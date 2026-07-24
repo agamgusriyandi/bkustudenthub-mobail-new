@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholarship Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#153ea3",
+                        "secondary-fixed": "#ffe08b",
+                        "surface-variant": "#e4e2e2",
+                        "surface": "#fbf9f8",
+                        "on-error-container": "#93000a",
+                        "secondary": "#745b00",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#735a00",
+                        "on-surface": "#1b1c1c",
+                        "tertiary-fixed-dim": "#61de8a",
+                        "surface-container-high": "#e9e8e7",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e4e2e2",
+                        "primary": "#002068",
+                        "surface-bright": "#fbf9f8",
+                        "secondary-fixed-dim": "#ebc246",
+                        "on-tertiary-container": "#3dbe6e",
+                        "inverse-primary": "#b5c4ff",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "surface-container-low": "#f5f3f3",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "primary-fixed": "#dce1ff",
+                        "primary-container": "#003399",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f2f0f0",
+                        "on-surface-variant": "#444653",
+                        "tertiary": "#002e14",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#efeded",
+                        "on-primary-container": "#8aa4ff",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed": "#7efba4",
+                        "outline-variant": "#c4c5d5",
+                        "tertiary-container": "#004721",
+                        "surface-tint": "#3557bc",
+                        "on-tertiary-fixed": "#00210c",
+                        "on-background": "#1b1c1c",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "outline": "#747684",
+                        "background": "#fbf9f8",
+                        "on-primary-fixed": "#00164e",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dbdad9",
+                        "inverse-surface": "#303031",
+                        "secondary-container": "#fdd355"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "base": "4px",
+                        "card-padding": "16px",
+                        "stack-md": "16px",
+                        "margin-page": "16px",
+                        "stack-lg": "24px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "title-lg": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen flex flex-col md:hidden overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 shadow-sm dark:shadow-none bg-surface dark:bg-surface-dim">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 text-primary dark:text-primary-fixed-dim" onclick="document.getElementById('side-drawer').classList.remove('-translate-x-full'); document.getElementById('drawer-overlay').classList.remove('hidden');">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display text-display text-primary dark:text-primary-fixed-dim">Scholarship Hub</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<div class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity" id="drawer-overlay" onclick="document.getElementById('side-drawer').classList.add('-translate-x-full'); this.classList.add('hidden');"></div><aside class="fixed top-0 left-0 h-full w-72 bg-surface dark:bg-surface-dim z-[70] transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-xl" id="side-drawer"><div class="p-6 border-b border-outline-variant"><h2 class="text-display font-display text-primary">Scholarship Hub</h2></div><nav class="flex-1 overflow-y-auto py-4"><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="{{DATA:SCREEN:SCREEN_16}}"><span class="material-symbols-outlined">dashboard</span><span class="font-label-md">Dashboard</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="{{DATA:SCREEN:SCREEN_11}}"><span class="material-symbols-outlined">stars</span><span class="font-label-md">Kencana</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="{{DATA:SCREEN:SCREEN_18}}"><span class="material-symbols-outlined">workspace_premium</span><span class="font-label-md">Achievement</span></a><a class="flex items-center gap-4 px-6 py-3 bg-primary-container text-on-primary-container font-bold transition-colors" href="{{DATA:SCREEN:SCREEN_21}}"><span class="material-symbols-outlined">school</span><span class="font-label-md">Scholarship Hub</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span class="material-symbols-outlined">psychology</span><span class="font-label-md">Counseling</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span class="material-symbols-outlined">medical_services</span><span class="font-label-md">Health Screening</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span class="material-symbols-outlined">campaign</span><span class="font-label-md">Student Voice</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span class="material-symbols-outlined">groups</span><span class="font-label-md">Organisasi</span></a><a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="{{DATA:SCREEN:SCREEN_14}}"><span class="material-symbols-outlined">person</span><span class="font-label-md">Student Profile</span></a></nav></aside><main class="flex-1 overflow-y-auto mt-16 pb-24 px-margin-page pt-stack-md flex flex-col gap-stack-lg">
+<!-- Toggle Tabs -->
+<div class="flex rounded-full bg-surface-container p-1">
+<button class="flex-1 py-2 text-center rounded-full bg-white shadow-sm font-label-md text-label-md text-primary">Katalog Aktif</button>
+<button class="flex-1 py-2 text-center rounded-full text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors">Riwayat Saya</button>
+</div>
+<!-- Filters & Sort Area -->
+<div class="flex flex-col gap-stack-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="sort">sort</span>
+<span>Sortir: Deadline Terdekat</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex overflow-x-auto gap-2 pb-2 scrollbar-hide -mx-margin-page px-margin-page">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md border border-primary-container">Semua</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:bg-surface-container-low">Internal</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:bg-surface-container-low">Alumni</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:bg-surface-container-low">Mitra</button>
+</div>
+</div>
+<!-- Scholarship List (Bento/Card Style) -->
+<div class="flex flex-col gap-stack-md">
+<!-- Card 1 -->
+<div class="bg-white rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high overflow-hidden flex flex-col relative">
+<div class="h-32 w-full bg-surface-container-low relative">
+<img alt="Card banner" class="w-full h-full object-cover" data-alt="A modern academic setting featuring a bright, airy library or study hall with large windows letting in natural daylight. The lighting is soft and even, highlighting a clean, institutional environment. The color palette incorporates cool whites, soft grays, and subtle hints of navy blue. The mood is aspirational and focused, reflecting a premium higher education experience." src="https://lh3.googleusercontent.com/aida/ADBb0uj8-s-MyfFo5_SKurfSaeLG_Yvx0R1Pub6VIDrNXmfvWwvUe7V6zJjWejVq6nmRPtPKUWD8eXa3yoUO5_GuU_nU9LH6mlUfITE-DSJX2yFaVhbb7KtBPkjRgyPtQN_b8uhsqs2DUYBbxBpvDgmmh85zyrjfpj5QB-09wFcVc4D4rFstRA-_iqUb15kctPKFjpJrHiJOsXAdO1QEynG3qvLvvAI7s5_Mfau9gVKgrU4btGTMugdYG4Iv1CkeeNn9lD0NLe1F9y0GlQ"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-tertiary-container border border-tertiary-container/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="workspace_premium" data-weight="fill" style="font-variation-settings: 'FILL' 1;">workspace_premium</span> PRESTASI
+                    </div>
+</div>
+<div class="p-card-padding flex flex-col gap-stack-sm">
+<div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1">Beasiswa Prestasi UBK</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="account_balance">account_balance</span>
+                            Universitas Bhakti Kencana
+                        </p>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-surface-variant my-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nominal</span>
+<span class="font-label-md text-label-md text-primary font-bold">Rp 5.000.000</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kuota</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">50/50</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Deadline</span>
+<span class="font-label-md text-label-md text-error font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 3 Hari
+                            </span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md font-bold mt-2 hover:bg-primary-container transition-colors shadow-md">
+                        Detail &amp; Daftar
+                    </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high overflow-hidden flex flex-col relative">
+<div class="h-32 w-full bg-surface-container-low relative">
+<img alt="Card banner" class="w-full h-full object-cover" data-alt="A close-up view of a high-tech study tablet resting on a sleek wooden desk in a modern academic space. The screen displays abstract data visualizations in hues of soft blue and green. The lighting is crisp and bright, establishing a clear, light-mode corporate aesthetic. The overall mood is innovative, organized, and deeply tied to modern learning." src="https://lh3.googleusercontent.com/aida/ADBb0uhMLmr_YZWICpC6x0REdtAnnEl0eCU0ZpIiE_psNIXY8I8948MK7EnMtwWW89RrnSMgNL6M4FiXodo-dygJV6QhyiIIJqhhInY0Flu2wCZgvFA9qhXT4YhSXOqQaeZb5Li-LecAIOzG59WK1GkXN4D1M7XVIXQVjcHPhwcnn0x0SjXz1F0y6cR9JI3PRzab3FveGlZM9TB59ylT9tq-cRg3F_tJ0C_o0DCSK9ePAG6xJbOIH4V0KjnSEfL5x_gsIPYEiTW5I3HFuQ"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-secondary-container border border-secondary-container/20 flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[12px]" data-icon="handshake" data-weight="fill" style="font-variation-settings: 'FILL' 1;">handshake</span> MITRA
+                   </div>
+</div>
+<div class="p-card-padding flex flex-col gap-stack-sm">
+<div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1">Beasiswa Bank Jabar</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="domain">domain</span>
+                           Bank BJB
+                       </p>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-surface-variant my-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nominal</span>
+<span class="font-label-md text-label-md text-primary font-bold">Rp 3.500.000</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kuota</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">12/20</span>
+</div>
+<div class="w-px h-8 bg-surface-variant"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Deadline</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="event">event</span> 12 Nov
+                           </span>
+</div>
+</div>
+<button class="w-full bg-white text-primary border border-primary py-3 rounded-lg font-label-md text-label-md font-bold mt-2 hover:bg-surface-container-low transition-colors">
+                       Detail
+                   </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 shadow-lg dark:shadow-none border-t border-outline-variant dark:border-outline bg-surface dark:bg-surface-dim"><a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_16}}"><span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_11}}"><span class="material-symbols-outlined mb-1" data-icon="stars">stars</span><span class="font-label-md text-label-md">Kencana</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_18}}"><span class="material-symbols-outlined mb-1" data-icon="workspace_premium">workspace_premium</span><span class="font-label-md text-label-md">Achievement</span></a><a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_21}}"><span class="material-symbols-outlined mb-1" data-icon="school" data-weight="fill" style="font-variation-settings: 'FILL' 1;">school</span><span class="font-label-md text-label-md">Scholarship</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_14}}"><span class="material-symbols-outlined mb-1" data-icon="person">person</span><span class="font-label-md text-label-md">Profile</span></a></nav>
+</body></html>

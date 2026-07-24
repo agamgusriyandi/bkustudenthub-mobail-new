@@ -1,0 +1,560 @@
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+
+class KencanaAttendanceScreen extends StatefulWidget {
+  const KencanaAttendanceScreen({super.key});
+
+  @override
+  State<KencanaAttendanceScreen> createState() =>
+      _KencanaAttendanceScreenState();
+}
+
+class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
+  Map<String, dynamic>? data;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() => isLoading = true);
+    final provider = context.read<KencanaProvider>();
+    final result = await provider.fetchAttendance();
+    if (mounted) {
+      setState(() {
+        data = result;
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _submitAbsence(int sessionId, String sessionTitle) async {
+    final reasonController = TextEditingController();
+    final isSubmitting = ValueNotifier<bool>(false);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Ajukan Izin'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sesi: $sessionTitle',
+                  style: AppTextStyles.labelMd.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: reasonController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: 'Jelaskan alasan ketidakhadiran...',
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.radiusMd,
+                    ),
+                    contentPadding: const EdgeInsets.all(AppSpacing.md),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Batal'),
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: isSubmitting,
+                builder: (ctx, submitting, _) {
+                  return TextButton(
+                    onPressed:
+                        submitting
+                            ? null
+                            : () async {
+                              if (reasonController.text.trim().isEmpty) {
+                                AppSnackbar.showWarning(
+                                  ctx,
+                                  'Alasan izin wajib diisi',
+                                );
+                                return;
+                              }
+                              isSubmitting.value = true;
+                              final provider = context.read<KencanaProvider>();
+                              final success = await provider.submitAbsence(
+                                sessionId,
+                                reasonController.text.trim(),
+                              );
+                              if (ctx.mounted) {
+                                isSubmitting.value = false;
+                                Navigator.pop(ctx, success);
+                              }
+                            },
+                    child:
+                        submitting
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : const Text('Ajukan Izin'),
+                  );
+                },
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true && mounted) {
+      AppSnackbar.showSuccess(context, 'Permohonan izin berhasil diajukan');
+      _loadData();
+    }
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'present':
+        return 'Hadir';
+      case 'permission':
+        return 'Izin';
+      case 'permission_requested':
+        return 'Diajukan';
+      default:
+        return 'Tidak Hadir';
+    }
+  }
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'present':
+        return AppColors.success;
+      case 'permission':
+        return AppColors.warning;
+      case 'permission_requested':
+        return Theme.of(context).colorScheme.primary;
+      default:
+        return AppColors.error;
+    }
+  }
+
+  IconData _statusIcon(String status) {
+    switch (status) {
+      case 'present':
+        return Icons.check_circle_rounded;
+      case 'permission':
+        return Icons.info_rounded;
+      case 'permission_requested':
+        return Icons.hourglass_empty_rounded;
+      default:
+        return Icons.cancel_rounded;
+    }
+  }
+
+  bool _canSubmitAbsence(String status) {
+    return status != 'present' &&
+        status != 'permission' &&
+        status != 'permission_requested';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            const BkuAppBar(
+              title: 'LOG PRESENSI',
+              subtitle: 'KENCANA',
+              variant: AppBarVariant.student,
+              expandedHeight: 100,
+              showBackButton: true,
+              isExpandable: false,
+            ),
+            if (isLoading)
+              SliverFillRemaining(
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.xl,
+                  ),
+                  child: BkuShimmerList(itemCount: 5, itemHeight: 80),
+                ),
+              )
+            else if (data == null || data!.isEmpty)
+              const SliverFillRemaining(
+                child: Center(child: Text('Gagal memuat presensi')),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  top: 16,
+                  left: 20,
+                  right: 20,
+                  bottom: 40,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _buildSummaryCard(),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Rincian Presensi',
+                      style: AppTextStyles.titleMd.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildItemsList(),
+                  ]),
+                ),
+              ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/kencana/qr-scan'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        icon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
+        label: const Text(
+          'Scan Presensi',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryCard() {
+    final themeProvider = context.watch<ThemeProvider>();
+    final summary = data?['summary'] ?? {};
+    final total = summary['required_sessions'] ?? 0;
+    final present = summary['attended_sessions'] ?? 0;
+    final percentage = (summary['percentage'] ?? 0.0).toDouble();
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'Total Sesi',
+                total.toString(),
+                Icons.event_note_rounded,
+                themeProvider.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                'Hadir',
+                present.toString(),
+                Icons.check_circle_rounded,
+                AppColors.success,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                'Persentase',
+                '${percentage.toStringAsFixed(0)}%',
+                Icons.percent_rounded,
+                Colors.blue,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: AppRadius.radiusLg,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(8),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant.withAlpha(55),
+            ),
+          ),
+          child: Row(
+            children: [
+              Text(
+                'Progress Kehadiran',
+                style: AppTextStyles.labelSm.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: AppRadius.radiusXs,
+                  child: LinearProgressIndicator(
+                    value: total == 0 ? 0 : percentage / 100,
+                    minHeight: 8,
+                    backgroundColor: Colors.grey[100],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      percentage >= 75
+                          ? AppColors.success
+                          : (percentage >= 50 ? Colors.amber : AppColors.error),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                '${percentage.toStringAsFixed(0)}%',
+                style: AppTextStyles.labelSm.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color:
+                      percentage >= 75
+                          ? AppColors.success
+                          : (percentage >= 50 ? Colors.amber : AppColors.error),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      height: 100,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: AppRadius.radiusLg,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(8),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(55),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color.withAlpha(20),
+                  borderRadius: AppRadius.radiusSm,
+                ),
+                child: Icon(icon, color: color, size: 16),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: AppTextStyles.titleMd.copyWith(
+              fontWeight: FontWeight.w900,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            style: AppTextStyles.labelSm.copyWith(
+              fontSize: 10,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemsList() {
+    final details = data?['details'] as List<dynamic>? ?? [];
+    if (details.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: AppRadius.radiusLg,
+        ),
+        child: Text(
+          'Belum ada sesi presensi',
+          textAlign: TextAlign.center,
+          style: AppTextStyles.labelMd.copyWith(
+            color: Theme.of(context).colorScheme.outline,
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children:
+          details.map((item) {
+            final sessionId = item['session_id'] ?? 0;
+            final title = item['title'] ?? '';
+            final status = item['status'] ?? 'absent';
+            final checkedAtStr = item['checked_at'];
+
+            final label = _statusLabel(status);
+            final color = _statusColor(status);
+            final icon = _statusIcon(status);
+            final canSubmit = _canSubmitAbsence(status);
+
+            String timeStr = '-';
+            if (checkedAtStr != null) {
+              try {
+                timeStr = DateFormat(
+                  'HH:mm, dd MMM',
+                ).format(DateTime.parse(checkedAtStr));
+              } catch (e) {
+                // ignore
+              }
+            }
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: AppRadius.radiusLg,
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withAlpha(50),
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: color.withAlpha(20),
+                      borderRadius: AppRadius.radiusMd,
+                    ),
+                    child: Icon(icon, color: color, size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: AppTextStyles.labelMd.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          status == 'present' ? 'Hadir: $timeStr' : label,
+                          style: AppTextStyles.labelSm.copyWith(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                        if (canSubmit)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: GestureDetector(
+                              onTap: () => _submitAbsence(sessionId, title),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.warning.withAlpha(20),
+                                  borderRadius: AppRadius.radiusSm,
+                                  border: Border.all(
+                                    color: AppColors.warning.withAlpha(60),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.edit_note_rounded,
+                                      size: 16,
+                                      color: Colors.orange[800],
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Ajukan Izin',
+                                      style: AppTextStyles.labelSm.copyWith(
+                                        color: Colors.orange[800],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withAlpha(20),
+                      borderRadius: AppRadius.radiusSm,
+                    ),
+                    child: Text(
+                      label.toUpperCase(),
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+    );
+  }
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Health Screening - Pusat Kesehatan BKU</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "inverse-on-surface": "#f2f0f0",
+                "on-secondary": "#ffffff",
+                "on-primary": "#ffffff",
+                "on-surface-variant": "#444653",
+                "on-tertiary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface-container": "#efeded",
+                "on-primary-fixed-variant": "#153ea3",
+                "on-tertiary-container": "#3dbe6e",
+                "on-primary-fixed": "#00164e",
+                "error-container": "#ffdad6",
+                "tertiary-fixed": "#7efba4",
+                "tertiary-container": "#004721",
+                "on-secondary-fixed-variant": "#584400",
+                "tertiary-fixed-dim": "#61de8a",
+                "outline-variant": "#c4c5d5",
+                "on-secondary-fixed": "#241a00",
+                "on-tertiary-fixed-variant": "#005228",
+                "on-secondary-container": "#735a00",
+                "secondary-container": "#fdd355",
+                "primary": "#002068",
+                "surface-variant": "#e4e2e2",
+                "primary-container": "#003399",
+                "error": "#ba1a1a",
+                "on-surface": "#1b1c1c",
+                "surface-tint": "#3557bc",
+                "surface-container-highest": "#e4e2e2",
+                "surface-container-high": "#e9e8e7",
+                "surface": "#fbf9f8",
+                "primary-fixed-dim": "#b5c4ff",
+                "secondary": "#745b00",
+                "primary-fixed": "#dce1ff",
+                "inverse-surface": "#303031",
+                "on-tertiary-fixed": "#00210c",
+                "tertiary": "#002e14",
+                "on-error": "#ffffff",
+                "surface-bright": "#fbf9f8",
+                "on-primary-container": "#8aa4ff",
+                "on-background": "#1b1c1c",
+                "inverse-primary": "#b5c4ff",
+                "surface-dim": "#dbdad9",
+                "surface-container-low": "#f5f3f3",
+                "secondary-fixed-dim": "#ebc246",
+                "surface-container-lowest": "#ffffff",
+                "background": "#fbf9f8",
+                "secondary-fixed": "#ffe08b",
+                "outline": "#747684"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "stack-sm": "8px",
+                "base": "4px",
+                "stack-md": "16px",
+                "gutter": "12px",
+                "card-padding": "16px",
+                "stack-lg": "24px",
+                "margin-page": "16px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "title-lg": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "display": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "title-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "10px",
+                        {
+                                "lineHeight": "14px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: #fbf9f8;
+    color: #1b1c1c;
+    font-family: 'Inter', sans-serif;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:flex md:pb-0">
+<!-- Desktop Sidebar Navigation (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col w-80 bg-surface shadow-xl fixed inset-y-0 left-0 z-[60] py-stack-lg">
+<div class="px-margin-page mb-stack-lg flex items-center gap-stack-sm">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
+<img alt="Student Portrait" class="w-full h-full object-cover" data-alt="A professional, well-lit studio portrait of a young student. The student is looking confidently at the camera, conveying a sense of academic focus and reliability. The lighting is soft and even, highlighting their features against a neutral, modern background. The overall tone is approachable yet authoritative, fitting perfectly within a clean, modern corporate or academic digital environment." src="https://lh3.googleusercontent.com/aida/ADBb0ujCOYrDbCR_nejxkg_iw2wYMxl3avZQf1xPFpGkPwlu4F4hVrEoyRzlSJ4lZ6F2NRJLoxsYE1KTZonwZe169EZn1GfXfWsf3NDHC82IhUAQnAxBS2oShmhQ5V8WAAbZmeiH59T2jX5XX1qYf2W-GJEzW5GyYqhZL8IsKz0iF-mGvx7QhDXPRWjAK7gSbaVT9Sg262pOK2I_643_gmAN_ZizR2nEbHNbpDMwQjIaZF_ZBi2BgxPCKngvy3CmjVvWgloHRW4iARQttg"/>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface">BKU Student</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Academic Hub</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="space-y-base">
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">home</span><span class="font-body-md text-body-md">Dashboard</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">military_tech</span><span class="font-body-md text-body-md">Kencana</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">emoji_events</span><span class="font-body-md text-body-md">Achievement</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">local_library</span><span class="font-body-md text-body-md">Scholarship Hub</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">psychology</span><span class="font-body-md text-body-md">Counseling</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 bg-secondary-container text-on-secondary-container font-bold rounded-r-full mr-4 transition-all duration-200" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span><span class="font-body-md text-body-md">Health Screening</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">campaign</span><span class="font-body-md text-body-md">Student Voice</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">groups</span><span class="font-body-md text-body-md">Organisasi</span></a></li>
+<li><a class="flex items-center gap-stack-md px-margin-page py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">account_circle</span><span class="font-body-md text-body-md">Student Profile</span></a></li>
+</ul>
+</nav>
+<div class="px-margin-page mt-stack-lg">
+<p class="font-label-sm text-label-sm text-outline">v1.0.0</p>
+</div>
+</aside>
+<!-- Mobile Top App Bar -->
+<header class="md:hidden fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 bg-surface shadow-sm transition-all duration-200">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors rounded-full active:scale-95"><span class="material-symbols-outlined">menu</span></button>
+<h1 class="font-display text-display text-primary font-bold tracking-tight">Student BKU Hub</h1>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors rounded-full active:scale-95"><span class="material-symbols-outlined">notifications</span></button>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full md:pl-80 pt-16 md:pt-0 min-h-screen">
+<!-- Header Section -->
+<div class="px-margin-page py-stack-lg">
+<div class="flex items-center gap-stack-sm mb-base">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<h1 class="font-display text-display text-on-surface font-extrabold tracking-tight">Health Screening</h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Pusat Kesehatan BKU - Pantau kondisi kesehatan Anda secara berkala.</p>
+</div>
+<!-- Content Grid -->
+<div class="px-margin-page pb-stack-lg space-y-stack-lg max-w-4xl mx-auto">
+<!-- Last Condition Summary (Bento Grid) -->
+<section>
+<h2 class="font-title-lg text-title-lg text-primary mb-stack-md">Kondisi Terakhir</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<div class="glass-card rounded-xl p-card-padding flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-base text-2xl">height</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Tinggi</span>
+<div class="font-headline-md text-headline-md text-on-surface mt-1">168 <span class="font-label-sm text-label-sm text-outline">cm</span></div>
+</div>
+<div class="glass-card rounded-xl p-card-padding flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-base text-2xl">scale</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Berat</span>
+<div class="font-headline-md text-headline-md text-on-surface mt-1">65 <span class="font-label-sm text-label-sm text-outline">kg</span></div>
+</div>
+<div class="glass-card rounded-xl p-card-padding flex flex-col items-center justify-center text-center relative overflow-hidden">
+<div class="absolute inset-0 bg-error-container opacity-20 pointer-events-none"></div>
+<span class="material-symbols-outlined text-error mb-base text-2xl" style="font-variation-settings: 'FILL' 1;">monitor_heart</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Tensi</span>
+<div class="font-headline-md text-headline-md text-error mt-1 font-bold">140/90</div>
+</div>
+<div class="glass-card rounded-xl p-card-padding flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-base text-2xl">bloodtype</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Gol. Darah</span>
+<div class="font-headline-md text-headline-md text-on-surface mt-1 text-primary-container">O+</div>
+</div>
+</div>
+</section>
+<!-- Status & Alerts (Asymmetric Layout) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- BMI Status -->
+<div class="glass-card rounded-xl p-card-padding md:col-span-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-tertiary-container">monitor_weight</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Status BMI</h3>
+</div>
+<div class="font-display text-display text-on-surface mb-1">23.0</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Ideal</p>
+</div>
+<div class="mt-stack-md w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-tertiary-container h-2 rounded-full w-[60%]"></div>
+</div>
+</div>
+<!-- Alert Card -->
+<div class="bg-error-container border border-[#ffb4ab] rounded-xl p-card-padding md:col-span-2 flex items-start gap-stack-md shadow-sm">
+<span class="material-symbols-outlined text-error text-3xl mt-1" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h3 class="font-title-lg text-title-lg text-[#93000a] mb-base">Peringatan: Hipertensi Ringan</h3>
+<p class="font-body-md text-body-md text-[#93000a] opacity-90 mb-stack-md">Tekanan darah Anda (140/90) berada di atas batas normal. Disarankan untuk memantau asupan garam dan berkonsultasi dengan klinik BKU jika kondisi berlanjut.</p>
+<button class="bg-[#93000a] text-white font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-error transition-colors">Jadwalkan Konsultasi</button>
+</div>
+</div>
+</section>
+<!-- Tensi Referensi Chart Area -->
+<section>
+<div class="glass-card rounded-xl p-card-padding">
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-title-lg text-title-lg text-primary">Riwayat Tekanan Darah</h2>
+<button class="text-primary hover:bg-surface-container-low p-2 rounded-full transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+<!-- Mock Chart Container -->
+<div class="w-full h-48 bg-surface-container-lowest border border-outline-variant rounded-lg relative overflow-hidden flex items-end px-4 pb-4 pt-8 gap-4">
+<!-- Y-Axis Labels -->
+<div class="absolute left-2 top-0 bottom-4 flex flex-col justify-between py-4 text-outline font-label-sm text-label-sm">
+<span>160</span>
+<span>120</span>
+<span>80</span>
+</div>
+<!-- Grid Lines -->
+<div class="absolute inset-x-8 inset-y-4 border-b border-t border-surface-container-highest pointer-events-none"></div>
+<!-- Bars (Mock Data) -->
+<div class="flex-1 flex flex-col justify-end items-center gap-1 group relative ml-8">
+<div class="w-full max-w-[24px] bg-primary-container rounded-t-sm h-[60%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-full max-w-[24px] bg-secondary-container rounded-t-sm h-[40%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-label-sm text-label-sm text-outline mt-2">Sep</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-1 group relative">
+<div class="w-full max-w-[24px] bg-primary-container rounded-t-sm h-[65%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-full max-w-[24px] bg-secondary-container rounded-t-sm h-[42%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-label-sm text-label-sm text-outline mt-2">Okt</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-1 group relative">
+<div class="w-full max-w-[24px] bg-primary-container rounded-t-sm h-[62%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-full max-w-[24px] bg-secondary-container rounded-t-sm h-[45%] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-label-sm text-label-sm text-outline mt-2">Nov</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-1 group relative">
+<div class="w-full max-w-[24px] bg-error rounded-t-sm h-[75%] opacity-90 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-full max-w-[24px] bg-[#ffb4ab] rounded-t-sm h-[55%] opacity-90 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-label-sm text-label-sm text-outline mt-2 font-bold text-error">Des</span>
+</div>
+</div>
+<div class="flex justify-center gap-stack-md mt-stack-md">
+<div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-primary-container"></div><span class="font-label-sm text-label-sm text-on-surface-variant">Sistolik</span></div>
+<div class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-secondary-container"></div><span class="font-label-sm text-label-sm text-on-surface-variant">Diastolik</span></div>
+</div>
+</div>
+</section>
+<!-- Action Area -->
+<section class="pt-stack-sm pb-stack-lg">
+<button class="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md py-4 rounded-xl shadow-lg hover:bg-primary transition-colors flex items-center justify-center gap-2 active:scale-[0.98]">
+<span class="material-symbols-outlined">add_circle</span>
+          Input Data Mandiri
+        </button>
+</section>
+</div>
+</main>
+<!-- Mobile Bottom Nav Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 bg-surface shadow-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 rounded-lg" href="{{DATA:SCREEN:SCREEN_16}}">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 rounded-lg" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-md text-label-md mt-1">Kencana</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 rounded-lg" href="{{DATA:SCREEN:SCREEN_18}}">
+<span class="material-symbols-outlined">workspace_premium</span>
+<span class="font-label-md text-label-md mt-1">Achievement</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 rounded-lg" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md mt-1">Scholarship</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 rounded-lg" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

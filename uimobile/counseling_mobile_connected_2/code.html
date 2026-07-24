@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Counseling Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f2f0f0",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#444653",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#efeded",
+                        "on-primary-fixed-variant": "#153ea3",
+                        "on-tertiary-container": "#3dbe6e",
+                        "on-primary-fixed": "#00164e",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#7efba4",
+                        "tertiary-container": "#004721",
+                        "on-secondary-fixed-variant": "#584400",
+                        "tertiary-fixed-dim": "#61de8a",
+                        "outline-variant": "#c4c5d5",
+                        "on-secondary-fixed": "#241a00",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "on-secondary-container": "#735a00",
+                        "secondary-container": "#fdd355",
+                        "primary": "#002068",
+                        "surface-variant": "#e4e2e2",
+                        "primary-container": "#003399",
+                        "error": "#ba1a1a",
+                        "on-surface": "#1b1c1c",
+                        "surface-tint": "#3557bc",
+                        "surface-container-highest": "#e4e2e2",
+                        "surface-container-high": "#e9e8e7",
+                        "surface": "#fbf9f8",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "secondary": "#745b00",
+                        "primary-fixed": "#dce1ff",
+                        "inverse-surface": "#303031",
+                        "on-tertiary-fixed": "#00210c",
+                        "tertiary": "#002e14",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fbf9f8",
+                        "on-primary-container": "#8aa4ff",
+                        "on-background": "#1b1c1c",
+                        "inverse-primary": "#b5c4ff",
+                        "surface-dim": "#dbdad9",
+                        "surface-container-low": "#f5f3f3",
+                        "secondary-fixed-dim": "#ebc246",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fbf9f8",
+                        "secondary-fixed": "#ffe08b",
+                        "outline": "#747684"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "gutter": "12px",
+                        "card-padding": "16px",
+                        "stack-lg": "24px",
+                        "margin-page": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "fontWeight": "600" }],
+                        "display": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-lg min-h-screen pb-24 md:pb-0 md:pl-80">
+<!-- Mobile Top App Bar (Hidden on Web) -->
+<header class="md:hidden fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 bg-surface dark:bg-surface-dim shadow-sm dark:shadow-none">
+<button class="p-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-full active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display text-display text-primary dark:text-primary-fixed-dim">Student BKU Hub</h1>
+<button class="p-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-full active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Navigation Drawer (Hidden on Mobile, Visible on Web) -->
+<nav class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex-col py-stack-lg bg-surface dark:bg-surface-dim shadow-xl dark:shadow-none w-80">
+<div class="px-4 mb-8 flex items-center space-x-4">
+<img alt="Student Portrait" class="w-12 h-12 rounded-full object-cover border-2 border-surface-container" data-alt="A professional studio portrait of an Asian student in a dark navy blue blazer with a white shirt underneath. The background is a soft, solid light gray. The lighting is soft and flattering, creating a polished, modern, and trustworthy corporate academic aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0ujCOYrDbCR_nejxkg_iw2wYMxl3avZQf1xPFpGkPwlu4F4hVrEoyRzlSJ4lZ6F2NRJLoxsYE1KTZonwZe169EZn1GfXfWsf3NDHC82IhUAQnAxBS2oShmhQ5V8WAAbZmeiH59T2jX5XX1qYf2W-GJEzW5GyYqhZL8IsKz0iF-mGvx7QhDXPRWjAK7gSbaVT9Sg262pOK2I_643_gmAN_ZizR2nEbHNbpDMwQjIaZF_ZBi2BgxPCKngvy3CmjVvWgloHRW4iARQttg"/>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">BKU Student</h2>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-outline">Academic Hub</p>
+<span class="font-label-sm text-label-sm text-outline">v1.0.0</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto pr-4"><!-- Inactive Navigation -->
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">home</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">military_tech</span>
+<span class="font-body-md text-body-md">Kencana</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">emoji_events</span>
+<span class="font-body-md text-body-md">Achievement</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">local_library</span>
+<span class="font-body-md text-body-md">Scholarship Hub</span>
+</a>
+<!-- Active Navigation -->
+<a class="flex items-center px-4 py-3 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary font-bold rounded-r-full mr-4 transition-all duration-200 mb-1" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-body-md text-body-md">Counseling</span>
+</a>
+<!-- Inactive Navigation -->
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">medical_services</span>
+<span class="font-body-md text-body-md">Health Screening</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">campaign</span>
+<span class="font-body-md text-body-md">Student Voice</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">groups</span>
+<span class="font-body-md text-body-md">Organisasi</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-all duration-200 rounded-r-full mb-1" href="#">
+<span class="material-symbols-outlined mr-3">account_circle</span>
+<span class="font-body-md text-body-md">Student Profile</span>
+</a></div>
+</nav>
+<!-- Main Canvas -->
+<main class="pt-16 md:pt-0">
+<!-- Hero Section -->
+<section class="bg-primary text-on-primary rounded-b-xl px-margin-page py-stack-lg shadow-sm relative overflow-hidden">
+<div class="relative z-10">
+<h1 class="font-display text-display mb-2">Layanan Konseling Mahasiswa BKU</h1>
+<p class="font-body-lg text-inverse-primary mb-6 max-w-2xl">Dapatkan dukungan profesional untuk kesehatan mental, akademik, dan karir Anda. Ruang aman dan rahasia bagi mahasiswa BKU.</p>
+<button class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-6 py-3 rounded-lg shadow-md hover:bg-secondary-fixed transition-colors">
+                    Jadwalkan Konseling
+                </button>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container rounded-full blur-3xl opacity-50 -mr-20 -mt-20"></div>
+<div class="absolute bottom-0 right-10 w-40 h-40 bg-surface-tint rounded-full blur-2xl opacity-40 -mb-10"></div>
+</section>
+<!-- Main Content Area -->
+<div class="px-margin-page py-stack-lg max-w-5xl mx-auto">
+<!-- Quick Stats Bento -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-stack-lg">
+<!-- Slot Tersedia -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-sm flex flex-col items-center justify-center text-center border border-surface-container">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center mb-stack-sm text-tertiary-container">
+<span class="material-symbols-outlined">event_available</span>
+</div>
+<span class="font-display text-display text-on-surface mb-1">12</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Slot Tersedia</span>
+</div>
+<!-- Total Sesi -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-sm flex flex-col items-center justify-center text-center border border-surface-container">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center mb-stack-sm text-primary-fixed-variant">
+<span class="material-symbols-outlined">history</span>
+</div>
+<span class="font-display text-display text-on-surface mb-1">4</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Total Sesi Anda</span>
+</div>
+<!-- Menunggu -->
+<div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-sm flex flex-col items-center justify-center text-center border border-surface-container">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center mb-stack-sm text-secondary-container">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+<span class="font-display text-display text-on-surface mb-1">1</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Jadwal Menunggu</span>
+</div>
+<!-- Darurat -->
+<div class="bg-error-container rounded-xl p-card-padding shadow-sm flex flex-col items-center justify-center text-center border border-error-container">
+<div class="w-10 h-10 rounded-full bg-error flex items-center justify-center mb-stack-sm text-on-error">
+<span class="material-symbols-outlined">emergency</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-error-container mb-1 mt-1">Bantuan</span>
+<span class="font-label-md text-label-md text-on-error-container">Darurat 24/7</span>
+</div>
+</section>
+<!-- Kategori Konseling -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-md flex items-center">
+<span class="material-symbols-outlined mr-2 text-primary">category</span>
+                    Kategori Konseling
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<!-- Akademik -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col border border-surface-container hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="h-32 bg-surface-container relative">
+<img alt="Academic Counseling" class="w-full h-full object-cover" data-alt="A modern, bright university library setting with a counselor and a student sitting at a table with books and a laptop. The mood is focused and academic. Light gray walls and natural light streaming through a window. The style is professional corporate photography with a clean aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0uj8-s-MyfFo5_SKurfSaeLG_Yvx0R1Pub6VIDrNXmfvWwvUe7V6zJjWejVq6nmRPtPKUWD8eXa3yoUO5_GuU_nU9LH6mlUfITE-DSJX2yFaVhbb7KtBPkjRgyPtQN_b8uhsqs2DUYBbxBpvDgmmh85zyrjfpj5QB-09wFcVc4D4rFstRA-_iqUb15kctPKFjpJrHiJOsXAdO1QEynG3qvLvvAI7s5_Mfau9gVKgrU4btGTMugdYG4Iv1CkeeNn9lD0NLe1F9y0GlQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<h3 class="absolute bottom-4 left-4 font-title-lg text-title-lg text-on-primary">Konseling Akademik</h3>
+</div>
+<div class="p-card-padding flex-1 flex flex-col">
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 flex-1">Bantuan terkait strategi belajar, manajemen waktu, dan kesulitan dalam perkuliahan.</p>
+<button class="w-full bg-surface-container-high text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center">
+                                Pilih <span class="material-symbols-outlined ml-1 text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Karir -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col border border-surface-container hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="h-32 bg-surface-container relative">
+<img alt="Career Counseling" class="w-full h-full object-cover" data-alt="A brightly lit modern office setting showing a career counselor pointing at a document while discussing with a young professional student. The mood is ambitious and supportive. Minimalist decor with subtle blue and white accents. Professional corporate photography style." src="https://lh3.googleusercontent.com/aida/ADBb0uhMLmr_YZWICpC6x0REdtAnnEl0eCU0ZpIiE_psNIXY8I8948MK7EnMtwWW89RrnSMgNL6M4FiXodo-dygJV6QhyiIIJqhhInY0Flu2wCZgvFA9qhXT4YhSXOqQaeZb5Li-LecAIOzG59WK1GkXN4D1M7XVIXQVjcHPhwcnn0x0SjXz1F0y6cR9JI3PRzab3FveGlZM9TB59ylT9tq-cRg3F_tJ0C_o0DCSK9ePAG6xJbOIH4V0KjnSEfL5x_gsIPYEiTW5I3HFuQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<h3 class="absolute bottom-4 left-4 font-title-lg text-title-lg text-on-primary">Konseling Karir</h3>
+</div>
+<div class="p-card-padding flex-1 flex flex-col">
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 flex-1">Eksplorasi minat karir, persiapan wawancara, dan penyusunan CV untuk masa depan.</p>
+<button class="w-full bg-surface-container-high text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center">
+                                Pilih <span class="material-symbols-outlined ml-1 text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Personal -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col border border-surface-container hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="h-32 bg-surface-container relative">
+<img alt="Personal Counseling" class="w-full h-full object-cover" data-alt="A warm, inviting counseling room with comfortable armchairs. A therapist is actively listening to a student. The lighting is soft and empathetic, creating a safe and confidential atmosphere. Subtle indoor plants in the background. Professional corporate photography style." src="https://lh3.googleusercontent.com/aida/ADBb0uhGLThaUHbC_J1dFjEgg2YykpcHDQdMVZ0r13P_0yDthxCxh7hIUWx-WoKQqjXZjkA8HfEcKnqFEmD9D8yxR30pCrlU08G126xQPwOARoS7A3d_5SxfWZ0pzYgfCz-Aifn1WvEMVUgRIdgbYnuwyTsarywlmCmegxXwVsgED8FYglxMR2jwA90NKXivvC7Bi81nJ6Kf8nJ0F1F39tPJeSiNdYNqhPwIDFXqXUmqkpsR5kBhVEyCt7DyIJijUicCPBdXNHKF3kqA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<h3 class="absolute bottom-4 left-4 font-title-lg text-title-lg text-on-primary">Konseling Personal</h3>
+</div>
+<div class="p-card-padding flex-1 flex flex-col">
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 flex-1">Dukungan untuk masalah pribadi, kecemasan, stres, dan tantangan kesehatan mental lainnya.</p>
+<button class="w-full bg-surface-container-high text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center">
+                                Pilih <span class="material-symbols-outlined ml-1 text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Konselor Tersedia -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-md flex items-center">
+<span class="material-symbols-outlined mr-2 text-primary">groups</span>
+                    Konselor Rekomendasi
+                </h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container divide-y divide-surface-container overflow-hidden">
+<!-- Counselor 1 -->
+<div class="p-card-padding flex items-start hover:bg-surface-container-low transition-colors cursor-pointer">
+<img alt="Counselor Dr. Sarah" class="w-14 h-14 rounded-full object-cover mr-4 border-2 border-surface-container" data-alt="A professional headshot of a female counselor in her 40s wearing a navy blue blazer over a light blouse. She has a warm, approachable smile. The background is a soft, solid light gray. Corporate portrait photography style." src="https://lh3.googleusercontent.com/aida/ADBb0ui2BAqxGLagKmjzCRyiPUZnNQQRnVQ9jXYn5U6i7WU-p05_S5XEesM6m6THHmgzQzhz1hMuuWULWRknvbkuZLA4ibtHv2wxMTmbcWrXGoTS3MnMnsgvUddLSGcXE3A_TBzIHhZCHYOj8VnjRLwggO18rfh4SSycFlJQW6EkFr_moPUfj4A4DDO90JLO8jTCAdZt8sJwv3kkhiz0KVAGBOdabRedAbNxuoVPUlp2LNEqlLTTZXq0hWLujSK33OQKxL6x4Svuii-0Vg"/>
+<div class="flex-1">
+<h4 class="font-title-lg text-title-lg text-on-surface">Dr. Sarah Wijaya, M.Psi.</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-1">Spesialis Konseling Personal &amp; Krisis</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-tertiary-fixed text-tertiary-container font-label-sm text-label-sm px-2 py-1 rounded-md">Tersedia Hari Ini</span>
+<span class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-md flex items-center"><span class="material-symbols-outlined text-[12px] mr-1">star</span>4.9</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Counselor 2 -->
+<div class="p-card-padding flex items-start hover:bg-surface-container-low transition-colors cursor-pointer">
+<img alt="Counselor Budi" class="w-14 h-14 rounded-full object-cover mr-4 border-2 border-surface-container" data-alt="A professional headshot of a male counselor in his 30s wearing a light blue button-down shirt and glasses. He looks attentive and friendly. The background is a soft, solid light gray. Corporate portrait photography style." src="https://lh3.googleusercontent.com/aida/ADBb0uiNMxBoYMd4Cdt7iAIPXQ3fv8nycE6XyPAjEd-5eZymp960RGhls6xzCSmufV12rGpPwvjokFOvbIXpGnJBttPbFPcUP8BzdwMf_fNXtw1D1pQdeOSNtd7ZxfKQyNusPke3g9jhpRYZ4qnDOH26zp6E3GuPIJtonGXbLu-ytVmdYnF5pNPfUBFJ-up06suAn25uRq1wcc06YOOeI3Sj-F0yAM_v9X90iKNhfML1b-dpWfwTpu2QfLZgYNLhwUHUjgS-TAUBdM3JnQ"/>
+<div class="flex-1">
+<h4 class="font-title-lg text-title-lg text-on-surface">Budi Santoso, S.Psi., M.A.</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-1">Konseling Karir &amp; Pengembangan Diri</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-md">Besok Pagi</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Hidden on Web) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 bg-surface dark:bg-surface-dim shadow-lg dark:shadow-none border-t border-outline-variant dark:border-outline"><a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_16}}">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-md text-label-md mt-1">Kencana</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">emoji_events</span>
+<span class="font-label-md text-label-md mt-1">Achievement</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md mt-1">Scholarship</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a></nav>
+</body></html>

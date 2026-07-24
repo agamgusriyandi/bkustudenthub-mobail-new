@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f2f0f0",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-surface-variant": "#444653",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#efeded",
+                      "on-primary-fixed-variant": "#153ea3",
+                      "on-tertiary-container": "#3dbe6e",
+                      "on-primary-fixed": "#00164e",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#7efba4",
+                      "tertiary-container": "#004721",
+                      "on-secondary-fixed-variant": "#584400",
+                      "tertiary-fixed-dim": "#61de8a",
+                      "outline-variant": "#c4c5d5",
+                      "on-secondary-fixed": "#241a00",
+                      "on-tertiary-fixed-variant": "#005228",
+                      "on-secondary-container": "#735a00",
+                      "secondary-container": "#fdd355",
+                      "primary": "#002068",
+                      "surface-variant": "#e4e2e2",
+                      "primary-container": "#003399",
+                      "error": "#ba1a1a",
+                      "on-surface": "#1b1c1c",
+                      "surface-tint": "#3557bc",
+                      "surface-container-highest": "#e4e2e2",
+                      "surface-container-high": "#e9e8e7",
+                      "surface": "#fbf9f8",
+                      "primary-fixed-dim": "#b5c4ff",
+                      "secondary": "#745b00",
+                      "primary-fixed": "#dce1ff",
+                      "inverse-surface": "#303031",
+                      "on-tertiary-fixed": "#00210c",
+                      "tertiary": "#002e14",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#fbf9f8",
+                      "on-primary-container": "#8aa4ff",
+                      "on-background": "#1b1c1c",
+                      "inverse-primary": "#b5c4ff",
+                      "surface-dim": "#dbdad9",
+                      "surface-container-low": "#f5f3f3",
+                      "secondary-fixed-dim": "#ebc246",
+                      "surface-container-lowest": "#ffffff",
+                      "background": "#fbf9f8",
+                      "secondary-fixed": "#ffe08b",
+                      "outline": "#747684"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "base": "4px",
+                      "stack-md": "16px",
+                      "gutter": "12px",
+                      "card-padding": "16px",
+                      "stack-lg": "24px",
+                      "margin-page": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "10px",
+                              {
+                                      "lineHeight": "14px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 shadow-sm dark:shadow-none bg-surface dark:bg-surface-dim">
+<button class="text-on-surface-variant dark:text-outline hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-full p-2 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display text-display text-primary dark:text-primary-fixed-dim">Student BKU Hub</h1>
+<button class="text-on-surface-variant dark:text-outline hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-full p-2 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- SideNav (Web) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex-col py-stack-lg docked full-height left-0 w-80 shadow-xl dark:shadow-none bg-surface dark:bg-surface-dim pt-24">
+<div class="px-margin-page mb-stack-lg flex items-center gap-4">
+<img alt="Student Portrait" class="w-12 h-12 rounded-full object-cover" data-alt="A professional headshot of a college student in a modern, light-filled academic setting. Soft, natural lighting. A clean, high-contrast, modern UI aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0ujCOYrDbCR_nejxkg_iw2wYMxl3avZQf1xPFpGkPwlu4F4hVrEoyRzlSJ4lZ6F2NRJLoxsYE1KTZonwZe169EZn1GfXfWsf3NDHC82IhUAQnAxBS2oShmhQ5V8WAAbZmeiH59T2jX5XX1qYf2W-GJEzW5GyYqhZL8IsKz0iF-mGvx7QhDXPRWjAK7gSbaVT9Sg262pOK2I_643_gmAN_ZizR2nEbHNbpDMwQjIaZF_ZBi2BgxPCKngvy3CmjVvWgloHRW4iARQttg"/>
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface">BKU Student</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Academic Hub</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">home</span><span class="font-body-md text-body-md">Dashboard</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">military_tech</span><span class="font-body-md text-body-md">Kencana</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">emoji_events</span><span class="font-body-md text-body-md">Achievement</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">local_library</span><span class="font-body-md text-body-md">Scholarship Hub</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">psychology</span><span class="font-body-md text-body-md">Counseling</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">medical_services</span><span class="font-body-md text-body-md">Health Screening</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">campaign</span><span class="font-body-md text-body-md">Student Voice</span></a>
+<a class="text-on-surface-variant dark:text-outline hover:bg-surface-container-low px-4 py-3 flex items-center gap-3 transition-all duration-200" href="#"><span class="material-symbols-outlined">groups</span><span class="font-body-md text-body-md">Organisasi</span></a>
+<a class="bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary font-bold rounded-r-full mr-4 flex items-center gap-3 px-4 py-3 transition-all duration-200" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span><span class="font-body-md text-body-md">Student Profile</span></a>
+</nav>
+<div class="px-margin-page mt-auto">
+<span class="font-label-sm text-label-sm text-on-surface-variant">v1.0.0</span>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="md:ml-80 pt-20 px-margin-page pb-stack-lg max-w-4xl mx-auto">
+<!-- Profile Header Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-card-padding mb-stack-lg flex flex-col items-center text-center">
+<div class="relative mb-stack-md">
+<img alt="Profile Picture" class="w-24 h-24 rounded-full object-cover border-4 border-surface-container-lowest shadow-sm" data-alt="A close-up profile portrait of a university student looking confident and approachable. The background is a blurred modern campus environment. Bright, even lighting." src="https://lh3.googleusercontent.com/aida/ADBb0ujCOYrDbCR_nejxkg_iw2wYMxl3avZQf1xPFpGkPwlu4F4hVrEoyRzlSJ4lZ6F2NRJLoxsYE1KTZonwZe169EZn1GfXfWsf3NDHC82IhUAQnAxBS2oShmhQ5V8WAAbZmeiH59T2jX5XX1qYf2W-GJEzW5GyYqhZL8IsKz0iF-mGvx7QhDXPRWjAK7gSbaVT9Sg262pOK2I_643_gmAN_ZizR2nEbHNbpDMwQjIaZF_ZBi2BgxPCKngvy3CmjVvWgloHRW4iARQttg"/>
+<button class="absolute bottom-0 right-0 bg-primary-container text-on-primary-container rounded-full p-1.5 shadow-sm hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-base">Mahasiswa Farmasi</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-base">1234567890</p>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full">Active</span>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex overflow-x-auto hide-scrollbar gap-stack-sm mb-stack-lg pb-1">
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-md text-label-md bg-primary-container text-on-primary-container transition-colors">Data Diri</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors border border-outline-variant">Keamanan Akun</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors border border-outline-variant">Preferensi Notif</button>
+</div>
+<!-- Data Section -->
+<div class="space-y-stack-lg">
+<!-- Data Pribadi Group -->
+<section>
+<h3 class="font-title-lg text-title-lg text-primary mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined">person</span> Data Pribadi
+                </h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] divide-y divide-outline-variant">
+<div class="p-card-padding flex justify-between items-center hover:bg-surface-container-low transition-colors rounded-t-xl cursor-pointer">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-base">NIK</p>
+<p class="font-body-md text-body-md text-on-surface">3201234567890001</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="p-card-padding flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-pointer">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-base">NISN</p>
+<p class="font-body-md text-body-md text-on-surface">9876543210</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="p-card-padding flex justify-between items-center hover:bg-surface-container-low transition-colors rounded-b-xl cursor-pointer">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-base">Date of Birth</p>
+<p class="font-body-md text-body-md text-on-surface">01 January 2000</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 shadow-lg dark:shadow-none border-t border-outline-variant dark:border-outline bg-surface dark:bg-surface-dim">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_16}}">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined mb-1">stars</span>
+<span class="font-label-md text-label-md">Kencana</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_18}}">
+<span class="material-symbols-outlined mb-1">workspace_premium</span>
+<span class="font-label-md text-label-md">Achievement</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined mb-1">school</span>
+<span class="font-label-md text-label-md">Scholarship</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

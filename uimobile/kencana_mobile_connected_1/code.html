@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student BKU Hub - Kencana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#153ea3",
+                        "secondary-fixed": "#ffe08b",
+                        "surface-variant": "#e4e2e2",
+                        "surface": "#fbf9f8",
+                        "on-error-container": "#93000a",
+                        "secondary": "#745b00",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#735a00",
+                        "on-surface": "#1b1c1c",
+                        "tertiary-fixed-dim": "#61de8a",
+                        "surface-container-high": "#e9e8e7",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e4e2e2",
+                        "primary": "#002068",
+                        "surface-bright": "#fbf9f8",
+                        "secondary-fixed-dim": "#ebc246",
+                        "on-tertiary-container": "#3dbe6e",
+                        "inverse-primary": "#b5c4ff",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "surface-container-low": "#f5f3f3",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "primary-fixed": "#dce1ff",
+                        "primary-container": "#003399",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f2f0f0",
+                        "on-surface-variant": "#444653",
+                        "tertiary": "#002e14",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#efeded",
+                        "on-primary-container": "#8aa4ff",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed": "#7efba4",
+                        "outline-variant": "#c4c5d5",
+                        "tertiary-container": "#004721",
+                        "surface-tint": "#3557bc",
+                        "on-tertiary-fixed": "#00210c",
+                        "on-background": "#1b1c1c",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "outline": "#747684",
+                        "background": "#fbf9f8",
+                        "on-primary-fixed": "#00164e",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dbdad9",
+                        "inverse-surface": "#303031",
+                        "secondary-container": "#fdd355"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "base": "4px",
+                        "card-padding": "16px",
+                        "stack-md": "16px",
+                        "margin-page": "16px",
+                        "stack-lg": "24px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["10px", {"lineHeight": "14px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 shadow-sm dark:shadow-none bg-surface dark:bg-surface-dim pt-safe">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 text-on-surface-variant dark:text-outline">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Kencana</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 text-on-surface-variant dark:text-outline">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-20 px-margin-page flex flex-col gap-stack-lg max-w-md mx-auto w-full">
+<!-- Banner -->
+<section class="bg-primary-container rounded-xl overflow-hidden shadow-sm relative">
+<img alt="Students collaborating on a modern academic campus with glass buildings and green spaces. The scene is brightly lit with natural sunlight, emphasizing a supportive and authoritative educational environment. The image uses a modern, light-mode corporate aesthetic with subtle navy blue and warm highlights." class="w-full h-32 object-cover opacity-60 mix-blend-overlay absolute inset-0" data-alt="Students collaborating on a modern academic campus with glass buildings and green spaces. The scene is brightly lit with natural sunlight, emphasizing a supportive and authoritative educational environment. The image uses a modern, light-mode corporate aesthetic with subtle navy blue and warm highlights." src="https://lh3.googleusercontent.com/aida/ADBb0uj8-s-MyfFo5_SKurfSaeLG_Yvx0R1Pub6VIDrNXmfvWwvUe7V6zJjWejVq6nmRPtPKUWD8eXa3yoUO5_GuU_nU9LH6mlUfITE-DSJX2yFaVhbb7KtBPkjRgyPtQN_b8uhsqs2DUYBbxBpvDgmmh85zyrjfpj5QB-09wFcVc4D4rFstRA-_iqUb15kctPKFjpJrHiJOsXAdO1QEynG3qvLvvAI7s5_Mfau9gVKgrU4btGTMugdYG4Iv1CkeeNn9lD0NLe1F9y0GlQ"/>
+<div class="p-card-padding relative z-10 flex flex-col justify-center h-32">
+<h2 class="font-title-lg text-title-lg text-on-primary-container mb-1">KENCANA</h2>
+<p class="font-body-md text-body-md text-on-primary-container opacity-90">PROGRAM PENGENALAN KAMPUS</p>
+</div>
+</section>
+<!-- Bento Grid: Progress & Score -->
+<section class="grid grid-cols-2 gap-stack-md">
+<!-- Progress Card -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl shadow-sm border border-outline-variant/30 flex flex-col items-center justify-center text-center">
+<div class="relative w-16 h-16 mb-stack-sm">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<!-- Background Circle -->
+<circle class="stroke-surface-variant" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<!-- Progress Circle -->
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-title-lg text-title-lg text-primary">0%</span>
+</div>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">0 dari 1 Kuis Selesai</p>
+</div>
+<!-- Score Card -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">NILAI KUMULATIF</p>
+<p class="font-display text-display text-primary">0.0<span class="font-title-lg text-title-lg text-on-surface-variant">/100</span></p>
+</div>
+<button class="mt-stack-sm w-full py-1.5 px-3 bg-surface-container-high rounded-lg font-label-md text-label-md text-on-surface flex items-center justify-center gap-1 opacity-70 cursor-not-allowed">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+                    Belum Mulai
+                </button>
+</div>
+</section>
+<!-- Timeline Section -->
+<section class="flex flex-col gap-stack-md">
+<h3 class="font-title-lg text-title-lg text-primary">TIMELINE 3 TAHAP KENCANA</h3>
+<!-- Tahap 1 Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/20 overflow-hidden">
+<div class="p-card-padding border-b border-surface-variant flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold tracking-wide bg-primary-container text-on-primary-container mb-2">TAHAP 1</span>
+<h4 class="font-headline-md text-headline-md text-on-surface">Tahap Umum</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_month">calendar_month</span>
+                            1 Sep - 15 Sep 2024
+                        </p>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="play_arrow">play_arrow</span>
+</div>
+</div>
+<div class="p-card-padding bg-surface-bright flex flex-col gap-stack-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Progress Modul</span>
+<span class="font-label-md text-label-md text-primary font-bold">0/4</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full w-[0%]"></div>
+</div>
+</div>
+</div>
+<!-- Tahap 2 Card (Locked) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden opacity-60">
+<div class="p-card-padding flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold tracking-wide bg-surface-variant text-on-surface-variant mb-2">TAHAP 2</span>
+<h4 class="font-headline-md text-headline-md text-on-surface">Tahap Fakultas</h4>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="lock">lock</span>
+</div>
+</div>
+</div>
+</section>
+<div class="h-8"></div> <!-- Spacer for bottom nav -->
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] dark:shadow-none bg-surface dark:bg-surface-dim">
+<!-- Dashboard (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150 rounded-xl" href="{{DATA:SCREEN:SCREEN_16}}">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<!-- Kencana (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-md text-label-md mt-1">Kencana</span>
+</a>
+<!-- Achievement (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150 rounded-xl" href="{{DATA:SCREEN:SCREEN_18}}">
+<span class="material-symbols-outlined" data-icon="workspace_premium">workspace_premium</span>
+<span class="font-label-md text-label-md mt-1">Achievement</span>
+</a>
+<!-- Scholarship (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150 rounded-xl" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label-md text-label-md mt-1">Scholarship</span>
+</a>
+<!-- Profile (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-4 py-1 hover:bg-surface-variant dark:hover:bg-surface-container-highest active:scale-90 transition-transform duration-150 rounded-xl" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

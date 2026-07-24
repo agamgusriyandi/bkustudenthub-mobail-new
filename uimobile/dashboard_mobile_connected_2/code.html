@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student BKU Hub - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-primary-fixed-variant": "#153ea3",
+                            "secondary-fixed": "#ffe08b",
+                            "surface-variant": "#e4e2e2",
+                            "surface": "#fbf9f8",
+                            "on-error-container": "#93000a",
+                            "secondary": "#745b00",
+                            "on-tertiary": "#ffffff",
+                            "on-primary": "#ffffff",
+                            "on-secondary-container": "#735a00",
+                            "on-surface": "#1b1c1c",
+                            "tertiary-fixed-dim": "#61de8a",
+                            "surface-container-high": "#e9e8e7",
+                            "on-error": "#ffffff",
+                            "surface-container-highest": "#e4e2e2",
+                            "primary": "#002068",
+                            "surface-bright": "#fbf9f8",
+                            "secondary-fixed-dim": "#ebc246",
+                            "on-tertiary-container": "#3dbe6e",
+                            "inverse-primary": "#b5c4ff",
+                            "primary-fixed-dim": "#b5c4ff",
+                            "surface-container-low": "#f5f3f3",
+                            "on-tertiary-fixed-variant": "#005228",
+                            "primary-fixed": "#dce1ff",
+                            "primary-container": "#003399",
+                            "surface-container-lowest": "#ffffff",
+                            "inverse-on-surface": "#f2f0f0",
+                            "on-surface-variant": "#444653",
+                            "tertiary": "#002e14",
+                            "error-container": "#ffdad6",
+                            "surface-container": "#efeded",
+                            "on-primary-container": "#8aa4ff",
+                            "on-secondary-fixed": "#241a00",
+                            "tertiary-fixed": "#7efba4",
+                            "outline-variant": "#c4c5d5",
+                            "tertiary-container": "#004721",
+                            "surface-tint": "#3557bc",
+                            "on-tertiary-fixed": "#00210c",
+                            "on-background": "#1b1c1c",
+                            "on-secondary": "#ffffff",
+                            "on-secondary-fixed-variant": "#584400",
+                            "outline": "#747684",
+                            "background": "#fbf9f8",
+                            "on-primary-fixed": "#00164e",
+                            "error": "#ba1a1a",
+                            "surface-dim": "#dbdad9",
+                            "inverse-surface": "#303031",
+                            "secondary-container": "#fdd355"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "stack-sm": "8px",
+                            "base": "4px",
+                            "card-padding": "16px",
+                            "stack-md": "16px",
+                            "margin-page": "16px",
+                            "stack-lg": "24px",
+                            "gutter": "12px"
+                    },
+                    "fontFamily": {
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "title-lg": ["Inter"],
+                            "display": ["Inter"],
+                            "label-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                            "display": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                            "label-sm": ["10px", {"lineHeight": "14px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen font-body-md pt-16 pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page h-16 bg-surface shadow-sm">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95 duration-200" id="menu-toggle">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display text-display text-primary">Student BKU Hub</h1>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="px-margin-page py-stack-md flex flex-col gap-stack-lg max-w-2xl mx-auto">
+<!-- Hero Section -->
+<section class="flex flex-col gap-stack-sm pt-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Selamat Siang, Mahasiswa! 👋</h2>
+<div class="flex gap-gutter items-center text-on-surface-variant">
+<span class="font-body-md text-body-md">NIM: 123456789</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body-md text-body-md">Semester 3</span>
+</div>
+</section>
+<!-- Alert Box -->
+<section class="bg-error-container p-card-padding rounded-lg border border-error/20 flex gap-stack-md items-start">
+<span class="material-symbols-outlined text-error mt-1" style="font-variation-settings: 'FILL' 1;">error</span>
+<div class="flex flex-col">
+<p class="font-body-md text-body-md text-on-error-container">Kamu masih memiliki modul PKKMB yang belum diselesaikan.</p>
+<button class="mt-2 text-error font-label-md text-label-md self-start underline underline-offset-2">Lanjutkan Modul</button>
+</div>
+</section>
+<!-- Status & Progress Section (Bento Grid) -->
+<section>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Status &amp; Progress</h3>
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Kencana Card -->
+<a class="bg-surface-container-lowest p-card-padding rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant flex flex-col justify-between aspect-square relative overflow-hidden group" href="{{DATA:SCREEN:SCREEN_11}}">
+<img alt="" class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" data-alt="Abstract academic achievement concept, modern geometric shapes in soft gold and blue tones, bright natural lighting, highly detailed vector style" src="https://lh3.googleusercontent.com/aida/ADBb0uj8-s-MyfFo5_SKurfSaeLG_Yvx0R1Pub6VIDrNXmfvWwvUe7V6zJjWejVq6nmRPtPKUWD8eXa3yoUO5_GuU_nU9LH6mlUfITE-DSJX2yFaVhbb7KtBPkjRgyPtQN_b8uhsqs2DUYBbxBpvDgmmh85zyrjfpj5QB-09wFcVc4D4rFstRA-_iqUb15kctPKFjpJrHiJOsXAdO1QEynG3qvLvvAI7s5_Mfau9gVKgrU4btGTMugdYG4Iv1CkeeNn9lD0NLe1F9y0GlQ"/>
+<div class="relative z-10 flex justify-between items-start">
+<div class="bg-secondary-container p-2 rounded-lg inline-flex">
+<span class="material-symbols-outlined text-on-secondary-container">stars</span>
+</div>
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-full">In Progress</span>
+</div>
+<div class="relative z-10 mt-auto">
+<h4 class="font-headline-md text-headline-md text-primary mb-1">KENCANA</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Progress Modul 60%</p>
+<div class="w-full bg-surface-variant rounded-full h-1.5 mt-3">
+<div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+</div>
+</a>
+<!-- Scholarship Card -->
+<a class="bg-surface-container-lowest p-card-padding rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant flex flex-col justify-between aspect-square relative overflow-hidden group" href="{{DATA:SCREEN:SCREEN_17}}">
+<img alt="" class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" data-alt="Graduation cap and diploma resting on a stack of books, soft daylight, modern minimalist composition, subtle blue shadows, academic excellence" src="https://lh3.googleusercontent.com/aida/ADBb0uhMLmr_YZWICpC6x0REdtAnnEl0eCU0ZpIiE_psNIXY8I8948MK7EnMtwWW89RrnSMgNL6M4FiXodo-dygJV6QhyiIIJqhhInY0Flu2wCZgvFA9qhXT4YhSXOqQaeZb5Li-LecAIOzG59WK1GkXN4D1M7XVIXQVjcHPhwcnn0x0SjXz1F0y6cR9JI3PRzab3FveGlZM9TB59ylT9tq-cRg3F_tJ0C_o0DCSK9ePAG6xJbOIH4V0KjnSEfL5x_gsIPYEiTW5I3HFuQ"/>
+<div class="relative z-10 flex justify-between items-start">
+<div class="bg-primary-fixed p-2 rounded-lg inline-flex">
+<span class="material-symbols-outlined text-on-primary-fixed">school</span>
+</div>
+</div>
+<div class="relative z-10 mt-auto">
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Beasiswa</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Pengajuan Terbaru</p>
+<p class="font-label-sm text-label-sm text-outline mt-2">Menunggu Review</p>
+</div>
+</a>
+<!-- Aspirasi Card -->
+<a class="bg-surface-container-lowest p-card-padding rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant flex flex-col justify-between aspect-[2/1] col-span-2 relative overflow-hidden group" href="{{DATA:SCREEN:SCREEN_19}}">
+<img alt="" class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" data-alt="Stylized speech bubble with megaphone, soft pastel colors, modern 3d illustration style, soft studio lighting, communicative layout" src="https://lh3.googleusercontent.com/aida/ADBb0uhGLThaUHbC_J1dFjEgg2YykpcHDQdMVZ0r13P_0yDthxCxh7hIUWx-WoKQqjXZjkA8HfEcKnqFEmD9D8yxR30pCrlU08G126xQPwOARoS7A3d_5SxfWZ0pzYgfCz-Aifn1WvEMVUgRIdgbYnuwyTsarywlmCmegxXwVsgED8FYglxMR2jwA90NKXivvC7Bi81nJ6Kf8nJ0F1F39tPJeSiNdYNqhPwIDFXqXUmqkpsR5kBhVEyCt7DyIJijUicCPBdXNHKF3kqA"/>
+<div class="relative z-10 flex items-center gap-stack-sm mb-2">
+<div class="bg-tertiary-fixed p-2 rounded-lg inline-flex">
+<span class="material-symbols-outlined text-on-tertiary-fixed">campaign</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary">Aspirasi</h4>
+</div>
+<div class="relative z-10 flex justify-between items-end mt-auto">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant">Laporan &amp; Saran</p>
+<p class="font-label-sm text-label-sm text-outline mt-1">2 Laporan Aktif</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary-container transition-colors">Buat Baru</button>
+</div>
+</a>
+<!-- Kesehatan Card -->
+<a class="bg-surface-container-lowest p-card-padding rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant flex flex-col justify-between aspect-[2/1] col-span-2 relative overflow-hidden group" href="{{DATA:SCREEN:SCREEN_15}}">
+<img alt="" class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" data-alt="Medical cross symbol with heartbeat line, soft green and blue gradients, clean modern vector art, subtle lighting, health and wellness theme" src="https://lh3.googleusercontent.com/aida/ADBb0ui2BAqxGLagKmjzCRyiPUZnNQQRnVQ9jXYn5U6i7WU-p05_S5XEesM6m6THHmgzQzhz1hMuuWULWRknvbkuZLA4ibtHv2wxMTmbcWrXGoTS3MnMnsgvUddLSGcXE3A_TBzIHhZCHYOj8VnjRLwggO18rfh4SSycFlJQW6EkFr_moPUfj4A4DDO90JLO8jTCAdZt8sJwv3kkhiz0KVAGBOdabRedAbNxuoVPUlp2LNEqlLTTZXq0hWLujSK33OQKxL6x4Svuii-0Vg"/>
+<div class="relative z-10 flex items-center gap-stack-sm mb-2">
+<div class="bg-tertiary-container p-2 rounded-lg inline-flex">
+<span class="material-symbols-outlined text-on-tertiary-container">medical_services</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary">Kesehatan</h4>
+</div>
+<div class="relative z-10 flex justify-between items-center mt-auto">
+<div class="flex flex-col">
+<p class="font-label-sm text-label-sm text-outline">BMI Status</p>
+<p class="font-body-lg text-body-lg font-semibold text-tertiary-container">Normal (22.5)</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</a>
+</div>
+</section>
+<!-- Quick Access Section -->
+<section>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-stack-md">Quick Access</h3>
+<div class="grid grid-cols-4 gap-gutter">
+<a class="flex flex-col items-center gap-2 group" href="{{DATA:SCREEN:SCREEN_20}}">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-surface-container transition-colors border border-surface-variant">
+<span class="material-symbols-outlined text-primary">psychology</span>
+</div>
+<span class="font-label-md text-label-md text-center text-on-surface-variant leading-tight">Counseling</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="{{DATA:SCREEN:SCREEN_15}}">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-surface-container transition-colors border border-surface-variant">
+<span class="material-symbols-outlined text-primary">medical_services</span>
+</div>
+<span class="font-label-md text-label-md text-center text-on-surface-variant leading-tight">Health Screening</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="{{DATA:SCREEN:SCREEN_19}}">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-surface-container transition-colors border border-surface-variant">
+<span class="material-symbols-outlined text-primary">campaign</span>
+</div>
+<span class="font-label-md text-label-md text-center text-on-surface-variant leading-tight">Student Voice</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="{{DATA:SCREEN:SCREEN_13}}">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-surface-container transition-colors border border-surface-variant">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<span class="font-label-md text-label-md text-center text-on-surface-variant leading-tight">Organisasi</span>
+</a>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-base pb-safe h-20 bg-surface shadow-lg md:hidden">
+<!-- Active Tab: Dashboard -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_29}}"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span><span class="font-label-md text-label-md mt-1">Dashboard</span></a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant rounded-xl active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-md text-label-md mt-1">Kencana</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant rounded-xl active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_18}}">
+<span class="material-symbols-outlined">workspace_premium</span>
+<span class="font-label-md text-label-md mt-1">Achievement</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant rounded-xl active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md mt-1">Scholarship</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant rounded-xl active:scale-90 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</nav>
+<!-- Navigation Drawer Overlay -->
+<div class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300" id="nav-overlay"></div>
+<!-- Side Navigation Drawer -->
+<aside class="fixed top-0 left-0 h-full w-[280px] bg-surface z-[70] transform -translate-x-full transition-transform duration-300 ease-in-out shadow-xl overflow-y-auto flex flex-col" id="nav-drawer">
+<div class="p-6 border-b border-surface-variant flex flex-col gap-2">
+<h2 class="font-display text-display text-primary">Student BKU Hub</h2>
+<p class="font-body-md text-on-surface-variant">NIM: 123456789</p>
+</div>
+<nav class="flex-1 py-4">
+<a class="flex items-center gap-4 px-6 py-3 bg-primary-container text-on-primary-container" href="{{DATA:SCREEN:SCREEN_29}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-md">Kencana</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_18}}">
+<span class="material-symbols-outlined">workspace_premium</span>
+<span class="font-label-md">Achievement</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md">Scholarship Hub</span>
+</a>
+<div class="h-px bg-outline-variant my-2 mx-6"></div>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_20}}">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-md">Counseling</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_15}}">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-md">Health Screening</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_19}}">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-label-md">Student Voice</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_13}}">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-md">Organisasi</span>
+</a>
+<div class="h-px bg-outline-variant my-2 mx-6"></div>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md">Student Profile</span>
+</a>
+</nav>
+</aside><script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navDrawer = document.getElementById('nav-drawer');
+    const navOverlay = document.getElementById('nav-overlay');
+
+    function toggleNav() {
+        const isOpen = !navDrawer.classList.contains('-translate-x-full');
+        if (isOpen) {
+            navDrawer.classList.add('-translate-x-full');
+            navOverlay.classList.add('opacity-0');
+            setTimeout(() => navOverlay.classList.add('hidden'), 300);
+        } else {
+            navOverlay.classList.remove('hidden');
+            setTimeout(() => navOverlay.classList.remove('opacity-0'), 10);
+            navDrawer.classList.remove('-translate-x-full');
+        }
+    }
+
+    menuToggle.addEventListener('click', toggleNav);
+    navOverlay.addEventListener('click', toggleNav);
+</script></body></html>

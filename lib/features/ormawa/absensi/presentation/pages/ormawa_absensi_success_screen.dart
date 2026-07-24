@@ -1,0 +1,261 @@
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+
+class OrmawaAbsensiSuccessScreen extends StatefulWidget {
+  final String eventId;
+  final String eventTitle;
+  final String studentName;
+  final String nim;
+  final DateTime timestamp;
+
+  const OrmawaAbsensiSuccessScreen({
+    super.key,
+    required this.eventId,
+    required this.eventTitle,
+    required this.studentName,
+    required this.nim,
+    required this.timestamp,
+  });
+
+  @override
+  State<OrmawaAbsensiSuccessScreen> createState() =>
+      _OrmawaAbsensiSuccessScreenState();
+}
+
+class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat('dd MMMM yyyy, HH:mm', 'id_ID');
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(),
+
+              ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withAlpha(20),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    decoration: const BoxDecoration(
+                      color: AppColors.success,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.success,
+                          blurRadius: 30,
+                          spreadRadius: 5,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: Colors.white,
+                      size: 64,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    Text(
+                      'Absensi Berhasil!',
+                      style: AppTextStyles.headlineMd.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.neutral900,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Kehadiran telah tercatat di sistem',
+                      style: AppTextStyles.bodyLg.copyWith(
+                        color: AppColors.neutral500,
+                      ),
+                    ),
+
+                    const SizedBox(height: 48),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: AppRadius.radiusXl,
+                        border: Border.all(color: AppColors.neutral200),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.neutral900.withAlpha(10),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetailRow(
+                            'Nama',
+                            widget.studentName,
+                            Icons.person_outline_rounded,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            child: Divider(color: AppColors.neutral200),
+                          ),
+                          _buildDetailRow(
+                            'NIM',
+                            widget.nim,
+                            Icons.badge_outlined,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            child: Divider(color: AppColors.neutral200),
+                          ),
+                          _buildDetailRow(
+                            'Kegiatan',
+                            widget.eventTitle,
+                            Icons.event_note_outlined,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            child: Divider(color: AppColors.neutral200),
+                          ),
+                          _buildDetailRow(
+                            'Waktu',
+                            dateFormat.format(widget.timestamp),
+                            Icons.access_time_rounded,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Spacer(),
+
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          int count = 0;
+                          Navigator.popUntil(context, (route) {
+                            return count++ == 2;
+                          });
+                        },
+                        icon: const Icon(Icons.check_circle_outline_rounded),
+                        label: const Text(
+                          'Selesai & Kembali',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value, IconData icon) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: AppColors.neutral400),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: AppTextStyles.labelMd.copyWith(
+                  color: AppColors.neutral500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: AppTextStyles.bodyLg.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.neutral900,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
