@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_success_screen.dart';
@@ -115,12 +116,12 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                   decoration: BoxDecoration(
                     borderRadius: AppRadius.radiusXl,
                     border: Border.all(
-                      color: _hasScanned ? AppColors.success : Colors.white,
+                      color: _hasScanned ? AppColors.success : context.appColors.onPrimary,
                       width: 3,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: (_hasScanned ? AppColors.success : Colors.white)
+                        color: (_hasScanned ? AppColors.success : context.appColors.onPrimary)
                             .withAlpha(80),
                         blurRadius: 20,
                         spreadRadius: 5,
@@ -153,13 +154,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                             color: Colors.white.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.close_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +168,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                             Text(
                               'Scan Presensi',
                               style: AppTextStyles.titleLg.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -191,9 +192,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                             color: Colors.white.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.flash_on_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -212,12 +213,12 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             child: Column(
               children: [
                 if (_isProcessing) ...[
-                  const CircularProgressIndicator(color: Colors.white),
-                  const SizedBox(height: 16),
+                  CircularProgressIndicator(color: context.appColors.onPrimary),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Mencatat kehadiran...',
                     style: AppTextStyles.bodyMd.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -234,17 +235,17 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.check_circle_rounded,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           _scannedStudentName != null
                               ? 'Hadir: $_scannedStudentName'
                               : 'Berhasil Terabsen!',
                           style: AppTextStyles.bodyMd.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -264,16 +265,16 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.qr_code_scanner_rounded,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Arahkan kamera ke KTM Digital mahasiswa',
                           style: AppTextStyles.bodySm.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ],
@@ -295,7 +296,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                 icon: const Icon(Icons.keyboard_rounded),
                 label: const Text('Input NIM Manual'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   side: const BorderSide(color: Colors.white70),
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
@@ -314,7 +315,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
     for (final barcode in barcodes) {
       final code = barcode.rawValue;
       if (code != null && code != _lastScannedCode) {
-        debugPrint('QR Detected raw: $code');
         _lastScannedCode = code;
         _processQrCode(code);
         break;
@@ -323,8 +323,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
   }
 
   Future<void> _processQrCode(String code) async {
-    debugPrint('=== START _processQrCode ===');
-    debugPrint('Scanned code: $code');
     setState(() {
       _isProcessing = true;
       _scannedStudentName = null;
@@ -337,12 +335,11 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         try {
           final uri = Uri.parse(code);
           nim = uri.queryParameters['nim'] ?? uri.queryParameters['NIM'] ?? nim;
-        } catch (_) {}
+        } catch (_) { /* Silenced: non-critical lookup fallback */ }
       } else if (code.contains(':')) {
         nim = code.split(':').last;
       }
       nim = nim.trim();
-      debugPrint('Parsed NIM: $nim');
 
       final provider = context.read<OrmawaProvider>();
       String? resolvedId;
@@ -351,14 +348,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
       if (code.contains('eventId=') || code.contains('student/presensi')) {
         // Mode 1: Scanning an Event QR Code to check in the logged-in student (Self-Presensi)
-        debugPrint('Mode: Event QR Code (Self-Presensi)');
 
         String? parsedEventId;
         try {
           final uri = Uri.parse(code);
           parsedEventId =
               uri.queryParameters['eventId'] ?? uri.queryParameters['event_id'];
-        } catch (_) {}
+        } catch (_) { /* Silenced: non-critical lookup fallback */ }
 
         if (parsedEventId == null ||
             parsedEventId.isEmpty ||
@@ -389,50 +385,35 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             authData?['user']?['nim'] ??
             'NIM Anda';
 
-        debugPrint(
-          'Self-presensi: Event ID: $targetEventId, Student ID: $resolvedId, Name: $studentName, NIM: $nim',
-        );
       } else {
         // Mode 2: Admin scanning student KTM/NIM QR
-        debugPrint('Mode: Student KTM QR (Admin Mode)');
 
         if (nim.isEmpty) {
           throw Exception('Kode QR tidak valid.');
         }
 
         // 1. Check in provider.members
-        debugPrint('Checking in members (total: ${provider.members.length})');
         try {
           final match = provider.members.firstWhere(
             (m) => m.nim.trim().toLowerCase() == nim.toLowerCase(),
           );
           resolvedId = match.mahasiswaId;
           studentName = match.name;
-          debugPrint('Found in members: $studentName (ID: $resolvedId)');
-        } catch (_) {}
+        } catch (_) { /* Silenced: non-critical lookup fallback */ }
 
         // 2. Check in provider.attendanceList
         if (resolvedId == null) {
-          debugPrint(
-            'Checking in attendanceList (total: ${provider.attendanceList.length})',
-          );
           try {
             final match = provider.attendanceList.firstWhere(
               (e) => e.nim?.trim().toLowerCase() == nim.toLowerCase(),
             );
             resolvedId = match.mahasiswaId;
             studentName = match.mahasiswaName;
-            debugPrint(
-              'Found in attendanceList: $studentName (ID: $resolvedId)',
-            );
-          } catch (_) {}
+          } catch (_) { /* Silenced: non-critical lookup fallback */ }
         }
 
         // 3. Check in preloaded _studentsLookup
         if (resolvedId == null) {
-          debugPrint(
-            'Checking in _studentsLookup (total: ${_studentsLookup.length})',
-          );
           if (_studentsLookup.isNotEmpty) {
             try {
               final match = _studentsLookup.firstWhere(
@@ -442,22 +423,17 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
               );
               resolvedId = match['id']?.toString();
               studentName = match['nama']?.toString();
-              debugPrint(
-                'Found in preloaded lookup: $studentName (ID: $resolvedId)',
-              );
-            } catch (_) {}
+            } catch (_) { /* Silenced: non-critical lookup fallback */ }
           }
         }
 
         // 4. Fallback if still loading students lookup
         if (resolvedId == null && _isLoadingStudents) {
-          debugPrint('Lookup list still loading. Bypassing API call...');
           final students = <Map<String, dynamic>>[];
           setState(() {
             _studentsLookup = students;
             _isLoadingStudents = false;
           });
-          debugPrint('Fetched ${students.length} students. Checking again...');
           try {
             final match = _studentsLookup.firstWhere(
               (s) =>
@@ -466,24 +442,16 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             );
             resolvedId = match['id']?.toString();
             studentName = match['nama']?.toString();
-            debugPrint(
-              'Found in fallback lookup: $studentName (ID: $resolvedId)',
-            );
-          } catch (_) {}
+          } catch (_) { /* Silenced: non-critical lookup fallback */ }
         }
 
         if (resolvedId == null) {
-          debugPrint('Student NOT found in any lookup for NIM: $nim');
           throw Exception('Mahasiswa dengan NIM $nim tidak ditemukan.');
         }
       }
 
-      debugPrint(
-        'Submitting attendance. Event: $targetEventId, Student ID: $resolvedId',
-      );
       // Submit attendance directly using the resolved database ID
       await provider.submitAttendance(targetEventId, resolvedId, 'hadir');
-      debugPrint('Attendance submitted successfully.');
 
       if (!mounted) return;
 
@@ -515,9 +483,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
           _lastScannedCode = null;
         });
       }
-    } catch (e, stack) {
-      debugPrint('ERROR in _processQrCode: $e');
-      debugPrint('Stacktrace: $stack');
+    } catch (e) {
       if (!mounted) return;
 
       setState(() {
@@ -530,8 +496,8 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.error_outline_rounded, color: Colors.white),
-              const SizedBox(width: 8),
+              Icon(Icons.error_outline_rounded, color: context.appColors.onPrimary),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   'Gagal mencatat presensi: ${ErrorHandler.getMessage(e)}',
@@ -558,9 +524,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -578,7 +544,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Container(
@@ -593,7 +559,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           size: 22,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,7 +581,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   TextField(
                     controller: nimController,
                     keyboardType: TextInputType.number,
@@ -629,7 +595,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       prefixIcon: const Icon(Icons.badge_rounded),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Expanded(
@@ -639,7 +605,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           child: const Text('Batal'),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {

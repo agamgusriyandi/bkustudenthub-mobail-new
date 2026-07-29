@@ -11,11 +11,13 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/counseling_session.dart';
 import 'package:bkuhub_mobile/features/counseling/domain/entities/psychologist.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BookCounselingScreen extends StatefulWidget {
   final String topic;
@@ -72,8 +74,8 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
           }
         });
       }
-    } catch (e) {
-      debugPrint('Error loading dynamic slots: $e');
+    } catch (_) {
+      // ignore: failed to load slots, will retry on next interaction
     } finally {
       if (mounted) {
         setState(() {
@@ -100,38 +102,38 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTopicBanner(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               _buildSectionTitle('Detail Keluhan'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildTextArea(
                 _descriptionController,
                 'Ceritakan sedikit apa yang sedang kamu rasakan atau apa yang ingin kamu bahas...',
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               _buildSectionTitle('Preferensi Sesi'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildLabel('Metode Sesi'),
               _buildDropdown(
                 ['Tatap Muka (Offline)', 'Daring (Online via Zoom)'],
                 _sessionMethod,
                 (val) => setState(() => _sessionMethod = val!),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               _buildLabel('Preferensi Gender Psikolog'),
               _buildDropdown(
                 ['Bebas', 'Laki-laki', 'Perempuan'],
                 _genderPreference,
                 (val) => setState(() => _genderPreference = val!),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               _buildSectionTitle('Pilih Jadwal'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildDatePicker(),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               _buildTimeSelector(),
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.s48),
               _buildSubmitButton(),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -151,11 +153,11 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                   width: 56,
                   height: 56,
                   child: ClipOval(
-                    child: Image.network(
+                    child: CachedNetworkImage(imageUrl: 
                       ApiGate.getImageUrl(widget.psychologist!.profileImageUrl),
                       fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) => Container(
+                      errorWidget:
+                          (context, url, error) => Container(
                             color: AppColors.neutral100,
                             child: const Icon(
                               Icons.person_rounded,
@@ -163,10 +165,11 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                               size: 28,
                             ),
                           ),
+                      placeholder: (context, url) => Container(color: AppColors.neutral200),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +199,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
         ],
         Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
@@ -210,7 +213,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                 ),
                 child: Icon(
@@ -218,7 +221,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                   color: AppColors.neutral600,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +254,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
@@ -300,7 +303,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -345,7 +348,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
               size: 20,
               color: Theme.of(context).colorScheme.outline,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Text(
               _selectedDate == null
                   ? 'Pilih Tanggal Sesi'
@@ -414,7 +417,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                         vertical: AppSpacing.md,
                       ),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.neutral100 : Colors.white,
+                        color: isSelected ? AppColors.neutral100 : context.appColors.surface,
                         borderRadius: AppRadius.radiusMd,
                         border: Border.all(
                           color:
@@ -444,7 +447,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                 }).toList(),
           ),
           if (_selectedSlot != null && _selectedSlot!['location'] != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
@@ -459,7 +462,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                     color: AppColors.neutral600,
                     size: 16,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'Lokasi Sesi: ${_selectedSlot!['location']}',
@@ -497,7 +500,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                   vertical: AppSpacing.md,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.neutral100 : Colors.white,
+                  color: isSelected ? AppColors.neutral100 : context.appColors.surface,
                   borderRadius: AppRadius.radiusMd,
                   border: Border.all(
                     color:

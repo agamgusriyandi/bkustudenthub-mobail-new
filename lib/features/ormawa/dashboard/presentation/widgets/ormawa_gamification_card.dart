@@ -1,4 +1,5 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _GamificationTheme {
 class OrmawaGamificationCard extends StatelessWidget {
   const OrmawaGamificationCard({super.key});
 
-  _GamificationTheme _getTheme(int rank) {
+  _GamificationTheme _getTheme(BuildContext context, int rank) {
     if (rank == 1) {
       // Gold
       return _GamificationTheme(
@@ -77,14 +78,14 @@ class OrmawaGamificationCard extends StatelessWidget {
     } else {
       // Default (Polos Putih)
       return _GamificationTheme(
-        gradientColors: [Colors.white, Colors.white],
+        gradientColors: [context.appColors.surface, context.appColors.surface],
         titleColor: Colors.black87,
         textColor: AppColors.neutral600,
         valueColor: Colors.black87,
         iconColor: AppColors.warning,
         iconBgColor: AppColors.warning.withAlpha(30),
-        progressBgColor: Colors.grey[200]!,
-        progressColor: Colors.blueAccent,
+        progressBgColor: AppColors.neutral200,
+        progressColor: AppColors.info,
         borderColor: AppColors.neutral300,
       );
     }
@@ -100,7 +101,7 @@ class OrmawaGamificationCard extends StatelessWidget {
         child: const BkuShimmer(
           width: double.infinity,
           height: 180,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
         ),
       );
     }
@@ -111,7 +112,7 @@ class OrmawaGamificationCard extends StatelessWidget {
 
     final progress =
         total > 0 ? ((total - peringkat + 1) / total).clamp(0.0, 1.0) : 0.0;
-    final theme = _getTheme(peringkat);
+    final theme = _getTheme(context, peringkat);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -149,7 +150,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                     size: 24,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +174,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Row(
               children: [
                 Expanded(
@@ -200,7 +201,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             'dari $total',
                             style: AppTextStyles.bodySm.copyWith(
@@ -213,7 +214,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: AppSpacing.xl),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +239,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             'Pts',
                             style: AppTextStyles.bodySm.copyWith(
@@ -253,7 +254,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             ClipRRect(
               borderRadius: AppRadius.radiusMd,
               child: LinearProgressIndicator(
@@ -263,7 +264,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                 minHeight: 8,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

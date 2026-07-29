@@ -1,7 +1,8 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -62,7 +63,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: CustomScrollView(
@@ -100,7 +101,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                               context,
                             ).colorScheme.surfaceContainerHighest,
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: AppSpacing.lg),
                       Text(
                         'Belum ada undangan DP atau Kelompok',
                         style: TextStyle(
@@ -115,15 +116,15 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
             else
               SliverPadding(
                 padding: const EdgeInsets.only(
-                  top: 16,
-                  left: 20,
-                  right: 20,
-                  bottom: 40,
+                  top: AppSpacing.lg,
+                  left: AppSpacing.s20,
+                  right: AppSpacing.s20,
+                  bottom: AppSpacing.xxxl,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _buildActiveMentorCard(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     Text(
                       'Undangan Dewan Pembimbing (DP)',
                       style: AppTextStyles.titleMd.copyWith(
@@ -131,9 +132,9 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                         color: AppColors.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildInvitationsList(data?['invitations'] ?? [], 'mentor'),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     Text(
                       'Undangan Kelompok',
                       style: AppTextStyles.titleMd.copyWith(
@@ -141,7 +142,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                         color: AppColors.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildInvitationsList(
                       data?['group_invitations'] ?? [],
                       'group',
@@ -167,7 +168,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
         child: Row(
           children: [
             const Icon(Icons.info_outline_rounded, color: Colors.amber),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Text(
                 'Kamu belum memiliki Dewan Pembimbing (DP) yang aktif.',
@@ -202,7 +203,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               if (mentor['avatar_url'] != null &&
@@ -234,7 +235,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                     color: AppColors.neutral600,
                   ),
                 ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +247,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       mentor['email'] ?? '',
                       style: AppTextStyles.labelSm.copyWith(
@@ -307,10 +308,10 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
             }
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
+              margin: const EdgeInsets.only(bottom: AppSpacing.lg),
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusLg,
                 border: Border.all(
                   color: Theme.of(
@@ -344,7 +345,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                           size: 24,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +357,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                                 color: AppColors.onSurface,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: AppSpacing.xs),
                             Text(
                               subtitle,
                               style: AppTextStyles.labelSm.copyWith(
@@ -369,9 +370,9 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                     ],
                   ),
                   if (isPending) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     const Divider(),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -388,7 +389,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         BkuButton(
                           onPressed:
                               isProcessing
@@ -399,7 +400,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                       ],
                     ),
                   ] else ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(

@@ -1,6 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
@@ -44,7 +44,7 @@ Future<void> showRejectionBottomSheet(
     ];
     int currentIndex = getStageIndex(currentStatus);
     Color activeColor =
-        isRejected ? Theme.of(context).colorScheme.error : AppColors.success;
+        isRejected ? Theme.of(context).colorScheme.error : context.appColors.success;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +80,7 @@ Future<void> showRejectionBottomSheet(
                                 : null,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -103,7 +103,7 @@ Future<void> showRejectionBottomSheet(
                 Expanded(
                   child: Container(
                     height: 2,
-                    margin: const EdgeInsets.only(bottom: 22),
+                    margin: const EdgeInsets.only(bottom: AppSpacing.s22),
                     color:
                         isDone
                             ? activeColor
@@ -136,7 +136,7 @@ Future<void> showRejectionBottomSheet(
       child: Column(
         children: [
           Icon(icon, color: color, size: 22),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: AppTextStyles.titleSm.copyWith(
@@ -144,7 +144,7 @@ Future<void> showRejectionBottomSheet(
               color: color,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -169,9 +169,9 @@ Future<void> showRejectionBottomSheet(
             AppSpacing.xl,
             AppSpacing.xxl,
           ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -242,27 +242,27 @@ Future<void> showRejectionBottomSheet(
                       'Pendaftar',
                       '342',
                       Icons.people_alt_rounded,
-                      AppColors.info,
+                      context.appColors.info,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: buildStatItem(
                       context,
                       'Kuota',
                       appliedScholarship.kuota ?? '0',
                       Icons.pie_chart_rounded,
-                      AppColors.warning,
+                      context.appColors.warning,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: buildStatItem(
                       context,
                       'Peluang',
                       '14%',
                       Icons.trending_up_rounded,
-                      AppColors.success,
+                      context.appColors.success,
                     ),
                   ),
                 ],

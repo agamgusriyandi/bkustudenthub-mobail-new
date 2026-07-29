@@ -1,5 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
@@ -54,25 +55,25 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
           children: [
             // Tanggal
             _buildSectionLabel('Tanggal Praktik'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             _buildDatePicker(),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Jam
             _buildSectionLabel('Jam Praktik'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             _buildTimePicker(),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Kuota
             _buildSectionLabel('Kuota Peserta'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             _buildKuotaSelector(),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Lokasi
             _buildSectionLabel('Lokasi'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             BkuTextField(
               decoration: InputDecoration(
                 hintText: 'Contoh: Klinik Kampus Lt.1',
@@ -103,11 +104,11 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
               },
               onSaved: (value) => _lokasi = value ?? '',
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Tipe Layanan
             _buildSectionLabel('Tipe Layanan'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
               initialValue: _tipeLayanan,
               decoration: InputDecoration(
@@ -136,11 +137,11 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                 });
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Catatan
             _buildSectionLabel('Catatan (Opsional)'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             BkuTextField(
               maxLines: 3,
               decoration: InputDecoration(
@@ -162,7 +163,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
               ),
               onSaved: (value) => _catatan = value ?? '',
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xxl),
 
             // Submit Button (Green Emerald)
             SizedBox(
@@ -172,28 +173,28 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                 onPressed: _isSaving ? null : _handleSubmit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF16A34A),
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   elevation: 2,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppRadius.radiusLg,
                   ),
                 ),
                 icon: _isSaving
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
                       )
-                    : const Icon(Icons.check_circle_rounded, color: Colors.white),
+                    : Icon(Icons.check_circle_rounded, color: context.appColors.onPrimary),
                 label: Text(
                   _isSaving ? 'Menyimpan...' : 'Simpan Jadwal',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 ),
               ),
@@ -228,11 +229,11 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200.withAlpha(150)),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusXl,
+        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(12),
@@ -244,7 +245,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
         child: Row(
           children: [
             Icon(Icons.calendar_today_rounded, color: AppColors.neutral700),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Text(
               _formatDate(_selectedDate),
               style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w500),
@@ -274,7 +275,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(color: AppColors.neutral200.withAlpha(150)),
                 boxShadow: [
@@ -294,7 +295,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
                       Icon(
@@ -302,7 +303,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                         color: AppColors.neutral700,
                         size: 18,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         _formatTime(_startTime),
                         style: AppTextStyles.bodyMd.copyWith(
@@ -337,7 +338,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(color: AppColors.neutral200.withAlpha(150)),
                 boxShadow: [
@@ -357,7 +358,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
                       Icon(
@@ -365,7 +366,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                         color: AppColors.neutral700,
                         size: 18,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         _formatTime(_endTime),
                         style: AppTextStyles.bodyMd.copyWith(
@@ -387,7 +388,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
         boxShadow: [
@@ -401,7 +402,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
       child: Row(
         children: [
           Icon(Icons.people_rounded, color: AppColors.neutral700),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           const Text('Kuota:', style: TextStyle(fontWeight: FontWeight.w500)),
           const Spacer(),
           IconButton(

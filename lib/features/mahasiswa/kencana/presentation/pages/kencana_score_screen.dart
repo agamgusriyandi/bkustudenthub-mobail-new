@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -51,7 +52,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     final certificates = dashboard?.certificates;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: CustomScrollView(
@@ -78,15 +79,15 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             else
               SliverPadding(
                 padding: const EdgeInsets.only(
-                  top: 16,
-                  left: 20,
-                  right: 20,
-                  bottom: 40,
+                  top: AppSpacing.lg,
+                  left: AppSpacing.s20,
+                  right: AppSpacing.s20,
+                  bottom: AppSpacing.xxxl,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _buildSummaryCard(dashboard),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     if (certificates != null) ...[
                       _buildCertificateSection(certificates),
                     ],
@@ -97,9 +98,9 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                         color: AppColors.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildItemsList(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     _buildBandingButton(context),
                   ]),
                 ),
@@ -177,7 +178,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -197,14 +198,14 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
                   color: color.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(icon, color: color, size: 18),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   title,
@@ -275,7 +276,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             }
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
@@ -299,7 +300,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                     ),
                     child: Icon(icon, color: iconColor, size: 24),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,7 +312,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                             color: AppColors.neutral900,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           component.toUpperCase(),
                           style: AppTextStyles.labelSm.copyWith(
@@ -348,14 +349,14 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             color: AppColors.onSurface,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Jika ada nilai yang kurang pas atau kamu telah menyelesaikan semua syarat, silakan ajukan banding.',
           style: AppTextStyles.bodySm.copyWith(
             color: Theme.of(context).colorScheme.outline,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         SizedBox(
           width: double.infinity,
           height: 52,
@@ -377,7 +378,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     if (univCert == null && facCert == null) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.success.withAlpha(15),
@@ -394,7 +395,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 color: AppColors.success,
                 size: 32,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,7 +407,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       'Sertifikat kelulusan Anda telah diterbitkan resmi.',
                       style: AppTextStyles.bodySm.copyWith(
@@ -418,7 +419,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               if (univCert != null)
@@ -431,7 +432,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                   ),
                 ),
               if (univCert != null && facCert != null)
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
               if (facCert != null)
                 Expanded(
                   child: BkuButton(

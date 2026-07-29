@@ -2,12 +2,13 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage_struktur_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
@@ -106,7 +107,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildCabinetInfo(ormawaProvider.academicYear),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   _buildSectionTitle(
                     'PIMPINAN INTI',
@@ -114,14 +115,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         ormawaProvider.hasPermission('manage_structure')
                             ? TextButton.icon(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            const ManageStrukturScreen(),
-                                  ),
-                                );
+                                context.push(AppRoutes.ormawaStrukturManage);
                               },
                               icon: const Icon(
                                 Icons.group_add_rounded,
@@ -147,14 +141,14 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                             )
                             : null,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   if (ketua.name != '-') ...[
                     _buildPrimaryMemberCard(
                       context,
                       ketua,
                       Icons.stars_rounded,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                   ],
                   if (wakil.name != '-') ...[
                     _buildSecondaryMemberCard(
@@ -162,36 +156,36 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       wakil,
                       Icons.shield_rounded,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                   ],
 
                   if (sekretaris.isNotEmpty || bendahara.isNotEmpty) ...[
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildSectionTitle('BADAN PENGURUS HARIAN'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     ...sekretaris.map(
                       (m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: _buildStaffTile(context, m, isHead: false),
                       ),
                     ),
                     ...bendahara.map(
                       (m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: _buildStaffTile(context, m, isHead: false),
                       ),
                     ),
                   ],
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // 2. Departments
                   if (departments.isNotEmpty) ...[
                     _buildSectionTitle('DIVISI & DEPARTEMEN'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     ...departments.entries.map(
                       (dept) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                         child: _buildDepartmentCard(dept.key, [
                           ...dept.value.map(
                             (m) => _buildStaffTile(
@@ -218,7 +212,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       ),
                     ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -233,18 +227,15 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     if (!provider.hasPermission('manage_structure')) return null;
     return FloatingActionButton.extended(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ManageStrukturScreen()),
-        );
+        context.push(AppRoutes.ormawaStrukturManage);
       },
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 8,
-      icon: const Icon(Icons.auto_fix_high_rounded, color: Colors.white),
-      label: const Text(
+      icon: Icon(Icons.auto_fix_high_rounded, color: context.appColors.onPrimary),
+      label: Text(
         'Kelola Struktur',
         style: TextStyle(
-          color: Colors.white,
+          color: context.appColors.onPrimary,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.5,
         ),
@@ -258,9 +249,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: Colors.white.withAlpha(50), width: 1.5),
+          border: Border.all(color: context.appColors.onPrimary.withAlpha(50), width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).colorScheme.primary.withAlpha(12),
@@ -272,7 +263,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(18),
+              padding: AppSpacing.padding18,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -290,7 +281,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 size: 32,
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: AppSpacing.s20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +293,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.s6),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
@@ -333,7 +324,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
 
   Widget _buildSectionTitle(String title, {Widget? action}) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8),
+      padding: const EdgeInsets.only(left: AppSpacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -347,7 +338,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 title,
                 style: AppTextStyles.labelSm.copyWith(
@@ -374,18 +365,13 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrmawaAnggotaDetailScreen(member: member),
-            ),
-          );
+          context.push(AppRoutes.ormawaAnggotaDetail, extra: member);
         },
         borderRadius: AppRadius.radiusLg,
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200, width: 1.5),
             boxShadow: [
@@ -423,7 +409,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         )
                         : null,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,7 +423,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       member.role.toUpperCase(),
                       style: AppTextStyles.labelSm.copyWith(
@@ -487,12 +473,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrmawaAnggotaDetailScreen(member: member),
-            ),
-          );
+          context.push(AppRoutes.ormawaAnggotaDetail, extra: member);
         },
         borderRadius: AppRadius.radiusLg,
         child: Container(
@@ -500,9 +481,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.xl,
           ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: AppRadius.radiusLg,
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200, width: 1.5),
             boxShadow: [
               BoxShadow(
@@ -539,7 +520,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         )
                         : null,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,7 +536,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       member.role,
                       style: AppTextStyles.labelSm.copyWith(
@@ -578,26 +559,31 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neutral600.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+            color: context.appColors.surface,
+            borderRadius: AppRadius.radiusLg,
+            border: Border.all(color: AppColors.neutral200, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.neutral600.withAlpha(12),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.md,
+            ),
             decoration: BoxDecoration(
               color: AppColors.neutral100.withAlpha(150),
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+                top: Radius.circular(AppRadius.lg),
               ),
             ),
             child: Row(
@@ -610,7 +596,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     title,
@@ -644,16 +630,11 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrmawaAnggotaDetailScreen(member: member),
-            ),
-          );
+          context.push(AppRoutes.ormawaAnggotaDetail, extra: member);
         },
         borderRadius: AppRadius.radiusMd,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 4),
+          margin: const EdgeInsets.only(bottom: AppSpacing.xs),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.md,
@@ -715,7 +696,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                             style: TextStyle(
                               color:
                                   isHead
-                                      ? Colors.white
+                                      ? context.appColors.onPrimary
                                       : Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
@@ -724,7 +705,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         )
                         : null,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -737,7 +718,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                         fontSize: 13,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       member.role,
                       style: AppTextStyles.labelSm.copyWith(

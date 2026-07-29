@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 
@@ -90,10 +93,13 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           // Background Image
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/gedung.png',
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
+            child: Semantics(
+              excludeSemantics: true,
+              child: Image.asset(
+                'assets/images/gedung.png',
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
             ),
           ),
           // Gradient Overlay
@@ -127,10 +133,10 @@ class _SplashScreenState extends State<SplashScreen>
                     );
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: AppSpacing.paddingXl,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(40),
+                      color: context.appColors.surface,
+                      borderRadius: BorderRadius.circular(AppRadius.xxl + 8),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.2),
@@ -139,15 +145,18 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ],
                     ),
-                    child: Image.asset(
-                      'assets/images/icons.png',
-                      width: 160,
-                      height: 160,
-                      fit: BoxFit.contain,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Image.asset(
+                        'assets/images/icons.png',
+                        width: 160,
+                        height: 160,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxl),
                 AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -161,8 +170,8 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'BKU Student HUB',
                         style: AppTextStyles.titleLg.copyWith(
-                          color: Colors.white,
-                          fontSize: 36,
+                        color: context.appColors.onPrimary,
+                        fontSize: 36,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 2,
                           shadows: [
@@ -174,11 +183,11 @@ class _SplashScreenState extends State<SplashScreen>
                           ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Smart Campus Ecosystem',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: context.appColors.onPrimary.withValues(alpha: 0.9),
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
                           shadows: [
@@ -208,11 +217,11 @@ class _SplashScreenState extends State<SplashScreen>
                     strokeWidth: 3,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Version 1.0.0',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Colors.white.withValues(alpha: 0.8),
+                          color: context.appColors.onPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                 ],

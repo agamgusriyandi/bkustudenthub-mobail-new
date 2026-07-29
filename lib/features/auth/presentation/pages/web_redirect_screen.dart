@@ -1,9 +1,10 @@
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
@@ -32,7 +33,7 @@ class WebRedirectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -65,7 +66,7 @@ class WebRedirectScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
               FadeInAnimation(
                 delay: 0.4,
                 child: Text(
@@ -77,7 +78,7 @@ class WebRedirectScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               FadeInAnimation(
                 delay: 0.6,
                 child: Text(
@@ -99,19 +100,19 @@ class WebRedirectScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.language_rounded, size: 20),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Buka Website Sekarang',
                         style: AppTextStyles.titleMd.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
+                      color: context.appColors.onPrimary,
+                      fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               FadeInAnimation(
                 delay: 0.9,
                 child: TextButton(
@@ -125,7 +126,7 @@ class WebRedirectScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),

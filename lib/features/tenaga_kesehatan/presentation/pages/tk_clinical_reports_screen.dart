@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_health_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_clinical_report_model.dart';
@@ -151,7 +152,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
 
   Widget _buildFilterSection() {
     return Container(
-      color: Colors.white,
+      color: context.appColors.surface,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
@@ -166,7 +167,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                 size: 18,
                 color: AppColors.neutral600,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'Filter Periode',
                 style: AppTextStyles.titleSm.copyWith(
@@ -176,7 +177,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -205,7 +206,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: AppSpacing.sm),
       child: InkWell(
         onTap: () {
           if (isCustom) {
@@ -230,7 +231,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
           child: Text(
             displayLabel,
             style: AppTextStyles.bodySm.copyWith(
-              color: isSelected ? Colors.white : AppColors.neutral700,
+              color: isSelected ? context.appColors.onPrimary : AppColors.neutral700,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -242,7 +243,12 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
   Widget _buildSummaryCards(TkClinicalReportStats stats) {
     final primaryColor = context.watch<ThemeProvider>().primary;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        0,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -254,7 +260,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               bgColor: primaryColor.withAlpha(25),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: _buildStatCard(
               title: 'Layak',
@@ -264,7 +270,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               bgColor: context.watch<ThemeProvider>().colors.successContainer,
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: _buildStatCard(
               title: 'Perlu Perhatian',
@@ -274,7 +280,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               bgColor: context.watch<ThemeProvider>().colors.warningContainer,
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: _buildStatCard(
               title: 'Tidak Layak',
@@ -304,14 +310,14 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: AppRadius.radiusSm,
             ),
             child: Icon(icon, size: 20, color: color),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
@@ -320,7 +326,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               color: AppColors.neutral900,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             title,
             style: AppTextStyles.labelSm.copyWith(
@@ -353,7 +359,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               color: context.watch<ThemeProvider>().colors.success,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _buildCircularChart(
               title: 'Pantauan',
@@ -361,7 +367,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               color: context.watch<ThemeProvider>().colors.warning,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _buildCircularChart(
               title: 'Tidak Layak',
@@ -404,7 +410,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             title,
             style: AppTextStyles.bodySm.copyWith(
@@ -427,7 +433,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
             size: 64,
             color: AppColors.neutral300,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada Laporan Klinis',
             style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral400),
@@ -440,7 +446,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
   Widget _buildReportCard(BuildContext context, TkClinicalReportRecord report) {
     return BkuCard(
       onTap: () => _showReportDetail(context, report),
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,12 +467,12 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
               _buildStatusBadge(report.hasil),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '${report.nim} • ${report.prodi} • ${report.fakultas}',
             style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Icon(
@@ -474,20 +480,20 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                 size: 14,
                 color: AppColors.neutral400,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.s6),
               Text(
                 DateFormat('dd MMM yyyy').format(report.tanggal),
                 style: AppTextStyles.bodySm.copyWith(
                   color: AppColors.neutral600,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Icon(
                 Icons.medical_services_rounded,
                 size: 14,
                 color: AppColors.neutral400,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.s6),
               Expanded(
                 child: Text(
                   report.namaPemeriksa,
@@ -551,11 +557,11 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
           height: MediaQuery.of(context).size.height * 0.85,
           decoration: BoxDecoration(
             color: AppColors.neutral100,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
           ),
           child: Column(
             children: [
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Center(
                 child: Container(
                   width: 40,
@@ -566,7 +572,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               Text(
                 'Detail Laporan Klinis',
                 style: AppTextStyles.titleLg.copyWith(
@@ -575,7 +581,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 DateFormat('dd MMMM yyyy - HH:mm').format(report.tanggal),
                 style: AppTextStyles.caption.copyWith(
@@ -583,7 +589,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -731,7 +737,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                     ],
                   ),
                 ),
@@ -760,7 +766,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
     required List<Widget> children,
   }) {
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -772,11 +778,11 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
   Widget _buildSectionHeader(String title, IconData icon) {
     final primaryColor = context.watch<ThemeProvider>().primary;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Icon(icon, size: 18, color: primaryColor),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             title,
             style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
@@ -798,7 +804,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -806,7 +812,7 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
             label,
             style: AppTextStyles.caption.copyWith(color: AppColors.neutral500),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           valueWidget,
         ],
       ),

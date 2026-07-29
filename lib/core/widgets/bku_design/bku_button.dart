@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 enum BkuButtonVariant { primary, secondary, outline, text, danger, success }
 
@@ -134,13 +134,13 @@ class BkuButton extends StatelessWidget {
         elevation = 2;
         break;
       case BkuButtonVariant.success:
-        bg = AppColors.success;
-        fg = Colors.white;
+        bg = context.appColors.success;
+        fg = context.appColors.onPrimary;
         elevation = 2;
         break;
       case BkuButtonVariant.danger:
-        bg = AppColors.danger;
-        fg = Colors.white;
+        bg = context.appColors.danger;
+        fg = context.appColors.onPrimary;
         elevation = 2;
         break;
       case BkuButtonVariant.outline:
@@ -202,10 +202,10 @@ class BkuButton extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(fg),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
           ] else if (icon != null) ...[
             Icon(icon, size: 18, color: fg),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
           ],
           textWidget,
         ],

@@ -131,8 +131,8 @@ class StudentProvider extends ChangeNotifier {
           (key, value) => MapEntry(int.parse(key), value as int),
         );
       }
-    } catch (e) {
-      debugPrint('Error loading local rescheduled bookings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -145,8 +145,8 @@ class StudentProvider extends ChangeNotifier {
         ),
       );
       await prefs.setString('local_rescheduled_bookings', encoded);
-    } catch (e) {
-      debugPrint('Error saving local rescheduled bookings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -502,8 +502,6 @@ class StudentProvider extends ChangeNotifier {
               'https://ui-avatars.com/api/?name=${Uri.encodeComponent(parsedNama)}&background=003399&color=fff&size=128';
         }
 
-        debugPrint("AVATAR LOADED FROM AUTH SERVICE: $fotoUrl");
-        debugPrint("USER DATA FROM AUTH: $userData");
 
         final prefs = await SharedPreferences.getInstance();
         final userEmail =
@@ -554,13 +552,11 @@ class StudentProvider extends ChangeNotifier {
         _repository
             .getPsychologists() // Psychologists (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading psychologists: $e');
               return <Psychologist>[];
             }),
         _repository
             .getFacultyStatistics() // Faculty statistics (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading faculty statistics: $e');
               return <FacultyProgress>[];
             }),
         _repository.getAspirations(), // Aspirations
@@ -569,32 +565,27 @@ class StudentProvider extends ChangeNotifier {
         _repository
             .getHealthWorkers() // Health workers (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading health workers: $e');
               return <HealthWorker>[];
             }),
         _repository
             .getHealthSchedules() // Health schedules (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading health schedules: $e');
               return <HealthSchedule>[];
             }),
         _repository
             .getHealthBookings() // Health bookings (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading health bookings: $e');
               return <HealthBooking>[];
             }),
         _repository
             .getInsuranceClaims() // Insurance claims (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error loading insurance claims: $e');
               return <InsuranceClaim>[];
             }),
         _repository.getOrganizationHistory(), // Organization history
         _repository
             .getPendaftaranList() // Pendaftaran list (may fail, wrapped)
             .catchError((e) {
-              debugPrint('Error fetching pendaftaran list: $e');
               return <Map<String, dynamic>>[];
             }),
         _repository.getCampusEvents(), // Campus events
@@ -643,8 +634,8 @@ class StudentProvider extends ChangeNotifier {
             }
           }
         }
-      } catch (e) {
-        debugPrint('Error restoring applied scholarship state: $e');
+      } catch (_) {
+        // ignore: failed to parse scholarship data, skip
       }
       _scholarships = fetchedScholarships;
 
@@ -717,9 +708,9 @@ class StudentProvider extends ChangeNotifier {
       await fetchProfile();
       try {
         _iuranList = await _repository.getIuranList();
-      } catch (_) {}
-    } catch (e) {
-      debugPrint('Error loading student data: $e');
+      } catch (_) { /* Silenced: non-critical iuran list fetch */ }
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -734,7 +725,6 @@ class StudentProvider extends ChangeNotifier {
     try {
       return await _repository.getAspirationDetail(id);
     } catch (e) {
-      debugPrint('Error get aspiration detail: $e');
       rethrow;
     }
   }
@@ -745,8 +735,8 @@ class StudentProvider extends ChangeNotifier {
     try {
       _campusEvents = await _repository.getCampusEvents();
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error refreshing campus events: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -761,7 +751,6 @@ class StudentProvider extends ChangeNotifier {
         _healthRecords.insert(0, record);
       }
     } catch (e) {
-      debugPrint('Error adding health record: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -813,7 +802,6 @@ class StudentProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('Error creating health booking: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -835,7 +823,6 @@ class StudentProvider extends ChangeNotifier {
         _applyLocalRescheduledBookings();
       }
     } catch (e) {
-      debugPrint('Error cancelling health booking: $e');
       rethrow;
     } finally {
       notifyListeners();
@@ -946,7 +933,6 @@ class StudentProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('Error rescheduling health booking: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -983,7 +969,6 @@ class StudentProvider extends ChangeNotifier {
         _insuranceClaims = await _repository.getInsuranceClaims();
       }
     } catch (e) {
-      debugPrint('Error submitting insurance claim: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1008,7 +993,6 @@ class StudentProvider extends ChangeNotifier {
         _insuranceClaims = await _repository.getInsuranceClaims();
       }
     } catch (e) {
-      debugPrint('Error uploading insurance document: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1028,8 +1012,8 @@ class StudentProvider extends ChangeNotifier {
       _healthRecords = await _repository.getHealthRecords();
       _rujukans = await _repository.getRujukans();
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error refreshing health data: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -1080,7 +1064,6 @@ class StudentProvider extends ChangeNotifier {
         await _repository.submitAppeal(alasan);
       }
     } catch (e) {
-      debugPrint('Error submitting appeal: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1100,7 +1083,6 @@ class StudentProvider extends ChangeNotifier {
         _achievements.insert(0, achievement);
       }
     } catch (e) {
-      debugPrint('Error adding achievement: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1117,7 +1099,6 @@ class StudentProvider extends ChangeNotifier {
       }
       _achievements.removeWhere((a) => a.id == id);
     } catch (e) {
-      debugPrint('Error deleting achievement: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1140,7 +1121,6 @@ class StudentProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('Error updating achievement: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1198,8 +1178,8 @@ class StudentProvider extends ChangeNotifier {
           appliedList.add(id);
           await prefs.setStringList('applied_scholarships', appliedList);
         }
-      } catch (e) {
-        debugPrint('Error saving applied scholarship to prefs: $e');
+      } catch (_) {
+        // ignore: failed to cache applied scholarship locally
       }
 
       // Selalu update state lokal agar UI langsung reaktif
@@ -1277,11 +1257,10 @@ class StudentProvider extends ChangeNotifier {
           appliedList.remove(id);
           await prefs.setStringList('applied_scholarships', appliedList);
         }
-      } catch (e) {
-        debugPrint('Error removing applied scholarship from prefs: $e');
+      } catch (_) {
+        // ignore: failed to remove cached scholarship data
       }
     } catch (e) {
-      debugPrint('Error cancelling scholarship: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1303,13 +1282,11 @@ class StudentProvider extends ChangeNotifier {
               notifyListeners();
             })
             .catchError((e) {
-              debugPrint('Background fetch aspirations error: $e');
             });
       } else {
         _aspirations.insert(0, aspiration);
       }
     } catch (e) {
-      debugPrint('Error adding aspiration: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1326,7 +1303,6 @@ class StudentProvider extends ChangeNotifier {
       }
       _counselingSessions.insert(0, session);
     } catch (e) {
-      debugPrint('Error booking counseling: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1343,7 +1319,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return [];
     } catch (e) {
-      debugPrint('Error getting psychologist schedules: $e');
       return [];
     }
   }
@@ -1360,7 +1335,6 @@ class StudentProvider extends ChangeNotifier {
         _organizationHistory.insert(0, org);
       }
     } catch (e) {
-      debugPrint('Error adding organization history: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1386,7 +1360,6 @@ class StudentProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('Error updating organization history: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1403,7 +1376,6 @@ class StudentProvider extends ChangeNotifier {
       }
       _organizationHistory.removeWhere((o) => o.id == id);
     } catch (e) {
-      debugPrint('Error deleting organization history: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1424,7 +1396,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return '';
     } catch (e) {
-      debugPrint('Error uploading organization documentation: $e');
       rethrow;
     }
   }
@@ -1436,7 +1407,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return [];
     } catch (e) {
-      debugPrint('Error getting ormawa list: $e');
       return [];
     }
   }
@@ -1448,8 +1418,8 @@ class StudentProvider extends ChangeNotifier {
       if (_repository != null) {
         _iuranList = await _repository.getIuranList();
       }
-    } catch (e) {
-      debugPrint('Error fetching iuran list: $e');
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -1467,7 +1437,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      debugPrint('Error paying iuran: $e');
       return false;
     } finally {
       _isLoading = false;
@@ -1482,7 +1451,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return [];
     } catch (e) {
-      debugPrint('Error getting divisions: $e');
       return [];
     }
   }
@@ -1494,7 +1462,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return {};
     } catch (e) {
-      debugPrint('Error getting recruitment fields: $e');
       return {};
     }
   }
@@ -1506,7 +1473,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return '';
     } catch (e) {
-      debugPrint('Error uploading recruitment file: $e');
       rethrow;
     }
   }
@@ -1690,8 +1656,8 @@ class StudentProvider extends ChangeNotifier {
               data['in_app_notif'] == null);
 
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error fetching profile: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -1718,7 +1684,6 @@ class StudentProvider extends ChangeNotifier {
       }
       await fetchProfile();
     } catch (e) {
-      debugPrint('Error updating profile: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1742,7 +1707,6 @@ class StudentProvider extends ChangeNotifier {
         );
       }
     } catch (e) {
-      debugPrint('Error changing password: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -1827,7 +1791,6 @@ class StudentProvider extends ChangeNotifier {
       }
       return '';
     } catch (e) {
-      debugPrint('Error uploading avatar: $e');
       rethrow;
     }
   }
@@ -1855,7 +1818,6 @@ class StudentProvider extends ChangeNotifier {
       }
       await loadAllData();
     } catch (e) {
-      debugPrint('Error registering ormawa: $e');
       rethrow;
     } finally {
       _isLoading = false;

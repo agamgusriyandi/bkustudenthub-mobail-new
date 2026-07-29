@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -75,7 +75,7 @@ class OrmawaProposalList extends StatelessWidget {
         return FadeInAnimation(
           delay: 0.9 + (index * 0.1),
           child: BkuCard(
-            margin: const EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: AppSpacing.lg),
             borderRadius: 24.0,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -95,7 +95,7 @@ class OrmawaProposalList extends StatelessWidget {
                         ),
                         child: Icon(statusIcon, color: statusColor, size: 22),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class OrmawaProposalList extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: AppSpacing.s2),
                             Text(
                               proposal.code,
                               style: AppTextStyles.labelSm.copyWith(
@@ -142,7 +142,7 @@ class OrmawaProposalList extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -153,7 +153,7 @@ class OrmawaProposalList extends StatelessWidget {
                             size: 14,
                             color: Theme.of(context).colorScheme.outline,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.s6),
                           Text(
                             DateFormat(
                               'dd MMM yyyy, HH:mm',
@@ -188,7 +188,7 @@ class OrmawaProposalList extends StatelessWidget {
                                 fontSize: 11,
                               ),
                             ),
-                            const SizedBox(width: 2),
+                            const SizedBox(width: AppSpacing.s2),
                             Icon(
                               Icons.arrow_forward_rounded,
                               color: Theme.of(context).colorScheme.primary,

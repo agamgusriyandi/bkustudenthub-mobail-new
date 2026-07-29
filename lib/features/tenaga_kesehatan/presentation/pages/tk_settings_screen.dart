@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -23,6 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkSettingsScreen extends StatefulWidget {
   final bool showBackButton;
@@ -60,7 +62,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
             AndroidUiSettings(
               toolbarTitle: 'Potong Foto',
               toolbarColor: primaryColor,
-              toolbarWidgetColor: Colors.white,
+              toolbarWidgetColor: context.appColors.surface,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
             ),
@@ -147,9 +149,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
         return StatefulBuilder(
           builder: (ctx, setSheetState) {
             return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              decoration: BoxDecoration(
+                  color: context.appColors.surface,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
               ),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.xl,
@@ -170,7 +172,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Container(
@@ -185,7 +187,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           size: 20,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Text(
                         'Notifikasi & Reminder',
                         style: AppTextStyles.titleLg.copyWith(
@@ -195,7 +197,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildSwitchTile(
                     icon: Icons.notifications_none_rounded,
                     title: 'Notifikasi Booking',
@@ -232,7 +234,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       _savePreference('tk_notif_alert', v);
                     },
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: AppSpacing.s28),
                   SizedBox(
                     width: double.infinity,
                     height: 44,
@@ -248,12 +250,12 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                         backgroundColor: const Color(0xFFEFF6FF),
                         side: const BorderSide(color: Color(0xFFBFDBFE)),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.br10,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   SizedBox(
                     width: double.infinity,
                     height: 44,
@@ -261,9 +263,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       onPressed: () => Navigator.pop(sheetContext),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF16A34A),
-                        foregroundColor: Colors.white,
+                        foregroundColor: context.appColors.onPrimary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.br10,
                         ),
                         elevation: 0,
                       ),
@@ -344,15 +346,15 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // Role Card - Consistent with Student
                       _buildRoleCard(provider),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
 
                       // 1. Data Pribadi Tenaga Kesehatan
                       _buildSectionHeader('Data Pribadi Tenaga Kesehatan'),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       _buildSettingsCard([
                         _buildSettingsTile(
                           icon: Icons.alternate_email_rounded,
@@ -376,11 +378,11 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           onTap: null,
                         ),
                       ]),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: AppSpacing.s28),
 
                       // 2. Pengaturan Akun
                       _buildSectionHeader('Pengaturan Akun'),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       _buildSettingsCard([
                         _buildSettingsTile(
                           icon: Icons.person_rounded,
@@ -397,11 +399,11 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           onTap: () => _showChangePasswordSheet(provider),
                         ),
                       ]),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: AppSpacing.s28),
 
                       // 3. Preferensi Sistem
                       _buildSectionHeader('Preferensi Sistem'),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       _buildSettingsCard([
                         _buildSettingsTile(
                           icon: Icons.notifications_active_rounded,
@@ -412,11 +414,11 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                         ),
                       ]),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
 
                       // Logout Button
                       _buildLogoutButton(context),
-                      const SizedBox(height: 120),
+                      const SizedBox(height: AppSpacing.s120),
                     ],
                   ),
                 );
@@ -481,21 +483,21 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
             child: Stack(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: AppSpacing.padding3,
                   decoration: BoxDecoration(
                     color: AppColors.neutral600.withAlpha(25),
                     shape: BoxShape.circle,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    padding: AppSpacing.padding2,
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
                       child:
                           fotoUrl.isNotEmpty
-                              ? Image.network(
+                              ? CachedNetworkImage(imageUrl: 
                                 () {
                                   final rawUrl = ApiGate.getImageUrl(fotoUrl);
                                   return rawUrl.contains('?')
@@ -505,7 +507,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorWidget: (context, url, error) {
                                   return Container(
                                     width: 64,
                                     height: 64,
@@ -522,6 +524,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                                     ),
                                   );
                                 },
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               )
                               : Container(
                                 width: 64,
@@ -544,19 +547,19 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                 if (_isUploadingAvatar)
                   Positioned.fill(
                     child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black38,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
+                      decoration: BoxDecoration(
+                    color: context.appColors.surface,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: CircularProgressIndicator(color: context.appColors.onPrimary),
                       ),
                     ),
                   ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,7 +572,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   spesialisasi,
                   style: AppTextStyles.labelMd.copyWith(
@@ -587,7 +590,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 12),
+      padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
       child: Text(
         title.toUpperCase(),
         style: AppTextStyles.titleSm.copyWith(
@@ -624,7 +627,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
           vertical: AppSpacing.xs,
         ),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
             color: color.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
@@ -671,7 +674,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
           vertical: AppSpacing.xs,
         ),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
             color: color.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
@@ -706,23 +709,23 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
       context: context,
       builder:
           (ctx) => AlertDialog(
-            contentPadding: const EdgeInsets.all(28),
+            contentPadding: AppSpacing.padding28,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
-                    color: AppColors.error.withAlpha(15),
+                    color: context.appColors.error.withAlpha(15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.logout_rounded,
-                    color: AppColors.error,
+                    color: context.appColors.error,
                     size: 36,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Keluar Aplikasi?',
                   style: AppTextStyles.titleLg.copyWith(
@@ -730,7 +733,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     color: AppColors.neutral800,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.s10),
                 Text(
                   'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
                   textAlign: TextAlign.center,
@@ -739,7 +742,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.s28),
                 Row(
                   children: [
                     Expanded(
@@ -749,7 +752,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                         variant: BkuButtonVariant.outline,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: BkuButton(
                         onPressed: () async {
@@ -773,39 +776,39 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
 
   Widget _buildLogoutButton(BuildContext context) {
     return Material(
-      color: AppColors.error.withAlpha(10),
+      color: context.appColors.error.withAlpha(10),
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.radiusXl,
-        side: BorderSide(color: AppColors.error.withAlpha(50)),
+        side: BorderSide(color: context.appColors.error.withAlpha(50)),
       ),
       child: ListTile(
         onTap: () => _showLogoutDialog(),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
-            color: AppColors.error.withAlpha(20),
+            color: context.appColors.error.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.logout_rounded,
-            color: AppColors.error,
+            color: context.appColors.error,
             size: 20,
           ),
         ),
-        title: const Text(
+        title: Text(
           'Keluar Aplikasi',
-          style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
+          style: TextStyle(color: context.appColors.error, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           'Anda akan keluar dari sesi ini',
           style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.error.withAlpha(150),
+            color: context.appColors.error.withAlpha(150),
           ),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.chevron_right_rounded,
-          color: AppColors.error,
+          color: context.appColors.error,
         ),
       ),
     );
@@ -830,7 +833,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.neutral200,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
+                    top: Radius.circular(AppRadius.xxl),
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
@@ -844,7 +847,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Text(
                         'Edit Profil',
                         style: AppTextStyles.titleLg.copyWith(
@@ -852,7 +855,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           color: theme.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.s20),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -866,7 +869,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           BkuTextField(
                             controller: emailController,
                             label: 'Email',
@@ -876,7 +879,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           BkuTextField(
                             controller: noHpController,
                             label: 'No HP',
@@ -886,7 +889,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           BkuTextField(
                             controller: lokasiController,
                             label: 'Lokasi',
@@ -898,7 +901,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
                         height: 48,
@@ -926,9 +929,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF16A34A),
-                            foregroundColor: Colors.white,
+                            foregroundColor: context.appColors.onPrimary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppRadius.br10,
                             ),
                             elevation: 0,
                           ),
@@ -967,7 +970,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.neutral200,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
+                    top: Radius.circular(AppRadius.xxl),
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
@@ -981,7 +984,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Text(
                         'Ubah Password',
                         style: AppTextStyles.titleLg.copyWith(
@@ -989,14 +992,14 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           color: theme.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.s20),
                       Text(
                         'Demi keamanan akun Anda, pastikan password baru memiliki kombinasi huruf dan angka.',
                         style: AppTextStyles.labelMd.copyWith(
                           color: theme.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1011,7 +1014,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           BkuTextField(
                             controller: newPasswordController,
                             obscureText: true,
@@ -1022,7 +1025,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           BkuTextField(
                             controller: confirmPasswordController,
                             obscureText: true,
@@ -1035,7 +1038,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
                         height: 48,
@@ -1087,9 +1090,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF16A34A),
-                            foregroundColor: Colors.white,
+                            foregroundColor: context.appColors.onPrimary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppRadius.br10,
                             ),
                             elevation: 0,
                           ),

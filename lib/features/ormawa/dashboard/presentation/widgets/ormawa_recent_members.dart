@@ -1,14 +1,17 @@
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/unified_section_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class OrmawaRecentMembers extends StatelessWidget {
   const OrmawaRecentMembers({super.key});
@@ -26,13 +29,13 @@ class OrmawaRecentMembers extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: UnifiedSectionHeader(title: 'Anggota Terbaru'),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: const BkuShimmer(
               width: double.infinity,
               height: 120,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
           ),
         ],
@@ -61,7 +64,7 @@ class OrmawaRecentMembers extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           child: BkuCard(
@@ -74,7 +77,7 @@ class OrmawaRecentMembers extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: recentMembers.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 16),
+                separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.lg),
                 itemBuilder: (context, index) {
                   final member = recentMembers[index];
                   final name = member.name.isNotEmpty ? member.name : 'Unknown';
@@ -102,14 +105,14 @@ class OrmawaRecentMembers extends StatelessWidget {
                         child:
                             member.fotoUrl != null && member.fotoUrl!.isNotEmpty
                                 ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: Image.network(
+                                  borderRadius: AppRadius.br25,
+                                  child: CachedNetworkImage(imageUrl: 
                                     ApiGate.getImageUrl(member.fotoUrl!),
                                     width: 50,
                                     height: 50,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Text(
+                                    errorWidget:
+                                        (context, url, error) => Text(
                                           initial,
                                           style: AppTextStyles.titleLg.copyWith(
                                             color:
@@ -120,6 +123,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                                             fontSize: 20,
                                           ),
                                         ),
+                                    placeholder: (context, url) => Container(color: AppColors.neutral200),
                                   ),
                                 )
                                 : Text(
@@ -132,7 +136,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                                   ),
                                 ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       SizedBox(
                         width: 60,
                         child: Text(

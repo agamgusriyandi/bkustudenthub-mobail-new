@@ -1,6 +1,8 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +12,12 @@ import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/widgets/icd10_search_delegate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkScreeningInputScreen extends StatefulWidget {
   final int? patientId;
@@ -237,9 +239,9 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
   Widget _buildProgressIndicator() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      color: Colors.white,
-      child: Row(
-        children: List.generate(5, (index) {
+                  color: context.appColors.surface,
+                  child: Row(
+                    children: List.generate(5, (index) {
           final isActive = index <= _currentStep;
           final isCompleted = index < _currentStep;
           return Expanded(
@@ -249,15 +251,15 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: isActive ? AppColors.success : AppColors.neutral200,
+                    color: isActive ? context.appColors.success : AppColors.neutral200,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child:
                         isCompleted
-                            ? const Icon(
+                            ? Icon(
                               Icons.check_rounded,
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               size: 16,
                             )
                             : Text(
@@ -267,8 +269,8 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                                 fontWeight: FontWeight.bold,
                                 color:
                                     isActive
-                                        ? Colors.white
-                                        : AppColors.neutral500,
+                              ? context.appColors.onPrimary
+                              : AppColors.neutral500,
                               ),
                             ),
                   ),
@@ -279,7 +281,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                       height: 2,
                       color:
                           isCompleted
-                              ? AppColors.success
+                              ? context.appColors.success
                               : AppColors.neutral200,
                     ),
                   ),
@@ -298,13 +300,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       children: [
         if (selectedPatient != null) ...[
           _buildSectionTitle('Pasien Terpilih'),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0FDF4),
-              borderRadius: AppRadius.radiusMd,
-              border: Border.all(color: const Color(0xFF86EFAC), width: 1.5),
+            color: context.appColors.surface,
+            borderRadius: AppRadius.radiusMd,
+            border: Border.all(color: const Color(0xFF86EFAC), width: 1.5),
             ),
             child: Row(
               children: [
@@ -312,13 +314,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   backgroundColor: const Color(0xFFDCFCE7),
                   child: Text(
                     selectedPatient.initials,
-                    style: const TextStyle(
-                      color: Color(0xFF16A34A),
+                    style: TextStyle(
+                      color: context.appColors.success,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +331,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${selectedPatient.nim} • ${selectedPatient.prodi}',
                         style: AppTextStyles.bodySm.copyWith(
@@ -351,15 +353,15 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
         ],
         _buildSectionTitle('Identifikasi Pasien'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Cari pasien berdasarkan Nama atau NIM',
           style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // QR Scan Button
         GestureDetector(
@@ -367,7 +369,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(color: AppColors.neutral200),
               boxShadow: [
@@ -383,16 +385,16 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withAlpha(26),
+                    color: context.appColors.primary.withAlpha(26),
                     borderRadius: AppRadius.radiusMd,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     size: 28,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,7 +406,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Arahkan kamera ke kartu mahasiswa',
                         style: AppTextStyles.labelSm.copyWith(
@@ -431,7 +433,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           ),
         ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         // Divider with text
         Row(
@@ -450,7 +452,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           ],
         ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         // Search Field
         TextField(
@@ -474,8 +476,8 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(
-                color: AppColors.success,
+              borderSide: BorderSide(
+                color: context.appColors.success,
                 width: 1.5,
               ),
             ),
@@ -487,7 +489,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             }
           },
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         Consumer<TkPatientProvider>(
           builder: (context, provider, child) {
             if (provider.patients.isEmpty) {
@@ -502,10 +504,10 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                     color: AppColors.neutral500,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 ...provider.patients.take(5).map((patient) {
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
+                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                     child: ListTile(
                       onTap: () {
                         provider.selectPatient(patient);
@@ -538,12 +540,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                             width: 40,
                             height: 40,
                             child: ClipOval(
-                              child: Image.network(
+                              child: CachedNetworkImage(imageUrl: 
                                 ApiGate.getImageUrl(foto),
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorWidget: (context, url, error) {
                                   return initialsWidget;
                                 },
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               ),
                             ),
                           );
@@ -576,10 +579,9 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(3),
@@ -594,14 +596,14 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
                   color: iconColor.withAlpha(26),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: iconColor, size: 16),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   title,
@@ -615,14 +617,14 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(child: inputWidget),
                 if (unit != null) ...[
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     unit,
                     style: AppTextStyles.bodySm.copyWith(
@@ -652,7 +654,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           label,
           style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
           initialValue: value,
           decoration: InputDecoration(
@@ -672,7 +674,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                borderSide: BorderSide(color: context.appColors.primary, width: 2),
             ),
           ),
           items:
@@ -690,11 +692,11 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         _buildSectionTitle('Info Pemeriksaan'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200),
           ),
@@ -740,7 +742,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 ],
                 (v) => setState(() => _jenisPemeriksaan = v!),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               _buildDropdownField(
                 'Sumber Pemeriksaan',
                 _sumberPemeriksaan,
@@ -750,14 +752,14 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         _buildSectionTitle('Data Vital (BMI)'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
@@ -780,7 +782,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                         color: AppColors.neutral500,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       _bmi.toStringAsFixed(1),
                       style: const TextStyle(
@@ -800,14 +802,14 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 decoration: BoxDecoration(
                   color:
                       _bmiCategory == 'Normal'
-                          ? AppColors.success
-                          : AppColors.warning,
+                          ? context.appColors.success
+                          : context.appColors.warning,
                   borderRadius: AppRadius.radiusXl,
                 ),
                 child: Text(
                   _bmiCategory,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -815,10 +817,10 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         _buildSectionTitle('Pengukuran Fisik & Vital'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1063,21 +1065,21 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200),
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
                   color: Colors.purple.withAlpha(26),
                   shape: BoxShape.circle,
@@ -1088,7 +1090,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1140,12 +1142,12 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         _buildSectionTitle('Data Subjektif'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Informasi dari keluhan pasien',
           style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         // Keluhan
         _buildTextArea(
@@ -1154,11 +1156,11 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _keluhan = v,
           hint: 'Ceritakan keluhan yang dirasakan...',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Skala Nyeri
         _buildSectionTitle('Skala Nyeri'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
             Expanded(
@@ -1167,7 +1169,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 min: 0,
                 max: 10,
                 divisions: 10,
-                activeColor: AppColors.success,
+                activeColor: context.appColors.success,
                 onChanged: (v) => setState(() => _skalaNyeri = v.round()),
               ),
             ),
@@ -1181,16 +1183,16 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               child: Center(
                 child: Text(
                   '$_skalaNyeri',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Riwayat Penyakit
         _buildTextArea(
@@ -1199,7 +1201,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _riwayatPenyakit = v,
           hint: 'Asma, Diabetes, Jantung, dll',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Alergi Obat
         _buildTextArea(
@@ -1208,7 +1210,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _alergiObat = v,
           hint: 'Daftar alergi obat jika ada',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Konsumsi Obat Terkini
         _buildTextArea(
@@ -1217,11 +1219,11 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _konsumsiObatTerkini = v,
           hint: 'Obat rutin yang sedang dikonsumsi...',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Kondisi Psikologis
         _buildSectionTitle('Kondisi Psikologis'),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
@@ -1269,12 +1271,12 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         _buildSectionTitle('Tindakan & Penanganan'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Input tindakan yang diberikan',
           style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         // Tindakan
         _buildTextArea(
@@ -1283,7 +1285,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _tindakanDiberikan = v,
           hint: 'Misal: Istirahat di UKS, Kompres air hangat',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Obat
         _buildTextArea(
@@ -1292,7 +1294,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _obatDiberikan = v,
           hint: 'Nama obat dan dosis',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Catatan
         _buildTextArea(
@@ -1301,7 +1303,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _catatan = v,
           hint: 'Observasi objektif...',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Rekomendasi
         _buildTextArea(
@@ -1310,7 +1312,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           (v) => _rekomendasi = v,
           hint: 'Saran tindak lanjut...',
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
       ],
     );
   }
@@ -1320,40 +1322,40 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         _buildSectionTitle('Status Akhir'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Tentukan status kesehatan pasien',
           style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
 
         // Status Options
-        _buildStatusOption(
+            _buildStatusOption(
           'Layak Kegiatan',
           'Pasien dapat mengikuti kegiatan',
-          const Color(0xFF16A34A),
+          context.appColors.success,
           Icons.verified_rounded,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         _buildStatusOption(
           'Perlu Perhatian',
           'Perlu pantauan dan tindak lanjut',
-          const Color(0xFFD97706),
+          context.appColors.warning,
           Icons.warning_amber_rounded,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         _buildStatusOption(
           'Tidak Layak',
           'Tidak dapat mengikuti kegiatan',
-          const Color(0xFFDC2626),
+          context.appColors.error,
           Icons.cancel_rounded,
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.xxl),
 
         // Eskalasi
         _buildSectionTitle('Rujukan & Alur Eskalasi'),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         SwitchListTile(
           title: const Text('Rujuk ke Psikolog'),
           subtitle: const Text('Kirim notifikasi ke psikolog'),
@@ -1367,7 +1369,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               _selectedPsikologSlotId = null;
             }
           },
-          activeThumbColor: AppColors.success,
+          activeThumbColor: context.appColors.success,
         ),
         if (_eskalasiPsikolog)
           Consumer<TkPatientProvider>(
@@ -1426,7 +1428,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     if (_selectedPsikologId != null)
                       if (provider.psychologistSchedules.isEmpty)
                         Text(
@@ -1476,7 +1478,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(color: AppColors.neutral200),
             ),
@@ -1484,7 +1486,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSectionTitle('Data Surat Rujukan Medis'),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildDropdownField(
                   'Fasilitas Kesehatan Tujuan',
                   _faskesTujuan,
@@ -1493,7 +1495,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 ),
                 if (_faskesTujuan == 'Lainnya')
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: _buildTextArea(
                       'Nama Faskes',
                       _faskesTujuanLainnya,
@@ -1501,7 +1503,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                       hint: 'Sebutkan nama faskes',
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildDropdownField(
                   'Alasan Rujukan',
                   _alasanRujukan,
@@ -1515,7 +1517,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 ),
                 if (_alasanRujukan == 'Lainnya')
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: _buildTextArea(
                       'Alasan',
                       _alasanRujukanLainnya,
@@ -1523,14 +1525,14 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                       hint: 'Sebutkan alasan',
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildTextArea(
                   'Keluhan Utama (Penyerta Rujukan)',
                   _keluhanUtamaRujukan,
                   (v) => _keluhanUtamaRujukan = v,
                   hint: 'Jelaskan keluhan utama...',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1562,29 +1564,29 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                               ),
                         );
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.search,
                         size: 16,
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                       ),
                       label: Text(
                         'Pilih Kode ICD-10',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 _buildTextArea(
                   '',
                   _diagnosisSementara,
                   (v) => _diagnosisSementara = v,
                   hint: 'Sebutkan diagnosis klinis...',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildDropdownField(
                   'Saran Asuransi (Klaim)',
                   _rekomendasiAsuransi,
@@ -1596,15 +1598,15 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   ],
                   (v) => setState(() => _rekomendasiAsuransi = v!),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   children: [
                     Icon(
                       Icons.info_outline,
                       size: 16,
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         'Data TTV akan ditarik otomatis. Surat memerlukan ACC dari Superadmin.',
@@ -1617,13 +1619,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
           ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.xxl),
 
         // Summary
         Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200),
           ),
@@ -1636,7 +1638,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               _buildSummaryRow(
                 'BMI',
                 '${_bmi.toStringAsFixed(1)} ($_bmiCategory)',
@@ -1666,7 +1668,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -1686,7 +1688,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   variant: BkuButtonVariant.danger,
                 ),
               ),
-            if (_currentStep > 0) const SizedBox(width: 16),
+            if (_currentStep > 0) const SizedBox(width: AppSpacing.lg),
             Expanded(
               flex: 2,
               child: BkuButton(
@@ -1728,7 +1730,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           label,
           style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           initialValue: value,
           maxLines: 3,
@@ -1737,7 +1739,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             hintStyle: const TextStyle(color: AppColors.neutral400),
             filled: true,
             fillColor: AppColors.neutral50,
-            contentPadding: const EdgeInsets.all(16),
+            contentPadding: AppSpacing.paddingLg,
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
               borderSide: BorderSide.none,
@@ -1748,8 +1750,8 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(
-                color: AppColors.success,
+              borderSide: BorderSide(
+                color: context.appColors.success,
                 width: 1.5,
               ),
             ),
@@ -1773,7 +1775,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: isSelected ? color.withAlpha(20) : Colors.white,
+          color: isSelected ? color.withAlpha(20) : context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
             color: isSelected ? color : const Color(0xFFE2E8F0),
@@ -1783,7 +1785,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: AppSpacing.padding10,
               decoration: BoxDecoration(
                 color: color.withAlpha(25),
                 shape: BoxShape.circle,
@@ -1794,7 +1796,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 size: 20,
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.s14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1807,7 +1809,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                       color: isSelected ? color : AppColors.neutral800,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     description,
                     style: AppTextStyles.labelSm.copyWith(
@@ -1829,9 +1831,9 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 ),
               ),
               child: isSelected
-                  ? const Icon(
+                  ? Icon(
                       Icons.check_rounded,
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       size: 14,
                     )
                   : null,
@@ -1858,13 +1860,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           context.read<TkPatientProvider>().loadPsychologists();
         }
       },
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.radiusMd,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? activeBg : const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusMd,
           border: Border.all(
             color: isSelected ? activeBorder : const Color(0xFFE2E8F0),
             width: isSelected ? 1.5 : 1.0,
@@ -1873,7 +1875,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: AppSpacing.padding6,
               decoration: BoxDecoration(
                 color: isSelected ? activeColor.withAlpha(30) : const Color(0xFFE2E8F0),
                 shape: BoxShape.circle,
@@ -1884,7 +1886,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 color: isSelected ? activeColor : const Color(0xFF64748B),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 title,
@@ -1905,7 +1907,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
 
   Widget _buildSummaryRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           SizedBox(

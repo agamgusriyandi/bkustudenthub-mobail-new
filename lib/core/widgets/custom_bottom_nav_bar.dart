@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -79,7 +80,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
           Container(
             height: 65,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(10),
@@ -172,7 +173,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
                   if (isSelected)
                     Padding(
-                      padding: const EdgeInsets.only(top: 6),
+                      padding: const EdgeInsets.only(top: AppSpacing.s6),
                       child: Text(
                         label,
                         style: TextStyle(
@@ -185,7 +186,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                 ],
               ),
             ),
-            if (!isSelected) const SizedBox(height: 15),
+            if (!isSelected) const SizedBox(height: AppSpacing.s14),
           ],
         ),
       ),
@@ -215,7 +216,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       ),
       child: Icon(
         icon,
-        color: isSelected ? Colors.white : themeProvider.outline.withAlpha(150),
+        color: isSelected ? context.appColors.onPrimary : themeProvider.outline.withAlpha(150),
         size: 24,
       ),
     );

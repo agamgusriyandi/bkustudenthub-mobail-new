@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -181,16 +182,16 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                       child: Center(
                         child:
                             isCompletedPast
-                                ? const Icon(
+                                ? Icon(
                                   Icons.check_rounded,
                                   size: 14,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 )
                                 : isCurrent && isRejected
-                                ? const Icon(
+                                ? Icon(
                                   Icons.close_rounded,
                                   size: 14,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 )
                                 : Text(
                                   '${index + 1}',
@@ -198,7 +199,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                     fontSize: 10,
                                     color:
                                         isCurrent
-                                            ? Colors.white
+                                            ? context.appColors.onPrimary
                                             : AppColors.neutral600,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -218,10 +219,10 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: isLast ? 0 : 16),
+                    padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -239,7 +240,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                               ),
                             ),
                             if (isCurrent) ...[
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
@@ -261,7 +262,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             ],
                           ],
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           isCompletedPast
                               ? 'Tahap selesai'
@@ -345,16 +346,16 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                       child: Center(
                         child:
                             isCompletedPast
-                                ? const Icon(
+                                ? Icon(
                                   Icons.check_rounded,
                                   size: 12,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 )
                                 : isCurrent && isRejected
-                                ? const Icon(
+                                ? Icon(
                                   Icons.close_rounded,
                                   size: 12,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 )
                                 : Text(
                                   '${index + 1}',
@@ -362,14 +363,14 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                     fontSize: 9,
                                     color:
                                         isCurrent
-                                            ? Colors.white
+                                            ? context.appColors.onPrimary
                                             : AppColors.neutral600,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       stages[index],
                       textAlign: TextAlign.center,
@@ -387,7 +388,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                 Expanded(
                   child: Container(
                     height: 2,
-                    margin: const EdgeInsets.only(top: 11),
+                    margin: const EdgeInsets.only(top: AppSpacing.s11),
                     color:
                         index < currentIndex
                             ? AppColors.success
@@ -471,12 +472,12 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                   width: itemWidth,
                   child: InkWell(
                     onTap: () => _launchUrl(context, doc['url']),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppRadius.br14,
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: AppSpacing.paddingMd,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
+                        color: context.appColors.surface,
+                        borderRadius: AppRadius.br14,
                         border: Border.all(
                           color: const Color(0xFFE5E7EB),
                           width: 1.2,
@@ -492,14 +493,14 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: AppSpacing.paddingSm,
                             decoration: BoxDecoration(
                               color: bgAccent,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: AppRadius.br10,
                             ),
                             child: Icon(docIcon, color: iconColor, size: 20),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: AppSpacing.s10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -507,15 +508,15 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   doc['title']!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F2937),
+                                    color: context.appColors.secondary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: AppSpacing.s2),
                                 Row(
                                   children: [
                                     Text(
@@ -526,7 +527,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                         color: iconColor,
                                       ),
                                     ),
-                                    const SizedBox(width: 3),
+                                    const SizedBox(width: AppSpacing.s3),
                                     Icon(
                                       Icons.arrow_forward_rounded,
                                       size: 10,
@@ -591,7 +592,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.appColors.surface,
                       borderRadius: AppRadius.radiusXl,
                       border: Border.all(
                         color: AppColors.neutral200.withAlpha(150),
@@ -647,7 +648,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           scholarship.title,
                           textAlign: TextAlign.center,
@@ -656,7 +657,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             color: AppColors.neutral900,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           scholarship.provider,
                           textAlign: TextAlign.center,
@@ -664,7 +665,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             color: Theme.of(context).colorScheme.outline,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         _buildTimeline(
                           context,
                           scholarship.applicationStatus ?? 'Pendaftaran',
@@ -679,10 +680,10 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
                             color: const Color(0xFFEEF2FF),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusSm,
                           ),
                           child: const Icon(
                             Icons.assignment_ind_rounded,
@@ -690,7 +691,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             color: Color(0xFF4F46E5),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpacing.s10),
                         Text(
                           'Data Jawaban Tambahan',
                           style: AppTextStyles.titleSm.copyWith(
@@ -703,7 +704,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         borderRadius: AppRadius.radiusLg,
                         border: Border.all(
                           color: AppColors.neutral200.withAlpha(150),
@@ -744,7 +745,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                           size: 16,
                                           color: const Color(0xFF4F46E5),
                                         ),
-                                        const SizedBox(width: 8),
+                                        const SizedBox(width: AppSpacing.sm),
                                         Expanded(
                                           child: Text(
                                             label,
@@ -760,7 +761,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: AppSpacing.sm),
                                     if (isFile)
                                       InkWell(
                                         onTap: () => _launchUrl(context, value),
@@ -782,7 +783,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                                 size: 16,
                                                 color: Color(0xFF4F46E5),
                                               ),
-                                              const SizedBox(width: 6),
+                                              const SizedBox(width: AppSpacing.s6),
                                               Text(
                                                 'Lihat File Lampiran',
                                                 style: AppTextStyles.labelSm
@@ -820,10 +821,10 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
                             color: const Color(0xFFF0FDFA),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusSm,
                           ),
                           child: const Icon(
                             Icons.folder_shared_rounded,
@@ -831,7 +832,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                             color: Color(0xFF0D9488),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpacing.s10),
                         Text(
                           'Dokumen Lampiran',
                           style: AppTextStyles.titleSm.copyWith(
@@ -845,7 +846,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xl),
                   ],
 
-                  const SizedBox(height: 60),
+                  const SizedBox(height: AppSpacing.s60),
                 ],
               ),
             ),

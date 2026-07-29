@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
@@ -92,34 +93,34 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
             children: [
               _buildLabel('Tujuan Aspirasi'),
               _buildTujuanSelector(),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               _buildSectionTitle('Pilih Kategori'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildCategorySelector(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               _buildSectionTitle('Apa yang ingin kamu sampaikan?'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildLabel('Judul Aspirasi'),
               _buildTextField(
                 _titleController,
                 'Contoh: Kerusakan Kursi di Kantin',
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               _buildLabel('Detail Aspirasi'),
               _buildTextArea(
                 _descController,
                 'Ceritakan lebih detail mengenai saran atau keluhanmu...',
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               _buildSectionTitle('Lampirkan Bukti (Opsional)'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               _buildUploadSection(),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               if (_isAnonimEnabled) _buildAnonimSwitch(),
 
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.s48),
               _buildSubmitButton(),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
             ],
           ),
         ),
@@ -173,7 +174,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                 color: AppColors.neutral600,
                 size: 24,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -213,7 +214,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
@@ -251,7 +252,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: context.appColors.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.radiusMd,
                 side: BorderSide(
@@ -330,14 +331,14 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
             size: 40,
             color: Theme.of(context).colorScheme.outline.withAlpha(50),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Klik untuk unggah Foto atau Dokumen',
             style: AppTextStyles.labelSm.copyWith(
               color: Theme.of(context).colorScheme.outline,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Maksimal 10MB',
             style: AppTextStyles.labelSm.copyWith(
@@ -346,13 +347,13 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
             ),
           ),
           if (_attachmentName != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'File terpilih: $_attachmentName',
               style: AppTextStyles.labelSm.copyWith(),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           InkWell(
             onTap: _pickFile,
             child: Container(
@@ -391,7 +392,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
       ),
       builder: (BuildContext sheetContext) {
         return SafeArea(

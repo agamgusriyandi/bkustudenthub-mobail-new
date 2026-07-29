@@ -2,6 +2,8 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -15,6 +17,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_qr_scan_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -60,11 +63,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => student.loadAllData(),
         color: Theme.of(context).colorScheme.primary,
-        backgroundColor: Colors.white,
+        backgroundColor: context.appColors.surface,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
@@ -73,23 +76,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
             BkuAppBar(
               title: name,
               subtitle: 'SELAMAT DATANG KEMBALI',
-              info: '${student.nim} • SEMESTER ${student.semester}',
+              info: '${student.nim} â€¢ SEMESTER ${student.semester}',
               variant: AppBarVariant.student,
               showBackButton: false,
               expandedHeight: 130,
               showProfileOnCollapse: true,
               profileImage:
                   student.fotoUrl != null && student.fotoUrl!.isNotEmpty
-                      ? Image.network(
+                      ? CachedNetworkImage(imageUrl: 
                         ApiGate.getImageUrl(student.fotoUrl!),
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
+                        errorWidget: (context, url, error) {
                           return Icon(
                             Icons.person_rounded,
                             color: Theme.of(context).colorScheme.primary,
                             size: 28,
                           );
                         },
+                        placeholder: (context, url) => Container(color: AppColors.neutral200),
                       )
                       : Icon(
                         Icons.person_rounded,
@@ -134,15 +138,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildSectionTitle('Layanan Mahasiswa'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     const StudentServiceGrid(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     const TodayScheduleCard(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildSectionTitle('Status Kamu'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     StudentStatusGrid(
                       isLoading: student.isLoading,
                       completedMissions: completedMissions,
@@ -151,11 +155,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       appliedScholarships: appliedScholarships,
                       latestHealth: latestHealth,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildSectionTitle('Berita Kampus'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     const StudentAgendaList(),
-                    const SizedBox(height: 100),
+                    const SizedBox(height: AppSpacing.s100),
                   ],
                 ),
               ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class NotifikasiTabWidget extends StatefulWidget {
   final StudentProvider student;
@@ -58,11 +61,11 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
     ValueChanged<bool> onChanged,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.s14),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -78,11 +81,11 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
             height: 42,
             decoration: BoxDecoration(
               color: iconColor.withAlpha(18),
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: AppRadius.br13,
             ),
             child: Icon(icon, color: iconColor, size: 21),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: AppSpacing.s14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,11 +98,11 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
                     color: Color(0xFF0F172A),
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: AppSpacing.s3),
                 Text(
                   subtitle,
                   style: const TextStyle(
-                    color: Color(0xFF64748B),
+                    color: AppColors.neutral600,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -107,14 +110,14 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Switch(
             value: value,
             onChanged: _isLoading ? null : onChanged,
-            activeThumbColor: Colors.white,
-            activeTrackColor: const Color(0xFF1E293B),
-            inactiveThumbColor: const Color(0xFF94A3B8),
-            inactiveTrackColor: const Color(0xFFE2E8F0),
+            activeThumbColor: context.appColors.onPrimary,
+            activeTrackColor: context.appColors.secondary,
+            inactiveThumbColor: AppColors.neutral500,
+            inactiveTrackColor: AppColors.neutral200,
           ),
         ],
       ),
@@ -127,26 +130,26 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F5F9),
-            borderRadius: BorderRadius.circular(20),
+            color: AppColors.neutral100,
+            borderRadius: AppRadius.br20,
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE2E8F0),
+                padding: AppSpacing.padding10,
+                decoration: BoxDecoration(
+                  color: AppColors.neutral200,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.notifications_active_rounded,
-                  color: Color(0xFF334155),
+                  color: context.appColors.secondary,
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +162,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
                         color: Color(0xFF0F172A),
                       ),
                     ),
-                    SizedBox(height: 3),
+                    SizedBox(height: AppSpacing.s3),
                     Text(
                       'Atur saluran pemberitahuan yang ingin Anda aktifkan',
                       style: TextStyle(
@@ -174,7 +177,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
 
         _buildSwitch(
           'Notifikasi Email',
@@ -209,7 +212,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
             _updatePreferences();
           },
         ),
-        const SizedBox(height: 120),
+        const SizedBox(height: AppSpacing.s120),
       ],
     );
   }

@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_news.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 String _formatDate(DateTime dt) {
   final days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
@@ -101,8 +105,8 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.radiusSm,
           border: Border.all(
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
@@ -114,7 +118,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
               size: 48,
               color: Theme.of(context).colorScheme.outline.withAlpha(100),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Belum ada berita kampus',
               style: AppTextStyles.labelMd.copyWith(
@@ -122,7 +126,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               'Berita terbaru dari kampus akan tampil di sini.',
               style: AppTextStyles.labelSm.copyWith(
@@ -155,7 +159,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
           ),
         ),
         if (newsList.length > 1) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(newsList.length, (index) {
@@ -169,7 +173,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
                   color: isSelected
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColor.withAlpha(50),
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: AppRadius.br3,
                 ),
               );
             }),
@@ -193,9 +197,9 @@ class _NewsCard extends StatelessWidget {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.85,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
             ),
             child: Column(
               children: [
@@ -203,17 +207,18 @@ class _NewsCard extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(16),
+                        top: Radius.circular(AppRadius.lg),
                       ),
                       child:
                           news.gambarUrl.isNotEmpty
-                              ? Image.network(
+                              ? CachedNetworkImage(imageUrl: 
                                 ApiGate.getImageUrl(news.gambarUrl),
                                 width: double.infinity,
                                 fit: BoxFit.contain,
-                                errorBuilder:
-                                    (context, error, stackTrace) =>
+                                errorWidget:
+                                    (context, url, error) =>
                                         _buildPlaceholderImage(),
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               )
                               : _buildPlaceholderImage(),
                     ),
@@ -224,9 +229,9 @@ class _NewsCard extends StatelessWidget {
                         backgroundColor: Colors.black.withAlpha(100),
                         child: IconButton(
                           onPressed: () => Navigator.pop(context),
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.close_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -235,7 +240,7 @@ class _NewsCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(28),
+                    padding: AppSpacing.padding28,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -246,7 +251,7 @@ class _NewsCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.grey.withAlpha(20),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
                             news.kategori.isNotEmpty
@@ -259,7 +264,7 @@ class _NewsCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           news.judul,
                           style: AppTextStyles.titleLg.copyWith(
@@ -269,7 +274,7 @@ class _NewsCard extends StatelessWidget {
                             height: 1.3,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
                             Icon(
@@ -277,7 +282,7 @@ class _NewsCard extends StatelessWidget {
                               size: 14,
                               color: Theme.of(context).colorScheme.outline,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Text(
                               _formatDate(news.tanggalPublish),
                               style: AppTextStyles.labelSm.copyWith(
@@ -286,7 +291,7 @@ class _NewsCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Text(
                           _parseHtmlString(news.isi),
                           style: AppTextStyles.bodyMd.copyWith(
@@ -295,7 +300,7 @@ class _NewsCard extends StatelessWidget {
                             fontSize: 15,
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: AppSpacing.xxxl),
                       ],
                     ),
                   ),
@@ -320,9 +325,9 @@ class _NewsCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusMd,
+        border: Border.all(color: AppColors.neutral200, width: 1.5),
       ),
       clipBehavior: Clip.antiAlias,
       child: Material(
@@ -333,12 +338,13 @@ class _NewsCard extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               news.gambarUrl.isNotEmpty
-                  ? Image.network(
+                  ? CachedNetworkImage(imageUrl: 
                       ApiGate.getImageUrl(news.gambarUrl),
                       fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) =>
+                      errorWidget:
+                          (context, url, error) =>
                               _buildPlaceholderImage(),
+                      placeholder: (context, url) => Container(color: AppColors.neutral200),
                     )
                   : _buildPlaceholderImage(),
               Container(
@@ -360,7 +366,7 @@ class _NewsCard extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Padding(
-                  padding: const EdgeInsets.all(14),
+                  padding: AppSpacing.padding14,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -375,14 +381,14 @@ class _NewsCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
                               news.kategori.isNotEmpty
                                   ? news.kategori.toUpperCase()
                                   : 'INFO TERBARU',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 9,
                               ),
@@ -395,12 +401,12 @@ class _NewsCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: Colors.black.withAlpha(120),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
                               _formatDate(news.tanggalPublish),
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: context.appColors.onPrimary,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
                               ),
@@ -408,19 +414,19 @@ class _NewsCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       Text(
                         news.judul,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 14,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           height: 1.3,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: AppSpacing.s10),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Container(
@@ -430,27 +436,27 @@ class _NewsCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white.withAlpha(40),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: AppRadius.radiusXs,
                             border: Border.all(
                               color: Colors.white.withAlpha(100),
                               width: 1,
                             ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 'Baca Selengkapnya',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 10,
                                 ),
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: AppSpacing.xs),
                               Icon(
                                 Icons.arrow_forward_rounded,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 size: 12,
                               ),
                             ],

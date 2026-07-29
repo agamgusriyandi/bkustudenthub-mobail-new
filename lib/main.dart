@@ -161,7 +161,7 @@ class MyApp extends StatelessWidget {
         ),
         dialogTheme: DialogThemeData(
           shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
-          backgroundColor: Colors.white,
+          backgroundColor: themeProvider.surface,
           elevation: 10,
         ),
         inputDecorationTheme: InputDecorationTheme(
@@ -196,9 +196,9 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: themeProvider.primary,
-            foregroundColor: Colors.white,
+            foregroundColor: themeProvider.onPrimary,
             elevation: 0,
-            minimumSize: const Size(0, 48), // Ensure consistent minimum height
+            minimumSize: const Size(0, 48),
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
             shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
           ),
@@ -222,7 +222,7 @@ class MyApp extends StatelessWidget {
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: themeProvider.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: themeProvider.onPrimary,
           elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
         ),
@@ -234,7 +234,7 @@ class MyApp extends StatelessWidget {
         // Override AppBar theme with dynamic primary color
         appBarTheme: AppBarTheme(
           backgroundColor: themeProvider.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: themeProvider.onPrimary,
           elevation: 0,
           scrolledUnderElevation: 0,
           centerTitle: true,
@@ -242,10 +242,10 @@ class MyApp extends StatelessWidget {
           titleTextStyle: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w900,
-            color: Colors.white,
+            color: themeProvider.onPrimary,
             letterSpacing: 0.5,
           ),
-          iconTheme: const IconThemeData(color: Colors.white, size: 24),
+          iconTheme: IconThemeData(color: themeProvider.onPrimary, size: 24),
         ),
       ),
     );

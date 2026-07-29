@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class AssessmentManagementScreen extends StatefulWidget {
   const AssessmentManagementScreen({super.key});
@@ -72,11 +73,11 @@ class _AssessmentManagementScreenState
             onPressed: () => _showCreateAssessmentDialog(provider),
             backgroundColor: AppColors.success,
             elevation: 4,
-            icon: const Icon(Icons.add_rounded, color: Colors.white),
+            icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
             label: Text(
               'Buat Asesmen',
               style: AppTextStyles.bodyMd.copyWith(
-                color: Colors.white,
+                color: context.appColors.onPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -109,21 +110,21 @@ class _AssessmentManagementScreenState
                                 urgent,
                                 mentalScore,
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: AppSpacing.xxl),
                               _buildSectionHeader('Kategori Asesmen'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildCategoryCards(categories),
                               if (verificationQueue.isNotEmpty) ...[
-                                const SizedBox(height: 32),
+                                const SizedBox(height: AppSpacing.xxl),
                                 _buildVerificationQueue(verificationQueue),
                               ],
-                              const SizedBox(height: 32),
+                              const SizedBox(height: AppSpacing.xxl),
                               _buildSectionHeader('Filter'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildCategoryFilter(),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
                               _buildSectionHeader('Hasil Asesmen'),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               filtered.isEmpty
                                   ? _buildEmpty()
                                   : Column(
@@ -136,7 +137,7 @@ class _AssessmentManagementScreenState
                                             )
                                             .toList(),
                                   ),
-                              const SizedBox(height: 100),
+                              const SizedBox(height: AppSpacing.s100),
                             ],
                           ),
                         ),
@@ -159,7 +160,7 @@ class _AssessmentManagementScreenState
             AppColors.primary,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _buildStatCard(
             'Butuh Atensi',
@@ -168,7 +169,7 @@ class _AssessmentManagementScreenState
             AppColors.error,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _buildStatCard(
             'Skor Mental',
@@ -195,14 +196,14 @@ class _AssessmentManagementScreenState
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: color.withAlpha(20),
               borderRadius: AppRadius.radiusSm,
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
@@ -211,7 +212,7 @@ class _AssessmentManagementScreenState
               color: AppColors.neutral900,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -235,12 +236,12 @@ class _AssessmentManagementScreenState
         'icon': Icons.favorite_rounded,
         'color': AppColors.error,
       },
-      'Kepribadian': {'icon': Icons.psychology_rounded, 'color': Colors.purple},
+      'Kepribadian': {'icon': Icons.psychology_rounded, 'color': AppColors.neutral700},
       'Minat Bakat': {
         'icon': Icons.track_changes_rounded,
-        'color': Colors.amber.shade800,
+        'color': context.appColors.warning,
       },
-      'Lainnya': {'icon': Icons.auto_awesome_rounded, 'color': Colors.teal},
+      'Lainnya': {'icon': Icons.auto_awesome_rounded, 'color': context.appColors.info},
     };
 
     return GridView.builder(
@@ -272,14 +273,14 @@ class _AssessmentManagementScreenState
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
                   color: color.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,7 +318,7 @@ class _AssessmentManagementScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader('Antrean Verifikasi'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Column(
           children:
               queue.map((item) {
@@ -326,7 +327,7 @@ class _AssessmentManagementScreenState
                 final count = map['count'] ?? 0;
 
                 return BkuCard(
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
@@ -336,12 +337,12 @@ class _AssessmentManagementScreenState
                       Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.amber,
+                        decoration: BoxDecoration(
+                          color: context.appColors.warning,
                           shape: BoxShape.circle,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
                           name,
@@ -394,11 +395,11 @@ class _AssessmentManagementScreenState
               case 'Kesehatan Mental':
                 return AppColors.error;
               case 'Kepribadian':
-                return Colors.purple;
+                return AppColors.neutral700;
               case 'Minat Bakat':
-                return Colors.amber.shade800;
+                return context.appColors.warning;
               case 'Lainnya':
-                return Colors.teal;
+                return context.appColors.info;
               default:
                 return AppColors.primary;
             }
@@ -408,20 +409,20 @@ class _AssessmentManagementScreenState
           return GestureDetector(
             onTap: () => setState(() => _selectedCategory = cat),
             child: Container(
-              margin: const EdgeInsets.only(right: 12),
+              margin: const EdgeInsets.only(right: AppSpacing.md),
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               decoration: BoxDecoration(
-                color: isSelected ? catColor : Colors.white,
+                color: isSelected ? catColor : context.appColors.surface,
                 borderRadius: AppRadius.radiusMd,
                 border: Border.all(
-                  color: isSelected ? catColor : Colors.grey.withAlpha(30),
+                  color: isSelected ? catColor : AppColors.neutral300.withAlpha(30),
                 ),
               ),
               child: Center(
                 child: Text(
                   cat,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: isSelected ? Colors.white : AppColors.neutral600,
+                    color: isSelected ? context.appColors.onPrimary : AppColors.neutral600,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -444,7 +445,7 @@ class _AssessmentManagementScreenState
               size: 64,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada asesmen',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
@@ -475,21 +476,21 @@ class _AssessmentManagementScreenState
       iconColor = AppColors.error;
       icon = Icons.favorite_rounded;
     } else if (category == 'Kepribadian') {
-      iconColor = Colors.purple;
+      iconColor = AppColors.neutral700;
       icon = Icons.psychology_rounded;
     } else if (category == 'Minat Bakat') {
-      iconColor = Colors.amber.shade800;
+      iconColor = context.appColors.warning;
       icon = Icons.track_changes_rounded;
     } else if (category == 'Lainnya') {
-      iconColor = Colors.teal;
+      iconColor = context.appColors.info;
       icon = Icons.auto_awesome_rounded;
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -498,7 +499,7 @@ class _AssessmentManagementScreenState
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: Colors.grey.withAlpha(20)),
+        border: Border.all(color: AppColors.neutral300.withAlpha(20)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,7 +520,7 @@ class _AssessmentManagementScreenState
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -533,7 +534,7 @@ class _AssessmentManagementScreenState
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       assessment,
                       style: AppTextStyles.labelMd.copyWith(
@@ -546,7 +547,7 @@ class _AssessmentManagementScreenState
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -569,7 +570,7 @@ class _AssessmentManagementScreenState
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       score,
                       style: AppTextStyles.labelMd.copyWith(
@@ -583,7 +584,7 @@ class _AssessmentManagementScreenState
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -619,7 +620,7 @@ class _AssessmentManagementScreenState
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 13, color: AppColors.neutral500),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Text(
             label,
@@ -650,9 +651,9 @@ class _AssessmentManagementScreenState
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (ctx) {
         return StatefulBuilder(
@@ -679,7 +680,7 @@ class _AssessmentManagementScreenState
                       child: Container(
                         width: 40,
                         height: 4,
-                        margin: const EdgeInsets.only(bottom: 24),
+                        margin: const EdgeInsets.only(bottom: AppSpacing.xl),
                       ),
                     ),
                     Text(
@@ -689,18 +690,18 @@ class _AssessmentManagementScreenState
                         color: AppColors.neutral900,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Lengkapi data di bawah ini untuk membuat asesmen.',
                       style: AppTextStyles.bodyMd.copyWith(
                         color: AppColors.neutral500,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: AppSpacing.padding20,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         borderRadius: AppRadius.radiusXl,
                         border: Border.all(
                           color: primaryColor.withAlpha(15),
@@ -742,7 +743,7 @@ class _AssessmentManagementScreenState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           DropdownButtonFormField<String>(
                             initialValue: selectedCategory,
                             icon: const Icon(
@@ -789,7 +790,7 @@ class _AssessmentManagementScreenState
                                 (v) =>
                                     setSheetState(() => selectedCategory = v!),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           TextField(
                             controller: descCtrl,
                             maxLines: 3,
@@ -820,7 +821,7 @@ class _AssessmentManagementScreenState
                         ],
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     Row(
                       children: [
                         Expanded(
@@ -831,7 +832,7 @@ class _AssessmentManagementScreenState
                             onPressed: () => Navigator.pop(ctx),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: BkuButton(
                             text: 'Buat Asesmen',
@@ -859,7 +860,7 @@ class _AssessmentManagementScreenState
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                   ],
                 ),
               ),

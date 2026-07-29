@@ -19,6 +19,9 @@ import 'package:bkuhub_mobile/features/counseling/presentation/providers/counsel
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
 import 'dart:async';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class PsychologistDashboardScreen extends StatefulWidget {
   const PsychologistDashboardScreen({super.key});
@@ -59,7 +62,7 @@ class _PsychologistDashboardScreenState
       }
       // Setup polling for dashboard data every 3 seconds
       if (mounted) {
-        _dashboardTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+        _dashboardTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
           if (mounted) {
             context.read<PsychologistDashboardProvider>().loadDashboardData(
               silent: true,
@@ -176,21 +179,26 @@ class _PsychologistDashboardScreenState
               _buildAppBar(context, provider),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.lg,
+                    AppSpacing.xl,
+                    0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildSectionHeader('Layanan Utama'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       const PsychologistServiceGrid(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       _buildSectionHeader('Ringkasan Hari Ini'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (provider.isLoading)
                         const BkuShimmer(
                           width: double.infinity,
                           height: 200,
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
                         )
                       else
                         QuickStatsCard(
@@ -207,7 +215,7 @@ class _PsychologistDashboardScreenState
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     if (provider.isLoading)
                       const Padding(
                         padding: EdgeInsets.symmetric(
@@ -219,7 +227,7 @@ class _PsychologistDashboardScreenState
                       UpcomingAppointmentsCard(
                         bookings: provider.upcomingBookings,
                       ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
                 ),
               ),
@@ -232,12 +240,12 @@ class _PsychologistDashboardScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildSectionHeader('Aktivitas Terbaru'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (provider.isLoading)
                         const BkuShimmerList(itemCount: 3, itemHeight: 80)
                       else
                         const RecentActivitiesCard(),
-                      const SizedBox(height: 120),
+                      const SizedBox(height: AppSpacing.s120),
                     ],
                   ),
                 ),
@@ -281,17 +289,16 @@ class _PsychologistDashboardScreenState
               context.push(AppRoutes.psychologistNotifications),
       profileImage:
           imageUrl.isNotEmpty
-              ? Image.network(
+              ? CachedNetworkImage(imageUrl: 
                 ApiGate.getImageUrl(imageUrl),
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
-                errorBuilder: (_, __, ___) => _buildInitialsAvatar(initials),
-                loadingBuilder:
-                    (_, child, progress) =>
-                        progress == null
-                            ? child
-                            : _buildInitialsAvatar(initials),
+                errorWidget: (_, url, error) => _buildInitialsAvatar(initials),
+                progressIndicatorBuilder:
+                    (_, url, progress) =>
+                        _buildInitialsAvatar(initials),
+                placeholder: (context, url) => Container(color: AppColors.neutral200),
               )
               : _buildInitialsAvatar(initials),
       bottomChild: _buildHeaderQuickChips(provider),
@@ -317,7 +324,7 @@ class _PsychologistDashboardScreenState
                   label: '${provider.completedToday} Selesai',
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
                 child: _buildGlassChip(
                   icon: Icons.hourglass_top_rounded,
@@ -326,7 +333,7 @@ class _PsychologistDashboardScreenState
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
@@ -335,7 +342,7 @@ class _PsychologistDashboardScreenState
                   label: '${provider.upcomingAppointments} Booking',
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
                 child: _buildGlassChip(
                   icon: Icons.notifications_active_rounded,
@@ -358,7 +365,7 @@ class _PsychologistDashboardScreenState
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(45),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.br20,
         border: Border.all(color: Colors.white.withAlpha(90), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -371,15 +378,15 @@ class _PsychologistDashboardScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 14, color: Colors.white),
-          const SizedBox(width: 6),
+          Icon(icon, size: 14, color: context.appColors.onPrimary),
+          const SizedBox(width: AppSpacing.s6),
           Flexible(
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                   fontWeight: FontWeight.w800,
                   fontSize: 12,
                   letterSpacing: 0.2,
@@ -406,7 +413,7 @@ class _PsychologistDashboardScreenState
         child: Text(
           initials,
           style: AppTextStyles.titleLg.copyWith(
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontSize: 28,
             fontWeight: FontWeight.w900,
             letterSpacing: 1,

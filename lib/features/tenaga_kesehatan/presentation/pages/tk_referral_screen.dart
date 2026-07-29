@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -283,9 +284,9 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
       builder: (context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.85,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
           child: Column(
             children: [
@@ -295,7 +296,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                 width: 40,
                 decoration: BoxDecoration(
                   color: AppColors.neutral300,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: AppRadius.br2,
                 ),
               ),
               Expanded(
@@ -310,10 +311,10 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     // Student Info Card
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: AppSpacing.paddingLg,
                       decoration: BoxDecoration(
                         color: const Color(0xFFF0FDF4),
                         borderRadius: AppRadius.radiusLg,
@@ -352,7 +353,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                   )
                                 : null,
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSpacing.lg),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +365,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                     color: const Color(0xFF16A34A),
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: AppSpacing.xs),
                                 Text(
                                   'NIM: $nim',
                                   style: AppTextStyles.labelSm.copyWith(
@@ -389,7 +390,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildDetailItem(
                       Icons.local_hospital_rounded,
                       'Faskes Tujuan',
@@ -427,7 +428,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       const Color(0xFF059669),
                     ),
                     if (pdfUrl != null && pdfUrl.toString().isNotEmpty) ...[
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
                         height: 48,
@@ -449,14 +450,14 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                               }
                             }
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.picture_as_pdf_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
-                          label: const Text(
+                          label: Text(
                             'Download Surat Rujukan PDF',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -464,7 +465,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFDC2626),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: AppRadius.radiusMd,
                             ),
                           ),
                         ),
@@ -487,19 +488,19 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
     Color color,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: color.withAlpha(20),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -510,7 +511,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                     color: AppColors.neutral500,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   value,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -534,8 +535,8 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
@@ -550,9 +551,9 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
         children: [
           Material(
             color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canPrev ? () => setState(() => _currentPage--) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -563,7 +564,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       size: 18,
                       color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       'Sebelumnya',
                       style: TextStyle(
@@ -587,9 +588,9 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
           ),
           Material(
             color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canNext ? () => setState(() => _currentPage++) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -603,7 +604,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                         color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
@@ -647,7 +648,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
           children: [
             // Header Search
             Container(
-              color: Colors.white,
+              color: context.appColors.surface,
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: TextField(
                 controller: _searchController,
@@ -706,7 +707,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                             size: 64,
                             color: AppColors.neutral400,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Belum Ada Surat Rujukan',
                             style: AppTextStyles.titleSm.copyWith(
@@ -723,7 +724,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                         bottom: AppSpacing.lg,
                       ),
                       itemCount: paginatedList.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
                       itemBuilder: (context, index) {
                         final ref = paginatedList[index];
                         final student = _extractStudentData(ref);
@@ -753,7 +754,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(AppSpacing.lg),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: context.appColors.surface,
                                 borderRadius: AppRadius.radiusLg,
                                 border: Border.all(color: AppColors.neutral200),
                                 boxShadow: [
@@ -808,7 +809,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                               )
                                             : null,
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: AppSpacing.md),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -824,7 +825,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                            const SizedBox(height: 2),
+                                            const SizedBox(height: AppSpacing.s2),
                                             Text(
                                               'NIM: $nim',
                                               style: AppTextStyles.labelSm
@@ -832,7 +833,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                                     color: AppColors.neutral600,
                                                   ),
                                             ),
-                                            const SizedBox(height: 4),
+                                            const SizedBox(height: AppSpacing.xs),
                                             Row(
                                               children: [
                                                 const Icon(
@@ -840,7 +841,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                                   size: 12,
                                                   color: AppColors.neutral500,
                                                 ),
-                                                const SizedBox(width: 4),
+                                                const SizedBox(width: AppSpacing.xs),
                                                 Text(
                                                   tanggal,
                                                   style: AppTextStyles.labelSm
@@ -862,12 +863,12 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 12),
+                                  const SizedBox(height: AppSpacing.md),
                                   Container(
-                                    padding: const EdgeInsets.all(12),
+                                    padding: AppSpacing.paddingMd,
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF8FAFC),
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: AppRadius.br10,
                                     ),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -879,7 +880,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                               size: 14,
                                               color: Color(0xFF2563EB),
                                             ),
-                                            const SizedBox(width: 6),
+                                            const SizedBox(width: AppSpacing.s6),
                                             Expanded(
                                               child: Text(
                                                 'Faskes Tujuan: $faskes',
@@ -892,7 +893,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: AppSpacing.xs),
                                         Text(
                                           'Diagnosa: $diagnosis',
                                           style: AppTextStyles.bodySm.copyWith(

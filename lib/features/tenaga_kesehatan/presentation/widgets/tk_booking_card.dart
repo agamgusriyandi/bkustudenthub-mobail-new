@@ -1,8 +1,10 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/booking.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class TkBookingCard extends StatelessWidget {
   final Booking booking;
@@ -59,7 +61,7 @@ class TkBookingCard extends StatelessWidget {
     } else if (s.contains('ditolak') || s.contains('dibatalkan') || s.contains('rejected')) {
       return const Color(0xFFFCA5A5);
     }
-    return const Color(0xFFE2E8F0);
+    return AppColors.neutral300;
   }
 
   @override
@@ -67,12 +69,12 @@ class TkBookingCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.radiusLg,
+          border: Border.all(color: AppColors.neutral300, width: 1.2),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(4),
@@ -91,22 +93,22 @@ class TkBookingCard extends StatelessWidget {
                 Container(
                   width: 44,
                   height: 44,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFEFF6FF),
+                  decoration: BoxDecoration(
+                    color: context.appColors.infoContainer,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
                       booking.initials,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2563EB),
+                        color: context.appColors.info,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 // Info
                 Expanded(
                   child: Column(
@@ -114,31 +116,31 @@ class TkBookingCard extends StatelessWidget {
                     children: [
                       Text(
                         booking.nama,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: AppSpacing.s3),
                       Text(
                         booking.nim,
-                        style: const TextStyle(
+                          style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF334155),
+                          color: context.appColors.secondaryContainer,
                           fontWeight: FontWeight.w700,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         booking.prodi,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -155,7 +157,7 @@ class TkBookingCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: statusBgColor,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusSm,
                     border: Border.all(color: statusBorderColor),
                   ),
                   child: Text(
@@ -170,7 +172,7 @@ class TkBookingCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             // Details
             Row(
@@ -179,9 +181,9 @@ class TkBookingCard extends StatelessWidget {
                   Icons.calendar_today_rounded,
                   booking.jadwalTanggal ?? '-',
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 _buildInfoItem(Icons.access_time_rounded, booking.waktu ?? '-'),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 _buildInfoItem(
                   Icons.medical_services_rounded,
                   booking.tipeLayanan ?? 'Umum',
@@ -191,28 +193,28 @@ class TkBookingCard extends StatelessWidget {
 
             // Keluhan
             if (booking.keluhan != null && booking.keluhan!.isNotEmpty) ...[
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(10),
+                padding: AppSpacing.padding10,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(10),
+                  color: context.appColors.background,
+                  borderRadius: AppRadius.br10,
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.chat_bubble_outline_rounded,
                       size: 14,
-                      color: Color(0xFF64748B),
+                      color: AppColors.neutral600,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         booking.keluhan!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF475569),
+                          color: AppColors.neutral700,
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 2,
@@ -226,21 +228,21 @@ class TkBookingCard extends StatelessWidget {
 
             // Actions
             if (showActions && booking.isPending) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    height: 34,
+                    height: 44,
                     child: OutlinedButton.icon(
                       onPressed: onReject,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFDC2626),
+                        foregroundColor: context.appColors.error,
                         side: const BorderSide(color: Color(0xFFFCA5A5)),
                         backgroundColor: const Color(0xFFFEF2F2),
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.br10,
                         ),
                       ),
                       icon: const Icon(Icons.close_rounded, size: 16),
@@ -250,18 +252,18 @@ class TkBookingCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.s10),
                   SizedBox(
-                    height: 34,
+                    height: 44,
                     child: ElevatedButton.icon(
                       onPressed: onAccept,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF16A34A),
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.appColors.success,
+                        foregroundColor: context.appColors.onPrimary,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.br10,
                         ),
                       ),
                       icon: const Icon(Icons.check_rounded, size: 16),
@@ -286,7 +288,7 @@ class TkBookingCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: AppColors.neutral500),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Flexible(
             child: Text(
               text,

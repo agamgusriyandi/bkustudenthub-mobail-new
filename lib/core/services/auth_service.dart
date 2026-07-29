@@ -234,11 +234,9 @@ class AuthService extends ChangeNotifier {
         return LoginResult(success: true);
       }
       return LoginResult(success: false, message: response.data['message']);
-    } on DioException catch (e) {
-      debugPrint('Login DioException: $e');
+    } on DioException {
       rethrow;
     } catch (e) {
-      debugPrint('Login Error: $e');
       return LoginResult(success: false, message: ErrorHandler.getMessage(e));
     }
   }
@@ -342,17 +340,10 @@ class AuthService extends ChangeNotifier {
       }
       return false;
     } on DioException catch (e) {
-      debugPrint('LoginSelectRole DioException: $e');
       if (e.response != null) {
-        debugPrint(
-          'LoginSelectRole Response Status: ${e.response?.statusCode}',
-        );
-        debugPrint('LoginSelectRole Response Data: ${e.response?.data}');
       }
       rethrow;
-    } catch (e, stack) {
-      debugPrint('LoginSelectRole Error: $e');
-      debugPrint('LoginSelectRole Stack: $stack');
+    } catch (_) {
       rethrow;
     }
   }
@@ -454,7 +445,6 @@ class AuthService extends ChangeNotifier {
         'message': response.data['message'] ?? 'Berhasil mengubah kata sandi',
       };
     } on DioException catch (e) {
-      debugPrint('ChangePassword DioException: $e');
       return {
         'success': false,
         'message':
@@ -462,7 +452,6 @@ class AuthService extends ChangeNotifier {
             'Gagal mengubah kata sandi. Periksa koneksi Anda.',
       };
     } catch (e) {
-      debugPrint('ChangePassword Error: $e');
       return {'success': false, 'message': 'Terjadi kesalahan sistem'};
     }
   }
@@ -475,7 +464,6 @@ class AuthService extends ChangeNotifier {
       );
       return response.data['success'] == true;
     } catch (e) {
-      debugPrint('RequestOtp Error: $e');
       return false;
     }
   }
@@ -488,7 +476,6 @@ class AuthService extends ChangeNotifier {
       );
       return response.data['success'] == true;
     } catch (e) {
-      debugPrint('VerifyOtp Error: $e');
       return false;
     }
   }
@@ -509,7 +496,6 @@ class AuthService extends ChangeNotifier {
       );
       return response.data['success'] == true;
     } catch (e) {
-      debugPrint('ResetPassword Error: $e');
       return false;
     }
   }
@@ -530,7 +516,6 @@ class AuthService extends ChangeNotifier {
       final response = await ApiClient().client.get('/auth/me');
       final data = response.data['data'] ?? response.data;
       if (data != null) {
-        debugPrint('FETCH ME DATA: $data');
         if (_userData != null) {
           final Map<String, dynamic> merged = Map<String, dynamic>.from(
             _userData!,
@@ -604,8 +589,8 @@ class AuthService extends ChangeNotifier {
         notifyListeners();
         return _userData;
       }
-    } catch (e) {
-      debugPrint('AuthService.fetchMe error: $e');
+    } catch (_) {
+      // ignore: data may not be cached, return null
     }
     return null;
   }
@@ -812,7 +797,6 @@ class AuthService extends ChangeNotifier {
       }
       return url;
     } catch (e) {
-      debugPrint('Error uploading avatar: $e');
       rethrow;
     }
   }

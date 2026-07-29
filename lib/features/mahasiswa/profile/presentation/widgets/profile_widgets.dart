@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import '../dialogs/profile_dialogs.dart';
 import '../utils/profile_utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 Widget buildRoleCard(BuildContext context, StudentProvider student) {
   final displayName = student.name.isNotEmpty ? student.name : 'Mahasiswa';
@@ -16,8 +21,8 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
 
   return Container(
     decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
+      color: context.appColors.surface,
+      borderRadius: AppRadius.radiusXl,
       boxShadow: [
         BoxShadow(
           color: Colors.black.withAlpha(12),
@@ -27,7 +32,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
       ],
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: AppRadius.radiusXl,
       child: Stack(
         children: [
           Positioned(
@@ -48,7 +53,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: AppSpacing.padding20,
             child: Column(
               children: [
                 Row(
@@ -57,14 +62,14 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                     Stack(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(3),
+                          padding: AppSpacing.padding3,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF1E293B), Color(0xFF475569)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                    gradient: LinearGradient(
+                      colors: [context.appColors.secondary, AppColors.neutral600],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withAlpha(30),
@@ -74,21 +79,21 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                             ],
                           ),
                           child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
+                            decoration: BoxDecoration(
+                              color: context.appColors.surface,
                               shape: BoxShape.circle,
                             ),
-                            padding: const EdgeInsets.all(2),
+                            padding: AppSpacing.padding2,
                             child: ClipOval(
                               child: student.fotoUrl != null &&
                                       student.fotoUrl!.isNotEmpty
-                                  ? Image.network(
+                                  ? CachedNetworkImage(imageUrl: 
                                       ApiGate.getImageUrl(student.fotoUrl!),
                                       width: 64,
                                       height: 64,
                                       fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
+                                      errorWidget:
+                                          (context, url, error) {
                                         return Container(
                                           width: 64,
                                           height: 64,
@@ -100,6 +105,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                           ),
                                         );
                                       },
+                                      placeholder: (context, url) => Container(color: AppColors.neutral200),
                                     )
                                   : Container(
                                       width: 64,
@@ -120,9 +126,9 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                           child: GestureDetector(
                             onTap: () => pickAvatar(context),
                             child: Container(
-                              padding: const EdgeInsets.all(6),
+                              padding: AppSpacing.padding6,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF1E293B),
+                                color: context.appColors.secondary,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
@@ -132,25 +138,25 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.camera_alt_rounded,
                                 size: 12,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             displayName,
-                            style: const TextStyle(
-                              color: Color(0xFF0F172A),
+                            style: TextStyle(
+                              color: context.appColors.onSurface,
                               fontWeight: FontWeight.w800,
                               fontSize: 18,
                               letterSpacing: -0.3,
@@ -158,7 +164,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
@@ -166,7 +172,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                             ),
                             decoration: BoxDecoration(
                               color: accentLight,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: AppRadius.br20,
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -176,7 +182,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                   size: 13,
                                   color: accentColor,
                                 ),
-                                const SizedBox(width: 5),
+                                const SizedBox(width: AppSpacing.s6),
                                 Flexible(
                                   child: Text(
                                     '$displayProdi • $displaySemester',
@@ -197,15 +203,15 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(16),
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusLg,
                   ),
                   child: Row(
                     children: [
@@ -213,10 +219,10 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(6),
+                              padding: AppSpacing.padding6,
                               decoration: BoxDecoration(
                                 color: accentLight,
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: AppRadius.br10,
                               ),
                               child: const Icon(
                                 Icons.badge_outlined,
@@ -224,25 +230,25 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                 size: 16,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: AppSpacing.s10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'NIM',
                                     style: TextStyle(
                                       fontSize: 10,
-                                      color: Color(0xFF64748B),
+                                      color: AppColors.neutral600,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   Text(
                                     displayNim,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w800,
-                                      color: Color(0xFF1E293B),
+                                      color: context.appColors.secondary,
                                       letterSpacing: 0.2,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -253,23 +259,23 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFECFDF5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 7,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF10B981),
+                  color: Color(0xFFECFDF5),
+                  borderRadius: AppRadius.br20,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: context.appColors.success,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
@@ -280,7 +286,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             const Text(
                               'AKTIF',
                               style: TextStyle(
@@ -315,14 +321,14 @@ Widget buildMenuSection(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 10),
+        padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.s10),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: AppSpacing.padding6,
               decoration: BoxDecoration(
                 color: const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.radiusSm,
               ),
               child: Icon(
                 headerIcon ?? Icons.grid_view_rounded,
@@ -330,7 +336,7 @@ Widget buildMenuSection(
                 color: const Color(0xFF334155),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               title,
               style: const TextStyle(
@@ -345,29 +351,29 @@ Widget buildMenuSection(
       ),
       Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(10),
-              blurRadius: 18,
-              offset: const Offset(0, 5),
-            ),
-          ],
+      color: context.appColors.surface,
+      borderRadius: AppRadius.br22,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withAlpha(10),
+          blurRadius: 18,
+          offset: const Offset(0, 5),
         ),
-        child: Column(
-          children: items.asMap().entries.map((entry) {
-            final isLast = entry.key == items.length - 1;
-            return Column(
-              children: [
-                entry.value,
-                if (!isLast)
-                  const Divider(
-                    height: 1,
-                    indent: 68,
-                    endIndent: 16,
-                    color: Color(0xFFF1F5F9),
-                  ),
+      ],
+    ),
+    child: Column(
+      children: items.asMap().entries.map((entry) {
+        final isLast = entry.key == items.length - 1;
+        return Column(
+          children: [
+            entry.value,
+            if (!isLast)
+              const Divider(
+                height: 1,
+                indent: 68,
+                endIndent: 16,
+                color: AppColors.neutral200,
+              ),
               ],
             );
           }).toList(),
@@ -387,10 +393,10 @@ Widget buildMenuItem(
 ) {
   return Material(
     color: Colors.transparent,
-    borderRadius: BorderRadius.circular(22),
+    borderRadius: AppRadius.br22,
     child: InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: AppRadius.br22,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(
@@ -400,11 +406,11 @@ Widget buildMenuItem(
               height: 42,
               decoration: BoxDecoration(
                 color: color.withAlpha(18),
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: AppRadius.br13,
               ),
               child: Icon(icon, color: color, size: 21),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.s14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,7 +423,7 @@ Widget buildMenuItem(
                       color: Color(0xFF1E293B),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     subtitle,
                     style: const TextStyle(
@@ -431,15 +437,15 @@ Widget buildMenuItem(
             ),
             if (onTap != null)
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Color(0xFF94A3B8),
-                  size: 18,
+    color: context.appColors.surface,
+    borderRadius: AppRadius.br10,
+  ),
+  child: Icon(
+    Icons.chevron_right_rounded,
+    color: AppColors.neutral500,
+    size: 18,
                 ),
               ),
           ],
@@ -452,8 +458,8 @@ Widget buildMenuItem(
 Widget buildLogoutButton(BuildContext context) {
   return Container(
     decoration: BoxDecoration(
-      color: const Color(0xFFFEF2F2),
-      borderRadius: BorderRadius.circular(22),
+      color: context.appColors.errorContainer,
+      borderRadius: AppRadius.br22,
       boxShadow: [
         BoxShadow(
           color: Colors.red.withAlpha(12),
@@ -464,45 +470,45 @@ Widget buildLogoutButton(BuildContext context) {
     ),
     child: Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: AppRadius.br22,
       child: InkWell(
         onTap: () => showLogoutDialog(context),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: AppRadius.br22,
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: AppSpacing.padding14,
           child: Row(
             children: [
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEE2E2),
-                  borderRadius: BorderRadius.circular(14),
+                  color: context.appColors.error.withAlpha(20),
+                  borderRadius: AppRadius.br14,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.logout_rounded,
-                  color: Color(0xFFEF4444),
+                  color: context.appColors.error,
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 14),
-              const Expanded(
+              const SizedBox(width: AppSpacing.s14),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Keluar Aplikasi',
                       style: TextStyle(
-                        color: Color(0xFFDC2626),
+                        color: context.appColors.error,
                         fontWeight: FontWeight.w800,
                         fontSize: 14,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    SizedBox(height: AppSpacing.s2),
                     Text(
                       'Anda akan keluar dari sesi akun ini',
                       style: TextStyle(
-                        color: Color(0xFFF87171),
+                        color: context.appColors.error.withAlpha(170),
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -511,14 +517,14 @@ Widget buildLogoutButton(BuildContext context) {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.br10,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.chevron_right_rounded,
-                  color: Color(0xFFEF4444),
+                  color: context.appColors.error,
                   size: 18,
                 ),
               ),

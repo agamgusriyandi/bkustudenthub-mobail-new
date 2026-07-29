@@ -7,8 +7,9 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
-// ─── Data Model Asesmen ───────────────────────────────────────────────────────
+// â”€â”€â”€ Data Model Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _AssessmentType {
   final String name;
@@ -30,9 +31,9 @@ class _AssessmentType {
 
 // DASS-21: Depression Anxiety Stress Scale
 // Skor per jawaban: 0=Tidak Pernah, 1=Kadang, 2=Sering, 3=Hampir Selalu
-// Depresi: soal 3,5,10,13,16,17,21 → skor x2
-// Kecemasan: soal 2,4,7,9,15,19,20 → skor x2
-// Stres: soal 1,6,8,11,12,14,18 → skor x2
+// Depresi: soal 3,5,10,13,16,17,21 â†’ skor x2
+// Kecemasan: soal 2,4,7,9,15,19,20 â†’ skor x2
+// Stres: soal 1,6,8,11,12,14,18 â†’ skor x2
 final _dass21 = _AssessmentType(
   name: 'DASS-21',
   kategori: 'Kesehatan Mental',
@@ -125,7 +126,7 @@ final List<_AssessmentType> _allAssessments = [
   _anxietyCheck,
 ];
 
-// ─── Screen Pilih Asesmen ─────────────────────────────────────────────────────
+// â”€â”€â”€ Screen Pilih Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class AssessmentScreen extends StatelessWidget {
   const AssessmentScreen({super.key});
@@ -150,7 +151,7 @@ class AssessmentScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildInfoBanner(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Pilih Jenis Asesmen',
                     style: AppTextStyles.titleMd.copyWith(
@@ -158,11 +159,11 @@ class AssessmentScreen extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   ..._allAssessments.map(
                     (a) => _buildAssessmentCard(context, a),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: AppSpacing.s80),
                 ],
               ),
             ),
@@ -187,7 +188,7 @@ class AssessmentScreen extends StatelessWidget {
             color: AppColors.info,
             size: 20,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               'Jawab dengan jujur. Hasil asesmen bersifat rahasia dan hanya dilihat oleh psikolog BKU.',
@@ -209,7 +210,7 @@ class AssessmentScreen extends StatelessWidget {
     final colors = {
       'DASS-21': AppColors.primary,
       'Tes Stres Akademik': AppColors.warning,
-      'Tes Kecemasan Sosial': Colors.purple,
+      'Tes Kecemasan Sosial': AppColors.neutral700,
     };
     final color = colors[assessment.name] ?? AppColors.primary;
 
@@ -222,7 +223,7 @@ class AssessmentScreen extends StatelessWidget {
             ),
           ),
       child: BkuCard(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
         padding: const EdgeInsets.symmetric(
           vertical: AppSpacing.lg,
           horizontal: AppSpacing.md,
@@ -237,7 +238,7 @@ class AssessmentScreen extends StatelessWidget {
               ),
               child: Icon(Icons.psychology_rounded, color: color, size: 28),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,7 +249,7 @@ class AssessmentScreen extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     assessment.deskripsi,
                     style: AppTextStyles.labelSm.copyWith(
@@ -257,12 +258,12 @@ class AssessmentScreen extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       _buildChip('${assessment.questions.length} soal', color),
-                      const SizedBox(width: 8),
-                      _buildChip(assessment.kategori, Colors.teal),
+                      const SizedBox(width: AppSpacing.sm),
+                      _buildChip(assessment.kategori, context.appColors.info),
                     ],
                   ),
                 ],
@@ -297,7 +298,7 @@ class AssessmentScreen extends StatelessWidget {
   }
 }
 
-// ─── Screen Quiz Asesmen ──────────────────────────────────────────────────────
+// â”€â”€â”€ Screen Quiz Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _AssessmentQuizScreen extends StatefulWidget {
   final _AssessmentType assessment;
@@ -321,7 +322,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -338,11 +339,11 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildProgress(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildQuestionCard(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildOptions(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   _buildNavButtons(),
                 ],
               ),
@@ -376,7 +377,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         LinearProgressIndicator(
           value: progress,
           backgroundColor: AppColors.neutral200,
@@ -409,13 +410,13 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
       children: List.generate(_options.length, (index) {
         final isSelected = _answers[_currentIndex] == index;
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: GestureDetector(
             onTap: () => setState(() => _answers[_currentIndex] = index),
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : Colors.white,
+                color: isSelected ? AppColors.primary : context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.neutral300,
@@ -441,11 +442,11 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                       border: Border.all(
                         color:
                             isSelected
-                                ? Colors.white
+                                ? context.appColors.onPrimary
                                 : Theme.of(context).colorScheme.outline,
                         width: 2,
                       ),
-                      color: isSelected ? Colors.white : Colors.transparent,
+                      color: isSelected ? context.appColors.onPrimary : Colors.transparent,
                     ),
                     child:
                         isSelected
@@ -456,11 +457,11 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                             )
                             : null,
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Text(
                     _options[index],
                     style: AppTextStyles.bodyMd.copyWith(
-                      color: isSelected ? Colors.white : AppColors.primary,
+                      color: isSelected ? context.appColors.onPrimary : AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -487,7 +488,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
               child: const Text('Kembali'),
             ),
           ),
-        if (_currentIndex > 0) const SizedBox(width: 16),
+        if (_currentIndex > 0) const SizedBox(width: AppSpacing.lg),
         Expanded(
           flex: 2,
           child: ElevatedButton(
@@ -544,7 +545,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.analytics_rounded, color: scoreColor, size: 72),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Hasil ${widget.assessment.name}',
                   style: AppTextStyles.titleLg.copyWith(
@@ -553,7 +554,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.xl,
@@ -573,7 +574,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   recommendation,
                   textAlign: TextAlign.center,
@@ -583,7 +584,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 // Submit ke backend
                 Consumer<StudentCounselingProvider>(
                   builder:
@@ -623,9 +624,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                                                 : AppColors.warning,
                                         behavior: SnackBarBehavior.floating,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
+                                          borderRadius: AppRadius.radiusMd,
                                         ),
                                       ),
                                     );
@@ -634,11 +633,11 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
 
                           child:
                               provider.assessmentSubmitting
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: CircularProgressIndicator(
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                       strokeWidth: 2,
                                     ),
                                   )
@@ -651,7 +650,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                         ),
                       ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(ctx);

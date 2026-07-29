@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -62,7 +62,7 @@ class BkuLoadingDialog extends StatelessWidget {
                   strokeWidth: 3,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Text(
                 message,
                 textAlign: TextAlign.center,

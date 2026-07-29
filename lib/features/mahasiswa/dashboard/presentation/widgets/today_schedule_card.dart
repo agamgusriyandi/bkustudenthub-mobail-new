@@ -1,10 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/pages/student_calendar_screen.dart';
@@ -72,7 +73,7 @@ class TodayScheduleCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
         boxShadow: [
@@ -100,11 +101,11 @@ class TodayScheduleCard extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       _formatDate(now),
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Colors.black87,
+                        color: AppColors.neutral800,
                         fontWeight: FontWeight.w800,
                         fontSize: 16,
                       ),
@@ -129,7 +130,7 @@ class TodayScheduleCard extends StatelessWidget {
                           color: AppColors.neutral800,
                           size: 16,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Lihat Jadwal',
                           style: AppTextStyles.labelSm.copyWith(
@@ -144,7 +145,7 @@ class TodayScheduleCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           if (student.isLoading && upcomingEvents.isEmpty) ...[
             Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -154,7 +155,7 @@ class TodayScheduleCard extends StatelessWidget {
                   BkuShimmer.text(
                     width: double.infinity,
                     height: 60,
-                    margin: const EdgeInsets.only(bottom: 12),
+                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
                   ),
                   BkuShimmer.text(width: double.infinity, height: 60),
                 ],
@@ -170,7 +171,7 @@ class TodayScheduleCard extends StatelessWidget {
                     size: 48,
                     color: Theme.of(context).colorScheme.outline.withAlpha(100),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'Tidak ada kegiatan terdekat',
                     style: AppTextStyles.labelMd.copyWith(
@@ -178,7 +179,7 @@ class TodayScheduleCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Semua agenda saat ini sudah terlaksana dengan baik.',
                     style: AppTextStyles.labelSm.copyWith(
@@ -200,7 +201,7 @@ class TodayScheduleCard extends StatelessWidget {
               return _buildScheduleItem(context, event, isOngoing: isToday);
             }),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
         ],
       ),
     );
@@ -225,7 +226,7 @@ class TodayScheduleCard extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: isOngoing ? statusColor.withAlpha(8) : Colors.white,
+        color: isOngoing ? statusColor.withAlpha(8) : context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color:
@@ -263,7 +264,7 @@ class TodayScheduleCard extends StatelessWidget {
                   borderRadius: AppRadius.radiusMd,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +273,7 @@ class TodayScheduleCard extends StatelessWidget {
                       children: [
                         Text(
                           isOngoing
-                              ? 'HARI INI • $timeStr'
+                              ? 'HARI INI â€¢ $timeStr'
                               : _formatDate(event.tanggal),
                           style: AppTextStyles.labelSm.copyWith(
                             color:
@@ -284,7 +285,7 @@ class TodayScheduleCard extends StatelessWidget {
                           ),
                         ),
                         if (isOngoing) ...[
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
@@ -294,10 +295,10 @@ class TodayScheduleCard extends StatelessWidget {
                               color: statusColor,
                               borderRadius: AppRadius.radiusSm,
                             ),
-                            child: Text(
-                              'SEDANG BERJALAN',
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: Colors.white,
+                              child: Text(
+                                'SEDANG BERJALAN',
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: context.appColors.onPrimary,
                                 fontSize: 8,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -306,7 +307,7 @@ class TodayScheduleCard extends StatelessWidget {
                         ],
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Text(
                       event.judul,
                       style: AppTextStyles.labelMd.copyWith(
@@ -315,7 +316,7 @@ class TodayScheduleCard extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         Icon(
@@ -325,7 +326,7 @@ class TodayScheduleCard extends StatelessWidget {
                             context,
                           ).colorScheme.outline.withAlpha(150),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
                             event.kategori,
@@ -361,9 +362,9 @@ class TodayScheduleCard extends StatelessWidget {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.55,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xxl),
             child: Column(
@@ -374,12 +375,12 @@ class TodayScheduleCard extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: AppRadius.radiusXs,
+                    color: AppColors.neutral300,
+                    borderRadius: AppRadius.radiusXs,
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Row(
                   children: [
                     Container(
@@ -393,7 +394,7 @@ class TodayScheduleCard extends StatelessWidget {
                         color: AppColors.neutral600,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,7 +418,7 @@ class TodayScheduleCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 _buildDetailInfo(
                   Icons.category_rounded,
                   'Kategori',
@@ -457,12 +458,12 @@ class TodayScheduleCard extends StatelessWidget {
 
   Widget _buildDetailInfo(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 20, color: AppColors.outline.withAlpha(150)),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -474,12 +475,12 @@ class TodayScheduleCard extends StatelessWidget {
                     fontSize: 10,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   value,
                   style: AppTextStyles.labelMd.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.neutral800,
                   ),
                 ),
               ],

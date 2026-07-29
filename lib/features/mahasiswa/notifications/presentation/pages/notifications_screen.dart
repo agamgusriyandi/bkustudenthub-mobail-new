@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -184,7 +185,7 @@ class _StudentNotificationsScreenState
     final unreadCount = _notifications.where((n) => !n.isRead).length;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: _load,
         color: AppColors.neutral800,
@@ -206,7 +207,12 @@ class _StudentNotificationsScreenState
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.s20,
+                  AppSpacing.s20,
+                  AppSpacing.s20,
+                  0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -263,7 +269,7 @@ class _StudentNotificationsScreenState
                                         color: AppColors.error,
                                         size: 18,
                                       ),
-                                      SizedBox(width: 8),
+                                      SizedBox(width: AppSpacing.sm),
                                       Text('Hapus yang Sudah Dibaca'),
                                     ],
                                   ),
@@ -272,11 +278,11 @@ class _StudentNotificationsScreenState
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Filter chips
                     _buildFilterChips(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
 
                     // Content
                     if (_isLoading)
@@ -292,7 +298,7 @@ class _StudentNotificationsScreenState
                         ),
                       ),
 
-                    const SizedBox(height: 100),
+                    const SizedBox(height: AppSpacing.s100),
                   ],
                 ),
               ),
@@ -311,7 +317,7 @@ class _StudentNotificationsScreenState
             _filters.map((f) {
               final isSelected = _selectedFilter == f;
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
                 child: ChoiceChip(
                   label: Text(_filterLabels[f] ?? f),
                   selected: isSelected,
@@ -330,7 +336,7 @@ class _StudentNotificationsScreenState
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.appColors.surface,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.radiusMd,
                     side: BorderSide(
@@ -365,8 +371,8 @@ class _StudentNotificationsScreenState
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(right: AppSpacing.s20),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: context.watch<ThemeProvider>().colors.error.withAlpha(20),
           borderRadius: AppRadius.radiusXl,
@@ -382,10 +388,10 @@ class _StudentNotificationsScreenState
         onTap: () => _markOneRead(notif),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: !notif.isRead ? color.withAlpha(8) : Colors.white,
+            color: !notif.isRead ? color.withAlpha(8) : context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
               color:
@@ -413,7 +419,7 @@ class _StudentNotificationsScreenState
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -434,7 +440,7 @@ class _StudentNotificationsScreenState
                           Container(
                             width: 8,
                             height: 8,
-                            margin: const EdgeInsets.only(left: 8, top: 4),
+                            margin: const EdgeInsets.only(left: AppSpacing.sm, top: AppSpacing.xs),
                             decoration: BoxDecoration(
                               color: color,
                               shape: BoxShape.circle,
@@ -442,7 +448,7 @@ class _StudentNotificationsScreenState
                           ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       notif.content,
                       style: AppTextStyles.labelSm.copyWith(
@@ -450,7 +456,7 @@ class _StudentNotificationsScreenState
                         height: 1.4,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
                         Icon(
@@ -460,7 +466,7 @@ class _StudentNotificationsScreenState
                             context,
                           ).colorScheme.outline.withAlpha(150),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           _formatTime(notif.createdAt),
                           style: AppTextStyles.labelSm.copyWith(
@@ -471,7 +477,7 @@ class _StudentNotificationsScreenState
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.sm,
@@ -505,7 +511,7 @@ class _StudentNotificationsScreenState
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 60),
+        padding: const EdgeInsets.only(top: AppSpacing.s60),
         child: Column(
           children: [
             Icon(
@@ -513,7 +519,7 @@ class _StudentNotificationsScreenState
               size: 72,
               color: Theme.of(context).colorScheme.outline.withAlpha(50),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada notifikasi',
               style: AppTextStyles.labelMd.copyWith(
@@ -521,7 +527,7 @@ class _StudentNotificationsScreenState
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Semua update dari kampus akan muncul di sini.',
               style: AppTextStyles.labelSm.copyWith(
@@ -535,7 +541,7 @@ class _StudentNotificationsScreenState
     );
   }
 
-  // ─── Helpers ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Color _getTypeColor(String type) {
     switch (type.toLowerCase()) {
@@ -554,7 +560,7 @@ class _StudentNotificationsScreenState
         return AppColors.warning;
       case 'referral':
       case 'rujukan':
-        return const Color(0xFF6366F1); // Indigo color for referrals
+        return context.appColors.info; // Indigo color for referrals
       default:
         return AppColors.neutral700;
     }

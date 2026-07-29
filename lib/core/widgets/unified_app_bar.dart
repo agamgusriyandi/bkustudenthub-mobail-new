@@ -1,6 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -94,24 +94,24 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
             (showBackButton
                 ? IconButton(
                   onPressed: onBack ?? () => Navigator.pop(context),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new_rounded,
                     size: 20,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 )
                 : null),
         titleSpacing: 0,
         title: Padding(
-          padding: EdgeInsets.only(left: showBackButton ? 0 : 20),
+          padding: EdgeInsets.only(left: showBackButton ? 0 : AppSpacing.s20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.appColors.onPrimary,
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
                   letterSpacing: -0.2,
@@ -123,7 +123,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Text(
                   info!,
                   style: TextStyle(
-                    color: Colors.white.withAlpha(160),
+                    color: context.appColors.onPrimary.withAlpha(160),
                     fontSize: 9,
                     fontWeight: FontWeight.bold,
                   ),
@@ -144,13 +144,13 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   defaultOnNotificationTap!(context, variant);
                 }
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.notifications_outlined,
-                color: Colors.white,
+                color: context.appColors.onPrimary,
                 size: 24,
               ),
             ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
         ],
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -160,12 +160,12 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
               colors: gradientColors,
             ),
             borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(32),
+              bottom: Radius.circular(AppRadius.xxl),
             ),
           ),
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(32),
+              bottom: Radius.circular(AppRadius.xxl),
             ),
             child: Stack(
               children: [
@@ -198,10 +198,10 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
           (showBackButton
               ? IconButton(
                 onPressed: onBack ?? () => Navigator.pop(context),
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 20,
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                 ),
               )
               : null),
@@ -209,7 +209,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (actions != null) ...actions!,
         if (showNotification)
           Padding(
-            padding: EdgeInsets.only(bottom: showProfileOnCollapse ? 8 : 4),
+            padding: EdgeInsets.only(bottom: showProfileOnCollapse ? AppSpacing.sm : AppSpacing.xs),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -221,10 +221,10 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       defaultOnNotificationTap!(context, variant);
                     }
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.notifications_outlined,
                     size: 24,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                   tooltip: 'Notifikasi',
                 ),
@@ -234,8 +234,8 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                     top: 8,
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.xs),
-                      decoration: const BoxDecoration(
-                        color: AppColors.error,
+                      decoration: BoxDecoration(
+                        color: context.appColors.error,
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
@@ -244,8 +244,8 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       child: Text(
                         notificationCount > 9 ? '9+' : '$notificationCount',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.appColors.onPrimary,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
@@ -256,7 +256,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
       ],
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -266,12 +266,12 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
             colors: gradientColors,
           ),
           borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(32),
+            bottom: Radius.circular(AppRadius.xxl),
           ),
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(32),
+            bottom: Radius.circular(AppRadius.xxl),
           ),
           child: Stack(
             children: [
@@ -304,8 +304,8 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   opacity: isCollapsed ? 1.0 : 0.0,
                   child: Container(
                     padding: EdgeInsets.only(
-                      left: showBackButton ? 72 : 20,
-                      bottom: 20,
+                      left: showBackButton ? 72 : AppSpacing.s20,
+                      bottom: AppSpacing.s20,
                     ),
                     alignment: Alignment.bottomLeft,
                     child: Row(
@@ -318,7 +318,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white.withAlpha(80),
+                                color: context.appColors.onPrimary.withAlpha(80),
                                 width: 1.5,
                               ),
                               boxShadow: [
@@ -334,7 +334,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: profileImage!,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                         ],
                         Expanded(
                           child: Column(
@@ -343,8 +343,8 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                             children: [
                               Text(
                                 title,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                   color: context.appColors.onPrimary,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 16,
                                   letterSpacing: -0.2,
@@ -356,7 +356,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 Text(
                                   info!,
                                   style: TextStyle(
-                                    color: Colors.white.withAlpha(160),
+                                    color: context.appColors.onPrimary.withAlpha(160),
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -382,7 +382,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       height: 200,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withAlpha(10),
+                        color: context.appColors.onPrimary.withAlpha(10),
                       ),
                     ),
                   ),
@@ -394,7 +394,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       height: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withAlpha(8),
+                        color: context.appColors.onPrimary.withAlpha(8),
                       ),
                     ),
                   ),
@@ -407,10 +407,10 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         child: Padding(
                           padding: EdgeInsets.only(
-                            top: topPadding + 20,
-                            bottom: 20,
-                            left: 20,
-                            right: 20,
+                            top: topPadding + AppSpacing.s20,
+                            bottom: AppSpacing.s20,
+                            left: AppSpacing.s20,
+                            right: AppSpacing.s20,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -427,7 +427,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: Colors.white.withAlpha(100),
+                                            color: context.appColors.onPrimary.withAlpha(100),
                                             width: 2,
                                           ),
                                           boxShadow: [
@@ -445,7 +445,7 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: profileImage!,
                                         ),
                                       ),
-                                      const SizedBox(width: 16),
+                                      const SizedBox(width: AppSpacing.lg),
                                     ],
                                     Expanded(
                                       child: Column(
@@ -455,19 +455,19 @@ class UnifiedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         children: [
                                           Text(
                                             title,
-                                            style: const TextStyle(
-                                              color: Colors.white,
+                                            style: TextStyle(
+                                              color: context.appColors.onPrimary,
                                               fontSize: 22,
                                               fontWeight: FontWeight.w900,
                                               letterSpacing: -0.5,
                                             ),
                                           ),
                                           if (info != null) ...[
-                                            const SizedBox(height: 4),
+                                            const SizedBox(height: AppSpacing.xs),
                                             Text(
                                               info!,
                                               style: TextStyle(
-                                                color: Colors.white.withAlpha(
+                                                color: context.appColors.onPrimary.withAlpha(
                                                   180,
                                                 ),
                                                 fontSize: 11,
@@ -563,7 +563,7 @@ class UnifiedStaticAppBar extends StatelessWidget
           end: Alignment.bottomRight,
           colors: gradientColors,
         ),
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
             color: gradientColors.first.withAlpha(40),
@@ -575,25 +575,25 @@ class UnifiedStaticAppBar extends StatelessWidget
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 24, top: 8),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xl, top: AppSpacing.sm),
           child: Row(
             children: [
               if (showBackButton)
                 IconButton(
                   onPressed: onBack ?? () => Navigator.pop(context),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     size: 20,
                   ),
                 )
               else
-                const SizedBox(width: 20),
+                const SizedBox(width: AppSpacing.s20),
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.appColors.onPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
                     letterSpacing: -0.5,
@@ -610,13 +610,13 @@ class UnifiedStaticAppBar extends StatelessWidget
                       defaultOnNotificationTap!(context, variant);
                     }
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.notifications_outlined,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     size: 24,
                   ),
                 ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
             ],
           ),
         ),

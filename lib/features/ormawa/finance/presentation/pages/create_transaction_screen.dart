@@ -51,7 +51,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildLabel('JENIS TRANSAKSI'),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _buildTypeCard(
@@ -60,7 +60,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                   Icons.arrow_downward_rounded,
                   AppColors.success,
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 _buildTypeCard(
                   'PENGELUARAN',
                   'pengeluaran',
@@ -69,10 +69,10 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
 
             _buildLabel('SUMBER DANA'),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _buildSourceCard(
@@ -81,7 +81,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                   Icons.payments_rounded,
                   AppColors.success,
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 _buildSourceCard(
                   'PAGU KAMPUS',
                   'kampus',
@@ -90,29 +90,29 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
 
             _buildLabel('DESKRIPSI / KETERANGAN'),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             _buildTextField(
               controller: _descriptionController,
               hint: 'Contoh: Iuran Kas Bulan Mei',
               icon: Icons.edit_note_rounded,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
 
             _buildLabel('NOMINAL (RP)'),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             _buildTextField(
               controller: _amountController,
               hint: '0',
               icon: Icons.payments_rounded,
               isNumber: true,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
 
             _buildLabel('KATEGORI'),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               decoration: BoxDecoration(
@@ -134,7 +134,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: AppSpacing.s48),
 
             SizedBox(
               width: double.infinity,
@@ -203,7 +203,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           child: Column(
             children: [
               Icon(icon, color: isSelected ? color : Colors.grey, size: 24),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
@@ -241,7 +241,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           child: Column(
             children: [
               Icon(icon, color: isSelected ? color : Colors.grey, size: 24),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(

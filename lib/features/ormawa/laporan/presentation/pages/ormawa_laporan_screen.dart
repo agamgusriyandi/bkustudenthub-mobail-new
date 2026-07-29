@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -77,7 +78,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSummaryGrid(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     OrmawaListHeader(
                       title: 'DAFTAR LPJ KEGIATAN',
                       searchHint: 'Cari judul laporan kegiatan...',
@@ -88,9 +89,9 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       onChanged:
                           (value) => setState(() => _searchQuery = value),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildLaporanList(),
-                    const SizedBox(height: 80),
+                    const SizedBox(height: AppSpacing.s80),
                   ],
                 ),
               ),
@@ -103,11 +104,11 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               ? FloatingActionButton.extended(
                 onPressed: () => _showAddLaporan(context),
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                icon: const Icon(Icons.note_add_rounded, color: Colors.white),
-                label: const Text(
+                icon: Icon(Icons.note_add_rounded, color: context.appColors.onPrimary),
+                label: Text(
                   'Buat LPJ',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -150,18 +151,18 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     AppColors.info,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: _buildStatCard(
                     'LPJ Disetujui',
                     approvedLPJ.toString(),
                     Icons.verified_rounded,
-                    Colors.indigo,
+                    context.appColors.info,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
@@ -172,7 +173,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     AppColors.warning,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: _buildStatCard(
                     'Realisasi Anggaran',
@@ -181,12 +182,12 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       symbol: 'Rp ',
                     ).format(totalRealisasi),
                     Icons.payments_rounded,
-                    Colors.teal,
+                    context.appColors.info,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             _buildStatCard(
               'Sisa Saldo Efisiensi',
               NumberFormat.compactCurrency(
@@ -214,7 +215,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
       width: isFullWidth ? double.infinity : null,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -230,14 +231,14 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
         children: [
           if (isFullWidth) ...[
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppSpacing.paddingMd,
               decoration: BoxDecoration(
                 color: color.withAlpha(20),
                 borderRadius: AppRadius.radiusSm,
               ),
               child: Icon(icon, color: color, size: 24),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +251,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     value,
                     style: AppTextStyles.titleLg.copyWith(
@@ -271,14 +272,14 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: AppSpacing.padding6,
                         decoration: BoxDecoration(
                           color: color.withAlpha(20),
                           borderRadius: AppRadius.radiusSm,
                         ),
                         child: Icon(icon, color: color, size: 16),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           label,
@@ -292,7 +293,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     value,
                     style: AppTextStyles.titleLg.copyWith(
@@ -380,7 +381,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               color: AppColors.success,
               size: 14,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.s6),
             Flexible(
               child: Text(
                 'HEMAT $pct% (+${currencyFormatter.format(diff)})',
@@ -414,7 +415,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               color: AppColors.error,
               size: 14,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.s6),
             Flexible(
               child: Text(
                 'OVER ${pct.abs()}% (-${currencyFormatter.format(diff.abs())})',
@@ -443,15 +444,15 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.gps_fixed_rounded, color: Colors.grey, size: 14),
-            const SizedBox(width: 6),
+            const Icon(Icons.gps_fixed_rounded, color: AppColors.neutral500, size: 14),
+            const SizedBox(width: AppSpacing.s6),
             Flexible(
               child: Text(
                 '100% EFISIEN',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Colors.grey.shade700,
+                  color: AppColors.neutral700,
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                 ),
@@ -478,10 +479,10 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogCtx),
-                child: const Text(
+                child: Text(
                   'Batal',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: AppColors.neutral500,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -505,7 +506,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   elevation: 0,
                 ),
                 child: const Text(
@@ -536,16 +537,16 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           return Center(
             child: Column(
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: AppSpacing.xxxl),
                 Icon(
                   Icons.description_outlined,
                   size: 64,
-                  color: Colors.grey.withAlpha(50),
+                  color: AppColors.neutral500.withAlpha(50),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Belum ada laporan kegiatan',
-                  style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
+                  style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
                 ),
               ],
             ),
@@ -557,7 +558,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: reports.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
             final report = reports[index];
             final statusColor = _getStatusColor(report.status);
@@ -589,7 +590,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ? AppColors.error
                     : (isUrgent ? AppColors.warning : AppColors.neutral600),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             isLate
                 ? 'Telat ${diffDays.abs()} hr'
@@ -612,7 +613,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -643,7 +644,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               if (tenggatWidget != null) tenggatWidget,
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             report.judul,
             style: AppTextStyles.bodyMd.copyWith(
@@ -653,7 +654,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           ),
           if (report.proposalTitle != null &&
               report.proposalTitle!.isNotEmpty) ...[
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.s2),
             Text(
               report.proposalTitle!,
               style: AppTextStyles.labelSm.copyWith(
@@ -662,7 +663,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               ),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Expanded(
@@ -677,7 +678,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       NumberFormat.currency(
                         locale: 'id',
@@ -704,7 +705,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       NumberFormat.currency(
                         locale: 'id',
@@ -722,14 +723,14 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpacing.s14),
           const Divider(height: 1, color: AppColors.neutral200),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(child: _buildEfficiencyRow(report)),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -738,13 +739,13 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     AppColors.info,
                     () => _showLaporanDetail(context, report),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _buildIconButton(
                     Icons.edit_outlined,
                     AppColors.warning,
                     () => _showEditLaporan(context, report),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _buildIconButton(
                     Icons.delete_outline_rounded,
                     AppColors.error,
@@ -793,9 +794,9 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               final isOver = real > total;
 
               return Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                decoration: BoxDecoration(
+                  color: context.appColors.surface,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
                 ),
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 child: ListView(
@@ -811,7 +812,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Text(
                       'DETAIL LAPORAN',
                       style: AppTextStyles.labelSm.copyWith(
@@ -819,7 +820,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       report.judul,
                       style: AppTextStyles.titleLg.copyWith(
@@ -829,7 +830,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ),
                     if (report.proposalTitle != null &&
                         report.proposalTitle!.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         report.proposalTitle!,
                         style: AppTextStyles.labelSm.copyWith(
@@ -838,7 +839,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildDetailItem(
                       'Status',
                       _getStatusLabel(report.status),
@@ -862,7 +863,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       ).format(report.realisasiAnggaran),
                       Icons.payments_outlined,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
 
                     // Budget Absorption Card (Visual Progress Bar)
                     Container(
@@ -884,7 +885,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -907,7 +908,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           ClipRRect(
                             borderRadius: AppRadius.radiusMd,
                             child: LinearProgressIndicator(
@@ -919,7 +920,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpacing.s10),
                           Row(
                             children: [
                               Icon(
@@ -932,7 +933,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                         ? AppColors.error
                                         : AppColors.success,
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: AppSpacing.s6),
                               Expanded(
                                 child: Text(
                                   isOver
@@ -953,7 +954,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
 
                     Text(
                       'CATATAN & EVALUASI',
@@ -962,7 +963,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       decoration: BoxDecoration(
@@ -979,7 +980,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     if (report.fileUrl != null &&
                         report.fileUrl!.isNotEmpty) ...[
                       SizedBox(
@@ -1009,21 +1010,21 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               }
                             }
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.file_download_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
-                          label: const Text(
+                          label: Text(
                             'UNDUH DOKUMEN LPJ',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ],
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     if (report.status == 'draft' ||
                         report.status == 'revisi') ...[
                       Row(
@@ -1052,7 +1053,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: SizedBox(
                               height: 52,
@@ -1090,14 +1091,14 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                   }
                                 },
 
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.send_rounded,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 ),
-                                label: const Text(
+                                label: Text(
                                   'KIRIM LPJ',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                   ),
@@ -1142,7 +1143,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
 
   Widget _buildDetailItem(String label, String value, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         children: [
           Container(
@@ -1153,7 +1154,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
             ),
             child: Icon(icon, color: AppColors.neutral600, size: 20),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1202,13 +1203,13 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
+              ),
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
@@ -1221,14 +1222,14 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Filter Status',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -1259,7 +1260,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1270,7 +1271,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                 ),
                 if (_filterStatus != 'Semua')
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterStatus = 'Semua');
@@ -1284,7 +1285,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -1381,7 +1382,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -1406,7 +1407,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     ),
                   ),
                   if (widget.report.proposalTitle != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Proposal: ${widget.report.proposalTitle}',
                       style: AppTextStyles.labelSm.copyWith(
@@ -1415,14 +1416,14 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildInputField(
                     'JUDUL LAPORAN LPJ',
                     'Misal: LPJ Seminar Kepemimpinan Mahasiswa 2026...',
                     Icons.title_rounded,
                     controller: _judulController,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'TOTAL ANGGARAN (PLANNED)',
                     'Contoh: 25000000',
@@ -1433,9 +1434,9 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     prefixText: 'Rp ',
                   ),
                   if (_totalAnggaranController.text.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Padding(
-                      padding: const EdgeInsets.only(left: 4),
+                      padding: const EdgeInsets.only(left: AppSpacing.xs),
                       child: Text(
                         'Format: ${currencyFormatter.format(double.tryParse(_totalAnggaranController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
@@ -1445,7 +1446,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'REALISASI ANGGARAN (ACTUAL)',
                     'Contoh: 24500000',
@@ -1456,9 +1457,9 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     prefixText: 'Rp ',
                   ),
                   if (_realisasiController.text.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Padding(
-                      padding: const EdgeInsets.only(left: 4),
+                      padding: const EdgeInsets.only(left: AppSpacing.xs),
                       child: Text(
                         'Format: ${currencyFormatter.format(double.tryParse(_realisasiController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
@@ -1468,7 +1469,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'CATATAN & EVALUASI',
                     'Tuliskan evaluasi dan catatan kegiatan...',
@@ -1476,7 +1477,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     controller: _catatanController,
                     maxLines: 5,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   if (_isSubmitting)
                     const Center(child: CircularProgressIndicator())
                   else if (widget.report.status == 'draft' ||
@@ -1505,21 +1506,21 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: SizedBox(
                             height: 56,
                             child: ElevatedButton.icon(
                               onPressed: () => _updateLPJ('diajukan'),
 
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.send_rounded,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                               ),
-                              label: const Text(
+                              label: Text(
                                 'KIRIM LAPORAN',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                   letterSpacing: 0.5,
@@ -1536,14 +1537,14 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       height: 56,
                       child: ElevatedButton.icon(
                         onPressed: () => _updateLPJ(widget.report.status),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.save_rounded,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
-                        label: const Text(
+                        label: Text(
                           'SIMPAN PERUBAHAN',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -1581,7 +1582,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -1599,10 +1600,10 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     : CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: maxLines > 1 ? 12 : 0),
+                padding: EdgeInsets.only(top: maxLines > AppSpacing.s1 ? AppSpacing.md : 0),
                 child: Icon(icon, color: AppColors.neutral500, size: 20),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: TextField(
                   controller: controller,
@@ -1617,7 +1618,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                     prefixText: prefixText,
                     prefixStyle: AppTextStyles.bodyMd.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: context.appColors.onSurface,
                     ),
                     border: InputBorder.none,
                   ),
@@ -1723,7 +1724,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -1755,7 +1756,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1790,18 +1791,18 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Unggah laporan pertanggungjawaban kegiatan resmi.',
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   _buildProposalSelector(),
                   if (_selectedProposal != null) ...[
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
@@ -1816,7 +1817,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                             color: AppColors.info,
                             size: 16,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: Text(
                               'Anggaran Terencana (Pagu): ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(_selectedProposal!.budget)}',
@@ -1829,14 +1830,14 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildInputField(
                       'JUDUL LAPORAN LPJ',
                       'Misal: LPJ Seminar Kepemimpinan Mahasiswa 2026...',
                       Icons.title_rounded,
                       controller: _judulController,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildInputField(
                       'TOTAL ANGGARAN (PLANNED)',
                       'Contoh: 25000000',
@@ -1847,9 +1848,9 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       prefixText: 'Rp ',
                     ),
                     if (_totalAnggaranController.text.isNotEmpty) ...[
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       Padding(
-                        padding: const EdgeInsets.only(left: 4),
+                        padding: const EdgeInsets.only(left: AppSpacing.xs),
                         child: Text(
                           'Format: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(double.tryParse(_totalAnggaranController.text.replaceAll('.', '')) ?? 0.0)}',
                           style: AppTextStyles.labelSm.copyWith(
@@ -1860,7 +1861,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       ),
                     ],
                   ],
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'REALISASI ANGGARAN (ACTUAL)',
                     'Contoh: 24500000',
@@ -1871,9 +1872,9 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                     prefixText: 'Rp ',
                   ),
                   if (_realisasiController.text.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Padding(
-                      padding: const EdgeInsets.only(left: 4),
+                      padding: const EdgeInsets.only(left: AppSpacing.xs),
                       child: Text(
                         'Format: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(double.tryParse(_realisasiController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
@@ -1883,7 +1884,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'CATATAN & EVALUASI',
                     'Tuliskan evaluasi dan catatan kegiatan...',
@@ -1891,7 +1892,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                     controller: _catatanController,
                     maxLines: 5,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
 
                   if (_isSubmitting)
                     const Center(child: CircularProgressIndicator())
@@ -1922,15 +1923,15 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: SizedBox(
                             height: 56,
                             child: ElevatedButton.icon(
                               onPressed: () => _submitLPJ('diajukan'),
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.send_rounded,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                               ),
                               label: const FittedBox(
                                 fit: BoxFit.scaleDown,
@@ -1976,11 +1977,11 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusMd,
                 border: Border.all(color: AppColors.neutral300),
               ),
@@ -2002,7 +2003,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                           child: Text(
                             p.title,
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.black87,
+                              color: context.appColors.onSurface,
                             ),
                           ),
                         );
@@ -2052,14 +2053,14 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.xs,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusMd,
             border: Border.all(color: AppColors.neutral300),
           ),
@@ -2070,10 +2071,10 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                     : CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: maxLines > 1 ? 12 : 0),
+                padding: EdgeInsets.only(top: maxLines > AppSpacing.s1 ? AppSpacing.md : 0),
                 child: Icon(icon, color: AppColors.neutral500, size: 20),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: TextField(
                   controller: controller,
@@ -2088,7 +2089,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                     prefixText: prefixText,
                     prefixStyle: AppTextStyles.bodyMd.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: context.appColors.onSurface,
                     ),
                     border: InputBorder.none,
                   ),

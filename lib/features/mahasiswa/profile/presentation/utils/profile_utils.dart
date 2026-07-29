@@ -1,4 +1,5 @@
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
@@ -89,12 +90,12 @@ Widget buildDetailRow(String label, String value) {
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: AppColors.neutral500,
               fontSize: 12,
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             value,

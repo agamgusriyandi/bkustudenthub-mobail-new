@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -178,7 +179,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
     final bool isReadOnly = status == 'submitted' || status == 'approved';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -198,24 +199,24 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
             )
           else
             SliverPadding(
-              padding: const EdgeInsets.all(20),
+              padding: AppSpacing.padding20,
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: AppSpacing.paddingXs,
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: AppColors.neutral50,
                       borderRadius: AppRadius.radiusLg,
-                      border: Border.all(color: Colors.grey[200]!),
+                      border: Border.all(color: AppColors.neutral300),
                     ),
                     child: TabBar(
                       controller: _tabController,
                       indicator: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: AppRadius.br10,
                       ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.grey[600],
+                      labelColor: context.appColors.onPrimary,
+                      unselectedLabelColor: AppColors.neutral600,
                       labelStyle: AppTextStyles.labelMd.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -227,27 +228,27 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildStatusCard(status, feedback),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildField(
                     'Refleksi Kencana',
                     _refleksiController,
                     isReadOnly,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildField(
                     'Komitmen Mahasiswa',
                     _komitmenController,
                     isReadOnly,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildField(
                     'Rencana Pengembangan Diri',
                     _rencanaController,
                     isReadOnly,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   if (!isReadOnly) ...[
                     Row(
                       children: [
@@ -258,7 +259,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                             variant: BkuButtonVariant.outline,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: BkuButton(
                             onPressed: _confirmSubmit,
@@ -284,7 +285,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                             Icons.check_circle_rounded,
                             color: AppColors.success,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Text(
                               'Handbook telah dikirim dan dikunci.',
@@ -298,7 +299,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                       ),
                     ),
                   ],
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ]),
               ),
             ),
@@ -308,7 +309,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
   }
 
   Widget _buildStatusCard(String status, String? feedback) {
-    Color textColor = Colors.grey[600]!;
+    Color textColor = AppColors.neutral600;
     IconData icon = Icons.info_outline_rounded;
     String statusText = 'Belum Dikerjakan';
 
@@ -332,7 +333,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             boxShadow: [
               BoxShadow(
@@ -346,14 +347,14 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: AppSpacing.padding10,
                 decoration: BoxDecoration(
                   color: textColor.withAlpha(15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: textColor, size: 22),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -366,11 +367,11 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     statusText,
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Colors.grey[850],
+                      color: AppColors.neutral900,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -382,7 +383,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
         if (status == 'rejected' &&
             feedback != null &&
             feedback.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
@@ -400,7 +401,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                       color: AppColors.warning,
                       size: 18,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Catatan Revisi Mentor:',
                       style: AppTextStyles.labelMd.copyWith(
@@ -410,11 +411,11 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   feedback,
                   style: AppTextStyles.bodySm.copyWith(
-                    color: Colors.grey[700],
+                    color: AppColors.neutral700,
                     height: 1.4,
                   ),
                 ),
@@ -442,10 +443,10 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
               height: 12,
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: AppRadius.br2,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               label.toUpperCase(),
               style: AppTextStyles.labelSm.copyWith(
@@ -457,7 +458,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -482,11 +483,11 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                 color: theme.colorScheme.outlineVariant,
               ),
               filled: true,
-              fillColor: isReadOnly ? Colors.grey[50] : Colors.white,
+              fillColor: isReadOnly ? AppColors.neutral50 : context.appColors.surface,
               contentPadding: const EdgeInsets.all(AppSpacing.lg),
               enabledBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                borderSide: BorderSide(color: AppColors.neutral300, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,

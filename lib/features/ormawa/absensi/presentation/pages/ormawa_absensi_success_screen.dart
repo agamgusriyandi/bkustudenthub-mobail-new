@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class OrmawaAbsensiSuccessScreen extends StatefulWidget {
   final String eventId;
@@ -97,16 +98,16 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.check_rounded,
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       size: 64,
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               FadeTransition(
                 opacity: _fadeAnimation,
@@ -119,7 +120,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                         color: AppColors.neutral900,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Kehadiran telah tercatat di sistem',
                       style: AppTextStyles.bodyLg.copyWith(
@@ -127,13 +128,13 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                       ),
                     ),
 
-                    const SizedBox(height: 48),
+                    const SizedBox(height: AppSpacing.s48),
 
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         borderRadius: AppRadius.radiusXl,
                         border: Border.all(color: AppColors.neutral200),
                         boxShadow: [
@@ -233,7 +234,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 20, color: AppColors.neutral400),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +245,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                   color: AppColors.neutral500,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 value,
                 style: AppTextStyles.bodyLg.copyWith(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -26,7 +27,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
     final student = context.watch<StudentProvider>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
           await student.refreshHealthData();
@@ -53,7 +54,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     if (student.isLoading)
                       const BkuShimmerList(itemCount: 3, itemHeight: 120)
                     else ...[
@@ -67,7 +68,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                               borderRadius: AppRadius.radiusXs,
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: AppSpacing.s10),
                           Text(
                             'Surat Rujukan Medis',
                             style: AppTextStyles.titleLg.copyWith(
@@ -78,7 +79,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       if (student.rujukans.isEmpty)
                         Container(
                           width: double.infinity,
@@ -97,7 +98,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                                 size: 36,
                                 color: AppColors.neutral400,
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Text(
                                 'Belum ada surat rujukan medis',
                                 style: AppTextStyles.labelMd.copyWith(
@@ -113,7 +114,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                           (ref) => _buildRujukanCard(context, ref),
                         ),
                     ],
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -132,10 +133,10 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
     final date = DateTime.tryParse(createdAtStr);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -191,14 +192,14 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Faskes Tujuan: $faskes',
             style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text('Diagnosis: $diagnosis', style: AppTextStyles.bodyMd),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Align(
             alignment: Alignment.centerRight,
             child: OutlinedButton.icon(
@@ -227,7 +228,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                 backgroundColor: const Color(0xFFFEF2F2),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppRadius.br10,
                 ),
               ),
               icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),

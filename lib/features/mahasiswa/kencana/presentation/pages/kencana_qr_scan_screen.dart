@@ -1,5 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -190,13 +191,13 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                             color: Colors.white.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
+                           child: Icon(
                             Icons.close_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +205,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                             Text(
                               'Scan QR Code',
                               style: AppTextStyles.titleLg.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -225,9 +226,9 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                             color: Colors.white.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
+                           child: Icon(
                             Icons.flash_on_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -247,10 +248,10 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
               children: [
                 if (_isProcessing) ...[
                   const CircularProgressIndicator(color: Colors.white),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Memproses data...',
-                    style: AppTextStyles.bodyMd.copyWith(color: Colors.white),
+                    style: AppTextStyles.bodyMd.copyWith(color: context.appColors.onPrimary),
                   ),
                 ] else ...[
                   Container(
@@ -265,16 +266,16 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.info_outline_rounded,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Posisi QR Code di dalam frame',
                           style: AppTextStyles.bodySm.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ],

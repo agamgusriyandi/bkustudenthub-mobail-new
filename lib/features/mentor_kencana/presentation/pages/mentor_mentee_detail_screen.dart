@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -155,7 +156,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   iconColor: AppColors.neutral700,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _buildGridInfoCard(
                   'Status',
@@ -164,13 +165,13 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   isStatus: true,
                   iconColor:
                       mentee.status == 'Lulus'
-                          ? AppColors.success
-                          : AppColors.warning,
+                          ? context.appColors.success
+                          : context.appColors.warning,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -181,7 +182,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   iconColor: AppColors.neutral700,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _buildGridInfoCard(
                   'Total Nilai',
@@ -192,14 +193,14 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           BkuCard(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: AppSpacing.padding10,
                   decoration: BoxDecoration(
                     color: AppColors.neutral500.withAlpha(15),
                     shape: BoxShape.circle,
@@ -210,7 +211,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     size: 24,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +223,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         mentee.faculty,
                         style: AppTextStyles.labelMd.copyWith(
@@ -237,7 +238,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           BkuButton(
             onPressed: () {
               Navigator.push(
@@ -273,7 +274,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: (iconColor ?? AppColors.neutral500).withAlpha(15),
               shape: BoxShape.circle,
@@ -284,7 +285,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               size: 20,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -292,7 +293,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           if (isStatus)
             Container(
               padding: const EdgeInsets.symmetric(
@@ -302,13 +303,13 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               decoration: BoxDecoration(
                 color:
                     value == 'Lulus'
-                        ? AppColors.success.withAlpha(15)
-                        : AppColors.warning.withAlpha(15),
+                        ? context.appColors.success.withAlpha(15)
+                        : context.appColors.warning.withAlpha(15),
                 border: Border.all(
                   color:
                       value == 'Lulus'
-                          ? AppColors.success.withAlpha(30)
-                          : AppColors.warning.withAlpha(30),
+                          ? context.appColors.success.withAlpha(30)
+                          : context.appColors.warning.withAlpha(30),
                 ),
                 borderRadius: AppRadius.radiusSm,
               ),
@@ -317,7 +318,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.bold,
                   color:
-                      value == 'Lulus' ? AppColors.success : AppColors.warning,
+                      value == 'Lulus' ? context.appColors.success : context.appColors.warning,
                 ),
               ),
             )
@@ -339,7 +340,12 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.s20,
+            AppSpacing.xl,
+            AppSpacing.s20,
+            AppSpacing.sm,
+          ),
           child: BkuButton(
             onPressed: () => _showAddScoreDialog(context, mentee.id),
             icon: Icons.add_task_rounded,
@@ -366,7 +372,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     itemBuilder: (context, index) {
                       final task = mentee.assignments[index];
                       return BkuCard(
-                        margin: const EdgeInsets.only(bottom: 16),
+                        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +391,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: AppSpacing.s6),
                                       Row(
                                         children: [
                                           Text(
@@ -398,7 +404,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                                       ).colorScheme.outline,
                                                 ),
                                           ),
-                                          const SizedBox(width: 8),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 6,
@@ -409,20 +415,20 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                                   (task.status == 'submitted' ||
                                                           task.status ==
                                                               'graded')
-                                                      ? AppColors.success
-                                                          .withAlpha(15)
-                                                      : AppColors.error
-                                                          .withAlpha(15),
-                                              border: Border.all(
-                                                color:
-                                                    (task.status ==
-                                                                'submitted' ||
-                                                            task.status ==
-                                                                'graded')
-                                                        ? AppColors.success
-                                                            .withAlpha(30)
-                                                        : AppColors.error
-                                                            .withAlpha(30),
+                                               ? context.appColors.success
+                                                           .withAlpha(15)
+                                                       : context.appColors.error
+                                                           .withAlpha(15),
+                                               border: Border.all(
+                                                 color:
+                                                     (task.status ==
+                                                                 'submitted' ||
+                                                             task.status ==
+                                                                 'graded')
+                                                         ? context.appColors.success
+                                                             .withAlpha(30)
+                                                         : context.appColors.error
+                                                             .withAlpha(30),
                                               ),
                                               borderRadius: AppRadius.radiusXs,
                                             ),
@@ -433,12 +439,12 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                                   : 'Belum Terkumpul',
                                               style: TextStyle(
                                                 color:
-                                                    (task.status ==
-                                                                'submitted' ||
-                                                            task.status ==
-                                                                'graded')
-                                                        ? AppColors.success
-                                                        : AppColors.error,
+                                                     (task.status ==
+                                                                 'submitted' ||
+                                                             task.status ==
+                                                                 'graded')
+                                                         ? context.appColors.success
+                                                         : context.appColors.error,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -461,14 +467,14 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                             ),
                             if (task.status == 'submitted' ||
                                 task.status == 'graded') ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               Divider(
                                 color:
                                     Theme.of(
                                       context,
                                     ).colorScheme.surfaceContainerHighest,
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Text(
                                 'Hasil Pekerjaan:',
                                 style: AppTextStyles.labelSm.copyWith(
@@ -476,7 +482,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                   color: Theme.of(context).colorScheme.outline,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: AppSpacing.s6),
                               if (task.answerText.isNotEmpty) ...[
                                 Container(
                                   width: double.infinity,
@@ -494,11 +500,11 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                   child: Text(
                                     task.answerText,
                                     style: AppTextStyles.labelSm.copyWith(
-                                      color: Colors.black87,
+                                      color: context.appColors.onSurface,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                               ],
                               if (task.submittedLink.isNotEmpty) ...[
                                 Container(
@@ -528,7 +534,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                               context,
                                             ).colorScheme.primary,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: AppSpacing.sm),
                                       Flexible(
                                         child: Text(
                                           task.submittedLink,
@@ -546,7 +552,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                               ],
                               if (task.submittedFile.isNotEmpty) ...[
                                 Container(
@@ -572,7 +578,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                         size: 16,
                                         color: Colors.black87,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: AppSpacing.sm),
                                       Flexible(
                                         child: Text(
                                           task.submittedFile.split('/').last,
@@ -587,30 +593,30 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                 ),
                               ],
                             ] else ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(AppSpacing.md),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withAlpha(15),
+                                  color: context.appColors.warning.withAlpha(15),
                                   borderRadius: AppRadius.radiusMd,
                                   border: Border.all(
-                                    color: Colors.amber.withAlpha(30),
+                                    color: context.appColors.warning.withAlpha(30),
                                   ),
                                 ),
                                 child: Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.warning_amber_rounded,
                                       size: 16,
-                                      color: Colors.amber,
+                                      color: context.appColors.warning,
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: AppSpacing.sm),
                                     Expanded(
                                       child: Text(
                                         'Mahasiswa belum mengunggah jawaban untuk tugas ini.',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: Colors.amber[900],
+                                          color: context.appColors.warning,
                                           fontStyle: FontStyle.italic,
                                         ),
                                       ),
@@ -645,14 +651,14 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Tambahkan catatan khusus untuk mahasiswa ini jika diperlukan.',
             style: AppTextStyles.labelSm.copyWith(
               color: Theme.of(context).colorScheme.outline,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           TextField(
             controller: _notesController,
             maxLines: 4,
@@ -680,13 +686,13 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               contentPadding: const EdgeInsets.all(AppSpacing.lg),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           BkuButton(
             onPressed: _submitNote,
             text: 'Simpan Catatan',
             isLoading: context.select((MentorKencanaProvider p) => p.isLoading),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           Text(
             'Riwayat Catatan Bimbingan (${mentee.notes.length})',
             style: AppTextStyles.titleLg.copyWith(
@@ -694,7 +700,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           if (mentee.notes.isEmpty)
             Center(
               child: Padding(
@@ -723,7 +729,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 } catch (_) {}
 
                 return BkuCard(
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.md),
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -735,7 +741,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                             size: 14,
                             color: Theme.of(context).colorScheme.outline,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.s6),
                           Text(
                             dateDisplay,
                             style: AppTextStyles.labelSm.copyWith(
@@ -746,7 +752,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         note.notes,
                         style: AppTextStyles.labelMd.copyWith(
@@ -849,7 +855,7 @@ extension _MentorTasksTab on _MentorMenteeDetailScreenState {
                       if (val != null) setState(() => selectedComponent = val);
                     },
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   TextField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -861,7 +867,7 @@ extension _MentorTasksTab on _MentorMenteeDetailScreenState {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   TextField(
                     controller: scoreController,
                     keyboardType: TextInputType.number,
@@ -874,7 +880,7 @@ extension _MentorTasksTab on _MentorMenteeDetailScreenState {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   TextField(
                     controller: notesController,
                     maxLines: 2,

@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -156,7 +156,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                       return const SizedBox.shrink();
                     }
                     return BkuCard(
-                      margin: const EdgeInsets.only(bottom: 12),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.md),
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       child: Row(
                         children: [
@@ -181,7 +181,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,9 +192,9 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: AppSpacing.xs),
                                 Text(
-                                  '${student.nim} • ${student.faculty}',
+                                  '${student.nim} â€¢ ${student.faculty}',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
                                         Theme.of(context).colorScheme.outline,
@@ -203,7 +203,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           BkuButton(
                             onPressed:
                                 provider.isLoading

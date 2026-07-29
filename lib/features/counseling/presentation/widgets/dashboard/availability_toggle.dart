@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 
@@ -23,7 +24,7 @@ class AvailabilityToggle extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         width: 110,
-        height: 36,
+        height: 44,
         padding: const EdgeInsets.all(AppSpacing.xs),
         decoration: BoxDecoration(
           color: isAvailable ? AppColors.success : AppColors.error,
@@ -50,13 +51,13 @@ class AvailabilityToggle extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
                 padding: EdgeInsets.only(
-                  left: isAvailable ? 0 : 32,
-                  right: isAvailable ? 32 : 0,
+                  left: isAvailable ? 0 : AppSpacing.xxl,
+                  right: isAvailable ? AppSpacing.xxl : 0,
                 ),
                 child: Text(
                   isAvailable ? 'Tersedia' : 'Sibuk',
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.w800,
                     fontSize: 11,
                     letterSpacing: 0.2,
@@ -73,8 +74,8 @@ class AvailabilityToggle extends StatelessWidget {
               child: Container(
                 width: 28,
                 height: 28,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: context.appColors.onPrimary,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(

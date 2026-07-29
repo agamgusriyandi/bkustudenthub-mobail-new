@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,7 @@ class PsychologistServiceGrid extends StatelessWidget {
             _ServiceItem(
               title: 'Booking Sesi',
               icon: Icons.event_note_rounded,
-              color: const Color(0xFF06B6D4),
+              color: context.appColors.info,
               onTap: () => context.read<NavigationProvider>().setIndex(1),
             ),
             _ServiceItem(
@@ -50,7 +51,7 @@ class PsychologistServiceGrid extends StatelessWidget {
             _ServiceItem(
               title: 'Rujukan',
               icon: Icons.send_rounded,
-              color: const Color(0xFF6366F1),
+              color: AppColors.neutral700,
               onTap: () => context.push(AppRoutes.referralManagement),
             ),
             _ServiceItem(
@@ -62,19 +63,19 @@ class PsychologistServiceGrid extends StatelessWidget {
             _ServiceItem(
               title: 'Edit Profil',
               icon: Icons.manage_accounts_rounded,
-              color: const Color(0xFF8B5CF6),
+              color: context.appColors.info,
               onTap: () => context.push(AppRoutes.psychologistEditProfile),
             ),
             _ServiceItem(
               title: 'Catatan Sesi',
               icon: Icons.edit_document,
-              color: const Color(0xFF14B8A6),
+              color: context.appColors.info,
               onTap: () => context.push(AppRoutes.psychologistBookings),
             ),
             _ServiceItem(
               title: 'Asesmen',
               icon: Icons.assignment_rounded,
-              color: const Color(0xFFF97316),
+              color: context.appColors.primary,
               onTap: () => context.push(AppRoutes.assessmentManagement),
             ),
           ],
@@ -116,7 +117,7 @@ class _ServiceItem extends StatelessWidget {
             ),
             child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             title,
             textAlign: TextAlign.center,

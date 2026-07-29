@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -9,6 +10,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class UpcomingAppointmentsCard extends StatelessWidget {
   final List<Map<String, dynamic>> bookings;
@@ -62,7 +64,7 @@ class UpcomingAppointmentsCard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         if (displayBookings.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -76,10 +78,10 @@ class UpcomingAppointmentsCard extends StatelessWidget {
                     size: 40,
                     color: AppColors.neutral300,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Tidak ada jadwal mendatang',
-                    style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
+                    style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
                   ),
                 ],
               ),
@@ -92,7 +94,7 @@ class UpcomingAppointmentsCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               scrollDirection: Axis.horizontal,
               itemCount: displayBookings.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 16),
+              separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.lg),
               itemBuilder: (context, index) {
                 final booking = displayBookings[index];
                 return _HorizontalAppointmentCard(
@@ -177,7 +179,7 @@ class _HorizontalAppointmentCard extends StatelessWidget {
       width: 240,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color:
@@ -204,38 +206,39 @@ class _HorizontalAppointmentCard extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: (isActive ? AppColors.primary : Colors.blueGrey)
+                  color: (isActive ? AppColors.primary : AppColors.neutral500)
                       .withAlpha(15),
                   shape: BoxShape.circle,
                 ),
                 child:
                     imageUrl != null && imageUrl!.isNotEmpty
                         ? ClipOval(
-                          child: Image.network(
+                          child: CachedNetworkImage(imageUrl: 
                             ApiGate.getImageUrl(imageUrl!),
                             fit: BoxFit.cover,
-                            errorBuilder:
-                                (_, __, ___) => Icon(
+                            errorWidget:
+                                (_, url, error) => Icon(
                                   isActive
                                       ? Icons.videocam_rounded
                                       : Icons.person_rounded,
                                   color:
                                       isActive
                                           ? AppColors.primary
-                                          : Colors.blueGrey,
+                                          : AppColors.neutral500,
                                   size: 18,
                                 ),
-                          ),
-                        )
-                        : Icon(
-                          isActive
-                              ? Icons.videocam_rounded
-                              : Icons.person_rounded,
-                          color: isActive ? AppColors.primary : Colors.blueGrey,
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
+                              ),
+                            )
+                            : Icon(
+                              isActive
+                                  ? Icons.videocam_rounded
+                                  : Icons.person_rounded,
+                              color: isActive ? AppColors.primary : AppColors.neutral500,
                           size: 18,
                         ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,11 +264,11 @@ class _HorizontalAppointmentCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Icon(Icons.schedule_rounded, size: 15, color: const Color(0xFF0D9488)),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 time,
                 style: AppTextStyles.labelMd.copyWith(
@@ -276,10 +279,10 @@ class _HorizontalAppointmentCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             reason,
-            style: AppTextStyles.labelSm.copyWith(color: Colors.grey[700]),
+            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500.withAlpha(150)),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -287,17 +290,17 @@ class _HorizontalAppointmentCard extends StatelessWidget {
           if (isActive)
             SizedBox(
               width: double.infinity,
-              height: 32,
+              height: 44,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF16A34A),
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusSm,
                   ),
                 ),
                 onPressed: () {
@@ -312,7 +315,7 @@ class _HorizontalAppointmentCard extends StatelessWidget {
                   style: AppTextStyles.labelMd.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 ),
               ),
@@ -320,7 +323,7 @@ class _HorizontalAppointmentCard extends StatelessWidget {
           else if (isPending)
             SizedBox(
               width: double.infinity,
-              height: 32,
+              height: 44,
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
@@ -347,10 +350,10 @@ class _HorizontalAppointmentCard extends StatelessWidget {
           else
             Container(
               width: double.infinity,
-              height: 32,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(20),
+                color: AppColors.neutral500.withAlpha(20),
                 borderRadius: AppRadius.radiusMd,
               ),
               child: Text(

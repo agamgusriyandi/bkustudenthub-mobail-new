@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
@@ -202,7 +203,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             height: 200,
             borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           BkuShimmer(
             width: double.infinity,
             height: 300,
@@ -226,13 +227,13 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             size: 48,
             color: AppColors.neutral400,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             _errorMsg ?? 'Gagal memuat detail aspirasi.',
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral600),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           BkuButton(
             onPressed: _fetchDetail,
             text: 'Coba Lagi',
@@ -267,7 +268,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.neutral100,
-                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    borderRadius: AppRadius.radiusMd,
                   ),
                   child: Text(
                     ticket.category.toUpperCase(),
@@ -277,7 +278,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -285,7 +286,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: statusColor.withAlpha(20),
-                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    borderRadius: AppRadius.radiusMd,
                   ),
                   child: Text(
                     ticket.status.toUpperCase(),
@@ -298,7 +299,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           // Title & Date
           FadeInAnimation(
@@ -312,7 +313,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           FadeInAnimation(
             delay: 0.3,
             child: Row(
@@ -322,7 +323,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   size: 16,
                   color: AppColors.neutral500,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   DateFormat(
                     'dd MMMM yyyy, HH:mm',
@@ -333,7 +334,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   ),
                 ),
                 if (ticket.isAnonim) ...[
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -341,7 +342,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.neutral200,
-                      borderRadius: BorderRadius.circular(AppRadius.xs),
+                      borderRadius: AppRadius.radiusXs,
                     ),
                     child: Row(
                       children: [
@@ -350,7 +351,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                           size: 12,
                           color: AppColors.neutral600,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           'Anonim',
                           style: AppTextStyles.labelSm.copyWith(
@@ -365,7 +366,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           // Content
           FadeInAnimation(
             delay: 0.4,
@@ -380,30 +381,30 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
 
           // Attachment
           if (ticket.imageUrl != null && ticket.imageUrl!.isNotEmpty) ...[
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             FadeInAnimation(
               delay: 0.5,
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusMd,
                   border: Border.all(color: AppColors.neutral200),
                 ),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: AppSpacing.paddingMd,
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(20),
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        borderRadius: AppRadius.radiusSm,
                       ),
                       child: Icon(
                         Icons.description_rounded,
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +457,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             ),
           ],
 
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
           FadeInAnimation(
             delay: 0.6,
             child: Row(
@@ -466,10 +467,10 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   height: 24,
                   decoration: BoxDecoration(
                     color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    borderRadius: AppRadius.radiusSm,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Text(
                   'Journey Tracker',
                   style: AppTextStyles.titleLg.copyWith(
@@ -480,7 +481,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
 
           // Timeline
           FadeInAnimation(
@@ -501,7 +502,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                       },
                     ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
         ],
       ),
     );
@@ -559,7 +560,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   decoration: BoxDecoration(
                     color: isFirst ? iconColor : AppColors.neutral300,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
+                    border: Border.all(color: context.appColors.surface, width: 3),
                     boxShadow: [
                       if (isFirst)
                         BoxShadow(
@@ -569,7 +570,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                         ),
                     ],
                   ),
-                  child: Icon(iconData, size: 14, color: Colors.white),
+                  child: Icon(iconData, size: 14, color: context.appColors.onPrimary),
                 ),
                 if (!isLast)
                   Expanded(
@@ -584,16 +585,16 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           // Event Content
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: const EdgeInsets.only(bottom: AppSpacing.xl),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.paddingLg,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusMd,
                   border: Border.all(color: AppColors.neutral200),
                   boxShadow: [
                     if (isFirst)
@@ -617,7 +618,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                           ),
                           decoration: BoxDecoration(
                             color: iconColor.withAlpha(20),
-                            borderRadius: BorderRadius.circular(AppRadius.xs),
+                            borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
                             labelText.toUpperCase(),
@@ -642,7 +643,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                       ],
                     ),
                     if (event.isiRespons.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Text(
                         event.isiRespons,
                         style: AppTextStyles.bodyMd.copyWith(
@@ -651,7 +652,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     Row(
                       children: [
                         Icon(
@@ -661,7 +662,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                           size: 12,
                           color: AppColors.neutral400,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           'Oleh ${event.level == 'sistem' ? 'Sistem' : 'Admin ${event.level[0].toUpperCase()}${event.level.substring(1)}'}',
                           style: AppTextStyles.labelSm.copyWith(

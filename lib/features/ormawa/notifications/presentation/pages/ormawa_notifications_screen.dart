@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -9,11 +10,9 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_notificatio
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/ormawa_recruitment_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa_aspirasi_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaNotificationsScreen extends StatefulWidget {
   const OrmawaNotificationsScreen({super.key});
@@ -50,7 +49,6 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
   }
 
   Future<void> _markAllAsRead() async {
-    debugPrint('OrmawaNotificationsScreen: _markAllAsRead clicked');
     await context.read<OrmawaProvider>().markAllAsRead();
     if (mounted) {
       AppSnackbar.showSuccess(
@@ -201,7 +199,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                   child: Text(
                     'Baca Semua',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -211,11 +209,11 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTabBar(),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildNotificationList(),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -242,7 +240,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(right: 12),
+              margin: const EdgeInsets.only(right: AppSpacing.md),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.xl,
                 vertical: AppSpacing.md,
@@ -332,12 +330,12 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
             size: 64,
             color: AppColors.neutral300,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada notifikasi',
             style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral600),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Notifikasi akan muncul di sini',
             style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral400),
@@ -356,8 +354,8 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(right: AppSpacing.s20),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.error.withAlpha(20),
           borderRadius: AppRadius.radiusXl,
@@ -376,7 +374,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
         onTap: () => _showNotificationDetail(notification),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: notification.isRead ? Colors.white : color.withAlpha(6),
@@ -410,7 +408,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,7 +431,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                           Container(
                             width: 8,
                             height: 8,
-                            margin: const EdgeInsets.only(left: 8, top: 4),
+                            margin: const EdgeInsets.only(left: AppSpacing.sm, top: AppSpacing.xs),
                             decoration: BoxDecoration(
                               color: color,
                               shape: BoxShape.circle,
@@ -441,7 +439,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                           ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       notification.message,
                       style: AppTextStyles.labelSm.copyWith(
@@ -451,7 +449,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       _formatTime(notification.createdAt),
                       style: AppTextStyles.labelSm.copyWith(
@@ -483,7 +481,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
             height: MediaQuery.of(context).size.height * 0.6,
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -499,7 +497,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Row(
                   children: [
                     Container(
@@ -521,7 +519,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                       ),
                       child: Icon(icon, color: Colors.white, size: 28),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -532,7 +530,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             _formatTime(notification.createdAt),
                             style: AppTextStyles.labelSm.copyWith(
@@ -544,7 +542,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Text(
@@ -553,7 +551,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -561,35 +559,15 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                       Navigator.pop(context);
                       final t = notification.type.toLowerCase();
                       if (t.contains('proposal')) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const OrmawaProposalScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaProposal);
                       } else if (t.contains('recruitment') ||
                           t.contains('rekrutmen') ||
                           t.contains('anggota')) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const OrmawaRecruitmentScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaRecruitment);
                       } else if (t.contains('aspirasi')) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const OrmawaAspirasiScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaAspirasi);
                       } else if (t.contains('pengumuman')) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const OrmawaPengumumanScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaPengumuman);
                       }
                     },
 

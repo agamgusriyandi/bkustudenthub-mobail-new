@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
@@ -21,6 +22,7 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PsychologistSettingsScreen extends StatefulWidget {
   final bool showBackButton;
@@ -46,7 +48,7 @@ class _PsychologistSettingsScreenState
       body: RefreshIndicator(
         onRefresh: () async => await Future.delayed(const Duration(seconds: 1)),
         color: themeProvider.primary,
-        backgroundColor: Colors.white,
+        backgroundColor: context.appColors.surface,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
@@ -73,16 +75,16 @@ class _PsychologistSettingsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildRoleCard(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
 
                     _buildMenuGroup('AKUN & PROFIL', [
                       _buildProfileTile(),
                       _buildChangePwTile(),
                     ]),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: AppSpacing.s28),
 
                     _buildMenuGroup('PREFERENSI SISTEM', [
                       _buildActionTile(
@@ -95,9 +97,9 @@ class _PsychologistSettingsScreenState
                       ),
                     ]),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                     _buildLogoutButton(),
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -115,7 +117,7 @@ class _PsychologistSettingsScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 12),
+          padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
             title,
             style: AppTextStyles.titleSm.copyWith(
@@ -173,7 +175,7 @@ class _PsychologistSettingsScreenState
         clipBehavior: Clip.antiAlias,
         child:
             imageUrl.isNotEmpty
-                ? Image.network(
+                ? CachedNetworkImage(imageUrl: 
                   (() {
                     final url = ApiGate.getImageUrl(imageUrl);
                     final version =
@@ -185,23 +187,24 @@ class _PsychologistSettingsScreenState
                         : '$url?v=$version';
                   })(),
                   fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) => Center(
+                  errorWidget:
+                      (context, url, error) => Center(
                         child: Text(
                           initials,
                           style: AppTextStyles.titleMd.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
                       ),
+                  placeholder: (context, url) => Container(color: AppColors.neutral200),
                 )
                 : Center(
                   child: Text(
                     initials,
                     style: AppTextStyles.titleMd.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
                     ),
@@ -293,7 +296,7 @@ class _PsychologistSettingsScreenState
                               size: 36,
                             ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +313,7 @@ class _PsychologistSettingsScreenState
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           '$spec • BKU Care',
                           style: AppTextStyles.labelMd.copyWith(
@@ -319,7 +322,7 @@ class _PsychologistSettingsScreenState
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: AppSpacing.s10),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
@@ -341,7 +344,7 @@ class _PsychologistSettingsScreenState
                                     color: AppColors.neutral500,
                                     size: 12,
                                   ),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: AppSpacing.s6),
                                   Text(
                                     'NIDN: $nidn',
                                     style: AppTextStyles.labelMd.copyWith(
@@ -373,7 +376,7 @@ class _PsychologistSettingsScreenState
                                     color: Color(0xFF34D399),
                                     size: 12,
                                   ),
-                                  SizedBox(width: 4),
+                                  SizedBox(width: AppSpacing.xs),
                                   Text(
                                     'Verified',
                                     style: AppTextStyles.labelMd.copyWith(
@@ -408,7 +411,7 @@ class _PsychologistSettingsScreenState
         vertical: AppSpacing.sm,
       ),
       leading: Container(
-        padding: const EdgeInsets.all(9),
+        padding: AppSpacing.padding9,
         decoration: BoxDecoration(
           color: const Color(0xFFFCE7F3),
           borderRadius: AppRadius.radiusMd,
@@ -463,7 +466,7 @@ class _PsychologistSettingsScreenState
         vertical: AppSpacing.sm,
       ),
       leading: Container(
-        padding: const EdgeInsets.all(9),
+        padding: AppSpacing.padding9,
         decoration: BoxDecoration(color: bg, borderRadius: AppRadius.radiusMd),
         child: Icon(icon, color: color, size: 20),
       ),
@@ -496,7 +499,7 @@ class _PsychologistSettingsScreenState
       child: ListTile(
         onTap: () => _showLogoutDialog(),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
             color: AppColors.error.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
@@ -530,7 +533,7 @@ class _PsychologistSettingsScreenState
       context: context,
       builder:
           (ctx) => AlertDialog(
-            contentPadding: const EdgeInsets.all(28),
+            contentPadding: AppSpacing.padding28,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -546,7 +549,7 @@ class _PsychologistSettingsScreenState
                     size: 36,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Keluar Aplikasi?',
                   style: AppTextStyles.titleLg.copyWith(
@@ -554,7 +557,7 @@ class _PsychologistSettingsScreenState
                     color: AppColors.neutral800,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.s10),
                 Text(
                   'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
                   textAlign: TextAlign.center,
@@ -563,7 +566,7 @@ class _PsychologistSettingsScreenState
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.s28),
                 Row(
                   children: [
                     Expanded(
@@ -578,7 +581,7 @@ class _PsychologistSettingsScreenState
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
@@ -591,14 +594,14 @@ class _PsychologistSettingsScreenState
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.error,
-                          foregroundColor: Colors.white,
+                          foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                         ),
                         child: Text(
                           'Keluar',
                           style: AppTextStyles.bodyMd.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -622,9 +625,9 @@ class _PsychologistSettingsScreenState
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.xl,
@@ -640,12 +643,12 @@ class _PsychologistSettingsScreenState
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withAlpha(80),
+                    color: AppColors.neutral500.withAlpha(80),
                     borderRadius: AppRadius.radiusMd,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Row(
                 children: [
                   Container(
@@ -660,7 +663,7 @@ class _PsychologistSettingsScreenState
                       size: 20,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Text(
                     'Log Aktivitas Sesi',
                     style: AppTextStyles.titleLg.copyWith(
@@ -670,7 +673,7 @@ class _PsychologistSettingsScreenState
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               if (logs.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -684,7 +687,7 @@ class _PsychologistSettingsScreenState
                           size: 48,
                           color: AppColors.neutral300,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           'Belum ada log aktivitas sesi',
                           style: AppTextStyles.labelMd.copyWith(
@@ -706,7 +709,7 @@ class _PsychologistSettingsScreenState
                     separatorBuilder:
                         (_, __) => Divider(
                           height: 20,
-                          color: Colors.grey.withAlpha(30),
+                          color: AppColors.neutral500.withAlpha(30),
                         ),
                     itemBuilder: (context, index) {
                       final log = logs[index];
@@ -718,7 +721,7 @@ class _PsychologistSettingsScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: AppSpacing.padding6,
                             decoration: const BoxDecoration(
                               color: AppColors.neutral200,
                               shape: BoxShape.circle,
@@ -729,7 +732,7 @@ class _PsychologistSettingsScreenState
                               size: 16,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -742,7 +745,7 @@ class _PsychologistSettingsScreenState
                                   ),
                                 ),
                                 if (desc.isNotEmpty) ...[
-                                  const SizedBox(height: 2),
+                                  const SizedBox(height: AppSpacing.s2),
                                   Text(
                                     desc,
                                     style: AppTextStyles.labelSm.copyWith(
@@ -750,7 +753,7 @@ class _PsychologistSettingsScreenState
                                     ),
                                   ),
                                 ],
-                                const SizedBox(height: 4),
+                                const SizedBox(height: AppSpacing.xs),
                                 Text(
                                   time,
                                   style: AppTextStyles.labelSm.copyWith(
@@ -766,7 +769,7 @@ class _PsychologistSettingsScreenState
                     },
                   ),
                 ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
             ],
           ),
         );
@@ -865,11 +868,16 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        decoration:  BoxDecoration(
+          color: context.appColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
         ),
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.lg,
+          AppSpacing.xl,
+          AppSpacing.xxl,
+        ),
         child: Form(
           key: _formKey,
           child: Column(
@@ -882,12 +890,12 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withAlpha(60),
+                    color: AppColors.neutral500.withAlpha(60),
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
 
               // Header
               Row(
@@ -904,7 +912,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                       size: 22,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -927,7 +935,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Password lama
               _buildPwField(
@@ -937,7 +945,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                 onToggle: () => setState(() => _showOld = !_showOld),
                 validator: (v) => v == null || v.isEmpty ? 'Wajib diisi' : null,
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.s14),
 
               // Password baru
               _buildPwField(
@@ -951,7 +959,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   return null;
                 },
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.s14),
 
               // Konfirmasi
               _buildPwField(
@@ -965,7 +973,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Submit
               SizedBox(
@@ -974,15 +982,15 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   onPressed: _isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.success,
-                    foregroundColor: Colors.white,
+                    foregroundColor: context.appColors.onPrimary,
                   ),
                   child:
                       _isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               strokeWidth: 2.5,
                             ),
                           )
@@ -991,7 +999,7 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                             style: AppTextStyles.titleMd.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                             ),
                           ),
                 ),
@@ -1041,11 +1049,11 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
         fillColor: AppColors.neutral100,
         border: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
-          borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+          borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
-          borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+          borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
@@ -1134,23 +1142,23 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                 .join();
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
       ),
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.xl,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Handle bar
           Container(
-            margin: const EdgeInsets.only(top: 12, bottom: 20),
+            margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.s20),
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.withAlpha(60),
+              color: AppColors.neutral500.withAlpha(60),
               borderRadius: AppRadius.radiusXs,
             ),
           ),
@@ -1181,7 +1189,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                   clipBehavior: Clip.antiAlias,
                   child:
                       imageUrl.isNotEmpty
-                          ? Image.network(
+                          ? CachedNetworkImage(imageUrl: 
                             (() {
                               final url = ApiGate.getImageUrl(imageUrl);
                               final version = provider.avatarVersion;
@@ -1190,23 +1198,24 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                                   : '$url?v=$version';
                             })(),
                             fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) => Center(
+                            errorWidget:
+                                (context, url, error) => Center(
                                   child: Text(
                                     initials,
                                     style: AppTextStyles.titleLg.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                          )
-                          : Center(
-                            child: Text(
-                              initials,
-                              style: AppTextStyles.titleLg.copyWith(
-                                color: Colors.white,
+                          color: context.appColors.onPrimary,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => Container(color: AppColors.neutral200),
+                  )
+                  : Center(
+                    child: Text(
+                      initials,
+                      style: AppTextStyles.titleLg.copyWith(
+                        color: context.appColors.onPrimary,
                                 fontSize: 26,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -1216,10 +1225,10 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                 Positioned(
                   bottom: 0,
                   right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+                    child: Container(
+                      padding: AppSpacing.padding6,
+                      decoration: BoxDecoration(
+                        color: context.appColors.surface,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -1243,12 +1252,12 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                         color: Colors.black.withAlpha(120),
                         shape: BoxShape.circle,
                       ),
-                      child: const Center(
+                      child:  Center(
                         child: SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             strokeWidth: 2,
                           ),
                         ),
@@ -1258,7 +1267,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             name,
             style: AppTextStyles.titleLg.copyWith(
@@ -1267,7 +1276,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
               color: AppColors.neutral800,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             spec != '-' ? spec : 'Psikolog',
             style: AppTextStyles.bodySm.copyWith(
@@ -1275,7 +1284,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
               color: AppColors.neutral600,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -1294,7 +1303,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
 
           // Info list
           Padding(
@@ -1341,7 +1350,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
 
           // Edit button
           Padding(
@@ -1355,19 +1364,19 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.neutral900,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                 ),
-                icon: const Icon(
+                icon:  Icon(
                   Icons.edit_rounded,
                   size: 18,
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                 ),
                 label: Text(
                   'Edit Profil',
                   style: AppTextStyles.titleMd.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 ),
               ),
@@ -1386,7 +1395,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
     Color color,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s10),
       child: Row(
         children: [
           Container(
@@ -1397,7 +1406,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
             ),
             child: Icon(icon, color: color, size: 16),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1522,19 +1531,19 @@ class _NotificationReminderBottomSheetState
     final themeProvider = context.watch<ThemeProvider>();
     if (_isLoading) {
       return Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        ),
+        decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
+          ),
         padding: const EdgeInsets.all(AppSpacing.xxxl),
         child: const BkuShimmerList(itemCount: 2, itemHeight: 80),
       );
     }
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.xl,
@@ -1555,7 +1564,7 @@ class _NotificationReminderBottomSheetState
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Row(
             children: [
               Container(
@@ -1570,7 +1579,7 @@ class _NotificationReminderBottomSheetState
                   size: 20,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 'Notifikasi & Reminder',
                 style: AppTextStyles.titleLg.copyWith(
@@ -1580,7 +1589,7 @@ class _NotificationReminderBottomSheetState
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
 
           // Switch: Session Reminder
           _buildSwitchTile(
@@ -1594,7 +1603,7 @@ class _NotificationReminderBottomSheetState
           ),
 
           if (_sessionReminder) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
               child: Row(
@@ -1645,7 +1654,7 @@ class _NotificationReminderBottomSheetState
                           Icons.arrow_drop_down,
                           color: themeProvider.primary,
                         ),
-                        dropdownColor: Colors.white,
+                        dropdownColor: context.appColors.surface,
                       ),
                     ),
                   ),
@@ -1654,7 +1663,7 @@ class _NotificationReminderBottomSheetState
             ),
           ],
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Outlined Button: Test Notifikasi
           SizedBox(
@@ -1679,7 +1688,7 @@ class _NotificationReminderBottomSheetState
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           // Primary Button: Simpan
           SizedBox(
@@ -1689,18 +1698,18 @@ class _NotificationReminderBottomSheetState
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.neutral900,
-                foregroundColor: Colors.white,
+                foregroundColor: context.appColors.onPrimary,
               ),
               child: Text(
                 'Tutup',
                 style: AppTextStyles.bodyMd.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
         ],
       ),
     );
@@ -1725,7 +1734,7 @@ class _NotificationReminderBottomSheetState
                   color: AppColors.neutral800,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.s2),
               Text(
                 subtitle,
                 style: AppTextStyles.labelSm.copyWith(

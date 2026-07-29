@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
@@ -35,7 +36,7 @@ class _HealthScreenState extends State<HealthScreen> {
     final latest = student.latestHealthRecord;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
@@ -47,14 +48,14 @@ class _HealthScreenState extends State<HealthScreen> {
         },
         elevation: 3,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusLg,
         ),
-        backgroundColor: const Color(0xFF16A34A),
-        icon: const Icon(Icons.calendar_month_rounded, color: Colors.white),
-        label: const Text(
+        backgroundColor: context.appColors.success,
+        icon: Icon(Icons.calendar_month_rounded, color: context.appColors.onPrimary),
+        label: Text(
           'Booking Klinik',
           style: TextStyle(
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontWeight: FontWeight.w800,
             fontSize: 13,
           ),
@@ -86,20 +87,20 @@ class _HealthScreenState extends State<HealthScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     if (student.isLoading) ...[
                       const BkuShimmer(
                         width: double.infinity,
                         height: 140,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       const BkuShimmer(
                         width: double.infinity,
                         height: 180,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       const BkuShimmerList(itemCount: 2, itemHeight: 120),
                     ] else ...[
                       // Welcome Banner
@@ -110,14 +111,14 @@ class _HealthScreenState extends State<HealthScreen> {
                                 ? _buildEmptyWelcomeBanner(student)
                                 : _buildDynamicWelcomeCard(student, latest),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // Medical Referral Nav Card
                       FadeInAnimation(
                         delay: 0.15,
                         child: _buildReferralNavCard(context),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // Self Screening Dashboard
                       if (latest != null) ...[
@@ -126,7 +127,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           delay: 0.2,
                           child: _buildBMIIndicator(latest),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         FadeInAnimation(
                           delay: 0.3,
                           child: Row(
@@ -139,7 +140,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                   borderRadius: AppRadius.radiusXs,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: AppSpacing.s10),
                               Text(
                                 'Kondisi Tubuh Saat Ini',
                                 style: AppTextStyles.titleLg.copyWith(
@@ -151,17 +152,17 @@ class _HealthScreenState extends State<HealthScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         FadeInAnimation(
                           delay: 0.4,
                           child: _buildStatsGrid(latest),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         FadeInAnimation(
                           delay: 0.5,
                           child: _buildHealthInsights(latest),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         if (student.healthRecords.isEmpty) ...[
                           Text(
                             'Riwayat Skrining Mandiri',
@@ -171,7 +172,7 @@ class _HealthScreenState extends State<HealthScreen> {
                               color: AppColors.neutral900,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -217,10 +218,10 @@ class _HealthScreenState extends State<HealthScreen> {
                                           vertical: 2,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFF1F5F9),
-                                          borderRadius: BorderRadius.circular(10),
+                                          color: AppColors.neutral100,
+                                          borderRadius: AppRadius.br10,
                                           border: Border.all(
-                                            color: const Color(0xFFCBD5E1),
+                                            color: AppColors.neutral400,
                                           ),
                                         ),
                                         child: Row(
@@ -230,15 +231,15 @@ class _HealthScreenState extends State<HealthScreen> {
                                               onTap: validPage > 1
                                                   ? () => setState(() => _currentScreeningPage = validPage - 1)
                                                   : null,
-                                              borderRadius: BorderRadius.circular(6),
+                                              borderRadius: AppRadius.br6,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(4),
+                                                padding: AppSpacing.paddingXs,
                                                 child: Icon(
                                                   Icons.chevron_left_rounded,
                                                   size: 18,
                                                   color: validPage > 1
-                                                      ? const Color(0xFF1E293B)
-                                                      : const Color(0xFF94A3B8),
+                                                      ? context.appColors.secondary
+                                                      : AppColors.neutral500,
                                                 ),
                                               ),
                                             ),
@@ -246,10 +247,10 @@ class _HealthScreenState extends State<HealthScreen> {
                                               padding: const EdgeInsets.symmetric(horizontal: 6),
                                               child: Text(
                                                 '$validPage / $totalPages',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w800,
-                                                  color: Color(0xFF334155),
+                                                  color: context.appColors.secondaryContainer,
                                                 ),
                                               ),
                                             ),
@@ -257,15 +258,15 @@ class _HealthScreenState extends State<HealthScreen> {
                                               onTap: validPage < totalPages
                                                   ? () => setState(() => _currentScreeningPage = validPage + 1)
                                                   : null,
-                                              borderRadius: BorderRadius.circular(6),
+                                              borderRadius: AppRadius.br6,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(4),
+                                                padding: AppSpacing.paddingXs,
                                                 child: Icon(
                                                   Icons.chevron_right_rounded,
                                                   size: 18,
                                                   color: validPage < totalPages
-                                                      ? const Color(0xFF1E293B)
-                                                      : const Color(0xFF94A3B8),
+                                                      ? context.appColors.secondary
+                                                      : AppColors.neutral500,
                                                 ),
                                               ),
                                             ),
@@ -274,7 +275,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                       ),
                                   ],
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 ...List.generate(
                                   paginatedRecords.length,
                                   (index) => FadeInAnimation(
@@ -285,7 +286,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 80),
+                                const SizedBox(height: AppSpacing.s80),
                               ],
                             );
                           }(),
@@ -304,7 +305,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                   borderRadius: AppRadius.radiusXs,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Text(
                                 'Indikator yang Akan Dipantau',
                                 style: AppTextStyles.titleLg.copyWith(
@@ -316,7 +317,7 @@ class _HealthScreenState extends State<HealthScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         FadeInAnimation(
                           delay: 0.3,
                           child: GridView.count(
@@ -355,7 +356,7 @@ class _HealthScreenState extends State<HealthScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: AppSpacing.s28),
                         FadeInAnimation(
                           delay: 0.4,
                           child: Text(
@@ -367,7 +368,7 @@ class _HealthScreenState extends State<HealthScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         FadeInAnimation(
                           delay: 0.5,
                           child: Column(
@@ -393,7 +394,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                 'Analisis BMI & Kesehatan',
                                 'Sistem langsung menghitung Indeks Massa Tubuh (BMI) idealmu.',
                                 Icons.calculate_rounded,
-                                Colors.teal,
+                                AppColors.info,
                                 onTap: () {
                                   AppSnackbar.showSuccess(
                                     context,
@@ -401,7 +402,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               _buildGuideStep(
                                 3,
                                 'Dapatkan Rekomendasi Medis',
@@ -438,7 +439,7 @@ class _HealthScreenState extends State<HealthScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: Colors.grey[200]!, width: 1),
         boxShadow: [
@@ -463,7 +464,7 @@ class _HealthScreenState extends State<HealthScreen> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 Text(
                   'Jaga kebugaran tubuhmu untuk performa belajar yang optimal. Mulai isi skrining kesehatan pertamamu!',
                   style: AppTextStyles.labelSm.copyWith(
@@ -476,7 +477,7 @@ class _HealthScreenState extends State<HealthScreen> {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
@@ -535,7 +536,7 @@ class _HealthScreenState extends State<HealthScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: Colors.grey[200]!, width: 1),
         boxShadow: [
@@ -560,7 +561,7 @@ class _HealthScreenState extends State<HealthScreen> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
@@ -579,7 +580,7 @@ class _HealthScreenState extends State<HealthScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.s10),
                 Text(
                   message,
                   style: AppTextStyles.labelSm.copyWith(
@@ -592,7 +593,7 @@ class _HealthScreenState extends State<HealthScreen> {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -654,7 +655,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -666,7 +667,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           color: AppColors.neutral900,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
@@ -695,9 +696,9 @@ class _HealthScreenState extends State<HealthScreen> {
               _buildHealthBadge(latest.bmiStatus, latest.bmiColor),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           _buildBMISlider(latest.bmi),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
@@ -769,7 +770,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ],
               ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:
@@ -818,7 +819,7 @@ class _HealthScreenState extends State<HealthScreen> {
           ),
           child: Text(emoji, style: const TextStyle(fontSize: 32)),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           status == 'Normal' ? 'Baik' : status.capitalizeFirstLetter(),
           style: AppTextStyles.labelSm.copyWith(
@@ -852,7 +853,7 @@ class _HealthScreenState extends State<HealthScreen> {
       if (latest.notes.startsWith('{') && latest.notes.endsWith('}')) {
         data = jsonDecode(latest.notes) as Map<String, dynamic>;
       }
-    } catch (_) {}
+    } catch (_) { /* Silenced: non-critical parse fallback */ }
 
     final jamTidur = data?['jam_tidur'] ?? 8;
     final olahraga = data?['olahraga'] ?? 2;
@@ -887,7 +888,7 @@ class _HealthScreenState extends State<HealthScreen> {
           '$jamTidur',
           'Jam',
           Icons.bedtime_rounded,
-          Colors.teal,
+          AppColors.info,
         ),
         _buildStatTile(
           'Olahraga',
@@ -901,14 +902,14 @@ class _HealthScreenState extends State<HealthScreen> {
           air.toStringAsFixed(1),
           'L/Hari',
           Icons.water_drop_rounded,
-          Colors.blueAccent,
+          AppColors.info,
         ),
         _buildStatTile(
           'Tingkat Stres',
           '$stres',
           '/10',
           Icons.psychology_rounded,
-          Colors.purple,
+          AppColors.secondary,
         ),
       ],
     );
@@ -923,7 +924,7 @@ class _HealthScreenState extends State<HealthScreen> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: color.withAlpha(20), width: 1.5),
         boxShadow: [
@@ -967,7 +968,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 letterSpacing: -0.2,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
@@ -1013,7 +1014,7 @@ class _HealthScreenState extends State<HealthScreen> {
             color: AppColors.neutral900,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const ClampingScrollPhysics(
@@ -1039,7 +1040,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 'Kualitas Tidur',
                 'Pastikan tidur 7-8 jam untuk regenerasi sel.',
                 Icons.bedtime_rounded,
-                Colors.indigo,
+                AppColors.info,
               ),
             ],
           ),
@@ -1056,7 +1057,7 @@ class _HealthScreenState extends State<HealthScreen> {
   ) {
     return Container(
       width: 220,
-      margin: const EdgeInsets.only(right: 16),
+      margin: const EdgeInsets.only(right: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -1071,7 +1072,7 @@ class _HealthScreenState extends State<HealthScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 24),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             title,
             style: AppTextStyles.labelMd.copyWith(
@@ -1079,7 +1080,7 @@ class _HealthScreenState extends State<HealthScreen> {
               color: color,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             desc,
             style: AppTextStyles.labelSm.copyWith(
@@ -1138,10 +1139,10 @@ class _HealthScreenState extends State<HealthScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusLg,
         border: Border.all(color: borderColor, width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -1155,13 +1156,13 @@ class _HealthScreenState extends State<HealthScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showHistoryDetail(context, record),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusLg,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLg,
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMd,
                   decoration: BoxDecoration(
                     color: iconBgColor,
                     shape: BoxShape.circle,
@@ -1172,24 +1173,24 @@ class _HealthScreenState extends State<HealthScreen> {
                     color: iconColor,
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '${record.date.day}/${record.date.month}/${record.date.year}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 15,
-                          color: Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: AppSpacing.s3),
                       Text(
                         'BMI: ${record.bmi.toStringAsFixed(1)} • ${record.weight} kg • ${record.height} cm',
                         style: const TextStyle(
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
                         ),
@@ -1204,7 +1205,7 @@ class _HealthScreenState extends State<HealthScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: statusBadgeBg,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusSm,
                     border: Border.all(color: borderColor),
                   ),
                   child: Text(
@@ -1232,9 +1233,9 @@ class _HealthScreenState extends State<HealthScreen> {
       builder:
           (context) => Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -1254,7 +1255,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Detail Skrining',
                     style: AppTextStyles.titleLg.copyWith(
@@ -1269,7 +1270,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildDetailRow(
                     'Tinggi Badan',
                     '${record.height.toStringAsFixed(0)} cm',
@@ -1299,10 +1300,10 @@ class _HealthScreenState extends State<HealthScreen> {
                       'Gula Darah',
                       '${record.gulaDarah} mg/dL',
                       Icons.water_drop_rounded,
-                      Colors.redAccent,
+                      context.appColors.error,
                     ),
                   _buildNotesSection(record),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                 ],
               ),
             ),
@@ -1318,13 +1319,13 @@ class _HealthScreenState extends State<HealthScreen> {
       if (record.notes.startsWith('{') && record.notes.endsWith('}')) {
         data = jsonDecode(record.notes) as Map<String, dynamic>;
       }
-    } catch (_) {}
+    } catch (_) { /* Silenced: non-critical parse fallback */ }
 
     if (data == null || data['is_screening_realistis'] != true) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Keluhan / Catatan:',
             style: AppTextStyles.labelSm.copyWith(
@@ -1332,7 +1333,7 @@ class _HealthScreenState extends State<HealthScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -1368,7 +1369,7 @@ class _HealthScreenState extends State<HealthScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         Text(
           'Gaya Hidup & Mental:',
           style: AppTextStyles.labelSm.copyWith(
@@ -1376,7 +1377,7 @@ class _HealthScreenState extends State<HealthScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
@@ -1392,25 +1393,25 @@ class _HealthScreenState extends State<HealthScreen> {
                 'Tidur / Hari',
                 '$jamTidur Jam',
                 Icons.bedtime_rounded,
-                Colors.teal,
+                AppColors.info,
               ),
               _buildDetailInfoRow(
                 'Olahraga / Minggu',
                 '$olahraga Kali',
                 Icons.fitness_center_rounded,
-                Colors.teal,
+                AppColors.info,
               ),
               _buildDetailInfoRow(
                 'Konsumsi Air',
                 '$air Liter',
                 Icons.water_drop_rounded,
-                Colors.teal,
+                AppColors.info,
               ),
               _buildDetailInfoRow(
                 'Merokok',
                 merokok,
                 Icons.smoke_free_rounded,
-                Colors.teal,
+                AppColors.info,
               ),
               Divider(
                 height: 24,
@@ -1421,25 +1422,25 @@ class _HealthScreenState extends State<HealthScreen> {
                 'Tingkat Stres',
                 '$stres / 10',
                 Icons.psychology_rounded,
-                Colors.purple,
+                AppColors.secondary,
               ),
               _buildDetailInfoRow(
                 'Mood',
                 mood,
                 Icons.mood_rounded,
-                Colors.purple,
+                AppColors.secondary,
               ),
               _buildDetailInfoRow(
                 'Motivasi Belajar',
                 motivasi,
                 Icons.auto_stories_rounded,
-                Colors.purple,
+                AppColors.secondary,
               ),
             ],
           ),
         ),
         if (keluhanList.isNotEmpty) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Text(
             'Keluhan yang Dirasakan:',
             style: AppTextStyles.labelSm.copyWith(
@@ -1447,7 +1448,7 @@ class _HealthScreenState extends State<HealthScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -1471,7 +1472,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           size: 14,
                           color: AppColors.error,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.s6),
                         Text(
                           k.toString(),
                           style: AppTextStyles.labelSm.copyWith(
@@ -1487,7 +1488,7 @@ class _HealthScreenState extends State<HealthScreen> {
           ),
         ],
         if (catatanTambahan.toString().isNotEmpty) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Text(
             'Catatan Tambahan:',
             style: AppTextStyles.labelSm.copyWith(
@@ -1495,7 +1496,7 @@ class _HealthScreenState extends State<HealthScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -1530,7 +1531,7 @@ class _HealthScreenState extends State<HealthScreen> {
       child: Row(
         children: [
           Icon(icon, size: 16, color: color),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -1560,7 +1561,7 @@ class _HealthScreenState extends State<HealthScreen> {
     Color color,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         children: [
           Container(
@@ -1571,7 +1572,7 @@ class _HealthScreenState extends State<HealthScreen> {
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Text(
             label,
             style: AppTextStyles.labelMd.copyWith(
@@ -1600,7 +1601,7 @@ class _HealthScreenState extends State<HealthScreen> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color: color.withAlpha(20),
@@ -1647,7 +1648,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.s2),
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -1685,9 +1686,9 @@ class _HealthScreenState extends State<HealthScreen> {
     VoidCallback? onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
@@ -1711,7 +1712,7 @@ class _HealthScreenState extends State<HealthScreen> {
                   ),
                   child: Icon(icon, color: color, size: 20),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1724,7 +1725,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           fontSize: 13,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         desc,
                         style: AppTextStyles.labelSm.copyWith(
@@ -1738,7 +1739,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
                 if (onTap != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm, left: AppSpacing.sm),
                     child: Icon(
                       Icons.chevron_right_rounded,
                       color: Theme.of(
@@ -1762,9 +1763,9 @@ class _HealthScreenState extends State<HealthScreen> {
     required String desc,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
@@ -1799,7 +1800,7 @@ class _HealthScreenState extends State<HealthScreen> {
                   ),
                   child: Icon(icon, color: color, size: 22),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1813,7 +1814,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           fontSize: 14,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         desc,
                         style: AppTextStyles.labelSm.copyWith(
@@ -1888,7 +1889,7 @@ class _HealthScreenState extends State<HealthScreen> {
         if (symptoms != null) {
           score -= symptoms.length * 6;
         }
-      } catch (_) {}
+      } catch (_) { /* Silenced: non-critical parse fallback */ }
     }
 
     if (score < 10) score = 10;
@@ -1919,7 +1920,7 @@ class _HealthScreenState extends State<HealthScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
@@ -1935,7 +1936,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 size: 28,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1947,7 +1948,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       color: AppColors.info,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Lihat & download surat rujukan klinik UBK yang telah disetujui.',
                     style: AppTextStyles.bodySm.copyWith(
@@ -1957,7 +1958,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             const Icon(
               Icons.chevron_right_rounded,
               color: AppColors.info,

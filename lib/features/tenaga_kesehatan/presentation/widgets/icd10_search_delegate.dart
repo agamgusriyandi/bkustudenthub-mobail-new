@@ -1,7 +1,10 @@
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/icd10_data.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class Icd10SearchBottomSheet extends StatefulWidget {
   final Function(Icd10Item) onSelected;
@@ -42,9 +45,9 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,11 +58,11 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: AppColors.neutral300,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: AppRadius.br2,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Katalog Diagnosa WHO ICD-10',
             style: AppTextStyles.titleSm.copyWith(
@@ -67,12 +70,12 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
               color: AppColors.neutral900,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Pilih diagnosa standar medis internasional',
             style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral600),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           TextField(
             controller: _searchController,
             onChanged: _filter,
@@ -80,7 +83,7 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
               hintText: 'Cari penyakit atau kode (misal: ISPA, A09)...',
               prefixIcon: const Icon(Icons.search, color: AppColors.neutral500),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusMd,
                 borderSide: const BorderSide(color: AppColors.neutral300),
               ),
               contentPadding: const EdgeInsets.symmetric(
@@ -89,7 +92,7 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Expanded(
             child:
                 _filteredList.isEmpty
@@ -118,7 +121,7 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.primary.withAlpha(20),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: AppRadius.radiusSm,
                             ),
                             child: Text(
                               item.code,

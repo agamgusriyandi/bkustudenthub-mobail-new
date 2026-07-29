@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
@@ -173,7 +174,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: Theme.of(context).colorScheme.primary,
-              onPrimary: Colors.white,
+              onPrimary: context.appColors.onPrimary,
               onSurface: Theme.of(context).colorScheme.primary,
             ),
           ),
@@ -205,7 +206,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildBMIPreview(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // 1. Fisik
               _buildInputCard(
@@ -223,7 +224,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           '170',
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildInputField(
                           _weightController,
@@ -236,13 +237,13 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // 2. Gaya Hidup
               _buildInputCard(
                 '2. Gaya Hidup (Self-report)',
                 Icons.sports_gymnastics_rounded,
-                Colors.teal,
+                context.appColors.info,
                 [
                   Row(
                     children: [
@@ -259,7 +260,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildDropdownField(
                           'Olahraga / Minggu',
@@ -275,7 +276,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -291,7 +292,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildDropdownField(
                           'Apakah Merokok?',
@@ -309,7 +310,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // 3. Mental
               _buildInputCard(
@@ -365,7 +366,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -387,7 +388,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildDropdownField(
                           'Motivasi Belajar',
@@ -411,7 +412,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // 4. Keluhan
               _buildInputCard(
@@ -451,7 +452,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // 5. Opsional
               _buildInputCard(
@@ -470,7 +471,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           isRequired: false,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildInputField(
                           _diaController,
@@ -482,7 +483,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -494,7 +495,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           isRequired: false,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: _buildDropdownField(
                           'Golongan Darah',
@@ -510,7 +511,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDateField(
                     context,
                     'Tanggal Pengukuran',
@@ -519,13 +520,13 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Catatan Tambahan
               _buildInputCard(
                 'Catatan Tambahan',
                 Icons.sticky_note_2_rounded,
-                Colors.teal,
+                context.appColors.info,
                 [
                   _buildTextAreaField(
                     _notesController,
@@ -535,9 +536,9 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.s48),
               _buildSubmitButton(),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
             ],
           ),
         ),
@@ -577,7 +578,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               size: 32,
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: AppSpacing.s20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -589,7 +590,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   _currentBMI > 0 ? _currentBMI.toStringAsFixed(1) : '--',
                   style: AppTextStyles.headlineMd.copyWith(
@@ -638,7 +639,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           Row(
             children: [
               Icon(icon, color: color, size: 20),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 title,
                 style: AppTextStyles.labelMd.copyWith(
@@ -648,7 +649,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           ...children,
         ],
       ),
@@ -695,7 +696,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ? AppColors.error
                       : Theme.of(context).colorScheme.outline,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 label,
@@ -734,7 +735,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             fontSize: 11,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           keyboardType: TextInputType.number,
@@ -794,7 +795,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             fontSize: 11,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         InkWell(
           onTap: () => _selectDate(context),
           borderRadius: AppRadius.radiusLg,
@@ -814,7 +815,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   size: 18,
                   color: Theme.of(context).colorScheme.primary.withAlpha(150),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     formattedDate,
@@ -855,7 +856,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             fontSize: 11,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
           isExpanded: true,
           initialValue: value,
@@ -878,7 +879,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   .toList(),
           decoration: InputDecoration(
             prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 8, right: 6),
+              padding: const EdgeInsets.only(left: AppSpacing.sm, right: AppSpacing.s6),
               child: Icon(
                 icon,
                 size: 14,
@@ -922,7 +923,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             fontSize: 11,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           maxLines: 3,
@@ -933,7 +934,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               color: Theme.of(context).colorScheme.outline.withAlpha(100),
             ),
             prefixIcon: Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
+              padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
               child: Icon(
                 icon,
                 size: 18,
@@ -986,7 +987,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           'Simpan Data Kesehatan',
           style: AppTextStyles.labelMd.copyWith(
             fontWeight: FontWeight.w900,
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontSize: 16,
           ),
         ),
@@ -1239,8 +1240,8 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(28),
-                        topRight: Radius.circular(28),
+                  topLeft: Radius.circular(AppRadius.radius28),
+                  topRight: Radius.circular(AppRadius.radius28),
                       ),
                     ),
                     child: Column(
@@ -1248,11 +1249,11 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                         Text(
                           'Data Kesehatan Disimpan!',
                           style: AppTextStyles.titleLg.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Hasil analisis kebugaran & gaya hidup',
                           style: AppTextStyles.labelSm.copyWith(
@@ -1319,7 +1320,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -1336,7 +1337,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: AppSpacing.xs),
                                       Text(
                                         delta?['message'] ??
                                             'Terus pertahankan pola tidur dan makan yang teratur!',
@@ -1354,7 +1355,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
 
                           // Delta Card
                           if (delta != null) ...[
@@ -1394,7 +1395,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                             : AppColors.info,
                                     size: 20,
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: AppSpacing.md),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -1413,7 +1414,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: AppSpacing.xs),
                                         Text(
                                           delta['message'],
                                           style: TextStyle(
@@ -1434,7 +1435,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                           ],
 
                           // Counseling Recommendation
@@ -1452,7 +1453,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                   Row(
                                     children: [
                                       Container(
-                                        padding: const EdgeInsets.all(6),
+                                        padding: AppSpacing.padding6,
                                         decoration: BoxDecoration(
                                           color:
                                               Theme.of(
@@ -1460,13 +1461,13 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                               ).colorScheme.primary,
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.support_agent_rounded,
-                                          color: Colors.white,
+                                          color: context.appColors.onPrimary,
                                           size: 14,
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: AppSpacing.s10),
                                       const Text(
                                         'Rekomendasi Ahli',
                                         style: TextStyle(
@@ -1477,7 +1478,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: AppSpacing.sm),
                                   const Text(
                                     'Tingkat stresmu atau BMI terdeteksi memerlukan perhatian khusus. Kamu bisa menjadwalkan konseling psikologis gratis & rahasia.',
                                     style: TextStyle(
@@ -1487,7 +1488,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                       height: 1.3,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: AppSpacing.s10),
                                   InkWell(
                                     onTap: () {
                                       Navigator.pop(context); // close dialog
@@ -1509,7 +1510,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                                 TextDecoration.underline,
                                           ),
                                         ),
-                                        const SizedBox(width: 4),
+                                        const SizedBox(width: AppSpacing.xs),
                                         Icon(
                                           Icons.arrow_forward_rounded,
                                           size: 10,
@@ -1521,7 +1522,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                           ],
                         ],
                       ),

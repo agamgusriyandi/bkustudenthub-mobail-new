@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -58,21 +59,21 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildGreeting(),
-                  SizedBox(height: 24),
+                  SizedBox(height: AppSpacing.xl),
                   _buildUrgentCard(),
-                  SizedBox(height: 32),
+                  SizedBox(height: AppSpacing.xxl),
                   _buildSectionHeader('Menu Layanan'),
-                  SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.lg),
                   _buildServiceGrid(context),
-                  SizedBox(height: 32),
+                  SizedBox(height: AppSpacing.xxl),
                   _buildSectionHeader('Jadwal Saya'),
-                  SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.lg),
                   _buildMyAppointments(),
-                  SizedBox(height: 32),
+                  SizedBox(height: AppSpacing.xxl),
                   _buildSectionHeader('Psikolog Tersedia'),
-                  SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.lg),
                   _buildPsychologistList(context),
-                  SizedBox(height: 100),
+                  SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -123,9 +124,9 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
               color: context.watch<ThemeProvider>().colorError,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.emergency_rounded, color: Colors.white, size: 24),
+            child: Icon(Icons.emergency_rounded, color: context.appColors.onPrimary, size: 24),
           ),
-          SizedBox(width: 16),
+          SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,14 +219,14 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppSpacing.paddingMd,
               decoration: BoxDecoration(
                 color: color.withAlpha(20),
                 borderRadius: AppRadius.radiusSm,
               ),
               child: Icon(icon, color: color, size: 24),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               title,
               style: AppTextStyles.labelMd.copyWith(
@@ -320,7 +321,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                   ],
                 ),
               ),
-              SizedBox(width: 16),
+              SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,10 +419,10 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
     final isActive = p['is_active'] == true;
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color:
@@ -454,13 +455,13 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                             ? context.watch<ThemeProvider>().success
                             : Colors.grey,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: AppColors.neutral300, width: 2),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(width: 16),
+          SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,7 +478,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                     color: context.watch<ThemeProvider>().outline,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: AppSpacing.xs),
                 Text(
                   isActive ? 'Tersedia' : 'Tidak Tersedia',
                   style: AppTextStyles.labelMd.copyWith(
@@ -591,11 +592,11 @@ class _MyBookingsSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: BoxDecoration(
         color: context.watch<ThemeProvider>().background,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         children: [
-          SizedBox(height: 12),
+          SizedBox(height: AppSpacing.md),
           Container(
             width: 48,
             height: 5,
@@ -664,10 +665,10 @@ class _MyBookingsSheet extends StatelessWidget {
                       }
 
                       return Container(
-                        margin: EdgeInsets.only(bottom: 12),
+                        margin: EdgeInsets.only(bottom: AppSpacing.md),
                         padding: EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.appColors.surface,
                           borderRadius: AppRadius.radiusLg,
                           border: Border.all(color: statusColor.withAlpha(30)),
                         ),
@@ -728,7 +729,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(height: AppSpacing.sm),
                             // Badge mode
                             Row(
                               children: [
@@ -762,7 +763,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                                     .info
                                                 : Colors.teal,
                                       ),
-                                      SizedBox(width: 4),
+                                      SizedBox(width: AppSpacing.xs),
                                       Text(
                                         mode,
                                         style: AppTextStyles.labelMd.copyWith(
@@ -785,7 +786,7 @@ class _MyBookingsSheet extends StatelessWidget {
                             if (isOnline &&
                                 isDikonfirmasi &&
                                 linkMeeting.isNotEmpty) ...[
-                              SizedBox(height: 10),
+                              SizedBox(height: AppSpacing.s10),
                               GestureDetector(
                                 onTap: () async {
                                   final uri = Uri.parse(linkMeeting);
@@ -826,7 +827,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                             context.watch<ThemeProvider>().info,
                                         size: 18,
                                       ),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: AppSpacing.s10),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -891,7 +892,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                     width: 120,
                                     height: 36,
                                   ),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: AppSpacing.sm),
                                   BkuButton(
                                     text: 'Reschedule',
                                     onPressed:
@@ -984,7 +985,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: context.watch<ThemeProvider>().primary,
-              onPrimary: Colors.white,
+              onPrimary: context.appColors.onPrimary,
               onSurface: context.watch<ThemeProvider>().onSurface,
             ),
           ),
@@ -1086,14 +1087,14 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
 
     return Container(
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-        left: 24,
-        right: 24,
-        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.xl,
+        left: AppSpacing.xl,
+        right: AppSpacing.xl,
+        top: AppSpacing.xl,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1109,7 +1110,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: AppSpacing.s20),
           Text(
             'Reschedule Konseling',
             style: AppTextStyles.titleMd.copyWith(
@@ -1117,14 +1118,14 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
               color: context.watch<ThemeProvider>().primary,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: AppSpacing.sm),
           Text(
             'Untuk sesi dengan $psikologName\nTopik: $topic',
             style: AppTextStyles.bodyMd.copyWith(
               color: context.watch<ThemeProvider>().outline,
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           // Date Field
           _buildPickerField(
             label: 'Tanggal Baru',
@@ -1135,7 +1136,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
             icon: Icons.calendar_today_rounded,
             onTap: _selectDate,
           ),
-          SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
           // Start & End Time Fields
           Row(
             children: [
@@ -1150,7 +1151,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
                   onTap: _selectStartTime,
                 ),
               ),
-              SizedBox(width: 16),
+              SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: _buildPickerField(
                   label: 'Jam Selesai',
@@ -1164,7 +1165,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
               ),
             ],
           ),
-          SizedBox(height: 24),
+          SizedBox(height: AppSpacing.xl),
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
@@ -1181,7 +1182,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
                   color: context.watch<ThemeProvider>().warning,
                   size: 20,
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     'Setelah reschedule dikirim, status booking akan kembali ke Menunggu dan psikolog perlu menyetujui jadwal baru.',
@@ -1195,7 +1196,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
               ],
             ),
           ),
-          SizedBox(height: 32),
+          SizedBox(height: AppSpacing.xxl),
           BkuButton(
             text: 'Kirim Reschedule',
             onPressed: _submit,
@@ -1223,7 +1224,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
             color: context.watch<ThemeProvider>().onSurfaceVariant,
           ),
         ),
-        SizedBox(height: 6),
+        SizedBox(height: AppSpacing.s6),
         InkWell(
           onTap: onTap,
           borderRadius: AppRadius.radiusLg,
@@ -1246,7 +1247,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
                   size: 18,
                   color: context.watch<ThemeProvider>().outline,
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     value,
@@ -1286,11 +1287,11 @@ class _MedicalRecordSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: BoxDecoration(
         color: context.watch<ThemeProvider>().background,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         children: [
-          SizedBox(height: 12),
+          SizedBox(height: AppSpacing.md),
           Container(
             width: 48,
             height: 5,
@@ -1342,7 +1343,7 @@ class _MedicalRecordSheet extends StatelessWidget {
                       // Summary card
                       Container(
                         padding: EdgeInsets.all(AppSpacing.lg),
-                        margin: EdgeInsets.only(bottom: 16),
+                        margin: EdgeInsets.only(bottom: AppSpacing.lg),
                         decoration: BoxDecoration(
                           color: context
                               .watch<ThemeProvider>()
@@ -1362,7 +1363,7 @@ class _MedicalRecordSheet extends StatelessWidget {
                               Icons.summarize_rounded,
                               color: context.watch<ThemeProvider>().primary,
                             ),
-                            SizedBox(width: 12),
+                            SizedBox(width: AppSpacing.md),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -1387,11 +1388,11 @@ class _MedicalRecordSheet extends StatelessWidget {
                       ...records.map((r) {
                         final rec = r as Map<String, dynamic>;
                         return Container(
-                          margin: EdgeInsets.only(bottom: 12),
-                          padding: EdgeInsets.all(AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: AppRadius.radiusLg,
+                           margin: EdgeInsets.only(bottom: AppSpacing.md),
+                           padding: EdgeInsets.all(AppSpacing.lg),
+                           decoration: BoxDecoration(
+                             color: context.appColors.surface,
+                             borderRadius: AppRadius.radiusLg,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1422,7 +1423,7 @@ class _MedicalRecordSheet extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: AppSpacing.sm),
                               if ((rec['complaint']?.toString() ?? '')
                                   .isNotEmpty)
                                 Text(
@@ -1436,7 +1437,7 @@ class _MedicalRecordSheet extends StatelessWidget {
                                 ),
                               if ((rec['recommendation']?.toString() ?? '')
                                   .isNotEmpty) ...[
-                                SizedBox(height: 4),
+                                SizedBox(height: AppSpacing.xs),
                                 Text(
                                   'Rekomendasi: ${rec['recommendation']}',
                                   style: AppTextStyles.labelMd.copyWith(
@@ -1445,14 +1446,14 @@ class _MedicalRecordSheet extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                              SizedBox(height: 8),
+                              SizedBox(height: AppSpacing.sm),
                               Row(
                                 children: [
                                   _buildChip(
                                     'Mood: ${rec['mood'] ?? '-'}',
                                     context.watch<ThemeProvider>().info,
                                   ),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: AppSpacing.sm),
                                   _buildChip(
                                     rec['status']?.toString() ?? '-',
                                     context.watch<ThemeProvider>().success,

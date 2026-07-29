@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_pr
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class ModuleDetailScreen extends StatelessWidget {
   final Mission mission;
@@ -40,7 +41,7 @@ class ModuleDetailScreen extends StatelessWidget {
                 children: [
                   if (mission.fileUrl != null && mission.fileUrl!.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
                       child: InkWell(
                         onTap: () async {
                           final fullUrl = ApiGate.getImageUrl(mission.fileUrl);
@@ -61,10 +62,10 @@ class ModuleDetailScreen extends StatelessWidget {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(16),
+                          padding: AppSpacing.paddingLg,
                           decoration: BoxDecoration(
                             color: const Color(0xFFEFF6FF),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: AppRadius.radiusLg,
                             border: Border.all(
                               color: const Color(0xFF93C5FD),
                               width: 1.2,
@@ -73,7 +74,7 @@ class ModuleDetailScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding: AppSpacing.padding10,
                                 decoration: const BoxDecoration(
                                   color: AppColors.primary,
                                   shape: BoxShape.circle,
@@ -84,7 +85,7 @@ class ModuleDetailScreen extends StatelessWidget {
                                   size: 22,
                                 ),
                               ),
-                              const SizedBox(width: 14),
+                              const SizedBox(width: AppSpacing.s14),
                               const Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +98,7 @@ class ModuleDetailScreen extends StatelessWidget {
                                         color: Color(0xFF1D4ED8),
                                       ),
                                     ),
-                                    SizedBox(height: 3),
+                                    SizedBox(height: AppSpacing.s3),
                                     Text(
                                       'Ketuk untuk membuka file atau tautan',
                                       style: TextStyle(
@@ -125,7 +126,7 @@ class ModuleDetailScreen extends StatelessWidget {
                       color: AppColors.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Diposting oleh Panitia PKKMB Kencana',
                     style: AppTextStyles.labelSm.copyWith(
@@ -133,7 +134,7 @@ class ModuleDetailScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     mission.content ?? 'Tidak ada deskripsi materi.',
                     style: AppTextStyles.bodyMd.copyWith(
@@ -141,7 +142,7 @@ class ModuleDetailScreen extends StatelessWidget {
                       height: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   BkuButton(
                     onPressed:
                         mission.isCompleted
@@ -200,7 +201,7 @@ class ModuleDetailScreen extends StatelessWidget {
                             : 'Tandai Selesai Belajar',
                     variant: BkuButtonVariant.success,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ],
               ),
             ),

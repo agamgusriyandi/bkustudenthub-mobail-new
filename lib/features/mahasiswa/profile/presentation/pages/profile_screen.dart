@@ -1,4 +1,6 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
@@ -11,6 +13,7 @@ import '../dialogs/profile_dialogs.dart';
 import '../widgets/data_diri_tab.dart';
 import '../widgets/akademik_tab.dart';
 import '../widgets/notifikasi_tab.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -63,12 +66,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     FadeInAnimation(
                       delay: 0.1,
                       child: buildRoleCard(context, student),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                   ],
                 ),
               ),
@@ -86,8 +89,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                       controller: _tabController,
                       isScrollable: false,
                       labelPadding: EdgeInsets.zero,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: const Color(0xFF64748B),
+                      labelColor: context.appColors.onPrimary,
+                      unselectedLabelColor: AppColors.neutral600,
                       labelStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
@@ -100,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       dividerColor: Colors.transparent,
                       indicator: BoxDecoration(
                         color: activeColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.radiusMd,
                         boxShadow: [
                           BoxShadow(
                             color: activeColor.withAlpha(70),
@@ -118,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.person_outline_rounded, size: 14),
-                                SizedBox(width: 3),
+                                SizedBox(width: AppSpacing.s3),
                                 Text('Data Diri'),
                               ],
                             ),
@@ -132,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.school_outlined, size: 14),
-                                SizedBox(width: 3),
+                                SizedBox(width: AppSpacing.s3),
                                 Text('Akademik'),
                               ],
                             ),
@@ -146,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.security_outlined, size: 14),
-                                SizedBox(width: 3),
+                                SizedBox(width: AppSpacing.s3),
                                 Text('Keamanan'),
                               ],
                             ),
@@ -160,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.notifications_none_rounded, size: 14),
-                                SizedBox(width: 3),
+                                SizedBox(width: AppSpacing.s3),
                                 Text('Notif'),
                               ],
                             ),
@@ -209,12 +212,12 @@ class _ProfileScreenState extends State<ProfileScreen>
             headerIcon: Icons.security_rounded,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         FadeInAnimation(
           delay: 0.2,
           child: buildLogoutButton(context),
         ),
-        const SizedBox(height: 120),
+        const SizedBox(height: AppSpacing.s120),
       ],
     );
   }
@@ -243,8 +246,8 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.radiusLg,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(10),
@@ -253,7 +256,7 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
             ),
           ],
         ),
-        padding: const EdgeInsets.all(3),
+        padding: AppSpacing.padding3,
         child: child,
       ),
     );

@@ -1,10 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
@@ -167,7 +168,7 @@ class _MentorHandbookReviewScreenState
                       size: 64,
                       color: AppColors.warning.withAlpha(150),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       'Mahasiswa belum mengirimkan handbook',
                       style: AppTextStyles.labelLg.copyWith(
@@ -184,7 +185,7 @@ class _MentorHandbookReviewScreenState
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _buildStatusCard(_handbookData!),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   Text(
                     'Isian Handbook:',
@@ -194,7 +195,7 @@ class _MentorHandbookReviewScreenState
                       fontSize: 18,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
 
                   if (_handbookData!.contentJson != null)
                     ..._handbookData!.contentJson!.entries.map(
@@ -203,7 +204,7 @@ class _MentorHandbookReviewScreenState
                   else
                     const Text('Tidak ada konten terstruktur.'),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                 ]),
               ),
             ),
@@ -214,7 +215,7 @@ class _MentorHandbookReviewScreenState
               ? Container(
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withAlpha(12),
@@ -232,7 +233,7 @@ class _MentorHandbookReviewScreenState
                         text: 'Tolak / Perbaikan',
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: BkuButton(
                         onPressed: () => _showReviewDialog('approved'),
@@ -285,7 +286,7 @@ class _MentorHandbookReviewScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(statusIcon, color: statusColor),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +300,7 @@ class _MentorHandbookReviewScreenState
                   ),
                 ),
                 if (data.feedback.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Catatan: ${data.feedback}',
                     style: AppTextStyles.bodySm.copyWith(
@@ -309,7 +310,7 @@ class _MentorHandbookReviewScreenState
                   ),
                 ],
                 if (data.submittedAt.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Disubmit: ${data.submittedAt}',
                     style: AppTextStyles.labelSm.copyWith(
@@ -328,7 +329,7 @@ class _MentorHandbookReviewScreenState
   Widget _buildJsonEntry(String key, dynamic value) {
     final theme = Theme.of(context);
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,7 +342,7 @@ class _MentorHandbookReviewScreenState
               letterSpacing: 1.2,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value?.toString() ?? '-',
             style: AppTextStyles.bodyMd.copyWith(

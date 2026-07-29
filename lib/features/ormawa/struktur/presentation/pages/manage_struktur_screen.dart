@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
@@ -46,7 +47,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
         }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Kelola Struktur Organisasi',
         variant: AppBarVariant.ormawa,
@@ -66,14 +67,14 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                       'INFORMASI KABINET',
                       Icons.info_outline_rounded,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildTextField(
                       'Nama Kabinet',
                       provider.orgName,
                       Icons.badge_rounded,
                       enabled: false,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildTextField(
                       'Periode',
                       provider.academicYear,
@@ -81,7 +82,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                       enabled: false,
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -104,19 +105,19 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     if (bphMembers.isEmpty)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
                         child: Text(
                           'Belum ada pengurus BPH',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: AppColors.neutral500),
                         ),
                       )
                     else
                       ...bphMembers.map(
                         (m) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: _buildEditableMemberCard(
                             m.role,
                             m.name,
@@ -127,7 +128,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                         ),
                       ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -150,19 +151,19 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     if (divisions.isEmpty)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
                         child: Text(
                           'Belum ada divisi',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: AppColors.neutral500),
                         ),
                       )
                     else
                       ...divisions.map(
                         (d) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: _buildDeptEditCard(
                             d,
                             members.where((m) => m.division == d.name).length,
@@ -171,7 +172,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                         ),
                       ),
 
-                    const SizedBox(height: 50),
+                    const SizedBox(height: AppSpacing.s50),
                   ],
                 ),
               ),
@@ -182,7 +183,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     return Row(
       children: [
         Icon(icon, color: Theme.of(context).colorScheme.primary, size: 18),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Text(
           title,
           style: AppTextStyles.labelSm.copyWith(
@@ -210,7 +211,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
             color: enabled ? AppColors.neutral100 : AppColors.neutral200,
@@ -258,7 +259,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
@@ -288,7 +289,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -301,7 +302,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   currentName,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -335,7 +336,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
@@ -349,7 +350,12 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 20, 16),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.s20,
+              AppSpacing.s20,
+              AppSpacing.lg,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -364,7 +370,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                           borderRadius: AppRadius.radiusXs,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
                           dept.name,
@@ -412,12 +418,12 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: AppColors.error,
-                                          foregroundColor: Colors.white,
+                                          foregroundColor: context.appColors.onPrimary,
                                           elevation: 0,
                                         ),
-                                        child: const Text(
+                                        child: Text(
                                           'Hapus',
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(color: context.appColors.onPrimary),
                                         ),
                                       ),
                                     ],
@@ -459,7 +465,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                         size: 14,
                         color: Theme.of(context).colorScheme.outline,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.s6),
                       Text(
                         '$memberCount Anggota Terdaftar',
                         style: AppTextStyles.labelSm.copyWith(
@@ -508,9 +514,9 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                   }
                 },
 
-                child: const Text(
+                child: Text(
                   'Simpan',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: context.appColors.onPrimary),
                 ),
               ),
             ],
@@ -538,20 +544,20 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(ctx).viewInsets.bottom,
                 ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                decoration: BoxDecoration(
+                  color: context.appColors.surface,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Center(
                       child: Container(
-                        margin: const EdgeInsets.only(top: 12, bottom: 20),
+                        margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.s20),
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.withAlpha(50),
+                                      color: AppColors.neutral500.withAlpha(50),
                           borderRadius: AppRadius.radiusXs,
                         ),
                       ),
@@ -602,7 +608,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               TextField(
                                 controller: _bphSearchController,
                                 decoration: InputDecoration(
@@ -621,14 +627,14 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                               if (_isSearchingStudent &&
                                   _bphSearchController.text.isNotEmpty)
                                 Container(
-                                  margin: const EdgeInsets.only(top: 8),
+                                  margin: const EdgeInsets.only(top: AppSpacing.sm),
                                   constraints: const BoxConstraints(
                                     maxHeight: 150,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: context.appColors.surface,
                                     border: Border.all(
-                                      color: Colors.grey.withAlpha(50),
+                          color: AppColors.neutral500.withAlpha(50),
                                     ),
                                     borderRadius: AppRadius.radiusMd,
                                     boxShadow: [
@@ -673,7 +679,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                             .toList(),
                                   ),
                                 ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
                             ],
                             Text(
                               'Jabatan BPH',
@@ -681,7 +687,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: AppSpacing.sm),
                             DropdownButtonFormField<String>(
                               initialValue: selectedRole,
                               items:
@@ -736,10 +742,10 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                           }
                         },
 
-                        child: const Text(
+                        child: Text(
                           'SIMPAN',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

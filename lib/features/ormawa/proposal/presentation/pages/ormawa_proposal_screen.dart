@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -6,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 
 class OrmawaProposalScreen extends StatefulWidget {
   final bool showBackButton;
@@ -75,12 +76,12 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
       floatingActionButton:
           canCreateProposal
               ? Padding(
-                padding: const EdgeInsets.only(bottom: 100),
+                padding: const EdgeInsets.only(bottom: AppSpacing.s100),
                 child: FadeInAnimation(
                   delay: 1.0,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: AppRadius.br28,
                       boxShadow: [
                         BoxShadow(
                           color: Theme.of(
@@ -93,21 +94,16 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     ),
                     child: FloatingActionButton.extended(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateProposalScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaCreateProposal);
                       },
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       elevation: 0,
                       highlightElevation: 0,
-                      icon: const Icon(Icons.add_rounded, color: Colors.white),
+                      icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                       label: Text(
                         'Buat Proposal',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -137,9 +133,9 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildProposalStats(ormawaProvider),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -155,7 +151,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                           (value) => setState(() => _searchQuery = value),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   if (filteredProposals.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -171,7 +167,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                                 context,
                               ).colorScheme.outline.withAlpha(50),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             Text(
                               'Proposal tidak ditemukan',
                               style: AppTextStyles.bodyMd.copyWith(
@@ -195,7 +191,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 150)),
+            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.s150)),
           ],
         ),
       ),
@@ -227,7 +223,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
             horizontal: AppSpacing.md,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             boxShadow: [
               BoxShadow(
@@ -302,7 +298,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
             ),
             child: Icon(icon, color: color, size: 16),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.s10),
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
@@ -311,7 +307,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
               color: AppColors.neutral800,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -373,10 +369,10 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
     return FadeInAnimation(
       delay: 0.1 * (index % 5),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
@@ -404,7 +400,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     size: 28,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,9 +412,9 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                           color: AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
-                        '${proposal.code} • ${dateFormatter.format(proposal.date).toUpperCase()}',
+                        '${proposal.code} â€¢ ${dateFormatter.format(proposal.date).toUpperCase()}',
                         style: AppTextStyles.labelSm.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                           fontWeight: FontWeight.bold,
@@ -480,30 +476,14 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       Icons.visibility_outlined,
                       AppColors.info,
                       () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => OrmawaProposalDetailScreen(
-                                  proposal: proposal,
-                                ),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaProposalDetail, extra: proposal);
                       },
                     ),
-                    const SizedBox(width: 8),
-                    _buildActionButton(Icons.edit_outlined, Colors.teal, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => CreateProposalScreen(
-                                initialProposal: proposal,
-                              ),
-                        ),
-                      );
+                    const SizedBox(width: AppSpacing.sm),
+                    _buildActionButton(Icons.edit_outlined, context.appColors.info, () {
+                      context.push(AppRoutes.ormawaCreateProposal, extra: proposal);
                     }),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     _buildActionButton(
                       Icons.delete_outline_rounded,
                       AppColors.error,
@@ -568,9 +548,9 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -587,14 +567,14 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Filter Status',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -625,7 +605,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -636,7 +616,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                 ),
                 if (_selectedStatus != 'Semua')
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
                     child: TextButton(
                       onPressed: () {
                         setState(() => _selectedStatus = 'Semua');
@@ -650,7 +630,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),

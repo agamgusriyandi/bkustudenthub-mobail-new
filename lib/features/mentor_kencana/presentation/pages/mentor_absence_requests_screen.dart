@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +125,7 @@ class _MentorAbsenceRequestsScreenState
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final req = requests[index];
                     return BkuCard(
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,28 +177,28 @@ class _MentorAbsenceRequestsScreenState
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             req.nim,
                             style: AppTextStyles.labelSm.copyWith(
                               color: Theme.of(context).colorScheme.outline,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           Text(
                             'Sesi: ${req.sessionTitle}',
                             style: AppTextStyles.labelSm.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.s2),
                           Text(
                             'Tanggal: ${req.date}',
                             style: AppTextStyles.labelSm.copyWith(
                               color: Theme.of(context).colorScheme.outline,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpacing.s10),
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.all(AppSpacing.md),
@@ -220,7 +220,7 @@ class _MentorAbsenceRequestsScreenState
                             ),
                           ),
                           if (req.status == 'Pending') ...[
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             Row(
                               children: [
                                 Expanded(
@@ -236,7 +236,7 @@ class _MentorAbsenceRequestsScreenState
                                     text: 'Tolak',
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: BkuButton(
                                     onPressed:

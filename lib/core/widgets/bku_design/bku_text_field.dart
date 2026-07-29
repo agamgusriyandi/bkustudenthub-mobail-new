@@ -108,6 +108,7 @@ class _BkuTextFieldState extends State<BkuTextField> {
           _obscureText ? Icons.visibility_off : Icons.visibility,
           color: AppColors.neutral500,
         ),
+        tooltip: _obscureText ? 'Tampilkan password' : 'Sembunyikan password',
         onPressed: () {
           setState(() {
             _obscureText = !_obscureText;

@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -76,21 +77,21 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   const FadeInAnimation(delay: 0.2, child: _AspirationBanner()),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   if (student.isLoading)
                     const BkuShimmer(
                       width: double.infinity,
                       height: 120,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
                     )
                   else
                     FadeInAnimation(
                       delay: 0.4,
                       child: _buildStatsDashboard(student),
                     ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   FadeInAnimation(
                     delay: 0.6,
                     child: Row(
@@ -117,9 +118,9 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   FadeInAnimation(delay: 0.7, child: _buildCategoryFilter()),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   if (student.isLoading)
                     const BkuShimmerList(itemCount: 2, itemHeight: 120)
                   else if (filteredAspirations.isEmpty)
@@ -132,7 +133,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                         child: _buildAspirationCard(filteredAspirations[index]),
                       ),
                     ),
-                  const SizedBox(height: 120),
+                  const SizedBox(height: AppSpacing.s120),
                 ],
               ),
             ),
@@ -151,14 +152,14 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
           Icons.send_rounded,
           AppColors.info,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         _buildStatCard(
           'Diproses',
           student.pendingAspirations.toString(),
           Icons.sync_rounded,
           AppColors.warning,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         _buildStatCard(
           'Selesai',
           student.resolvedAspirations.toString(),
@@ -179,7 +180,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
@@ -193,14 +194,14 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: AppSpacing.paddingSm,
               decoration: BoxDecoration(
                 color: color.withAlpha(20),
                 borderRadius: AppRadius.radiusSm,
               ),
               child: Icon(icon, color: color, size: 20),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               value,
               style: AppTextStyles.titleLg.copyWith(
@@ -209,7 +210,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                 color: AppColors.neutral900,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.s2),
             Text(
               label,
               style: AppTextStyles.labelSm.copyWith(
@@ -242,7 +243,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
             categories.map((cat) {
               bool isSelected = _selectedFilter == cat;
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
                 child: ChoiceChip(
                   label: Text(cat),
                   selected: isSelected,
@@ -258,7 +259,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.appColors.surface,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.radiusLg,
                     side: BorderSide(
@@ -282,7 +283,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
 
   Widget _buildAspirationCard(Aspiration asp) {
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -325,7 +326,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     _buildStatusBadge(asp.status),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -341,7 +342,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                               fontSize: 15,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             asp.description,
                             style: AppTextStyles.labelSm.copyWith(
@@ -359,7 +360,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                       ),
                     ),
                     if (asp.imageUrl != null && asp.imageUrl!.isNotEmpty) ...[
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       if (asp.imageUrl!.toLowerCase().endsWith('.pdf'))
                         InkWell(
                           onTap: () async {
@@ -426,7 +427,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                   ],
                 ),
                 if (asp.feedback != null) ...[
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
@@ -444,7 +445,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                           size: 18,
                           color: AppColors.success,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,7 +458,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                                   color: AppColors.success,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: AppSpacing.xs),
                               Text(
                                 asp.feedback!,
                                 style: AppTextStyles.labelSm.copyWith(
@@ -477,7 +478,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     ),
                   ),
                 ],
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -565,13 +566,13 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
     return Center(
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
           Icon(
             Icons.inbox_rounded,
             size: 64,
             color: Theme.of(context).colorScheme.outline.withAlpha(50),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada riwayat aspirasi',
             style: AppTextStyles.labelMd.copyWith(
@@ -595,9 +596,9 @@ class _AspirationBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey[200]!, width: 1),
+        border: Border.all(color: AppColors.neutral200, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(5),
@@ -623,7 +624,7 @@ class _AspirationBanner extends StatelessWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -636,7 +637,7 @@ class _AspirationBanner extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       'Setiap suara berharga untuk BKU.',
                       style: AppTextStyles.labelSm.copyWith(
@@ -649,7 +650,7 @@ class _AspirationBanner extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           SizedBox(
             width: double.infinity,
             height: 54,

@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import '../../utils/portfolio_pdf_generator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrganisasiScreen extends StatefulWidget {
   const OrganisasiScreen({super.key});
@@ -68,7 +70,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     final orgHistory = student.organizationHistory;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           try {
@@ -99,14 +101,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
             }
           }
         },
-        backgroundColor: AppColors.danger,
-        foregroundColor: Colors.white,
+        backgroundColor: context.appColors.error,
+        foregroundColor: context.appColors.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
-        icon: const Icon(Icons.picture_as_pdf_rounded, color: Colors.white),
+        icon: Icon(Icons.picture_as_pdf_rounded, color: context.appColors.onPrimary),
         label: Text(
           'Export Portfolio',
           style: AppTextStyles.labelMd.copyWith(
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -130,17 +132,17 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   const FadeInAnimation(
                     delay: 0.2,
                     child: _OrganizationBanner(),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   FadeInAnimation(
                     delay: 0.3,
                     child: _buildPortfolioStats(orgHistory),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   FadeInAnimation(
                     delay: 0.4,
                     child: SingleChildScrollView(
@@ -151,9 +153,9 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             0,
                             'Keanggotaan & Riwayat (${orgHistory.length})',
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           _buildTabPill(1, 'Daftar Ormawa Baru'),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           _buildTabPill(
                             2,
                             'Tagihan Iuran Kas (${student.iuranList.where((i) => i['status'] != 'lunas').length})',
@@ -162,7 +164,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   if (_activeTab == 0) ...[
                     if (student.isLoading)
                       const BkuShimmerList(itemCount: 2, itemHeight: 120)
@@ -200,7 +202,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         final org = entry.value;
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                           child: FadeInAnimation(
                             delay: 0.5 + (index * 0.1),
                             child: _buildOrgCard(
@@ -216,7 +218,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         );
                       }),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     FadeInAnimation(
                       delay: 0.7,
                       child: _buildAddButton(context),
@@ -226,7 +228,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                   ] else if (_activeTab == 2) ...[
                     _buildTagihanIuranTab(student),
                   ],
-                  const SizedBox(height: 120),
+                  const SizedBox(height: AppSpacing.s120),
                 ],
               ),
             ),
@@ -287,7 +289,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     ),
                     child: Icon(icon, color: iconColor, size: 30),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +302,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             color: AppColors.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           type,
                           style: AppTextStyles.labelMd.copyWith(
@@ -357,7 +359,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           role,
                           style: AppTextStyles.labelMd.copyWith(
@@ -374,7 +376,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     height: 25,
                     color: AppColors.neutral300,
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +390,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           period,
                           style: AppTextStyles.labelMd.copyWith(
@@ -403,7 +405,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               ),
             ),
             if (achievements.isNotEmpty) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                 child: Column(
@@ -417,14 +419,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         color: AppColors.neutral800,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     ...achievements.map(
                       (a) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.s10),
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(2),
+                              padding: AppSpacing.padding2,
                               decoration: BoxDecoration(
                                 color: iconColor.withAlpha(15),
                                 shape: BoxShape.circle,
@@ -435,7 +437,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 color: iconColor,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: Text(
                                 a,
@@ -457,7 +459,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                 ),
               ),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
           ],
         ),
       ),
@@ -486,14 +488,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
           Icons.bolt_rounded,
           AppColors.warning,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         _buildStatItem(
           verifiedOrg,
           'Terverifikasi',
           Icons.verified_user_rounded,
           AppColors.info,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         _buildStatItem(
           totalAchievements,
           'Pencapaian',
@@ -516,7 +518,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         child: Column(
           children: [
             Icon(icon, color: color, size: 18),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               count,
               style: AppTextStyles.labelMd.copyWith(
@@ -561,7 +563,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
         decoration: BoxDecoration(
           color: isActive ? activeColor : const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.br20,
           boxShadow: isActive
               ? [
                   BoxShadow(
@@ -650,29 +652,29 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
             final imageUrl = ApiGate.getImageUrl(logoUrl);
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: AppSpacing.paddingLg,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: context.appColors.surface,
+                borderRadius: AppRadius.radiusLg,
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child:
-                        logoUrl.isNotEmpty
-                            ? Image.network(
+                    borderRadius: AppRadius.radiusSm,
+                    child: logoUrl.isNotEmpty
+                            ? CachedNetworkImage(imageUrl: 
                               imageUrl,
                               width: 48,
                               height: 48,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _buildDefaultLogo(),
+                              errorWidget: (_, url, error) => _buildDefaultLogo(),
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             )
                             : _buildDefaultLogo(),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -683,7 +685,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           category,
                           style: AppTextStyles.bodySm.copyWith(
@@ -710,7 +712,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.radiusMd,
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -791,11 +793,11 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
             }
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: AppSpacing.paddingLg,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: context.appColors.surface,
+                borderRadius: AppRadius.radiusLg,
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: Column(
@@ -807,7 +809,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       Text(
                         ormawaName,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Colors.blueGrey,
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -818,7 +820,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: statusColor.withAlpha(20),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.radiusSm,
                         ),
                         child: Text(
                           statusLabel,
@@ -830,14 +832,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     judul,
                     style: AppTextStyles.titleMd.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -850,14 +852,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       Text(
                         'Rp ${_formatNominal(nominal)}',
                         style: AppTextStyles.titleMd.copyWith(
-                          color: Colors.redAccent,
+                          color: context.appColors.error,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                     ],
                   ),
                   if (formattedDate.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -877,7 +879,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     ),
                   ],
                   if (catatan.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Catatan: $catatan',
                       style: AppTextStyles.bodySm.copyWith(
@@ -887,7 +889,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     ),
                   ],
                   if (status == 'belum_bayar' || status == 'ditolak') ...[
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -897,7 +899,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                               Theme.of(context).colorScheme.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.radiusMd,
                           ),
                         ),
                         child: const Text('Bayar Sekarang'),
@@ -925,17 +927,17 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (sheetCtx, setSheetState) {
             return Padding(
               padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 24,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 32,
+                left: AppSpacing.xl,
+                right: AppSpacing.xl,
+                top: AppSpacing.xl,
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.xxl,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -947,23 +949,23 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       height: 4,
                       decoration: BoxDecoration(
                         color: AppColors.neutral300,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: AppRadius.br2,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Detail Pembayaran Transfer',
                     style: AppTextStyles.titleLg.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppSpacing.paddingLg,
                     decoration: BoxDecoration(
                       color: AppColors.neutral100,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: AppRadius.radiusLg,
                     ),
                     child: Column(
                       children: [
@@ -983,7 +985,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -1036,7 +1038,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: AppRadius.radiusLg,
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
@@ -1089,13 +1091,13 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
           MaterialPageRoute(builder: (context) => const AddOrganisasiScreen()),
         );
       },
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.br20,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.br20,
         ),
         child: const Column(
           children: [
@@ -1104,7 +1106,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               color: accentColor,
               size: 26,
             ),
-            SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               'Tambah Riwayat Organisasi',
               style: TextStyle(
@@ -1143,13 +1145,13 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.85,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             child: Column(
               children: [
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Container(
                   width: 40,
                   height: 4,
@@ -1173,7 +1175,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             ),
                             child: Icon(icon, color: iconColor, size: 32),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSpacing.lg),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1201,7 +1203,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       _buildDetailSection('Detail Posisi', [
                         _buildDetailRow(Icons.badge_rounded, 'Jabatan', role),
                         _buildDetailRow(
@@ -1215,7 +1217,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           statusVerifikasi,
                         ),
                       ]),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       Text(
                         'Deskripsi Kontribusi',
                         style: AppTextStyles.titleLg.copyWith(
@@ -1224,7 +1226,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           color: AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Text(
                         description.isNotEmpty
                             ? description
@@ -1235,7 +1237,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         ),
                       ),
                       if (achievements.isNotEmpty) ...[
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         Text(
                           'Pencapaian & Impact',
                           style: AppTextStyles.titleLg.copyWith(
@@ -1244,10 +1246,10 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             color: AppColors.neutral800,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         ...achievements.map(
                           (a) => Container(
-                            margin: const EdgeInsets.only(bottom: 12),
+                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
                               color: Theme.of(context)
@@ -1269,7 +1271,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                   color: AppColors.warning,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: Text(
                                     a,
@@ -1284,7 +1286,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -1345,7 +1347,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (org.dokumentasi != null &&
                           org.dokumentasi!.isNotEmpty)
                         org.dokumentasi!.toLowerCase().endsWith('.pdf')
@@ -1381,7 +1383,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                       color: AppColors.error,
                                       size: 32,
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: AppSpacing.md),
                                     Expanded(
                                       child: Text(
                                         'Dokumen PDF',
@@ -1401,14 +1403,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             )
                             : ClipRRect(
                               borderRadius: AppRadius.radiusLg,
-                              child: Image.network(
+                              child: CachedNetworkImage(imageUrl: 
                                 org.dokumentasi!.startsWith('http')
                                     ? org.dokumentasi!
                                     : '${ApiGate.baseUrl.replaceAll('/api', '')}${org.dokumentasi}',
                                 fit: BoxFit.cover,
                                 height: 180,
                                 width: double.infinity,
-                                errorBuilder:
+                                errorWidget:
                                     (ctx, err, stack) => Container(
                                       height: 100,
                                       color: Colors.grey.shade100,
@@ -1416,6 +1418,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                         child: Icon(Icons.broken_image_rounded),
                                       ),
                                     ),
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               ),
                             )
                       else
@@ -1434,7 +1437,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 size: 40,
                                 color: Colors.grey.shade300,
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               Text(
                                 'Belum ada dokumentasi',
                                 style: TextStyle(
@@ -1447,7 +1450,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         ),
                       if (statusVerifikasi.toLowerCase() == 'menunggu' ||
                           statusVerifikasi.toLowerCase() == 'pending') ...[
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Row(
                           children: [
                             Expanded(
@@ -1472,7 +1475,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: SizedBox(
                                 height: 50,
@@ -1487,7 +1490,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -1499,7 +1502,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         ),
                       ] else ...[
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -1511,7 +1514,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 40),
+                      const SizedBox(height: AppSpacing.xxxl),
                     ],
                   ),
                 ),
@@ -1583,7 +1586,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
             color: AppColors.neutral800,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         BkuCard(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(children: children),
@@ -1594,11 +1597,11 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppColors.neutral600),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1655,7 +1658,7 @@ class _OrganizationBanner extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Jejak Kontribusi\n& Kepemimpinan',
             style: AppTextStyles.headlineMd.copyWith(
@@ -1665,7 +1668,7 @@ class _OrganizationBanner extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Catat setiap pengalaman organisasimu untuk masa depan.',
             style: AppTextStyles.labelSm.copyWith(

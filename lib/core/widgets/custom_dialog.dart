@@ -1,7 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:flutter/material.dart';
 
@@ -35,17 +35,17 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color iconBgColor = AppColors.info.withAlpha(25);
-    Color iconColor = AppColors.info;
+    Color iconBgColor = context.appColors.info.withAlpha(25);
+    Color iconColor = context.appColors.info;
     IconData iconData = Icons.info_outline_rounded;
 
     if (isSuccess) {
-      iconBgColor = AppColors.success.withAlpha(25);
-      iconColor = AppColors.success;
+      iconBgColor = context.appColors.success.withAlpha(25);
+      iconColor = context.appColors.success;
       iconData = Icons.check_circle_rounded;
     } else if (isDestructive) {
-      iconBgColor = AppColors.error.withAlpha(25);
-      iconColor = AppColors.error;
+      iconBgColor = context.appColors.error.withAlpha(25);
+      iconColor = context.appColors.error;
       iconData = Icons.error_outline_rounded;
     }
 
@@ -58,7 +58,7 @@ class CustomDialog extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary.withAlpha(25),
           shape: BoxShape.circle,
         ),
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         child: CircularProgressIndicator(
           color: Theme.of(context).colorScheme.primary,
           strokeWidth: 3,
@@ -74,7 +74,7 @@ class CustomDialog extends StatelessWidget {
     }
 
     Widget actionsWidget;
-    final resolvedConfirmColor = confirmColor ?? (isDestructive ? null : (isSuccess ? null : const Color(0xFF1E293B)));
+    final resolvedConfirmColor = confirmColor ?? (isDestructive ? null : (isSuccess ? null : context.appColors.secondary));
 
     if (cancelText.isEmpty) {
       actionsWidget = BkuButton(
@@ -97,12 +97,12 @@ class CustomDialog extends StatelessWidget {
             child: BkuButton(
               text: cancelText,
               variant: BkuButtonVariant.outline,
-              customFgColor: const Color(0xFF1E293B),
+              customFgColor: context.appColors.secondary,
               onPressed: isLoading ? null : onCancel,
               height: 48,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: BkuButton(
               text: confirmText,
@@ -124,7 +124,7 @@ class CustomDialog extends StatelessWidget {
 
     return Dialog(
       shape: const RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),

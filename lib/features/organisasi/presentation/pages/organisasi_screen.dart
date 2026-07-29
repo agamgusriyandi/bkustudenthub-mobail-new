@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
@@ -34,9 +35,9 @@ class OrganisasiScreen extends StatelessWidget {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
               ),
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Form(
@@ -56,7 +57,7 @@ class OrganisasiScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         'Tambah Riwayat Organisasi',
                         style: AppTextStyles.titleLg.copyWith(
@@ -64,7 +65,7 @@ class OrganisasiScreen extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       BkuTextField(
                         controller: nameController,
                         decoration: InputDecoration(
@@ -80,7 +81,7 @@ class OrganisasiScreen extends StatelessWidget {
                                     ? 'Nama organisasi wajib diisi'
                                     : null,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       BkuTextField(
                         controller: typeController,
                         decoration: InputDecoration(
@@ -96,7 +97,7 @@ class OrganisasiScreen extends StatelessWidget {
                                     ? 'Tipe organisasi wajib diisi'
                                     : null,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       BkuTextField(
                         controller: roleController,
                         decoration: InputDecoration(
@@ -112,7 +113,7 @@ class OrganisasiScreen extends StatelessWidget {
                                     ? 'Jabatan wajib diisi'
                                     : null,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Row(
                         children: [
                           Expanded(
@@ -130,7 +131,7 @@ class OrganisasiScreen extends StatelessWidget {
                                       v == null || v.isEmpty ? 'Wajib' : null,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: BkuTextField(
                               controller: endYearController,
@@ -145,7 +146,7 @@ class OrganisasiScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       BkuTextField(
                         controller: descController,
                         maxLines: 2,
@@ -157,7 +158,7 @@ class OrganisasiScreen extends StatelessWidget {
                           prefixIcon: const Icon(Icons.description_rounded),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       BkuTextField(
                         controller: achievementsController,
                         decoration: InputDecoration(
@@ -168,7 +169,7 @@ class OrganisasiScreen extends StatelessWidget {
                           prefixIcon: const Icon(Icons.star_rounded),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       SizedBox(
                         width: double.infinity,
                         height: 54,
@@ -262,7 +263,7 @@ class OrganisasiScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
@@ -271,21 +272,21 @@ class OrganisasiScreen extends StatelessWidget {
           _buildSliverAppBar(context),
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     const FadeInAnimation(
                       delay: 0.2,
                       child: _OrganizationBanner(),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     FadeInAnimation(
                       delay: 0.4,
                       child: Text(
@@ -297,7 +298,7 @@ class OrganisasiScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Consumer<StudentProvider>(
                       builder: (context, provider, child) {
                         final orgList = provider.organizationHistory;
@@ -316,7 +317,7 @@ class OrganisasiScreen extends StatelessWidget {
                                       context,
                                     ).colorScheme.outline.withAlpha(80),
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: AppSpacing.lg),
                                   Text(
                                     'Belum ada riwayat organisasi',
                                     style: AppTextStyles.bodyMd.copyWith(
@@ -325,7 +326,7 @@ class OrganisasiScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: AppSpacing.sm),
                                   Text(
                                     'Daftarkan riwayat organisasi Anda di bawah ini.',
                                     style: AppTextStyles.labelSm.copyWith(
@@ -344,7 +345,7 @@ class OrganisasiScreen extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: orgList.length,
                           separatorBuilder:
-                              (context, index) => const SizedBox(height: 16),
+                              (context, index) => const SizedBox(height: AppSpacing.lg),
                           itemBuilder: (context, index) {
                             final org = orgList[index];
                             final isBEM = org.tipe.toLowerCase().contains(
@@ -353,6 +354,7 @@ class OrganisasiScreen extends StatelessWidget {
                             return FadeInAnimation(
                               delay: 0.3 + (index * 0.1),
                               child: _buildOrgCard(
+                                context,
                                 org.namaOrganisasi,
                                 org.tipe,
                                 org.jabatan,
@@ -370,12 +372,12 @@ class OrganisasiScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     FadeInAnimation(
                       delay: 0.7,
                       child: _buildAddButton(context),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     FadeInAnimation(
                       delay: 0.8,
                       child: Text(
@@ -387,9 +389,9 @@ class OrganisasiScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    FadeInAnimation(delay: 0.9, child: _buildGalleryGrid()),
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.lg),
+                    FadeInAnimation(delay: 0.9, child: _buildGalleryGrid(context)),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -406,7 +408,7 @@ class OrganisasiScreen extends StatelessWidget {
       pinned: true,
       elevation: 0,
       backgroundColor: Theme.of(context).colorScheme.primary,
-      iconTheme: const IconThemeData(color: Colors.white),
+                iconTheme: IconThemeData(color: context.appColors.onPrimary),
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         titlePadding: EdgeInsets.zero,
@@ -417,11 +419,11 @@ class OrganisasiScreen extends StatelessWidget {
                 kToolbarHeight + MediaQuery.of(context).padding.top + 10;
             return AnimatedPadding(
               duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.only(bottom: isCollapsed ? 16 : 48),
+              padding: EdgeInsets.only(bottom: isCollapsed ? AppSpacing.lg : AppSpacing.s48),
               child: Text(
                 'Organisasi',
                 style: AppTextStyles.titleLg.copyWith(
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -445,7 +447,7 @@ class OrganisasiScreen extends StatelessWidget {
                 child: Icon(
                   Icons.groups_rounded,
                   size: 120,
-                  color: Colors.white.withAlpha(15),
+                  color: context.appColors.onPrimary.withAlpha(15),
                 ),
               ),
             ],
@@ -456,6 +458,7 @@ class OrganisasiScreen extends StatelessWidget {
   }
 
   Widget _buildOrgCard(
+    BuildContext context,
     String name,
     String type,
     String role,
@@ -467,7 +470,7 @@ class OrganisasiScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.surfaceVariant, width: 1.5),
         boxShadow: [
@@ -491,7 +494,7 @@ class OrganisasiScreen extends StatelessWidget {
                 ),
                 child: Icon(icon, color: iconColor, size: 28),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,13 +504,13 @@ class OrganisasiScreen extends StatelessWidget {
                       style: AppTextStyles.titleLg.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                       ),
                     ),
                     Text(
                       type,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: AppColors.onSurfaceVariant,
+                        color: context.appColors.onSurfaceVariant,
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
                       ),
@@ -517,13 +520,13 @@ class OrganisasiScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppColors.primary.withAlpha(5),
+              color: context.appColors.primary.withAlpha(5),
               borderRadius: AppRadius.radiusLg,
-              border: Border.all(color: AppColors.primary.withAlpha(10)),
+              border: Border.all(color: context.appColors.primary.withAlpha(10)),
             ),
             child: Row(
               children: [
@@ -534,7 +537,7 @@ class OrganisasiScreen extends StatelessWidget {
                       Text(
                         'PERAN',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.outline,
+                          color: context.appColors.outline,
                           fontSize: 8,
                           fontWeight: FontWeight.w900,
                         ),
@@ -543,7 +546,7 @@ class OrganisasiScreen extends StatelessWidget {
                         role,
                         style: AppTextStyles.labelMd.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                           fontSize: 13,
                         ),
                       ),
@@ -553,9 +556,9 @@ class OrganisasiScreen extends StatelessWidget {
                 Container(
                   width: 1.5,
                   height: 30,
-                  color: AppColors.primary.withAlpha(15),
+                  color: context.appColors.primary.withAlpha(15),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -563,7 +566,7 @@ class OrganisasiScreen extends StatelessWidget {
                       Text(
                         'PERIODE',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.outline,
+                          color: context.appColors.outline,
                           fontSize: 8,
                           fontWeight: FontWeight.w900,
                         ),
@@ -581,28 +584,28 @@ class OrganisasiScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Text(
             'Pencapaian Utama:',
             style: AppTextStyles.labelMd.copyWith(
               fontWeight: FontWeight.w900,
               fontSize: 12,
-              color: AppColors.primary,
+              color: context.appColors.primary,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           ...achievements.map(
             (a) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Row(
                 children: [
                   Icon(Icons.check_circle_rounded, size: 14, color: iconColor),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.s10),
                   Expanded(
                     child: Text(
                       a,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: AppColors.onSurfaceVariant,
+                        color: context.appColors.onSurfaceVariant,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -637,7 +640,7 @@ class OrganisasiScreen extends StatelessWidget {
         label: Text(
           'Tambah Riwayat Organisasi',
           style: AppTextStyles.titleLg.copyWith(
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontSize: 15,
             fontWeight: FontWeight.w900,
           ),
@@ -646,7 +649,7 @@ class OrganisasiScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGalleryGrid() {
+  Widget _buildGalleryGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -684,10 +687,10 @@ class OrganisasiScreen extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(AppSpacing.lg),
             alignment: Alignment.bottomLeft,
-            child: Text(
-              'Kegiatan ${index + 1}',
-              style: AppTextStyles.labelSm.copyWith(
-                color: Colors.white,
+              child: Text(
+                'Kegiatan ${index + 1}',
+                style: AppTextStyles.labelSm.copyWith(
+                  color: context.appColors.onPrimary,
                 fontWeight: FontWeight.w900,
                 fontSize: 11,
               ),
@@ -730,34 +733,34 @@ class _OrganizationBanner extends StatelessWidget {
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(40),
+              color: context.appColors.onPrimary.withAlpha(40),
               borderRadius: AppRadius.radiusSm,
             ),
             child: Text(
               'LEADERSHIP PORTFOLIO',
               style: AppTextStyles.labelSm.copyWith(
-                color: Colors.white,
+                color: context.appColors.onPrimary,
                 fontSize: 9,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.5,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Jejak Kontribusi\n& Kepemimpinan',
             style: AppTextStyles.headlineMd.copyWith(
-              color: Colors.white,
+              color: context.appColors.onPrimary,
               fontSize: 22,
               height: 1.2,
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Catat setiap pengalaman organisasimu untuk masa depan.',
             style: AppTextStyles.labelSm.copyWith(
-              color: Colors.white70,
+              color: context.appColors.onPrimary.withAlpha(178),
               fontWeight: FontWeight.w500,
             ),
           ),

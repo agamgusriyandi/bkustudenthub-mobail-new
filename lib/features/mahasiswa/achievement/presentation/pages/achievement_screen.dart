@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/report_achievement_screen.dart';
@@ -39,7 +40,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final student = context.watch<StudentProvider>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => student.loadAllData(),
         color: Theme.of(context).colorScheme.primary,
@@ -64,9 +65,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     const FadeInAnimation(delay: 0.2, child: _RecapSection()),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     FadeInAnimation(
                       delay: 0.4,
                       child: Text(
@@ -78,7 +79,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     if (student.isLoading)
                       const BkuShimmerList(itemCount: 3, itemHeight: 120)
                     else if (student.achievements.isEmpty)
@@ -92,7 +93,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                           ),
                         );
                       }),
-                    const SizedBox(height: 160),
+                    const SizedBox(height: AppSpacing.s160),
                   ],
                 ),
               ),
@@ -101,9 +102,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLg,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(8),
@@ -179,7 +180,7 @@ class _RecapSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -233,7 +234,7 @@ class _RecapSection extends StatelessWidget {
           ),
           child: Icon(icon, color: color, size: 16),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           value,
           style: AppTextStyles.titleLg.copyWith(
@@ -288,7 +289,7 @@ class _AchievementCard extends StatelessWidget {
         "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: InkWell(
         onTap: () => _showAchievementDetail(context, achievement),
         borderRadius: AppRadius.radiusXl,
@@ -312,7 +313,7 @@ class _AchievementCard extends StatelessWidget {
                       size: 28,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +339,7 @@ class _AchievementCard extends StatelessWidget {
                                     color: statusColor,
                                     size: 12,
                                   ),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: AppSpacing.s6),
                                   Text(
                                     achievement.status.toUpperCase(),
                                     style: AppTextStyles.labelSm.copyWith(
@@ -368,7 +369,7 @@ class _AchievementCard extends StatelessWidget {
                                       color: Colors.teal,
                                       size: 12,
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: AppSpacing.s6),
                                     Text(
                                       'SIMKATMAWA',
                                       style: AppTextStyles.labelSm.copyWith(
@@ -382,7 +383,7 @@ class _AchievementCard extends StatelessWidget {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           achievement.title,
                           style: AppTextStyles.labelMd.copyWith(
@@ -404,13 +405,13 @@ class _AchievementCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               const SizedBox(height: 0),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
                   _buildTag(context, Icons.layers_rounded, achievement.level),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   _buildTag(
                     context,
                     Icons.workspace_premium_rounded,
@@ -466,9 +467,9 @@ class _AchievementCard extends StatelessWidget {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.7,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xxl),
             child: Column(
@@ -484,7 +485,7 @@ class _AchievementCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(
@@ -507,7 +508,7 @@ class _AchievementCard extends StatelessWidget {
                                 size: 24,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: AppSpacing.lg),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -532,7 +533,7 @@ class _AchievementCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         Text(
                           achievement.title,
                           style: AppTextStyles.titleLg.copyWith(
@@ -541,7 +542,7 @@ class _AchievementCard extends StatelessWidget {
                             fontSize: 20,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         Text(
                           achievement.organizer,
                           style: AppTextStyles.labelMd.copyWith(
@@ -549,14 +550,14 @@ class _AchievementCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         Text(
                           'Detail Penghargaan',
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         _buildDetailRow(
                           context,
                           Icons.layers_rounded,
@@ -587,14 +588,14 @@ class _AchievementCard extends StatelessWidget {
                                   ? Colors.teal
                                   : Theme.of(context).colorScheme.outline,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Text(
                           'Dokumen Sertifikat',
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         if (achievement.certificateUrl != null)
                           BkuCard(
                             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -612,7 +613,7 @@ class _AchievementCard extends StatelessWidget {
                                     size: 24,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -692,7 +693,7 @@ class _AchievementCard extends StatelessWidget {
                                       }
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: AppSpacing.paddingSm,
                                       child: const Icon(
                                         Icons.visibility_rounded,
                                         color: AppColors.neutral800,
@@ -715,7 +716,7 @@ class _AchievementCard extends StatelessWidget {
                                   ).colorScheme.outline.withAlpha(100),
                                   size: 32,
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Text(
                                   'File sertifikat belum tersedia atau belum diunggah.',
                                   textAlign: TextAlign.center,
@@ -728,7 +729,7 @@ class _AchievementCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           decoration: BoxDecoration(
@@ -742,7 +743,7 @@ class _AchievementCard extends StatelessWidget {
                                 color: statusColor,
                                 size: 18,
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Text(
                                   statusDesc,
@@ -759,7 +760,7 @@ class _AchievementCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 if (achievement.status == 'Pending' ||
                     achievement.status == 'Menunggu') ...[
                   Row(
@@ -786,7 +787,7 @@ class _AchievementCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: SizedBox(
                           height: 54,
@@ -801,7 +802,7 @@ class _AchievementCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   SizedBox(
                     width: double.infinity,
                     height: 54,
@@ -886,7 +887,7 @@ class _AchievementCard extends StatelessWidget {
     Color? color,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         children: [
           Icon(
@@ -894,7 +895,7 @@ class _AchievementCard extends StatelessWidget {
             color: Theme.of(context).colorScheme.outline.withAlpha(100),
             size: 20,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Text(
             label,
             style: AppTextStyles.labelMd.copyWith(
@@ -919,7 +920,7 @@ class _AchievementCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, color: Theme.of(context).colorScheme.outline, size: 14),
-        const SizedBox(width: 6),
+        const SizedBox(width: AppSpacing.s6),
         Text(
           text,
           style: AppTextStyles.labelSm.copyWith(
@@ -943,13 +944,13 @@ class _EmptyState extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
           Icon(
             Icons.emoji_events_outlined,
             size: 80,
             color: Theme.of(context).colorScheme.outline.withAlpha(50),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada prestasi',
             style: AppTextStyles.titleLg.copyWith(
@@ -957,7 +958,7 @@ class _EmptyState extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Yuk, mulai lapor prestasi mandiri kamu!',
             style: AppTextStyles.labelSm.copyWith(

@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -40,7 +41,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
     final session = provider.currentSessionDetail;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -72,14 +73,14 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                       color: AppColors.error,
                       size: 48,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       provider.errorMessage!,
                       style: AppTextStyles.labelMd.copyWith(
                         color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     BkuButton(
                       onPressed:
                           () => provider.fetchSessionDetails(widget.sessionId),
@@ -110,13 +111,13 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                   ),
                   children: [
                     _buildSessionInfo(session),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     _buildMaterialsSection(session),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildQuizzesSection(session),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildAssignmentsSection(session),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                   ],
                 ),
               ),
@@ -138,7 +139,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
             fontSize: 24,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         if (session.startDate != null)
           Row(
             children: [
@@ -147,7 +148,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                 size: 16,
                 color: Theme.of(context).colorScheme.outline,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
                 style: AppTextStyles.labelMd.copyWith(
@@ -157,7 +158,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               ),
             ],
           ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         if (session.description != null && session.description!.isNotEmpty)
           Text(
             session.description!,
@@ -337,7 +338,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         Row(
           children: [
             Icon(icon, size: 20, color: AppColors.neutral600),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               title,
               style: AppTextStyles.titleMd.copyWith(
@@ -347,7 +348,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         if (items.isEmpty)
           Container(
             width: double.infinity,
@@ -372,7 +373,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         else
           ...items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: itemBuilder(item),
             ),
           ),
@@ -407,7 +408,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                 ),
                 child: Icon(icon, color: iconColor, size: 24),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +420,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                         color: AppColors.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle,
                       style: AppTextStyles.labelSm.copyWith(

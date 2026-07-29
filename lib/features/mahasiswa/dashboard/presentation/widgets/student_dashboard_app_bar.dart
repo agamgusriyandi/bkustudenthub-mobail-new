@@ -1,9 +1,10 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class StudentDashboardAppBar extends StatelessWidget {
   final String name;
@@ -27,11 +28,11 @@ class StudentDashboardAppBar extends StatelessWidget {
         preferredSize: const Size.fromHeight(20),
         child: Container(
           height: 20,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32),
-              topRight: Radius.circular(32),
+              topLeft: Radius.circular(AppRadius.xxl),
+              topRight: Radius.circular(AppRadius.xxl),
             ),
           ),
         ),
@@ -86,17 +87,17 @@ class StudentDashboardAppBar extends StatelessWidget {
                                       color: Colors.white.withAlpha(30),
                                     ),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.person_rounded,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     size: 18,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 Text(
                                   name,
                                   style: AppTextStyles.labelMd.copyWith(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.w900,
                                     fontSize: 15,
                                     letterSpacing: 0.2,
@@ -111,9 +112,9 @@ class StudentDashboardAppBar extends StatelessWidget {
                                 color: Colors.white.withAlpha(20),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.notifications_active_rounded,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 size: 20,
                               ),
                             ),
@@ -166,13 +167,13 @@ class StudentDashboardAppBar extends StatelessWidget {
                                 color: Colors.white.withAlpha(20),
                               ),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.person_rounded,
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               size: 32,
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSpacing.lg),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +189,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                                 Text(
                                   name,
                                   style: AppTextStyles.titleLg.copyWith(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w900,
                                   ),
@@ -204,9 +205,9 @@ class StudentDashboardAppBar extends StatelessWidget {
                               color: Colors.white.withAlpha(25),
                               borderRadius: AppRadius.radiusLg,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.notifications_active_rounded,
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               size: 24,
                             ),
                           ),
@@ -238,7 +239,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                               color: Colors.white60,
                               size: 22,
                             ),
-                            const SizedBox(width: 14),
+                            const SizedBox(width: AppSpacing.s14),
                             Text(
                               'Cari info akademik atau layanan...',
                               style: AppTextStyles.labelSm.copyWith(

@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 // // import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
@@ -79,9 +80,9 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl))
           ),
           child: SafeArea(
             child: Column(
@@ -98,7 +99,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Row(
                   children: [
                     Container(
@@ -115,7 +116,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         size: 28,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +127,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
@@ -152,8 +153,8 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   children: [
                     const Icon(
@@ -161,7 +162,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                       color: Colors.grey,
                       size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Text(
                       _formatDate(event.tanggal),
                       style: AppTextStyles.labelMd.copyWith(
@@ -171,7 +172,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                   ],
                 ),
                 if (event.lokasi.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       const Icon(
@@ -179,7 +180,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         color: Colors.grey,
                         size: 20,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
                           event.lokasi,
@@ -192,7 +193,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                   ),
                 ],
                 if (event.deskripsi.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -201,7 +202,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         color: Colors.grey,
                         size: 20,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
                           event.deskripsi,
@@ -213,7 +214,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                     ],
                   ),
                 ],
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 SizedBox(
                   width: double.infinity,
                   child: BkuButton(
@@ -239,7 +240,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
         );
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: context.appColors.surface,
           appBar: const BkuStaticAppBar(
             title: 'Jadwal',
             variant: AppBarVariant.student,
@@ -310,10 +311,15 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.xl),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.s20,
+                  AppSpacing.lg,
+                  AppSpacing.s20,
+                  AppSpacing.lg,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -323,7 +329,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         color: AppColors.neutral600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       _formatDate(_selectedDay ?? _focusedDay),
                       style: AppTextStyles.titleMd.copyWith(
@@ -351,7 +357,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                           ),
                           itemCount: selectedEvents.length,
                           separatorBuilder:
-                              (context, index) => const SizedBox(height: 12),
+                              (context, index) => const SizedBox(height: AppSpacing.md),
                           itemBuilder: (context, index) {
                             final event = selectedEvents[index];
                             IconData iconData = Icons.event_note_rounded;
@@ -377,7 +383,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                 duration: const Duration(milliseconds: 200),
                                 padding: const EdgeInsets.all(AppSpacing.lg),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: context.appColors.surface,
                                   borderRadius: AppRadius.radiusXl,
                                   border: Border.all(
                                     color: Theme.of(
@@ -410,7 +416,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                         size: 22,
                                       ),
                                     ),
-                                    const SizedBox(width: 16),
+                                    const SizedBox(width: AppSpacing.lg),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -424,7 +430,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                                   color: AppColors.neutral900,
                                                 ),
                                           ),
-                                          const SizedBox(height: 6),
+                                          const SizedBox(height: AppSpacing.s6),
                                           Row(
                                             children: [
                                               Icon(
@@ -432,7 +438,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                                 size: 14,
                                                 color: AppColors.neutral500,
                                               ),
-                                              const SizedBox(width: 4),
+                                              const SizedBox(width: AppSpacing.xs),
                                               Text(
                                                 event.kategori.toUpperCase(),
                                                 style: AppTextStyles.labelSm

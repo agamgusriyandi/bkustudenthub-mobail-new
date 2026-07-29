@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:go_router/go_router.dart';
@@ -192,11 +193,14 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           // 1. Full Screen Background Image
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/gedung.png',
-              fit: BoxFit.cover,
-              // Karena gambar gedung barunya sudah di tengah, kita gunakan Alignment.center!
-              alignment: Alignment.center,
+            child: Semantics(
+              excludeSemantics: true,
+              child: Image.asset(
+                'assets/images/gedung.png',
+                fit: BoxFit.cover,
+                // Karena gambar gedung barunya sudah di tengah, kita gunakan Alignment.center!
+                alignment: Alignment.center,
+              ),
             ),
           ),
           // 2. Background Gradient Overlay
@@ -241,7 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _buildCenteredLogo(),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         // BOTTOM CARD
                         Center(
                           child: ConstrainedBox(
@@ -249,9 +253,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFFFFF),
+                                color: context.appColors.surface,
                                 borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(35),
+                                  top: Radius.circular(AppRadius.radius35),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
@@ -263,26 +267,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: AppSpacing.s20),
                                   // Elegant accent line at top of card
                                   Center(
                                     child: Container(
                                       width: 48,
                                       height: 5,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFE0E0E0),
+                                        color: AppColors.neutral300,
                                         borderRadius: AppRadius.radiusMd,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: AppSpacing.lg),
                                   // Form Content
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      left: 32,
-                                      right: 32,
+                                      left: AppSpacing.xxl,
+                                      right: AppSpacing.xxl,
                                       top: 0,
-                                      bottom: 24,
+                                      bottom: AppSpacing.xl,
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
@@ -300,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: AppSpacing.sm),
                                         FadeInAnimation(
                                           delay: 0.6,
                                           child: Text(
@@ -311,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 32),
+                                        const SizedBox(height: AppSpacing.xxl),
                                         FadeInAnimation(
                                           delay: 0.7,
                                           child: _buildTextField(
@@ -321,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             controller: _usernameController,
                                           ),
                                         ),
-                                        const SizedBox(height: 24),
+                                        const SizedBox(height: AppSpacing.xl),
                                         FadeInAnimation(
                                           delay: 0.8,
                                           child: _buildTextField(
@@ -332,7 +336,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             controller: _passwordController,
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
+                                        const SizedBox(height: AppSpacing.md),
                                         FadeInAnimation(
                                           delay: 0.9,
                                           child: Align(
@@ -368,12 +372,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 16),
+                                        const SizedBox(height: AppSpacing.lg),
                                         FadeInAnimation(
                                           delay: 1.0,
                                           child: _buildLoginButton(),
                                         ),
-                                        const SizedBox(height: 32),
+                                        const SizedBox(height: AppSpacing.xxl),
                                       ],
                                     ),
                                   ),
@@ -402,24 +406,27 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusXl,
             ),
-            child: ClipRRect(
+              child: ClipRRect(
               borderRadius: AppRadius.radiusMd,
-              child: Image.asset(
-                'assets/images/icons.png',
-                width: 65,
-                height: 65,
-                fit: BoxFit.contain,
+              child: Semantics(
+                excludeSemantics: true,
+                child: Image.asset(
+                  'assets/images/icons.png',
+                  width: 65,
+                  height: 65,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpacing.s18),
           Text(
             'BKU Student HUB',
             style: AppTextStyles.titleLg.copyWith(
-              color: Colors.white,
+              color: context.appColors.onPrimary,
               fontSize: 26,
               fontWeight: FontWeight.w900,
               letterSpacing: 2.5,
@@ -432,11 +439,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Smart Campus Ecosystem',
             style: AppTextStyles.bodySm.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: context.appColors.onPrimary.withValues(alpha: 0.9),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.8,
               shadows: [
@@ -463,18 +470,18 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: _isLoading ? null : _handleLogin,
               child:
                   _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                         height: 24,
                         width: 24,
                         child: CircularProgressIndicator(
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           strokeWidth: 3.0,
                         ),
                       )
                       : Text(
                         'Masuk',
                         style: AppTextStyles.titleMd.copyWith(
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                           letterSpacing: 0.5,
@@ -484,7 +491,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         if (_isBiometricEnabled) ...[
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           SizedBox(
             height: 48,
             width: 48,
@@ -517,7 +524,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 12, // Smaller label
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.s10),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !_isPasswordVisible,
@@ -571,7 +578,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+              borderSide: BorderSide(color: context.appColors.error, width: 1.5),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.xl,
@@ -677,12 +684,17 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.xxl,
+      ),
       decoration: const BoxDecoration(
         color: AppColors.neutral50,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
+                                  topLeft: Radius.circular(AppRadius.radius28),
+                                  topRight: Radius.circular(AppRadius.radius28),
         ),
       ),
       child: SingleChildScrollView(
@@ -700,7 +712,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               'Pilih Peran Anda',
               style: AppTextStyles.titleLarge.copyWith(
@@ -709,7 +721,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                 fontSize: 26,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             RichText(
               text: TextSpan(
                 text: 'Halo, ',
@@ -725,11 +737,11 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                       color: AppColors.neutral800,
                     ),
                   ),
-                  const TextSpan(text: '! 👋'),
+                  const TextSpan(text: '! ðŸ‘‹'),
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Akun Anda memiliki beberapa peran. Silakan pilih salah satu untuk melanjutkan.',
               style: AppTextStyles.bodyMd.copyWith(
@@ -737,7 +749,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             if (_errorMessage != null) ...[
               Container(
                 padding: EdgeInsets.symmetric(
@@ -754,7 +766,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                       Icons.error_outline_rounded,
                       color: context.watch<ThemeProvider>().colors.error,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
                         _errorMessage!,
@@ -767,13 +779,13 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.roles.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
               itemBuilder: (context, index) {
                 final roleItem = widget.roles[index] as Map<String, dynamic>;
                 final roleKey = roleItem['role'] as String;
@@ -792,7 +804,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                     child: Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         border: Border.all(
                           color: AppColors.neutral200,
                           width: 1.5,
@@ -839,7 +851,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                                     size: 26,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -853,7 +865,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                                         ),
                                       ),
                                       if (desc.isNotEmpty) ...[
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: AppSpacing.xs),
                                         Text(
                                           desc,
                                           style: AppTextStyles.bodySm.copyWith(
@@ -865,7 +877,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 if (_isLoading)
                                   SizedBox(
                                     width: 20,

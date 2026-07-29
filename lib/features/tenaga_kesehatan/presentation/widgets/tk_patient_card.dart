@@ -1,7 +1,11 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/patient.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class TkPatientCard extends StatelessWidget {
   final Patient patient;
@@ -13,11 +17,11 @@ class TkPatientCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(color: AppColors.neutral300, width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(4),
@@ -28,10 +32,10 @@ class TkPatientCard extends StatelessWidget {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusLg,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusLg,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
@@ -40,24 +44,25 @@ class TkPatientCard extends StatelessWidget {
                 Container(
                   width: 48,
                   height: 48,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFEFF6FF),
+                  decoration: BoxDecoration(
+                    color: context.appColors.infoContainer,
                     shape: BoxShape.circle,
                   ),
                   child: ClipOval(
                     child:
                         patient.fotoURL != null && patient.fotoURL!.isNotEmpty
-                            ? Image.network(
+                            ? CachedNetworkImage(imageUrl: 
                               ApiGate.getImageUrl(patient.fotoURL),
                               width: 48,
                               height: 48,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _buildInitials(context),
+                              errorWidget: (_, url, error) => _buildInitials(context),
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             )
                             : _buildInitials(context),
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 // Info
                 Expanded(
                   child: Column(
@@ -65,32 +70,32 @@ class TkPatientCard extends StatelessWidget {
                     children: [
                       Text(
                         patient.nama,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: AppSpacing.s3),
                       Text(
                         patient.nim,
-                        style: const TextStyle(
+                          style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF334155),
+                          color: context.appColors.secondaryContainer,
                           fontWeight: FontWeight.w700,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (patient.prodi.isNotEmpty) ...[
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           patient.prodi,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF64748B),
+                            color: AppColors.neutral600,
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -98,24 +103,24 @@ class TkPatientCard extends StatelessWidget {
                         ),
                       ],
                       if (patient.fakultas.isNotEmpty) ...[
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           patient.fakultas,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF64748B),
+                            color: AppColors.neutral600,
                             fontWeight: FontWeight.w500,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         'Semester ${patient.semester}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF94A3B8),
+                          color: AppColors.neutral500,
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 1,
@@ -126,14 +131,14 @@ class TkPatientCard extends StatelessWidget {
                 ),
                 // Arrow
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: AppSpacing.padding6,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.neutral100,
+                    borderRadius: AppRadius.radiusSm,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.chevron_right_rounded,
-                    color: Color(0xFF64748B),
+                    color: AppColors.neutral600,
                     size: 20,
                   ),
                 ),

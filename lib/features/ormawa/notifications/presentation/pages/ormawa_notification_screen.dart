@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -88,7 +88,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                           size: 72,
                           color: AppColors.neutral300,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           'Belum ada notifikasi masuk',
                           style: AppTextStyles.labelMd.copyWith(
@@ -140,8 +140,8 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                         direction: DismissDirection.endToStart,
                         background: Container(
                           alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 24),
-                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.only(right: AppSpacing.xl),
+                          margin: const EdgeInsets.only(bottom: AppSpacing.md),
                           decoration: BoxDecoration(
                             color: Colors.redAccent,
                             borderRadius: AppRadius.radiusXl,
@@ -163,7 +163,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                             }
                           },
                           child: Container(
-                            margin: const EdgeInsets.only(bottom: 12),
+                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
                               color:
@@ -208,7 +208,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                                     size: 22,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -245,7 +245,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                                             ),
                                         ],
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: AppSpacing.xs),
                                       Text(
                                         notif.message,
                                         style: AppTextStyles.labelSm.copyWith(
@@ -253,7 +253,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                                           height: 1.4,
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: AppSpacing.sm),
                                       Text(
                                         dateStr,
                                         style: AppTextStyles.labelSm.copyWith(

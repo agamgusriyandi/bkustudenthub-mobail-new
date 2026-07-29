@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorDashboardScreen extends StatefulWidget {
   const MentorDashboardScreen({super.key});
@@ -81,7 +83,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchDashboard(),
         color: Theme.of(context).colorScheme.primary,
@@ -98,16 +100,17 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               showProfileOnCollapse: true,
               profileImage:
                   fotoUrl.isNotEmpty
-                      ? Image.network(
+                      ? CachedNetworkImage(imageUrl: 
                         ApiGate.getImageUrl(fotoUrl),
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
+                        errorWidget: (context, url, error) {
                           return const Icon(
                             Icons.person_rounded,
                             color: AppColors.neutral500,
                             size: 28,
                           );
                         },
+                        placeholder: (context, url) => Container(color: AppColors.neutral200),
                       )
                       : const Icon(
                         Icons.person_rounded,
@@ -139,25 +142,25 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       _buildSectionTitle('Statistik Mentoring'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.1,
                         child: _buildStatsGrid(dashboard),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       _buildSectionTitle('Layanan Kencana'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(delay: 0.15, child: _buildServiceMenu()),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       _buildSectionTitle('Pengumuman'),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.2,
                         child: _buildAnnouncements(provider),
                       ),
-                      const SizedBox(height: 120),
+                      const SizedBox(height: AppSpacing.s120),
                     ],
                   ),
                 ),
@@ -205,21 +208,21 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               'Kelompok Saya',
               dashboard.totalGroups.toString(),
               Icons.diversity_3_rounded,
-              AppColors.success,
+              context.appColors.success,
               () => context.go('/mentor-kencana?tab=1'),
             ),
             _buildStatCard(
               'Penilaian Akhir',
               dashboard.pendingScoring.toString(),
               Icons.grade_rounded,
-              AppColors.warning,
+              context.appColors.warning,
               () => context.go('/mentor-kencana?tab=3'),
             ),
             _buildStatCard(
               'Validasi Presensi',
               dashboard.unreadAnnouncements.toString(),
               Icons.edit_note_rounded,
-              AppColors.error,
+              context.appColors.error,
               () => context.push(AppRoutes.mentorAbsenceRequests),
             ),
           ],
@@ -244,14 +247,14 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: color.withAlpha(20),
               borderRadius: AppRadius.radiusSm,
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +270,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   value,
                   style: AppTextStyles.titleLg.copyWith(
@@ -298,13 +301,13 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
             () => context.push(AppRoutes.mentorRecruit),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           child: _buildServiceCard(
             'Validasi Presensi',
             'Kelola permohonan izin',
             Icons.edit_note_rounded,
-            Colors.purple,
+            AppColors.neutral700,
             () => context.push(AppRoutes.mentorAbsenceRequests),
           ),
         ),
@@ -333,12 +336,12 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
             ),
             child: Icon(icon, color: color, size: 24),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             title,
             style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             description,
             style: AppTextStyles.labelSm.copyWith(
@@ -373,7 +376,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       itemCount: provider.announcements.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
         final ann = provider.announcements[index];
         return BkuCard(
@@ -399,9 +402,9 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                         vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.error.withAlpha(15),
+                        color: context.appColors.error.withAlpha(15),
                         border: Border.all(
-                          color: AppColors.error.withAlpha(30),
+                          color: context.appColors.error.withAlpha(30),
                         ),
                         borderRadius: AppRadius.radiusXs,
                       ),
@@ -410,20 +413,20 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                         style: AppTextStyles.labelSm.copyWith(
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.error,
+                          color: context.appColors.error,
                         ),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _cleanHtml(ann.content),
                 style: AppTextStyles.labelSm.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 _formatDate(ann.date),
                 style: AppTextStyles.labelSm.copyWith(

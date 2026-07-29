@@ -326,8 +326,8 @@ class OrmawaProvider extends ChangeNotifier {
       _knownNotificationIds = notifications.map((n) => n.id).toList();
       _isFirstFetch = false;
       _notifications = notifications;
-    } catch (e) {
-      debugPrint('Error refreshing Ormawa data: $e');
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -348,8 +348,8 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       await _repository.deleteProposal(id);
       await refreshData();
-    } catch (e) {
-      debugPrint('Error deleting proposal: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -371,7 +371,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error regenerating members: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -383,7 +382,6 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       return await _repository.getStudents();
     } catch (e) {
-      debugPrint('Error getting students: $e');
       return [];
     }
   }
@@ -399,7 +397,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error adding member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -414,7 +411,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.updateMember(id, data);
       await refreshData();
     } catch (e) {
-      debugPrint('Error updating member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -429,7 +425,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteMember(id);
       await refreshData();
     } catch (e) {
-      debugPrint('Error deleting member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -449,7 +444,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error adding agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -464,7 +458,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.updateAgenda(id, data);
       await refreshData();
     } catch (e) {
-      debugPrint('Error updating agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -479,7 +472,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteAgenda(id);
       await refreshData();
     } catch (e) {
-      debugPrint('Error deleting agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -498,8 +490,8 @@ class OrmawaProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       _attendanceList = await _repository.getAttendance(eventId);
-    } catch (e) {
-      debugPrint('Error fetching attendance: $e');
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -515,7 +507,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.submitAttendance(eventId, mhsId, status);
       await fetchAttendance(eventId);
     } catch (e) {
-      debugPrint('Error submitting attendance: $e');
       rethrow;
     }
   }
@@ -527,8 +518,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (id == null) return;
       _financeList = await _repository.getFinance(id);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error getting finance: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -550,8 +541,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (id == null) return;
       _lpjs = await _repository.getLPJs(id);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error getting LPJs: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -580,7 +571,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteLPJ(id);
       await getLPJs();
     } catch (e) {
-      debugPrint('Error deleting LPJ in provider: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -593,8 +583,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (ormawaId == null) return;
       _aspirations = await _repository.getAspirations(ormawaId!);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading aspirations: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -612,8 +602,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (ormawaId == null) return;
       _announcements = await _repository.getAnnouncements(ormawaId!);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading announcements: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -673,7 +663,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error inline division creation: $e');
       rethrow;
     }
   }
@@ -745,8 +734,8 @@ class OrmawaProvider extends ChangeNotifier {
 
     try {
       await _repository.markAllNotificationsAsRead(oId);
-    } catch (e) {
-      debugPrint('Error marking all notifications as read: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -774,8 +763,8 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment settings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -790,37 +779,23 @@ class OrmawaProvider extends ChangeNotifier {
   }
 
   Future<void> getRecruitmentApplicants() async {
-    debugPrint(
-      'OrmawaProvider.getRecruitmentApplicants called. ormawaId: $ormawaId',
-    );
     if (ormawaId == null) {
-      debugPrint(
-        'OrmawaProvider.getRecruitmentApplicants returned because ormawaId is null',
-      );
       return;
     }
     try {
       _recruitmentApplicants = await _repository.getRecruitmentApplicants(
         ormawaId!,
       );
-      debugPrint(
-        'OrmawaProvider.getRecruitmentApplicants fetched ${_recruitmentApplicants.length} applicants',
-      );
       try {
         _recruitmentFormFields = await _repository.getRecruitmentFormFields(
           ormawaId!,
         );
-        debugPrint(
-          'OrmawaProvider.getRecruitmentApplicants fetched ${_recruitmentFormFields.length} form fields',
-        );
       } catch (err) {
-        debugPrint(
-          'Error loading recruitment form fields inside getRecruitmentApplicants: $err',
-        );
+        // Silenced: non-critical form fields error
       }
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment applicants: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -843,8 +818,8 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment form fields: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -882,8 +857,8 @@ class OrmawaProvider extends ChangeNotifier {
       _ormawaSettings['notifAspiration'] =
           prefs.getBool('ormawa_notif_aspiration_$ormawaId') ?? false;
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading ormawa settings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -911,8 +886,8 @@ class OrmawaProvider extends ChangeNotifier {
         _ormawaSettings['notifAspiration'] = notifAspiration;
       }
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error updating notification preferences: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -923,7 +898,6 @@ class OrmawaProvider extends ChangeNotifier {
       final url = await _repository.uploadFile(filePath);
       return url;
     } catch (e) {
-      debugPrint('Error uploading file in provider: $e');
       return null;
     } finally {
       _isLoading = false;

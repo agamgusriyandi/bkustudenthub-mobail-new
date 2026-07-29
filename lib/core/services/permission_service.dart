@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../network/api_client.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -90,15 +89,11 @@ class PermissionService {
   /// Set permissions (called after login)
   void setPermissions(List<String> permissions) {
     _permissions = List.from(permissions);
-    debugPrint(
-      '[PermissionService] Permissions loaded: ${_permissions.length} permissions',
-    );
   }
 
   /// Clear permissions (called on logout)
   void clear() {
     _permissions = [];
-    debugPrint('[PermissionService] Permissions cleared');
   }
 
   /// Sync permissions from backend
@@ -111,14 +106,12 @@ class PermissionService {
     }
 
     if (_isSyncing) {
-      debugPrint('[PermissionService] Sync already in progress, skipping...');
       return false;
     }
 
     _isSyncing = true;
 
     try {
-      debugPrint('[PermissionService] Syncing permissions from /auth/me...');
 
       final response = await _dio.get('/auth/me');
 
@@ -130,26 +123,17 @@ class PermissionService {
 
         if (perms is List) {
           _permissions = perms.map((e) => e.toString()).toList();
-          debugPrint(
-            '[PermissionService] Permissions synced: ${_permissions.length} permissions',
-          );
-          debugPrint('[PermissionService] Permissions: $_permissions');
           _isSyncing = false;
           return true;
         }
       }
 
-      debugPrint(
-        '[PermissionService] Failed to sync: unexpected response format',
-      );
       _isSyncing = false;
       return false;
-    } on DioException catch (e) {
-      debugPrint('[PermissionService] Sync failed: ${e.message}');
+    } on DioException {
       _isSyncing = false;
       return false;
     } catch (e) {
-      debugPrint('[PermissionService] Sync error: $e');
       _isSyncing = false;
       return false;
     }
@@ -220,9 +204,6 @@ class PermissionService {
   /// 2. User has the exact permission or mapped domain permission
   bool hasPermission(String permission) {
     if (_permissions.isEmpty) {
-      debugPrint(
-        '[PermissionService] Warning: permissions not loaded, denying $permission',
-      );
       return false;
     }
     if (_permissions.contains('*')) return true;

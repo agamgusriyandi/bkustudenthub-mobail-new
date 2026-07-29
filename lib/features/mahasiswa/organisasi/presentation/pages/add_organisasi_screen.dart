@@ -1,5 +1,6 @@
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class AddOrganisasiScreen extends StatefulWidget {
   final OrganizationHistory? organization;
@@ -174,7 +176,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           TextFormField(
             controller: controller,
             maxLines: maxLines,
@@ -200,26 +202,26 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               ),
               prefixIcon: Icon(icon, size: 19, color: const Color(0xFF64748B)),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(
                   color: Color(0xFF334155),
                   width: 1.8,
                 ),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(color: Color(0xFFFCA5A5)),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.8),
               ),
             ),
@@ -263,7 +265,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           DropdownButtonFormField<String>(
             initialValue: value,
             items:
@@ -292,15 +294,15 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               ),
               prefixIcon: Icon(icon, size: 19, color: const Color(0xFF64748B)),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(
                   color: Color(0xFF334155),
                   width: 1.8,
@@ -320,11 +322,11 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
     List<Widget> children,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.only(bottom: AppSpacing.s18),
+      padding: AppSpacing.padding18,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -339,14 +341,14 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
                   color: accentColor.withAlpha(18),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusMd,
                 ),
                 child: Icon(sectionIcon, size: 18, color: accentColor),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 title,
                 style: const TextStyle(
@@ -358,7 +360,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpacing.s18),
           ...children,
         ],
       ),
@@ -452,7 +454,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: _buildField(
                           controller: _tahunSelesaiController,
@@ -498,12 +500,12 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Container(
                 height: 52,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusLg,
                   gradient: const LinearGradient(
                     colors: [Color(0xFF10B981), Color(0xFF059669)],
                     begin: Alignment.centerLeft,
@@ -522,9 +524,9 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    foregroundColor: Colors.white,
+                    foregroundColor: context.appColors.onPrimary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: AppRadius.radiusLg,
                     ),
                   ),
                   child: _isSubmitting
@@ -540,7 +542,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.save_rounded, size: 20),
-                            SizedBox(width: 8),
+                            SizedBox(width: AppSpacing.sm),
                             Text(
                               'Simpan',
                               style: TextStyle(
@@ -553,7 +555,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                         ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:bkuhub_mobile/features/counseling/presentation/providers/psychol
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class PsychologistEditProfileScreen extends StatefulWidget {
   const PsychologistEditProfileScreen({super.key});
@@ -255,7 +257,7 @@ class _PsychologistEditProfileScreenState
                                                   )
                                                   .join(),
                                           style: AppTextStyles.titleLg.copyWith(
-                                            color: Colors.white,
+                                            color: context.appColors.onPrimary,
                                             fontSize: 32,
                                             fontWeight: FontWeight.w900,
                                           ),
@@ -270,9 +272,9 @@ class _PsychologistEditProfileScreenState
                                   color: Colors.black54,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                               )
@@ -281,10 +283,10 @@ class _PsychologistEditProfileScreenState
                                 right: 0,
                                 bottom: 0,
                                 child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
+                                  padding: AppSpacing.padding6,
+                                    decoration: BoxDecoration(
+                                      color: context.appColors.surface,
+                                      shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withAlpha(20),
@@ -303,10 +305,10 @@ class _PsychologistEditProfileScreenState
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
 
                     _buildSectionLabel('Informasi Dasar'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildCard([
                       _buildField(
                         controller: _namaCtrl,
@@ -344,9 +346,9 @@ class _PsychologistEditProfileScreenState
                       ),
                     ]),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildSectionLabel('Informasi Profesional'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildCard([
                       _buildField(
                         controller: _spesialisasiCtrl,
@@ -371,9 +373,9 @@ class _PsychologistEditProfileScreenState
                       ),
                     ]),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildSectionLabel('Bio / Deskripsi'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildCard([
                       _buildField(
                         controller: _bioCtrl,
@@ -385,27 +387,27 @@ class _PsychologistEditProfileScreenState
                       ),
                     ]),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _isSaving ? null : _save,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF16A34A),
-                          foregroundColor: Colors.white,
+                          foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: AppRadius.br10,
                           ),
                         ),
                         child:
                             _isSaving
-                                ? const SizedBox(
+                                ? SizedBox(
                                   width: 22,
                                   height: 22,
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     strokeWidth: 2.5,
                                   ),
                                 )
@@ -414,12 +416,12 @@ class _PsychologistEditProfileScreenState
                                   style: AppTextStyles.titleMd.copyWith(
                                     fontWeight: FontWeight.w900,
                                     fontSize: 16,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                   ],
                 ),
               ),

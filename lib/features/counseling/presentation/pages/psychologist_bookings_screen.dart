@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -85,7 +86,7 @@ class _PsychologistBookingsScreenState
   }
 
   void _startPolling() {
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (mounted) {
         context.read<CounselingProvider>().loadBookings(silent: true);
       }
@@ -210,14 +211,14 @@ class _PsychologistBookingsScreenState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (waiting > 0) ...[
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               _buildPendingBanner(waiting),
                             ],
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildSearchAndFilter(bookings),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildTabs(),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: AppSpacing.xl),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
@@ -244,12 +245,12 @@ class _PsychologistBookingsScreenState
                               ),
                             ),
                             if (totalPages > 1) ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildTopPagination(totalPages),
                             ],
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildBookingList(pagedFiltered, provider),
-                            const SizedBox(height: 120),
+                            const SizedBox(height: AppSpacing.s120),
                           ],
                         ),
               ),
@@ -270,12 +271,12 @@ class _PsychologistBookingsScreenState
         child: Column(
           children: [
             Icon(Icons.error_outline_rounded, size: 64, color: Colors.red[300]),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               message,
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: provider.loadBookings,
 
@@ -309,7 +310,7 @@ class _PsychologistBookingsScreenState
               color: AppColors.warning,
               size: 24,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
                 '$count permintaan booking menunggu konfirmasi kamu!',
@@ -346,7 +347,7 @@ class _PsychologistBookingsScreenState
             decoration: InputDecoration(
               hintText: 'Cari nama mahasiswa atau NIM...',
               hintStyle: AppTextStyles.bodySm.copyWith(
-                color: Colors.grey.withAlpha(150),
+                color: AppColors.neutral500.withAlpha(150),
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -359,11 +360,11 @@ class _PsychologistBookingsScreenState
               ),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+                borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+                borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
@@ -371,7 +372,7 @@ class _PsychologistBookingsScreenState
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -381,9 +382,9 @@ class _PsychologistBookingsScreenState
                     horizontal: AppSpacing.lg,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: AppRadius.radiusLg,
-                    border: Border.all(color: Colors.grey.withAlpha(40)),
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusLg,
+                  border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -414,7 +415,7 @@ class _PsychologistBookingsScreenState
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 flex: 6,
                 child: Container(
@@ -422,14 +423,14 @@ class _PsychologistBookingsScreenState
                     horizontal: AppSpacing.lg,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: AppRadius.radiusLg,
-                    border: Border.all(color: Colors.grey.withAlpha(40)),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String?>(
-                      isExpanded: true,
-                      value: _selectedProdi,
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusLg,
+                  border: Border.all(color: AppColors.neutral500.withAlpha(40)),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String?>(
+                    isExpanded: true,
+                    value: _selectedProdi,
                       hint: Text(
                         'Seluruh Fakultas',
                         style: AppTextStyles.labelMd.copyWith(
@@ -493,7 +494,7 @@ class _PsychologistBookingsScreenState
           final activeBorder = tab['activeBorder'] as Color;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: AppSpacing.s10),
             child: GestureDetector(
               onTap: () {
                 setState(() {
@@ -508,7 +509,7 @@ class _PsychologistBookingsScreenState
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? activeBg : Colors.white,
+                  color: isSelected ? activeBg : context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color: isSelected ? activeBorder : AppColors.neutral200,
@@ -531,7 +532,7 @@ class _PsychologistBookingsScreenState
                       size: 16,
                       color: isSelected ? activeFg : AppColors.neutral500,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.s6),
                     Text(
                       tab['label'] as String,
                       style: AppTextStyles.labelMd.copyWith(
@@ -560,8 +561,8 @@ class _PsychologistBookingsScreenState
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.br14,
           border: Border.all(color: const Color(0xFFE2E8F0)),
           boxShadow: [
             BoxShadow(
@@ -576,9 +577,9 @@ class _PsychologistBookingsScreenState
           children: [
             Material(
               color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canPrev ? () => setState(() => _currentPage--) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -590,7 +591,7 @@ class _PsychologistBookingsScreenState
                         size: 16,
                         color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Text(
                         'Sebelumnya',
                         style: TextStyle(
@@ -622,9 +623,9 @@ class _PsychologistBookingsScreenState
             ),
             Material(
               color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canNext ? () => setState(() => _currentPage++) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -639,7 +640,7 @@ class _PsychologistBookingsScreenState
                           color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
@@ -671,10 +672,10 @@ class _PsychologistBookingsScreenState
                 size: 64,
                 color: AppColors.neutral300,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 'Tidak ada booking',
-                style: AppTextStyles.bodyMd.copyWith(color: Colors.grey),
+                style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
               ),
             ],
           ),
@@ -805,7 +806,7 @@ class _PsychologistBookingsScreenState
     final avatarColor = avatarColors[name.length % avatarColors.length];
 
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -843,7 +844,7 @@ class _PsychologistBookingsScreenState
                                 ),
                               ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -855,9 +856,9 @@ class _PsychologistBookingsScreenState
                               color: AppColors.neutral800,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.s2),
                           Text(
-                            '$nim${faculty.isNotEmpty ? ' • $faculty' : ''}',
+                            '$nim${faculty.isNotEmpty ? ' â€¢ $faculty' : ''}',
                             style: AppTextStyles.labelSm.copyWith(
                               color: AppColors.neutral600,
                             ),
@@ -878,7 +879,7 @@ class _PsychologistBookingsScreenState
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(statusIcon, size: 12, color: statusColor),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             status,
                             style: AppTextStyles.labelMd.copyWith(
@@ -893,7 +894,7 @@ class _PsychologistBookingsScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
@@ -905,17 +906,17 @@ class _PsychologistBookingsScreenState
                     Row(
                       children: [
                         _buildInfoChip(Icons.calendar_today_rounded, date),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         _buildInfoChip(Icons.access_time_rounded, time),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     _buildInfoChip(
                       Icons.psychology_rounded,
                       issue,
                       color: AppColors.primary,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     // Badge mode Online/Tatap Muka
                     Row(
                       children: [
@@ -929,7 +930,6 @@ class _PsychologistBookingsScreenState
                                 isOnline
                                     ? AppColors.info.withAlpha(20)
                                     : Colors.teal.withAlpha(20),
-                            borderRadius: AppRadius.radiusSm,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -941,7 +941,7 @@ class _PsychologistBookingsScreenState
                                 size: 11,
                                 color: isOnline ? AppColors.info : Colors.teal,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               Text(
                                 mode,
                                 style: AppTextStyles.labelMd.copyWith(
@@ -957,7 +957,7 @@ class _PsychologistBookingsScreenState
                       ],
                     ),
                     if (note.isNotEmpty) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         note,
                         style: AppTextStyles.labelSm.copyWith(
@@ -983,7 +983,7 @@ class _PsychologistBookingsScreenState
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 13, color: color ?? AppColors.neutral500),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
@@ -1076,9 +1076,9 @@ class _PsychologistBookingsScreenState
       backgroundColor: Colors.transparent,
       builder:
           (sheetContext) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
             ),
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(sheetContext).padding.bottom,
@@ -1089,11 +1089,11 @@ class _PsychologistBookingsScreenState
                 // Handle bar
                 Center(
                   child: Container(
-                    margin: const EdgeInsets.only(top: 12, bottom: 24),
+                    margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.xl),
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.withAlpha(80),
+                      color: AppColors.neutral500.withAlpha(80),
                       borderRadius: AppRadius.radiusXs,
                     ),
                   ),
@@ -1112,7 +1112,7 @@ class _PsychologistBookingsScreenState
                           color: AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // Student info
                       Row(
@@ -1134,7 +1134,7 @@ class _PsychologistBookingsScreenState
                                       color: AppColors.primary,
                                     ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSpacing.lg),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1146,9 +1146,9 @@ class _PsychologistBookingsScreenState
                                     color: AppColors.neutral800,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: AppSpacing.xs),
                                 Text(
-                                  '$nim${faculty.isNotEmpty ? ' • $faculty' : ''}',
+                                  '$nim${faculty.isNotEmpty ? ' â€¢ $faculty' : ''}',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color: AppColors.neutral600,
                                   ),
@@ -1158,7 +1158,7 @@ class _PsychologistBookingsScreenState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // Session details
                       _buildDetailRow(
@@ -1166,7 +1166,7 @@ class _PsychologistBookingsScreenState
                         'Jadwal',
                         '$date, $time',
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       _buildDetailRow(
                         isOnline
                             ? Icons.videocam_rounded
@@ -1175,21 +1175,21 @@ class _PsychologistBookingsScreenState
                         mode,
                         valueColor: isOnline ? AppColors.info : Colors.teal,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       _buildDetailRow(
                         Icons.psychology_rounded,
                         'Topik/Masalah',
                         issue,
                       ),
                       if (note.isNotEmpty) ...[
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         _buildDetailRow(
                           Icons.description_rounded,
                           'Keluhan',
                           note,
                         ),
                       ],
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
 
                       // Actions
                       if (isWaiting) ...[
@@ -1220,7 +1220,7 @@ class _PsychologistBookingsScreenState
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: AppSpacing.lg),
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -1234,9 +1234,9 @@ class _PsychologistBookingsScreenState
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF16A34A),
-                                  foregroundColor: Colors.white,
+                                  foregroundColor: context.appColors.onPrimary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: AppRadius.br10,
                                   ),
                                   elevation: 0,
                                 ),
@@ -1244,14 +1244,14 @@ class _PsychologistBookingsScreenState
                                   'Konfirmasi',
                                   style: AppTextStyles.bodyMd.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                       ],
                       if (isConfirmed) ...[
                         Row(
@@ -1285,14 +1285,14 @@ class _PsychologistBookingsScreenState
                                   'Selesai',
                                   style: AppTextStyles.bodyMd.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                       ],
                     ],
                   ),
@@ -1313,7 +1313,7 @@ class _PsychologistBookingsScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 20, color: AppColors.neutral500),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1324,7 +1324,7 @@ class _PsychologistBookingsScreenState
                   color: AppColors.neutral600,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 value,
                 style: AppTextStyles.bodySm.copyWith(
@@ -1433,7 +1433,7 @@ class _PsychologistBookingsScreenState
                                 color: AppColors.info,
                                 size: 16,
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Text(
                                 'Link Meeting (Wajib)',
                                 style: AppTextStyles.labelMd.copyWith(
@@ -1443,7 +1443,7 @@ class _PsychologistBookingsScreenState
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpacing.s10),
                           Material(
                             color: Colors.transparent,
                             child: TextField(
@@ -1484,7 +1484,7 @@ class _PsychologistBookingsScreenState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             'Link akan dikirim ke mahasiswa via notifikasi.',
                             style: AppTextStyles.labelMd.copyWith(

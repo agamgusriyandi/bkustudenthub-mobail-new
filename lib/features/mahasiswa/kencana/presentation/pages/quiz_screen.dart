@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -334,7 +335,7 @@ class _QuizScreenState extends State<QuizScreen> {
         (currentQ['options'] as List? ?? []).cast<Map<String, dynamic>>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -398,7 +399,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                       : Theme.of(context).colorScheme.outline,
                               size: 20,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               _getFormattedTime(),
                               style: AppTextStyles.labelMd.copyWith(
@@ -414,7 +415,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Progress bar
                   ClipRRect(
@@ -426,7 +427,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       minHeight: 8,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
 
                   // Pertanyaan
                   Text(
@@ -437,7 +438,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       fontSize: 20,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Opsi jawaban / Essay field
                   if (currentQ['question_type']?.toString().toLowerCase() ==
@@ -456,8 +457,8 @@ class _QuizScreenState extends State<QuizScreen> {
                             ),
                             padding: const EdgeInsets.all(AppSpacing.md),
                             decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              border: Border.all(color: Colors.blue.shade200),
+                              color: context.appColors.infoContainer,
+                              border: Border.all(color: context.appColors.info.withAlpha(60)),
                               borderRadius: AppRadius.radiusMd,
                             ),
                             child: Row(
@@ -466,7 +467,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                 Icon(
                                   Icons.info_outline,
                                   size: 20,
-                                  color: Colors.blue.shade700,
+                                  color: context.appColors.onInfo,
                                 ),
                                 const SizedBox(width: AppSpacing.sm),
                                 Expanded(
@@ -477,15 +478,15 @@ class _QuizScreenState extends State<QuizScreen> {
                                       Text(
                                         'Panduan Jawaban',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: Colors.blue.shade700,
+                                          color: context.appColors.onInfo,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 2),
+                                      const SizedBox(height: AppSpacing.s2),
                                       Text(
                                         currentQ['answer_guidance'].toString(),
                                         style: AppTextStyles.bodySm.copyWith(
-                                          color: Colors.blue.shade900,
+                                          color: context.appColors.onInfo,
                                         ),
                                       ),
                                     ],
@@ -557,7 +558,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       );
                     }),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
 
                   // Tombol lanjut / kumpul
                   BkuButton(
@@ -569,11 +570,11 @@ class _QuizScreenState extends State<QuizScreen> {
                     isLoading: _isSubmitting,
                     variant: BkuButtonVariant.primary,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Navigasi soal (dot row)
                   _buildDotNavigation(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ],
               ),
             ),
@@ -590,18 +591,18 @@ class _QuizScreenState extends State<QuizScreen> {
     required bool isSelected,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: InkWell(
         onTap: () => setState(() => _jawaban[qId] = optId),
         borderRadius: AppRadius.radiusLg,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: BoxDecoration(
-            color:
-                isSelected
-                    ? Theme.of(context).colorScheme.primary.withAlpha(15)
-                    : Colors.white,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              decoration: BoxDecoration(
+                                color:
+                                    isSelected
+                                        ? Theme.of(context).colorScheme.primary.withAlpha(15)
+                                        : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color:
@@ -636,7 +637,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         ? const Icon(Icons.check, color: Colors.white, size: 14)
                         : null,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Text(
                   text,
@@ -695,7 +696,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Widget _buildLoading() {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -710,7 +711,7 @@ class _QuizScreenState extends State<QuizScreen> {
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   const BkuShimmerList(itemCount: 4, itemHeight: 72),
                 ],
               ),
@@ -731,7 +732,7 @@ class _QuizScreenState extends State<QuizScreen> {
         msg.contains('berakhir');
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: BkuStaticAppBar(
         title: isClosed ? 'Kuis Sudah Ditutup' : 'Evaluasi Kuis',
         variant: AppBarVariant.student,
@@ -750,14 +751,14 @@ class _QuizScreenState extends State<QuizScreen> {
                   decoration: BoxDecoration(
                     color:
                         isClosed
-                            ? const Color(0xFFF1F5F9)
-                            : const Color(0xFFFEF2F2),
+                            ? AppColors.neutral100
+                            : context.appColors.errorContainer,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color:
                           isClosed
-                              ? const Color(0xFFCBD5E1)
-                              : const Color(0xFFFCA5A5),
+                              ? AppColors.neutral400
+                              : context.appColors.error.withAlpha(150),
                       width: 1.5,
                     ),
                   ),
@@ -768,32 +769,32 @@ class _QuizScreenState extends State<QuizScreen> {
                     size: 44,
                     color:
                         isClosed
-                            ? const Color(0xFF475569)
-                            : const Color(0xFFDC2626),
+                            ? AppColors.neutral700
+                            : context.appColors.error,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   isClosed ? 'Kuis Sudah Ditutup' : 'Gagal Memuat Kuis',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E293B),
+                    color: context.appColors.secondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.s10),
                 Text(
                   _errorMsg ??
                       'Batas waktu pengerjaan kuis ini telah selesai atau kuis sudah ditutup oleh panitia.',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF64748B),
+                    color: AppColors.neutral600,
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxl),
                 if (isClosed)
                   SizedBox(
                     width: double.infinity,
@@ -813,7 +814,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           variant: BkuButtonVariant.outline,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: BkuButton(
                           onPressed: _loadSoal,
@@ -834,7 +835,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Widget _buildEmptySoal() {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -844,14 +845,14 @@ class _QuizScreenState extends State<QuizScreen> {
               size: 72,
               color: Theme.of(context).colorScheme.outline.withAlpha(80),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Soal belum tersedia',
               style: AppTextStyles.labelMd.copyWith(
                 color: Theme.of(context).colorScheme.outline,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Kembali'),
@@ -904,7 +905,7 @@ class _QuizScreenState extends State<QuizScreen> {
     final skor = _nilaiAkhir.toStringAsFixed(0);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -913,7 +914,7 @@ class _QuizScreenState extends State<QuizScreen> {
             children: [
               // Ikon hasil
               Container(
-                padding: const EdgeInsets.all(28),
+                padding: AppSpacing.padding28,
                 decoration: BoxDecoration(
                   color: (lulus ? AppColors.success : AppColors.warning)
                       .withAlpha(15),
@@ -925,7 +926,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   size: 80,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               Text(
                 lulus ? 'Selamat, Kamu Lulus! 🎉' : 'Kuis Selesai',
                 style: AppTextStyles.display.copyWith(
@@ -934,7 +935,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 lulus
                     ? 'Kamu berhasil melewati batas minimum nilai $_passingGrade.'
@@ -945,14 +946,14 @@ class _QuizScreenState extends State<QuizScreen> {
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
 
               // Kartu skor
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(28),
+                padding: AppSpacing.padding28,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color: AppColors.neutral200.withAlpha(150),
@@ -967,7 +968,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       skor,
                       style: AppTextStyles.display.copyWith(
@@ -983,7 +984,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -1010,7 +1011,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
 
               if (_maxAttempts == 0 || _attemptsUsed < _maxAttempts) ...[
                 SizedBox(
@@ -1025,7 +1026,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     variant: BkuButtonVariant.outline,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
               ],
               SizedBox(
                 width: double.infinity,
@@ -1051,7 +1052,7 @@ class _QuizScreenState extends State<QuizScreen> {
     return Column(
       children: [
         Icon(icon, color: color, size: 22),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppTextStyles.titleLg.copyWith(
@@ -1060,7 +1061,7 @@ class _QuizScreenState extends State<QuizScreen> {
             color: color,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.s2),
         Text(
           label,
           textAlign: TextAlign.center,

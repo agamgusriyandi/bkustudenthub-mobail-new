@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -166,10 +167,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           // Background Image
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/gedung.png',
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
+            child: Semantics(
+              excludeSemantics: true,
+              child: Image.asset(
+                'assets/images/gedung.png',
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
             ),
           ),
           // Gradient Overlay
@@ -205,11 +209,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 16, top: 16),
+                              padding: const EdgeInsets.only(left: AppSpacing.lg, top: AppSpacing.lg),
                               child: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.arrow_back_ios_new_rounded,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 ),
                                 onPressed: () {
                                   if (_currentStep == ForgotPasswordStep.otp) {
@@ -232,7 +236,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                           ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                           _buildCenteredLogo(),
                           const Spacer(),
 
@@ -243,9 +247,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFFFFF),
+                                  color: context.appColors.surface,
                                   borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(35),
+                                    top: Radius.circular(AppRadius.radius35),
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -257,18 +261,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 ),
                                 child: Column(
                                   children: [
-                                    const SizedBox(height: 20),
+                                    const SizedBox(height: AppSpacing.s20),
                                     Center(
                                       child: Container(
                                         width: 48,
                                         height: 5,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFE0E0E0),
+                                          color: AppColors.neutral300,
                                           borderRadius: AppRadius.radiusMd,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 24),
+                                    const SizedBox(height: AppSpacing.xl),
 
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -277,13 +281,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       child: _buildTimeline(),
                                     ),
 
-                                    const SizedBox(height: 24),
+                                    const SizedBox(height: AppSpacing.xl),
 
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                        left: 32,
-                                        right: 32,
-                                        bottom: 40,
+                                        left: AppSpacing.xxl,
+                                        right: AppSpacing.xxl,
+                                        bottom: AppSpacing.xxxl,
                                       ),
                                       child: AnimatedSwitcher(
                                         duration: const Duration(milliseconds: 300),
@@ -316,24 +320,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusXl,
             ),
             child: ClipRRect(
               borderRadius: AppRadius.radiusMd,
-              child: Image.asset(
-                'assets/images/icons.png',
-                width: 65,
-                height: 65,
-                fit: BoxFit.contain,
+              child: Semantics(
+                excludeSemantics: true,
+                child: Image.asset(
+                  'assets/images/icons.png',
+                  width: 65,
+                  height: 65,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpacing.s18),
           Text(
             'BKU Student HUB',
             style: AppTextStyles.titleLg.copyWith(
-              color: Colors.white,
+              color: context.appColors.onPrimary,
               fontSize: 26,
               fontWeight: FontWeight.w900,
               letterSpacing: 2.5,
@@ -346,11 +353,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Smart Campus Ecosystem',
             style: AppTextStyles.bodySm.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: context.appColors.onPrimary.withValues(alpha: 0.9),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.8,
               shadows: [
@@ -391,28 +398,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           height: 36,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color:
-                isActive ? Theme.of(context).colorScheme.primary : Colors.white,
-            border: Border.all(
-              color:
-                  isActive
-                      ? Theme.of(context).colorScheme.primary
-                      : AppColors.neutral200,
-              width: 2,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              stepNum.toString(),
-              style: TextStyle(
-                color: isActive ? Colors.white : AppColors.neutral400,
+                color:
+                    isActive ? Theme.of(context).colorScheme.primary : context.appColors.surface,
+                border: Border.all(
+                  color:
+                      isActive
+                          ? Theme.of(context).colorScheme.primary
+                          : AppColors.neutral200,
+                  width: 2,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  stepNum.toString(),
+                  style: TextStyle(
+                    color: isActive ? context.appColors.onPrimary : AppColors.neutral400,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           label,
           style: TextStyle(
@@ -432,7 +439,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Container(
       width: 40,
       height: 2,
-      margin: const EdgeInsets.only(bottom: 24, left: 8, right: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl, left: AppSpacing.sm, right: AppSpacing.sm),
       color:
           isActive
               ? Theme.of(context).colorScheme.primary
@@ -466,7 +473,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Masukkan email atau NIM Anda, dan kami akan mengirimkan OTP untuk mengatur ulang kata sandi.',
             style: AppTextStyles.bodyMd.copyWith(
@@ -474,14 +481,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildTextField(
             label: 'Email atau NIM',
             placeholder: 'Masukkan email atau NIM',
             icon: Icons.person_outline_rounded,
             controller: _emailController,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildActionButton(label: 'Kirim OTP', onPressed: _requestOtp),
         ],
       ),
@@ -498,7 +505,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         fontWeight: FontWeight.w600,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         border: Border.all(color: AppColors.neutral300),
         borderRadius: AppRadius.radiusMd,
       ),
@@ -525,7 +532,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               color: AppColors.neutral800,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Masukkan 6 digit kode yang telah dikirim ke\n${_emailController.text}',
             textAlign: TextAlign.center,
@@ -534,7 +541,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           Pinput(
             length: 6,
             controller: _otpController,
@@ -542,9 +549,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             focusedPinTheme: focusedPinTheme,
             onCompleted: (pin) => _verifyOtp(),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildActionButton(label: 'Verifikasi OTP', onPressed: _verifyOtp),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -589,7 +596,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Sandi baru Anda harus unik dan berbeda dari sandi sebelumnya.',
             style: AppTextStyles.bodyMd.copyWith(
@@ -597,7 +604,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildTextField(
             label: 'Kata Sandi Baru',
             placeholder: 'Masukkan kata sandi baru',
@@ -611,7 +618,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             },
             controller: _passwordController,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           _buildTextField(
             label: 'Konfirmasi Sandi Baru',
             placeholder: 'Ulangi kata sandi baru',
@@ -625,7 +632,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             },
             controller: _confirmPasswordController,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildActionButton(
             label: 'Simpan Sandi Baru',
             onPressed: _resetPassword,
@@ -654,7 +661,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !isPasswordVisible,
@@ -734,18 +741,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
         child:
             _isLoading
-                ? const SizedBox(
+                ? SizedBox(
                   height: 24,
                   width: 24,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     strokeWidth: 3.0,
                   ),
                 )
                 : Text(
                   label,
                   style: AppTextStyles.titleMd.copyWith(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                     letterSpacing: 0.5,

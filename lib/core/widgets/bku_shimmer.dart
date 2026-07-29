@@ -1,5 +1,7 @@
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -30,14 +32,14 @@ class BkuShimmer extends StatelessWidget {
     required this.width,
     this.height = 14,
     this.margin,
-  }) : borderRadius = const BorderRadius.all(Radius.circular(4)),
+  }) : borderRadius = const BorderRadius.all(Radius.circular(AppRadius.xs)),
        shape = BoxShape.rectangle;
 
   @override
   Widget build(BuildContext context) {
     // Colors that look professional in light mode (very soft grays)
-    final baseColor = Colors.grey[200]!;
-    final highlightColor = Colors.white;
+    final baseColor = AppColors.neutral200;
+    final highlightColor = context.appColors.surface;
 
     return Padding(
       padding: margin ?? EdgeInsets.zero,
@@ -49,7 +51,7 @@ class BkuShimmer extends StatelessWidget {
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius:
                 shape == BoxShape.circle
                     ? null
@@ -72,12 +74,12 @@ class BkuShimmerCard extends StatelessWidget {
     return Container(
       width: width ?? double.infinity,
       constraints: BoxConstraints(minHeight: height),
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: AppColors.neutral200),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,9 +87,9 @@ class BkuShimmerCard extends StatelessWidget {
           const BkuShimmer(
             width: 50,
             height: 50,
-            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +97,7 @@ class BkuShimmerCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 BkuShimmer.text(width: MediaQuery.of(context).size.width * 0.4),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 BkuShimmer.text(
                   width: MediaQuery.of(context).size.width * 0.25,
                   height: 10,

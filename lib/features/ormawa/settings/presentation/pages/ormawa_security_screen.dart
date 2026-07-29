@@ -1,8 +1,9 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -53,14 +54,14 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                   result['success']
                       ? Icons.check_circle_outline_rounded
                       : Icons.error_outline_rounded,
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     result['message'] ??
                         (result['success'] ? 'Berhasil' : 'Gagal'),
-                    style: AppTextStyles.bodyMd.copyWith(color: Colors.white),
+                    style: AppTextStyles.bodyMd.copyWith(color: context.appColors.onPrimary),
                   ),
                 ),
               ],
@@ -106,11 +107,11 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSecurityAlertCard(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildSectionTitle('UBAH KATA SANDI'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildPasswordForm(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ],
               ),
             ),
@@ -145,7 +146,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +157,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Gunakan kombinasi kata sandi yang kuat dan jangan pernah membagikan akses ke orang lain.',
                   style: AppTextStyles.bodyMd.copyWith(
@@ -174,7 +175,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 4),
+      padding: const EdgeInsets.only(left: AppSpacing.xs),
       child: Text(
         title,
         style: AppTextStyles.overline.copyWith(
@@ -203,14 +204,14 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
               obscureText: _obscureOld,
               onToggle: () => setState(() => _obscureOld = !_obscureOld),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             _buildPasswordField(
               label: 'Kata Sandi Baru',
               controller: _newPasswordController,
               obscureText: _obscureNew,
               onToggle: () => setState(() => _obscureNew = !_obscureNew),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             _buildPasswordField(
               label: 'Konfirmasi Sandi Baru',
               controller: _confirmPasswordController,
@@ -224,7 +225,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -233,11 +234,11 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
 
                 child:
                     _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                           height: 24,
                           width: 24,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             strokeWidth: 2,
                           ),
                         )
@@ -246,7 +247,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                           style: AppTextStyles.labelLg.copyWith(
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
               ),
@@ -274,13 +275,13 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           obscureText: obscureText,
           style: AppTextStyles.bodyLg,
           decoration: InputDecoration(
-            hintText: '••••••••',
+            hintText: 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢',
             hintStyle: TextStyle(color: AppColors.neutral400),
             filled: true,
             fillColor: AppColors.neutral50,

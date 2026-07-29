@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -118,7 +118,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +170,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
               children: [
                 if (_isProcessing) ...[
                   const CircularProgressIndicator(color: Colors.white),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Memproses data...',
                     style: AppTextStyles.bodyMd.copyWith(color: Colors.white),
@@ -196,7 +196,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           Icons.check_circle_rounded,
                           color: Colors.white,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'QR Terdeteksi!',
                           style: AppTextStyles.bodyMd.copyWith(
@@ -225,7 +225,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           color: Colors.white,
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Posisi QR Code di dalam frame',
                           style: AppTextStyles.bodySm.copyWith(
@@ -312,7 +312,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
             content: Row(
               children: [
                 const Icon(Icons.check_circle_rounded, color: Colors.white),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(child: Text('Mahasiswa ditemukan: ${patient.nama}')),
               ],
             ),
@@ -339,7 +339,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
               content: Row(
                 children: [
                   const Icon(Icons.error_outline_rounded, color: Colors.white),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text('Mahasiswa dengan NIM $nim tidak ditemukan'),
                   ),
@@ -385,7 +385,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
             ),
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -403,7 +403,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Container(
@@ -418,7 +418,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           size: 22,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,7 +440,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   TextField(
                     controller: nimController,
                     keyboardType: TextInputType.number,
@@ -454,7 +454,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                       prefixIcon: const Icon(Icons.badge_rounded),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Expanded(
@@ -464,7 +464,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           child: const Text('Batal'),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {

@@ -1,4 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class OrmawaQuickStats extends StatelessWidget {
         child: const BkuShimmer(
           width: double.infinity,
           height: 180,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
         ),
       );
     }
@@ -42,20 +44,20 @@ class OrmawaQuickStats extends StatelessWidget {
                   iconBgColor: AppColors.info.withAlpha(15),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: _buildStatCard(
                   context,
                   icon: Icons.people_rounded,
                   title: 'Total Anggota',
                   value: ormawa.totalMembers.toString(),
-                  iconColor: Colors.purple,
-                  iconBgColor: Colors.purple.withAlpha(15),
+                  iconColor: AppColors.neutral700,
+                  iconBgColor: AppColors.neutral700.withAlpha(15),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Expanded(
@@ -64,24 +66,24 @@ class OrmawaQuickStats extends StatelessWidget {
                   icon: Icons.checklist_rounded,
                   title: 'Approval Rate',
                   value: '${ormawa.approvalRate}%',
-                  iconColor: Colors.teal,
-                  iconBgColor: Colors.teal.withAlpha(15),
+                  iconColor: context.appColors.info,
+                  iconBgColor: context.appColors.info.withAlpha(15),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: _buildStatCard(
                   context,
                   icon: Icons.event_rounded,
                   title: 'Agenda Dekat',
                   value: ormawa.upcomingAgendasCount.toString(),
-                  iconColor: Colors.indigo,
-                  iconBgColor: Colors.indigo.withAlpha(15),
+                  iconColor: context.appColors.info,
+                  iconBgColor: context.appColors.info.withAlpha(15),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           _buildStatCard(
             context,
             icon: Icons.account_balance_wallet_rounded,
@@ -121,7 +123,7 @@ class OrmawaQuickStats extends StatelessWidget {
             ),
             child: Icon(icon, color: iconColor, size: 24),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +137,7 @@ class OrmawaQuickStats extends StatelessWidget {
                     fontSize: isFullWidth ? 22 : 18,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(

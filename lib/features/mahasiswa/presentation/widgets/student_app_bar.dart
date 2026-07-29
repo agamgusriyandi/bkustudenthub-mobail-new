@@ -1,9 +1,10 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class StudentAppBar extends StatelessWidget {
   final String title;
@@ -34,19 +35,19 @@ class StudentAppBar extends StatelessWidget {
       pinned: pinned,
       elevation: 0,
       backgroundColor: Colors.transparent,
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: IconThemeData(color: context.appColors.onPrimary),
       leading: leading,
       centerTitle: true,
-      actions: [if (actions != null) ...actions!, const SizedBox(width: 8)],
+      actions: [if (actions != null) ...actions!, const SizedBox(width: AppSpacing.sm)],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(20),
         child: Container(
           height: 20,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32),
-              topRight: Radius.circular(32),
+              topLeft: Radius.circular(AppRadius.xxl),
+              topRight: Radius.circular(AppRadius.xxl),
             ),
           ),
         ),
@@ -79,7 +80,7 @@ class StudentAppBar extends StatelessWidget {
                   child: Text(
                     title,
                     style: AppTextStyles.titleLg.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
                     ),
@@ -117,7 +118,7 @@ class StudentAppBar extends StatelessWidget {
                   // Content
                   Positioned.fill(
                     child: Padding(
-                      padding: EdgeInsets.only(top: topPadding, bottom: 20),
+                      padding: EdgeInsets.only(top: topPadding, bottom: AppSpacing.s20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,14 +139,14 @@ class StudentAppBar extends StatelessWidget {
                               child: Text(
                                 label!.toUpperCase(),
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                   fontSize: 9,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 1.2,
                                 ),
                               ),
                             ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpacing.s10),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.xxxl,
@@ -154,7 +155,7 @@ class StudentAppBar extends StatelessWidget {
                               title,
                               textAlign: TextAlign.center,
                               style: AppTextStyles.titleLg.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: -0.5,

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/medical_record.dart';
@@ -15,6 +16,7 @@ import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkPatientDetailScreen extends StatefulWidget {
   final int patientId;
@@ -82,7 +84,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
 
                       // Tabs
                       Container(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         child: TabBar(
                           controller: _tabController,
                           labelColor: primaryColor,
@@ -116,10 +118,10 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                   '/tk/screening?patient_id=${widget.patientId}',
                 ),
             backgroundColor: context.watch<ThemeProvider>().colors.success,
-            icon: const Icon(Icons.add_rounded, color: Colors.white),
-            label: const Text(
+            icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
+            label: Text(
               'Input Screening',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: context.appColors.onPrimary),
             ),
           ),
         );
@@ -132,49 +134,55 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
     final initials = patient.initials;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s20,
+        AppSpacing.s20,
+        AppSpacing.s20,
+        AppSpacing.sm,
+      ),
       child: BkuCard(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Row(
           children: [
             // Avatar
             Container(
-              padding: const EdgeInsets.all(3),
+              padding: AppSpacing.padding3,
               decoration: BoxDecoration(
                 color: AppColors.neutral600.withAlpha(25),
                 shape: BoxShape.circle,
               ),
               child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                padding: AppSpacing.padding2,
+                decoration: BoxDecoration(
+                  color: context.appColors.surface,
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
                   child:
                       patient.fotoURL != null && patient.fotoURL!.isNotEmpty
-                          ? Image.network(
+                          ? CachedNetworkImage(imageUrl: 
                             ApiGate.getImageUrl(patient.fotoURL),
                             width: 64,
                             height: 64,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
+                            errorWidget: (context, url, error) {
                               return _buildInitialsAvatar(initials);
                             },
+                            placeholder: (context, url) => Container(color: AppColors.neutral200),
                           )
                           : _buildInitialsAvatar(initials),
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     patient.nama,
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: context.appColors.onSurface,
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
                       height: 1.2,
@@ -182,11 +190,11 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     patient.prodi.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.black87,
+                    style: TextStyle(
+                      color: context.appColors.onSurfaceVariant,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       height: 1.3,
@@ -194,7 +202,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -253,7 +261,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: textColor, size: 12),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.s6),
           Text(
             label,
             style: TextStyle(
@@ -332,7 +340,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             AppColors.success,
           ),
         ]),
-        const SizedBox(height: 28),
+        const SizedBox(height: AppSpacing.s28),
         _buildGridSection('Informasi Kontak', [
           _buildGridItem(
             'No. HP',
@@ -361,7 +369,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           ),
         ]),
         if (patient.alergiObat != null && patient.alergiObat!.isNotEmpty) ...[
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.s28),
           _buildGridSection('Riwayat Alergi', [
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -379,7 +387,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     color: Theme.of(context).colorScheme.error,
                     size: 22,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
                       patient.alergiObat!,
@@ -403,7 +411,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 12),
+          padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
             title.toUpperCase(),
             style: AppTextStyles.titleSm.copyWith(
@@ -439,9 +447,9 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey.withAlpha(30)),
+        border: Border.all(color: AppColors.neutral300.withAlpha(30)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(4),
@@ -454,19 +462,19 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: AppSpacing.padding10,
             decoration: BoxDecoration(
               color: color.withAlpha(20),
               borderRadius: AppRadius.radiusMd,
             ),
             child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             title,
             style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: AppTextStyles.bodySm.copyWith(
@@ -489,7 +497,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.history_rounded, size: 64, color: AppColors.neutral300),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada riwayat pemeriksaan',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral400),
@@ -509,12 +517,12 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
   Widget _buildRecordCard(MedicalRecord record) {
     final primaryColor = context.watch<ThemeProvider>().primary;
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey.withAlpha(30)),
+        border: Border.all(color: AppColors.neutral300.withAlpha(30)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(4),
@@ -531,16 +539,16 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(record.statusKesehatan).withAlpha(20),
+                  color: _getStatusColor(context, record.statusKesehatan).withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(
                   Icons.medical_services_rounded,
-                  color: _getStatusColor(record.statusKesehatan),
+                  color: _getStatusColor(context, record.statusKesehatan),
                   size: 20,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,7 +575,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(record.statusKesehatan).withAlpha(20),
+                  color: _getStatusColor(context, record.statusKesehatan).withAlpha(20),
                   borderRadius: AppRadius.radiusXl,
                 ),
                 child: Text(
@@ -575,13 +583,13 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: _getStatusColor(record.statusKesehatan),
+                    color: _getStatusColor(context, record.statusKesehatan),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           // Vital Signs Grid
           Row(
             children: [
@@ -594,7 +602,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(child: _buildVitalItem('Tensi', record.tekananDarah)),
@@ -605,7 +613,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             ],
           ),
           if (record.catatan != null && record.catatan!.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
@@ -619,7 +627,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     size: 14,
                     color: AppColors.neutral500,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       record.catatan!,
@@ -633,7 +641,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
               ),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton.icon(
@@ -663,56 +671,56 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32),
-              topRight: Radius.circular(32),
+      return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.success,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.xxl),
+          topRight: Radius.circular(AppRadius.xxl),
+        ),
+      ),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Pull Bar
+          Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.neutral300,
+                borderRadius: AppRadius.radiusXs,
+              ),
             ),
           ),
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.85,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Pull Bar
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral300,
-                    borderRadius: AppRadius.radiusXs,
-                  ),
-                ),
-              ),
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl,
-                  vertical: AppSpacing.sm,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Detail Rekam Medis',
-                            style: AppTextStyles.titleLg.copyWith(
-                              color: const Color(0xFF1E293B),
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xl,
+              vertical: AppSpacing.sm,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Detail Rekam Medis',
+                        style: AppTextStyles.titleLg.copyWith(
+                          color: context.appColors.secondary,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             '${_formatDate(record.tanggal)} • Oleh ${record.namaPemeriksa ?? "-"}',
                             style: AppTextStyles.bodySm.copyWith(
@@ -748,6 +756,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                         ),
                         decoration: BoxDecoration(
                           color: _getStatusColor(
+                            context,
                             record.statusKesehatan,
                           ).withAlpha(20),
                           borderRadius: AppRadius.radiusXl,
@@ -757,27 +766,27 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                           children: [
                             Icon(
                               Icons.medical_services_rounded,
-                              color: _getStatusColor(record.statusKesehatan),
+                              color: _getStatusColor(context, record.statusKesehatan),
                               size: 16,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Text(
                               record.statusCategory,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: _getStatusColor(record.statusKesehatan),
+                                color: _getStatusColor(context, record.statusKesehatan),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
 
                     // Section 1: Tanda Vital & Fisik
                     _buildModalSectionTitle('Tanda Vital & Fisik'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildModalGrid([
                       _buildModalGridItem(
                         'Tinggi Badan',
@@ -812,16 +821,16 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                         record.golonganDarah ?? '-',
                       ),
                     ]),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // Section 2: Keluhan & Kondisi
                     _buildModalSectionTitle('Keluhan & Kondisi'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildDetailItem(
                       'Riwayat Penyakit',
                       record.riwayatPenyakit,
                     ),
-                    _buildWarningDetailItem('Alergi Obat', record.alergiObat),
+                    _buildWarningDetailItem(context, 'Alergi Obat', record.alergiObat),
                     _buildDetailItem(
                       'Kondisi Psikologis',
                       record.kondisiPsikologis,
@@ -834,11 +843,11 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                           : null,
                     ),
                     _buildDetailItem('Buta Warna', record.butaWarna),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // Section 3: Tindakan & Penanganan
                     _buildModalSectionTitle('Tindakan & Rekomendasi'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildDetailItem(
                       'Tindakan Diberikan',
                       record.tindakanDiberikan,
@@ -864,10 +873,10 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           height: 18,
           decoration: BoxDecoration(
             color: const Color(0xFF16A34A),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: AppRadius.br2,
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Text(
           title,
           style: AppTextStyles.titleSm.copyWith(
@@ -911,7 +920,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             value,
             style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
@@ -926,7 +935,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
   Widget _buildDetailItem(String label, String? value) {
     final displayValue = (value == null || value.trim().isEmpty) ? '-' : value;
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: const BoxDecoration(
         color: AppColors.neutral100,
@@ -940,7 +949,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             label,
             style: AppTextStyles.caption.copyWith(color: AppColors.neutral500),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             displayValue,
             style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w500),
@@ -950,7 +959,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
     );
   }
 
-  Widget _buildWarningDetailItem(String label, String? value) {
+  Widget _buildWarningDetailItem(BuildContext context, String label, String? value) {
     final hasWarning =
         value != null &&
         value.trim().isNotEmpty &&
@@ -960,7 +969,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       return _buildDetailItem(label, value);
     }
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.error.withAlpha(15),
@@ -980,7 +989,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                 color: Theme.of(context).colorScheme.error,
                 size: 14,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.s6),
               Text(
                 label,
                 style: AppTextStyles.caption.copyWith(
@@ -990,7 +999,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             value,
             style: AppTextStyles.bodyMd.copyWith(
@@ -1010,7 +1019,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           label,
           style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
@@ -1019,7 +1028,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
     );
   }
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(BuildContext context, String status) {
     switch (status) {
       case 'Layak Kegiatan':
       case 'prima':
@@ -1071,10 +1080,10 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         final date = DateTime.tryParse(createdAtStr);
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.only(bottom: AppSpacing.lg),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(color: Colors.grey.withAlpha(30)),
             boxShadow: [
@@ -1139,18 +1148,18 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 'Faskes Tujuan: $faskes',
                 style: AppTextStyles.titleSm.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text('Diagnosis: $diagnosis', style: AppTextStyles.bodyMd),
               if (status.toString().toLowerCase() == 'disetujui' ||
                   status.toString().toLowerCase() == 'selesai') ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   height: 36,
                   child: ElevatedButton.icon(
@@ -1177,7 +1186,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: AppRadius.br10,
                         side: const BorderSide(color: Color(0xFFFCA5A5)),
                       ),
                     ),

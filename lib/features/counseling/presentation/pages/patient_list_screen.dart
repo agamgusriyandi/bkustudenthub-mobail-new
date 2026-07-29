@@ -1,7 +1,9 @@
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +12,6 @@ import 'package:printing/printing.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:go_router/go_router.dart';
@@ -81,7 +82,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
   }
 
   void _startPolling() {
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (mounted) {
         context.read<CounselingProvider>().loadPatients(silent: true);
       }
@@ -188,21 +189,21 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
                               ),
                               child: _buildSummaryCard(filtered),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: AppSpacing.s20),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
                               ),
                               child: _buildSearchAndFilter(patients),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: AppSpacing.s20),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
@@ -215,7 +216,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: AppSpacing.md),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
@@ -223,17 +224,17 @@ class _PatientListScreenState extends State<PatientListScreen> {
                               child: _buildFilterChips(),
                             ),
                             if (totalPages > 1) ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildTopPagination(totalPages),
                             ],
-                            const SizedBox(height: 12),
+                            const SizedBox(height: AppSpacing.md),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
                               ),
                               child: _buildPatientList(pagedFiltered, provider),
                             ),
-                            const SizedBox(height: 120),
+                            const SizedBox(height: AppSpacing.s120),
                           ],
                         ),
               ),
@@ -322,12 +323,12 @@ class _PatientListScreenState extends State<PatientListScreen> {
         child: Column(
           children: [
             Icon(Icons.error_outline_rounded, size: 64, color: Colors.red[300]),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               message,
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: provider.loadPatients,
 
@@ -354,13 +355,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
           controller: _searchController,
           onChanged: (val) => setState(() => _searchQuery = val),
           decoration: InputDecoration(
+            labelText: 'Cari pasien',
             hintText: 'Cari nama mahasiswa atau NIM...',
             hintStyle: AppTextStyles.bodySm.copyWith(
-              color: Colors.grey.withAlpha(150),
+              color: AppColors.neutral500.withAlpha(150),
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
-            prefixIcon: const Icon(Icons.search_rounded, color: Colors.grey),
+            prefixIcon: const Icon(Icons.search_rounded, color: AppColors.neutral500),
             suffixIcon:
                 _searchQuery.isNotEmpty
                     ? IconButton(
@@ -383,11 +385,11 @@ class _PatientListScreenState extends State<PatientListScreen> {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(40)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -395,17 +397,17 @@ class _PatientListScreenState extends State<PatientListScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             Expanded(
               flex: 4,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: Colors.grey.withAlpha(40)),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: AppRadius.radiusLg,
+            border: Border.all(color: AppColors.neutral300.withAlpha(40)),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
@@ -431,15 +433,15 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               flex: 6,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: Colors.grey.withAlpha(40)),
+                  border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String?>(
@@ -499,7 +501,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
                   color: const Color(0xFF16A34A).withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
@@ -510,7 +512,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   color: Color(0xFF16A34A),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Text(
                 'Ringkasan Analitik',
                 style: AppTextStyles.titleSm.copyWith(
@@ -521,7 +523,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -535,7 +537,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 true,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildScrollableStatCard(
                 'Aktif',
@@ -546,7 +548,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 false,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildScrollableStatCard(
                 'Baru',
@@ -581,14 +583,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: primaryColor.withAlpha(20),
               borderRadius: AppRadius.radiusSm,
             ),
             child: Icon(icon, color: primaryColor, size: 20),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
@@ -597,7 +599,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
               fontSize: 20,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -632,7 +634,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
           final activeBorder = filter['activeBorder'] as Color;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: AppSpacing.s10),
             child: GestureDetector(
               onTap: () {
                 setState(() {
@@ -647,7 +649,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? activeBg : Colors.white,
+                  color: isSelected ? activeBg : context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color: isSelected ? activeBorder : AppColors.neutral200,
@@ -670,7 +672,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                       size: 16,
                       color: isSelected ? activeFg : AppColors.neutral500,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.s6),
                     Text(
                       filterLabel,
                       style: AppTextStyles.labelMd.copyWith(
@@ -699,8 +701,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.br14,
           border: Border.all(color: const Color(0xFFE2E8F0)),
           boxShadow: [
             BoxShadow(
@@ -715,9 +717,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
           children: [
             Material(
               color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canPrev ? () => setState(() => _currentPage--) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -729,7 +731,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         size: 16,
                         color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Text(
                         'Sebelumnya',
                         style: TextStyle(
@@ -761,9 +763,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
             ),
             Material(
               color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canNext ? () => setState(() => _currentPage++) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -778,7 +780,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                           color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
@@ -817,7 +819,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   color: AppColors.info,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               Text(
                 'Tidak Ada Data',
                 style: AppTextStyles.titleLg.copyWith(
@@ -825,7 +827,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _searchQuery.isNotEmpty || _selectedProdi != null
                     ? 'Tidak ada mahasiswa yang cocok dengan filter.'
@@ -860,7 +862,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
             : status == 'Baru'
             ? AppColors.warning
             : status == 'Selesai'
-            ? Colors.teal
+            ? context.appColors.info
             : status == 'Perlu Perhatian'
             ? AppColors.error
             : AppColors.neutral600;
@@ -930,18 +932,18 @@ class _PatientListScreenState extends State<PatientListScreen> {
     const colors = [
       AppColors.warning,
       AppColors.info,
-      Colors.purple,
-      Colors.teal,
+      AppColors.neutral700,
+      AppColors.neutral500,
       AppColors.error,
     ];
     final color = colors[name.length % colors.length];
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: Colors.grey.withAlpha(30)),
+        border: Border.all(color: AppColors.neutral500.withAlpha(30)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(4),
@@ -999,7 +1001,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                 ),
                               ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
 
                     // Main Details
                     Expanded(
@@ -1021,7 +1023,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               // Status Badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -1040,7 +1042,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                       size: 10,
                                       color: statusColor,
                                     ),
-                                    const SizedBox(width: 4),
+                                    const SizedBox(width: AppSpacing.xs),
                                     Text(
                                       status,
                                       style: AppTextStyles.labelSm.copyWith(
@@ -1054,7 +1056,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           // NIM & Prodi
                           Text(
                             '$nim${prodi.isNotEmpty ? ' • $prodi' : ''}',
@@ -1064,7 +1066,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           // Visit Info
                           Row(
                             children: [
@@ -1073,7 +1075,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                 size: 14,
                                 color: AppColors.neutral500,
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: AppSpacing.s6),
                               Text(
                                 lastVisit,
                                 style: AppTextStyles.labelSm.copyWith(
@@ -1082,13 +1084,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: AppSpacing.lg),
                               const Icon(
                                 Icons.access_time_rounded,
                                 size: 14,
                                 color: AppColors.neutral500,
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: AppSpacing.s6),
                               Text(
                                 '$sessions Sesi',
                                 style: AppTextStyles.labelSm.copyWith(
@@ -1153,13 +1155,13 @@ class _PatientDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius36)),
       ),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Container(
             width: 48,
             height: 5,
@@ -1186,9 +1188,9 @@ class _PatientDetailsSheet extends StatelessWidget {
                   ),
                   children: [
                     _buildHeader(context),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildInfoGrid(context),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     prov.medicalRecordLoading
                         ? const Padding(
                           padding: EdgeInsets.symmetric(
@@ -1316,7 +1318,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                     ),
                   ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Name
         Text(
@@ -1328,7 +1330,7 @@ class _PatientDetailsSheet extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.s2),
 
         // NIM
         BkuCard(
@@ -1346,7 +1348,7 @@ class _PatientDetailsSheet extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.s2),
 
         // Faculty / Prodi
         Text(
@@ -1395,7 +1397,7 @@ class _PatientDetailsSheet extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -1434,7 +1436,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                 color: themeProvider.primary,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Text(
               'Riwayat Kunjungan',
               style: AppTextStyles.titleSm.copyWith(
@@ -1444,7 +1446,7 @@ class _PatientDetailsSheet extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         if (visits.isEmpty)
           Center(
             child: Padding(
@@ -1502,9 +1504,9 @@ class _PatientDetailsSheet extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.history_edu_rounded,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     size: 16,
                   ),
                 ),
@@ -1521,15 +1523,15 @@ class _PatientDetailsSheet extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           // Timeline Content Card
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: Colors.grey.withAlpha(20)),
                   boxShadow: [
@@ -1554,7 +1556,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                               size: 14,
                               color: AppColors.neutral600,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               date,
                               style: AppTextStyles.labelMd.copyWith(
@@ -1638,7 +1640,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                               }
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(6),
+                              padding: AppSpacing.padding6,
                               decoration: BoxDecoration(
                                 color: themeProvider.primary.withAlpha(15),
                                 shape: BoxShape.circle,
@@ -1652,7 +1654,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     // Title
                     Text(
                       type,
@@ -1663,7 +1665,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                     ),
                     // Note Box
                     if (note.isNotEmpty) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(AppSpacing.md),
@@ -1700,9 +1702,9 @@ class _PatientDetailsSheet extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -1717,7 +1719,7 @@ class _PatientDetailsSheet extends StatelessWidget {
           children: [
             if (isLocked) ...[
               Container(
-                margin: const EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.success.withAlpha(20),
@@ -1730,7 +1732,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                       color: AppColors.success,
                       size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
                         'Kasus/Episode selesai. Mahasiswa harus membuat booking baru untuk memulai sesi konseling baru.',
@@ -1765,7 +1767,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   flex: 2,
                   child: ElevatedButton(

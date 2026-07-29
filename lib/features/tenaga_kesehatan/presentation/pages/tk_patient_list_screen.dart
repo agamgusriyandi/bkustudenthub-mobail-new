@@ -74,7 +74,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                 ),
               ),
             ),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: AppSpacing.s20),
             pw.TableHelper.fromTextArray(
               headers: [
                 'NIM',
@@ -283,7 +283,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
             children: [
               // Filters Section
               Container(
-                color: Colors.white,
+                color: AppColors.surface,
                 child: Theme(
                   data: Theme.of(
                     context,
@@ -293,10 +293,10 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                     title: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
                             color: const Color(0xFFEFF6FF),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusSm,
                           ),
                           child: const Icon(
                             Icons.tune_rounded,
@@ -304,7 +304,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                             color: Color(0xFF2563EB),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpacing.s10),
                         Text(
                           'Saring & Cari Mahasiswa',
                           style: AppTextStyles.labelMd.copyWith(
@@ -329,7 +329,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                               color: AppColors.neutral500,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
@@ -378,7 +378,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                               setState(() => _searchQuery = value);
                             },
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
 
                           // Filters row
                           Row(
@@ -397,7 +397,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   },
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: _buildFilterSelector(
                                   label: 'Program Studi',
@@ -410,7 +410,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           _buildFilterSelector(
                             label: 'Jenis Kelamin',
                             value: _selectedGender,
@@ -418,7 +418,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                             onChanged:
                                 (val) => setState(() => _selectedGender = val!),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Row(
                             children: [
                               Expanded(
@@ -431,7 +431,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   border: const BorderSide(color: Color(0xFF86EFAC)),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: _buildCompactActionButton(
                                   onPressed: () => _exportPdf(filteredPatients),
@@ -444,7 +444,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Row(
                             children: [
                               Expanded(
@@ -457,7 +457,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   border: const BorderSide(color: Color(0xFFCBD5E1)),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: _buildCompactActionButton(
                                   onPressed: _showManualBookingSheet,
@@ -515,7 +515,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         InkWell(
           onTap: () {
             _showSelectionBottomSheet(
@@ -578,7 +578,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
       backgroundColor: Colors.white,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       builder: (context) {
         return SafeArea(
@@ -591,7 +591,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
               children: [
                 // Handle bar
                 Container(
-                  margin: const EdgeInsets.only(top: 12, bottom: 16),
+                  margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.lg),
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
@@ -623,7 +623,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Flexible(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -683,7 +683,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
               size: 64,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Mahasiswa tidak ditemukan',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral400),
@@ -696,12 +696,17 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
     return RefreshIndicator(
       onRefresh: () => provider.loadPatients(),
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg,
+          100,
+        ),
         itemCount: patients.length,
         itemBuilder: (context, index) {
           final patient = patients[index];
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: TkPatientCard(
               patient: patient,
               onTap: () => _navigateToPatientDetail(patient),
@@ -735,7 +740,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusMd,
             side: border ?? BorderSide.none,
           ),
         ),

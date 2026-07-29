@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class AppSnackbar {
   static void showSuccess(BuildContext context, String message) {
-    _showSnackbar(context, message, AppColors.success);
+    _showSnackbar(context, message, context.appColors.success);
   }
 
   static void showError(BuildContext context, String message) {
-    _showSnackbar(context, message, AppColors.error);
+    _showSnackbar(context, message, context.appColors.error);
   }
 
   static void showWarning(BuildContext context, String message) {
-    _showSnackbar(context, message, AppColors.warning);
+    _showSnackbar(context, message, context.appColors.warning);
   }
 
   static void _showSnackbar(
@@ -21,10 +22,10 @@ class AppSnackbar {
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: const TextStyle(color: Colors.white)),
+        content: Text(message, style: TextStyle(color: context.appColors.onPrimary)),
         backgroundColor: backgroundColor,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
       ),
     );
   }

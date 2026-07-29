@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -46,8 +47,8 @@ class _TkBapScreenState extends State<TkBapScreen> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
@@ -62,9 +63,9 @@ class _TkBapScreenState extends State<TkBapScreen> {
         children: [
           Material(
             color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canPrev ? () => setState(() => _currentPage--) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -76,12 +77,12 @@ class _TkBapScreenState extends State<TkBapScreen> {
                     Icon(
                       Icons.chevron_left_rounded,
                       size: 18,
-                      color:
-                          canPrev
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFFCBD5E1),
+                              color:
+                            canPrev
+                                ? context.appColors.secondary
+                                : const Color(0xFFCBD5E1),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       'Sebelumnya',
                       style: TextStyle(
@@ -89,7 +90,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                         fontWeight: FontWeight.bold,
                         color:
                             canPrev
-                                ? const Color(0xFF1E293B)
+                                ? context.appColors.secondary
                                 : const Color(0xFFCBD5E1),
                       ),
                     ),
@@ -100,17 +101,17 @@ class _TkBapScreenState extends State<TkBapScreen> {
           ),
           Text(
             'Halaman $_currentPage dari $totalPages',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E293B),
+              color: context.appColors.secondary,
             ),
           ),
           Material(
             color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canNext ? () => setState(() => _currentPage++) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -126,17 +127,17 @@ class _TkBapScreenState extends State<TkBapScreen> {
                         fontWeight: FontWeight.bold,
                         color:
                             canNext
-                                ? const Color(0xFF1E293B)
+                                ? context.appColors.secondary
                                 : const Color(0xFFCBD5E1),
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
                       color:
                           canNext
-                              ? const Color(0xFF1E293B)
+                              ? context.appColors.secondary
                               : const Color(0xFFCBD5E1),
                     ),
                   ],
@@ -156,12 +157,12 @@ class _TkBapScreenState extends State<TkBapScreen> {
       backgroundColor: AppColors.neutral100,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/tk/bap/form'),
-        backgroundColor: const Color(0xFF16A34A),
+        backgroundColor: context.appColors.success,
         elevation: 4,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text(
+        icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
+        label: Text(
           'Buat BAP',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
       bottomNavigationBar: UnifiedBottomNavBar.tenagaKesehatan(
@@ -237,10 +238,10 @@ class _TkBapScreenState extends State<TkBapScreen> {
                     padding: const EdgeInsets.only(
                       left: AppSpacing.lg,
                       right: AppSpacing.lg,
-                      bottom: 100,
+                      bottom: AppSpacing.s100,
                     ),
                     itemCount: paginatedBaps.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
                     itemBuilder: (context, index) {
                       return _buildBapCard(context, paginatedBaps[index]);
                     },
@@ -267,13 +268,13 @@ class _TkBapScreenState extends State<TkBapScreen> {
                 color: Color(0xFFFEF2F2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.error_outline_rounded,
                 size: 64,
-                color: Color(0xFFDC2626),
+                color: context.appColors.error,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               'Gagal Memuat Data',
               style: AppTextStyles.titleLg.copyWith(
@@ -281,26 +282,26 @@ class _TkBapScreenState extends State<TkBapScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               error,
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             SizedBox(
               height: 40,
               child: ElevatedButton.icon(
                 onPressed: () => context.read<TkHealthProvider>().fetchBAPs(),
-                icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 18),
-                label: const Text(
+                icon: Icon(Icons.refresh_rounded, color: context.appColors.onPrimary, size: 18),
+                label: Text(
                   'Coba Lagi',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A34A),
+                  backgroundColor: context.appColors.success,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppRadius.br10,
                   ),
                 ),
               ),
@@ -319,16 +320,16 @@ class _TkBapScreenState extends State<TkBapScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: const Color(0xFF16A34A).withAlpha(15),
+              color: context.appColors.success.withAlpha(15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.description_outlined,
               size: 64,
-              color: Color(0xFF16A34A),
+              color: context.appColors.success,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             'Belum ada BAP Kesehatan',
             style: AppTextStyles.titleLg.copyWith(
@@ -336,7 +337,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Klik tombol "Buat BAP" untuk memulai',
             style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
@@ -348,7 +349,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
 
   Widget _buildBapCard(BuildContext context, TkBapModel bap) {
     final isFinal = bap.status == 'FINAL';
-    final statusColor = isFinal ? const Color(0xFF16A34A) : const Color(0xFFD97706);
+    final statusColor = isFinal ? context.appColors.success : context.appColors.warning;
     final statusBg = isFinal ? const Color(0xFFF0FDF4) : const Color(0xFFFEF3C7);
 
     return Material(
@@ -359,7 +360,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
@@ -388,7 +389,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                       size: 20,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +403,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Row(
                           children: [
                             const Icon(
@@ -410,7 +411,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                               size: 12,
                               color: AppColors.neutral400,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               DateFormat('dd MMM yyyy', 'id_ID').format(bap.tanggalPelaksanaan),
                               style: AppTextStyles.labelSm.copyWith(
@@ -418,13 +419,13 @@ class _TkBapScreenState extends State<TkBapScreen> {
                               ),
                             ),
                             if (bap.tempat.isNotEmpty) ...[
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               const Icon(
                                 Icons.location_on_rounded,
                                 size: 12,
                                 color: AppColors.neutral400,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
                                   bap.tempat,
@@ -441,16 +442,16 @@ class _TkBapScreenState extends State<TkBapScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _buildStatusBadge(bap.status),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(12),
+                  color: context.appColors.background,
+                  borderRadius: AppRadius.radiusMd,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -462,24 +463,24 @@ class _TkBapScreenState extends State<TkBapScreen> {
                     _buildStatItem(
                       'Layak',
                       bap.totalLayak.toString(),
-                      color: const Color(0xFF16A34A),
+                      color: context.appColors.success,
                     ),
                     _buildStatDivider(),
                     _buildStatItem(
                       'Pantauan',
                       bap.totalPantauan.toString(),
-                      color: const Color(0xFFD97706),
+                      color: context.appColors.warning,
                     ),
                     _buildStatDivider(),
                     _buildStatItem(
                       'Tdk Layak',
                       bap.totalTidakLayak.toString(),
-                      color: const Color(0xFFDC2626),
+                      color: context.appColors.error,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.s14),
               Row(
                 children: [
                   if (!isFinal) ...[
@@ -492,7 +493,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                       fontSize: 12,
                       fullWidth: false,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                   ],
                   Expanded(
                     child: BkuButton(
@@ -598,7 +599,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
             color: color ?? AppColors.neutral800,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.s2),
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
@@ -626,7 +627,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
       ),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppRadius.br6,
         border: Border.all(color: border),
       ),
       child: Text(

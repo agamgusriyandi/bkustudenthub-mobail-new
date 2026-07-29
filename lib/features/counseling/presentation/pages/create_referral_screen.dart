@@ -1,7 +1,8 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -83,21 +84,21 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSectionTitle('Pilih Pasien'),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           _buildStudentSelector(),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     BkuCard(
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSectionTitle('Detail Rujukan'),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           _buildDropdownField('Tipe Rujukan', _referralTypes),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           _buildTextField(
                             label: 'Alasan Rujukan',
                             hint:
@@ -111,7 +112,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           _buildTextField(
                             label: 'Pihak Tujuan',
                             hint: 'Contoh: RS Jiwa Dr. Soeharto Heerdjan',
@@ -125,7 +126,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           _buildTextField(
                             label: 'Email Tujuan',
                             hint: 'Contoh: rujukan@rsj.com',
@@ -149,7 +150,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                   ],
                 ),
               ),
@@ -210,17 +211,17 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           return Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
-              border: Border.all(color: Colors.grey.withAlpha(40)),
+              border: Border.all(color: AppColors.neutral500.withAlpha(40)),
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor: AppColors.primary,
-                  child: Icon(Icons.person_rounded, color: Colors.white),
+                  child: Icon(Icons.person_rounded, color: context.appColors.onPrimary),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +241,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                     ],
                   ),
                 ),
-                const Icon(Icons.lock_rounded, color: Colors.grey, size: 18),
+                const Icon(Icons.lock_rounded, color: AppColors.neutral500, size: 18),
               ],
             ),
           );
@@ -272,11 +273,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -339,7 +340,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             color: AppColors.neutral700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           maxLines: maxLines,
@@ -363,11 +364,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -390,7 +391,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             color: AppColors.neutral700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
           initialValue: _selectedType,
           isExpanded: true,
@@ -412,11 +413,11 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(color: Colors.grey.withAlpha(50)),
+              borderSide: BorderSide(color: AppColors.neutral500.withAlpha(50)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -454,10 +455,10 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
         return Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(10),
+          color: context.appColors.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(10),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -480,26 +481,26 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   flex: 2,
                   child: ElevatedButton(
                     onPressed: isLoading ? null : _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF16A34A),
-                      foregroundColor: Colors.white,
+                      foregroundColor: context.appColors.onPrimary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: AppRadius.br10,
                       ),
                     ),
                     child:
                         isLoading
-                            ? const SizedBox(
+                            ? SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 strokeWidth: 2,
                               ),
                             )
@@ -507,7 +508,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                               'Simpan Rujukan',
                               style: AppTextStyles.bodyMd.copyWith(
                                 fontWeight: FontWeight.w900,
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                               ),
                             ),
                   ),

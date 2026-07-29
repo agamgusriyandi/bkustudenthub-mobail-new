@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -114,12 +114,12 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
               size: 72,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada notifikasi',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Notifikasi aktivitas, pembaruan, dan pengingat akan muncul di sini',
               style: AppTextStyles.labelMd.copyWith(
@@ -167,8 +167,8 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(right: AppSpacing.s20),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.error.withAlpha(20),
           borderRadius: AppRadius.radiusXl,
@@ -212,7 +212,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: !notif.isRead ? color.withAlpha(8) : Colors.white,
@@ -243,7 +243,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
                 ),
                 child: Icon(icon, color: color, size: 22),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpacing.s14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +274,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
                       ],
                     ),
                     if (notif.content.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         notif.content,
                         style: AppTextStyles.labelMd.copyWith(
@@ -285,7 +285,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
                         Icon(
@@ -293,7 +293,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
                           size: 11,
                           color: AppColors.neutral400,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${notif.createdAt.day}/${notif.createdAt.month}/${notif.createdAt.year}',
                           style: AppTextStyles.labelSm.copyWith(

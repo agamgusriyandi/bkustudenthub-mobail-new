@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
@@ -120,7 +121,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
         }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
           await student.refreshHealthData();
@@ -150,7 +151,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                     if (isReschedule)
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
-                        margin: const EdgeInsets.only(bottom: 24),
+                        margin: const EdgeInsets.only(bottom: AppSpacing.xl),
                         decoration: BoxDecoration(
                           color: themeProvider.warning.withAlpha(20),
                           borderRadius: AppRadius.radiusLg,
@@ -164,7 +165,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                               Icons.info_outline_rounded,
                               color: themeProvider.warning,
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: Text(
                                 'Anda sedang melakukan penjadwalan ulang (Reschedule) untuk janji temu klinik.',
@@ -180,17 +181,17 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
 
                     // Brief Dokter
                     _buildHealthWorkerBrief(widget.worker),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
 
                     // Pilih Slot
                     _buildSectionHeader('Pilih Slot Jadwal'),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.sm,
                       ),
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                       decoration: BoxDecoration(
                         color: AppColors.info.withAlpha(15),
                         borderRadius: AppRadius.radiusMd,
@@ -202,7 +203,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                             size: 16,
                             color: AppColors.info,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           const Expanded(
                             child: Text(
                               'Slot abu-abu = penuh. Tarik ke bawah untuk refresh jadwal.',
@@ -273,7 +274,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -320,7 +321,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
 
                     if (filteredSchedules.isEmpty)
                       _buildEmptySlots()
@@ -328,15 +329,15 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                       _buildSlotList(filteredSchedules),
 
                     if (!isReschedule) ...[
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                       _buildSectionHeader('Keluhan Utama'),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       _buildComplaintField(),
                     ],
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                     _buildConfirmButton(student),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                   ],
                 ),
               ),
@@ -375,7 +376,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Row(
                   children: [
                     Icon(
@@ -383,7 +384,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                       size: 14,
                       color: Theme.of(context).colorScheme.outline,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       worker.lokasi.isNotEmpty
                           ? worker.lokasi
@@ -432,7 +433,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
               size: 48,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Tidak ada jadwal praktek tersedia',
               style: AppTextStyles.labelMd.copyWith(
@@ -454,12 +455,12 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
         thumbVisibility: true,
         trackVisibility: true,
         thickness: 5,
-        radius: const Radius.circular(3),
+        radius: const Radius.circular(AppRadius.radius3),
         thumbColor: AppColors.neutral400,
         trackColor: AppColors.neutral200.withAlpha(50),
         child: ListView.builder(
           controller: _scrollController,
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(right: AppSpacing.md),
           shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: schedules.length,
@@ -488,7 +489,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                       ),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color:
@@ -496,7 +497,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                           ? Colors.grey.withAlpha(10)
                           : isSelected
                           ? Theme.of(context).colorScheme.primary
-                          : Colors.white,
+                          : context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color:
@@ -539,12 +540,12 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                             isFull
                                 ? Colors.grey
                                 : isSelected
-                                ? Colors.white
+                                ? context.appColors.onPrimary
                                 : AppColors.neutral700,
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,11 +558,11 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                                   isFull
                                       ? Colors.grey
                                       : isSelected
-                                      ? Colors.white
+                                      ? context.appColors.onPrimary
                                       : AppColors.neutral900,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.s2),
                           Text(
                             'Pukul $start - $end WIB',
                             style: AppTextStyles.labelSm.copyWith(
@@ -574,7 +575,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Row(
                             children: [
                               Container(
@@ -593,7 +594,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                                   lokasi.isNotEmpty ? lokasi : 'Klinik Kampus',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        isSelected ? Colors.white : Colors.teal,
+                                        isSelected ? context.appColors.onPrimary : Colors.teal,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

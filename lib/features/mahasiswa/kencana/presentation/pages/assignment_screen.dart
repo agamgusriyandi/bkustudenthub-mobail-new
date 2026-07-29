@@ -1,7 +1,8 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:file_picker/file_picker.dart';
@@ -264,13 +265,13 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 color: Colors.redAccent,
                 size: 60,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 _errorMsg!,
                 style: AppTextStyles.labelLg,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               BkuButton(
                 onPressed: _loadAssignment,
                 icon: Icons.refresh_rounded,
@@ -317,7 +318,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Icon(
@@ -328,7 +329,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                         ? AppColors.error
                         : Theme.of(context).colorScheme.outline,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'Tenggat: ${_formatDateTime(dueDateStr)}',
                 style: AppTextStyles.labelMd.copyWith(
@@ -341,7 +342,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
 
           if (desc.isNotEmpty) ...[
             Text(
@@ -351,7 +352,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               desc,
               style: AppTextStyles.bodyLg.copyWith(
@@ -359,7 +360,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xxl),
           ],
 
           Text(
@@ -369,14 +370,14 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           if (isSubmitted)
             _buildSubmittedState(subStatus)
           else
             _buildInputArea(subType),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
 
           if (!isSubmitted)
             BkuButton(
@@ -405,14 +406,14 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
       ),
       child: Row(
         children: [
           Icon(Icons.check_circle_rounded, color: statusColor, size: 24),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +427,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 ),
                 if (status == 'graded' &&
                     _submissionData?['score'] != null) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Nilai: ${_submissionData!['score']}',
                     style: AppTextStyles.labelSm.copyWith(
@@ -533,7 +534,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.outline,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 _selectedFile != null
                     ? _selectedFile!.name
@@ -547,7 +548,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 textAlign: TextAlign.center,
               ),
               if (_selectedFile == null) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Format: PDF, DOCX, JPG, PNG, MP4',
                   style: AppTextStyles.bodySm.copyWith(

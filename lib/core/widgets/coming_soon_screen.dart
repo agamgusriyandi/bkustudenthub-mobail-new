@@ -1,5 +1,6 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
@@ -12,9 +13,9 @@ class ComingSoonScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appColors.surface,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -45,7 +46,7 @@ class ComingSoonScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
               FadeInAnimation(
                 delay: 0.4,
                 child: Text(
@@ -58,7 +59,7 @@ class ComingSoonScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               FadeInAnimation(
                 delay: 0.6,
                 child: Text(
@@ -70,7 +71,7 @@ class ComingSoonScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSpacing.xxxl),
               FadeInAnimation(
                 delay: 0.8,
                 child: Container(
@@ -94,13 +95,13 @@ class ComingSoonScreen extends StatelessWidget {
                   child: Text(
                     'Segera Hadir',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: AppSpacing.s100),
             ],
           ),
         ),

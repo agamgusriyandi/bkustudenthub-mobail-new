@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-/// App Color Palette - Semantic & Neutral Colors
-/// =============================================
-/// Primary: Deep Blue (Institutional)
-/// Secondary: Gold (Academic)
-/// Neutral: Slate Gray Scale
-/// Semantic: Success, Warning, Info, Error variants
+/// Static color palette for const contexts and neutral scale.
+///
+/// For dynamic/theme-aware colors, use `context.appColors` from app_theme.dart:
+///   import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+///   context.appColors.primary  // instead of AppColors.primary
+///
+/// Migration guide:
+///   AppColors.primary       → context.appColors.primary
+///   AppColors.onSurface     → context.appColors.onSurface
+///   AppColors.success       → context.appColors.success
+///   AppColors.neutral500    → AppColors.neutral500 (neutral scale stays static)
 class AppColors {
   // ==================== PRIMARY ====================
   static const Color primary = Color(0xFFE85D04);
@@ -65,38 +70,34 @@ class AppColors {
   static const Color inversePrimary = Color(0xFFB5C4FF);
 
   // ==================== NEUTRAL SCALE ====================
-  // Digunakan untuk background, border, dan text hierarchy
+  // Neutral colors don't change with theme - these are always static
   static const Color neutral50 = Color(0xFFF9FAFB);
-  static const Color neutral100 = Color(0xFFF8FAFC); // Background default
-  static const Color neutral200 = Color(0xFFF1F5F9); // Border light
+  static const Color neutral100 = Color(0xFFF8FAFC);
+  static const Color neutral200 = Color(0xFFF1F5F9);
   static const Color neutral300 = Color(0xFFE2E8F0);
-  static const Color neutral400 = Color(0xFFCBD5E1); // Icon muted
-  static const Color neutral500 = Color(0xFF94A3B8); // Subtitle muted
+  static const Color neutral400 = Color(0xFFCBD5E1);
+  static const Color neutral500 = Color(0xFF94A3B8);
   static const Color neutral600 = Color(0xFF64748B);
   static const Color neutral700 = Color(0xFF475569);
-  static const Color neutral800 = Color(0xFF1E293B); // Primary text dark
+  static const Color neutral800 = Color(0xFF1E293B);
   static const Color neutral900 = Color(0xFF0F172A);
 
   // ==================== SEMANTIC COLORS ====================
-  // Success - Green
   static const Color success = Color(0xFF16A34A);
   static const Color successContainer = Color(0xFFD1FAE5);
   static const Color onSuccess = Color(0xFFFFFFFF);
   static const Color onSuccessContainer = Color(0xFF064E3B);
 
-  // Warning - Amber
   static const Color warning = Color(0xFFD97706);
   static const Color warningContainer = Color(0xFFFEF3C7);
   static const Color onWarning = Color(0xFFFFFFFF);
   static const Color onWarningContainer = Color(0xFF92400E);
 
-  // Info - Blue
   static const Color info = Color(0xFF2563EB);
   static const Color infoContainer = Color(0xFFDBEAFE);
   static const Color onInfo = Color(0xFFFFFFFF);
   static const Color onInfoContainer = Color(0xFF1E40AF);
 
-  // Danger - Red (alternatif untuk error yang lebih soft)
   static const Color danger = Color(0xFFDC2626);
   static const Color dangerContainer = Color(0xFFFEE2E2);
   static const Color onDanger = Color(0xFFFFFFFF);

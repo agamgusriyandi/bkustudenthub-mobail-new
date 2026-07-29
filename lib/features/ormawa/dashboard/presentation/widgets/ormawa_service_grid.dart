@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_prov
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -44,7 +45,7 @@ class OrmawaServiceGrid extends StatelessWidget {
         const _ServiceIcon(
           title: 'Anggota',
           icon: Icons.groups_rounded,
-          color: Colors.purple,
+          color: AppColors.neutral700,
           delay: 0.55,
           target: OrmawaAnggotaScreen(),
         ),
@@ -57,18 +58,18 @@ class OrmawaServiceGrid extends StatelessWidget {
           target: OrmawaFinanceScreen(),
         ),
       if (ormawaProvider.hasPermission('view_attendance'))
-        const _ServiceIcon(
+        _ServiceIcon(
           title: 'Absensi',
           icon: Icons.qr_code_scanner_rounded,
-          color: Colors.teal,
+          color: context.appColors.info,
           delay: 0.65,
           target: OrmawaAbsensiScreen(),
         ),
       if (ormawaProvider.hasPermission('view_calendar'))
-        const _ServiceIcon(
+        _ServiceIcon(
           title: 'Kalender',
           icon: Icons.event_rounded,
-          color: Colors.indigo,
+          color: context.appColors.info,
           delay: 0.7,
           target: OrmawaKalenderScreen(),
         ),
@@ -84,14 +85,14 @@ class OrmawaServiceGrid extends StatelessWidget {
         const _ServiceIcon(
           title: 'Pengumuman',
           icon: Icons.campaign_rounded,
-          color: Colors.purple,
+          color: AppColors.neutral700,
           delay: 0.8,
           target: OrmawaPengumumanScreen(),
         ),
       const _ServiceIcon(
         title: 'Lainnya',
         icon: Icons.menu_rounded,
-        color: Colors.blueGrey,
+        color: AppColors.neutral600,
         delay: 0.85,
         isMore: true,
       ),
@@ -138,36 +139,36 @@ class OrmawaServiceGridModal extends StatelessWidget {
 
     final modalItems = <Widget>[
       if (ormawaProvider.hasPermission('view_structure'))
-        const _ModalServiceIcon(
+        _ModalServiceIcon(
           title: 'Struktur',
           icon: Icons.account_tree_rounded,
-          color: Colors.indigo,
+          color: context.appColors.info,
           target: OrmawaStrukturScreen(),
         ),
       if (isOpenRecruitment && canViewRecruitment)
-        const _ModalServiceIcon(
+        _ModalServiceIcon(
           title: 'Open Recruitment',
           icon: Icons.person_add_rounded,
-          color: Colors.cyan,
+          color: context.appColors.info,
           target: OrmawaRecruitmentScreen(),
         ),
       if (canViewAspirations)
-        const _ModalServiceIcon(
+        _ModalServiceIcon(
           title: 'Aspirasi',
           icon: Icons.chat_bubble_outline_rounded,
-          color: Colors.pink,
+          color: context.appColors.error,
           target: OrmawaAspirasiScreen(),
         ),
-      const _ModalServiceIcon(
+      _ModalServiceIcon(
         title: 'Notifikasi',
         icon: Icons.notifications_rounded,
-        color: Colors.amber,
+        color: context.appColors.warning,
         target: OrmawaNotificationsScreen(),
       ),
       const _ModalServiceIcon(
         title: 'Pengaturan',
         icon: Icons.settings_rounded,
-        color: Colors.grey,
+        color: AppColors.neutral500,
         target: OrmawaSettingsScreen(),
       ),
       _ModalServiceIcon(
@@ -188,12 +189,12 @@ class OrmawaServiceGridModal extends StatelessWidget {
             borderRadius: AppRadius.radiusXs,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.xxl),
         Text(
           'Lainnya',
           style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.w900),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         Expanded(
           child: GridView.count(
             crossAxisCount: 4,
@@ -212,7 +213,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
       context: context,
       builder:
           (ctx) => AlertDialog(
-            contentPadding: const EdgeInsets.all(28),
+            contentPadding: AppSpacing.padding28,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -228,14 +229,14 @@ class OrmawaServiceGridModal extends StatelessWidget {
                     size: 36,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Keluar Portal?',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.s10),
                 Text(
                   'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
                   textAlign: TextAlign.center,
@@ -244,7 +245,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.s28),
                 Row(
                   children: [
                     Expanded(
@@ -259,7 +260,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
@@ -272,7 +273,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.error,
-                          foregroundColor: Colors.white,
+                          foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.radiusMd,
@@ -282,7 +283,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                           'Keluar',
                           style: AppTextStyles.labelLg.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -335,7 +336,7 @@ class _ModalServiceIcon extends StatelessWidget {
             ),
             child: Icon(icon, color: color, size: 26),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             title,
             style: AppTextStyles.labelSm.copyWith(
@@ -396,7 +397,7 @@ class _ServiceIcon extends StatelessWidget {
               ),
               child: Icon(icon, color: color, size: 26),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               title,
               style: AppTextStyles.labelSm.copyWith(
@@ -419,9 +420,9 @@ class _ServiceIcon extends StatelessWidget {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.65,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: const OrmawaServiceGridModal(),

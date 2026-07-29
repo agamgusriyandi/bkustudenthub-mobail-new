@@ -1,4 +1,5 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -55,7 +56,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                         size: 64,
                         color: Colors.red[400],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       Text(
                         'Akses Ditolak',
                         style: AppTextStyles.titleLg.copyWith(
@@ -63,7 +64,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                           color: AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Anda tidak memiliki izin untuk mengelola atau melihat sistem absensi.',
                         textAlign: TextAlign.center,
@@ -128,9 +129,9 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                         BkuShimmer(
                           width: double.infinity,
                           height: 120,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: AppSpacing.s20),
                         BkuShimmerList(itemCount: 3, itemHeight: 120),
                       ],
                     ),
@@ -153,11 +154,11 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               size: 64,
                               color: AppColors.neutral300,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             Text(
                               'Belum ada agenda kegiatan',
                               style: AppTextStyles.labelMd.copyWith(
-                                color: Colors.grey,
+                                color: AppColors.neutral500,
                               ),
                             ),
                           ],
@@ -166,7 +167,12 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     )
                   else
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.s20,
+                        AppSpacing.s20,
+                        AppSpacing.s20,
+                        100,
+                      ),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
                           final agenda = agendas[index];
@@ -179,11 +185,11 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               isPast ? AppColors.info : AppColors.success;
 
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                             child: _buildAbsensiCard(
                               agenda.id,
                               agenda.title,
-                              '${agenda.date.day}/${agenda.date.month}/${agenda.date.year} • ${agenda.date.hour}:${agenda.date.minute.toString().padLeft(2, '0')}',
+                              '${agenda.date.day}/${agenda.date.month}/${agenda.date.year} â€¢ ${agenda.date.hour}:${agenda.date.minute.toString().padLeft(2, '0')}',
                               status,
                               statusColor,
                             ),
@@ -210,7 +216,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
               child: Container(
                 height: 52,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: AppColors.neutral300),
                 ),
@@ -237,7 +243,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             InkWell(
               onTap: _showFilterBottomSheet,
               borderRadius: AppRadius.radiusLg,
@@ -245,7 +251,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: AppColors.neutral300),
                 ),
@@ -265,9 +271,9 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -287,7 +293,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Filter Status',
                     style: AppTextStyles.titleLg.copyWith(
@@ -295,7 +301,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -308,7 +314,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               style: TextStyle(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight:
                                     isSelected
@@ -336,7 +342,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                           );
                         }).toList(),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                 ],
               ),
             );
@@ -366,19 +372,19 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     iconBgColor: AppColors.warning.withAlpha(15),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: _buildStatCard(
                     icon: Icons.people_rounded,
                     title: 'Total Anggota',
                     value: provider.members.length.toString(),
-                    iconColor: Colors.purple,
-                    iconBgColor: Colors.purple.withAlpha(15),
+                    iconColor: AppColors.neutral700,
+                    iconBgColor: AppColors.neutral700.withAlpha(15),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Row(
               children: [
                 Expanded(
@@ -390,14 +396,14 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     iconBgColor: AppColors.success.withAlpha(15),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: _buildStatCard(
                     icon: Icons.percent_rounded,
                     title: 'Rasio Kehadiran',
                     value: '0%',
-                    iconColor: Colors.teal,
-                    iconBgColor: Colors.teal.withAlpha(15),
+                    iconColor: AppColors.info,
+                    iconBgColor: AppColors.info.withAlpha(15),
                   ),
                 ),
               ],
@@ -427,7 +433,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
             ),
             child: Icon(icon, color: iconColor, size: 24),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,7 +447,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     fontSize: 18,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(
@@ -487,7 +493,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
         child: Ink(
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(color: AppColors.neutral200),
           ),
@@ -517,7 +523,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 title,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -525,7 +531,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Row(
                 children: [
                   const Icon(
@@ -533,7 +539,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     size: 14,
                     color: AppColors.neutral500,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.s6),
                   Text(
                     time,
                     style: AppTextStyles.labelSm.copyWith(
@@ -542,7 +548,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -583,7 +589,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   if (status.toUpperCase() != 'SELESAI' &&
                       (canEditAttendance || canSubmitAttendance))
                     Row(
@@ -603,7 +609,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                         ],
                         if (canSubmitAttendance)
                           ElevatedButton(
@@ -620,10 +626,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               );
                             },
 
-                            child: const Text(
+                            child: Text(
                               'Scan QR',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -686,7 +692,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
       context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
     });
     // Poll attendance list every 3 seconds to keep UI synced in real-time
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (mounted) {
         context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
       }
@@ -707,7 +713,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 400),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
@@ -771,7 +777,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                             size: 28,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.s20),
                         Text(
                           'PEMINDAI QR PRESENSI',
                           style: AppTextStyles.labelSm.copyWith(
@@ -782,7 +788,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: AppSpacing.s10),
                         Text(
                           widget.title,
                           style: AppTextStyles.titleLg.copyWith(
@@ -792,7 +798,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Arahkan kamera mahasiswa ke kode QR di bawah ini untuk melakukan presensi secara mandiri.',
                           style: AppTextStyles.bodySm.copyWith(
@@ -801,7 +807,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.s20),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.lg,
@@ -822,7 +828,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                                 color: AppColors.success,
                                 size: 16,
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Text(
                                 '$attendedCount Mahasiswa Hadir',
                                 style: AppTextStyles.labelSm.copyWith(
@@ -833,11 +839,11 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.s20),
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xl),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             borderRadius: AppRadius.radiusXl,
                             border: Border.all(
                               color: AppColors.neutral200,
@@ -867,7 +873,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: AppSpacing.s28),
                         SizedBox(
                           width: double.infinity,
                           height: 54,
@@ -922,7 +928,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
       context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
     });
     // Start periodic polling for real-time check-in updates
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (mounted) {
         context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
       }
@@ -986,9 +992,9 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                 actions: [
                   IconButton(
                     onPressed: () => provider.fetchAttendance(widget.eventId),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.refresh_rounded,
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                     ),
                   ),
                 ],
@@ -1006,9 +1012,9 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                         BkuShimmer(
                           width: double.infinity,
                           height: 140,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: AppSpacing.s20),
                         BkuShimmerList(itemCount: 4, itemHeight: 90),
                       ],
                     ),
@@ -1018,10 +1024,15 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                 // Beautiful Header Card
                 SliverToBoxAdapter(
                   child: Container(
-                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                    margin: const EdgeInsets.fromLTRB(
+                      AppSpacing.s20,
+                      AppSpacing.s20,
+                      AppSpacing.s20,
+                      AppSpacing.s10,
+                    ),
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.appColors.surface,
                       borderRadius: AppRadius.radiusXl,
                       boxShadow: [
                         BoxShadow(
@@ -1043,7 +1054,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: AppSpacing.s6),
                         Text(
                           'Cek lis secara manual untuk memperbarui status kehadiran mahasiswa.',
                           style: AppTextStyles.labelSm.copyWith(
@@ -1052,9 +1063,9 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                           ),
                         ),
                         if (list.isNotEmpty) ...[
-                          const SizedBox(height: 18),
+                          const SizedBox(height: AppSpacing.s18),
                           const Divider(color: AppColors.neutral200, height: 1),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: AppSpacing.s14),
                           Row(
                             children: [
                               Expanded(
@@ -1074,7 +1085,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                         color: AppColors.success,
                                         size: 18,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: AppSpacing.sm),
                                       Text(
                                         '$attendedCount Hadir',
                                         style: AppTextStyles.labelSm.copyWith(
@@ -1086,7 +1097,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -1104,7 +1115,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                         color: AppColors.error,
                                         size: 18,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: AppSpacing.sm),
                                       Text(
                                         '$absentCount Alpa',
                                         style: AppTextStyles.labelSm.copyWith(
@@ -1135,11 +1146,11 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                             size: 64,
                             color: AppColors.neutral300,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Belum ada data kehadiran',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.grey,
+                              color: AppColors.neutral500,
                             ),
                           ),
                         ],
@@ -1148,7 +1159,12 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.s20,
+                      AppSpacing.s10,
+                      AppSpacing.s20,
+                      AppSpacing.s20,
+                    ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final item = list[index];
@@ -1156,11 +1172,11 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                         final isAbsent = item.status == 'tidak_hadir';
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: Container(
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.appColors.surface,
                               borderRadius: AppRadius.radiusXl,
                               boxShadow: [
                                 BoxShadow(
@@ -1191,11 +1207,11 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                             ? AppColors.success
                                             : (isAbsent
                                                 ? AppColors.error
-                                                : Colors.grey.shade300),
+                                                : AppColors.neutral300),
                                     borderRadius: AppRadius.radiusXs,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 CircleAvatar(
                                   radius: 20,
                                   backgroundColor:
@@ -1227,7 +1243,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 14),
+                                const SizedBox(width: AppSpacing.s14),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -1244,7 +1260,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                               ).colorScheme.primary,
                                         ),
                                       ),
-                                      const SizedBox(height: 2),
+                                      const SizedBox(height: AppSpacing.s2),
                                       Text(
                                         'NIM. ${item.nim ?? item.mahasiswaId}',
                                         style: AppTextStyles.labelSm.copyWith(
@@ -1255,7 +1271,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: AppSpacing.sm),
                                 () {
                                   final canEditAttendance = provider
                                       .hasPermission('edit_attendance');
@@ -1269,9 +1285,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                                 item.mahasiswaId,
                                                 'hadir',
                                               ),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
+                                          borderRadius: AppRadius.radiusMd,
                                           child: Container(
                                             padding: const EdgeInsets.all(
                                               AppSpacing.md,
@@ -1296,22 +1310,20 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                               Icons.check_rounded,
                                               color:
                                                   isAttended
-                                                      ? Colors.white
+                                                      ? context.appColors.onPrimary
                                                       : AppColors.neutral600,
                                               size: 18,
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 8),
+                                        const SizedBox(width: AppSpacing.sm),
                                         InkWell(
                                           onTap:
                                               () => _recordAttendance(
                                                 item.mahasiswaId,
                                                 'tidak_hadir',
                                               ),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
+                                          borderRadius: AppRadius.radiusMd,
                                           child: Container(
                                             padding: const EdgeInsets.all(
                                               AppSpacing.md,
@@ -1336,7 +1348,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                               Icons.close_rounded,
                                               color:
                                                   isAbsent
-                                                      ? Colors.white
+                                                      ? context.appColors.onPrimary
                                                       : AppColors.neutral600,
                                               size: 18,
                                             ),
@@ -1360,7 +1372,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                                     ? AppColors.error.withAlpha(
                                                       20,
                                                     )
-                                                    : Colors.grey.withAlpha(
+                                                    : AppColors.neutral500.withAlpha(
                                                       20,
                                                     )),
                                         borderRadius: AppRadius.radiusSm,
@@ -1377,7 +1389,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                                   ? AppColors.success
                                                   : (isAbsent
                                                       ? AppColors.error
-                                                      : Colors.grey),
+                                                       : AppColors.neutral500),
                                           fontWeight: FontWeight.bold,
                                           fontSize: 10,
                                         ),

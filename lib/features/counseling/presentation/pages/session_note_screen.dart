@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
@@ -95,7 +96,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -112,9 +113,9 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildConfidentialBanner(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildStudentInfo(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // I. Informasi Asesmen
                   _buildSectionHeader('I. Informasi Asesmen'),
@@ -123,7 +124,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     'Misal: Evaluasi Layanan Konseling Akademik',
                     _tujuanCtrl,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +135,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                           color: AppColors.neutral500,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       InkWell(
                         onTap: _pickDate,
                         borderRadius: AppRadius.radiusLg,
@@ -151,7 +152,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                                 color: AppColors.primary,
                                 size: 20,
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Text(
                                 DateFormat(
                                   'yyyy-MM-dd',
@@ -166,7 +167,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   _buildInput(
                     'Riwayat Keluhan',
@@ -174,28 +175,28 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     _riwayatKeluhanCtrl,
                     lines: 4,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildInput(
                     'Aspek Kognitif',
                     'Observasi aspek kognitif...',
                     _aspekKognitifCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildInput(
                     'Aspek Emosional',
                     'Observasi aspek emosional...',
                     _aspekEmosionalCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildInput(
                     'Aspek Perilaku',
                     'Observasi aspek perilaku...',
                     _aspekPerilakuCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // II. Rekomendasi Layanan
                   _buildSectionHeader('II. Rekomendasi Layanan'),
@@ -205,21 +206,21 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     _rekMahasiswaCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildInput(
                     'Rekomendasi Program Studi',
                     'Rekomendasi bagi Prodi...',
                     _rekProdiCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildInput(
                     'Rekomendasi Orang Tua/Wali',
                     'Rekomendasi bagi Orang tua...',
                     _rekOrangTuaCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // III. Tindak Lanjut & Kesimpulan
                   _buildSectionHeader('III. Tindak Lanjut & Kesimpulan'),
@@ -231,23 +232,23 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                   ),
                   if (_tindakLanjutTuntas == true)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 16),
+                      padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.lg),
                       child: Text(
-                        '⚠ Booking akan dikunci setelah disimpan',
+                        'âš  Booking akan dikunci setelah disimpan',
                         style: AppTextStyles.caption.copyWith(
                           color: context.watch<ThemeProvider>().primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   _buildYesNoToggle(
                     '2. Konseling Lanjutan',
                     _tindakLanjutLanjutan,
                     (val) => setState(() => _tindakLanjutLanjutan = val),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   _buildYesNoToggle(
                     '3. Rujuk Klinis',
@@ -256,16 +257,16 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                   ),
                   if (_tindakLanjutRujuk == true)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 16),
+                      padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.lg),
                       child: Text(
-                        '→ Surat rujukan otomatis dibuat & dikirim ke Referral',
+                        'â†’ Surat rujukan otomatis dibuat & dikirim ke Referral',
                         style: AppTextStyles.caption.copyWith(
                           color: Colors.indigo,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   if (_tindakLanjutRujuk == true) ...[
                     Container(
@@ -282,13 +283,13 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                             _rujukanTipe,
                             (v) => setState(() => _rujukanTipe = v!),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           _buildInput(
                             'Pihak / Instansi Tujuan',
                             'Misal: RS Pusat, Dekan FT',
                             _rujukanPihakCtrl,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           _buildInput(
                             'Email Tujuan',
                             'email@tujuan.com',
@@ -297,7 +298,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                   ],
 
                   _buildInput(
@@ -306,7 +307,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     _kesimpulanCtrl,
                     lines: 3,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildDropdown(
                     'Status Mood / Kondisi Emosional Saat Sesi',
@@ -314,10 +315,10 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     _selectedMood,
                     (v) => setState(() => _selectedMood = v!),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
 
                   _buildSaveButton(),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -338,7 +339,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
             color: AppColors.neutral900,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
       ],
     );
   }
@@ -354,7 +355,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
       child: Row(
         children: [
           const Icon(Icons.security_rounded, color: AppColors.error, size: 20),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               'DOKUMEN RAHASIA: Catatan ini hanya dapat diakses oleh Psikolog yang berwenang.',
@@ -384,9 +385,9 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
           CircleAvatar(
             radius: 24,
             backgroundColor: AppColors.primary,
-            child: Icon(Icons.person_rounded, color: Colors.white),
+            child: Icon(Icons.person_rounded, color: context.appColors.onPrimary),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +459,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
             color: AppColors.neutral900,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
             Expanded(
@@ -475,14 +476,14 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     'Ya',
                     style: AppTextStyles.labelLg.copyWith(
                       color:
-                          value == true ? Colors.white : AppColors.neutral700,
+                          value == true ? context.appColors.onPrimary : AppColors.neutral700,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: GestureDetector(
                 onTap: () => onChanged(false),
@@ -498,7 +499,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     'Tidak',
                     style: AppTextStyles.labelLg.copyWith(
                       color:
-                          value == false ? Colors.white : AppColors.neutral700,
+                          value == false ? context.appColors.onPrimary : AppColors.neutral700,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -527,7 +528,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
             color: AppColors.neutral800,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           decoration: BoxDecoration(

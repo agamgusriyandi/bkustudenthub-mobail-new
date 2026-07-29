@@ -1,5 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
@@ -20,6 +21,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkBapFormScreen extends StatefulWidget {
   final TkBapModel? existingBap;
@@ -241,7 +243,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
         actions: [
           if (widget.existingBap != null && !isAlreadyFinal)
             IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.white),
+              icon: Icon(Icons.delete_outline, color: context.appColors.onPrimary),
               onPressed: () => _confirmDelete(),
             ),
         ],
@@ -265,7 +267,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       icon: Icons.event_note_rounded,
                       iconColor: const Color(0xFF2563EB),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildInput(
                       'Tempat Pelaksanaan',
                       _tempatController,
@@ -273,9 +275,9 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       icon: Icons.location_on_rounded,
                       iconColor: const Color(0xFF16A34A),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildDatePicker(isAlreadyFinal),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Row(
                       children: [
                         Expanded(
@@ -287,7 +289,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                             iconColor: const Color(0xFF0D9488),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: _buildTimePicker(
                             'Waktu Selesai',
@@ -303,7 +305,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               _buildSectionTitle('Statistik Pemeriksaan'),
               _buildCard(
                 child: Column(
@@ -317,7 +319,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                             isAlreadyFinal,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: _buildNumberInput(
                             'Jml Diperiksa',
@@ -327,7 +329,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Row(
                       children: [
                         Expanded(
@@ -339,7 +341,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                 context.watch<ThemeProvider>().colors.success,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: _buildNumberInput(
                             'Pantauan',
@@ -349,7 +351,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                 context.watch<ThemeProvider>().colors.warning,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: _buildNumberInput(
                             'Tdk Layak',
@@ -364,7 +366,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               _buildSectionTitle('Penandatangan BAP'),
               _buildCard(
                 child: Column(
@@ -377,7 +379,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                         color: AppColors.neutral700,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildInput(
                       'Atas Nama',
                       _ttdKepalaNamaController,
@@ -385,7 +387,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       icon: Icons.person_rounded,
                       iconColor: const Color(0xFF2563EB),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildInput(
                       'NIK / NIP',
                       _ttdKepalaNikController,
@@ -393,7 +395,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       icon: Icons.badge_rounded,
                       iconColor: const Color(0xFF475569),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Text(
                       'Tim Medis / Tenaga Kesehatan',
                       style: AppTextStyles.labelMd.copyWith(
@@ -401,7 +403,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                         color: AppColors.neutral700,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildInput(
                       'Atas Nama',
                       _ttdMedisNamaController,
@@ -409,7 +411,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       icon: Icons.medical_services_rounded,
                       iconColor: const Color(0xFF16A34A),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildInput(
                       'NIK / SIP',
                       _ttdMedisNikController,
@@ -421,10 +423,10 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               _buildPhotoPickerSection(isAlreadyFinal),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               if (!isAlreadyFinal) ...[
                 BkuCard(
                   padding: EdgeInsets.zero,
@@ -457,7 +459,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 BkuButton(
                   onPressed: _isSubmitting ? null : _submitForm,
                   isLoading: _isSubmitting,
@@ -476,7 +478,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                   height: 46,
                   fontSize: 13,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: AppSpacing.xxxl),
               ],
             ],
           ),
@@ -487,7 +489,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md, left: AppSpacing.xs),
       child: Text(
         title,
         style: AppTextStyles.titleSm.copyWith(
@@ -541,13 +543,13 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       vertical: 12,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppRadius.br10,
                     ),
                   ),
                 ),
               if (_localPhotoPaths.isNotEmpty ||
                   _uploadedPhotoUrls.isNotEmpty) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -559,12 +561,12 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                         children: [
                           ClipRRect(
                             borderRadius: AppRadius.radiusMd,
-                            child: Image.network(
+                            child: CachedNetworkImage(imageUrl: 
                               fullUrl,
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, url, error) {
                                 return Container(
                                   width: 80,
                                   height: 80,
@@ -580,7 +582,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                         color: AppColors.neutral500,
                                         size: 24,
                                       ),
-                                      SizedBox(height: 4),
+                                      SizedBox(height: AppSpacing.xs),
                                       Text(
                                         '404 Not Found',
                                         style: TextStyle(
@@ -593,6 +595,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                   ),
                                 );
                               },
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             ),
                           ),
                           if (!isAlreadyFinal)
@@ -611,10 +614,10 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                     color: AppColors.error,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.close_rounded,
                                     size: 14,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                               ),
@@ -649,7 +652,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                         color: AppColors.neutral500,
                                         size: 24,
                                       ),
-                                      SizedBox(height: 4),
+                                      SizedBox(height: AppSpacing.xs),
                                       Text(
                                         'File Error',
                                         style: TextStyle(
@@ -680,10 +683,10 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                     color: AppColors.error,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.close_rounded,
                                     size: 14,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                   ),
                                 ),
                               ),
@@ -733,7 +736,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
         labelText: label,
         labelStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
         filled: true,
-        fillColor: readOnly ? AppColors.neutral100 : Colors.white,
+        fillColor: readOnly ? AppColors.neutral100 : context.appColors.surface,
         prefixIcon:
             icon != null
                 ? Icon(
@@ -803,14 +806,14 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: readOnly ? AppColors.neutral100 : Colors.white,
+          color: readOnly ? AppColors.neutral100 : context.appColors.surface,
           border: Border.all(color: AppColors.neutral300),
           borderRadius: AppRadius.radiusMd,
         ),
         child: Row(
           children: [
             Icon(icon, color: iconColor, size: 20),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.s10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -822,7 +825,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       fontSize: 11,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     controller.text.isEmpty ? '--:--' : controller.text,
                     style: AppTextStyles.bodyMd.copyWith(
@@ -915,7 +918,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: readOnly ? AppColors.neutral100 : Colors.white,
+          color: readOnly ? AppColors.neutral100 : context.appColors.surface,
           border: Border.all(color: AppColors.neutral300),
           borderRadius: AppRadius.radiusMd,
         ),
@@ -926,7 +929,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
               color: Theme.of(context).colorScheme.primary,
               size: 20,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -937,7 +940,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     DateFormat('dd MMMM yyyy', 'id_ID').format(_selectedDate),
                     style: AppTextStyles.bodyMd.copyWith(
@@ -969,7 +972,12 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
               style: TextStyle(height: 1.5),
             ),
 
-            actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            actionsPadding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              0,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),

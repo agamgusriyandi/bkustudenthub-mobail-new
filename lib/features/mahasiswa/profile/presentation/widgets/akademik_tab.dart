@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -37,7 +38,7 @@ class AkademikTabWidget extends StatelessWidget {
                 'Fakultas & Prodi',
                 '${student.fakultas} - ${student.prodi}',
                 Icons.account_balance_rounded,
-                Colors.indigo,
+                context.appColors.info,
                 () => showUneditableInfoDialog(context),
               ),
               buildMenuItem(
@@ -53,7 +54,7 @@ class AkademikTabWidget extends StatelessWidget {
               buildMenuItem(
                 context,
                 'Jalur Masuk & Asal Sekolah',
-                '$jalurMasuk • $asalSekolah',
+                '$jalurMasuk â€¢ $asalSekolah',
                 Icons.school_rounded,
                 Colors.blue,
                 () => showUneditableInfoDialog(context),
@@ -62,7 +63,7 @@ class AkademikTabWidget extends StatelessWidget {
             headerIcon: Icons.school_rounded,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         FadeInAnimation(
           delay: 0.2,
           child: buildMenuSection(
@@ -81,7 +82,7 @@ class AkademikTabWidget extends StatelessWidget {
             headerIcon: Icons.qr_code_2_rounded,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.s20),
         FadeInAnimation(
           delay: 0.3,
           child: buildMenuSection(
@@ -93,7 +94,7 @@ class AkademikTabWidget extends StatelessWidget {
                 'Jabatan Aktif',
                 getActiveOrganizationRole(student),
                 Icons.stars_rounded,
-                Colors.amber,
+                context.appColors.warning,
                 () => context.push(AppRoutes.organisasi),
               ),
               buildMenuItem(
@@ -116,7 +117,7 @@ class AkademikTabWidget extends StatelessWidget {
             headerIcon: Icons.stars_rounded,
           ),
         ),
-        const SizedBox(height: 120),
+        const SizedBox(height: AppSpacing.s120),
       ],
     );
   }

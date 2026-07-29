@@ -1,4 +1,6 @@
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class MobileScannerController {
   MobileScannerController({
@@ -45,12 +47,12 @@ class MobileScanner extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Mobile Scanner Disabled\n(Mock Mode)',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: context.appColors.onPrimary, fontSize: 16),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
             ElevatedButton(
               onPressed: () {
                 onDetect(
@@ -61,7 +63,7 @@ class MobileScanner extends StatelessWidget {
               },
               child: const Text('Simulasi Scan Kencana'),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.s10),
             ElevatedButton(
               onPressed: () {
                 onDetect(

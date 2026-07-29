@@ -1,5 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -54,9 +55,9 @@ class _PsychologistNotificationsScreenState
                 actions: [
                   if (unread > 0)
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.done_all_rounded,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                       ),
                       tooltip: 'Tandai semua dibaca',
                       onPressed: () => provider.markAllNotificationsRead(),
@@ -95,7 +96,7 @@ class _PsychologistNotificationsScreenState
               size: 72,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada notifikasi',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
@@ -185,8 +186,8 @@ class _PsychologistNotificationsScreenState
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 24),
-        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(right: AppSpacing.xl),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.error.withAlpha(20),
           borderRadius: AppRadius.radiusLg,
@@ -229,10 +230,10 @@ class _PsychologistNotificationsScreenState
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: isUnread ? color.withAlpha(12) : Colors.white,
+            color: isUnread ? color.withAlpha(12) : context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
               color: isUnread ? color.withAlpha(60) : Colors.grey.withAlpha(20),
@@ -258,11 +259,11 @@ class _PsychologistNotificationsScreenState
                 ),
                 child: Icon(
                   icon,
-                  color: isUnread ? Colors.white : color,
+                  color: isUnread ? context.appColors.onPrimary : color,
                   size: 24,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               // Content
               Expanded(
                 child: Column(
@@ -294,7 +295,7 @@ class _PsychologistNotificationsScreenState
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Text(
                       desc,
                       style: AppTextStyles.bodySm.copyWith(
@@ -307,7 +308,7 @@ class _PsychologistNotificationsScreenState
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
                         Icon(
@@ -315,7 +316,7 @@ class _PsychologistNotificationsScreenState
                           size: 14,
                           color: color.withAlpha(isUnread ? 200 : 150),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           time,
                           style: AppTextStyles.bodySm.copyWith(

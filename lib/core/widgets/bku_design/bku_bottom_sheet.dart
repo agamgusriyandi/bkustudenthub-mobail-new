@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -31,7 +32,7 @@ class BkuBottomSheet {
             decoration: BoxDecoration(
               color: theme.surface,
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24.0),
+                top: Radius.circular(AppRadius.xl),
               ),
               boxShadow: [
                 BoxShadow(
@@ -50,12 +51,12 @@ class BkuBottomSheet {
                   // Handle indicator
                   Center(
                     child: Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 8),
+                      margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
                       height: 4,
                       width: 40,
                       decoration: BoxDecoration(
                         color: AppColors.neutral300,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: AppRadius.br2,
                       ),
                     ),
                   ),

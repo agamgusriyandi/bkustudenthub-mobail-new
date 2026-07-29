@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -80,21 +81,23 @@ class PsychologistAnalyticsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: AppSpacing.s28),
               // Stats
               Row(
                 children: [
                   Expanded(
                     child: _buildStatBadge(
+                      context,
                       'Total Pasien',
                       totalPasien,
                       Icons.group_rounded,
                       AppColors.info,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: _buildStatBadge(
+                      context,
                       'Sesi Selesai',
                       sesiSelesai,
                       Icons.check_circle_rounded,
@@ -103,7 +106,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 36),
+              const SizedBox(height: AppSpacing.s36),
               Text(
                 'Topik Terbanyak',
                 style: AppTextStyles.titleMd.copyWith(
@@ -111,7 +114,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               isLoading
                   ? Center(
                     child: SizedBox(
@@ -133,6 +136,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
   }
 
   Widget _buildStatBadge(
+    BuildContext context,
     String label,
     String value,
     IconData icon,
@@ -141,9 +145,8 @@ class PsychologistAnalyticsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: color.withAlpha(30)),
         boxShadow: [
           BoxShadow(
             color: color.withAlpha(10),
@@ -163,7 +166,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
             ),
             child: Icon(icon, color: color, size: 24),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
@@ -173,7 +176,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
               height: 1,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           Text(
             label,
             style: AppTextStyles.labelMd.copyWith(
@@ -199,7 +202,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
               color: AppColors.neutral300,
               size: 40,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Belum ada data minggu ini',
               style: AppTextStyles.bodySm.copyWith(
@@ -262,7 +265,7 @@ class _SimpleBar extends StatelessWidget {
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           height: 120,
           width: 20,
@@ -292,7 +295,7 @@ class _SimpleBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Text(
           label,
           style: AppTextStyles.labelMd.copyWith(

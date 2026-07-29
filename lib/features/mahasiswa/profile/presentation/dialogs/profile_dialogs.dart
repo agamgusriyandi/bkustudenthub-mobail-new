@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -17,6 +18,7 @@ import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 void showLogoutDialog(BuildContext context) {
   showDialog(
@@ -45,7 +47,7 @@ void showUneditableInfoDialog(BuildContext context) {
     context: context,
     builder:
         (ctx) => AlertDialog(
-          contentPadding: const EdgeInsets.all(28),
+          contentPadding: AppSpacing.padding28,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -61,7 +63,7 @@ void showUneditableInfoDialog(BuildContext context) {
                   size: 36,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Text(
                 'Data Terkunci',
                 style: AppTextStyles.titleLg.copyWith(
@@ -69,7 +71,7 @@ void showUneditableInfoDialog(BuildContext context) {
                   color: AppColors.neutral800,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.s10),
               Text(
                 'Data ini ditarik langsung dari SEVIMA dan tidak dapat diubah secara manual.\n\nJika terdapat kesalahan, silakan ajukan perubahan melalui menu Aspirasi.',
                 textAlign: TextAlign.center,
@@ -78,7 +80,7 @@ void showUneditableInfoDialog(BuildContext context) {
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: AppSpacing.s28),
               Row(
                 children: [
                   Expanded(
@@ -88,7 +90,7 @@ void showUneditableInfoDialog(BuildContext context) {
                       child: const Text('Tutup'),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -119,11 +121,16 @@ void showDigitalID(BuildContext context, StudentProvider student) {
     backgroundColor: Colors.transparent,
     builder:
         (context) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+          decoration: BoxDecoration(
+          color: context.appColors.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
           ),
-          padding: const EdgeInsets.fromLTRB(32, 16, 32, 32),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xxl,
+            AppSpacing.lg,
+            AppSpacing.xxl,
+            AppSpacing.xxl,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -135,7 +142,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               Flexible(
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(
@@ -151,11 +158,11 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.xl),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.appColors.surface,
                           borderRadius: AppRadius.radiusXl,
                           boxShadow: [
                             BoxShadow(
@@ -172,7 +179,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                         child: Column(
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(bottom: 16),
+                              margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                               child: ClipRRect(
                                 borderRadius: AppRadius.radiusSm,
                                 child: Image.asset(
@@ -183,12 +190,14 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                                 ),
                               ),
                             ),
-                            Image.network(
+                            CachedNetworkImage(imageUrl: 
                               'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${student.nim}',
                               height: 180,
                               width: 180,
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
+                              errorWidget: (context, url, error) => Icon(Icons.error, color: AppColors.neutral400),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: AppSpacing.s20),
                             Text(
                               student.name,
                               style: AppTextStyles.labelMd.copyWith(
@@ -197,7 +206,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: AppSpacing.xs),
                             Text(
                               student.nim,
                               style: AppTextStyles.labelSm.copyWith(
@@ -209,7 +218,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         'Gunakan QR Code ini untuk keperluan administrasi, perpustakaan, dan presensi di lingkungan kampus BKU.',
                         textAlign: TextAlign.center,
@@ -222,7 +231,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               SizedBox(
                 width: double.infinity,
                 height: 54,
@@ -279,15 +288,15 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
       return StatefulBuilder(
         builder: (stateContext, setState) {
           return Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: EdgeInsets.fromLTRB(
-              24,
-              16,
-              24,
-              MediaQuery.of(stateContext).viewInsets.bottom + 24,
+              AppSpacing.xl,
+              AppSpacing.lg,
+              AppSpacing.xl,
+              MediaQuery.of(stateContext).viewInsets.bottom + AppSpacing.xl,
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -304,7 +313,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text(
                     'Edit Data Pribadi',
                     style: AppTextStyles.titleLg.copyWith(
@@ -312,7 +321,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       color: Theme.of(stateContext).colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
 
                   // Input No WhatsApp
                   Text(
@@ -322,7 +331,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       color: AppColors.neutral600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
@@ -341,7 +350,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Input Tempat Lahir
                   Text(
@@ -351,7 +360,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       color: AppColors.neutral600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextField(
                     controller: tempatLahirController,
                     decoration: InputDecoration(
@@ -369,7 +378,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Input Tanggal Lahir
                   Text(
@@ -379,7 +388,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       color: AppColors.neutral600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   InkWell(
                     onTap: () async {
                       final picked = await showDatePicker(
@@ -430,7 +439,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Input Alamat Domisili
                   Text(
@@ -440,7 +449,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       color: AppColors.neutral600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextField(
                     controller: alamatController,
                     maxLines: 3,
@@ -459,7 +468,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Action buttons
                   Row(
@@ -471,7 +480,7 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                           child: const Text('Batal'),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child:
                             student.isLoading
@@ -581,11 +590,16 @@ void showCertificatesBottomSheet(
     builder: (sheetContext) {
       final themeProvider = sheetContext.watch<ThemeProvider>();
       return Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        decoration: BoxDecoration(
+          color: sheetContext.appColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         ),
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.lg,
+          AppSpacing.xl,
+          AppSpacing.xl,
+        ),
         height: MediaQuery.of(sheetContext).size.height * 0.7,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -600,7 +614,7 @@ void showCertificatesBottomSheet(
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -631,7 +645,7 @@ void showCertificatesBottomSheet(
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Expanded(
               child:
                   certificates.isEmpty
@@ -644,15 +658,15 @@ void showCertificatesBottomSheet(
                               size: 64,
                               color: AppColors.neutral300,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             const Text(
                               'Belum ada sertifikat terverifikasi',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: AppColors.neutral500,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: AppSpacing.sm),
                             Text(
                               'Laporkan prestasi mandiri Anda untuk memvalidasi e-sertifikat.',
                               textAlign: TextAlign.center,
@@ -681,13 +695,13 @@ void showCertificatesBottomSheet(
                               status == 'pending' || status == 'menunggu';
 
                           return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
+                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.appColors.surface,
                               borderRadius: AppRadius.radiusXl,
                               border: Border.all(
-                                color: Colors.grey[200]!,
+                                color: AppColors.neutral200,
                                 width: 1,
                               ),
                               boxShadow: [
@@ -726,7 +740,7 @@ void showCertificatesBottomSheet(
                                     size: 24,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -743,7 +757,7 @@ void showCertificatesBottomSheet(
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 8),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: AppSpacing.sm,
@@ -781,7 +795,7 @@ void showCertificatesBottomSheet(
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: AppSpacing.xs),
                                       Text(
                                         cert.organizer,
                                         style: TextStyle(
@@ -798,7 +812,7 @@ void showCertificatesBottomSheet(
                         },
                       ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               width: double.infinity,
               height: 54,
@@ -807,7 +821,7 @@ void showCertificatesBottomSheet(
                   Navigator.pop(sheetContext);
                   context.read<NavigationProvider>().setIndex(2);
                 },
-                icon: const Icon(Icons.add_rounded, color: Colors.white),
+                icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                 label: const Text('Lapor Prestasi Baru'),
               ),
             ),
@@ -835,11 +849,16 @@ void showNotificationPreferences(
       return StatefulBuilder(
         builder: (stateContext, setState) {
           return Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: stateContext.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+            padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.lg,
+          AppSpacing.xl,
+          AppSpacing.xl,
+        ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -854,7 +873,7 @@ void showNotificationPreferences(
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Preferensi Notifikasi',
                   style: AppTextStyles.titleLg.copyWith(
@@ -862,12 +881,12 @@ void showNotificationPreferences(
                     color: AppColors.neutral800,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Atur bagaimana Anda menerima pemberitahuan kuliah & pengumuman.',
                   style: TextStyle(color: AppColors.neutral500, fontSize: 12),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
 
                 SwitchListTile(
                   title: const Text(
@@ -889,7 +908,7 @@ void showNotificationPreferences(
                             });
                           },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 SwitchListTile(
                   title: const Text(
                     'Notifikasi Email',
@@ -910,7 +929,7 @@ void showNotificationPreferences(
                             });
                           },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 SwitchListTile(
                   title: const Text(
                     'Peringatan In-App',
@@ -931,7 +950,7 @@ void showNotificationPreferences(
                             });
                           },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 BkuButton(
                   onPressed: () async {
                     try {
@@ -955,7 +974,7 @@ void showNotificationPreferences(
                   icon: Icons.notifications_active_rounded,
                   variant: BkuButtonVariant.outline,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 BkuButton(
                   onPressed: () async {
                     setState(() {
@@ -1036,11 +1055,16 @@ void showChangePasswordDialog(BuildContext context) {
               bottom: MediaQuery.of(stateContext).viewInsets.bottom,
             ),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
               ),
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+              padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.lg,
+          AppSpacing.xl,
+          AppSpacing.xl,
+        ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1055,7 +1079,7 @@ void showChangePasswordDialog(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Row(
                     children: [
                       Container(
@@ -1070,7 +1094,7 @@ void showChangePasswordDialog(BuildContext context) {
                           size: 24,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Text(
                         'Ubah Password',
                         style: AppTextStyles.titleLg.copyWith(
@@ -1080,14 +1104,14 @@ void showChangePasswordDialog(BuildContext context) {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Demi keamanan akun Anda, pastikan password baru memiliki kombinasi huruf dan angka.',
                     style: AppTextStyles.labelMd.copyWith(
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   TextField(
                     controller: oldPasswordController,
                     obscureText: true,
@@ -1118,7 +1142,7 @@ void showChangePasswordDialog(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   TextField(
                     controller: newPasswordController,
                     obscureText: true,
@@ -1146,7 +1170,7 @@ void showChangePasswordDialog(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   TextField(
                     controller: confirmPasswordController,
                     obscureText: true,
@@ -1174,7 +1198,7 @@ void showChangePasswordDialog(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   Row(
                     children: [
                       Expanded(
@@ -1187,7 +1211,7 @@ void showChangePasswordDialog(BuildContext context) {
                           variant: BkuButtonVariant.outline,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: BkuButton(
                           onPressed:

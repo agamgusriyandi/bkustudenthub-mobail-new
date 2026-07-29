@@ -1,8 +1,11 @@
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 /// Navigation item definition
 class BottomNavItem {
   final int index;
@@ -200,15 +203,15 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
     return Container(
       color: Colors.transparent,
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: bottomPadding > 0 ? bottomPadding : 12,
-        top: 6,
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        bottom: bottomPadding > 0 ? bottomPadding : AppSpacing.md,
+        top: AppSpacing.s6,
       ),
       child: Container(
         height: 64,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: AppRadius.radiusXxl,
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -223,18 +226,21 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: AppRadius.radiusXxl,
           child: Stack(
             children: [
               Positioned.fill(
-                child: Opacity(
-                  opacity: 0.12,
-                  child: Image.asset(
-                    'assets/images/batik_pattern.png',
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+                  child: Opacity(
+                    opacity: 0.12,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      child: Image.asset(
+                        'assets/images/batik_pattern.png',
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                      ),
+                    ),
                   ),
-                ),
               ),
               Center(
                 child: Padding(
@@ -258,9 +264,9 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? Colors.white.withAlpha(55)
+                                        ? context.appColors.onPrimary.withAlpha(55)
                                         : Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: AppRadius.br20,
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -275,8 +281,8 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
                                       key: ValueKey<bool>(isSelected),
                                       color:
                                           isSelected
-                                              ? Colors.white
-                                              : Colors.white.withAlpha(160),
+                                              ? context.appColors.onPrimary
+                                              : context.appColors.onPrimary.withAlpha(160),
                                       size: 22,
                                     ),
                                   ),
@@ -287,12 +293,12 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
                                         isSelected
                                             ? Padding(
                                               padding: const EdgeInsets.only(
-                                                left: 6,
+                                                left: AppSpacing.s6,
                                               ),
                                               child: Text(
                                                 item.label,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
+                                                style: TextStyle(
+                                                  color: context.appColors.onPrimary,
                                                   fontWeight: FontWeight.w800,
                                                   fontSize: 11,
                                                   fontFamily: 'Inter',

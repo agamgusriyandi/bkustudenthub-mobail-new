@@ -1,4 +1,5 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -96,7 +97,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                             size: 64,
                             color: Colors.red[400],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Akses Ditolak',
                             style: AppTextStyles.titleLg.copyWith(
@@ -104,7 +105,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               color: AppColors.neutral800,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             'Anda tidak memiliki izin untuk mengakses jadwal kalender agenda kegiatan.',
                             textAlign: TextAlign.center,
@@ -144,16 +145,16 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.only(
-                      top: 8,
-                      left: 20,
-                      right: 20,
-                      bottom: 100,
+                      top: AppSpacing.sm,
+                      left: AppSpacing.s20,
+                      right: AppSpacing.s20,
+                      bottom: AppSpacing.s100,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildCalendarCard(provider.agendas),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         OrmawaListHeader(
                           title:
                               '${DateFormat('d MMMM', 'id').format(_selectedDay ?? _focusedDay).toUpperCase()} - ${selectedEvents.length} AGENDA',
@@ -166,7 +167,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                           onChanged:
                               (value) => setState(() => _searchQuery = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         if (provider.isLoading)
                           const BkuShimmerList(itemCount: 3, itemHeight: 90)
                         else
@@ -183,11 +184,11 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   ? FloatingActionButton.extended(
                     onPressed: () => _showAddJadwal(context),
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    icon: const Icon(Icons.add_rounded, color: Colors.white),
-                    label: const Text(
+                    icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
+                    label: Text(
                       'Tambah Kegiatan',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -201,7 +202,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
   Widget _buildCalendarCard(List<OrmawaAgenda> agendas) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -289,7 +290,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               size: 64,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               _searchQuery.isEmpty
                   ? 'Tidak ada agenda di tanggal ini'
@@ -306,7 +307,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: filteredAgendas.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
         final agenda = filteredAgendas[index];
         return _buildAgendaCard(agenda);
@@ -350,7 +351,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
         child: Ink(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(color: AppColors.neutral200),
           ),
@@ -399,7 +400,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                 child: Row(
                                   children: [
                                     Icon(Icons.edit_rounded, size: 18),
-                                    SizedBox(width: 8),
+                                    SizedBox(width: AppSpacing.sm),
                                     Text('Edit'),
                                   ],
                                 ),
@@ -414,7 +415,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                       size: 18,
                                       color: AppColors.error,
                                     ),
-                                    SizedBox(width: 8),
+                                    SizedBox(width: AppSpacing.sm),
                                     Text(
                                       'Hapus',
                                       style: TextStyle(color: AppColors.error),
@@ -426,7 +427,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 agenda.title,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -435,7 +436,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 ),
               ),
               if (agenda.description.isNotEmpty) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   agenda.description,
                   style: AppTextStyles.labelSm.copyWith(
@@ -443,9 +444,9 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               const Divider(height: 1, color: AppColors.neutral200),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
                   const Icon(
@@ -453,7 +454,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                     size: 14,
                     color: AppColors.neutral500,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       agenda.location,
@@ -463,13 +464,13 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   const Icon(
                     Icons.access_time_rounded,
                     size: 14,
                     color: AppColors.neutral500,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     '${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
                     style: AppTextStyles.labelSm.copyWith(
@@ -545,9 +546,9 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -564,14 +565,14 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Filter Status',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -602,7 +603,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -613,7 +614,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 ),
                 if (_filterStatus != 'Semua')
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterStatus = 'Semua');
@@ -627,7 +628,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -830,7 +831,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
     final isEdit = widget.agenda != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -844,90 +845,90 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
           SliverToBoxAdapter(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(
-                top: 16,
-                left: 24,
-                right: 24,
-                bottom: 40,
+                top: AppSpacing.lg,
+                left: AppSpacing.xl,
+                right: AppSpacing.xl,
+                bottom: AppSpacing.xxxl,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionHeader(isEdit),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildFormSectionTitle('1. INFORMASI UTAMA'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildTextField(
                     'NAMA KEGIATAN *',
                     'Contoh: Rapat Kerja Anggota...',
                     _titleController,
                     Icons.title_rounded,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'PENANGGUNG JAWAB (PJ)',
                     'Nama PJ kegiatan...',
                     _pjController,
                     Icons.person_outline_rounded,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'LOKASI / RUANG',
                     'Contoh: Aula Serbaguna Lt. 2...',
                     _locationController,
                     Icons.location_on_outlined,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildStatusDropdown(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildDateTimePicker(),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   _buildFormSectionTitle('2. PARAMETER OPERASIONAL'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildTextField(
                     'LANDASAN KEGIATAN',
                     'Contoh: GBHP Organisasi 2026...',
                     _landasanController,
                     Icons.gavel_rounded,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'BENTUK KEGIATAN',
                     'Contoh: Seminar / Workshop...',
                     _bentukController,
                     Icons.category_outlined,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'SASARAN KEGIATAN',
                     'Contoh: Seluruh mahasiswa baru...',
                     _sasaranController,
                     Icons.track_changes_rounded,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'MITRA KERJA',
                     'Contoh: Sponsor, UKM lain...',
                     _mitraController,
                     Icons.handshake_outlined,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'SUMBER DANA',
                     'Contoh: Dana kemahasiswaan...',
                     _sumberDanaController,
                     Icons.account_balance_wallet_outlined,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'INDIKATOR KEBERHASILAN',
                     'Contoh: Target kehadiran 80%...',
                     _indikatorController,
                     Icons.emoji_events_outlined,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildCurrencyField(
                     'ESTIMASI ANGGARAN (RP)',
                     'Contoh: Rp 5.000.000',
@@ -935,10 +936,10 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                     Icons.payments_outlined,
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   _buildFormSectionTitle('3. DESKRIPSI & NARASI'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildTextField(
                     'LATAR BELAKANG',
                     'Tuliskan latar belakang singkat...',
@@ -946,7 +947,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                     Icons.article_outlined,
                     maxLines: 4,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'TUJUAN KEGIATAN',
                     'Tuliskan tujuan kegiatan...',
@@ -954,7 +955,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                     Icons.flag_outlined,
                     maxLines: 3,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'DESKRIPSI DETAIL & MEKANISME',
                     'Detail alur / mekanisme agenda...',
@@ -963,7 +964,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                     maxLines: 4,
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   _buildActionButtons(),
                 ],
               ),
@@ -1013,7 +1014,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             size: 26,
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1027,7 +1028,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                   letterSpacing: 1.0,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.s2),
               Text(
                 isEdit ? 'PERBARUI AGENDA' : 'BUAT KEGIATAN BARU',
                 style: AppTextStyles.titleLg.copyWith(
@@ -1061,7 +1062,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             fontSize: 10,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         TextField(
           controller: controller,
           maxLines: maxLines,
@@ -1119,7 +1120,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             fontSize: 10,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
@@ -1181,7 +1182,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             Icons.calendar_month_rounded,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Row(
           children: [
             Expanded(
@@ -1200,7 +1201,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: InkWell(
                 onTap: () async {
@@ -1235,7 +1236,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             fontSize: 10,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -1249,7 +1250,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
           child: Row(
             children: [
               Icon(icon, size: 20, color: AppColors.neutral500),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 value,
                 style: const TextStyle(
@@ -1277,7 +1278,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             fontSize: 10,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -1333,7 +1334,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           flex: 2,
           child: ElevatedButton(
@@ -1341,8 +1342,8 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
 
             child: Text(
               widget.agenda != null ? 'PERBARUI AGENDA' : 'SIMPAN JADWAL',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.appColors.onPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -1,14 +1,15 @@
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
@@ -119,7 +120,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                             size: 24,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: AppSpacing.s2),
                               Text(
                                 'Pusatkan layanan ke instansi ahli',
                                 style: AppTextStyles.labelSm.copyWith(
@@ -142,7 +143,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
                             color: themeProvider.primary.withAlpha(20),
                             shape: BoxShape.circle,
@@ -156,7 +157,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
 
                   // Stats Section
                   Consumer<ReferralProvider>(
@@ -185,7 +186,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                               .length;
 
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.s20),
                         child: Row(
                           children: [
                             Expanded(
@@ -196,7 +197,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                                 AppColors.primary,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: _buildStatCard(
                                 'Menunggu\nPersetujuan',
@@ -205,7 +206,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                                 context.watch<ThemeProvider>().colors.warning,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: _buildStatCard(
                                 'Selesai\nDiproses',
@@ -222,9 +223,9 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
 
                   // Search and Filter
                   _buildSearchBar(),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildFilterChips(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
 
                   // Referrals List
                   Consumer<ReferralProvider>(
@@ -243,7 +244,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                       if (provider.error != null) {
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.xxl),
-                          margin: const EdgeInsets.only(top: 20),
+                          margin: const EdgeInsets.only(top: AppSpacing.s20),
                           decoration: BoxDecoration(
                             color: Theme.of(
                               context,
@@ -262,7 +263,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                                 size: 48,
                                 color: Theme.of(context).colorScheme.error,
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               Text(
                                 provider.error!,
                                 style: AppTextStyles.bodyMd.copyWith(
@@ -322,7 +323,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.xxl),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             borderRadius: AppRadius.radiusMd,
                             border: Border.all(color: AppColors.neutral200),
                           ),
@@ -333,7 +334,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                                 size: 48,
                                 color: AppColors.neutral300,
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               Text(
                                 provider.referrals.isEmpty
                                     ? 'Belum Ada Rujukan'
@@ -351,7 +352,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                         children: [
                           if (totalPages > 1) ...[
                             _buildTopPagination(totalPages),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: AppSpacing.md),
                           ],
                           ListView.builder(
                             shrinkWrap: true,
@@ -366,7 +367,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                       );
                     },
                   ),
-                  const SizedBox(height: 120),
+                  const SizedBox(height: AppSpacing.s120),
                 ],
               ),
             ),
@@ -379,7 +380,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusMd,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -397,6 +398,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
           });
         },
         decoration: InputDecoration(
+          labelText: 'Cari rujukan',
           hintText: 'Cari nama pasien atau tujuan...',
           hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral400),
           prefixIcon: Icon(Icons.search_rounded, color: AppColors.neutral500),
@@ -428,7 +430,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
           final activeBorder = filter['activeBorder'] as Color;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: AppSpacing.s10),
             child: GestureDetector(
               onTap: () {
                 setState(() {
@@ -443,7 +445,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? activeBg : Colors.white,
+                  color: isSelected ? activeBg : context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color: isSelected ? activeBorder : AppColors.neutral200,
@@ -466,7 +468,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                       size: 16,
                       color: isSelected ? activeFg : AppColors.neutral500,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.s6),
                     Text(
                       filterLabel,
                       style: AppTextStyles.labelMd.copyWith(
@@ -495,8 +497,8 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          color: context.appColors.surface,
+          borderRadius: AppRadius.br14,
           border: Border.all(color: const Color(0xFFE2E8F0)),
           boxShadow: [
             BoxShadow(
@@ -511,9 +513,9 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
           children: [
             Material(
               color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canPrev ? () => setState(() => _currentPage--) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -525,7 +527,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                         size: 16,
                         color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Text(
                         'Sebelumnya',
                         style: TextStyle(
@@ -557,9 +559,9 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
             ),
             Material(
               color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.br10,
                 onTap: canNext ? () => setState(() => _currentPage++) : null,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -574,7 +576,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                           color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
@@ -605,14 +607,14 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSm,
             decoration: BoxDecoration(
               color: color.withAlpha(20),
               borderRadius: AppRadius.radiusSm,
             ),
             child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             count,
             style: AppTextStyles.titleLg.copyWith(
@@ -621,7 +623,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
               color: AppColors.neutral900,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             title,
             style: AppTextStyles.labelSm.copyWith(
@@ -704,9 +706,9 @@ class _ReferralCard extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
             ),
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -720,7 +722,7 @@ class _ReferralCard extends StatelessWidget {
                 // Handle bar
                 Center(
                   child: Container(
-                    margin: const EdgeInsets.only(top: 12, bottom: 20),
+                    margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.s20),
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
@@ -738,7 +740,7 @@ class _ReferralCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(Icons.description_rounded, color: AppColors.primary),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Text(
                         'Detail Tindak Lanjut',
                         style: AppTextStyles.titleMd.copyWith(
@@ -788,7 +790,7 @@ class _ReferralCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
                             if (referral.sistole != null &&
@@ -810,7 +812,7 @@ class _ReferralCard extends StatelessWidget {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
                             if (referral.suhuTubuh != null)
@@ -842,7 +844,7 @@ class _ReferralCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       _buildDetailItem(
                         'Tipe Rujukan',
                         referral.tipe,
@@ -893,7 +895,7 @@ class _ReferralCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (referral.diagnosis != null &&
                           referral.diagnosis!.isNotEmpty)
                         _buildDetailItem(
@@ -913,7 +915,7 @@ class _ReferralCard extends StatelessWidget {
                         referral.alasan,
                         Icons.notes_rounded,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                     ],
                   ),
                 ),
@@ -927,7 +929,7 @@ class _ReferralCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 16, color: AppColors.neutral500),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -958,14 +960,14 @@ class _ReferralCard extends StatelessWidget {
     Color? color,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(icon, size: 16, color: AppColors.neutral500),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
@@ -974,7 +976,7 @@ class _ReferralCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           Text(
             value,
             style: AppTextStyles.bodyMd.copyWith(
@@ -991,7 +993,7 @@ class _ReferralCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BkuCard(
       onTap: () => _showDetailBottomSheet(context),
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
@@ -1026,7 +1028,7 @@ class _ReferralCard extends StatelessWidget {
                             ),
                           ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1040,7 +1042,7 @@ class _ReferralCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         '${referral.mahasiswaNim != null && referral.mahasiswaNim!.isNotEmpty ? referral.mahasiswaNim! : '-'} • ${referral.tipe}',
                         style: AppTextStyles.labelSm.copyWith(
@@ -1072,7 +1074,7 @@ class _ReferralCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // Inner Data Box
             Container(
@@ -1095,7 +1097,7 @@ class _ReferralCard extends StatelessWidget {
                             size: 14,
                             color: AppColors.neutral500,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.s6),
                           Text(
                             'Tanggal Dibuat',
                             style: AppTextStyles.labelSm.copyWith(
@@ -1113,13 +1115,13 @@ class _ReferralCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildDataRow(
                     'Instansi Tujuan',
                     referral.pihakTujuan,
                     Icons.apartment_rounded,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   if (referral.diagnosis != null &&
                       referral.diagnosis!.isNotEmpty)
                     _buildDataRow(
@@ -1159,7 +1161,7 @@ class _ReferralCard extends StatelessWidget {
                         referral.suratRujiukanUrl!.isNotEmpty);
 
                 return Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -1251,7 +1253,7 @@ class _ReferralCard extends StatelessWidget {
                               !isSent &&
                               !isDone &&
                               !isRejected)
-                            const SizedBox(width: 10),
+                            const SizedBox(width: AppSpacing.s10),
                           if (isDone)
                             Expanded(
                               child: BkuButton(
@@ -1274,7 +1276,7 @@ class _ReferralCard extends StatelessWidget {
                       ),
                       // PDF download row (separate row)
                       if (showPdf) ...[
-                        const SizedBox(height: 10),
+                        const SizedBox(height: AppSpacing.s10),
                         BkuButton(
                           text: 'Lihat PDF',
                           icon: Icons.picture_as_pdf_rounded,
@@ -1357,7 +1359,7 @@ class _ReferralCard extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 14, color: AppColors.neutral500),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.s6),
             Text(
               label,
               style: AppTextStyles.labelSm.copyWith(
@@ -1366,7 +1368,7 @@ class _ReferralCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppTextStyles.bodySm.copyWith(

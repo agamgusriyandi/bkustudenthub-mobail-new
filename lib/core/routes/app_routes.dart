@@ -50,6 +50,20 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_mentee_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_recruit_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_absence_requests_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/ormawa_recruitment_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa_aspirasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create_proposal_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_kalender_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_agenda_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage_struktur_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -106,6 +120,25 @@ class AppRoutes {
   static const String ormawaNotifications = '/notifications/ormawa';
   static const String psychologistNotifications = '/notifications/psychologist';
   static const String tkNotifications = '/notifications/tk';
+
+  // Ormawa Sub-Routes
+  static const String ormawaSettings = '/ormawa/settings';
+  static const String ormawaProfile = '/ormawa/profile';
+  static const String ormawaSecurity = '/ormawa/security';
+  static const String ormawaStruktur = '/ormawa/struktur';
+  static const String ormawaRecruitment = '/ormawa/recruitment';
+  static const String ormawaAspirasi = '/ormawa/aspirasi';
+  static const String ormawaProposal = '/ormawa/proposal';
+  static const String ormawaAgenda = '/ormawa/agenda';
+  static const String ormawaPengumuman = '/ormawa/pengumuman';
+  static const String ormawaStrukturManage = '/ormawa/struktur/manage';
+  static const String ormawaAnggotaDetail = '/ormawa/anggota-detail';
+  static const String ormawaRecruitmentHistory = '/ormawa/recruitment/history';
+  static const String ormawaRecruitmentForm = '/ormawa/recruitment/form';
+  static const String ormawaRecruitmentSettings = '/ormawa/recruitment/settings';
+  static const String ormawaCreateProposal = '/ormawa/proposal/create';
+  static const String ormawaProposalDetail = '/ormawa/proposal/detail';
+  static const String ormawaAgendaDetail = '/ormawa/agenda/detail';
 
   // Compatibility aliases
   static const String main = studentMain;
@@ -402,6 +435,87 @@ class AppRoutes {
       GoRoute(
         path: tkReferralManagement,
         builder: (context, state) => const TkReferralScreen(),
+      ),
+      // Ormawa Sub-Routes
+      GoRoute(
+        path: ormawaSettings,
+        builder: (context, state) => const OrmawaSettingsScreen(),
+      ),
+      GoRoute(
+        path: ormawaProfile,
+        builder: (context, state) => const OrmawaProfileScreen(),
+      ),
+      GoRoute(
+        path: ormawaSecurity,
+        builder: (context, state) => const OrmawaSecurityScreen(),
+      ),
+      GoRoute(
+        path: ormawaStruktur,
+        builder: (context, state) => const OrmawaStrukturScreen(),
+      ),
+      GoRoute(
+        path: ormawaRecruitment,
+        builder: (context, state) => const OrmawaRecruitmentScreen(),
+      ),
+      GoRoute(
+        path: ormawaAspirasi,
+        builder: (context, state) => const OrmawaAspirasiScreen(),
+      ),
+      GoRoute(
+        path: ormawaProposal,
+        builder: (context, state) => const OrmawaProposalScreen(),
+      ),
+      GoRoute(
+        path: ormawaAgenda,
+        builder: (context, state) => const OrmawaKalenderScreen(),
+      ),
+      GoRoute(
+        path: ormawaPengumuman,
+        builder: (context, state) => const OrmawaPengumumanScreen(),
+      ),
+      GoRoute(
+        path: ormawaStrukturManage,
+        builder: (context, state) => const ManageStrukturScreen(),
+      ),
+      GoRoute(
+        path: ormawaAnggotaDetail,
+        builder: (context, state) {
+          final member = state.extra;
+          return OrmawaAnggotaDetailScreen(member: member as dynamic);
+        },
+      ),
+      GoRoute(
+        path: ormawaRecruitmentHistory,
+        builder: (context, state) => const RecruitmentHistoryScreen(),
+      ),
+      GoRoute(
+        path: ormawaRecruitmentForm,
+        builder: (context, state) => const RecruitmentFormScreen(),
+      ),
+      GoRoute(
+        path: ormawaRecruitmentSettings,
+        builder: (context, state) => const RecruitmentSettingsScreen(),
+      ),
+      GoRoute(
+        path: ormawaCreateProposal,
+        builder: (context, state) {
+          final initialProposal = state.extra;
+          return CreateProposalScreen(initialProposal: initialProposal as dynamic);
+        },
+      ),
+      GoRoute(
+        path: ormawaProposalDetail,
+        builder: (context, state) {
+          final proposal = state.extra;
+          return OrmawaProposalDetailScreen(proposal: proposal as dynamic);
+        },
+      ),
+      GoRoute(
+        path: ormawaAgendaDetail,
+        builder: (context, state) {
+          final agenda = state.extra;
+          return OrmawaAgendaDetailScreen(agenda: agenda as dynamic);
+        },
       ),
     ],
   );

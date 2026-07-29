@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -21,6 +22,7 @@ import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bkuhub_mobile/core/widgets/rejection_bottom_sheet.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ApplyScholarshipScreen extends StatefulWidget {
   final Scholarship scholarship;
@@ -56,7 +58,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) {
         return SafeArea(
@@ -64,11 +66,11 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.neutral300,
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
@@ -133,7 +135,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                   _processPick(type, 'file');
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
             ],
           ),
         );
@@ -482,12 +484,12 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         FadeInAnimation(
           delay: 0.85,
           child: _buildSectionTitle('Rubrik Penilaian Skema'),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         ...questions.map((q) {
           final id = q['id'] as String;
           final questionText = q['question'] as String;
@@ -498,10 +500,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           }
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: AppSpacing.lg),
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
                 color: Theme.of(
@@ -525,7 +527,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...options.map((opt) {
                   return InkWell(
                     onTap:
@@ -570,7 +572,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                     : Theme.of(context).colorScheme.outline,
                             size: 20,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Text(
                               opt['label']!,
@@ -604,7 +606,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
     // Watch provider so the screen rebuilds when scholarship status changes
     context.watch<StudentProvider>();
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Form Pendaftaran',
         variant: AppBarVariant.student,
@@ -626,7 +628,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FadeInAnimation(delay: 0.1, child: _buildScholarshipInfo()),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
 
             // DATA AKADEMIK CARD
             FadeInAnimation(
@@ -634,13 +636,13 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               child: _buildFormCard(
                 children: [
                   _buildSectionTitle('Data Akademik'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Nama Lengkap',
                     _nameController,
                     'Masukkan nama lengkap',
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -650,7 +652,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                           'Masukkan NIM',
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: _buildTextField(
                           'IPK Terakhir',
@@ -663,7 +665,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             // MOTIVASI & ALASAN CARD
             FadeInAnimation(
@@ -671,7 +673,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               child: _buildFormCard(
                 children: [
                   _buildSectionTitle('Motivasi & Alasan'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -690,7 +692,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.s6),
                       ValueListenableBuilder<TextEditingValue>(
                         valueListenable: _reasonController,
                         builder: (context, value, child) {
@@ -714,7 +716,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             // DOKUMEN PENDUKUNG CARD
             FadeInAnimation(
@@ -722,7 +724,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               child: _buildFormCard(
                 children: [
                   _buildSectionTitle('Dokumen Pendukung'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildUploadItem(
                     'KTM & KTP${widget.scholarship.fileKtm == 'wajib' ? ' *' : ' (Opsional)'}',
                     Icons.badge_rounded,
@@ -744,22 +746,22 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildRubrikPenilaianSection(),
 
             if (_customFields.isNotEmpty) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               FadeInAnimation(
                 delay: 0.5,
                 child: _buildFormCard(
                   children: [
                     _buildSectionTitle('Form Persyaratan Tambahan'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     ..._customFields.asMap().entries.map((entry) {
                       var field = entry.value;
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                         child: _buildCustomFieldItem(field),
                       );
                     }),
@@ -768,12 +770,12 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               ),
             ],
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
             FadeInAnimation(delay: 0.6, child: _buildAgreementCheckbox()),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
             FadeInAnimation(delay: 0.7, child: _buildSubmitButton()),
-            const SizedBox(height: 40),
+            const SizedBox(height: AppSpacing.xxxl),
           ],
         ),
       ),
@@ -783,10 +785,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
   Widget _buildFormCard({required List<Widget> children}) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -805,10 +807,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
 
   Widget _buildScholarshipInfo() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLg,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -821,10 +823,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: AppSpacing.padding10,
             decoration: BoxDecoration(
               color: const Color(0xFFEFF6FF),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusMd,
             ),
             child: const Icon(
               Icons.school_rounded,
@@ -832,7 +834,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               size: 26,
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: AppSpacing.s14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -845,7 +847,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                     color: Color(0xFF111827),
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   widget.scholarship.provider,
                   style: const TextStyle(
@@ -992,10 +994,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           height: 18,
           decoration: BoxDecoration(
             color: AppColors.primary,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: AppRadius.br2,
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Text(
           title,
           style: const TextStyle(
@@ -1010,7 +1012,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
@@ -1115,10 +1117,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                               borderRadius: AppRadius.radiusLg,
                               child:
                                   isNetwork
-                                      ? Image.network(
+                                      ? CachedNetworkImage(imageUrl: 
                                         cleanPath,
                                         fit: BoxFit.contain,
-                                        errorBuilder:
+                                        errorWidget:
                                             (
                                               context,
                                               error,
@@ -1134,6 +1136,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                                 ),
                                               ),
                                             ),
+                                        placeholder: (context, url) => Container(color: AppColors.neutral200),
                                       )
                                       : Image.file(
                                         File(cleanPath),
@@ -1148,7 +1151,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                   size: 80,
                                   color: AppColors.neutral800,
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppSpacing.lg),
                                 Text(
                                   filePath.split('/').last,
                                   textAlign: TextAlign.center,
@@ -1159,7 +1162,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                         ).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Text(
                                   'Dokumen PDF tidak dapat ditampilkan langsung. Ketuk "Ganti Dokumen" jika ingin mengubah berkas.',
                                   textAlign: TextAlign.center,
@@ -1172,7 +1175,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                             ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
@@ -1183,7 +1186,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) {
         return SafeArea(
@@ -1191,11 +1194,11 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.neutral300,
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
@@ -1280,7 +1283,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                   }
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
             ],
           ),
         );
@@ -1304,10 +1307,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             : filePath;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br14,
         border: Border.all(
           color: filePath != null ? AppColors.primary : const Color(0xFFE5E7EB),
           width: 1.2,
@@ -1334,9 +1337,9 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               }
             }
           },
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: AppRadius.br14,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: AppSpacing.paddingMd,
             child: Row(
               children: [
                 Container(
@@ -1347,23 +1350,24 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                         filePath != null
                             ? const Color(0xFFEFF6FF)
                             : const Color(0xFFF3F4F6),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppRadius.br10,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppRadius.br10,
                     child:
                         filePath != null
                             ? (isImage
                                 ? (isNetwork
-                                    ? Image.network(
+                                    ? CachedNetworkImage(imageUrl: 
                                       cleanPath!,
                                       fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
+                                      errorWidget:
+                                          (context, url, error) =>
                                               const Icon(
                                                 Icons.broken_image_rounded,
-                                                color: Colors.grey,
+                                                color: AppColors.neutral500,
                                               ),
+                                      placeholder: (context, url) => Container(color: AppColors.neutral200),
                                     )
                                     : Image.file(
                                       File(cleanPath!),
@@ -1381,20 +1385,20 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                             ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1F2937),
+                          color: context.appColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         fileName ?? 'PDF / JPG (Maks. 5MB)',
                         style: TextStyle(
@@ -1422,7 +1426,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF0FDFA),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: AppRadius.br6,
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1432,7 +1436,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                           color: Color(0xFF0D9488),
                           size: 12,
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: AppSpacing.xs),
                         Text(
                           'Selesai',
                           style: TextStyle(
@@ -1444,7 +1448,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.s6),
                 ],
                 Icon(
                   filePath != null
@@ -1466,10 +1470,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
 
   Widget _buildAgreementCheckbox() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.paddingMd,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br14,
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -1481,7 +1485,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       ),
       child: InkWell(
         onTap: () => setState(() => _isAgreed = !_isAgreed),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadius.br10,
         child: Row(
           children: [
             Checkbox(
@@ -1489,10 +1493,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               onChanged: (val) => setState(() => _isAgreed = val ?? false),
               activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.radiusXs,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             const Expanded(
               child: Text(
                 'Saya menyatakan bahwa semua data yang saya lampirkan adalah benar.',
@@ -1519,11 +1523,11 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           disabledBackgroundColor: const Color(0xFFE5E7EB),
-          foregroundColor: Colors.white,
+          foregroundColor: context.appColors.onPrimary,
           disabledForegroundColor: const Color(0xFF9CA3AF),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.radiusMd,
           ),
         ),
         child: Text(

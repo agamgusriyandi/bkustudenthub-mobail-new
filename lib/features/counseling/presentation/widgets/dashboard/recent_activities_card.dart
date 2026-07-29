@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -59,7 +60,7 @@ class RecentActivitiesCard extends StatelessWidget {
         child: Column(
           children: [
             Icon(Icons.history_rounded, size: 40, color: AppColors.neutral300),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Belum ada aktivitas terbaru',
               style: AppTextStyles.labelMd.copyWith(
@@ -96,12 +97,12 @@ class _ActivityItem extends StatelessWidget {
             : Icons.info_outline_rounded;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: AppSpacing.s10),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: Colors.grey.withAlpha(20)),
+        border: Border.all(color: AppColors.neutral500.withAlpha(20)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(12),
@@ -121,7 +122,7 @@ class _ActivityItem extends StatelessWidget {
             ),
             child: Icon(icon, color: iconColor, size: 20),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +141,7 @@ class _ActivityItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       time,
                       style: AppTextStyles.labelSm.copyWith(
@@ -151,7 +152,7 @@ class _ActivityItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   description,
                   style: AppTextStyles.labelSm.copyWith(

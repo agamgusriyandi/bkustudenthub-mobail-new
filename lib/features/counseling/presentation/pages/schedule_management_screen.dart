@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -227,7 +228,12 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     _buildCalendarHeader(),
                     _buildCalendarStrip(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.xl,
+                        AppSpacing.xxl,
+                        AppSpacing.xl,
+                        AppSpacing.xl,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -268,7 +274,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                                           size: 18,
                                           color: Color(0xFF2563EB),
                                         ),
-                                        SizedBox(width: 4),
+                                        SizedBox(width: AppSpacing.xs),
                                         Text(
                                           'Tambah Slot',
                                           style: TextStyle(
@@ -284,11 +290,11 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           _buildTimeSlotsList(),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: AppSpacing.xxl),
                           _buildBulkActions(),
-                          const SizedBox(height: 120),
+                          const SizedBox(height: AppSpacing.s120),
                         ],
                       ),
                     ),
@@ -307,24 +313,23 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                       elevation: 4,
                       icon:
                           _isSaving
-                              ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : const Icon(
-                                Icons.check_circle_rounded,
-                                color: Colors.white,
+                               ? SizedBox(
+                                 width: 20,
+                                 height: 20,
+                                 child: CircularProgressIndicator(
+                                   color: context.appColors.onPrimary,
+                                   strokeWidth: 2,
+                                 ),
+                               )
+                               : Icon(
+                                 Icons.check_circle_rounded,
+                                 color: context.appColors.onPrimary,
                                 size: 20,
                               ),
                       label: Text(
                         _isSaving ? 'Menyimpan...' : 'Simpan Perubahan',
                         style: AppTextStyles.bodyMd.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
+                          color: context.appColors.onPrimary,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -353,7 +358,12 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
       'Desember',
     ];
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.xl,
+        AppSpacing.xl,
+        AppSpacing.md,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -376,7 +386,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             ],
           ),
           Material(
-            color: Colors.white,
+            color: context.appColors.surface,
             shape: const CircleBorder(),
             child: InkWell(
               customBorder: const CircleBorder(),
@@ -391,7 +401,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
                           primary: const Color(0xFF16A34A),
-                          onPrimary: Colors.white,
+                          onPrimary: context.appColors.onPrimary,
                           onSurface: AppColors.neutral900,
                         ),
                       ),
@@ -409,7 +419,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.withAlpha(40)),
+                    border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                 ),
                 child: const Icon(
                   Icons.calendar_today_rounded,
@@ -447,7 +457,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               width: 72,
-              margin: const EdgeInsets.only(right: 12, top: 4, bottom: 4),
+              margin: const EdgeInsets.only(right: AppSpacing.md, top: AppSpacing.xs, bottom: AppSpacing.xs),
               decoration: BoxDecoration(
                 gradient:
                     isSelected
@@ -457,7 +467,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                           end: Alignment.bottomRight,
                         )
                         : null,
-                color: isSelected ? null : Colors.white,
+                color: isSelected ? null : context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 boxShadow:
                     isSelected
@@ -491,31 +501,31 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     style: AppTextStyles.labelMd.copyWith(
                       color:
                           isSelected
-                              ? Colors.white.withAlpha(220)
+                              ? context.appColors.onPrimary.withAlpha(220)
                               : AppColors.neutral600,
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     date.day.toString(),
                     style: AppTextStyles.titleLg.copyWith(
-                      color: isSelected ? Colors.white : AppColors.neutral900,
+                      color: isSelected ? context.appColors.onPrimary : AppColors.neutral900,
                       fontSize: 22,
                       fontWeight: FontWeight.w900,
                       height: 1,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Container(
                     width: 6,
                     height: 6,
                     decoration: BoxDecoration(
                       color:
                           isSelected
-                              ? Colors.white
+                              ? context.appColors.onPrimary
                               : hasActiveSlot
                               ? AppColors.success
                               : Colors.transparent,
@@ -524,7 +534,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                           hasActiveSlot || isSelected
                               ? [
                                 BoxShadow(
-                                  color: Colors.white.withAlpha(150),
+                                  color: context.appColors.onPrimary.withAlpha(150),
                                   blurRadius: 4,
                                 ),
                               ]
@@ -548,9 +558,9 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.xxxl),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: Colors.grey.withAlpha(20)),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusXl,
+        border: Border.all(color: AppColors.neutral500.withAlpha(20)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(12),
@@ -573,7 +583,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 color: AppColors.neutral500,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               'Jadwal Kosong',
               style: AppTextStyles.titleLg.copyWith(
@@ -581,7 +591,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Tidak ada slot untuk $_selectedDayName. Ketuk "Tambah Slot" untuk menjadwalkan sesi konseling.',
               style: AppTextStyles.labelMd.copyWith(
@@ -611,10 +621,10 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             boxShadow:
                 isAvailable
@@ -629,8 +639,8 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             border: Border.all(
               color:
                   isAvailable
-                      ? Colors.grey.withAlpha(30)
-                      : Colors.grey.withAlpha(50),
+                      ? AppColors.neutral500.withAlpha(30)
+                      : AppColors.neutral500.withAlpha(50),
               width: 1,
             ),
           ),
@@ -644,7 +654,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: AppSpacing.paddingSm,
                         decoration: BoxDecoration(
                           color:
                               isAvailable
@@ -661,7 +671,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                                   : AppColors.neutral500,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: AppSpacing.s10),
                       Text(
                         '$start - $end',
                         style: AppTextStyles.titleSm.copyWith(
@@ -686,7 +696,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               // Tags Row
               Wrap(
                 spacing: 8,
@@ -700,7 +710,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               // Footer Row: Status Switch
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -743,7 +753,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
         Row(
           children: [
             Icon(Icons.flash_on_rounded, color: AppColors.primary, size: 20),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               'Aksi Cepat Harian',
               style: AppTextStyles.titleMd.copyWith(
@@ -753,12 +763,12 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: Colors.grey.withAlpha(20)),
+            border: Border.all(color: AppColors.neutral500.withAlpha(20)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withAlpha(2),
@@ -791,7 +801,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 },
                 isTop: true,
               ),
-              Divider(height: 1, color: Colors.grey.withAlpha(20)),
+              Divider(height: 1, color: AppColors.neutral500.withAlpha(20)),
               _buildActionTile(
                 icon: Icons.block_rounded,
                 color: AppColors.error,
@@ -832,8 +842,8 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.vertical(
-        top: isTop ? const Radius.circular(16) : Radius.zero,
-        bottom: !isTop ? const Radius.circular(16) : Radius.zero,
+        top: isTop ? const Radius.circular(AppRadius.lg) : Radius.zero,
+        bottom: !isTop ? const Radius.circular(AppRadius.lg) : Radius.zero,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -850,7 +860,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
               ),
               child: Icon(icon, color: color, size: 20),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -863,7 +873,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     subtitle,
                     style: AppTextStyles.labelMd.copyWith(
@@ -877,7 +887,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: Colors.grey.withAlpha(100),
+              color: AppColors.neutral500.withAlpha(100),
               size: 20,
             ),
           ],
@@ -903,7 +913,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: isActive ? AppColors.neutral200 : Colors.grey.withAlpha(20),
+        color: isActive ? AppColors.neutral200 : AppColors.neutral500.withAlpha(20),
         borderRadius: AppRadius.radiusSm,
       ),
       child: Text(

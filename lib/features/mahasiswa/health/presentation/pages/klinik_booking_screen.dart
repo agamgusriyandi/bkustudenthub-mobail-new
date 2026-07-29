@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
@@ -35,7 +36,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
             .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
           await student.refreshHealthData();
@@ -62,7 +63,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     if (student.isLoading)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
@@ -82,7 +83,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                 borderRadius: AppRadius.radiusXs,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: AppSpacing.s10),
                             Text(
                               'Jadwal Klinik Saya',
                               style: AppTextStyles.titleLg.copyWith(
@@ -94,7 +95,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (activeBookings.isEmpty)
                         FadeInAnimation(
                           delay: 0.2,
@@ -105,7 +106,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               horizontal: AppSpacing.xl,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.appColors.surface,
                               borderRadius: AppRadius.radiusXl,
                               border: Border.all(color: AppColors.neutral200),
                               boxShadow: [
@@ -133,7 +134,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                         Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppSpacing.lg),
                                 Text(
                                   'Belum Ada Janji Temu Aktif',
                                   style: AppTextStyles.labelMd.copyWith(
@@ -143,7 +144,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: AppSpacing.s6),
                                 Text(
                                   'Jadwal pemeriksaan atau konsultasi dokter yang Anda pesan akan muncul di sini.',
                                   textAlign: TextAlign.center,
@@ -172,7 +173,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           ),
                         ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
 
                       // SECTION 2: TENAGA KESEHATAN TERSEDIA
                       FadeInAnimation(
@@ -187,7 +188,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                 borderRadius: AppRadius.radiusXs,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: AppSpacing.s10),
                             Text(
                               'Tenaga Kesehatan Tersedia',
                               style: AppTextStyles.titleLg.copyWith(
@@ -199,7 +200,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       if (student.healthWorkers.isEmpty)
                         FadeInAnimation(
                           delay: 0.4,
@@ -230,7 +231,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           ),
                         ),
                     ],
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -264,9 +265,9 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -317,7 +318,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         const Icon(
                           Icons.chevron_right_rounded,
                           size: 18,
@@ -327,7 +328,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -347,7 +348,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildCardInfoRow(Icons.calendar_today_rounded, dateStr),
                 _buildCardInfoRow(
                   Icons.access_time_rounded,
@@ -365,7 +366,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                 ),
                 if (booking.alasanPenolakan.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: Text(
                       'Catatan Review: ${booking.alasanPenolakan}',
                       style: AppTextStyles.labelSm.copyWith(
@@ -375,7 +376,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ),
                 if (!isCompleted) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
                       Expanded(
@@ -390,7 +391,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           variant: BkuButtonVariant.outline,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: BkuButton(
                           onPressed: () {
@@ -431,10 +432,10 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
     HealthWorker worker,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -459,7 +460,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
@@ -484,7 +485,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     Icon(
@@ -492,7 +493,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       size: 12,
                       color: Theme.of(context).colorScheme.outline,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Expanded(
                       child: Text(
                         worker.lokasi.isNotEmpty
@@ -512,7 +513,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           BkuButton(
             onPressed:
                 () => Navigator.push(
@@ -563,9 +564,9 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
       builder:
           (modalContext) => Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -582,7 +583,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -626,9 +627,9 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   const Divider(color: AppColors.neutral200),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'TENAGA KESEHATAN',
                     style: AppTextStyles.labelSm.copyWith(
@@ -638,7 +639,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.s6),
                   Text(
                     schedule?.tenagaKes?.nama ?? 'Tenaga Kesehatan',
                     style: AppTextStyles.titleSm.copyWith(
@@ -654,7 +655,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'WAKTU & LOKASI',
                     style: AppTextStyles.labelSm.copyWith(
@@ -664,7 +665,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _buildCardInfoRow(Icons.calendar_today_rounded, dateStr),
                   _buildCardInfoRow(
                     Icons.access_time_rounded,
@@ -676,7 +677,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         ? schedule!.lokasi
                         : 'Klinik Kampus Universitas Bakti Kencana',
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'KELUHAN MAHASISWA',
                     style: AppTextStyles.labelSm.copyWith(
@@ -686,7 +687,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.s6),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.md),
@@ -703,7 +704,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ),
                   if (booking.alasanPenolakan.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       'CATATAN REVIEW',
                       style: AppTextStyles.labelSm.copyWith(
@@ -713,7 +714,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.s6),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(AppSpacing.md),
@@ -731,7 +732,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     ),
                   ],
                   if (!isCompleted && !isCancelled) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     Row(
                       children: [
                         Expanded(
@@ -744,7 +745,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                             variant: BkuButtonVariant.outline,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: BkuButton(
                             onPressed: () {
@@ -771,7 +772,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       ],
                     ),
                   ],
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
@@ -786,7 +787,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(
               text,

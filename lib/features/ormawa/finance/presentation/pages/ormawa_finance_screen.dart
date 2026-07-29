@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
       floatingActionButton:
           canCreateFinance
               ? Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: AppSpacing.s70),
                 child: FadeInAnimation(
                   delay: 1.0,
                   child: FloatingActionButton.extended(
@@ -70,11 +71,11 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     },
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     elevation: 8,
-                    icon: const Icon(Icons.add_rounded, color: Colors.white),
+                    icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                     label: Text(
                       'Catat Transaksi',
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -99,7 +100,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
 
             _buildTransactionList(),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.s100)),
           ],
         ),
       ),
@@ -145,7 +146,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
             SizedBox(
               height: 140,
               child: SingleChildScrollView(
@@ -161,30 +162,30 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       balance: balance,
                       subtitle:
                           _obscureNominal
-                              ? 'Masuk: Rp ••• | Keluar: Rp •••'
+                              ? 'Masuk: Rp â€¢â€¢â€¢ | Keluar: Rp â€¢â€¢â€¢'
                               : 'Masuk: Rp ${_formatNominal(totalMasuk)} | Keluar: Rp ${_formatNominal(totalKeluar)}',
                       accentColor: Theme.of(context).colorScheme.primary,
                       icon: Icons.account_balance_rounded,
                       showVisibilityToggle: true,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     _buildBalanceCard(
                       title: 'SISA PAGU KAMPUS',
                       balance: campusBalance,
                       subtitle:
                           _obscureNominal
-                              ? 'Hibah: Rp ••• | LPJ: Rp •••'
+                              ? 'Hibah: Rp â€¢â€¢â€¢ | LPJ: Rp â€¢â€¢â€¢'
                               : 'Hibah: Rp ${_formatNominal(campusMasuk)} | LPJ: Rp ${_formatNominal(campusKeluar)}',
                       accentColor: const Color(0xFF0284C7),
                       icon: Icons.assured_workload_rounded,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     _buildBalanceCard(
                       title: 'KAS MANDIRI ORGANISASI',
                       balance: orgBalance,
                       subtitle:
                           _obscureNominal
-                              ? 'Iuran: Rp ••• | Mandiri: Rp •••'
+                              ? 'Iuran: Rp â€¢â€¢â€¢ | Mandiri: Rp â€¢â€¢â€¢'
                               : 'Iuran: Rp ${_formatNominal(orgMasuk)} | Mandiri: Rp ${_formatNominal(orgKeluar)}',
                       accentColor: const Color(0xFF059669),
                       icon: Icons.payments_rounded,
@@ -194,7 +195,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.s20,
+                AppSpacing.xl,
+                AppSpacing.s20,
+                0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -206,7 +212,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     onFilterTap: _showFilterBottomSheet,
                     onChanged: (value) => setState(() => _searchQuery = value),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
@@ -236,7 +242,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
       width: 290,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
@@ -266,12 +272,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               Icon(icon, color: accentColor, size: 20),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Text(
                 _obscureNominal
-                    ? 'Rp ••••••'
+                    ? 'Rp â€¢â€¢â€¢â€¢â€¢â€¢'
                     : NumberFormat.currency(
                       locale: 'id',
                       symbol: 'Rp ',
@@ -284,7 +290,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 ),
               ),
               if (showVisibilityToggle) ...[
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -313,7 +319,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               ],
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             subtitle,
             style: AppTextStyles.labelSm.copyWith(
@@ -356,21 +362,21 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               _selectedSumberFilter != 'Semua';
           return SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(top: 100),
+              padding: const EdgeInsets.only(top: AppSpacing.s100),
               child: Center(
                 child: Column(
                   children: [
                     Icon(
                       Icons.search_off_rounded,
                       size: 48,
-                      color: Colors.grey.withAlpha(50),
+                      color: AppColors.neutral500.withAlpha(50),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       (_searchQuery.isEmpty && !hasActiveFilters)
                           ? 'Belum ada riwayat transaksi'
                           : 'Transaksi tidak ditemukan',
-                      style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
+                      style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
                     ),
                   ],
                 ),
@@ -388,10 +394,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               final isCampus = t.sumber == 'kampus';
 
               return Container(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: AppColors.neutral200),
                 ),
@@ -412,7 +418,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,23 +430,23 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             ),
                           ),
                           Text(
-                            '${t.category} • ${DateFormat('dd MMM yyyy', 'id').format(t.date)}',
+                            '${t.category} â€¢ ${DateFormat('dd MMM yyyy', 'id').format(t.date)}',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.grey,
+                              color: AppColors.neutral500,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpacing.s6),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 6,
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: (isCampus ? AppColors.info : Colors.grey)
+                              color: (isCampus ? AppColors.info : AppColors.neutral500)
                                   .withAlpha(15),
                               borderRadius: AppRadius.radiusXs,
                               border: Border.all(
-                                color: (isCampus ? AppColors.info : Colors.grey)
+                                color: (isCampus ? AppColors.info : AppColors.neutral500)
                                     .withAlpha(40),
                                 width: 0.5,
                               ),
@@ -456,10 +462,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   size: 10,
                                   color:
                                       isCampus
-                                          ? const Color(0xFF1D4ED8)
-                                          : Colors.grey.shade600,
+                                        ? const Color(0xFF1D4ED8)
+                                        : AppColors.neutral600,
                                 ),
-                                const SizedBox(width: 4),
+                                const SizedBox(width: AppSpacing.xs),
                                 Text(
                                   isCampus ? 'PAGU KAMPUS' : 'KAS MANDIRI',
                                   style: TextStyle(
@@ -468,7 +474,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                     color:
                                         isCampus
                                             ? const Color(0xFF1D4ED8)
-                                            : Colors.grey.shade600,
+                                            : AppColors.neutral600,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -480,7 +486,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     ),
                     Text(
                       _obscureNominal
-                          ? '${isIncome ? '+' : '-'} ••••••'
+                          ? '${isIncome ? '+' : '-'} â€¢â€¢â€¢â€¢â€¢â€¢'
                           : '${isIncome ? '+' : '-'} ${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(t.nominal)}',
                       style: AppTextStyles.labelMd.copyWith(
                         color: isIncome ? AppColors.success : AppColors.error,
@@ -505,9 +511,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
               ),
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
@@ -540,17 +546,17 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Filter Tipe Transaksi
                   Text(
                     'TIPE TRANSAKSI',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Colors.grey,
+                      color: AppColors.neutral500,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       _buildFilterChip(
@@ -561,7 +567,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           setState(() {});
                         },
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _buildFilterChip(
                         label: 'Pemasukan',
                         isSelected: _selectedTypeFilter == 'pemasukan',
@@ -572,7 +578,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           setState(() {});
                         },
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _buildFilterChip(
                         label: 'Pengeluaran',
                         isSelected: _selectedTypeFilter == 'pengeluaran',
@@ -585,17 +591,17 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
 
                   // Filter Sumber Dana
                   Text(
                     'SUMBER DANA',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Colors.grey,
+                      color: AppColors.neutral500,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       _buildFilterChip(
@@ -606,7 +612,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           setState(() {});
                         },
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _buildFilterChip(
                         label: 'Pagu Kampus',
                         isSelected: _selectedSumberFilter == 'kampus',
@@ -615,7 +621,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           setState(() {});
                         },
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _buildFilterChip(
                         label: 'Kas Mandiri',
                         isSelected: _selectedSumberFilter == 'organisasi',
@@ -628,7 +634,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   SizedBox(
                     width: double.infinity,
@@ -639,7 +645,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       child: Text(
                         'Terapkan Filter',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -685,7 +691,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : AppColors.neutral700,
+            color: isSelected ? context.appColors.onPrimary : AppColors.neutral700,
           ),
         ),
       ),

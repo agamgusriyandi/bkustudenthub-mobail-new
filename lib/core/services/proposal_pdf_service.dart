@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -26,7 +26,7 @@ class ProposalPdfService {
         build: (pw.Context context) {
           return [
             _buildHeader(),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: AppSpacing.s20),
             _buildInfoRow('Organisasi', ormawaName),
             _buildInfoRow('Judul Kegiatan', proposal.title),
             _buildInfoRow(
@@ -45,31 +45,31 @@ class ProposalPdfService {
               'Rp ${NumberFormat('#,###', 'id_ID').format(proposal.budget)}',
             ),
             _buildInfoRow('Sumber Dana', proposal.sumberDana ?? '-'),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: AppSpacing.lg),
             _buildSectionTitle('Deskripsi Kegiatan'),
             pw.Text(
               proposal.description ?? '-',
               style: const pw.TextStyle(fontSize: 11),
             ),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: AppSpacing.lg),
             _buildSectionTitle('Latar Belakang'),
             pw.Text(
               proposal.latarBelakang ?? '-',
               style: const pw.TextStyle(fontSize: 11),
             ),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: AppSpacing.lg),
             _buildSectionTitle('Tujuan'),
             pw.Text(
               proposal.tujuanKegiatan ?? '-',
               style: const pw.TextStyle(fontSize: 11),
             ),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: AppSpacing.lg),
             _buildSectionTitle('Indikator Keberhasilan'),
             pw.Text(
               proposal.indikatorKeberhasilan ?? '-',
               style: const pw.TextStyle(fontSize: 11),
             ),
-            pw.SizedBox(height: 40),
+            pw.SizedBox(height: AppSpacing.xxxl),
             _buildSignatureBlocks(proposal.pjKegiatan ?? 'Ketua Pelaksana'),
           ];
         },
@@ -91,12 +91,12 @@ class ProposalPdfService {
             'FORM PENGAJUAN PROPOSAL KEGIATAN',
             style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
           ),
-          pw.SizedBox(height: 4),
+          pw.SizedBox(height: AppSpacing.xs),
           pw.Text(
             'KEMAHASISWAAN UNIVERSITAS BINA KARYA',
             style: const pw.TextStyle(fontSize: 12),
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: AppSpacing.s10),
           pw.Divider(),
         ],
       ),
@@ -181,7 +181,7 @@ class ProposalPdfService {
           textAlign: pw.TextAlign.center,
           style: const pw.TextStyle(fontSize: 10),
         ),
-        pw.SizedBox(height: 40),
+        pw.SizedBox(height: AppSpacing.xxxl),
         pw.Text(
           name,
           style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),

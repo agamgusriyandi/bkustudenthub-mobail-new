@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -182,7 +183,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildInfoBanner(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               _buildLabel('Tipe Pengajuan', required: true),
               _buildDropdown(
@@ -196,7 +197,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 (val) => setState(() => _selectedTipe = val!),
                 _selectedTipe,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               _buildLabel(
                 _selectedTipe == 'Sertifikasi'
@@ -212,7 +213,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                     ? 'Contoh: Sertifikasi BNSP'
                     : 'Contoh: Gemastik 2026',
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               if (_selectedTipe == 'Prestasi Mandiri') ...[
                 _buildLabel('Kategori', required: true),
@@ -222,7 +223,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   (val) => setState(() => _selectedKategori = val!),
                   _selectedKategori,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
               ],
 
               if (_selectedTipe == 'Rekognisi') ...[
@@ -248,7 +249,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   (val) => setState(() => _selectedJenisRekognisi = val!),
                   _selectedJenisRekognisi,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
               ],
 
               Row(
@@ -267,7 +268,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +283,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               Row(
                 children: [
@@ -295,7 +296,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   if (_selectedTipe == 'Prestasi Mandiri')
                     Expanded(
                       child: Column(
@@ -341,11 +342,11 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                     const Expanded(child: SizedBox()),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // SIMKATMAWA Section
               _buildSimkatmawaSection(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               _buildLabel(
                 _selectedTipe == 'Pengajuan Dana'
@@ -354,10 +355,10 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 required: widget.achievement == null,
               ),
               _buildUploadSection(),
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.s48),
 
               _buildSubmitButton(),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
             ],
           ),
         ),
@@ -385,7 +386,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'Informasi Tambahan SIMKATMAWA',
                 style: AppTextStyles.labelMd.copyWith(
@@ -394,7 +395,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '(Opsional) Lengkapi data ini untuk pelaporan ke kementerian.',
             style: AppTextStyles.labelSm.copyWith(
@@ -402,11 +403,11 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               fontSize: 10,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
 
           _buildLabel('Cabang Lomba'),
           _buildTextField(_cabangController, 'Cth: Lomba Esai'),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           Row(
             children: [
@@ -424,7 +425,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,19 +442,19 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('URL Kompetisi / Lomba'),
           _buildTextField(_urlPesertaController, 'https://...'),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('URL Foto UPP (Serah Terima)'),
           _buildTextField(_urlFotoUppController, 'https://...'),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('URL Dokumen Undangan'),
           _buildTextField(_urlDokumenUndanganController, 'https://...'),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('Jumlah PT Peserta (Atau Negara)'),
           _buildTextField(
@@ -461,11 +462,11 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             'Cth: 10',
             keyboardType: TextInputType.number,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('ID Mahasiswa Tim (Koma)'),
           _buildTextField(_anggotaMahasiswaController, 'Cth: 1, 2, 3'),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           _buildLabel('ID/NIDN Dosen Pembimbing'),
           _buildTextField(_pembimbingDosenController, 'Cth: 5, 0012345678'),
@@ -491,7 +492,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             Icons.info_outline_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               'Pilih tipe pengajuan yang sesuai. Isi data selengkap mungkin agar validasi Admin lebih cepat.',
@@ -508,7 +509,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
 
   Widget _buildLabel(String text, {bool required = false}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
       child: RichText(
         text: TextSpan(
           text: text,
@@ -548,7 +549,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           fontSize: 12,
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: context.appColors.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: 14,
@@ -585,7 +586,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withAlpha(30),
@@ -650,7 +651,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           vertical: 14,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
             color: Theme.of(context).colorScheme.outline.withAlpha(30),
@@ -679,15 +680,15 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
 
     return InkWell(
       onTap: _pickFile,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.radiusLg,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: BoxDecoration(
-          color: hasFile ? const Color(0xFFF0FDF4) : const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(16),
+          color: hasFile ? const Color(0xFFF0FDF4) : context.appColors.background,
+          borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: hasFile ? const Color(0xFF86EFAC) : const Color(0xFFE5E7EB),
+            color: hasFile ? const Color(0xFF86EFAC) : AppColors.neutral200,
             width: 1.2,
           ),
           boxShadow: [
@@ -701,7 +702,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: AppSpacing.padding14,
               decoration: BoxDecoration(
                 color: hasFile ? const Color(0xFFDCFCE7) : const Color(0xFFEFF6FF),
                 shape: BoxShape.circle,
@@ -709,24 +710,24 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               child: Icon(
                 hasFile ? Icons.task_rounded : Icons.cloud_upload_rounded,
                 size: 28,
-                color: hasFile ? const Color(0xFF16A34A) : AppColors.primary,
+                color: hasFile ? context.appColors.success : context.appColors.primary,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               _selectedFileName ?? 'Klik untuk Upload File',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: hasFile ? const Color(0xFF15803D) : const Color(0xFF1F2937),
+                color: hasFile ? context.appColors.success : context.appColors.secondary,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               hasFile ? 'Klik untuk mengganti file' : 'Maks 5MB (PDF, JPG, PNG)',
               style: const TextStyle(
-                color: Color(0xFF6B7280),
+                color: AppColors.neutral600,
                 fontSize: 12,
               ),
             ),
@@ -742,7 +743,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) {
         return SafeArea(
@@ -750,11 +751,11 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.neutral300,
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
@@ -803,7 +804,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   _pickFromGalleryOrFiles();
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
           ),
         );

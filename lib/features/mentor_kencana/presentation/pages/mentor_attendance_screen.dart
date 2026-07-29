@@ -1,4 +1,5 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -53,7 +54,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                     size: 200.0,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Minta mahasiswa untuk scan QR Code ini dari aplikasi mereka.',
                   style: AppTextStyles.labelSm.copyWith(
@@ -144,7 +145,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   DropdownButtonFormField<String>(
                     initialValue: status,
                     decoration: InputDecoration(
@@ -216,9 +217,9 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
 
               actions: [
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.assignment_ind_rounded,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                   onPressed: () {
                     context.push('/mentor-kencana/absence-requests');
@@ -262,7 +263,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final session = provider.sessions[index];
                     return BkuCard(
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,12 +274,12 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                 padding: const EdgeInsets.all(AppSpacing.md),
                                 decoration: BoxDecoration(
                                   color: [
-                                    Colors.blue,
-                                    Colors.green,
-                                    Colors.orange,
-                                    Colors.purple,
-                                    Colors.teal,
-                                    Colors.indigo,
+                                    context.appColors.info,
+                                    context.appColors.success,
+                                    context.appColors.warning,
+                                    AppColors.neutral700,
+                                    context.appColors.info,
+                                    context.appColors.info,
                                   ][index % 6].withAlpha(15),
                                   borderRadius: AppRadius.radiusLg,
                                 ),
@@ -286,17 +287,17 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                   Icons.event_available_rounded,
                                   color:
                                       [
-                                        Colors.blue,
-                                        Colors.green,
-                                        Colors.orange,
-                                        Colors.purple,
-                                        Colors.teal,
-                                        Colors.indigo,
+                                        context.appColors.info,
+                                        context.appColors.success,
+                                        context.appColors.warning,
+                                        AppColors.neutral700,
+                                        context.appColors.info,
+                                        context.appColors.info,
                                       ][index % 6],
                                   size: 24,
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: AppSpacing.lg),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,9 +309,9 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: AppSpacing.xs),
                                     Text(
-                                      '${session.stageName} • ${session.date}',
+                                      '${session.stageName} â€¢ ${session.date}',
                                       style: AppTextStyles.labelSm.copyWith(
                                         color:
                                             Theme.of(
@@ -323,7 +324,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           Row(
                             children: [
                               Expanded(
@@ -339,7 +340,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                             ).colorScheme.outline,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: AppSpacing.xs),
                                     Text(
                                       '${session.attendanceCount} / ${session.totalMentees}',
                                       style: AppTextStyles.titleLg.copyWith(
@@ -354,7 +355,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: BkuButton(
                                   onPressed: () async {
@@ -391,7 +392,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           SizedBox(
                             width: double.infinity,
                             child: BkuButton(

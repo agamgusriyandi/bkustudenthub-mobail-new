@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import "package:bkuhub_mobile/core/providers/navigation_provider.dart";
 import "package:provider/provider.dart";
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class QuickStatsCard extends StatelessWidget {
                           letterSpacing: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         'Janji Temu Disetujui',
                         style: AppTextStyles.labelMd.copyWith(
@@ -94,7 +95,7 @@ class QuickStatsCard extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         totalAppointments.toString(),
                         style: AppTextStyles.titleLg.copyWith(
@@ -104,7 +105,7 @@ class QuickStatsCard extends StatelessWidget {
                           height: 1,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         'sesi konseling yang telah disetujui',
                         style: AppTextStyles.labelSm.copyWith(
@@ -130,7 +131,7 @@ class QuickStatsCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +152,7 @@ class QuickStatsCard extends StatelessWidget {
                 Icons.pending_actions_rounded,
                 waiting,
                 'Menunggu',
-                Colors.amber,
+                context.appColors.warning,
                 onTap: () {
                   // Navigate to Booking tab (index 1) and sub-tab Menunggu (index 1)
                   context.read<NavigationProvider>().navigateToBookingsWithTab(
@@ -211,7 +212,7 @@ class QuickStatsCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 24),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               value,
               style: AppTextStyles.titleMd.copyWith(
@@ -220,7 +221,7 @@ class QuickStatsCard extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               style: AppTextStyles.labelSm.copyWith(

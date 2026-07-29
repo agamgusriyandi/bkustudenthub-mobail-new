@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +148,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
     }
 
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -169,7 +169,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                     size: 28,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +178,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                         ormawa['Nama'] ?? ormawa['nama'] ?? 'Unknown',
                         style: AppTextStyles.titleLg.copyWith(fontSize: 16),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         ormawa['Kategori'] ?? ormawa['kategori'] ?? 'Kategori',
                         style: AppTextStyles.labelSm.copyWith(
@@ -190,19 +190,19 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               ormawa['deskripsi'] ?? 'Tidak ada deskripsi',
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral600),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             if (minIpk > 0) ...[
               Row(
                 children: [
                   Icon(Icons.star_rounded, size: 16, color: Colors.amber[700]),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Syarat IPK: ${minIpk.toStringAsFixed(2)}',
                     style: AppTextStyles.labelSm.copyWith(
@@ -215,7 +215,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
             BkuButton(text: btnText, onPressed: action),
           ],

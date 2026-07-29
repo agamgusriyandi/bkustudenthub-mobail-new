@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -75,12 +75,12 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildScoreInput('Kognitif (Kuis/Tugas)', kognitifController),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildScoreInput(
                     'Psikomotor (Kehadiran)',
                     psikomotorController,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildScoreInput(
                     'Afektif (Sikap/Keaktifan)',
                     afektifController,
@@ -129,16 +129,11 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('MentorScoringScreen build started');
     final provider = context.watch<MentorKencanaProvider>();
-    debugPrint(
-      'MentorScoringScreen provider groups: ${provider.groups.length}',
-    );
     final totalMentees = provider.groups.fold<int>(
       0,
       (sum, g) => sum + g.mentees.length,
     );
-    debugPrint('MentorScoringScreen totalMentees: $totalMentees');
 
     return Scaffold(
       backgroundColor: AppColors.neutral100,
@@ -182,7 +177,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                           context,
                         ).colorScheme.outline.withAlpha(80),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       Text(
                         'Anda tidak memiliki mahasiswa bimbingan yang aktif untuk dinilai.',
                         style: AppTextStyles.labelMd.copyWith(
@@ -202,11 +197,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    debugPrint('SliverChildBuilderDelegate index: $index');
                     final group = provider.groups[index];
-                    debugPrint(
-                      'Building group: ${group.name}, mentees: ${group.mentees.length}',
-                    );
                     if (group.mentees.isEmpty) {
                       return const SizedBox.shrink();
                     }
@@ -221,13 +212,10 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                             color: AppColors.neutral900,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         ...group.mentees.map((mentee) {
-                          debugPrint(
-                            'Building card for mentee: ${mentee.name}',
-                          );
                           return BkuCard(
-                            margin: const EdgeInsets.only(bottom: 12),
+                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             child: Row(
                               children: [
@@ -256,7 +244,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -268,7 +256,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: AppSpacing.xs),
                                       Text(
                                         'NIM: ${mentee.nim}',
                                         style: AppTextStyles.labelSm.copyWith(
@@ -278,7 +266,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                                               ).colorScheme.outline,
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: AppSpacing.sm),
                                       Text(
                                         'Skor Sementara: ${mentee.score}',
                                         style: AppTextStyles.labelSm.copyWith(
@@ -289,7 +277,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: AppSpacing.sm),
                                 BkuButton(
                                   onPressed:
                                       () => _showScoringDialog(
@@ -304,7 +292,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                             ),
                           );
                         }),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                       ],
                     );
                   }, childCount: provider.groups.length),

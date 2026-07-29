@@ -1,5 +1,4 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'dart:developer';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:dio/dio.dart';
@@ -110,7 +109,7 @@ class NotificationService extends ChangeNotifier {
   void startPolling() {
     _pollingTimer?.cancel();
     _checkNewNotifications(); // Jalankan check pertama kali secara instan saat aplikasi dibuka
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       _checkNewNotifications();
     });
   }
@@ -175,8 +174,8 @@ class NotificationService extends ChangeNotifier {
 
           // Resolve dynamic SnackBar background color based on Super Admin config
           final theme = ThemeProvider.current;
-          Color snackbarBgColor = const Color(0xFF1A3BAA); // Fallback
-          Color snackbarTextColor = Colors.white;
+          Color snackbarBgColor = theme?.primary ?? const Color(0xFF1A3BAA);
+          Color snackbarTextColor = theme?.onPrimary ?? Colors.white;
           if (theme != null) {
             final titleLower = latest.title.toLowerCase();
             final contentLower = latest.content.toLowerCase();
@@ -203,8 +202,8 @@ class NotificationService extends ChangeNotifier {
               snackbarBgColor = theme.colorError;
               snackbarTextColor = theme.colors.onError;
             } else if (isSuccess) {
-              snackbarBgColor = AppColors.success;
-              snackbarTextColor = Colors.white;
+              snackbarBgColor = theme.success;
+              snackbarTextColor = theme.colors.onSuccess;
             } else if (isWarning) {
               snackbarBgColor = theme.warning;
               snackbarTextColor = theme.colors.onWarning;

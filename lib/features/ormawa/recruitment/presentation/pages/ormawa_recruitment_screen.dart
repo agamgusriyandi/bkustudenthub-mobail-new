@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -14,6 +15,8 @@ import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 
 class OrmawaRecruitmentScreen extends StatefulWidget {
   const OrmawaRecruitmentScreen({super.key});
@@ -167,10 +170,10 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.only(
-                      top: 16,
-                      left: 20,
-                      right: 20,
-                      bottom: 16,
+                      top: AppSpacing.lg,
+                      left: AppSpacing.s20,
+                      right: AppSpacing.s20,
+                      bottom: AppSpacing.lg,
                     ),
                     child: OrmawaListHeader(
                       title: 'DAFTAR PENDAFTAR (${applicants.length})',
@@ -216,7 +219,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                           Text(
                             'Belum Ada Pendaftar',
                             style: AppTextStyles.titleLg.copyWith(
@@ -224,7 +227,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                               color: AppColors.neutral900,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             'Daftar mahasiswa yang melamar ke ORMAWA ini akan muncul di sini.',
                             textAlign: TextAlign.center,
@@ -233,7 +236,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                               height: 1.5,
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: AppSpacing.xxl),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.lg,
@@ -264,7 +267,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                                           .colors
                                           .info,
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: Text(
                                     'Pastikan status Open Recruitment sudah dibuka pada menu Pengaturan.',
@@ -336,45 +339,30 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
             color: AppColors.success,
             onTap: () {
               _toggleFab();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const RecruitmentHistoryScreen(),
-                ),
-              );
+              context.push(AppRoutes.ormawaRecruitmentHistory);
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           _buildFabOption(
             icon: Icons.list_alt_rounded,
             label: 'Form Builder',
-            color: Colors.purple,
+            color: AppColors.neutral700,
             onTap: () {
               _toggleFab();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const RecruitmentFormScreen(),
-                ),
-              );
+              context.push(AppRoutes.ormawaRecruitmentForm);
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           _buildFabOption(
             icon: Icons.settings_rounded,
             label: 'Pengaturan',
             color: AppColors.info,
             onTap: () {
               _toggleFab();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const RecruitmentSettingsScreen(),
-                ),
-              );
+              context.push(AppRoutes.ormawaRecruitmentSettings);
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
         ],
         FloatingActionButton.extended(
           onPressed: _toggleFab,
@@ -382,12 +370,12 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
             progress: _animationController,
-            color: Colors.white,
+            color: context.appColors.onPrimary,
           ),
           label: Text(
             _isFabExpanded ? 'Tutup' : 'Menu Utama',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.appColors.onPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -411,11 +399,11 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
             vertical: AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: AppRadius.radiusSm,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+              color: context.appColors.surface,
+              borderRadius: AppRadius.radiusSm,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -429,13 +417,13 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         FloatingActionButton(
           heroTag: label, // Prevent hero animation conflicts
           mini: true,
           onPressed: onTap,
           backgroundColor: color,
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: context.appColors.onPrimary),
         ),
       ],
     );
@@ -448,9 +436,9 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
       builder: (sheetContext) {
         return Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -462,7 +450,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               ...['Semua', 'Menunggu', 'Diterima', 'Ditolak'].map(
                 (status) => ListTile(
                   title: Text(
@@ -494,7 +482,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                   },
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
           ),
         );
@@ -646,12 +634,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           style: AppTextStyles.titleSm.copyWith(
                             color:
                                 _isOpenRecruitment
-                                    ? Colors.white
+                                    ? context.appColors.onPrimary
                                     : AppColors.neutral800,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           _isOpenRecruitment
                               ? 'Pendaftaran saat ini sedang DIBUKA'
@@ -659,7 +647,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           style: AppTextStyles.labelMd.copyWith(
                             color:
                                 _isOpenRecruitment
-                                    ? Colors.white70
+                                    ? context.appColors.onPrimary
                                     : AppColors.neutral500,
                           ),
                         ),
@@ -670,7 +658,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     value: _isOpenRecruitment,
                     onChanged:
                         (value) => setState(() => _isOpenRecruitment = value),
-                    activeThumbColor: Colors.white,
+                    activeThumbColor: context.appColors.onPrimary,
                     activeTrackColor: Colors.greenAccent.shade400,
                     inactiveThumbColor: AppColors.neutral400,
                     inactiveTrackColor: AppColors.neutral300,
@@ -678,7 +666,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
 
             Text(
               'Periode & Syarat',
@@ -687,7 +675,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 color: AppColors.neutral800,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             Row(
               children: [
@@ -698,7 +686,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     onTap: () => _selectDate(true),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: RecruitmentDateField(
                     label: 'Selesai',
@@ -708,12 +696,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(
                   color: Theme.of(
@@ -748,7 +736,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           Text(
                             'IPK Minimal',
                             style: AppTextStyles.bodyMd.copyWith(
@@ -776,7 +764,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   SliderTheme(
                     data: SliderThemeData(
                       activeTrackColor: Theme.of(context).colorScheme.primary,
@@ -800,12 +788,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(
                   color: Theme.of(
@@ -837,7 +825,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           size: 20,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Text(
                         'Persyaratan Utama',
                         style: AppTextStyles.bodyMd.copyWith(
@@ -846,7 +834,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   TextField(
                     controller: _requirementsController,
                     maxLines: 4,
@@ -868,7 +856,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xxl),
 
             SizedBox(
               width: double.infinity,
@@ -890,7 +878,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
                             Icon(Icons.save_rounded, size: 20),
-                            SizedBox(width: 8),
+                            SizedBox(width: AppSpacing.sm),
                             Text(
                               'Simpan Pengaturan',
                               style: TextStyle(
@@ -903,7 +891,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                         ),
               ),
             ),
-            const SizedBox(height: 100),
+            const SizedBox(height: AppSpacing.s100),
           ],
         ),
       ),
@@ -932,7 +920,7 @@ class RecruitmentDateField extends StatelessWidget {
           label,
           style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral600),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         InkWell(
           onTap: onTap,
           borderRadius: AppRadius.radiusMd,
@@ -956,7 +944,7 @@ class RecruitmentDateField extends StatelessWidget {
                   size: 18,
                   color: AppColors.neutral600,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   date != null
                       ? DateFormat('dd MMM yyyy').format(date!)
@@ -1109,7 +1097,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) {
         return Container(
@@ -1120,7 +1108,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
+                margin: const EdgeInsets.only(bottom: AppSpacing.s20),
                 decoration: BoxDecoration(
                   color: AppColors.neutral300,
                   borderRadius: AppRadius.radiusXs,
@@ -1132,7 +1120,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               ..._fieldTypes.map(
                 (type) => ListTile(
                   contentPadding: const EdgeInsets.symmetric(
@@ -1210,7 +1198,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                                 size: 64,
                                 color: AppColors.neutral300,
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               Text(
                                 'Belum ada field',
                                 style: AppTextStyles.bodyMd.copyWith(
@@ -1218,7 +1206,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Text(
                                 'Tekan tombol + di bawah untuk membuat formulir',
                                 style: AppTextStyles.labelMd.copyWith(
@@ -1230,10 +1218,10 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                         )
                         : ReorderableListView.builder(
                           padding: const EdgeInsets.only(
-                            left: 20,
-                            right: 20,
-                            top: 16,
-                            bottom: 100,
+                            left: AppSpacing.s20,
+                            right: AppSpacing.s20,
+                            top: AppSpacing.lg,
+                            bottom: AppSpacing.s100,
                           ),
                           itemCount: _fields.length,
                           onReorderItem: (oldIndex, newIndex) {
@@ -1245,7 +1233,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                           itemBuilder: (context, index) {
                             return Padding(
                               key: ValueKey(_fields[index].id),
-                              padding: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.only(bottom: AppSpacing.md),
                               child: _buildFieldCard(_fields[index], index),
                             );
                           },
@@ -1255,7 +1243,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.xl),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.appColors.surface,
                     border: Border(
                       top: BorderSide(
                         color: Theme.of(
@@ -1291,7 +1279,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
                                   Icon(Icons.save_rounded, size: 20),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: AppSpacing.sm),
                                   Text(
                                     'Simpan Form',
                                     style: TextStyle(
@@ -1312,7 +1300,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
             child: FloatingActionButton(
               heroTag: 'add_field_fab',
               backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: context.appColors.onPrimary,
               elevation: 4,
               onPressed: _showAddFieldSheet,
               child: const Icon(Icons.add_rounded),
@@ -1326,7 +1314,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   Widget _buildFieldCard(RecruitmentFormField field, int index) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
@@ -1350,17 +1338,17 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
             decoration: BoxDecoration(
               color: AppColors.neutral100.withValues(alpha: 0.5),
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+                top: Radius.circular(AppRadius.lg),
               ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.drag_indicator_rounded,
-                  color: Colors.grey,
+                  color: AppColors.neutral500,
                   size: 20,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
@@ -1384,7 +1372,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                 InkWell(
                   onTap: () => _removeField(index),
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: AppSpacing.padding6,
                     decoration: BoxDecoration(
                       color: AppColors.error.withValues(alpha: 0.1),
                       borderRadius: AppRadius.radiusSm,
@@ -1418,7 +1406,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                   ),
                   onChanged: (value) => field.label = value,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 DropdownButtonFormField<String>(
                   initialValue: field.type,
                   decoration: InputDecoration(
@@ -1438,7 +1426,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                 ),
                 if (field.type == 'Dropdown' ||
                     field.type == 'Pilihan Ganda') ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   TextField(
                     controller: TextEditingController(text: field.options)
                       ..selection = TextSelection.collapsed(
@@ -1455,7 +1443,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                     onChanged: (value) => field.options = value,
                   ),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   children: [
                     Switch(
@@ -1465,7 +1453,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                       },
                       activeThumbColor: Theme.of(context).colorScheme.primary,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Wajib diisi',
                       style: AppTextStyles.bodyMd.copyWith(
@@ -1561,9 +1549,9 @@ class RecruitmentApplicantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withAlpha(50),
@@ -1612,12 +1600,12 @@ class RecruitmentApplicantCard extends StatelessWidget {
                   child: Text(
                     applicant.name.substring(0, 1).toUpperCase(),
                     style: AppTextStyles.titleSm.copyWith(
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1630,7 +1618,7 @@ class RecruitmentApplicantCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${applicant.nim} • ${applicant.prodi}',
                         style: AppTextStyles.labelMd.copyWith(
@@ -1642,12 +1630,12 @@ class RecruitmentApplicantCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _buildStatusBadge(applicant.status),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
                         const Icon(
@@ -1655,7 +1643,7 @@ class RecruitmentApplicantCard extends StatelessWidget {
                           color: AppColors.warning,
                           size: 14,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           applicant.ipk.toStringAsFixed(2),
                           style: AppTextStyles.labelMd.copyWith(
@@ -1726,14 +1714,14 @@ class RecruitmentHistoryScreen extends StatelessWidget {
                     size: 64,
                     color: AppColors.neutral300,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Belum ada riwayat',
                     style: AppTextStyles.bodyMd.copyWith(
                       color: AppColors.neutral600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Riwayat keputusan akan muncul di sini',
                     style: AppTextStyles.labelMd.copyWith(
@@ -1773,9 +1761,9 @@ class RecruitmentHistoryCard extends StatelessWidget {
         applicant.status == 'aktif' || applicant.status == 'accepted';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
           color:
@@ -1824,12 +1812,12 @@ class RecruitmentHistoryCard extends StatelessWidget {
               child: Text(
                 applicant.name.substring(0, 1).toUpperCase(),
                 style: AppTextStyles.titleSm.copyWith(
-                  color: Colors.white,
+                  color: context.appColors.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1842,7 +1830,7 @@ class RecruitmentHistoryCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${applicant.nim} • ${applicant.prodi}',
                     style: AppTextStyles.labelMd.copyWith(
@@ -1854,7 +1842,7 @@ class RecruitmentHistoryCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
@@ -1913,9 +1901,9 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
             applicant.status.toLowerCase() == 'pending' ||
             applicant.status.toLowerCase() == 'menunggu';
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
           ),
           child: Stack(
             children: [
@@ -1925,7 +1913,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Container(
                           width: 48,
                           height: 6,
@@ -1934,7 +1922,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             borderRadius: AppRadius.radiusXs,
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         // Profile Avatar Modern
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xs),
@@ -1976,13 +1964,13 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             child: Text(
                               applicant.name.substring(0, 1).toUpperCase(),
                               style: AppTextStyles.displaySmall.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.s20),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.xl,
@@ -1996,7 +1984,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.lg,
@@ -2014,9 +2002,9 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         _buildStatusBadge(applicant.status),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.s20),
 
                         // Detail Data
                         Padding(
@@ -2060,7 +2048,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                               size: 24,
                                             ),
                                           ),
-                                          const SizedBox(width: 16),
+                                          const SizedBox(width: AppSpacing.lg),
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -2093,7 +2081,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
 
                               if (applicant.customAnswers.isEmpty) ...[
                                 Text(
@@ -2102,7 +2090,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Row(
                                   children: [
                                     Expanded(
@@ -2111,7 +2099,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                         value: applicant.divisi1,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: AppSpacing.md),
                                     Expanded(
                                       child: RecruitmentInfoCard(
                                         label: 'Pilihan 2',
@@ -2120,14 +2108,14 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: AppSpacing.xl),
                                 Text(
                                   'Alasan & Motivasi',
                                   style: AppTextStyles.titleSm.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(AppSpacing.xl),
@@ -2147,14 +2135,14 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: AppSpacing.xl),
                                 Text(
                                   'Dokumen Pendukung',
                                   style: AppTextStyles.titleSm.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 if (applicant.cvUrl.trim().isNotEmpty)
                                   InkWell(
                                     onTap: () async {
@@ -2179,10 +2167,8 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                       .externalApplication,
                                             );
                                           }
-                                        } catch (e) {
-                                          debugPrint(
-                                            'Could not launch $uri: $e',
-                                          );
+                                        } catch (_) {
+                                          // Silenced: non-critical launch error
                                         }
                                       }
                                     },
@@ -2224,7 +2210,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                               size: 24,
                                             ),
                                           ),
-                                          const SizedBox(width: 16),
+                                          const SizedBox(width: AppSpacing.lg),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
@@ -2304,7 +2290,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 ...applicant.customAnswers.entries.map((entry) {
                                   final fieldId = entry.key;
                                   final answer = entry.value;
@@ -2347,7 +2333,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: AppSpacing.s6),
                                       if (isFile &&
                                           answer.toString().isNotEmpty)
                                         InkWell(
@@ -2373,10 +2359,8 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                             .externalApplication,
                                                   );
                                                 }
-                                              } catch (e) {
-                                                debugPrint(
-                                                  'Could not launch $uri: $e',
-                                                );
+                                              } catch (_) {
+                                                // Silenced: non-critical launch error
                                               }
                                             }
                                           },
@@ -2390,7 +2374,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                     ).colorScheme.primary,
                                                 size: 16,
                                               ),
-                                              const SizedBox(width: 8),
+                                              const SizedBox(width: AppSpacing.sm),
                                               Expanded(
                                                 child: Text(
                                                   'Buka Dokumen',
@@ -2427,7 +2411,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                      const SizedBox(height: 16),
+                                      const SizedBox(height: AppSpacing.lg),
                                       if (entry.key !=
                                           applicant
                                               .customAnswers
@@ -2439,7 +2423,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                           ).colorScheme.outline.withAlpha(30),
                                           height: 1,
                                         ),
-                                        const SizedBox(height: 16),
+                                        const SizedBox(height: AppSpacing.lg),
                                       ],
                                     ],
                                   );
@@ -2464,9 +2448,14 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                   left: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.xl,
+                      AppSpacing.lg,
+                      AppSpacing.xl,
+                      AppSpacing.xxl,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.appColors.surface,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withAlpha(10),
@@ -2475,7 +2464,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                         ),
                       ],
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(32),
+                        top: Radius.circular(AppRadius.xxl),
                       ),
                     ),
                     child: Row(
@@ -2496,13 +2485,13 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: onAccept,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.success,
-                              foregroundColor: Colors.white,
+                              foregroundColor: context.appColors.onPrimary,
                               elevation: 0,
                             ),
                             child: const Text(
@@ -2606,7 +2595,7 @@ class RecruitmentInfoCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: AppTextStyles.bodyMd.copyWith(

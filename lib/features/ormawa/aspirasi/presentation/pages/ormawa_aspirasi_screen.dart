@@ -1,10 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -85,7 +86,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSummaryGrid(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     OrmawaListHeader(
                       title: 'REKAPITULASI ASPIRASI',
                       searchHint: 'Cari topik aspirasi...',
@@ -94,7 +95,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                           () => context.read<OrmawaProvider>().refreshData(),
                       onFilterTap: () => _showSortFilterSheet(),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildAspirasiList(),
                   ],
                 ),
@@ -120,7 +121,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
         return Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
@@ -178,7 +179,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
             ),
             child: Icon(icon, color: color, size: 24),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
             style: AppTextStyles.headlineMd.copyWith(
@@ -187,7 +188,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
               color: AppColors.neutral900,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -235,7 +236,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     size: 48,
                     color: Colors.grey.withAlpha(50),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Tidak ada aspirasi ditemukan',
                     style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
@@ -250,7 +251,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: filteredList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
             final item = filteredList[index];
             Color statusColor = AppColors.info;
@@ -275,7 +276,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           border: Border.all(color: AppColors.neutral200),
           boxShadow: [
@@ -312,7 +313,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
@@ -343,7 +344,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               item.judul,
               style: AppTextStyles.bodyMd.copyWith(
@@ -352,7 +353,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                 color: AppColors.neutral900,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               item.isi,
               style: AppTextStyles.bodyMd.copyWith(
@@ -362,7 +363,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.s20),
             Row(
               children: [
                 Container(
@@ -393,7 +394,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                           )
                           : null,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,7 +450,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                   decoration: const BoxDecoration(
                     color: AppColors.neutral100,
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
+                      top: Radius.circular(AppRadius.xxl),
                     ),
                   ),
                   child: Column(
@@ -457,7 +458,12 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     children: [
                       // HEADER
                       Container(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSpacing.xl,
+                          AppSpacing.lg,
+                          AppSpacing.xl,
+                          AppSpacing.xl,
+                        ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors:
@@ -466,7 +472,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(32),
+                            top: Radius.circular(AppRadius.xxl),
                           ),
                         ),
                         child: Column(
@@ -476,7 +482,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                               child: Container(
                                 width: 40,
                                 height: 4,
-                                margin: const EdgeInsets.only(bottom: 24),
+                                margin: const EdgeInsets.only(bottom: AppSpacing.xl),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: AppRadius.radiusXs,
@@ -497,13 +503,13 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                       ),
                                     ),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.admin_panel_settings_rounded,
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     size: 28,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
+                                const SizedBox(width: AppSpacing.lg),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -521,7 +527,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                   fontSize: 10,
                                                 ),
                                           ),
-                                          const SizedBox(width: 8),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Container(
                                             width: 4,
                                             height: 4,
@@ -531,13 +537,13 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                               shape: BoxShape.circle,
                                             ),
                                           ),
-                                          const SizedBox(width: 8),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Text(
                                             '#ASP-${item.id.padLeft(4, '0')}',
                                             style: AppTextStyles.labelSm
                                                 .copyWith(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.7),
+                                                   color: context.appColors.onPrimary
+                                                       .withValues(alpha: 0.7),
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily: 'monospace',
                                                   fontSize: 10,
@@ -545,11 +551,11 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: AppSpacing.xs),
                                       Text(
                                         item.judul,
                                         style: AppTextStyles.titleLg.copyWith(
-                                          color: Colors.white,
+                                                  color: context.appColors.onPrimary,
                                           fontWeight: FontWeight.w900,
                                           fontSize: 20,
                                         ),
@@ -561,18 +567,18 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: AppSpacing.s20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.person_rounded,
-                                      color: Colors.white70,
+                                      color: context.appColors.onPrimary.withValues(alpha: 0.7),
                                       size: 14,
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: AppSpacing.s6),
                                     Text(
                                       'Oleh: ',
                                       style: AppTextStyles.labelSm.copyWith(
@@ -583,7 +589,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     Text(
                                       item.mahasiswaName,
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Colors.white,
+                                        color: context.appColors.onPrimary,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 11,
                                       ),
@@ -618,7 +624,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                           shape: BoxShape.circle,
                                         ),
                                       ),
-                                      const SizedBox(width: 6),
+                                      const SizedBox(width: AppSpacing.s6),
                                       Text(
                                         item.status.toUpperCase(),
                                         style: AppTextStyles.labelSm.copyWith(
@@ -648,22 +654,22 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                               Container(
                                 padding: const EdgeInsets.all(AppSpacing.xl),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: AppRadius.radiusXl,
-                                  border: Border.all(
-                                    color: AppColors.neutral200,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.02,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
+                                color: context.appColors.surface,
+                                borderRadius: AppRadius.radiusXl,
+                                border: Border.all(
+                                  color: AppColors.neutral200,
                                 ),
-                                child: Row(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(
+                                      alpha: 0.02,
+                                    ),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
                                   children: [
                                     Container(
                                       width: 64,
@@ -700,7 +706,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                               )
                                               : null,
                                     ),
-                                    const SizedBox(width: 16),
+                                    const SizedBox(width: AppSpacing.lg),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -729,7 +735,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                       vertical: 2,
                                                     ),
                                                 decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  color: context.appColors.surface,
                                                   border: Border.all(
                                                     color: AppColors.neutral200,
                                                   ),
@@ -751,7 +757,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: AppSpacing.sm),
                                           Text(
                                             item.mahasiswaName,
                                             style: AppTextStyles.bodyMd
@@ -761,7 +767,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                   color: AppColors.neutral900,
                                                 ),
                                           ),
-                                          const SizedBox(height: 4),
+                                          const SizedBox(height: AppSpacing.xs),
                                           if (item.mahasiswaNim.isNotEmpty)
                                             Row(
                                               children: [
@@ -777,10 +783,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                       color:
                                                           AppColors.neutral200,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          4,
-                                                        ),
+                                                    borderRadius: AppRadius.radiusXs,
                                                   ),
                                                   child: Text(
                                                     item.mahasiswaNim,
@@ -805,7 +808,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
 
                               // SUBSTANSI ASPIRASI
                               Row(
@@ -816,7 +819,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                   ),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: AppSpacing.sm),
                                   Text(
                                     'SUBSTANSI ASPIRASI',
                                     style: AppTextStyles.labelSm.copyWith(
@@ -828,12 +831,12 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(AppSpacing.xl),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: context.appColors.surface,
                                   borderRadius: AppRadius.radiusXl,
                                   border: Border.all(
                                     color: AppColors.neutral200,
@@ -874,7 +877,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: AppSpacing.xxl),
 
                               // PANEL RESOLUSI
                               Row(
@@ -892,7 +895,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                       size: 20,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: AppSpacing.md),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -917,7 +920,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: AppSpacing.s20),
                               // Tanggapan section - only show if user has permission
                               if (canRespond) ...[
                                 Text(
@@ -929,14 +932,14 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     letterSpacing: 1.5,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSpacing.xl,
                                     vertical: AppSpacing.sm,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: context.appColors.surface,
                                     borderRadius: AppRadius.radiusXl,
                                     border: Border.all(
                                       color: AppColors.neutral200,
@@ -968,7 +971,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 32),
+                                const SizedBox(height: AppSpacing.xxl),
                               ],
                             ],
                           ),
@@ -1041,7 +1044,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 16),
+                                      const SizedBox(width: AppSpacing.lg),
                                       Expanded(
                                         flex: 2,
                                         child: SizedBox(
@@ -1084,17 +1087,17 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                const Icon(
+                                                Icon(
                                                   Icons.send_rounded,
-                                                  color: Colors.white,
+                                                  color: context.appColors.onPrimary,
                                                   size: 18,
                                                 ),
-                                                const SizedBox(width: 8),
+                                                const SizedBox(width: AppSpacing.sm),
                                                 Text(
                                                   'KIRIM TANGGAPAN',
                                                   style: AppTextStyles.labelSm
                                                       .copyWith(
-                                                        color: Colors.white,
+                                        color: context.appColors.onPrimary,
                                                         fontWeight:
                                                             FontWeight.w900,
                                                         letterSpacing: 1.5,
@@ -1121,9 +1124,9 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -1140,14 +1143,14 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Urutkan & Filter',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Urutkan',
                   style: AppTextStyles.labelSm.copyWith(
@@ -1155,7 +1158,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -1194,7 +1197,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1203,7 +1206,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                         );
                       }).toList(),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Filter Status',
                   style: AppTextStyles.labelSm.copyWith(
@@ -1211,7 +1214,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -1242,7 +1245,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1253,7 +1256,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                 ),
                 if (_filterStatus != 'Semua' || _sortOrder != 'terbaru')
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
                     child: TextButton(
                       onPressed: () {
                         setState(() {
@@ -1270,7 +1273,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),

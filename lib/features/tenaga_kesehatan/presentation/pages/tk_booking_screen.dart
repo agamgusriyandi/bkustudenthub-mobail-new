@@ -2,12 +2,13 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'dart:async';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_booking_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
@@ -18,6 +19,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkBookingScreen extends StatefulWidget {
   const TkBookingScreen({super.key});
@@ -92,7 +94,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
       body: Column(
         children: [
           Container(
-            color: Colors.white,
+            color: context.appColors.surface,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -106,7 +108,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                   final activeBorder = tab['activeBorder'] as Color;
 
                   return Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: GestureDetector(
                       onTap: () => setState(() => _selectedTabIndex = index),
                       child: AnimatedContainer(
@@ -131,7 +133,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                               size: 16,
                               color: isSelected ? activeFg : AppColors.neutral500,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               tab['label'] as String,
                               style: TextStyle(
@@ -161,7 +163,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFEF3C7),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: const Color(0xFFFCD34D), width: 1),
                   boxShadow: [
                     BoxShadow(
@@ -174,10 +176,10 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: AppSpacing.padding10,
                       decoration: BoxDecoration(
                         color: const Color(0xFFFDE68A),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.radiusMd,
                       ),
                       child: const Icon(
                         Icons.pending_actions_rounded,
@@ -185,7 +187,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +234,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
         ],
       ),
       floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 80),
+        margin: const EdgeInsets.only(bottom: AppSpacing.s80),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -244,17 +246,17 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
         ),
         child: FloatingActionButton.extended(
           onPressed: _showManualBookingSheet,
-          backgroundColor: const Color(0xFF16A34A),
+          backgroundColor: context.appColors.success,
           elevation: 0,
           highlightElevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: AppRadius.radiusXl,
           ),
-          icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
-          label: const Text(
+          icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary, size: 20),
+          label: Text(
             'Registrasi Manual',
             style: TextStyle(
-              color: Colors.white,
+              color: context.appColors.onPrimary,
               fontWeight: FontWeight.w800,
               fontSize: 13,
               letterSpacing: 0.2,
@@ -336,7 +338,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
               size: 72,
               color: AppColors.neutral300,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Tidak ada booking',
               style: AppTextStyles.titleMd.copyWith(
@@ -344,7 +346,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Booking akan muncul di sini',
               style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral400),
@@ -358,7 +360,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
       color: Theme.of(context).colorScheme.primary,
       onRefresh: () => context.read<TkBookingProvider>().loadBookings(),
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          AppSpacing.lg,
+          100,
+        ),
         itemCount: bookings.length,
         itemBuilder: (context, index) {
           final booking = bookings[index];
@@ -376,7 +383,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 context.push('/tk/patient/$mahasiswaId');
               }
             },
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: const EdgeInsets.only(bottom: AppSpacing.md),
             padding: EdgeInsets.zero,
             child: Column(
               children: [
@@ -389,7 +396,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                         _getBookingField(booking, 'name'),
                         _getBookingField(booking, 'foto_url'),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,14 +408,14 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                                 color: AppColors.neutral800,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: AppSpacing.s2),
                             Text(
                               _getBookingField(booking, 'nim'),
                               style: AppTextStyles.labelSm.copyWith(
                                 color: AppColors.neutral600,
                               ),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: AppSpacing.s6),
                             Wrap(
                               spacing: 8,
                               runSpacing: 4,
@@ -425,7 +432,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             ),
                             if (_getBookingField(booking, 'tipe_layanan') !=
                                 '-') ...[
-                              const SizedBox(height: 6),
+                              const SizedBox(height: AppSpacing.s6),
                               _buildInfoChip(
                                 Icons.medical_services_rounded,
                                 _getBookingField(booking, 'tipe_layanan'),
@@ -442,7 +449,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 if (keluhan.isNotEmpty && keluhan != '-')
                   Container(
                     width: double.infinity,
-                    margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    margin: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      0,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                    ),
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppColors.neutral50,
@@ -458,7 +470,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             color: AppColors.neutral500,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           keluhan,
                           style: AppTextStyles.bodySm.copyWith(
@@ -473,7 +485,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
 
                 if (isPending)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.xs,
+                      AppSpacing.lg,
+                      AppSpacing.s14,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -482,12 +499,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                           child: OutlinedButton.icon(
                             onPressed: () => _handleReject(bookingId),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFFDC2626),
+                              foregroundColor: context.appColors.error,
                               side: const BorderSide(color: Color(0xFFFCA5A5)),
                               backgroundColor: const Color(0xFFFEF2F2),
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: AppRadius.br10,
                               ),
                             ),
                             icon: const Icon(Icons.close_rounded, size: 16),
@@ -497,18 +514,18 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpacing.s10),
                         SizedBox(
                           height: 34,
                           child: ElevatedButton.icon(
                             onPressed: () => _handleAccept(bookingId),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF16A34A),
-                              foregroundColor: Colors.white,
+                              backgroundColor: context.appColors.success,
+                              foregroundColor: context.appColors.onPrimary,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: AppRadius.br10,
                               ),
                             ),
                             icon: const Icon(Icons.check_rounded, size: 16),
@@ -524,7 +541,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
 
                 if (!isPending && !isRejected && !isCompleted && bookingId != 0)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.xs,
+                      AppSpacing.lg,
+                      AppSpacing.s14,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -539,7 +561,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                                 backgroundColor: const Color(0xFFEFF6FF),
                                 padding: const EdgeInsets.symmetric(horizontal: 14),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: AppRadius.br10,
                                 ),
                               ),
                               icon: const Icon(Icons.medical_services_rounded, size: 16),
@@ -549,18 +571,18 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                               ),
                             ),
                           ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: AppSpacing.s10),
                         SizedBox(
                           height: 34,
                           child: ElevatedButton.icon(
                             onPressed: () => _handleComplete(bookingId),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF16A34A),
-                              foregroundColor: Colors.white,
+                              backgroundColor: context.appColors.success,
+                              foregroundColor: context.appColors.onPrimary,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: AppRadius.br10,
                               ),
                             ),
                             icon: const Icon(Icons.check_circle_rounded, size: 16),
@@ -576,7 +598,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
 
                 if ((isCompleted || isRejected) && mahasiswaId != 0)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.xs,
+                      AppSpacing.lg,
+                      AppSpacing.s14,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -590,7 +617,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                               backgroundColor: const Color(0xFFF8FAFC),
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: AppRadius.br10,
                               ),
                             ),
                             icon: const Icon(Icons.person_rounded, size: 16),
@@ -623,27 +650,28 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
     final hasImage = fotoUrl != null && fotoUrl.isNotEmpty && fotoUrl != '-';
 
     return Container(
-      padding: const EdgeInsets.all(2),
+      padding: AppSpacing.padding2,
       decoration: BoxDecoration(
         color: AppColors.neutral600.withAlpha(25),
         shape: BoxShape.circle,
       ),
       child: Container(
-        padding: const EdgeInsets.all(2),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        padding: AppSpacing.padding2,
+        decoration: BoxDecoration(
+          color: context.appColors.surface,
           shape: BoxShape.circle,
         ),
         child: ClipOval(
           child:
               hasImage
-                  ? Image.network(
+                  ? CachedNetworkImage(imageUrl: 
                     ApiGate.getImageUrl(fotoUrl),
                     width: 44,
                     height: 44,
                     fit: BoxFit.cover,
-                    errorBuilder:
-                        (_, __, ___) => _buildInitialsAvatarSmall(avatarText),
+                    errorWidget:
+                        (_, url, error) => _buildInitialsAvatarSmall(avatarText),
+                    placeholder: (context, url) => Container(color: AppColors.neutral200),
                   )
                   : _buildInitialsAvatarSmall(avatarText),
         ),
@@ -675,7 +703,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 12, color: AppColors.neutral500),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Text(
             text,
@@ -732,14 +760,14 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
       ),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.radiusSm,
         border: Border.all(color: borderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: textColor),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             status,
             style: TextStyle(
@@ -776,9 +804,9 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -796,7 +824,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Text(
                     'Tolak Booking',
                     style: AppTextStyles.titleMd.copyWith(
@@ -804,14 +832,14 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Berikan alasan penolakan (opsional)',
                     style: AppTextStyles.bodySm.copyWith(
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   TextField(
                     controller: alasanController,
                     maxLines: 3,
@@ -827,7 +855,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   Row(
                     children: [
                       Expanded(
@@ -836,7 +864,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                           text: 'Batal',
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: BkuButton(
                           onPressed: () => Navigator.pop(context, true),
@@ -907,21 +935,21 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        left: AppSpacing.s20,
+        right: AppSpacing.s20,
+        top: AppSpacing.s20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.xl,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Pendaftaran Pasien Manual (Walk-in)',
             style: AppTextStyles.titleMd.copyWith(
@@ -930,7 +958,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           if (_selectedPatient == null) ...[
             TextField(
               controller: _searchController,
@@ -982,7 +1010,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                 });
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 200),
               child: Builder(
@@ -1013,9 +1041,9 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                       final patient = displayList[index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: AppRadius.radiusXl,
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
+                      borderRadius: AppRadius.radiusXl,
                           border: Border.all(
                             color: AppColors.neutral200.withAlpha(150),
                           ),
@@ -1051,12 +1079,12 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                     child:
                                         patient.fotoURL != null &&
                                                 patient.fotoURL!.isNotEmpty
-                                            ? Image.network(
+                                            ? CachedNetworkImage(imageUrl: 
                                               ApiGate.getImageUrl(
                                                 patient.fotoURL!,
                                               ),
                                               fit: BoxFit.cover,
-                                              errorBuilder: (
+                                              errorWidget: (
                                                 context,
                                                 error,
                                                 stackTrace,
@@ -1073,6 +1101,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                                   ),
                                                 );
                                               },
+                                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                                             )
                                             : Center(
                                               child: Text(
@@ -1099,7 +1128,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: AppSpacing.xs),
                                         Text(
                                           'NIM: ${patient.nim}',
                                           style: const TextStyle(
@@ -1153,10 +1182,10 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                     child:
                         _selectedPatient!.fotoURL != null &&
                                 _selectedPatient!.fotoURL!.isNotEmpty
-                            ? Image.network(
+                            ? CachedNetworkImage(imageUrl: 
                               ApiGate.getImageUrl(_selectedPatient!.fotoURL!),
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, url, error) {
                                 return Center(
                                   child: Text(
                                     _selectedPatient!.initials,
@@ -1167,6 +1196,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                   ),
                                 );
                               },
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             )
                             : Center(
                               child: Text(
@@ -1178,7 +1208,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                               ),
                             ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1197,7 +1227,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             const Icon(
                               Icons.check_circle_rounded,
                               size: 16,
@@ -1205,7 +1235,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.s2),
                         Text(
                           'NIM: ${_selectedPatient!.nim}',
                           style: const TextStyle(
@@ -1231,7 +1261,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             TextField(
               controller: _keluhanController,
               maxLines: 3,
@@ -1251,29 +1281,29 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
               child: ElevatedButton.icon(
                 onPressed: _isSubmitting ? null : _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A34A),
-                  foregroundColor: Colors.white,
+                  backgroundColor: context.appColors.success,
+                  foregroundColor: context.appColors.onPrimary,
                   elevation: 2,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppRadius.radiusLg,
                   ),
                 ),
                 icon: _isSubmitting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
                       )
-                    : const Icon(Icons.check_circle_rounded, color: Colors.white),
+                    : Icon(Icons.check_circle_rounded, color: context.appColors.onPrimary),
                 label: Text(
                   _isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Pasien',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                   ),
                 ),
               ),

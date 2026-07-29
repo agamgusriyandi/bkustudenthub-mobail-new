@@ -1,5 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
@@ -17,6 +18,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/features/counseling/presentation/widgets/dashboard/availability_toggle.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkDashboardScreen extends StatefulWidget {
   const TkDashboardScreen({super.key});
@@ -67,16 +69,15 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       (context, variant) => context.push('/notifications/tk'),
                   profileImage:
                       imageUrl.isNotEmpty
-                          ? Image.network(
+                          ? CachedNetworkImage(imageUrl: 
                             ApiGate.getImageUrl(imageUrl),
                             fit: BoxFit.cover,
-                            loadingBuilder:
-                                (_, child, progress) =>
-                                    progress == null
-                                        ? child
-                                        : _buildInitialsAvatar(initials),
-                            errorBuilder:
-                                (_, __, ___) => _buildInitialsAvatar(initials),
+                            progressIndicatorBuilder:
+                                (_, url, progress) =>
+                                    _buildInitialsAvatar(initials),
+                            errorWidget:
+                                (_, url, error) => _buildInitialsAvatar(initials),
+                            placeholder: (context, url) => Container(color: AppColors.neutral200),
                           )
                           : _buildInitialsAvatar(initials),
                   bottomChild: _buildHeaderQuickChips(provider),
@@ -101,13 +102,13 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                             color: AppColors.neutral800,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         _buildServiceGrid(context),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
 
                         // ── HERO CARD (Ringkasan Hari Ini) ──
                         _buildHeroCard(provider),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
 
                         // ── JADWAL MENDATANG ──
                         _buildSectionRow(
@@ -126,17 +127,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                             }
                           },
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         _buildBookingHorizontalScroll(provider),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
 
                         // ── MAHASISWA PERLU PERHATIAN ──
                         if (provider.isLoading ||
                             provider.alerts.isNotEmpty) ...[
                           _buildSectionRow('Perlu Perhatian', null),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           _buildAlertList(provider),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                         ],
 
                         // ── GRAFIK ANALITIK ──
@@ -152,21 +153,21 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                               color: AppColors.neutral800,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           if (provider.isLoading) ...[
                             const BkuShimmer(
                               width: double.infinity,
                               height: 200,
                               borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(AppRadius.radius20),
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: AppSpacing.md),
                             const BkuShimmer(
                               width: double.infinity,
                               height: 200,
                               borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(AppRadius.radius20),
                               ),
                             ),
                           ] else ...[
@@ -176,7 +177,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                                 icon: Icons.pie_chart_rounded,
                                 child: _buildPieChartKondisi(provider),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                             ],
                             if (provider.chartFakultas.isNotEmpty) ...[
                               _buildChartCard(
@@ -184,7 +185,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                                 icon: Icons.bar_chart_rounded,
                                 child: _buildBarChartFakultas(provider),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                             ],
                             if (provider.chartTren.isNotEmpty) ...[
                               _buildChartCard(
@@ -192,12 +193,12 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                                 icon: Icons.show_chart_rounded,
                                 child: _buildLineChartTren(provider),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                             ],
                           ],
                         ],
 
-                        const SizedBox(height: 100),
+                        const SizedBox(height: AppSpacing.s100),
                       ],
                     ),
                   ),
@@ -218,7 +219,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       return const BkuShimmer(
         width: double.infinity,
         height: 180,
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+        borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
       );
     }
 
@@ -250,7 +251,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                         letterSpacing: 1.2,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       'Booking Hari Ini & Mendatang',
                       style: AppTextStyles.labelMd.copyWith(
@@ -259,17 +260,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                         fontSize: 14,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${provider.bookingHariIniCount}',
                       style: AppTextStyles.titleLg.copyWith(
-                        color: const Color(0xFF1E293B),
+                        color: context.appColors.secondary,
                         fontSize: 44,
                         fontWeight: FontWeight.w900,
                         height: 1,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
                       'sesi booking hari ini',
                       style: AppTextStyles.labelSm.copyWith(
@@ -301,7 +302,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +311,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 Icons.check_circle_outline_rounded,
                 '${provider.totalDiperiksaHariIni}',
                 'Selesai\nHari Ini',
-                AppColors.success,
+                context.appColors.success,
               ),
               _buildSummaryItem(
                 Icons.pending_actions_rounded,
@@ -354,7 +355,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             ),
             child: Icon(icon, color: iconColor, size: 24),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: AppTextStyles.titleMd.copyWith(
@@ -363,7 +364,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -398,7 +399,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         icon: Icons.assignment_turned_in_rounded,
         label: 'Booking',
         bg: const Color(0xFFE6FAF0),
-        iconColor: AppColors.success,
+        iconColor: context.appColors.success,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
           s != null ? s.setSelectedIndex(2) : context.go('/tenagakes?tab=2');
@@ -418,7 +419,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         icon: Icons.send_rounded,
         label: 'Rujukan',
         bg: const Color(0xFFFFF4E6),
-        iconColor: AppColors.warning,
+        iconColor: context.appColors.warning,
         onTap: () => context.push(AppRoutes.tkReferralManagement),
       ),
       _ServiceItem(
@@ -432,14 +433,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         icon: Icons.shield_rounded,
         label: 'Asuransi',
         bg: const Color(0xFFE6FAF0),
-        iconColor: AppColors.success,
+        iconColor: context.appColors.success,
         onTap: () => context.push('/tk/insurance-claims'),
       ),
       _ServiceItem(
         icon: Icons.article_rounded,
         label: 'BAP',
         bg: const Color(0xFFFFF4E6),
-        iconColor: AppColors.warning,
+        iconColor: context.appColors.warning,
         onTap: () => context.push('/tk/bap'),
       ),
       _ServiceItem(
@@ -495,7 +496,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             ),
             child: Icon(s.icon, color: s.iconColor, size: 22),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             s.label,
             textAlign: TextAlign.center,
@@ -520,14 +521,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         height: 195,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(right: 4),
+          padding: const EdgeInsets.only(right: AppSpacing.xs),
           itemCount: 3,
-          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
           itemBuilder:
               (context, index) => const BkuShimmer(
                 width: 195,
                 height: 195,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
               ),
         ),
       );
@@ -537,7 +538,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       return Container(
         height: 120,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           border: Border.all(color: AppColors.neutral200.withAlpha(150)),
           boxShadow: [
@@ -557,7 +558,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 size: 36,
                 color: AppColors.neutral300,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'Tidak ada jadwal hari ini',
                 style: TextStyle(color: AppColors.neutral400, fontSize: 13),
@@ -572,9 +573,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       height: 195,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(right: 4),
+        padding: const EdgeInsets.only(right: AppSpacing.xs),
         itemCount: provider.bookings.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
         itemBuilder:
             (context, index) => _buildBookingCard(provider.bookings[index]),
       ),
@@ -609,10 +610,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     Color statusColor;
     Color statusBg;
     if (status == 'Dikonfirmasi') {
-      statusColor = AppColors.success;
+      statusColor = context.appColors.success;
       statusBg = const Color(0xFFD1FAE5);
     } else if (status == 'Menunggu Konfirmasi') {
-      statusColor = AppColors.warning;
+      statusColor = context.appColors.warning;
       statusBg = const Color(0xFFFEF3C7);
     } else {
       statusColor = AppColors.neutral500;
@@ -629,7 +630,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         }
       },
       width: 170,
-      margin: const EdgeInsets.only(right: 12),
+      margin: const EdgeInsets.only(right: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -674,7 +675,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.s10),
           // Name
           Text(
             name,
@@ -686,17 +687,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             nim,
             style: const TextStyle(fontSize: 11, color: AppColors.neutral500),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           // Time row
           Row(
             children: [
               const Icon(Icons.access_time_rounded, size: 12, color: AppColors.neutral800),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 time,
                 style: const TextStyle(
@@ -707,7 +708,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           // Tipe layanan
           Row(
             children: [
@@ -716,7 +717,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 size: 12,
                 color: AppColors.neutral500,
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   tipeLayanan,
@@ -734,7 +735,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           SizedBox(
             width: double.infinity,
             child: Material(
-              color: isConfirmed ? const Color(0xFF16A34A) : const Color(0xFFF1F5F9),
+              color: isConfirmed ? context.appColors.success : const Color(0xFFF1F5F9),
               borderRadius: AppRadius.radiusMd,
               child: InkWell(
                 borderRadius: AppRadius.radiusMd,
@@ -754,10 +755,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: isConfirmed ? Colors.white : AppColors.neutral800,
+                          color: isConfirmed ? context.appColors.onPrimary : AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 12,
@@ -805,7 +806,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.only(bottom: AppSpacing.s10),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: const Color(0xFFFFF1F2),
@@ -827,13 +828,13 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 color: const Color(0xFFFEE2E2),
                 borderRadius: AppRadius.radiusMd,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.warning_amber_rounded,
-                color: AppColors.error,
+                color: context.appColors.error,
                 size: 20,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -846,7 +847,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       color: AppColors.neutral800,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     'NIM: $nim',
                     style: const TextStyle(
@@ -854,20 +855,20 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     event,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.error,
+              color: context.appColors.error,
               size: 22,
             ),
           ],
@@ -885,7 +886,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     required Widget child,
   }) {
     return BkuCard(
-      padding: const EdgeInsets.all(18),
+      padding: AppSpacing.padding18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -903,7 +904,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   size: 18,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               Text(
                 title,
                 style: const TextStyle(
@@ -914,7 +915,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           child,
         ],
       ),
@@ -968,7 +969,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpacing.s14),
         Wrap(
           spacing: 14,
           runSpacing: 8,
@@ -986,7 +987,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: AppSpacing.s6),
                 Text(
                   '${item['name']} (${item['value']})',
                   style: const TextStyle(
@@ -1049,7 +1050,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                             .join()
                             .toUpperCase();
                     return Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: AppSpacing.sm),
                       child: Text(
                         abbr.length > 4 ? abbr.substring(0, 4) : abbr,
                         style: const TextStyle(
@@ -1128,7 +1129,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   gradient: barGradients[i % barGradients.length],
                   width: 20,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(6),
+                    top: Radius.circular(AppRadius.radius6),
                   ),
                 ),
               ],
@@ -1176,7 +1177,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                     final dateStr =
                         provider.chartTren[i]['name']?.toString() ?? '';
                     return Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: AppSpacing.sm),
                       child: Text(
                         dateStr,
                         style: const TextStyle(
@@ -1252,10 +1253,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     return Container(
       color: primary,
       child: Center(
-        child: Text(
+          child: Text(
           initials,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.appColors.onPrimary,
             fontSize: 28,
             fontWeight: FontWeight.w900,
             letterSpacing: 1,
@@ -1278,14 +1279,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 icon: Icons.check_circle_rounded,
                 label: '${provider.totalDiperiksaHariIni} Selesai',
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               _buildGlassChip(
                 icon: Icons.hourglass_top_rounded,
                 label: '${provider.belumScreening} Menunggu',
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -1294,7 +1295,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 icon: Icons.calendar_month_rounded,
                 label: '${provider.bookingHariIniCount} Booking',
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.s10),
               _buildGlassChip(
                 icon: Icons.notifications_active_rounded,
                 label: '${provider.perluPerhatian} Perhatian',
@@ -1314,7 +1315,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(35),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.br20,
         border: Border.all(color: Colors.white.withAlpha(60), width: 1),
         boxShadow: [
           BoxShadow(
@@ -1327,14 +1328,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: Colors.white),
-          const SizedBox(width: 6),
+          Icon(icon, size: 13, color: context.appColors.onPrimary),
+          const SizedBox(width: AppSpacing.s6),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: context.appColors.onPrimary,
               letterSpacing: 0.2,
             ),
           ),

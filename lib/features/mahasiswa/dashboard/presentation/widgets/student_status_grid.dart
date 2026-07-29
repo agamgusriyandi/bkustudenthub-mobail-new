@@ -1,6 +1,9 @@
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 
@@ -32,7 +35,7 @@ class StudentStatusGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     IconData healthIcon = Icons.favorite_rounded;
-    Color healthColor = Colors.redAccent;
+    Color healthColor = context.appColors.error;
     String healthStatus = 'Normal';
     String healthSub = 'Ketuk untuk skrining';
 
@@ -78,14 +81,14 @@ class StudentStatusGrid extends StatelessWidget {
                 healthColor = AppColors.error;
               } else if (stres >= 5 || record.bmiStatus == 'Overweight') {
                 healthStatus = 'Waspada';
-                healthSub = 'Stres: $stres/10 • Mood: $mood';
+                healthSub = 'Stres: $stres/10 â€¢ Mood: $mood';
                 healthIcon = Icons.monitor_heart_rounded;
                 healthColor = AppColors.warning;
               } else {
                 healthStatus = 'Sangat Fit';
-                healthSub = 'Tidur Cukup • Mood: $mood';
+                healthSub = 'Tidur Cukup â€¢ Mood: $mood';
                 healthIcon = Icons.spa_rounded;
-                healthColor = Colors.teal;
+                healthColor = AppColors.info;
               }
             }
           }
@@ -114,22 +117,22 @@ class StudentStatusGrid extends StatelessWidget {
               BkuShimmer(
                 width: MediaQuery.of(context).size.width,
                 height: 75,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(AppRadius.radius20)),
               ),
               BkuShimmer(
                 width: MediaQuery.of(context).size.width,
                 height: 75,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(AppRadius.radius20)),
               ),
               BkuShimmer(
                 width: MediaQuery.of(context).size.width,
                 height: 75,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(AppRadius.radius20)),
               ),
               BkuShimmer(
                 width: MediaQuery.of(context).size.width,
                 height: 75,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(AppRadius.radius20)),
               ),
             ] else ...[
               _StatusItem(
@@ -193,9 +196,9 @@ class _StatusItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br20,
+        border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(8),
@@ -212,7 +215,7 @@ class _StatusItem extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => target),
               ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.br20,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Row(
@@ -222,10 +225,10 @@ class _StatusItem extends StatelessWidget {
                   height: 38,
                   decoration: BoxDecoration(
                     color: color,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: AppRadius.br2,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +237,7 @@ class _StatusItem extends StatelessWidget {
                       Row(
                         children: [
                           Icon(icon, size: 13, color: color),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Expanded(
                             child: Text(
                               label,
@@ -249,18 +252,18 @@ class _StatusItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         value,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF1F2937),
+                          color: context.appColors.secondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 1),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         subValue,
                         style: TextStyle(

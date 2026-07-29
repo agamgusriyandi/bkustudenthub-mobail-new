@@ -1,5 +1,8 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class TkStatCard extends StatelessWidget {
   final String label;
@@ -24,9 +27,9 @@ class TkStatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(color: AppColors.neutral300, width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(4),
@@ -42,10 +45,10 @@ class TkStatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
                   color: color.withAlpha(25),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppRadius.br10,
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
@@ -57,7 +60,7 @@ class TkStatCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: color.withAlpha(20),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: AppRadius.br6,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -66,9 +69,9 @@ class TkStatCard extends StatelessWidget {
                         Container(
                           width: 6,
                           height: 6,
-                          margin: const EdgeInsets.only(right: 4),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDC2626),
+                          margin: const EdgeInsets.only(right: AppSpacing.xs),
+                          decoration: BoxDecoration(
+                            color: context.appColors.error,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -88,19 +91,19 @@ class TkStatCard extends StatelessWidget {
           const Spacer(),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1E293B),
+              color: context.appColors.secondary,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             label,
-            style: const TextStyle(
+              style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF64748B),
+              color: AppColors.neutral600,
             ),
           ),
         ],

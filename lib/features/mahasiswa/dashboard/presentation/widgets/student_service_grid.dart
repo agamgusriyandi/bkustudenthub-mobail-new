@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -56,7 +57,7 @@ class StudentServiceGrid extends StatelessWidget {
             _ServiceIcon(
               label: 'Konseling',
               icon: Icons.psychology_rounded,
-              color: Colors.purple,
+              color: context.appColors.tertiary,
               target: const CounselingScreen(),
             ),
             _ServiceIcon(
@@ -68,19 +69,19 @@ class StudentServiceGrid extends StatelessWidget {
             _ServiceIcon(
               label: 'Kesehatan',
               icon: Icons.monitor_heart_rounded,
-              color: Colors.teal,
+              color: context.appColors.info,
               target: const HealthScreen(),
             ),
             _ServiceIcon(
               label: 'Organisasi',
               icon: Icons.groups_rounded,
-              color: Colors.cyan,
+              color: context.appColors.info,
               target: const OrganisasiScreen(),
             ),
             _ServiceIcon(
               label: 'Profil',
               icon: Icons.person_rounded,
-              color: Colors.blueGrey,
+              color: AppColors.neutral600,
               target: const ProfileScreen(),
             ),
           ],
@@ -131,7 +132,7 @@ class _ServiceIcon extends StatelessWidget {
               ),
               child: Icon(icon, color: color, size: 22),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.s6),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(

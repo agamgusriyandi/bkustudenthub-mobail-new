@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class AddScheduleSlotScreen extends StatefulWidget {
   const AddScheduleSlotScreen({super.key});
@@ -46,7 +47,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: AppColors.primary,
-              onPrimary: Colors.white,
+              onPrimary: context.appColors.onPrimary,
               onSurface: AppColors.neutral800,
             ),
           ),
@@ -94,14 +95,14 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                   _buildFormSection('Informasi Dasar', [
                     _buildLabel('Pilih Hari'),
                     _buildDayDropdown(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildLabel('Lokasi / Ruangan'),
                     _buildRoomTextField(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildLabel('Kuota (maks mahasiswa per slot)'),
                     _buildKuotaSelector(),
                   ]),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildFormSection('Pengaturan Waktu', [
                     Row(
                       children: [
@@ -112,7 +113,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                             () => _selectTime(context, true),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.lg),
                         Expanded(
                           child: _buildTimePickerField(
                             'Selesai',
@@ -123,7 +124,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                       ],
                     ),
                   ]),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildFormSection('Opsi Lainnya', [
                     _buildOptionTile(
                       'Ulangi Setiap Minggu',
@@ -132,7 +133,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                       (val) => setState(() => isRecurring = val),
                     ),
                   ]),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -154,7 +155,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         BkuCard(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
@@ -168,7 +169,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
 
   Widget _buildLabel(String label) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
       child: Text(
         label,
         style: AppTextStyles.labelSm.copyWith(
@@ -214,6 +215,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
       controller: roomController,
       style: AppTextStyles.bodyLg,
       decoration: InputDecoration(
+        labelText: 'Cari jadwal',
         hintText: 'Misal: Ruang Konseling A',
         filled: true,
         fillColor: AppColors.neutral200,
@@ -249,7 +251,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                 fontSize: 10,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
                 Icon(
@@ -257,7 +259,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                   size: 16,
                   color: AppColors.primary,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   time,
                   style: AppTextStyles.bodyLg.copyWith(
@@ -322,22 +324,22 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
               color:
                   selectedKuota > 1
                       ? AppColors.primary.withAlpha(15)
-                      : Colors.grey.withAlpha(10),
+                       : AppColors.neutral200.withAlpha(10),
               borderRadius: AppRadius.radiusMd,
             ),
             child: Icon(
               Icons.remove_rounded,
-              color: selectedKuota > 1 ? AppColors.primary : Colors.grey,
+              color: selectedKuota > 1 ? AppColors.primary : AppColors.neutral500,
               size: 20,
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Text(
           '$selectedKuota mahasiswa',
           style: AppTextStyles.bodyLg.copyWith(fontWeight: FontWeight.w900),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         GestureDetector(
           onTap: () {
             if (selectedKuota < 10) setState(() => selectedKuota++);
@@ -352,7 +354,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
             child: Icon(Icons.add_rounded, color: AppColors.primary, size: 20),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Text(
             selectedKuota == 1
@@ -368,9 +370,9 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
   Widget _buildBottomAction() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -403,7 +405,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
               content: 'Jam selesai harus lebih dari jam mulai',
               cancelText: '',
               confirmText: 'Tutup',
-              confirmColor: const Color(0xFF16A34A),
+              confirmColor: AppColors.success,
               onCancel: () {},
               onConfirm: () => Navigator.pop(context),
             ),
@@ -446,7 +448,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
                   content: 'Slot dengan jam yang sama sudah ada di hari ini',
                   cancelText: '',
                   confirmText: 'Tutup',
-                  confirmColor: const Color(0xFF16A34A),
+                  confirmColor: AppColors.success,
                   onCancel: () {},
                   onConfirm: () => Navigator.pop(context),
                 ),
@@ -486,7 +488,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
               cancelText: '',
               confirmText: 'Tutup',
               isSuccess: success,
-              confirmColor: const Color(0xFF16A34A),
+              confirmColor: AppColors.success,
               onCancel: () {},
               onConfirm: () {
                 Navigator.pop(context);

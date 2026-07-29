@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_health_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
@@ -20,6 +21,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TkInsuranceClaimsScreen extends StatefulWidget {
   const TkInsuranceClaimsScreen({super.key});
@@ -94,9 +96,9 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(8),
@@ -110,9 +112,9 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         children: [
           Material(
             color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canPrev ? () => setState(() => _currentPage--) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -124,23 +126,23 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                     Icon(
                       Icons.chevron_left_rounded,
                       size: 18,
-                      color:
-                          canPrev
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFFCBD5E1),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Sebelumnya',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
                         color:
                             canPrev
-                                ? const Color(0xFF1E293B)
-                                : const Color(0xFFCBD5E1),
+                                ? context.appColors.secondary
+                                : AppColors.neutral300,
                       ),
-                    ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        'Sebelumnya',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              canPrev
+                                  ? context.appColors.secondary
+                                  : AppColors.neutral300,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -148,17 +150,17 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
           ),
           Text(
             'Halaman $_currentPage dari $totalPages',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E293B),
+              color: context.appColors.secondary,
             ),
           ),
           Material(
             color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadius.br10,
             child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.br10,
               onTap: canNext ? () => setState(() => _currentPage++) : null,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -178,7 +180,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                 : const Color(0xFFCBD5E1),
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
@@ -250,7 +252,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                     padding: const EdgeInsets.only(
                       left: AppSpacing.lg,
                       right: AppSpacing.lg,
-                      bottom: 80,
+                      bottom: AppSpacing.s80,
                     ),
                     itemCount: paginatedClaims.length,
                     itemBuilder: (context, index) {
@@ -277,7 +279,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
             size: 64,
             color: AppColors.neutral300,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada klaim asuransi',
             style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral400),
@@ -315,7 +317,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
 
     return BkuCard(
       onTap: () => _showReviewDialog(context, provider, claim),
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +356,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                         )
                         : null,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,9 +370,9 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.s2),
                     Text(
-                      '$nim • $prodi',
+                      '$nim â€¢ $prodi',
                       style: AppTextStyles.bodySm.copyWith(
                         color: AppColors.neutral600,
                       ),
@@ -380,11 +382,11 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _buildStatusBadge(claim.status),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           _buildCardInfoRow(
             Icons.local_hospital_rounded,
             'Provider: ${claim.jenisProvider}',
@@ -407,7 +409,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
           ),
           if (claim.catatanReview != null &&
               claim.catatanReview!.trim().isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -427,7 +429,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
           ],
           if (claim.namaFile != null && claim.namaFile!.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Row(
                 children: [
                   Icon(
@@ -435,7 +437,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                     size: 14,
                     color: context.watch<ThemeProvider>().colors.success,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.s6),
                   Expanded(
                     child: Text(
                       'Lampiran: ${claim.namaFile}',
@@ -462,7 +464,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(
               text,
@@ -587,9 +589,9 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       builder: (context) {
         return DraggableScrollableSheet(
@@ -600,7 +602,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
           builder: (context, scrollController) {
             return Column(
               children: [
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Center(
                   child: Container(
                     width: 40,
@@ -611,16 +613,16 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Detail Review Klaim',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: const Color(0xFF1E293B),
+                    color: context.appColors.secondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Expanded(
                   child: ListView(
                     controller: scrollController,
@@ -671,7 +673,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                       )
                                       : null,
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -680,42 +682,42 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                     nama,
                                     style: AppTextStyles.bodyMd.copyWith(
                                       fontWeight: FontWeight.w900,
-                                      color: const Color(0xFF1E293B),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    '$nim • $prodi',
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: const Color(0xFF334155),
+                          color: context.appColors.secondary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.s2),
+                      Text(
+                        '$nim â€¢ $prodi',
+                        style: AppTextStyles.caption.copyWith(
+                          color: context.appColors.secondaryContainer,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             _buildStatusBadge(claim.status),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.s20),
 
                       // Information Grid/List
                       Text(
                         'Rincian Pengajuan',
                         style: AppTextStyles.labelSm.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.appColors.surface,
                           borderRadius: AppRadius.radiusXl,
-                          border: Border.all(color: Colors.grey.withAlpha(30)),
+                          border: Border.all(color: AppColors.neutral300.withAlpha(30)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withAlpha(4),
@@ -731,19 +733,19 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                               'Provider',
                               claim.jenisProvider,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildModalDetailRow(
                               Icons.location_on_rounded,
                               'Lokasi Faskes',
                               claim.lokasiFaskes,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildModalDetailRow(
                               Icons.calendar_today_rounded,
                               'Tanggal Kejadian',
                               dateStr,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.lg),
                             _buildModalDetailRow(
                               Icons.payments_rounded,
                               'Estimasi Biaya',
@@ -752,22 +754,22 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.s20),
 
                       Text(
                         'Kronologi / Deskripsi',
                         style: AppTextStyles.labelSm.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.appColors.surface,
                           borderRadius: AppRadius.radiusXl,
-                          border: Border.all(color: Colors.grey.withAlpha(30)),
+                          border: Border.all(color: AppColors.neutral300.withAlpha(30)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withAlpha(4),
@@ -785,7 +787,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.s20),
 
                       // Direct image display
                       if (imageUrl != null) ...[
@@ -796,7 +798,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                             color: const Color(0xFF1E293B),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         GestureDetector(
                           onTap: () async {
                             final uri = Uri.parse(imageUrl!);
@@ -809,17 +811,16 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           },
                           child: ClipRRect(
                             borderRadius: AppRadius.radiusLg,
-                            child: Image.network(
+                            child: CachedNetworkImage(imageUrl: 
                               imageUrl,
                               height: 220,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              loadingBuilder: (
+                              progressIndicatorBuilder: (
                                 context,
-                                child,
+                                url,
                                 loadingProgress,
                               ) {
-                                if (loadingProgress == null) return child;
                                 return const SizedBox(
                                   height: 220,
                                   child: Center(
@@ -827,7 +828,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, url, error) {
                                 return Container(
                                   height: 100,
                                   color: AppColors.neutral100,
@@ -838,10 +839,11 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                       ],
 
                       if (imageUrl2 != null) ...[
@@ -852,7 +854,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                             color: const Color(0xFF1E293B),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         GestureDetector(
                           onTap: () async {
                             final uri = Uri.parse(imageUrl2!);
@@ -865,17 +867,16 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           },
                           child: ClipRRect(
                             borderRadius: AppRadius.radiusLg,
-                            child: Image.network(
+                            child: CachedNetworkImage(imageUrl: 
                               imageUrl2,
                               height: 220,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              loadingBuilder: (
+                              progressIndicatorBuilder: (
                                 context,
-                                child,
+                                url,
                                 loadingProgress,
                               ) {
-                                if (loadingProgress == null) return child;
                                 return const SizedBox(
                                   height: 220,
                                   child: Center(
@@ -883,7 +884,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, url, error) {
                                 return Container(
                                   height: 100,
                                   color: AppColors.neutral100,
@@ -894,10 +895,11 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
+                              placeholder: (context, url) => Container(color: AppColors.neutral200),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                       ],
 
                       if (claim.suratPengantarUrl != null &&
@@ -923,17 +925,17 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                             label: const Text('Buka Surat Pengantar (PDF/Doc)'),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                       ],
 
                       Text(
                         'Catatan Peninjauan',
                         style: AppTextStyles.labelSm.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF1E293B),
+                          color: context.appColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       TextField(
                         controller: noteController,
                         maxLines: 3,
@@ -955,7 +957,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       if (claim.status == 'PENDING_VERIFICATION') ...[
                         Row(
@@ -987,7 +989,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                 text: 'Tolak',
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: AppSpacing.lg),
                             Expanded(
                               child: BkuButton(
                                 variant: BkuButtonVariant.success,
@@ -1027,23 +1029,23 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 18, color: const Color(0xFF475569)),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
               style: AppTextStyles.caption.copyWith(
-                color: const Color(0xFF475569),
-                fontWeight: FontWeight.w600,
+                          color: AppColors.neutral600,
+                          fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.s2),
             Text(
               value,
               style: AppTextStyles.bodySm.copyWith(
                 fontWeight: FontWeight.w800,
-                color: const Color(0xFF1E293B),
+                color: context.appColors.secondary,
               ),
             ),
           ],

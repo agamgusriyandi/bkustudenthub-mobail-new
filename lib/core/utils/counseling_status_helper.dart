@@ -18,7 +18,7 @@ class CounselingStatusHelper {
     final warning = AppColors.warning;
     final success = AppColors.success;
     final error = AppColors.error;
-    final grey = Colors.grey;
+    final grey = AppColors.neutral500;
 
     switch (status.toLowerCase()) {
       case 'menunggu':
@@ -46,7 +46,7 @@ class CounselingStatusHelper {
     final warning = AppColors.warning;
     final success = AppColors.success;
     final error = AppColors.error;
-    final grey = Colors.grey;
+    final grey = AppColors.neutral500;
 
     switch (status.toLowerCase()) {
       case 'pending':

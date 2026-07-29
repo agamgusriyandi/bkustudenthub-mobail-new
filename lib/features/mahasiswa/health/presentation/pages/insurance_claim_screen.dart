@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/insurance_claim.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
@@ -35,7 +36,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
     final student = context.watch<StudentProvider>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
           await student.refreshHealthData();
@@ -62,7 +63,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     if (student.isLoading)
                       const BkuShimmerList(itemCount: 3, itemHeight: 120)
                     else ...[
@@ -74,7 +75,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           text: 'Ajukan Klaim Baru',
                         ),
                       ),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: AppSpacing.s28),
                       Row(
                         children: [
                           Container(
@@ -85,7 +86,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               borderRadius: AppRadius.radiusXs,
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: AppSpacing.s10),
                           Text(
                             'Riwayat Pengajuan Klaim',
                             style: AppTextStyles.titleLg.copyWith(
@@ -96,7 +97,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       if (student.insuranceClaims.isEmpty)
                         Container(
                           width: double.infinity,
@@ -115,7 +116,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                 size: 36,
                                 color: AppColors.neutral400,
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Text(
                                 'Belum ada riwayat pengajuan klaim',
                                 style: AppTextStyles.labelMd.copyWith(
@@ -132,7 +133,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               _buildInsuranceClaimCard(context, student, claim),
                         ),
                     ],
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -184,10 +185,10 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -231,7 +232,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           _buildCardInfoRow(Icons.calendar_today_rounded, 'Kejadian: $dateStr'),
           _buildCardInfoRow(
             Icons.location_on_rounded,
@@ -247,7 +248,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
           ),
           if (claim.catatanReview != null &&
               claim.catatanReview!.trim().isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
@@ -266,7 +267,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
           ],
           if (claim.namaFile != null && claim.namaFile!.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Row(
                 children: [
                   Icon(
@@ -274,7 +275,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                     size: 14,
                     color: context.watch<ThemeProvider>().colors.success,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.s6),
                   Expanded(
                     child: Text(
                       'Lampiran: ${claim.namaFile}',
@@ -289,9 +290,9 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                 ],
               ),
             ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Divider(height: 1, color: AppColors.neutral200),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -310,7 +311,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                       claim.status == 'APPROVED_FINAL') &&
                   claim.suratPengantarUrl != null &&
                   claim.suratPengantarUrl!.isNotEmpty) ...[
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.s10),
                 Expanded(
                   child: BkuButton(
                     onPressed: () async {
@@ -362,7 +363,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(
               text,
@@ -385,9 +386,9 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
   ) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (BuildContext sheetContext) {
         return SafeArea(
@@ -404,7 +405,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildOptionTile(
                   context,
                   icon: Icons.camera_alt_rounded,
@@ -427,7 +428,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _buildOptionTile(
                   context,
                   icon: Icons.photo_library_rounded,
@@ -450,7 +451,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _buildOptionTile(
                   context,
                   icon: Icons.folder_rounded,
@@ -511,7 +512,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
               ),
               child: Icon(icon, color: Theme.of(context).colorScheme.primary),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,7 +524,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     subtitle,
                     style: TextStyle(color: AppColors.neutral600, fontSize: 12),
@@ -603,15 +604,15 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
             builder:
                 (context, setModalState) => Container(
                   padding: EdgeInsets.only(
-                    top: 24,
-                    left: 24,
-                    right: 24,
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                    top: AppSpacing.xl,
+                    left: AppSpacing.xl,
+                    right: AppSpacing.xl,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.xl,
                   ),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: context.appColors.surface,
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
+                      top: Radius.circular(AppRadius.xxl),
                     ),
                   ),
                   child: SingleChildScrollView(
@@ -631,7 +632,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                           Text(
                             'Pengajuan Klaim Asuransi',
                             style: AppTextStyles.titleLg.copyWith(
@@ -639,7 +640,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: AppSpacing.xl),
                           Text(
                             'Provider Asuransi',
                             style: AppTextStyles.labelSm.copyWith(
@@ -647,7 +648,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           DropdownButtonFormField<String>(
                             initialValue: selectedProvider,
                             items: const [
@@ -679,7 +680,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Tanggal Kejadian',
                             style: AppTextStyles.labelSm.copyWith(
@@ -687,7 +688,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           GestureDetector(
                             onTap: () async {
                               final picked = await showDatePicker(
@@ -732,7 +733,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Fasilitas Kesehatan (Faskes)',
                             style: AppTextStyles.labelSm.copyWith(
@@ -740,7 +741,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           BkuTextField(
                             controller: faskesController,
                             validator:
@@ -760,7 +761,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Estimasi Total Biaya (Rp)',
                             style: AppTextStyles.labelSm.copyWith(
@@ -768,7 +769,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           BkuTextField(
                             controller: biayaController,
                             keyboardType: TextInputType.number,
@@ -800,7 +801,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Deskripsi & Kronologi Singkat',
                             style: AppTextStyles.labelSm.copyWith(
@@ -808,7 +809,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           BkuTextField(
                             controller: deskripsiController,
                             maxLines: 2,
@@ -828,7 +829,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Text(
                             'Unggah Kwitansi / Berkas',
                             style: AppTextStyles.labelSm.copyWith(
@@ -836,7 +837,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Row(
                             children: [
                               ElevatedButton.icon(
@@ -845,7 +846,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                     context: context,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
+                                        top: Radius.circular(AppRadius.radius20),
                                       ),
                                     ),
                                     builder: (BuildContext sheetContext) {
@@ -946,7 +947,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                 ),
                                 label: const Text('Pilih Berkas'),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Text(
                                   selectedFileName ??
@@ -969,7 +970,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: AppSpacing.xxl),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(

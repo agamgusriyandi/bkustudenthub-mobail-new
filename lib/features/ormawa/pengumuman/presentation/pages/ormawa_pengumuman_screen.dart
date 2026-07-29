@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -113,7 +114,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSummaryGrid(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     OrmawaListHeader(
                       title: 'REKAPITULASI SIARAN',
                       searchHint: 'Cari judul pengumuman...',
@@ -124,7 +125,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                       onChanged:
                           (value) => setState(() => _searchQuery = value),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildPengumumanList(),
                   ],
                 ),
@@ -138,11 +139,11 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
               ? FloatingActionButton.extended(
                 onPressed: () => _showAddPengumuman(context),
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                icon: const Icon(Icons.campaign_rounded, color: Colors.white),
-                label: const Text(
+                icon: Icon(Icons.campaign_rounded, color: context.appColors.onPrimary),
+                label: Text(
                   'Buat Pengumuman',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -182,7 +183,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
               'Total',
               total.toString(),
               Icons.record_voice_over_rounded,
-              Colors.cyan,
+              AppColors.info,
             ),
             _buildStatCard(
               'Aktif',
@@ -194,7 +195,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
               'Arsip',
               archived.toString(),
               Icons.archive_rounded,
-              Colors.grey,
+              AppColors.neutral500,
             ),
           ],
         );
@@ -211,7 +212,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -229,14 +230,14 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
                   color: color.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(icon, color: color, size: 16),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   label,
@@ -298,13 +299,13 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                 children: [
                   Icon(
                     Icons.campaign_outlined,
-                    size: 48,
-                    color: Colors.grey.withAlpha(50),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Tidak ada pengumuman ditemukan',
-                    style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
+                  size: 48,
+                  color: AppColors.neutral500.withAlpha(50),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  'Tidak ada pengumuman ditemukan',
+                  style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
                   ),
                 ],
               ),
@@ -317,7 +318,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: filteredList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
             final announcement = filteredList[index];
             return _buildPengumumanCard(announcement);
@@ -345,7 +346,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -419,7 +420,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             announcement.judul,
             style: AppTextStyles.bodyMd.copyWith(
@@ -427,7 +428,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
               fontSize: 16,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             announcement.isi,
             style: AppTextStyles.bodyMd.copyWith(
@@ -437,7 +438,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Icon(
@@ -445,13 +446,13 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     ? Icons.schedule_rounded
                     : Icons.access_time_rounded,
                 size: 14,
-                color: isScheduled ? Colors.amber[700] : AppColors.neutral500,
+                color: isScheduled ? AppColors.warning : AppColors.neutral500,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 isScheduled ? 'Dijadwalkan: $dateStr' : dateStr,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: isScheduled ? Colors.amber[800] : AppColors.neutral600,
+                  color: isScheduled ? AppColors.warning : AppColors.neutral600,
                   fontWeight: isScheduled ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -530,9 +531,9 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.85,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             clipBehavior: Clip.antiAlias,
             child: Column(
@@ -541,7 +542,12 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(gradient: categoryGradient),
-                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                    AppSpacing.xl,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -550,12 +556,12 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: context.appColors.onPrimary,
                             borderRadius: AppRadius.radiusXs,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: AppSpacing.s18),
                       Row(
                         children: [
                           Container(
@@ -564,23 +570,23 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: context.appColors.onPrimary,
                               borderRadius: AppRadius.radiusSm,
                             ),
                             child: Text(
                               label,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.w900,
                                 fontSize: 10,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           Text(
                             'SIARAN ANN-${announcement.id}',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.white.withValues(alpha: 0.6),
+                              color: context.appColors.onPrimary,
                               fontWeight: FontWeight.w900,
                               fontSize: 10,
                               letterSpacing: 1,
@@ -588,17 +594,17 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       Text(
                         announcement.judul,
                         style: AppTextStyles.titleLg.copyWith(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
                           height: 1.3,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.md),
                       Row(
                         children: [
                           Icon(
@@ -606,15 +612,15 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                 ? Icons.schedule_rounded
                                 : Icons.calendar_month_rounded,
                             size: 14,
-                            color: Colors.white.withValues(alpha: 0.8),
+                            color: context.appColors.onPrimary,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.s6),
                           Text(
                             displayDate != null
                                 ? '$dateLabel ${DateFormat('dd MMMM yyyy, HH:mm', 'id').format(displayDate)}'
                                 : '',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: context.appColors.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -632,7 +638,12 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.xl,
+                            AppSpacing.xl,
+                            AppSpacing.xl,
+                            AppSpacing.lg,
+                          ),
                           child: Row(
                             children: [
                               Expanded(
@@ -667,7 +678,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                           size: 20,
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: AppSpacing.md),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -684,7 +695,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                                     fontWeight: FontWeight.w900,
                                                   ),
                                             ),
-                                            const SizedBox(height: 2),
+                                            const SizedBox(height: AppSpacing.s2),
                                             Text(
                                               'Badan Pengurus Harian',
                                               style: AppTextStyles.bodyMd
@@ -705,7 +716,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -734,7 +745,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                           size: 20,
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: AppSpacing.md),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -751,7 +762,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                                     fontWeight: FontWeight.w900,
                                                   ),
                                             ),
-                                            const SizedBox(height: 2),
+                                            const SizedBox(height: AppSpacing.s2),
                                             Text(
                                               'Seluruh Anggota',
                                               style: AppTextStyles.bodyMd
@@ -792,7 +803,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(AppSpacing.xl),
@@ -812,7 +823,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
                             ],
                           ),
                         ),
@@ -822,10 +833,15 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                 ),
                 // Bottom Buttons Bar
                 Container(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.lg,
+                    AppSpacing.xl,
+                    AppSpacing.xl,
+                  ),
+                decoration: BoxDecoration(
+                  color: context.appColors.surface,
+                  border: Border(
                       top: BorderSide(color: AppColors.neutral300, width: 1),
                     ),
                   ),
@@ -839,7 +855,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                           height: 50,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         flex: 2,
                         child: BkuButton(
@@ -902,9 +918,9 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -921,14 +937,14 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Filter Kategori',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -959,7 +975,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isSelected
-                                        ? Colors.white
+                                        ? context.appColors.onPrimary
                                         : Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -970,7 +986,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                 ),
                 if (_filterTarget != 'Semua')
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterTarget = 'Semua');
@@ -984,7 +1000,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -1036,7 +1052,7 @@ class _OrmawaCreatePengumumanScreenState
     final ormawaId = context.read<OrmawaProvider>().ormawaId;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -1069,7 +1085,7 @@ class _OrmawaCreatePengumumanScreenState
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1104,23 +1120,23 @@ class _OrmawaCreatePengumumanScreenState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Publikasikan informasi penting untuk seluruh anggota.',
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral500,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildInputField(
                     'JUDUL PENGUMUMAN',
                     'Masukkan judul pengumuman...',
                     Icons.title_rounded,
                     controller: _judulController,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildCategorySelector(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildDateField(
                     'TANGGAL RILIS (OPSIONAL)',
                     'Pilih tanggal rilis...',
@@ -1132,7 +1148,7 @@ class _OrmawaCreatePengumumanScreenState
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
                     'ISI PENGUMUMAN',
                     'Tuliskan isi pengumuman di sini...',
@@ -1140,7 +1156,7 @@ class _OrmawaCreatePengumumanScreenState
                     maxLines: 8,
                     controller: _isiController,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   Row(
                     children: [
                       Expanded(
@@ -1151,7 +1167,7 @@ class _OrmawaCreatePengumumanScreenState
                           height: 50,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                       Expanded(
                         flex: 2,
                         child: BkuButton(
@@ -1221,7 +1237,7 @@ class _OrmawaCreatePengumumanScreenState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 120),
+                  const SizedBox(height: AppSpacing.s120),
                 ],
               ),
             ),
@@ -1250,7 +1266,7 @@ class _OrmawaCreatePengumumanScreenState
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           maxLines: maxLines,
@@ -1262,7 +1278,7 @@ class _OrmawaCreatePengumumanScreenState
             ),
             prefixIcon: Icon(icon, color: AppColors.neutral500, size: 20),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: context.appColors.surface,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -1334,7 +1350,7 @@ class _OrmawaCreatePengumumanScreenState
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1361,7 +1377,7 @@ class _OrmawaCreatePengumumanScreenState
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? baseColor : Colors.white,
+                  color: isSelected ? baseColor : context.appColors.onPrimary,
                   borderRadius: AppRadius.radiusMd,
                   border: Border.all(
                     color:
@@ -1385,13 +1401,13 @@ class _OrmawaCreatePengumumanScreenState
                     Icon(
                       icon,
                       size: 16,
-                      color: isSelected ? Colors.white : baseColor,
+                      color: isSelected ? context.appColors.onPrimary : baseColor,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       label,
                       style: AppTextStyles.labelSm.copyWith(
-                        color: isSelected ? Colors.white : AppColors.neutral700,
+                        color: isSelected ? context.appColors.onPrimary : AppColors.neutral700,
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
                       ),
@@ -1427,7 +1443,7 @@ class _OrmawaCreatePengumumanScreenState
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         InkWell(
           onTap: () async {
             final picked = await showDatePicker(
@@ -1440,7 +1456,7 @@ class _OrmawaCreatePengumumanScreenState
                   data: Theme.of(context).copyWith(
                     colorScheme: ColorScheme.light(
                       primary: Theme.of(context).colorScheme.primary,
-                      onPrimary: Colors.white,
+                      onPrimary: context.appColors.onPrimary,
                       onSurface: AppColors.neutral800,
                     ),
                   ),
@@ -1459,14 +1475,14 @@ class _OrmawaCreatePengumumanScreenState
               vertical: AppSpacing.lg,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: AppRadius.radiusMd,
               border: Border.all(color: AppColors.neutral300),
             ),
             child: Row(
               children: [
                 Icon(icon, color: AppColors.neutral500, size: 20),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     displayStr,

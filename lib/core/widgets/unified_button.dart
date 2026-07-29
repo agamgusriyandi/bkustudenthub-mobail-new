@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 enum UnifiedButtonVariant { primary, secondary, success, danger, outline, text }
 
@@ -79,19 +79,19 @@ class UnifiedButton extends StatelessWidget {
     switch (variant) {
       case UnifiedButtonVariant.primary:
         bg = theme.primary;
-        fg = Colors.white;
+        fg = context.appColors.onPrimary;
         break;
       case UnifiedButtonVariant.secondary:
         bg = theme.secondary;
-        fg = Colors.white;
+        fg = context.appColors.onPrimary;
         break;
       case UnifiedButtonVariant.success:
-        bg = AppColors.success;
-        fg = Colors.white;
+        bg = context.appColors.success;
+        fg = context.appColors.onPrimary;
         break;
       case UnifiedButtonVariant.danger:
-        bg = AppColors.danger;
-        fg = Colors.white;
+        bg = context.appColors.danger;
+        fg = context.appColors.onPrimary;
         break;
       case UnifiedButtonVariant.outline:
         bg = Colors.transparent;
@@ -115,8 +115,8 @@ class UnifiedButton extends StatelessWidget {
           lowerText == 'tolak' ||
           lowerText == 'kembali' ||
           lowerText == 'tutup') {
-        bg = AppColors.danger;
-        fg = Colors.white;
+        bg = context.appColors.danger;
+        fg = context.appColors.onPrimary;
         border = null;
       } else if (lowerText == 'setuju' ||
           lowerText == 'setujui' ||
@@ -128,8 +128,8 @@ class UnifiedButton extends StatelessWidget {
           lowerText == 'reschedule' ||
           lowerText.contains('ajukan') ||
           lowerText == 'kirim') {
-        bg = AppColors.success;
-        fg = Colors.white;
+        bg = context.appColors.success;
+        fg = context.appColors.onPrimary;
         border = null;
       }
     }
@@ -173,10 +173,10 @@ class UnifiedButton extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(fg),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
           ] else if (icon != null) ...[
             Icon(icon, size: 18, color: fg),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
           ],
           textWidget,
         ],

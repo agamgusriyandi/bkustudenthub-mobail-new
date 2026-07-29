@@ -1,5 +1,6 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -99,7 +100,7 @@ class BkuAppBar extends StatelessWidget {
                     } else {
                       try {
                         context.read<NavigationProvider>().setIndex(0);
-                      } catch (_) {}
+                      } catch (_) { /* Silenced: non-critical navigation fallback */ }
                     }
                   },
                   icon: Icon(
@@ -112,7 +113,7 @@ class BkuAppBar extends StatelessWidget {
         titleSpacing: 0,
         title: Padding(
           padding: EdgeInsets.only(
-            left: (showBackButton ?? context.canPop()) ? 0 : 20,
+            left: (showBackButton ?? context.canPop()) ? 0 : AppSpacing.s20,
           ),
           child: Row(
             children: [
@@ -179,10 +180,8 @@ class BkuAppBar extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: BorderRadius.circular(
-                          10,
-                        ), // Pill shape agar muat 2-3 digit
+                        color: context.appColors.error,
+                        borderRadius: AppRadius.br10, // Pill shape agar muat 2-3 digit
                       ),
                       constraints: const BoxConstraints(
                         minWidth: 16,
@@ -192,8 +191,8 @@ class BkuAppBar extends StatelessWidget {
                         dynamicNotificationCount > 99
                             ? '99+'
                             : '$dynamicNotificationCount',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.appColors.onPrimary,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
@@ -203,7 +202,7 @@ class BkuAppBar extends StatelessWidget {
                   ),
               ],
             ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
         ],
         flexibleSpace: Align(
           alignment: Alignment.topCenter,
@@ -216,12 +215,12 @@ class BkuAppBar extends StatelessWidget {
                 colors: gradientColors,
               ),
               borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(32),
+                bottom: Radius.circular(AppRadius.xxl),
               ),
             ),
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(32),
+                bottom: Radius.circular(AppRadius.xxl),
               ),
               child: Stack(
                 children: [
@@ -264,7 +263,7 @@ class BkuAppBar extends StatelessWidget {
                   } else {
                     try {
                       context.read<NavigationProvider>().setIndex(0);
-                    } catch (_) {}
+                    } catch (_) { /* Silenced: non-critical navigation fallback */ }
                   }
                 },
                 icon: Icon(
@@ -278,13 +277,13 @@ class BkuAppBar extends StatelessWidget {
         if (actions != null)
           ...actions!.map(
             (action) => Padding(
-              padding: EdgeInsets.only(bottom: showProfileOnCollapse ? 8 : 4),
+              padding: EdgeInsets.only(bottom: showProfileOnCollapse ? AppSpacing.sm : AppSpacing.xs),
               child: action,
             ),
           ),
         if (showNotification)
           Padding(
-            padding: EdgeInsets.only(bottom: showProfileOnCollapse ? 8 : 4),
+            padding: EdgeInsets.only(bottom: showProfileOnCollapse ? AppSpacing.sm : AppSpacing.xs),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -313,10 +312,8 @@ class BkuAppBar extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: BorderRadius.circular(
-                          10,
-                        ), // Pill shape agar muat 2-3 digit
+                        color: context.appColors.error,
+                        borderRadius: AppRadius.br10, // Pill shape agar muat 2-3 digit
                       ),
                       constraints: const BoxConstraints(
                         minWidth: 16,
@@ -326,8 +323,8 @@ class BkuAppBar extends StatelessWidget {
                         dynamicNotificationCount > 99
                             ? '99+'
                             : '$dynamicNotificationCount',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.appColors.onPrimary,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
@@ -338,7 +335,7 @@ class BkuAppBar extends StatelessWidget {
               ],
             ),
           ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
       ],
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
@@ -357,12 +354,12 @@ class BkuAppBar extends StatelessWidget {
                 colors: gradientColors,
               ),
               borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(32),
+                bottom: Radius.circular(AppRadius.xxl),
               ),
             ),
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(32),
+                bottom: Radius.circular(AppRadius.xxl),
               ),
               child: Stack(
                 children: [
@@ -387,8 +384,8 @@ class BkuAppBar extends StatelessWidget {
                         opacity: isCollapsed ? 1.0 : 0.0,
                         child: Container(
                           padding: EdgeInsets.only(
-                            left: (showBackButton ?? true) ? 72 : 20,
-                            bottom: 20,
+                            left: (showBackButton ?? true) ? 72 : AppSpacing.s20,
+                            bottom: AppSpacing.s20,
                           ),
                           alignment: Alignment.bottomLeft,
                           child: Row(
@@ -416,7 +413,7 @@ class BkuAppBar extends StatelessWidget {
                                     child: SizedBox.expand(child: profileImage!),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.md),
                               ],
                               Expanded(
                                 child: Column(
@@ -489,10 +486,10 @@ class BkuAppBar extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         child: Padding(
                           padding: EdgeInsets.only(
-                            top: topPadding + 10,
-                            bottom: 12,
-                            left: 18,
-                            right: 18,
+                            top: topPadding + AppSpacing.s10,
+                            bottom: AppSpacing.md,
+                            left: AppSpacing.s18,
+                            right: AppSpacing.s18,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,7 +524,7 @@ class BkuAppBar extends StatelessWidget {
                                           child: profileImage!,
                                         ),
                                       ),
-                                      const SizedBox(width: 16),
+                                      const SizedBox(width: AppSpacing.lg),
                                     ],
                                     Expanded(
                                       child: Column(
@@ -548,7 +545,7 @@ class BkuAppBar extends StatelessWidget {
                                                     letterSpacing: 0.8,
                                                   ),
                                             ),
-                                            const SizedBox(height: 2),
+                                            const SizedBox(height: AppSpacing.s2),
                                           ],
                                           Text(
                                             title,
@@ -563,7 +560,7 @@ class BkuAppBar extends StatelessWidget {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           if (info != null) ...[
-                                            const SizedBox(height: 2),
+                                            const SizedBox(height: AppSpacing.s2),
                                             Text(
                                               info!,
                                               style: AppTextStyles.labelSm
@@ -582,16 +579,16 @@ class BkuAppBar extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    // ── child widget (e.g. AvailabilityToggle) moved to right ──
+                                    // â”€â”€ child widget (e.g. AvailabilityToggle) moved to right â”€â”€
                                     if (child != null) ...[
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: AppSpacing.sm),
                                       child!,
                                     ],
                                   ],
                                 ),
                               ),
                               if (bottomChild != null) ...[
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 bottomChild!,
                               ],
                             ],
@@ -669,7 +666,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
           end: Alignment.bottomRight,
           colors: gradientColors,
         ),
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
             color: gradientColors.first.withAlpha(40),
@@ -679,7 +676,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
         child: Stack(
           children: [
             Positioned.fill(
@@ -695,7 +692,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
             SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 12, top: 4),
+                padding: const EdgeInsets.only(bottom: AppSpacing.md, top: AppSpacing.xs),
                 child: Row(
                   children: [
                     if (showBackButton)
@@ -710,7 +707,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                           } else {
                             try {
                               context.read<NavigationProvider>().setIndex(0);
-                            } catch (_) {}
+                            } catch (_) { /* Silenced: non-critical navigation fallback */ }
                           }
                         },
                         icon: Icon(
@@ -720,7 +717,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       )
                     else
-                      const SizedBox(width: 48),
+                      const SizedBox(width: AppSpacing.s48),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -753,7 +750,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     if (actions != null) ...actions!,
                     if (variant == AppBarVariant.nakes && showNotification) ...[
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Consumer<NotificationService>(
                         builder: (context, notifService, _) {
                           final count = notifService.unreadCount;
@@ -780,7 +777,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.error,
+                                      color: context.appColors.error,
                                       borderRadius: AppRadius.radiusMd,
                                     ),
                                     constraints: const BoxConstraints(
@@ -789,8 +786,8 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     ),
                                     child: Text(
                                       count > 99 ? '99+' : '$count',
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                        style: TextStyle(
+                           color: context.appColors.onPrimary,
                                         fontSize: 8,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -803,7 +800,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                         },
                       ),
                     ],
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                   ],
                 ),
               ),

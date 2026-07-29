@@ -1,5 +1,6 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -67,9 +68,9 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       const BkuShimmer(
                         width: double.infinity,
                         height: 140,
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       const BkuShimmerList(itemCount: 3, itemHeight: 100),
                     ],
                   ),
@@ -86,14 +87,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         color: Theme.of(context).colorScheme.error,
                         size: 48,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       Text(
                         provider.errorMessage!,
                         style: AppTextStyles.labelMd.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       BkuButton(
                         onPressed: () => provider.refreshAll(),
                         text: 'Coba Lagi',
@@ -111,37 +112,37 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.1,
                         child: _buildHeaderScore(dashboard),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.15,
                         child: _buildAnnouncements(context, provider),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.2,
                         child: _buildStatsGrid(dashboard),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.3,
                         child: _buildKomposisiNilai(dashboard),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.4,
                         child: _buildQuickActions(context),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
                         delay: 0.45,
                         child: _buildMentorSection(context, dashboard),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       // TIMELINE TAHAPAN
                       Text(
@@ -152,14 +153,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Pilih tahapan untuk melihat sesi, materi, tugas, dan kuis.',
                         style: AppTextStyles.labelSm.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
 
                       if (stages.isEmpty)
                         Center(
@@ -174,7 +175,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                                     100,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppSpacing.lg),
                                 Text(
                                   'Timeline belum tersedia.',
                                   style: AppTextStyles.labelMd.copyWith(
@@ -198,7 +199,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                           ),
                         ),
 
-                      const SizedBox(height: 120),
+                      const SizedBox(height: AppSpacing.s120),
                     ],
                   ),
                 ),
@@ -214,7 +215,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
       ),
@@ -239,7 +240,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF0FDFA),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: AppRadius.br6,
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -249,7 +250,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       color: Color(0xFF0D9488),
                       size: 12,
                     ),
-                    SizedBox(width: 4),
+                    SizedBox(width: AppSpacing.xs),
                     Text(
                       'Status PMB Kencana',
                       style: TextStyle(
@@ -262,7 +263,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 dashboard.activeStage['name'] ?? 'Menunggu jadwal',
                 style: AppTextStyles.headlineMd.copyWith(
@@ -272,7 +273,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 dashboard.scoreFakultas != null
                     ? 'Status Univ: ${(dashboard.graduationStatus.replaceAll('_', ' ')).toUpperCase()} | Status Fak: ${(dashboard.scoreFakultas!['graduation_status']?.toString().replaceAll('_', ' ') ?? '').toUpperCase()}'
@@ -283,7 +284,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.s20),
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -359,7 +360,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
       ),
@@ -370,14 +371,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
                   color: color.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(icon, color: color, size: 16),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   title,
@@ -430,7 +431,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -454,15 +455,15 @@ class _KencanaScreenState extends State<KencanaScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          _buildProgressRow('Kognitif', kognitif, Colors.purple),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.xl),
+          _buildProgressRow('Kognitif', kognitif, AppColors.neutral700),
+          const SizedBox(height: AppSpacing.lg),
           _buildProgressRow(
             'Psikomotor',
             psikomotor,
             context.watch<ThemeProvider>().success,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           _buildProgressRow(
             'Afektif',
             afektif,
@@ -497,7 +498,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         SizedBox(
           width: 40,
           child: Text(
@@ -520,7 +521,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           context,
           'Rekap Nilai',
           Icons.workspace_premium_rounded,
-          Colors.amber,
+          context.appColors.warning,
           () {
             context.push('/kencana/score');
           },
@@ -529,7 +530,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           context,
           'Undangan DP',
           Icons.group_add_rounded,
-          Colors.blue,
+          context.appColors.info,
           () {
             context.push('/kencana/invitations');
           },
@@ -538,7 +539,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           context,
           'Presensi',
           Icons.fact_check_rounded,
-          Colors.teal,
+          context.appColors.info,
           () {
             context.push('/kencana/attendance');
           },
@@ -581,7 +582,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 ),
                 child: Icon(icon, color: color, size: 26),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 title,
                 style: AppTextStyles.labelSm.copyWith(
@@ -668,13 +669,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 }
               }
               : null,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.radiusLg,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+        padding: AppSpacing.paddingLg,
         decoration: BoxDecoration(
           color: cardBg,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusLg,
           border: Border.all(
             color: borderColor,
             width: isActive ? 1.5 : 1,
@@ -695,13 +696,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: numberBg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusMd,
               ),
               child: Center(
                 child: isCompleted
-                    ? const Icon(
+                    ? Icon(
                         Icons.check_circle_rounded,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         size: 24,
                       )
                     : Text(
@@ -714,7 +715,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       ),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.s14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,7 +740,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: badgeBg,
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: AppRadius.br6,
                         ),
                         child: Text(
                           badgeText,
@@ -754,11 +755,11 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   ),
                   if (stage.description != null &&
                       stage.description!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       stage.description!,
                       style: const TextStyle(
-                        color: Color(0xFF64748B),
+                        color: AppColors.neutral600,
                         fontSize: 12,
                       ),
                       maxLines: 2,
@@ -766,31 +767,31 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     ),
                   ],
                   if (stage.startDate != null) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: AppSpacing.s10),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.calendar_today_rounded,
                           size: 13,
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral500,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${_formatDate(stage.startDate)} - ${_formatDate(stage.endDate)}',
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF64748B),
-                            fontWeight: FontWeight.w600,
+                          color: AppColors.neutral600,
+                          fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ],
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   Row(
                     children: [
                       _buildStageStat('Sesi', stage.sessionCount, isCompleted),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
                       _buildStageStat(
                         'Materi/Tugas',
                         stage.quizCount + stage.assignmentCount,
@@ -814,9 +815,9 @@ class _KencanaScreenState extends State<KencanaScreen> {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: isCompleted ? Colors.grey[50] : Colors.grey[100],
+        color: isCompleted ? AppColors.neutral50.withAlpha(50) : AppColors.neutral200.withAlpha(50),
         borderRadius: AppRadius.radiusSm,
-        border: isCompleted ? Border.all(color: Colors.grey[200]!) : null,
+        border: isCompleted ? Border.all(color: AppColors.neutral300) : null,
       ),
       child: Row(
         children: [
@@ -830,7 +831,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       : Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
@@ -863,7 +864,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
@@ -872,7 +873,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: AppColors.neutral300),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -885,7 +886,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               color: Theme.of(context).colorScheme.outline,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Text(
             score.toStringAsFixed(1),
             style: AppTextStyles.titleLg.copyWith(
@@ -914,7 +915,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         ...provider.kencanaAnnouncements.map((ann) {
           final judul = ann['judul'] ?? 'Pengumuman';
           final isi = _cleanHtml(ann['isi'] ?? '');
@@ -922,7 +923,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               ann['created_at'] != null ? _formatDate(ann['created_at']) : '-';
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: const EdgeInsets.only(bottom: AppSpacing.md),
             child: BkuCard(
               onTap: () {
                 showDialog(
@@ -966,7 +967,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       isi,
                       style: AppTextStyles.bodySm.copyWith(
@@ -1004,14 +1005,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         if (mentorUniv != null)
           _buildMentorCard('DP Universitas', mentorUniv['name'] ?? '-')
         else if (dashboard.hasPendingInvitation)
           _buildPendingInvitationCard(context, 'Universitas')
         else
           _buildNoMentorCard('Belum ada pembimbing Universitas'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         if (dashboard.scoreFakultas != null) ...[
           if (mentorFak != null)
             _buildMentorCard('DP Fakultas', mentorFak['name'] ?? '-')
@@ -1041,7 +1042,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             color: context.read<ThemeProvider>().success,
             size: 24,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1049,7 +1050,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 Text(
                   role,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Colors.grey[600],
+                    color: AppColors.neutral600,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1085,7 +1086,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             color: Theme.of(context).colorScheme.primary,
             size: 24,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1097,7 +1098,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 GestureDetector(
                   onTap: () {
                     context.push('/kencana/invitations');
@@ -1123,14 +1124,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: AppColors.neutral200,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: AppColors.neutral300),
       ),
       child: Row(
         children: [
-          const Icon(Icons.person_off_rounded, color: Colors.grey, size: 24),
-          const SizedBox(width: 12),
+          const Icon(Icons.person_off_rounded, color: AppColors.neutral500, size: 24),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               message,

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class DataDiriTabWidget extends StatefulWidget {
   final StudentProvider student;
@@ -98,7 +101,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             content: const Row(
               children: [
                 Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
-                SizedBox(width: 10),
+                SizedBox(width: AppSpacing.s10),
                 Text(
                   'Profil berhasil diperbarui',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -108,7 +111,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             backgroundColor: const Color(0xFF10B981),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusMd,
             ),
           ),
         );
@@ -120,7 +123,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             content: Row(
               children: [
                 const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.s10),
                 Expanded(
                   child: Text(
                     e.toString(),
@@ -132,7 +135,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             backgroundColor: const Color(0xFFEF4444),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusMd,
             ),
           ),
         );
@@ -160,10 +163,10 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF334155),
+                  color: context.appColors.secondaryContainer,
                 ),
               ),
               if (required)
@@ -177,7 +180,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.s6),
           TextFormField(
             controller: controller,
             readOnly: isDate,
@@ -215,30 +218,30 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                   ? Icon(
                       prefixIcon,
                       size: 19,
-                      color: const Color(0xFF64748B),
+                      color: AppColors.neutral600,
                     )
                   : null,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: Color(0xFF334155),
+                borderRadius: AppRadius.br14,
+                borderSide: BorderSide(
+                  color: context.appColors.secondaryContainer,
                   width: 1.8,
                 ),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(color: Color(0xFFFCA5A5)),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.8),
               ),
             ),
@@ -262,11 +265,11 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
     List<Widget> fields,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.only(bottom: AppSpacing.s18),
+      padding: AppSpacing.padding18,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: context.appColors.surface,
+        borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(10),
@@ -281,10 +284,10 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
                   color: accentColor.withAlpha(18),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusMd,
                 ),
                 child: Icon(
                   sectionIcon,
@@ -292,7 +295,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                   color: accentColor,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 title,
                 style: const TextStyle(
@@ -304,7 +307,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpacing.s18),
           ...fields,
         ],
       ),
@@ -356,11 +359,11 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
               _buildField('Nama Ayah', 'nama_ayah', prefixIcon: Icons.man_rounded),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Container(
             height: 52,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.radiusLg,
               gradient: const LinearGradient(
                 colors: [Color(0xFF10B981), Color(0xFF059669)],
                 begin: Alignment.centerLeft,
@@ -381,15 +384,15 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 shadowColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusLg,
                 ),
               ),
               child: _isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 22,
                       height: 22,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         strokeWidth: 2.5,
                       ),
                     )
@@ -397,7 +400,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.save_rounded, size: 20),
-                        SizedBox(width: 8),
+                        SizedBox(width: AppSpacing.sm),
                         Text(
                           'Simpan Perubahan',
                           style: TextStyle(
@@ -410,7 +413,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                     ),
             ),
           ),
-          const SizedBox(height: 120),
+          const SizedBox(height: AppSpacing.s120),
         ],
       ),
     );

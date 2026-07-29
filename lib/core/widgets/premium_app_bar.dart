@@ -1,8 +1,10 @@
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -25,12 +27,12 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       decoration: BoxDecoration(
         color: themeProvider.primary,
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 24, top: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xl, top: AppSpacing.md),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -41,26 +43,26 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
                     if (showBackButton)
                       IconButton(
                         onPressed: onBack ?? () => Navigator.pop(context),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           size: 20,
                         ),
                       )
                     else
-                      const SizedBox(width: 16),
+                      const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Text(
                         title,
                         style: AppTextStyles.titleLg.copyWith(
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                           fontSize: 20,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
                     if (actions != null) ...actions!,
-                    if (actions == null) const SizedBox(width: 48),
+                    if (actions == null) const SizedBox(width: AppSpacing.s48),
                   ],
                 ),
               ),

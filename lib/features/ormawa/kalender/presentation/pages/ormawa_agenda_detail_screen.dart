@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -59,50 +59,50 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(
-                top: 8,
-                left: 20,
-                right: 20,
-                bottom: 40,
+                top: AppSpacing.sm,
+                left: AppSpacing.s20,
+                right: AppSpacing.s20,
+                bottom: AppSpacing.xxxl,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(statusColor),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildSectionTitle('Informasi Utama'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildMainInfoGrid(statusColor),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _buildSectionTitle('Detail Kegiatan'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildTechnicalDetailsCard(),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   if (agenda.latarBelakang?.isNotEmpty == true) ...[
                     _buildSectionTitle('Latar Belakang'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildNarrativeCard(agenda.latarBelakang!),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                   ],
 
                   if (agenda.tujuanKegiatan?.isNotEmpty == true) ...[
                     _buildSectionTitle('Tujuan Kegiatan'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildNarrativeCard(agenda.tujuanKegiatan!),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                   ],
 
                   if (agenda.description.isNotEmpty) ...[
                     _buildSectionTitle('Deskripsi & Mekanisme'),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     _buildNarrativeCard(agenda.description),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
 
                   _buildBottomActions(context),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ],
               ),
             ),
@@ -116,7 +116,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
@@ -141,7 +141,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               size: 28,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 Text(
                   agenda.title,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -217,7 +217,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -282,7 +282,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 20, color: AppColors.primary),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +295,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.s2),
               Text(
                 value,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -314,7 +314,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
@@ -331,38 +331,38 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
             'Landasan Kegiatan',
             agenda.landasanKegiatan?.isNotEmpty == true
                 ? agenda.landasanKegiatan!
-                : '—',
+                : 'â€”',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Bentuk Kegiatan',
             agenda.bentukKegiatan?.isNotEmpty == true
                 ? agenda.bentukKegiatan!
-                : '—',
+                : 'â€”',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Sasaran Kegiatan',
             agenda.sasaranKegiatan?.isNotEmpty == true
                 ? agenda.sasaranKegiatan!
-                : '—',
+                : 'â€”',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Mitra Kerja',
-            agenda.mitra?.isNotEmpty == true ? agenda.mitra! : '—',
+            agenda.mitra?.isNotEmpty == true ? agenda.mitra! : 'â€”',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Sumber Dana',
-            agenda.sumberDana?.isNotEmpty == true ? agenda.sumberDana! : '—',
+            agenda.sumberDana?.isNotEmpty == true ? agenda.sumberDana! : 'â€”',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Indikator Keberhasilan',
             agenda.indikatorKeberhasilan?.isNotEmpty == true
                 ? agenda.indikatorKeberhasilan!
-                : '—',
+                : 'â€”',
           ),
         ],
       ),
@@ -385,7 +385,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           flex: 5,
           child: Text(
@@ -407,7 +407,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral300),
       ),

@@ -1,7 +1,8 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -79,7 +80,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -93,10 +94,10 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
           ),
           SliverPadding(
             padding: const EdgeInsets.only(
-              top: 16,
-              left: 20,
-              right: 20,
-              bottom: 40,
+              top: AppSpacing.lg,
+              left: AppSpacing.s20,
+              right: AppSpacing.s20,
+              bottom: AppSpacing.xxxl,
             ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
@@ -107,14 +108,14 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                     color: AppColors.onSurface,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Jika ada nilai yang tidak sesuai atau kamu merasa telah menyelesaikan syarat yang diminta, silakan ajukan banding di sini.',
                   style: AppTextStyles.bodySm.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 BkuCard(
                   child: TextField(
                     controller: _reasonController,
@@ -130,14 +131,14 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 BkuButton(
                   onPressed: _submitBanding,
                   text: 'KIRIM BANDING',
                   isLoading: _isSubmitting,
                   variant: BkuButtonVariant.primary,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxl),
                 Consumer<KencanaProvider>(
                   builder: (context, provider, _) {
                     if (provider.bandingList.isEmpty) {
@@ -186,10 +187,10 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                             }
 
                             return Container(
-                              margin: const EdgeInsets.only(bottom: 12),
+                              margin: const EdgeInsets.only(bottom: AppSpacing.md),
                               padding: const EdgeInsets.all(AppSpacing.lg),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: context.appColors.surface,
                                 borderRadius: AppRadius.radiusLg,
                                 border: Border.all(
                                   color: Theme.of(
@@ -224,9 +225,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: statusColor.withAlpha(20),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
+                                          borderRadius: AppRadius.radiusSm,
                                         ),
                                         child: Text(
                                           statusLabel,
@@ -239,7 +238,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: AppSpacing.sm),
                                   Text(
                                     alasan,
                                     style: AppTextStyles.bodySm.copyWith(

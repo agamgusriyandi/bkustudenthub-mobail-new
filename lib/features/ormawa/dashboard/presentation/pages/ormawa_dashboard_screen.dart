@@ -2,6 +2,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -22,9 +24,9 @@ import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/orm
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_service_grid.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_proposal_list.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_recent_members.dart';
-import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_kalender_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_agenda_detail_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrmawaDashboardScreen extends StatefulWidget {
   const OrmawaDashboardScreen({super.key});
@@ -55,7 +57,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
           await context.read<OrmawaProvider>().refreshData();
         },
         color: Theme.of(context).colorScheme.primary,
-        backgroundColor: Colors.white,
+        backgroundColor: context.appColors.surface,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -83,7 +85,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                               .currentMember!
                               .fotoUrl!
                               .isNotEmpty
-                      ? Image.network(
+                      ? CachedNetworkImage(imageUrl: 
                         ApiGate.getImageUrl(
                           context
                               .watch<OrmawaProvider>()
@@ -93,17 +95,18 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
+                        errorWidget: (context, url, error) {
+                          return Icon(
                             Icons.groups_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             size: 28,
                           );
                         },
+                        placeholder: (context, url) => Container(color: AppColors.neutral200),
                       )
-                      : const Icon(
+                      : Icon(
                         Icons.groups_rounded,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         size: 28,
                       ),
               isExpandable: true,
@@ -115,23 +118,23 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.s20),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                     child: UnifiedSectionHeader(title: 'Layanan Administrasi'),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSpacing.s10),
                   const OrmawaServiceGrid(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                     child: UnifiedSectionHeader(title: 'Statistik Organisasi'),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   const OrmawaQuickStats(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   const OrmawaGamificationCard(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -139,18 +142,13 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                     child: UnifiedSectionHeader(
                       title: 'Proposal Terbaru',
                       onSeeAll: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OrmawaProposalScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaProposal);
                       },
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   const OrmawaProposalList(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -158,16 +156,11 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                     child: UnifiedSectionHeader(
                       title: 'Agenda Kegiatan',
                       onSeeAll: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OrmawaKalenderScreen(),
-                          ),
-                        );
+                        context.push(AppRoutes.ormawaAgenda);
                       },
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -187,9 +180,9 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                                       .toList(),
                             ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   const OrmawaRecentMembers(),
-                  const SizedBox(height: 120),
+                  const SizedBox(height: AppSpacing.s120),
                 ],
               ),
             ),
@@ -203,14 +196,9 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
 
   Widget _buildAgendaCard(OrmawaAgenda agenda) {
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OrmawaAgendaDetailScreen(agenda: agenda),
-          ),
-        );
+        context.push(AppRoutes.ormawaAgendaDetail, extra: agenda);
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,7 +215,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               size: 22,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,7 +230,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  '${DateFormat('dd MMM', 'id').format(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
+                  '${DateFormat('dd MMM', 'id').format(agenda.date)} â€¢ ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
                   style: AppTextStyles.labelMd.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -285,7 +273,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
             color: Theme.of(context).colorScheme.outlineVariant,
             size: 40,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             message,
             style: AppTextStyles.bodyMd.copyWith(

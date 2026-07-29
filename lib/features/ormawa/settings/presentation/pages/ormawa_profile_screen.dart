@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
@@ -13,6 +14,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrmawaProfileScreen extends StatefulWidget {
   const OrmawaProfileScreen({super.key});
@@ -28,6 +30,8 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     final themeProvider = context.read<ThemeProvider>();
     final primaryColor = themeProvider.primary;
     final ormawaProvider = context.read<OrmawaProvider>();
+    // Extract context-dependent values BEFORE any await
+    final onPrimaryColor = context.appColors.onPrimary;
 
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
@@ -46,7 +50,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             AndroidUiSettings(
               toolbarTitle: 'Potong Foto',
               toolbarColor: primaryColor,
-              toolbarWidgetColor: Colors.white,
+              toolbarWidgetColor: onPrimaryColor,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
             ),
@@ -120,13 +124,13 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeaderCard(member),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
           _buildMenuSection('Informasi Ormawa', [
             _buildMenuItem(
               'Jabatan / Role',
               member.role,
               Icons.badge_rounded,
-              Colors.indigo,
+              context.appColors.info,
             ),
             _buildMenuItem(
               'Divisi / Departemen',
@@ -147,32 +151,32 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'Periode Kepengurusan',
                 member.periode!,
                 Icons.date_range_rounded,
-                Colors.purple,
+                AppColors.neutral700,
               ),
           ]),
-          const SizedBox(height: 28),
+          const SizedBox(height: AppSpacing.s28),
           _buildMenuSection('Kontak & Data Diri', [
             _buildMenuItem(
               'Email Kampus',
               member.email ?? 'Belum diatur',
               Icons.email_rounded,
-              Colors.redAccent,
+              context.appColors.error,
             ),
             _buildMenuItem(
               'No Handphone / WhatsApp',
               member.phone ?? 'Belum diatur',
               Icons.phone_rounded,
-              Colors.teal,
+              context.appColors.info,
             ),
             if (member.joinedAt != null)
               _buildMenuItem(
                 'Bergabung Sejak',
                 '${member.joinedAt!.day}/${member.joinedAt!.month}/${member.joinedAt!.year}',
                 Icons.access_time_rounded,
-                Colors.blueGrey,
+                AppColors.neutral600,
               ),
           ]),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxxl),
         ],
       ),
     );
@@ -182,7 +186,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     final theme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: theme.outline.withAlpha(26)),
         boxShadow: [
@@ -200,26 +204,26 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             Stack(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: AppSpacing.padding3,
                   decoration: BoxDecoration(
                     color: AppColors.neutral600.withAlpha(26),
                     shape: BoxShape.circle,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    padding: AppSpacing.padding2,
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
                       child:
                           member.fotoUrl != null && member.fotoUrl!.isNotEmpty
-                              ? Image.network(
+                              ? CachedNetworkImage(imageUrl: 
                                 ApiGate.getImageUrl(member.fotoUrl!),
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorWidget: (context, url, error) {
                                   return Container(
                                     width: 64,
                                     height: 64,
@@ -231,6 +235,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                                     ),
                                   );
                                 },
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               )
                               : Container(
                                 width: 64,
@@ -252,9 +257,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                     child: GestureDetector(
                       onTap: () => _pickAndUploadAvatar(),
                       child: Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: AppSpacing.padding6,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.appColors.surface,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.black12, width: 1),
                           boxShadow: [
@@ -279,7 +284,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                   ),
               ],
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,7 +299,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Text(
                     '${member.role} • ${member.division}',
                     style: const TextStyle(
@@ -305,7 +310,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -330,7 +335,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                               color: Colors.black87,
                               size: 12,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               'NIM: ${member.nim}',
                               style: const TextStyle(
@@ -372,7 +377,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                                       : AppColors.warning,
                               size: 12,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               member.status.toUpperCase(),
                               style: TextStyle(
@@ -403,7 +408,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 12),
+          padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
             title.toUpperCase(),
             style: AppTextStyles.titleSm.copyWith(
@@ -415,9 +420,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
-            border: Border.all(color: Colors.grey.withAlpha(30)),
+            border: Border.all(color: AppColors.neutral300.withAlpha(30)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withAlpha(4),
@@ -438,7 +443,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                           height: 1,
                           indent: 64,
                           endIndent: 20,
-                          color: Colors.grey.withAlpha(30),
+                          color: AppColors.neutral300.withAlpha(30),
                         ),
                     ],
                   );
@@ -463,7 +468,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           vertical: AppSpacing.xs,
         ),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
             color: color.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
@@ -494,9 +499,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 60),
+          const SizedBox(height: AppSpacing.s60),
           Icon(Icons.person_off_rounded, size: 80, color: AppColors.neutral300),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             'Data Profil Tidak Ditemukan',
             style: AppTextStyles.titleLg.copyWith(
@@ -504,7 +509,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Gagal memuat informasi pribadi Anda. Pastikan Anda sudah terdaftar sebagai pengurus.',
             textAlign: TextAlign.center,

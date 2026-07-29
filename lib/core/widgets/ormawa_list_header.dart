@@ -1,7 +1,8 @@
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 
 class OrmawaListHeader extends StatelessWidget {
@@ -53,7 +54,7 @@ class OrmawaListHeader extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Row(
           children: [
             Expanded(
@@ -61,7 +62,7 @@ class OrmawaListHeader extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 height: 52,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: AppColors.neutral200),
                 ),
@@ -72,7 +73,7 @@ class OrmawaListHeader extends StatelessWidget {
                       color: AppColors.neutral400,
                       size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: TextField(
                         controller: searchController,
@@ -82,6 +83,7 @@ class OrmawaListHeader extends StatelessWidget {
                           fontSize: 14,
                         ),
                         decoration: InputDecoration(
+                          labelText: 'Cari',
                           hintText: searchHint,
                           hintStyle: AppTextStyles.bodyMd.copyWith(
                             color: AppColors.neutral400,
@@ -114,14 +116,14 @@ class OrmawaListHeader extends StatelessWidget {
               ),
             ),
             if (onFilterTap != null) ...[
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               GestureDetector(
                 onTap: onFilterTap,
                 child: Container(
                   height: 52,
                   width: 52,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.appColors.surface,
                     borderRadius: AppRadius.radiusLg,
                     border: Border.all(color: AppColors.neutral200),
                   ),

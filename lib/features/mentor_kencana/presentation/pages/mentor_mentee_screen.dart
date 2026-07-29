@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -11,6 +12,7 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/men
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorMenteeScreen extends StatefulWidget {
   const MentorMenteeScreen({super.key});
@@ -84,7 +86,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final group = provider.groups[index];
                     return BkuCard(
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                       padding: EdgeInsets.zero,
                       child: Theme(
                         data: Theme.of(
@@ -101,12 +103,12 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                             padding: const EdgeInsets.all(AppSpacing.md),
                             decoration: BoxDecoration(
                               color: [
-                                Colors.blue,
-                                Colors.green,
-                                Colors.orange,
-                                Colors.purple,
-                                Colors.teal,
-                                Colors.indigo,
+                                context.appColors.info,
+                                context.appColors.success,
+                                context.appColors.warning,
+                                AppColors.neutral700,
+                                context.appColors.info,
+                                context.appColors.info,
                               ][index % 6].withAlpha(15),
                               borderRadius: AppRadius.radiusLg,
                             ),
@@ -114,12 +116,12 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                               Icons.groups_rounded,
                               color:
                                   [
-                                    Colors.blue,
-                                    Colors.green,
-                                    Colors.orange,
-                                    Colors.purple,
-                                    Colors.teal,
-                                    Colors.indigo,
+                                    context.appColors.info,
+                                    context.appColors.success,
+                                    context.appColors.warning,
+                                    AppColors.neutral700,
+                                    context.appColors.info,
+                                    context.appColors.info,
                                   ][index % 6],
                               size: 24,
                             ),
@@ -162,14 +164,14 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                       child:
                                           mentee.avatarUrl != null &&
                                                   mentee.avatarUrl!.isNotEmpty
-                                              ? Image.network(
+                                              ? CachedNetworkImage(imageUrl: 
                                                 ApiGate.getImageUrl(
                                                   mentee.avatarUrl,
                                                 ),
                                                 width: 44,
                                                 height: 44,
                                                 fit: BoxFit.cover,
-                                                errorBuilder:
+                                                errorWidget:
                                                     (
                                                       context,
                                                       error,
@@ -191,6 +193,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                                         ),
                                                       ),
                                                     ),
+                                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                                               )
                                               : Center(
                                                 child: Text(
@@ -232,18 +235,18 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                         decoration: BoxDecoration(
                                           color:
                                               mentee.status == 'Lulus'
-                                                  ? AppColors.success.withAlpha(
+                                                  ? context.appColors.success.withAlpha(
                                                     15,
                                                   )
-                                                  : AppColors.warning.withAlpha(
+                                                  : context.appColors.warning.withAlpha(
                                                     15,
                                                   ),
                                           border: Border.all(
                                             color:
                                                 mentee.status == 'Lulus'
-                                                    ? AppColors.success
+                                                    ? context.appColors.success
                                                         .withAlpha(30)
-                                                    : AppColors.warning
+                                                    : context.appColors.warning
                                                         .withAlpha(30),
                                           ),
                                           borderRadius: AppRadius.radiusSm,
@@ -255,8 +258,8 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                             fontWeight: FontWeight.bold,
                                             color:
                                                 mentee.status == 'Lulus'
-                                                    ? AppColors.success
-                                                    : AppColors.warning,
+                                                    ? context.appColors.success
+                                                    : context.appColors.warning,
                                           ),
                                         ),
                                       ),
@@ -322,7 +325,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                         itemBuilder:
                                             (BuildContext context) =>
                                                 <PopupMenuEntry<String>>[
-                                                  const PopupMenuItem<String>(
+                                                  PopupMenuItem<String>(
                                                     value: 'remove',
                                                     child: Text(
                                                       'Keluarkan dari Grup',
@@ -353,10 +356,10 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
-        icon: const Icon(Icons.person_add_rounded, color: Colors.white),
-        label: const Text(
+        icon: Icon(Icons.person_add_rounded, color: context.appColors.onPrimary),
+        label: Text(
           'Rekrut Mahasiswa',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
     );

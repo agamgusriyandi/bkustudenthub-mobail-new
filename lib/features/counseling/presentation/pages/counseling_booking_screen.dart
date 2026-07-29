@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
   /// Jika diberikan, langsung load jadwal psikolog ini
@@ -82,7 +84,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                 : <String, dynamic>{};
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: context.appColors.surface,
           body: RefreshIndicator(
             onRefresh: () async {
               if (widget.psikologId != null && widget.psikologId!.isNotEmpty) {
@@ -110,7 +112,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                         if (widget.rescheduleBookingId != null)
                           Container(
                             padding: EdgeInsets.all(AppSpacing.lg),
-                            margin: EdgeInsets.only(bottom: 24),
+                            margin: EdgeInsets.only(bottom: AppSpacing.xl),
                             decoration: BoxDecoration(
                               color: context
                                   .watch<ThemeProvider>()
@@ -130,7 +132,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                                   Icons.info_outline_rounded,
                                   color: context.watch<ThemeProvider>().warning,
                                 ),
-                                SizedBox(width: 12),
+                                SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: Text(
                                     'Kamu sedang melakukan penjadwalan ulang (Reschedule) untuk sesi konseling.',
@@ -148,16 +150,16 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                           ),
                         if (psikologDetail.isNotEmpty)
                           _buildPsychologistBrief(psikologDetail),
-                        if (psikologDetail.isNotEmpty) SizedBox(height: 32),
+                        if (psikologDetail.isNotEmpty) SizedBox(height: AppSpacing.xxl),
                         _buildSectionHeader('Pilih Slot Jadwal'),
-                        SizedBox(height: 8),
+                        SizedBox(height: AppSpacing.sm),
                         // Info kuota
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: AppSpacing.md,
                             vertical: AppSpacing.sm,
                           ),
-                          margin: EdgeInsets.only(bottom: 16),
+                          margin: EdgeInsets.only(bottom: AppSpacing.lg),
                           decoration: BoxDecoration(
                             color: AppColors.info.withAlpha(15),
                             borderRadius: AppRadius.radiusMd,
@@ -169,7 +171,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                                 size: 16,
                                 color: AppColors.info,
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               const Expanded(
                                 child: Text(
                                   'Slot abu-abu = penuh atau sudah kamu booking. Tarik ke bawah untuk refresh.',
@@ -183,26 +185,26 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
-                        SizedBox(height: 16),
+                        SizedBox(height: AppSpacing.lg),
+                        SizedBox(height: AppSpacing.lg),
                         _buildSlotList(slots),
-                        SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                         _buildSectionHeader('Topik / Kategori Konseling'),
-                        SizedBox(height: 16),
+                        SizedBox(height: AppSpacing.lg),
                         _buildKategoriSelector(),
-                        SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                         _buildSectionHeader('Mode Konseling'),
-                        SizedBox(height: 16),
+                        SizedBox(height: AppSpacing.lg),
                         _buildModeSelector(),
-                        SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                         _buildSectionHeader('Keluhan Singkat'),
-                        SizedBox(height: 16),
+                        SizedBox(height: AppSpacing.lg),
                         _buildComplaintField(),
-                        SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xl),
                         _buildAttachmentField(),
-                        SizedBox(height: 32),
+                        SizedBox(height: AppSpacing.xxl),
                         _buildConfirmButton(provider),
-                        SizedBox(height: 48),
+                        SizedBox(height: AppSpacing.s48),
                       ],
                     ),
                   ),
@@ -259,17 +261,18 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
             child: ClipOval(
               child:
                   photoUrl.isNotEmpty
-                      ? Image.network(
+                      ? CachedNetworkImage(imageUrl: 
                         photoUrl,
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) => const Icon(
+                        errorWidget:
+                            (context, url, error) => const Icon(
                               Icons.person_rounded,
                               color: AppColors.neutral700,
                               size: 30,
                             ),
+                        placeholder: (context, url) => Container(color: AppColors.neutral200),
                       )
                       : const Icon(
                         Icons.person_rounded,
@@ -278,7 +281,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                       ),
             ),
           ),
-          SizedBox(width: 16),
+          SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,8 +371,8 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                         () => _selectedSlot = isSelected ? null : slot,
                       ),
               child: BkuCard(
-                backgroundColor: isSelected ? primaryColor : Colors.white,
-                margin: const EdgeInsets.only(bottom: 12),
+                backgroundColor: isSelected ? primaryColor : context.appColors.surface,
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Row(
                   children: [
@@ -378,9 +381,9 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                       decoration: BoxDecoration(
                         color:
                             isDisabled
-                                ? Colors.grey.withAlpha(20)
+                                ? AppColors.neutral200.withAlpha(20)
                                 : isSelected
-                                ? Colors.white.withAlpha(30)
+                                ? context.appColors.onPrimary.withAlpha(30)
                                 : AppColors.neutral100,
                         borderRadius: AppRadius.radiusMd,
                       ),
@@ -392,14 +395,14 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                             : Icons.schedule_rounded,
                         color:
                             isDisabled
-                                ? Colors.grey
+                                ? AppColors.neutral500
                                 : isSelected
-                                ? Colors.white
+                                ? context.appColors.onPrimary
                                 : AppColors.neutral700,
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,11 +412,11 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                             style: AppTextStyles.bodyMd.copyWith(
                               fontWeight: FontWeight.w900,
                               color:
-                                  isDisabled
-                                      ? Colors.grey
-                                      : isSelected
-                                      ? Colors.white
-                                      : AppColors.neutral900,
+                                   isDisabled
+                                       ? AppColors.neutral500
+                                       : isSelected
+                                       ? context.appColors.onPrimary
+                                       : AppColors.neutral900,
                             ),
                           ),
                           if (displayDate.isNotEmpty)
@@ -422,19 +425,19 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
                                     isDisabled
-                                        ? Colors.grey
-                                        : isSelected
-                                        ? Colors.white70
-                                        : outlineColor,
+                                        ? AppColors.neutral500
+                                      : isSelected
+                                      ? Colors.white70
+                                      : outlineColor,
                               ),
                             ),
-                          if (psikologName.isNotEmpty)
-                            Text(
-                              psikologName,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isDisabled
-                                        ? Colors.grey
+                            if (psikologName.isNotEmpty)
+                              Text(
+                                psikologName,
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color:
+                                      isDisabled
+                                          ? AppColors.neutral500
                                         : isSelected
                                         ? Colors.white70
                                         : primaryColor,
@@ -449,7 +452,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                                 _buildChip(
                                   kategori,
                                   isSelected
-                                      ? Colors.white
+                                      ? context.appColors.onPrimary
                                       : AppColors.neutral700,
                                   isSelected,
                                   isDisabled,
@@ -457,7 +460,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                               if (lokasi.isNotEmpty)
                                 _buildChip(
                                   lokasi,
-                                  isSelected ? Colors.white : Colors.teal,
+                                  isSelected ? context.appColors.onPrimary : context.appColors.info,
                                   isSelected,
                                   isDisabled,
                                 ),
@@ -500,14 +503,14 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     bool isDisabled,
   ) {
     return Container(
-      margin: const EdgeInsets.only(top: 4),
+      margin: const EdgeInsets.only(top: AppSpacing.xs),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color:
             isDisabled
-                ? Colors.grey.withAlpha(15)
+                ? AppColors.neutral500.withAlpha(15)
                 : isSelected
-                ? Colors.white.withAlpha(30)
+                ? context.appColors.onPrimary.withAlpha(30)
                 : color.withAlpha(15),
         borderRadius: AppRadius.radiusXs,
       ),
@@ -515,12 +518,12 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         label,
         style: AppTextStyles.labelSm.copyWith(
           color:
-              isDisabled
-                  ? Colors.grey
-                  : isSelected
-                  ? Colors.white
-                  : color,
-          fontWeight: FontWeight.bold,
+            isDisabled
+                ? AppColors.neutral500
+                : isSelected
+                ? context.appColors.onPrimary
+                : color,
+            fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -561,7 +564,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
               color: context.watch<ThemeProvider>().outline,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -596,7 +599,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                         style: AppTextStyles.labelMd.copyWith(
                           color:
                               isSelected
-                                  ? Colors.white
+                                  ? context.appColors.onPrimary
                                   : context.watch<ThemeProvider>().onSurface,
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
@@ -622,13 +625,13 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
                 color:
-                    _selectedMode == 'Tatap Muka' ? Colors.green : Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                    _selectedMode == 'Tatap Muka' ? AppColors.success : context.appColors.surface,
+                borderRadius: AppRadius.radiusLg,
                 border: Border.all(
-                  color:
+                    color:
                       _selectedMode == 'Tatap Muka'
-                          ? Colors.green
-                          : Colors.grey.shade300,
+                          ? AppColors.success
+                          : AppColors.neutral300,
                   width: 2,
                 ),
               ),
@@ -636,20 +639,17 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                 children: [
                   Icon(
                     Icons.location_on_rounded,
-                    color:
-                        _selectedMode == 'Tatap Muka'
-                            ? Colors.white
-                            : Colors.grey,
+                    color: AppColors.neutral500,
                     size: 28,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Tatap Muka',
                     style: TextStyle(
                       color:
                           _selectedMode == 'Tatap Muka'
-                              ? Colors.white
-                              : Colors.grey.shade800,
+                              ? context.appColors.onPrimary
+                              : AppColors.neutral800,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -658,7 +658,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           child: GestureDetector(
             onTap: () => setState(() => _selectedMode = 'Daring'),
@@ -666,13 +666,16 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
-                color: _selectedMode == 'Daring' ? Colors.green : Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color:
+                    _selectedMode == 'Daring'
+                        ? AppColors.success
+                        : context.appColors.surface,
+                borderRadius: AppRadius.radiusLg,
                 border: Border.all(
                   color:
                       _selectedMode == 'Daring'
-                          ? Colors.green
-                          : Colors.grey.shade300,
+                          ? AppColors.success
+                          : AppColors.neutral300,
                   width: 2,
                 ),
               ),
@@ -680,18 +683,17 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                 children: [
                   Icon(
                     Icons.video_camera_front_rounded,
-                    color:
-                        _selectedMode == 'Daring' ? Colors.white : Colors.grey,
+                    color: _selectedMode == 'Daring' ? context.appColors.onPrimary : AppColors.neutral500,
                     size: 28,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Daring',
                     style: TextStyle(
                       color:
                           _selectedMode == 'Daring'
-                              ? Colors.white
-                              : Colors.grey.shade800,
+                              ? context.appColors.onPrimary
+                              : AppColors.neutral800,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -730,7 +732,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader('Lampiran (Opsional)'),
-        SizedBox(height: 12),
+        SizedBox(height: AppSpacing.md),
         InkWell(
           onTap: _pickFile,
           borderRadius: AppRadius.radiusLg,
@@ -759,7 +761,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                             150,
                           ),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _attachmentPath != null
@@ -988,19 +990,19 @@ class _InformedConsentSheet extends StatelessWidget {
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Container(
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppColors.neutral500.withAlpha(60),
               borderRadius: AppRadius.radiusXs,
             ),
           ),
@@ -1008,54 +1010,57 @@ class _InformedConsentSheet extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE6F4EA),
+                    padding: AppSpacing.paddingLg,
+                    decoration: BoxDecoration(
+                      color: AppColors.success.withAlpha(30),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.assignment_turned_in_rounded,
-                      color: Color(0xFF10B981),
+                      color: AppColors.success,
                       size: 40,
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Informed Consent Digital',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyLg.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF1E293B),
+                    color: context.appColors.secondary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Harap baca dan setujui lembar persetujuan layanan konseling di bawah ini sebelum melanjutkan pendaftaran.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodySm.copyWith(
-                    color: const Color(0xFF64748B),
+                    color: AppColors.neutral600,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 _buildClauseItem(
+                  context,
                   '1. Kerahasiaan Informasi',
                   'Semua informasi yang Anda bagikan selama sesi konseling bersifat rahasia dan dilindungi, kecuali jika terdapat indikasi yang membahayakan diri sendiri atau orang lain.',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildClauseItem(
+                  context,
                   '2. Keterbukaan & Kerjasama',
                   'Proses konseling berjalan efektif apabila Anda bersedia menyampaikan keluhan dengan jujur dan bekerja sama secara aktif dengan konselor/psikolog.',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 _buildClauseItem(
+                  context,
                   '3. Penjadwalan & Kehadiran',
                   'Anda diharapkan hadir tepat waktu sesuai jadwal slot yang dipilih. Jika ingin melakukan pembatalan atau penjadwalan ulang, harap lakukan sebelum sesi dimulai.',
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxl),
               ],
             ),
           ),
@@ -1063,12 +1068,12 @@ class _InformedConsentSheet extends StatelessWidget {
             padding: const EdgeInsets.only(
               left: AppSpacing.xl,
               right: AppSpacing.xl,
-              bottom: AppSpacing.xl + 8,
+              bottom: AppSpacing.xl + AppSpacing.sm,
               top: AppSpacing.md,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey[100]!)),
+          color: context.appColors.surface,
+          border: Border(top: BorderSide(color: AppColors.neutral500.withAlpha(100))),
             ),
             child: Row(
               children: [
@@ -1077,7 +1082,7 @@ class _InformedConsentSheet extends StatelessWidget {
                     onPressed: onCancel,
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: Colors.grey[300]!),
+                      side: BorderSide(color: AppColors.neutral500.withAlpha(50)),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppRadius.radiusLg,
                       ),
@@ -1085,13 +1090,13 @@ class _InformedConsentSheet extends StatelessWidget {
                     child: Text(
                       'Batal',
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Colors.grey[700],
+                        color: AppColors.neutral700,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: BkuButton(
                     text: 'Saya Setuju',
@@ -1108,26 +1113,26 @@ class _InformedConsentSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildClauseItem(String title, String content) {
+  Widget _buildClauseItem(BuildContext context, String title, String content) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: context.appColors.background,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.neutral300),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 14,
-              color: Color(0xFF1E293B),
+              color: context.appColors.secondary,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             content,
             style: AppTextStyles.bodySm.copyWith(

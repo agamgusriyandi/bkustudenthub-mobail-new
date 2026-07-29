@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class UnifiedCard extends StatelessWidget {
@@ -6,7 +7,7 @@ class UnifiedCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final VoidCallback? onTap;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final double borderRadius;
   final bool enableShadow;
   final double? width;
@@ -18,7 +19,7 @@ class UnifiedCard extends StatelessWidget {
     this.padding = const EdgeInsets.all(AppSpacing.lg),
     this.margin,
     this.onTap,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.borderRadius = 20.0,
     this.enableShadow = true,
     this.width,
@@ -27,15 +28,16 @@ class UnifiedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cardColor = backgroundColor ?? context.appColors.surface;
     final cardContent = Container(
       width: width,
       height: height,
       padding: padding,
       margin: margin,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: cardColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: Colors.black.withAlpha(8), width: 1),
+        border: Border.all(color: context.appColors.outline.withAlpha(30), width: 1),
         boxShadow:
             enableShadow
                 ? [

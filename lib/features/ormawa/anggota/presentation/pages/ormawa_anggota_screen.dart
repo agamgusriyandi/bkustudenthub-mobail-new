@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -70,9 +71,9 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder:
           (context) => StatefulBuilder(
@@ -118,11 +119,11 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                 Text(
                                   'STATUS KEANGGOTAAN',
                                   style: AppTextStyles.labelSm.copyWith(
-                                    color: Colors.grey,
+                                    color: AppColors.neutral500,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
@@ -144,15 +145,15 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                           )
                                           .toList(),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: AppSpacing.xl),
                                 Text(
-                                  'JABATAN',
+                                  'STATUS KEANGGOTAAN',
                                   style: AppTextStyles.labelSm.copyWith(
-                                    color: Colors.grey,
+                                    color: AppColors.neutral500,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
@@ -175,15 +176,15 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                           )
                                           .toList(),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: AppSpacing.xl),
                                 Text(
                                   'DIVISI',
                                   style: AppTextStyles.labelSm.copyWith(
-                                    color: Colors.grey,
+                                    color: AppColors.neutral500,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
@@ -210,7 +211,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.lg),
                           Row(
                             children: [
                               Expanded(
@@ -232,19 +233,19 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                flex: 2,
-                                child: ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
+                              const SizedBox(width: AppSpacing.lg),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
 
-                                  child: const Text(
-                                    'TERAPKAN FILTER',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                        child: Text(
+                          'TERAPKAN FILTER',
+                          style: TextStyle(
+                            color: context.appColors.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                                 ),
                               ),
                             ],
@@ -270,7 +271,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                   color: AppColors.warning,
                   size: 28,
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     'Regenerasi Pengurus',
@@ -286,10 +287,10 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext),
-                child: const Text(
+                child: Text(
                   'Batal',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: AppColors.neutral500,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -313,13 +314,13 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   elevation: 0,
                 ),
-                child: const Text(
+                child: Text(
                   'Ya, Arsipkan',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -363,22 +364,22 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.only(
-                        top: 8,
-                        left: 20,
-                        right: 20,
-                        bottom: 20,
+                        top: AppSpacing.sm,
+                        left: AppSpacing.s20,
+                        right: AppSpacing.s20,
+                        bottom: AppSpacing.s20,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSummaryCard(provider),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
 
                           // Period & Regenerate Header
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.appColors.surface,
                               borderRadius: AppRadius.radiusXl,
                               border: Border.all(color: AppColors.neutral300),
                               boxShadow: [
@@ -400,7 +401,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                     letterSpacing: 1.0,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Row(
                                   children: [
                                     Expanded(
@@ -411,9 +412,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: AppColors.neutral100,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
+                                          borderRadius: AppRadius.radiusMd,
                                           border: Border.all(
                                             color: AppColors.neutral300,
                                           ),
@@ -465,7 +464,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                         provider.hasPermission(
                                           'edit_members',
                                         )) ...[
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: AppSpacing.md),
                                       InkWell(
                                         onTap: () => _confirmRegenerate(),
                                         borderRadius: AppRadius.radiusMd,
@@ -478,9 +477,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                             color: AppColors.error.withAlpha(
                                               20,
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
+                                            borderRadius: AppRadius.radiusMd,
                                             border: Border.all(
                                               color: AppColors.error.withAlpha(
                                                 50,
@@ -494,7 +491,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                                 color: AppColors.error,
                                                 size: 20,
                                               ),
-                                              SizedBox(width: 6),
+                                              SizedBox(width: AppSpacing.s6),
                                               Text(
                                                 'Arsipkan',
                                                 style: TextStyle(
@@ -513,7 +510,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: AppSpacing.xxl),
                           OrmawaListHeader(
                             title: 'DAFTAR ANGGOTA (${filteredMembers.length})',
                             searchHint: 'Cari nama atau NIM...',
@@ -529,7 +526,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                   () => _searchQuery = value.toLowerCase(),
                                 ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppSpacing.s20),
                           if (filteredMembers.isEmpty)
                             _buildEmptyState()
                           else
@@ -539,7 +536,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: filteredMembers.length,
                               separatorBuilder:
-                                  (_, __) => const SizedBox(height: 12),
+                                  (_, __) => const SizedBox(height: AppSpacing.md),
                               itemBuilder: (context, index) {
                                 final member = filteredMembers[index];
                                 return _buildMemberCard(
@@ -566,10 +563,10 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                       Icons.person_add_rounded,
                       color: Colors.white,
                     ),
-                    label: const Text(
+                    label: Text(
                       'Tambah Anggota',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -589,7 +586,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.appColors.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 20),
@@ -601,7 +598,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 color: AppColors.neutral400,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               'Data tidak ditemukan',
               style: AppTextStyles.titleLg.copyWith(
@@ -609,7 +606,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Coba gunakan kata kunci pencarian atau\nfilter yang berbeda.',
               textAlign: TextAlign.center,
@@ -619,7 +616,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 _selectedFilterRole != 'SEMUA' ||
                 _selectedFilterDivisi != 'SEMUA' ||
                 _selectedFilterStatus != 'SEMUA') ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               ElevatedButton.icon(
                 onPressed:
                     () => setState(() {
@@ -682,7 +679,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
         vertical: 22,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
@@ -703,7 +700,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'STATISTIK ORGANISASI',
                 style: AppTextStyles.labelSm.copyWith(
@@ -714,7 +711,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.s20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -742,7 +739,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             textAlign: TextAlign.center,
@@ -762,7 +759,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
     if (r.contains('ketua umum') || r == 'ketua') {
       return Theme.of(context).colorScheme.primary;
     }
-    if (r.contains('wakil ketua')) return Colors.indigo;
+    if (r.contains('wakil ketua')) return context.appColors.info;
     if (r.contains('sekretaris') || r.contains('bendahara')) {
       return AppColors.info;
     }
@@ -770,7 +767,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
     if (r.contains('staff') || r.contains('staf') || r == 'anggota') {
       return AppColors.success;
     }
-    return Colors.blueGrey;
+    return AppColors.neutral500;
   }
 
   Widget _buildMemberCard(
@@ -794,7 +791,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusXl,
           border: Border.all(
             color: isAktif ? AppColors.neutral200 : AppColors.neutral300,
@@ -834,7 +831,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                         : null,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -876,7 +873,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                           size: 18,
                                           color: AppColors.info,
                                         ),
-                                        SizedBox(width: 10),
+                                        SizedBox(width: AppSpacing.s10),
                                         Text(
                                           'Edit Anggota',
                                           style: TextStyle(
@@ -895,7 +892,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                           size: 18,
                                           color: AppColors.error,
                                         ),
-                                        SizedBox(width: 10),
+                                        SizedBox(width: AppSpacing.s10),
                                         Text(
                                           'Hapus Anggota',
                                           style: TextStyle(
@@ -918,7 +915,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   Row(
                     children: [
                       Text(
@@ -931,14 +928,14 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                         ),
                       ),
                       if (!isAktif) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 6,
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.grey.withAlpha(30),
+                            color: AppColors.neutral500.withAlpha(30),
                             borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
@@ -946,7 +943,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                             style: const TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.w900,
-                              color: Colors.grey,
+                              color: AppColors.neutral500,
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -954,7 +951,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                       ],
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSpacing.s10),
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
@@ -1024,7 +1021,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
             title: const Row(
               children: [
                 Icon(Icons.delete_forever_rounded, color: AppColors.error),
-                SizedBox(width: 10),
+                SizedBox(width: AppSpacing.s10),
                 Text('Hapus Anggota'),
               ],
             ),
@@ -1038,7 +1035,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 child: const Text(
                   'Batal',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: AppColors.neutral500,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1050,16 +1047,16 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.appColors.onPrimary,
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Hapus',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+              child: Text(
+                'Hapus',
+                style: TextStyle(
+                  color: context.appColors.onPrimary,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
               ),
             ],
           ),
@@ -1176,9 +1173,9 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) => const _StudentSearchSheet(),
     ).then((selected) {
@@ -1217,7 +1214,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                 child: const Text(
                   'Batal',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: AppColors.neutral500,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1239,10 +1236,10 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                   }
                 },
 
-                child: const Text(
+                child: Text(
                   'Simpan',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1257,7 +1254,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
     final isEdit = widget.initialMember != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: Consumer<OrmawaProvider>(
         builder: (context, provider, child) {
           final availableRoles = provider.roles.map((r) => r.name).toList();
@@ -1297,7 +1294,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                           color: AppColors.neutral500,
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
 
                       Text(
                         'Pilih Mahasiswa',
@@ -1306,7 +1303,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       GestureDetector(
                         onTap: isEdit ? null : _showStudentSearchModal,
                         child: Container(
@@ -1317,7 +1314,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isEdit
-                                    ? Colors.grey[100]
+                                    ? AppColors.neutral200
                                     : AppColors.neutral100,
                             borderRadius: AppRadius.radiusLg,
                             border: Border.all(color: AppColors.neutral300),
@@ -1328,11 +1325,11 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                 Icons.person_search_rounded,
                                 color:
                                     isEdit
-                                        ? Colors.grey
+                                        ? AppColors.neutral500
                                         : Theme.of(context).colorScheme.primary,
                                 size: 24,
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Text(
                                   isEdit
@@ -1360,7 +1357,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Row(
                         children: [
                           Expanded(
@@ -1374,7 +1371,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 _buildDropdown<String>(
                                   value:
                                       availableRoles.contains(_selectedRole)
@@ -1388,7 +1385,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: AppSpacing.lg),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1415,7 +1412,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 _buildDropdown<String>(
                                   value:
                                       availableDivisions.contains(
@@ -1435,7 +1432,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                         ],
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         'Status Keanggotaan',
                         style: AppTextStyles.labelSm.copyWith(
@@ -1443,7 +1440,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       _buildDropdown<String>(
                         value: _selectedStatus,
                         items: _statuses,
@@ -1451,14 +1448,14 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                             (val) => setState(() => _selectedStatus = val!),
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       _buildInputField(
                         'Email Kampus (Opsional)',
                         'email@kampus.ac.id',
                         Icons.email_rounded,
                         controller: _emailController,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       _buildInputField(
                         'Nomor HP / WA (Opsional)',
                         '08123456789',
@@ -1466,7 +1463,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                         controller: _phoneController,
                       ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: AppSpacing.xxxl),
                       SizedBox(
                         width: double.infinity,
                         height: 56,
@@ -1496,7 +1493,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                   ),
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.xxl),
                     ],
                   ),
                 ),
@@ -1570,7 +1567,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -1584,7 +1581,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
           child: Row(
             children: [
               Icon(icon, color: AppColors.neutral500, size: 20),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: TextField(
                   controller: controller,
@@ -1686,7 +1683,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 decoration: BoxDecoration(
@@ -1707,7 +1704,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Expanded(
                 child:
                     _isLoading
@@ -1772,7 +1769,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                                 style: const TextStyle(
                                   fontFamily: 'monospace',
                                   fontSize: 12,
-                                  color: Colors.grey,
+                                  color: AppColors.neutral500,
                                 ),
                               ),
                             );
@@ -1795,7 +1792,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
   Color _getRoleColor(String role) {
     final r = role.toLowerCase();
     if (r.contains('ketua umum') || r == 'ketua') return AppColors.primary;
-    if (r.contains('wakil ketua')) return Colors.indigo;
+    if (r.contains('wakil ketua')) return AppColors.info;
     if (r.contains('sekretaris') || r.contains('bendahara')) {
       return AppColors.info;
     }
@@ -1803,7 +1800,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
     if (r.contains('staff') || r.contains('staf') || r == 'anggota') {
       return AppColors.success;
     }
-    return Colors.blueGrey;
+    return AppColors.neutral500;
   }
 
   @override
@@ -1827,7 +1824,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   Center(
                     child: Column(
                       children: [
@@ -1862,7 +1859,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                                     : null,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           member.name,
                           style: AppTextStyles.titleLg.copyWith(
@@ -1877,7 +1874,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1902,7 +1899,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.lg,
@@ -1935,7 +1932,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -1944,7 +1941,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildSectionTitle('KONTAK & DATA'),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         _buildDetailRow(
                           Icons.email_rounded,
                           'Email',
@@ -1964,15 +1961,15 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                           'Bergabung Pada',
                           member.joinedAt?.toString().split(' ')[0] ?? '-',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                         _buildSectionTitle('STATUS KEANGGOTAAN'),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         _buildActivityItem(
                           'Status Saat Ini',
                           member.status.toUpperCase(),
-                          member.status.toLowerCase() == 'aktif'
-                              ? AppColors.success
-                              : Colors.grey,
+                              member.status.toLowerCase() == 'aktif'
+                                  ? AppColors.success
+                                  : AppColors.neutral500,
                         ),
                         if (member.periode != null &&
                             member.periode!.isNotEmpty)
@@ -1981,7 +1978,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                             member.periode!,
                             Theme.of(context).colorScheme.primary,
                           ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: AppSpacing.xxxl),
                       ],
                     ),
                   ),
@@ -2007,7 +2004,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: AppSpacing.s20),
       child: Row(
         children: [
           Container(
@@ -2019,7 +2016,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
             ),
             child: Icon(icon, size: 20, color: AppColors.neutral600),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -2032,7 +2029,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   value,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -2050,7 +2047,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
 
   Widget _buildActivityItem(String label, String value, Color color) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.neutral100,

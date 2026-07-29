@@ -1,6 +1,7 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -287,7 +288,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           size: 48,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         _errorMessage!,
                         textAlign: TextAlign.center,
@@ -296,7 +297,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           color: AppColors.neutral800,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       SizedBox(
                         width: double.infinity,
                         child: BkuButton(
@@ -323,7 +324,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedDivisi,
                           decoration: InputDecoration(
@@ -384,14 +385,14 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Text(
                           'Pilih Divisi (Prioritas 2 - Opsional)',
                           style: AppTextStyles.titleLarge.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedDivisi2,
                           decoration: InputDecoration(
@@ -451,7 +452,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppSpacing.xxl),
                       ],
 
                       // Dynamic form fields / Default form fields
@@ -462,7 +463,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         BkuTextField(
                           controller: _alasanController,
                           maxLines: 5,
@@ -503,19 +504,19 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xl),
                         Text(
                           'Lampiran Pendukung (CV/Portofolio)',
                           style: AppTextStyles.titleLarge.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(AppSpacing.xl),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             borderRadius: AppRadius.radiusXl,
                             border: Border.all(
                               color:
@@ -533,7 +534,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                   context,
                                 ).colorScheme.outline.withAlpha(50),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               Text(
                                 'Maksimal 5MB (PDF/JPG/PNG)',
                                 style: AppTextStyles.labelSm.copyWith(
@@ -544,7 +545,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                 ),
                               ),
                               if (_lampiranName != null) ...[
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 Text(
                                   'File terpilih: $_lampiranName',
                                   style: AppTextStyles.labelSm.copyWith(
@@ -552,7 +553,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                   ),
                                 ),
                               ],
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.lg),
                               InkWell(
                                 onTap: _pickFile,
                                 child: Container(
@@ -588,7 +589,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           final options = field['options']?.toString() ?? '';
 
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 24),
+                            padding: const EdgeInsets.only(bottom: AppSpacing.xl),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -616,7 +617,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                       ),
                                   ],
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 if (type == 'text')
                                   BkuTextField(
                                     controller: _textControllers[idStr],
@@ -783,7 +784,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                       AppSpacing.xl,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: context.appColors.surface,
                                       borderRadius: AppRadius.radiusXl,
                                       border: Border.all(
                                         color:
@@ -801,7 +802,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                             context,
                                           ).colorScheme.outline.withAlpha(50),
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: AppSpacing.sm),
                                         Text(
                                           'Maksimal 5MB (PDF/JPG/PNG)',
                                           style: AppTextStyles.labelSm.copyWith(
@@ -812,7 +813,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                           ),
                                         ),
                                         if (_fileNames[idStr] != null) ...[
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: AppSpacing.sm),
                                           Text(
                                             'File terpilih: ${_fileNames[idStr]}',
                                             style: AppTextStyles.labelSm
@@ -822,7 +823,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
-                                        const SizedBox(height: 12),
+                                        const SizedBox(height: AppSpacing.md),
                                         InkWell(
                                           onTap: () => _pickDynamicFile(idStr),
                                           child: Container(
@@ -855,7 +856,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                         }),
                       ],
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: AppSpacing.xxxl),
                       SizedBox(
                         width: double.infinity,
                         height: 58,
@@ -864,19 +865,19 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
 
                           child:
                               _isSubmitting
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                     ),
                                   )
                                   : Text(
                                     'Kirim Pendaftaran',
                                     style: AppTextStyles.labelMd.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                     ),
                                   ),
                         ),

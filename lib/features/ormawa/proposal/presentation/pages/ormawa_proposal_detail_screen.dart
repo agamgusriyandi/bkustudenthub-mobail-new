@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -69,7 +70,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
     final isDitolak = proposal.status.toLowerCase() == 'ditolak';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -85,14 +86,14 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                   AppSnackbar.showSuccess(context, 'Menyiapkan dokumen PDF...');
                   await ProposalPdfService.generateAndPrintPdf(proposal);
                 },
-                icon: const Icon(Icons.print_rounded, color: Colors.white),
+                icon: Icon(Icons.print_rounded, color: context.appColors.onPrimary),
                 tooltip: 'Cetak Proposal',
               ),
               IconButton(
                 onPressed: () {
                   AppSnackbar.showSuccess(context, 'Membuka menu bagikan...');
                 },
-                icon: const Icon(Icons.share_rounded, color: Colors.white),
+                icon: Icon(Icons.share_rounded, color: context.appColors.onPrimary),
                 tooltip: 'Bagikan',
               ),
             ],
@@ -108,13 +109,13 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                   if ((isRevisi || isDitolak) &&
                       proposal.catatan != null &&
                       proposal.catatan!.isNotEmpty) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     _buildReviewerNote(proposal.catatan!),
                   ],
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Informasi Dasar'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   BkuCard(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: Column(
@@ -129,22 +130,22 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                           Icons.foundation_rounded,
                           'Landasan Kegiatan',
                           proposal.landasanKegiatan ?? '-',
-                          color: Colors.teal,
+                          color: context.appColors.info,
                         ),
                         _buildInfoItem(
                           Icons.category_rounded,
                           'Bentuk Kegiatan',
                           proposal.bentukKegiatan ?? '-',
-                          color: Colors.purple,
+                          color: AppColors.neutral700,
                           isLast: true,
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Pelaksanaan & Target'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   BkuCard(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: Column(
@@ -162,34 +163,34 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                           Icons.schedule_rounded,
                           'Jadwal Pelaksanaan',
                           proposal.jadwalPelaksanaan ?? '-',
-                          color: Colors.deepOrange,
+                          color: context.appColors.primary,
                         ),
                         _buildInfoItem(
                           Icons.handshake_rounded,
                           'Mitra Kerja',
                           proposal.mitra ?? '-',
-                          color: Colors.amber,
+                          color: context.appColors.warning,
                         ),
                         _buildInfoItem(
                           Icons.person_rounded,
                           'PJ Kegiatan',
                           proposal.pjKegiatan ?? '-',
-                          color: Colors.indigo,
+                          color: context.appColors.info,
                         ),
                         _buildInfoItem(
                           Icons.group_rounded,
                           'Sasaran Kegiatan',
                           proposal.sasaranKegiatan ?? '-',
-                          color: Colors.redAccent,
+                          color: context.appColors.error,
                           isLast: true,
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Keuangan'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   BkuCard(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: Column(
@@ -204,16 +205,16 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                           Icons.account_balance_wallet_rounded,
                           'Sumber Dana',
                           proposal.sumberDana ?? '-',
-                          color: Colors.lightGreen,
+                          color: context.appColors.success,
                           isLast: true,
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Deskripsi & Analisis'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   BkuCard(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: Column(
@@ -240,14 +241,14 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Status Verifikasi'),
-                  const SizedBox(height: 16),
-                  _buildStatusTimeline(proposal.status, isUnivLevel),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildStatusTimeline(context, proposal.status, isUnivLevel),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSectionTitle('Lampiran & Dokumen'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   if (proposal.fileUrl != null && proposal.fileUrl!.isNotEmpty)
                     _buildFileCard(
                       'Dokumen_Proposal.pdf',
@@ -262,10 +263,10 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                       ),
                     ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                   if (isRevisi && ormawaProvider.hasPermission('edit_proposal'))
                     _buildReSubmitButton(context),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -287,7 +288,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(Icons.warning_rounded, color: AppColors.warning, size: 24),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +300,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   catatan,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -321,7 +322,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
   }) {
     if (content == null || content.isEmpty) return const SizedBox();
     return Padding(
-      padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+      padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.s20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -335,7 +336,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 title.toUpperCase(),
                 style: AppTextStyles.labelSm.copyWith(
@@ -346,7 +347,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -368,7 +369,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTimeline(String currentStatus, bool isUnivLevel) {
+  Widget _buildStatusTimeline(BuildContext context, String currentStatus, bool isUnivLevel) {
     final status = currentStatus.toLowerCase();
 
     bool isSubmitted = true;
@@ -385,6 +386,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
       child: Column(
         children: [
           _buildTimelineStep(
+            context,
             'Proposal Diajukan',
             isUnivLevel
                 ? 'Menunggu respon Universitas'
@@ -394,6 +396,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
           ),
           if (!isUnivLevel)
             _buildTimelineStep(
+              context,
               isRevisi
                   ? 'Revisi Fakultas'
                   : (isDitolak && !isFakultas
@@ -410,6 +413,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               isWarning: isRevisi,
             ),
           _buildTimelineStep(
+            context,
             (isDitolak && isFakultas)
                 ? 'Ditolak Universitas'
                 : 'Persetujuan Universitas',
@@ -428,6 +432,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTimelineStep(
+    BuildContext context,
     String title,
     String subtitle,
     bool isDone,
@@ -448,7 +453,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: isDone ? indicatorColor : Colors.white,
+                color: isDone ? indicatorColor : context.appColors.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isDone ? Colors.transparent : AppColors.neutral400,
@@ -462,7 +467,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                             ? Icons.close
                             : (isWarning ? Icons.edit : Icons.check),
                         size: 14,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                       )
                       : null,
             ),
@@ -477,7 +482,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: AppSpacing.lg),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -522,10 +527,10 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             ),
           );
         },
-        icon: const Icon(Icons.edit_document, color: Colors.white),
-        label: const Text(
+        icon: Icon(Icons.edit_document, color: context.appColors.onPrimary),
+        label: Text(
           'PERBAIKI PROPOSAL',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -553,7 +558,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               size: 28,
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: AppSpacing.s20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,7 +571,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                     letterSpacing: 1.2,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Status Pengajuan Saat Ini',
                   style: AppTextStyles.bodyMd.copyWith(color: Colors.black54),
@@ -591,7 +596,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             letterSpacing: 1.0,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Container(
           width: 40,
           height: 3,
@@ -613,7 +618,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
   }) {
     final effectiveColor = color ?? AppColors.primary;
     return Padding(
-      padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+      padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.s20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -625,7 +630,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             ),
             child: Icon(icon, size: 20, color: effectiveColor),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -637,7 +642,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                     fontSize: 11,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
                   style: AppTextStyles.bodyMd.copyWith(
@@ -655,7 +660,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
 
   Widget _buildFileCard(String fileName, String size) {
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
@@ -664,7 +669,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             color: AppColors.primary,
             size: 24,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

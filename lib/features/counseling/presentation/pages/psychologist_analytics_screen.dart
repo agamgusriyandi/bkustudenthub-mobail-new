@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class PsychologistAnalyticsScreen extends StatefulWidget {
   const PsychologistAnalyticsScreen({super.key});
@@ -72,17 +73,17 @@ class _PsychologistAnalyticsScreenState
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.xl),
                               if (stats.isNotEmpty) ...[
                                 _buildSectionTitle('Ringkasan'),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                                 _buildSummaryCards(stats),
-                                const SizedBox(height: 28),
+                                const SizedBox(height: AppSpacing.s28),
                               ],
                               _buildSectionTitle('Tren Sesi Bulanan'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildTrendChart(monthly),
-                              const SizedBox(height: 28),
+                              const SizedBox(height: AppSpacing.s28),
 
                               if (prodiPopularity.isNotEmpty ||
                                   academicCount > 0 ||
@@ -99,7 +100,7 @@ class _PsychologistAnalyticsScreenState
                                             _buildSectionTitle(
                                               'Prodi Terbanyak',
                                             ),
-                                            const SizedBox(height: 12),
+                                            const SizedBox(height: AppSpacing.md),
                                             _buildProdiPopularity(
                                               prodiPopularity,
                                             ),
@@ -109,7 +110,7 @@ class _PsychologistAnalyticsScreenState
                                     if (prodiPopularity.isNotEmpty &&
                                         (academicCount > 0 ||
                                             nonAcademicCount > 0))
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: AppSpacing.md),
                                     if (academicCount > 0 ||
                                         nonAcademicCount > 0)
                                       Expanded(
@@ -120,7 +121,7 @@ class _PsychologistAnalyticsScreenState
                                             _buildSectionTitle(
                                               'Kategori Masalah',
                                             ),
-                                            const SizedBox(height: 12),
+                                            const SizedBox(height: AppSpacing.md),
                                             _buildCategoryChart(
                                               academicCount,
                                               nonAcademicCount,
@@ -130,17 +131,17 @@ class _PsychologistAnalyticsScreenState
                                       ),
                                   ],
                                 ),
-                                const SizedBox(height: 28),
+                                const SizedBox(height: AppSpacing.s28),
                               ],
 
                               _buildSectionTitle('Distribusi Masalah (Isu)'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildIssueDistribution(topIssues),
-                              const SizedBox(height: 28),
+                              const SizedBox(height: AppSpacing.s28),
                               _buildSectionTitle('Rekomendasi Sistem'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: AppSpacing.md),
                               _buildRecommendations(recommendations),
-                              const SizedBox(height: 40),
+                              const SizedBox(height: AppSpacing.xxxl),
                             ],
                           ),
                         ),
@@ -185,7 +186,7 @@ class _PsychologistAnalyticsScreenState
         final color = colors[c % colors.length];
         return Expanded(
           child: BkuCard(
-            margin: EdgeInsets.only(right: c < count - 1 ? 12 : 0),
+            margin: EdgeInsets.only(right: c < count - AppSpacing.s1 ? AppSpacing.md : 0),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.lg,
@@ -195,14 +196,14 @@ class _PsychologistAnalyticsScreenState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: AppSpacing.paddingSm,
                   decoration: BoxDecoration(
                     color: color.withAlpha(20),
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Icon(icons[c % icons.length], color: color, size: 20),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   '${s['value'] ?? 0}',
                   style: AppTextStyles.titleLg.copyWith(
@@ -211,7 +212,7 @@ class _PsychologistAnalyticsScreenState
                     color: AppColors.neutral900,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.s2),
                 Text(
                   s['label']?.toString() ?? '',
                   textAlign: TextAlign.center,
@@ -253,7 +254,12 @@ class _PsychologistAnalyticsScreenState
 
     return BkuCard(
       height: 220,
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.lg,
+      ),
       child: LineChart(
         LineChartData(
           minX: 0,
@@ -272,7 +278,7 @@ class _PsychologistAnalyticsScreenState
                   final i = value.toInt();
                   if (i < 0 || i > 11) return const SizedBox();
                   return Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -346,7 +352,7 @@ class _PsychologistAnalyticsScreenState
                 getDotPainter:
                     (spot, percent, barData, index) => FlDotCirclePainter(
                       radius: 4,
-                      color: Colors.white,
+                      color: context.appColors.surface,
                       strokeWidth: 2,
                       strokeColor: const Color(0xFF8B5CF6),
                     ),
@@ -392,7 +398,7 @@ class _PsychologistAnalyticsScreenState
       height: 230,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -424,7 +430,7 @@ class _PsychologistAnalyticsScreenState
                         titleStyle: AppTextStyles.labelMd.copyWith(
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: context.appColors.onPrimary,
                         ),
                       );
                     }).toList(),
@@ -432,7 +438,7 @@ class _PsychologistAnalyticsScreenState
               swapAnimationDuration: const Duration(milliseconds: 800),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Expanded(
             flex: 3,
             child: SingleChildScrollView(
@@ -443,12 +449,12 @@ class _PsychologistAnalyticsScreenState
                       final i = entry.key;
                       final prodi = entry.value as Map<String, dynamic>;
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.s6),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(top: 2),
+                              margin: const EdgeInsets.only(top: AppSpacing.s2),
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
@@ -456,7 +462,7 @@ class _PsychologistAnalyticsScreenState
                                 color: colors[i % colors.length],
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Expanded(
                               child: Text(
                                 prodi['name']?.toString() ?? '-',
@@ -488,7 +494,7 @@ class _PsychologistAnalyticsScreenState
       height: 230,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
@@ -516,7 +522,7 @@ class _PsychologistAnalyticsScreenState
                       titleStyle: AppTextStyles.labelMd.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                       ),
                     ),
                   if (nonAcademic > 0)
@@ -528,7 +534,7 @@ class _PsychologistAnalyticsScreenState
                       titleStyle: AppTextStyles.labelMd.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                       ),
                     ),
                   if (academic <= 0 && nonAcademic <= 0)
@@ -543,7 +549,7 @@ class _PsychologistAnalyticsScreenState
               swapAnimationDuration: const Duration(milliseconds: 800),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Expanded(
             flex: 2,
             child: Column(
@@ -554,7 +560,7 @@ class _PsychologistAnalyticsScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 2),
+                      margin: const EdgeInsets.only(top: AppSpacing.s2),
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
@@ -562,7 +568,7 @@ class _PsychologistAnalyticsScreenState
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.s6),
                     Expanded(
                       child: Text(
                         'Akademik',
@@ -576,12 +582,12 @@ class _PsychologistAnalyticsScreenState
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 2),
+                      margin: const EdgeInsets.only(top: AppSpacing.s2),
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
@@ -589,7 +595,7 @@ class _PsychologistAnalyticsScreenState
                         color: AppColors.warning,
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.s6),
                     Expanded(
                       child: Text(
                         'Non-Akademik',
@@ -644,7 +650,7 @@ class _PsychologistAnalyticsScreenState
 
               return Padding(
                 padding: EdgeInsets.only(
-                  bottom: i == topIssues.length - 1 ? 0 : 16,
+                  bottom: i == topIssues.length - AppSpacing.s1 ? 0 : AppSpacing.lg,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -674,7 +680,7 @@ class _PsychologistAnalyticsScreenState
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final width = constraints.maxWidth;
@@ -731,7 +737,7 @@ class _PsychologistAnalyticsScreenState
                 isWarning ? const Color(0xFFFDE68A) : const Color(0xFFBBF7D0);
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.only(bottom: AppSpacing.s10),
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: bgColor,
@@ -742,7 +748,7 @@ class _PsychologistAnalyticsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: AppSpacing.padding6,
                     decoration: BoxDecoration(
                       color: color.withAlpha(30),
                       borderRadius: AppRadius.radiusSm,
@@ -755,7 +761,7 @@ class _PsychologistAnalyticsScreenState
                       size: 16,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.s10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -770,7 +776,7 @@ class _PsychologistAnalyticsScreenState
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: AppSpacing.s3),
                         Text(
                           rec['description']?.toString() ?? '',
                           style: AppTextStyles.labelMd.copyWith(
@@ -800,7 +806,7 @@ class _PsychologistAnalyticsScreenState
       child: Column(
         children: [
           Icon(Icons.bar_chart_rounded, size: 40, color: AppColors.neutral300),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             message,
             style: AppTextStyles.bodySm.copyWith(

@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PsychologistListScreen extends StatefulWidget {
   final bool autoFocusSearch;
@@ -66,7 +68,12 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s20,
+                    AppSpacing.s20,
+                    AppSpacing.s20,
+                    0,
+                  ),
                   child: _buildSearchBar(provider),
                 ),
               ),
@@ -91,14 +98,14 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                           size: 56,
                           color: Colors.red[300],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           provider.psychologistsError!,
                           style: AppTextStyles.bodyMd.copyWith(
                             color: AppColors.neutral500,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         BkuButton(
                           onPressed: () => provider.loadPsychologists(),
                           text: 'Coba Lagi',
@@ -118,7 +125,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                           size: 64,
                           color: AppColors.neutral300,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           'Tidak ada psikolog tersedia',
                           style: AppTextStyles.bodyMd.copyWith(
@@ -150,7 +157,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
   Widget _buildSearchBar(StudentCounselingProvider provider) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
@@ -258,10 +265,9 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
       return '';
     }();
     final photoUrl = rawPhoto.isNotEmpty ? ApiGate.getImageUrl(rawPhoto) : '';
-    debugPrint('AVATAR_DEBUG psychologist_list_screen: $photoUrl');
 
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -310,31 +316,32 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         borderRadius: AppRadius.radiusLg,
                         child:
                             photoUrl.isNotEmpty
-                                ? Image.network(
+                                ? CachedNetworkImage(imageUrl: 
                                   photoUrl,
                                   width: 60,
                                   height: 60,
                                   fit: BoxFit.cover,
-                                  errorBuilder:
-                                      (context, error, stackTrace) => Center(
-                                        child: Text(
-                                          initials,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ),
-                                )
-                                : Center(
-                                  child: Text(
-                                    initials,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                  errorWidget:
+                                      (context, url, error) => Center(
+                                       child: Text(
+                                         initials,
+                                         style: TextStyle(
+                                           color: context.appColors.onPrimary,
+                                           fontSize: 20,
+                                           fontWeight: FontWeight.w900,
+                                         ),
+                                       ),
+                                     ),
+                                     placeholder: (context, url) => Container(color: AppColors.neutral200),
+                                   )
+                                   : Center(
+                                     child: Text(
+                                       initials,
+                                       style: TextStyle(
+                                         color: context.appColors.onPrimary,
+                                         fontSize: 20,
+                                         fontWeight: FontWeight.w900,
+                                       ),
                                   ),
                                 ),
                       ),
@@ -354,7 +361,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: AppSpacing.s14),
                 // Info
                 Expanded(
                   child: Column(
@@ -369,7 +376,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.s2),
                       Text(
                         spec,
                         style: AppTextStyles.labelSm.copyWith(
@@ -378,7 +385,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
                           Container(
@@ -404,7 +411,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                             ),
                           ),
                           if (fee > 0) ...[
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               'Rp ${_formatFee(fee)}',
                               style: TextStyle(
@@ -421,7 +428,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -434,7 +441,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                           size: 13,
                           color: AppColors.neutral500,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
                             location,
@@ -451,7 +458,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                   )
                 else
                   const Spacer(),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 BkuButton(
                   onPressed:
                       isActive ? () => _showTopicPicker(context, id, name) : null,
@@ -492,10 +499,15 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
       backgroundColor: Colors.transparent,
       builder:
           (_) => Container(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.lg,
+              AppSpacing.xl,
+              AppSpacing.xxl,
+            ),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius28)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -511,7 +523,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 Text(
                   'Konseling dengan $psikologName',
                   style: AppTextStyles.bodyLg.copyWith(
@@ -519,17 +531,17 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                     color: AppColors.onSurface,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.s6),
                 Text(
                   'Pilih topik yang ingin kamu diskusikan',
                   style: AppTextStyles.labelMd.copyWith(
                     color: AppColors.neutral600,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.s20),
                 ...topics.map(
                   (t) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.s10),
                     child: ListTile(
                       onTap: () {
                         Navigator.pop(context);
@@ -563,7 +575,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         borderRadius: AppRadius.radiusLg,
                         side: BorderSide(color: Colors.grey.withAlpha(30)),
                       ),
-                      tileColor: Colors.white,
+                      tileColor: context.appColors.surface,
                     ),
                   ),
                 ),

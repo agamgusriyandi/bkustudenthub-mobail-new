@@ -1,4 +1,5 @@
-import 'package:pdf/pdf.dart';
+﻿import 'package:pdf/pdf.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
@@ -105,7 +106,7 @@ class PortfolioPdfGenerator {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    pw.SizedBox(height: 2),
+                    pw.SizedBox(height: AppSpacing.s2),
                     pw.Text(
                       'PORTOFOLIO KEGIATAN & REKAM JEJAK MAHASISWA',
                       style: pw.TextStyle(
@@ -136,9 +137,9 @@ class PortfolioPdfGenerator {
                 ),
               ],
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: AppSpacing.s10),
             pw.Divider(color: primaryColor, thickness: 1.5),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: AppSpacing.lg),
 
             // Profile & Summary Table
             pw.Container(
@@ -160,7 +161,7 @@ class PortfolioPdfGenerator {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  pw.SizedBox(height: 10),
+                  pw.SizedBox(height: AppSpacing.s10),
                   pw.Row(
                     children: [
                       pw.Expanded(
@@ -173,7 +174,7 @@ class PortfolioPdfGenerator {
                               textDark,
                               textMuted,
                             ),
-                            pw.SizedBox(height: 6),
+                            pw.SizedBox(height: AppSpacing.s6),
                             _buildInfoRow(
                               'NIM',
                               student.nim,
@@ -193,7 +194,7 @@ class PortfolioPdfGenerator {
                               textDark,
                               textMuted,
                             ),
-                            pw.SizedBox(height: 6),
+                            pw.SizedBox(height: AppSpacing.s6),
                             _buildInfoRow(
                               'Semester',
                               'Semester ${student.semester}',
@@ -205,9 +206,9 @@ class PortfolioPdfGenerator {
                       ),
                     ],
                   ),
-                  pw.SizedBox(height: 10),
+                  pw.SizedBox(height: AppSpacing.s10),
                   pw.Divider(color: borderColor, thickness: 0.5),
-                  pw.SizedBox(height: 8),
+                  pw.SizedBox(height: AppSpacing.sm),
                   pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
@@ -224,7 +225,7 @@ class PortfolioPdfGenerator {
                 ],
               ),
             ),
-            pw.SizedBox(height: 24),
+            pw.SizedBox(height: AppSpacing.xl),
 
             // Section Header: Riwayat Organisasi
             pw.Text(
@@ -236,9 +237,9 @@ class PortfolioPdfGenerator {
                 letterSpacing: 0.5,
               ),
             ),
-            pw.SizedBox(height: 4),
+            pw.SizedBox(height: AppSpacing.xs),
             pw.Divider(color: borderColor, thickness: 0.8),
-            pw.SizedBox(height: 12),
+            pw.SizedBox(height: AppSpacing.md),
 
             // List Organisasi
             if (orgList.isEmpty)
@@ -368,7 +369,7 @@ class PortfolioPdfGenerator {
                         color: primaryColor,
                       ),
                     ),
-                    pw.SizedBox(height: 2),
+                    pw.SizedBox(height: AppSpacing.s2),
                     pw.Text(
                       '${org.jabatan} | ${org.tipe.isNotEmpty ? "${org.tipe} | " : ""}$period',
                       style: pw.TextStyle(
@@ -415,7 +416,7 @@ class PortfolioPdfGenerator {
               ),
             ],
           ),
-          pw.SizedBox(height: 8),
+          pw.SizedBox(height: AppSpacing.sm),
           if (org.deskripsiKegiatan.isNotEmpty) ...[
             pw.Text(
               'Deskripsi Kontribusi:',
@@ -425,12 +426,12 @@ class PortfolioPdfGenerator {
                 color: textMuted,
               ),
             ),
-            pw.SizedBox(height: 2),
+            pw.SizedBox(height: AppSpacing.s2),
             pw.Text(
               org.deskripsiKegiatan,
               style: pw.TextStyle(fontSize: 9, color: textDark),
             ),
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: AppSpacing.s6),
           ],
           if (org.achievements.isNotEmpty) ...[
             pw.Text(
@@ -441,7 +442,7 @@ class PortfolioPdfGenerator {
                 color: textMuted,
               ),
             ),
-            pw.SizedBox(height: 2),
+            pw.SizedBox(height: AppSpacing.s2),
             ...org.achievements.map(
               (ach) => pw.Padding(
                 padding: const pw.EdgeInsets.only(left: 4, bottom: 2),
@@ -468,7 +469,7 @@ class PortfolioPdfGenerator {
             ),
           ],
           if (org.dokumentasi != null && org.dokumentasi!.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: AppSpacing.s6),
             pw.Text(
               '[Dokumentasi Terlampir pada Sistem]',
               style: pw.TextStyle(

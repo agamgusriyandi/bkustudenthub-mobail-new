@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorProfileScreen extends StatefulWidget {
   const MentorProfileScreen({super.key});
@@ -164,12 +166,12 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xl),
                     FadeInAnimation(
                       delay: 0.1,
                       child: _buildRoleCard(context, name, username, fotoUrl),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
                     FadeInAnimation(
                       delay: 0.15,
                       child: _buildMenuSection(context, 'Data Pribadi Mentor', [
@@ -178,7 +180,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           'ID / Username',
                           username,
                           Icons.badge_rounded,
-                          AppColors.info,
+                          context.appColors.info,
                           null,
                         ),
                         _buildMenuItem(
@@ -186,7 +188,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           'Email',
                           email.isEmpty ? '-' : email,
                           Icons.alternate_email_rounded,
-                          Colors.indigo,
+                          context.appColors.info,
                           null,
                         ),
                         _buildMenuItem(
@@ -194,7 +196,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           'Nomor WhatsApp',
                           phone,
                           Icons.phone_android_rounded,
-                          AppColors.success,
+                          context.appColors.success,
                           null,
                         ),
                         if (prodiName.isNotEmpty)
@@ -203,12 +205,12 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                             'Program Studi',
                             prodiName,
                             Icons.school_rounded,
-                            AppColors.warning,
+                            context.appColors.warning,
                             null,
                           ),
                       ]),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: AppSpacing.s28),
                     FadeInAnimation(
                       delay: 0.2,
                       child: _buildMenuSection(context, 'Keamanan', [
@@ -222,12 +224,12 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                         ),
                       ]),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: AppSpacing.xxxl),
                     FadeInAnimation(
                       delay: 0.25,
                       child: _buildLogoutButton(context),
                     ),
-                    const SizedBox(height: 120),
+                    const SizedBox(height: AppSpacing.s120),
                   ],
                 ),
               ),
@@ -248,7 +250,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: theme.outline.withValues(alpha: 0.1)),
         boxShadow: [
@@ -266,26 +268,26 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
             Stack(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: AppSpacing.padding3,
                   decoration: BoxDecoration(
                     color: AppColors.neutral600.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    padding: AppSpacing.padding2,
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
                       child:
                           fotoUrl.isNotEmpty
-                              ? Image.network(
+                              ? CachedNetworkImage(imageUrl: 
                                 ApiGate.getImageUrl(fotoUrl),
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorWidget: (context, url, error) {
                                   return Container(
                                     width: 64,
                                     height: 64,
@@ -299,6 +301,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                                     ),
                                   );
                                 },
+                                placeholder: (context, url) => Container(color: AppColors.neutral200),
                               )
                               : Container(
                                 width: 64,
@@ -321,9 +324,9 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                   child: GestureDetector(
                     onTap: () => _pickAvatar(context),
                     child: Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: AppSpacing.padding6,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.black12, width: 1),
                         boxShadow: [
@@ -344,7 +347,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,7 +362,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.s2),
                   const Text(
                     'BKU HUB MEMBER',
                     style: TextStyle(
@@ -370,7 +373,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -397,7 +400,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                               color: Colors.black87,
                               size: 12,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpacing.s6),
                             Text(
                               'ID: $username',
                               style: const TextStyle(
@@ -416,25 +419,25 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.success.withValues(alpha: 0.1),
+                          color: context.appColors.success.withValues(alpha: 0.1),
                           borderRadius: AppRadius.radiusMd,
                           border: Border.all(
-                            color: AppColors.success.withValues(alpha: 0.2),
+                            color: context.appColors.success.withValues(alpha: 0.2),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.check_circle_rounded,
-                              color: AppColors.success,
+                              color: context.appColors.success,
                               size: 12,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               'MENTOR KENCANA',
                               style: TextStyle(
-                                color: AppColors.success,
+                                color: context.appColors.success,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -462,7 +465,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 12),
+          padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
             title.toUpperCase(),
             style: AppTextStyles.titleSm.copyWith(
@@ -474,9 +477,9 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
-            border: Border.all(color: Colors.grey.withAlpha(30)),
+            border: Border.all(color: AppColors.neutral300.withAlpha(30)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withAlpha(4),
@@ -497,7 +500,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           height: 1,
                           indent: 64,
                           endIndent: 20,
-                          color: Colors.grey.withAlpha(30),
+                          color: AppColors.neutral300.withAlpha(30),
                         ),
                     ],
                   );
@@ -525,7 +528,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
           vertical: AppSpacing.xs,
         ),
         leading: Container(
-          padding: const EdgeInsets.all(9),
+          padding: AppSpacing.padding9,
           decoration: BoxDecoration(
             color: color.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
@@ -560,41 +563,41 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.error.withAlpha(10),
+        color: context.appColors.error.withAlpha(10),
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.error.withAlpha(50)),
+        border: Border.all(color: context.appColors.error.withAlpha(50)),
       ),
       child: Material(
         color: Colors.transparent,
         child: ListTile(
           leading: Container(
-            padding: const EdgeInsets.all(9),
+            padding: AppSpacing.padding9,
             decoration: BoxDecoration(
-              color: AppColors.error.withAlpha(20),
+              color: context.appColors.error.withAlpha(20),
               borderRadius: AppRadius.radiusMd,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.logout_rounded,
-              color: AppColors.error,
+              color: context.appColors.error,
               size: 20,
             ),
           ),
-          title: const Text(
+          title: Text(
             'Keluar Aplikasi',
             style: TextStyle(
-              color: AppColors.error,
+              color: context.appColors.error,
               fontWeight: FontWeight.bold,
             ),
           ),
           subtitle: Text(
             'Anda akan keluar dari sesi ini',
             style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.error.withAlpha(150),
+              color: context.appColors.error.withAlpha(150),
             ),
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.chevron_right_rounded,
-            color: AppColors.error,
+            color: context.appColors.error,
           ),
           onTap: () => showLogoutDialog(context),
         ),

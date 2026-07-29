@@ -1,4 +1,4 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -212,14 +212,14 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle('Informasi Dasar'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Nama Kegiatan',
                     'Contoh: Seminar Nasional IT 2026',
                     Icons.event_rounded,
                     controller: _nameController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Landasan Kegiatan',
                     'Pilih landasan...',
@@ -233,7 +233,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _landasanController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Bentuk Kegiatan',
                     'Pilih bentuk...',
@@ -249,10 +249,10 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _bentukController,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildSectionTitle('Pelaksanaan'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Tanggal Kegiatan',
                     '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
@@ -270,7 +270,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                       }
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Mitra Kerja',
                     'Pilih mitra...',
@@ -285,21 +285,21 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _mitraController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'PJ Kegiatan',
                     'Contoh: Budi Santoso (Ketua Panitia)...',
                     Icons.person_rounded,
                     controller: _pjKegiatanController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Jadwal Pelaksanaan',
                     'Contoh: Senin, 15 Juli 2026, 09.00...',
                     Icons.schedule_rounded,
                     controller: _jadwalController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Sasaran Kegiatan',
                     'Pilih sasaran...',
@@ -314,10 +314,10 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _sasaranController,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildSectionTitle('Detail Khusus'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Latar Belakang',
                     'Uraikan latar belakang...',
@@ -325,7 +325,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     maxLines: 5,
                     controller: _latarBelakangController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Tujuan Kegiatan',
                     'Uraikan tujuan kegiatan...',
@@ -333,7 +333,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     maxLines: 5,
                     controller: _tujuanController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Deskripsi Detail Kegiatan',
                     'Uraikan deskripsi kegiatan...',
@@ -341,7 +341,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     maxLines: 5,
                     controller: _deskripsiController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Indikator Keberhasilan',
                     'Pilih indikator...',
@@ -356,10 +356,10 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _indikatorController,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   _buildSectionTitle('Anggaran & Berkas'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildTextField(
                     'Total Anggaran',
                     '0',
@@ -368,7 +368,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     controller: _budgetController,
                     isPrice: true,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildDropdownField(
                     'Sumber Dana',
                     'Pilih sumber...',
@@ -383,12 +383,12 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     ],
                     _sumberDanaController,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildFileUploadBox(),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xxl),
                   _buildSubmitButton(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxxl),
                 ],
               ),
             ),
@@ -409,7 +409,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
             letterSpacing: 1.5,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Container(
           width: 40,
           height: 3,
@@ -448,7 +448,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
               initialValue: currentValue,
               hint: Text(
@@ -522,7 +522,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               },
             ),
             if (currentValue == 'Lainnya') ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               BkuTextField(
                 controller: controller,
                 style: AppTextStyles.bodyMd.copyWith(
@@ -590,7 +590,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         GestureDetector(
           onTap: onTap,
           child: BkuTextField(
@@ -663,7 +663,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         GestureDetector(
           onTap: _pickFile,
           child: Container(
@@ -687,7 +687,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                   color: Theme.of(context).colorScheme.primary,
                   size: 32,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   _selectedFile != null
                       ? _selectedFile!.name
