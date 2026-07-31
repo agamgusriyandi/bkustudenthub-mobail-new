@@ -65,6 +65,7 @@ import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -90,6 +91,7 @@ class AppRoutes {
   static const String kencanaBanding = '/kencana/banding';
   static const String kencanaHandbook = '/kencana/handbook';
   static const String presensi = '/presensi';
+  static const String counselingHistory = '/counseling/history';
 
   // Counseling Routes
   static const String psychologistAnalytics = '/counseling/analytics';
@@ -197,6 +199,9 @@ class AppRoutes {
       if (path.startsWith('/kencana') && role != UserRole.student) {
         return studentMain;
       }
+      if (path.startsWith('/presensi') && role != UserRole.student) {
+        return studentMain;
+      }
       if (path.startsWith('/mentor-kencana') &&
           role != UserRole.mentorKencana) {
         return studentMain;
@@ -294,6 +299,10 @@ class AppRoutes {
       GoRoute(
         path: presensi,
         builder: (context, state) => const PresensiScreen(),
+      ),
+      GoRoute(
+        path: counselingHistory,
+        builder: (context, state) => const CounselingHistoryScreen(),
       ),
       GoRoute(
         path: psychologistMain,
