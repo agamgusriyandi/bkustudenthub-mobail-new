@@ -26,6 +26,13 @@ import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/healt
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/referral_management_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/assessment_management_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/assessment_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/admin_psychologist_list_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/create_psychologist_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/psychologist_detail_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/edit_psychologist_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/patient_medical_record_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/create_medical_record_screen.dart';
+import 'package:bkuhub_mobile/features/counseling/presentation/pages/all_schedules_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_add_schedule_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_patient_detail_screen.dart';
@@ -162,6 +169,15 @@ class AppRoutes {
   static const String referralManagement = '/counseling/referrals';
   static const String assessmentManagement = '/counseling/assessments';
   static const String assessment = '/counseling/assessment';
+
+  // Admin Psychology Routes
+  static const String adminPsychologistList = '/counseling/admin/psikolog';
+  static const String createPsychologist = '/counseling/admin/psikolog/create';
+  static const String psychologistDetail = '/counseling/admin/psikolog/:id';
+  static const String editPsychologist = '/counseling/admin/psikolog/:id/edit';
+  static const String patientMedicalRecord = '/counseling/patients/:id/medical-record';
+  static const String createMedicalRecord = '/counseling/patients/:id/medical-record/create';
+  static const String allSchedules = '/counseling/all-schedules';
 
   // TK (Tenaga Kesehatan) Routes
   static const String tkAddSchedule = '/tk/add-schedule';
@@ -554,6 +570,51 @@ class AppRoutes {
       GoRoute(
         path: assessment,
         builder: (context, state) => const AssessmentScreen(),
+      ),
+      // Admin Psychology Routes
+      GoRoute(
+        path: adminPsychologistList,
+        builder: (context, state) => const AdminPsychologistListScreen(),
+      ),
+      GoRoute(
+        path: createPsychologist,
+        builder: (context, state) => const CreatePsychologistScreen(),
+      ),
+      GoRoute(
+        path: '/counseling/admin/psikolog/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '0';
+          return PsychologistDetailScreen(psychologistId: id);
+        },
+      ),
+      GoRoute(
+        path: '/counseling/admin/psikolog/:id/edit',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '0';
+          return EditPsychologistScreen(psychologistId: id);
+        },
+      ),
+      GoRoute(
+        path: '/counseling/patients/:id/medical-record',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '0';
+          final name = state.uri.queryParameters['name'] ?? 'Pasien';
+          return PatientMedicalRecordScreen(
+            patientId: id,
+            patientName: name,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/counseling/patients/:id/medical-record/create',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '0';
+          return CreateMedicalRecordScreen(patientId: id);
+        },
+      ),
+      GoRoute(
+        path: allSchedules,
+        builder: (context, state) => const AllSchedulesScreen(),
       ),
       // TK (Tenaga Kesehatan) Routes
       GoRoute(
