@@ -64,6 +64,7 @@ import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -88,6 +89,7 @@ class AppRoutes {
   static const String kencanaInvitations = '/kencana/invitations';
   static const String kencanaBanding = '/kencana/banding';
   static const String kencanaHandbook = '/kencana/handbook';
+  static const String presensi = '/presensi';
 
   // Counseling Routes
   static const String psychologistAnalytics = '/counseling/analytics';
@@ -288,6 +290,10 @@ class AppRoutes {
       GoRoute(
         path: '/kencana/qr-scan',
         builder: (context, state) => const KencanaQrScanScreen(),
+      ),
+      GoRoute(
+        path: presensi,
+        builder: (context, state) => const PresensiScreen(),
       ),
       GoRoute(
         path: psychologistMain,
