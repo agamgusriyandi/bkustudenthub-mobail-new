@@ -45,6 +45,16 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_ba
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_clinical_reports_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_referral_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_bap_model.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_emr_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_live_examination_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/create_patient_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_patient_record_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_medical_records_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_screenings_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_insurance_review_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_all_schedules_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/admin_tk_list_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/create_tk_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_stage_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_session_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_score_screen.dart';
@@ -189,6 +199,16 @@ class AppRoutes {
   static const String tkBapForm = '/tk/bap/form';
   static const String tkClinicalReports = '/tk/reports';
   static const String tkReferralManagement = '/tk/referrals';
+  static const String tkEmr = '/tk/emr';
+  static const String tkLiveExam = '/tk/live-exam';
+  static const String tkCreatePatient = '/tk/create-patient';
+  static const String tkPatientRecord = '/tk/patient-record';
+  static const String tkMedicalRecords = '/tk/medical-records';
+  static const String tkScreenings = '/tk/screenings';
+  static const String tkInsuranceReview = '/tk/insurance-review';
+  static const String tkAllSchedules = '/tk/all-schedules';
+  static const String adminTkList = '/tk/admin/list';
+  static const String adminCreateTk = '/tk/admin/create';
 
   // Notification Routes
   static const String studentNotifications = '/notifications/student';
@@ -675,6 +695,50 @@ class AppRoutes {
       GoRoute(
         path: tkReferralManagement,
         builder: (context, state) => const TkReferralScreen(),
+      ),
+      GoRoute(
+        path: tkEmr,
+        builder: (context, state) => const TkEmrScreen(),
+      ),
+      GoRoute(
+        path: tkLiveExam,
+        builder: (context, state) => const TkLiveExaminationScreen(),
+      ),
+      GoRoute(
+        path: tkCreatePatient,
+        builder: (context, state) => const CreatePatientScreen(),
+      ),
+      GoRoute(
+        path: '/tk/patient-record/:id',
+        builder: (context, state) {
+          final patientId = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          final name = state.uri.queryParameters['name'];
+          return TkPatientRecordScreen(patientId: patientId, patientName: name);
+        },
+      ),
+      GoRoute(
+        path: tkMedicalRecords,
+        builder: (context, state) => const TkMedicalRecordsScreen(),
+      ),
+      GoRoute(
+        path: tkScreenings,
+        builder: (context, state) => const TkScreeningsScreen(),
+      ),
+      GoRoute(
+        path: tkInsuranceReview,
+        builder: (context, state) => const TkInsuranceReviewScreen(),
+      ),
+      GoRoute(
+        path: tkAllSchedules,
+        builder: (context, state) => const TkAllSchedulesScreen(),
+      ),
+      GoRoute(
+        path: adminTkList,
+        builder: (context, state) => const AdminTkListScreen(),
+      ),
+      GoRoute(
+        path: adminCreateTk,
+        builder: (context, state) => const CreateTkScreen(),
       ),
       // Ormawa Sub-Routes
       GoRoute(
