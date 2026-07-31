@@ -13,6 +13,8 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_service_grid.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_status_grid.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_agenda_list.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
 
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
@@ -76,7 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             BkuAppBar(
               title: name,
               subtitle: 'SELAMAT DATANG KEMBALI',
-              info: '${student.nim} â€¢ SEMESTER ${student.semester}',
+              info: '${student.nim} • SEMESTER ${student.semester}',
               variant: AppBarVariant.student,
               showBackButton: false,
               expandedHeight: 130,
@@ -145,6 +147,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: AppSpacing.s20),
                     const TodayScheduleCard(),
                     const SizedBox(height: AppSpacing.s20),
+                    IpkChartCard(
+                      currentIpk: student.ipk,
+                      currentSemester: student.semester,
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
                     _buildSectionTitle('Status Kamu'),
                     const SizedBox(height: AppSpacing.md),
                     StudentStatusGrid(
@@ -155,6 +162,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       appliedScholarships: appliedScholarships,
                       latestHealth: latestHealth,
                     ),
+                    const SizedBox(height: AppSpacing.s10),
+                    InsuranceTrackerCard(claims: student.insuranceClaims),
                     const SizedBox(height: AppSpacing.s20),
                     _buildSectionTitle('Berita Kampus'),
                     const SizedBox(height: AppSpacing.md),

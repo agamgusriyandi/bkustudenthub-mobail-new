@@ -414,7 +414,11 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
   String _formatDateTime(String? dateStr) {
     if (dateStr == null) return '-';
     try {
-      final date = DateTime.parse(dateStr);
+      final date = DateTime.parse(dateStr).toLocal();
+      // Jika waktu tepat 00:00, kemungkinan hanya data tanggal dari DB
+      if (date.hour == 0 && date.minute == 0) {
+        return DateFormat('dd MMM yyyy').format(date);
+      }
       return DateFormat('dd MMM, HH:mm').format(date);
     } catch (e) {
       return dateStr;

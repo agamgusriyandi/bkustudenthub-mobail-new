@@ -48,7 +48,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
               title: 'Kelompok Saya',
               variant: AppBarVariant.student,
               isExpandable: false,
-              showBackButton: false,
+              showBackButton: true,
             ),
             if (provider.isLoading && provider.groups.isEmpty)
               const SliverFillRemaining(
@@ -78,9 +78,11 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl,
-                  vertical: AppSpacing.xl,
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.xl,
+                  right: AppSpacing.xl,
+                  top: AppSpacing.xl,
+                  bottom: 120,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {

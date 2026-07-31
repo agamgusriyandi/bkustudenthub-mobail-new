@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -446,7 +446,10 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
   String _formatDateTime(String? dateStr) {
     if (dateStr == null) return '-';
     try {
-      final date = DateTime.parse(dateStr);
+      final date = DateTime.parse(dateStr).toLocal();
+      if (date.hour == 0 && date.minute == 0) {
+        return DateFormat('dd MMM yyyy').format(date);
+      }
       return DateFormat('dd MMM, HH:mm').format(date);
     } catch (e) {
       return dateStr;

@@ -26,7 +26,18 @@ class MentorKencanaProvider extends ChangeNotifier {
   List<MentorSession> get sessions => _sessions;
 
   MenteeDetailData? _menteeDetail;
+  Map<String, dynamic>? _progressData;
+  Map<String, dynamic>? _scoreData;
+  Map<String, dynamic>? _attendanceData;
+  Map<String, dynamic>? _handbookData;
+  List<dynamic>? _assignmentsData;
+
   MenteeDetailData? get menteeDetail => _menteeDetail;
+  Map<String, dynamic>? get progressData => _progressData;
+  Map<String, dynamic>? get scoreData => _scoreData;
+  Map<String, dynamic>? get attendanceData => _attendanceData;
+  Map<String, dynamic>? get handbookData => _handbookData;
+  List<dynamic>? get assignmentsData => _assignmentsData;
 
   List<AvailableStudentData> _availableStudents = [];
   List<AvailableStudentData> get availableStudents => _availableStudents;
@@ -148,6 +159,12 @@ class MentorKencanaProvider extends ChangeNotifier {
               : response.data;
       final groupList = resData is List ? resData : [];
       _groups = groupList.map((e) => MenteeGroup.fromJson(e)).toList();
+      
+      if (_groups.isNotEmpty) {
+        final detailResponse = await _apiClient.client.get('/kencana-mentor/groups/${_groups.first.id}');
+        final detailData = detailResponse.data['data'] as Map<String, dynamic>;
+        _scoreDefinitions = detailData['score_definitions'] as Map<String, dynamic>?;
+      }
     } on DioException catch (e) {
       _setError(e.response?.data['message'] ?? 'Gagal memuat daftar mentee');
     } catch (e) {
@@ -177,41 +194,38 @@ class MentorKencanaProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> submitBulkScores(Map<String, dynamic> data) async {
+  Map<String, dynamic>? _scoreDefinitions;
+  Map<String, dynamic>? get scoreDefinitions => _scoreDefinitions;
+
+  Future<void> fetchGroupDetails(int groupId) async {
     _setLoading(true);
     _setError(null);
     try {
-      final studentId = data['studentId'] as int;
-      final kognitif =
-          double.tryParse(data['kognitif']?.toString() ?? '') ?? 0.0;
-      final psikomotor =
-          double.tryParse(data['psikomotor']?.toString() ?? '') ?? 0.0;
-      final afektif = double.tryParse(data['afektif']?.toString() ?? '') ?? 0.0;
+      final response = await _apiClient.client.get('/kencana-mentor/groups/$groupId');
+      final data = response.data['data'] as Map<String, dynamic>;
+      _scoreDefinitions = data['score_definitions'] as Map<String, dynamic>?;
+      notifyListeners();
+    } on DioException catch (e) {
+      _setError(e.response?.data['message'] ?? 'Gagal memuat detail kelompok');
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
 
+  Future<bool> submitBulkScores({
+    required int studentId,
+    required List<Map<String, dynamic>> items,
+  }) async {
+    _setLoading(true);
+    _setError(null);
+    try {
       final payload = {
         'scores': [
           {
             'student_id': studentId,
-            'items': [
-              {
-                'component': 'cognitive',
-                'item_name': 'Handbook',
-                'score': kognitif,
-                'notes': 'Diinput via Mobile',
-              },
-              {
-                'component': 'psychomotor',
-                'item_name': 'Evaluasi Psikomotor',
-                'score': psikomotor,
-                'notes': 'Diinput via Mobile',
-              },
-              {
-                'component': 'affective',
-                'item_name': 'Evaluasi Afektif',
-                'score': afektif,
-                'notes': 'Diinput via Mobile',
-              },
-            ],
+            'items': items,
           },
         ],
       };
@@ -237,10 +251,20 @@ class MentorKencanaProvider extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final response = await _apiClient.client.get(
-        '/kencana-mentor/students/$studentId/progress',
-      );
-      _menteeDetail = MenteeDetailData.fromJson(response.data['data'] ?? {});
+      final results = await Future.wait([
+        _apiClient.client.get('/kencana-mentor/students/$studentId/progress'),
+        _apiClient.client.get('/kencana-mentor/students/$studentId/score'),
+        _apiClient.client.get('/kencana-mentor/students/$studentId/attendance'),
+        _apiClient.client.get('/kencana-mentor/students/$studentId/handbook'),
+        _apiClient.client.get('/kencana-mentor/students/$studentId/assignments'),
+      ]);
+
+      _menteeDetail = MenteeDetailData.fromJson(results[0].data['data'] ?? {});
+      _progressData = results[0].data['data'] ?? {};
+      _scoreData = results[1].data['data'] ?? {};
+      _attendanceData = results[2].data['data'] ?? {};
+      _handbookData = results[3].data['data'] ?? {};
+      _assignmentsData = results[4].data['data'] is List ? results[4].data['data'] : [];
     } on DioException catch (e) {
       _setError(e.response?.data['message'] ?? 'Gagal memuat detail mentee');
     } catch (e) {

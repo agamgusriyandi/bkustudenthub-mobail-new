@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -35,9 +35,60 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
     int studentId,
     String menteeName,
   ) {
-    final kognitifController = TextEditingController();
-    final psikomotorController = TextEditingController();
-    final afektifController = TextEditingController();
+    final provider = context.read<MentorKencanaProvider>();
+    final scoreDefs = provider.scoreDefinitions;
+    
+    final Map<String, TextEditingController> controllers = {};
+    final List<Widget> inputFields = [];
+    
+    if (scoreDefs != null) {
+      for (final category in ['cognitive', 'psychomotor', 'affective']) {
+        final items = scoreDefs[category] as List<dynamic>? ?? [];
+        final manualItems = items.where((it) => it['manual'] == true).toList();
+        
+        if (manualItems.isNotEmpty) {
+          inputFields.add(
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.xs),
+              child: Text(
+                category.toUpperCase(),
+                style: AppTextStyles.labelSm.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.neutral700,
+                ),
+              ),
+            ),
+          );
+          
+          for (final item in manualItems) {
+            final key = "${category}_${item['key']}";
+            final controller = TextEditingController();
+            controllers[key] = controller;
+            
+            inputFields.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _buildScoreInput(item['label'] ?? item['key'], controller),
+              ),
+            );
+          }
+        }
+      }
+    }
+
+    if (controllers.isEmpty) {
+      controllers['cognitive_Handbook'] = TextEditingController();
+      controllers['psychomotor_Evaluasi Psikomotor'] = TextEditingController();
+      controllers['affective_Evaluasi Afektif'] = TextEditingController();
+      
+      inputFields.addAll([
+        _buildScoreInput('Kognitif (Kuis/Tugas)', controllers['cognitive_Handbook']!),
+        const SizedBox(height: AppSpacing.md),
+        _buildScoreInput('Psikomotor (Kehadiran)', controllers['psychomotor_Evaluasi Psikomotor']!),
+        const SizedBox(height: AppSpacing.md),
+        _buildScoreInput('Afektif (Sikap/Keaktifan)', controllers['affective_Evaluasi Afektif']!),
+      ]);
+    }
 
     showDialog(
       context: context,
@@ -54,15 +105,28 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
               onCancel: () => Navigator.pop(context),
               onConfirm: () async {
                 setState(() => isSubmitting = true);
-                final data = {
-                  'studentId': studentId,
-                  'kognitif': kognitifController.text,
-                  'psikomotor': psikomotorController.text,
-                  'afektif': afektifController.text,
-                };
+                
+                final List<Map<String, dynamic>> itemsPayload = [];
+                controllers.forEach((compositeKey, controller) {
+                  final parts = compositeKey.split('_');
+                  final category = parts[0];
+                  final itemKey = parts.sublist(1).join('_');
+                  final score = double.tryParse(controller.text) ?? 0.0;
+                  
+                  itemsPayload.add({
+                    'component': category,
+                    'item_name': itemKey,
+                    'score': score,
+                    'notes': 'Diinput via Mobile',
+                  });
+                });
+
                 final success = await context
                     .read<MentorKencanaProvider>()
-                    .submitBulkScores(data);
+                    .submitBulkScores(
+                      studentId: studentId,
+                      items: itemsPayload,
+                    );
                 if (!context.mounted) return;
                 Navigator.pop(context);
                 if (success) {
@@ -73,19 +137,8 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
               },
               customChild: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildScoreInput('Kognitif (Kuis/Tugas)', kognitifController),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildScoreInput(
-                    'Psikomotor (Kehadiran)',
-                    psikomotorController,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildScoreInput(
-                    'Afektif (Sikap/Keaktifan)',
-                    afektifController,
-                  ),
-                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: inputFields,
               ),
             );
           },
@@ -147,7 +200,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
               title: 'Penilaian Akhir (Skoring)',
               variant: AppBarVariant.student,
               isExpandable: false,
-              showBackButton: false,
+              showBackButton: true,
             ),
             if (provider.isLoading && provider.groups.isEmpty)
               const SliverFillRemaining(

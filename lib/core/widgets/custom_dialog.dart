@@ -126,36 +126,38 @@ class CustomDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
       backgroundColor: context.appColors.surface,
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            headerWidget,
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.titleLarge.copyWith(
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            if (content.isNotEmpty)
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              headerWidget,
+              const SizedBox(height: AppSpacing.lg),
               Text(
-                content,
+                title,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                style: AppTextStyles.titleLarge.copyWith(
+                  fontWeight: FontWeight.w900,
                 ),
               ),
-            if (customChild != null) ...[
-              const SizedBox(height: AppSpacing.md),
-              customChild!,
+              const SizedBox(height: AppSpacing.sm),
+              if (content.isNotEmpty)
+                Text(
+                  content,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                ),
+              if (customChild != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                customChild!,
+              ],
+              const SizedBox(height: AppSpacing.xl),
+              actionsWidget,
             ],
-            const SizedBox(height: AppSpacing.xl),
-            actionsWidget,
-          ],
+          ),
         ),
       ),
     );

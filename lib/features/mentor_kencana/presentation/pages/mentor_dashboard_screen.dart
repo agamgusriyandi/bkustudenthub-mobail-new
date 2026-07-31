@@ -95,7 +95,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               subtitle: 'HALO MENTOR KENCANA',
               info: 'Status: Aktif Membimbing',
               variant: AppBarVariant.student,
-              showBackButton: false,
+              showBackButton: true,
               expandedHeight: 120,
               showProfileOnCollapse: true,
               profileImage:

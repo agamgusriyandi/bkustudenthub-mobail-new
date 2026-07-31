@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 ///   AppColors.neutral500    → AppColors.neutral500 (neutral scale stays static)
 class AppColors {
   // ==================== PRIMARY ====================
-  static const Color primary = Color(0xFFE85D04);
-  static const Color primaryContainer = Color(0xFFD35400);
+  static const Color primary = Color(0xFF1B3A6B);
+  static const Color primaryContainer = Color(0xFF152F58);
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color primaryFixedDim = Color(0xFFB5C4FF);
   static const Color primaryFixed = Color(0xFFDCE1FF);
@@ -23,8 +23,8 @@ class AppColors {
   static const Color onPrimaryFixedVariant = Color(0xFF153EA3);
 
   // ==================== SECONDARY ====================
-  static const Color secondary = Color(0xFF1E293B);
-  static const Color secondaryContainer = Color(0xFF334155);
+  static const Color secondary = Color(0xFFC9A84C);
+  static const Color secondaryContainer = Color(0xFFB8973E);
   static const Color onSecondaryContainer = Color(0xFF735A00);
   static const Color secondaryFixed = Color(0xFFFFE08B);
   static const Color secondaryFixedDim = Color(0xFFEBC246);

@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -213,7 +213,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
               title: 'Absensi Sesi',
               variant: AppBarVariant.student,
               isExpandable: false,
-              showBackButton: false,
+              showBackButton: true,
 
               actions: [
                 IconButton(

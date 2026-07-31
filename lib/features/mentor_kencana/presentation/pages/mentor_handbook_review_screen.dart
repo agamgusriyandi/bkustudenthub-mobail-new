@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -94,38 +94,24 @@ class _MentorHandbookReviewScreenState
               },
               customChild: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    'Catatan Review',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 6),
                   TextField(
                     controller: feedbackController,
                     maxLines: 3,
                     decoration: InputDecoration(
-                      labelText: 'Catatan Review',
                       filled: true,
                       fillColor: AppColors.neutral100,
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
-                        ),
+                        borderSide: BorderSide.none,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                   ),
                 ],
@@ -139,7 +125,6 @@ class _MentorHandbookReviewScreenState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       body: CustomScrollView(
@@ -157,25 +142,44 @@ class _MentorHandbookReviewScreenState
               child: Center(child: CircularProgressIndicator()),
             )
           else if (_handbookData == null ||
-              _handbookData!.status == 'not_started')
+              _handbookData!.status == 'not_started' || _handbookData!.status == '')
             SliverFillRemaining(
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      size: 64,
-                      color: AppColors.warning.withAlpha(150),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    Text(
-                      'Mahasiswa belum mengirimkan handbook',
-                      style: AppTextStyles.labelLg.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: context.appColors.warning.withAlpha(15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.menu_book_rounded,
+                          size: 48,
+                          color: context.appColors.warning,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        'Belum Ada Handbook',
+                        style: AppTextStyles.titleLg.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.appColors.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Mahasiswa belum mengirimkan handbook kencana.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: context.appColors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
@@ -211,7 +215,7 @@ class _MentorHandbookReviewScreenState
         ],
       ),
       bottomNavigationBar:
-          _handbookData != null && _handbookData!.status != 'not_started'
+          _handbookData != null && _handbookData!.status == 'submitted'
               ? Container(
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(

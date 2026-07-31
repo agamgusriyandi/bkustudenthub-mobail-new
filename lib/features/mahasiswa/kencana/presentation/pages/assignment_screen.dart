@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -149,7 +149,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
       _showError('Tautan tidak boleh kosong');
       return;
     }
-    if (type == 'file' &&
+    if ((type == 'file' || type == 'media') &&
         _selectedFile == null &&
         (_submissionData == null || _submissionData!['file_url'] == '')) {
       _showError('Pilih file terlebih dahulu');
@@ -162,7 +162,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
 
     try {
       String fileUrl = _submissionData?['file_url'] ?? '';
-      if (type == 'file' && _selectedFile != null) {
+      if ((type == 'file' || type == 'media') && _selectedFile != null) {
         final uploadedUrl = await _uploadFile(_selectedFile!);
         if (uploadedUrl == null) {
           _showError('Gagal mengunggah file. Silakan coba lagi.');
@@ -176,7 +176,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
 
       final payload = {
         'answer_text': type == 'text' ? _answerController.text.trim() : '',
-        'file_url': type == 'file' ? fileUrl : '',
+        'file_url': (type == 'file' || type == 'media') ? fileUrl : '',
         'link_url': type == 'link' ? _linkController.text.trim() : '',
         'checklist': true,
       };
@@ -215,6 +215,9 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
     if (dateTime == null) return '-';
     try {
       final dt = DateTime.parse(dateTime.toString()).toLocal();
+      if (dt.hour == 0 && dt.minute == 0) {
+        return DateFormat('dd MMM yyyy').format(dt);
+      }
       return DateFormat('dd MMM yyyy, HH:mm').format(dt);
     } catch (_) {
       return dateTime.toString();
@@ -313,7 +316,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           // Header Clean
           Text(
             title,
-            style: AppTextStyles.headlineMedium.copyWith(
+            style: AppTextStyles.titleLarge.copyWith(
               color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w800,
             ),
@@ -355,7 +358,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
             const SizedBox(height: AppSpacing.md),
             Text(
               desc,
-              style: AppTextStyles.bodyLg.copyWith(
+              style: AppTextStyles.bodyMd.copyWith(
                 height: 1.6,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -501,10 +504,10 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           ),
         ),
       );
-    } else if (type == 'file') {
+    } else if (type == 'file' || type == 'media') {
       return InkWell(
         onTap: _pickFile,
-        borderRadius: AppRadius.radiusMd,
+        borderRadius: AppRadius.radiusLg,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(
@@ -512,27 +515,36 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
             horizontal: AppSpacing.lg,
           ),
           decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: AppRadius.radiusMd,
+            color: _selectedFile != null
+                ? Theme.of(context).colorScheme.primary.withAlpha(15)
+                : Theme.of(context).colorScheme.surface,
+            borderRadius: AppRadius.radiusLg,
             border: Border.all(
-              color:
-                  _selectedFile != null
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outlineVariant,
-              style: BorderStyle.solid,
+              color: _selectedFile != null
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.outlineVariant,
+              width: _selectedFile != null ? 1.5 : 1.0,
             ),
           ),
           child: Column(
             children: [
-              Icon(
-                _selectedFile != null
-                    ? Icons.file_present_rounded
-                    : Icons.cloud_upload_outlined,
-                size: 32,
-                color:
-                    _selectedFile != null
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outline,
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: _selectedFile != null
+                      ? Theme.of(context).colorScheme.primary.withAlpha(30)
+                      : Theme.of(context).colorScheme.onSurface.withAlpha(15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  _selectedFile != null
+                      ? Icons.file_present_rounded
+                      : Icons.cloud_upload_rounded,
+                  size: 28,
+                  color: _selectedFile != null
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(

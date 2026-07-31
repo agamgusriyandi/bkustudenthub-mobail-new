@@ -158,7 +158,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
               variant: AppBarVariant.student,
               showNotification: false,
               isExpandable: false,
-              showBackButton: false,
+              showBackButton: true,
             ),
             SliverToBoxAdapter(
               child: Padding(
