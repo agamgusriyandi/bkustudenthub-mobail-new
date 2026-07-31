@@ -34,6 +34,10 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_booking_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/providers/self_screening_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/providers/berita_detail_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/providers/achievement_form_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_program_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
@@ -113,6 +117,10 @@ void main() async {
           create: (_) => TkPatientProvider(repository: tkRepository),
         ),
         ChangeNotifierProvider(create: (_) => MentorKencanaProvider()),
+        ChangeNotifierProvider(create: (_) => SelfScreeningProvider()),
+        ChangeNotifierProvider(create: (_) => BeritaDetailProvider()),
+        ChangeNotifierProvider(create: (_) => AchievementFormProvider()),
+        ChangeNotifierProvider(create: (_) => ScholarshipProgramProvider()),
       ],
       child: const AppLifecycleObserver(child: MyApp()),
     ),

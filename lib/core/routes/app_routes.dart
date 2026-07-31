@@ -70,6 +70,10 @@ import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/pages/berita_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/create_achievement_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/edit_achievement_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_program_detail_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -100,6 +104,16 @@ class AppRoutes {
   static const String presensi = '/presensi';
   static const String selfScreening = '/health/self-screening';
   static const String counselingHistory = '/counseling/history';
+
+  // Berita Routes
+  static const String beritaDetail = '/berita/:id';
+
+  // Achievement Routes
+  static const String createAchievement = '/achievement/create';
+  static const String editAchievement = '/achievement/edit';
+
+  // Scholarship Program Routes
+  static const String scholarshipProgramDetail = '/scholarship/program/:id';
 
   // Counseling Routes
   static const String psychologistAnalytics = '/counseling/analytics';
@@ -327,6 +341,37 @@ class AppRoutes {
       GoRoute(
         path: counselingHistory,
         builder: (context, state) => const CounselingHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/berita/:id',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          return BeritaDetailScreen(beritaId: id);
+        },
+      ),
+      GoRoute(
+        path: createAchievement,
+        builder: (context, state) => const CreateAchievementScreen(),
+      ),
+      GoRoute(
+        path: '/achievement/edit',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return EditAchievementScreen(
+            achievementId: extra?['id'] ?? 0,
+            namaPrestasi: extra?['namaPrestasi'] ?? '',
+            tingkat: extra?['tingkat'] ?? 'Lokal',
+            tanggal: extra?['tanggal'] ?? DateTime.now(),
+            deskripsi: extra?['deskripsi'] ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: '/scholarship/program/:id',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          return ScholarshipProgramDetailScreen(programId: id);
+        },
       ),
       GoRoute(
         path: psychologistMain,
