@@ -62,11 +62,28 @@ import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/create_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/edit_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_kalender_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_agenda_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/create_anggota_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/edit_anggota_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_keuangan_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_mutasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_iuran_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/jadwal/presentation/pages/create_kegiatan_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/jadwal/presentation/pages/ormawa_jadwal_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/staf/presentation/pages/ormawa_staf_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/gamifikasi/presentation/pages/ormawa_gamifikasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pagu/presentation/pages/ormawa_pagu_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
@@ -165,6 +182,27 @@ class AppRoutes {
   static const String ormawaCreateProposal = '/ormawa/proposal/create';
   static const String ormawaProposalDetail = '/ormawa/proposal/detail';
   static const String ormawaAgendaDetail = '/ormawa/agenda/detail';
+
+  // Ormawa Phase 2 Routes
+  static const String ormawaLpj = '/ormawa/lpj';
+  static const String ormawaLpjCreate = '/ormawa/lpj/create';
+  static const String ormawaLpjDetail = '/ormawa/lpj/detail';
+  static const String ormawaLpjEdit = '/ormawa/lpj/edit';
+  static const String ormawaKeuanganDetail = '/ormawa/keuangan/detail';
+  static const String ormawaKeuanganEdit = '/ormawa/keuangan/edit';
+  static const String ormawaMutasi = '/ormawa/mutasi';
+  static const String ormawaIuran = '/ormawa/iuran';
+  static const String ormawaAnggotaCreate = '/ormawa/anggota/create';
+  static const String ormawaAnggotaEdit = '/ormawa/anggota/edit';
+  static const String ormawaJadwalCreate = '/ormawa/jadwal/create';
+  static const String ormawaJadwalDetail = '/ormawa/jadwal/detail';
+  static const String ormawaJadwalEdit = '/ormawa/jadwal/edit';
+  static const String ormawaPengumumanCreate = '/ormawa/pengumuman/create';
+  static const String ormawaPengumumanDetail = '/ormawa/pengumuman/detail';
+  static const String ormawaPengumumanEdit = '/ormawa/pengumuman/edit';
+  static const String ormawaStaf = '/ormawa/staf';
+  static const String ormawaGamifikasi = '/ormawa/gamifikasi';
+  static const String ormawaPagu = '/ormawa/pagu';
 
   // Compatibility aliases
   static const String main = studentMain;
@@ -600,6 +638,110 @@ class AppRoutes {
           final agenda = state.extra;
           return OrmawaAgendaDetailScreen(agenda: agenda as dynamic);
         },
+      ),
+      // Ormawa Phase 2 Routes
+      GoRoute(
+        path: ormawaLpj,
+        builder: (context, state) => const OrmawaLpjScreen(),
+      ),
+      GoRoute(
+        path: ormawaLpjCreate,
+        builder: (context, state) => const CreateLpjScreen(),
+      ),
+      GoRoute(
+        path: ormawaLpjDetail,
+        builder: (context, state) {
+          final lpj = state.extra;
+          return OrmawaLpjDetailScreen(lpj: lpj);
+        },
+      ),
+      GoRoute(
+        path: ormawaLpjEdit,
+        builder: (context, state) {
+          final lpj = state.extra;
+          return EditLpjScreen(lpj: lpj);
+        },
+      ),
+      GoRoute(
+        path: ormawaKeuanganDetail,
+        builder: (context, state) {
+          final transaksi = state.extra;
+          return OrmawaKeuanganDetailScreen(transaksi: transaksi);
+        },
+      ),
+      GoRoute(
+        path: ormawaKeuanganEdit,
+        builder: (context, state) {
+          final transaksi = state.extra;
+          return EditKeuanganScreen(transaksi: transaksi);
+        },
+      ),
+      GoRoute(
+        path: ormawaMutasi,
+        builder: (context, state) => const OrmawaMutasiScreen(),
+      ),
+      GoRoute(
+        path: ormawaIuran,
+        builder: (context, state) => const OrmawaIuranScreen(),
+      ),
+      GoRoute(
+        path: ormawaAnggotaCreate,
+        builder: (context, state) => const CreateAnggotaScreen(),
+      ),
+      GoRoute(
+        path: ormawaAnggotaEdit,
+        builder: (context, state) {
+          final member = state.extra;
+          return EditAnggotaScreen(member: member);
+        },
+      ),
+      GoRoute(
+        path: ormawaJadwalCreate,
+        builder: (context, state) => const CreateKegiatanScreen(),
+      ),
+      GoRoute(
+        path: ormawaJadwalDetail,
+        builder: (context, state) {
+          final kegiatan = state.extra;
+          return OrmawaJadwalDetailScreen(kegiatan: kegiatan);
+        },
+      ),
+      GoRoute(
+        path: ormawaJadwalEdit,
+        builder: (context, state) {
+          final kegiatan = state.extra;
+          return EditKegiatanScreen(kegiatan: kegiatan);
+        },
+      ),
+      GoRoute(
+        path: ormawaPengumumanCreate,
+        builder: (context, state) => const CreatePengumumanScreen(),
+      ),
+      GoRoute(
+        path: ormawaPengumumanDetail,
+        builder: (context, state) {
+          final announcement = state.extra;
+          return OrmawaPengumumanDetailScreen(announcement: announcement);
+        },
+      ),
+      GoRoute(
+        path: ormawaPengumumanEdit,
+        builder: (context, state) {
+          final announcement = state.extra;
+          return EditPengumumanScreen(announcement: announcement);
+        },
+      ),
+      GoRoute(
+        path: ormawaStaf,
+        builder: (context, state) => const OrmawaStafScreen(),
+      ),
+      GoRoute(
+        path: ormawaGamifikasi,
+        builder: (context, state) => const OrmawaGamifikasiScreen(),
+      ),
+      GoRoute(
+        path: ormawaPagu,
+        builder: (context, state) => const OrmawaPaguScreen(),
       ),
     ],
   );
