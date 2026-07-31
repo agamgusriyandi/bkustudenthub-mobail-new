@@ -45,6 +45,31 @@ class MentorKencanaProvider extends ChangeNotifier {
   List<AbsenceRequestData> _absenceRequests = [];
   List<AbsenceRequestData> get absenceRequests => _absenceRequests;
 
+  // Phase 3: Mentor Groups
+  List<MentorGroup> _mentorGroups = [];
+  List<MentorGroup> get mentorGroups => _mentorGroups;
+
+  MentorGroupDetail? _mentorGroupDetail;
+  MentorGroupDetail? get mentorGroupDetail => _mentorGroupDetail;
+
+  // Phase 3: Mentor Notes
+  List<MentorNote> _mentorNotes = [];
+  List<MentorNote> get mentorNotes => _mentorNotes;
+
+  MentorNote? _mentorNoteDetail;
+  MentorNote? get mentorNoteDetail => _mentorNoteDetail;
+
+  // Phase 3: Essay Grading
+  List<MentorEssayItem> _essayItems = [];
+  List<MentorEssayItem> get essayItems => _essayItems;
+
+  // Phase 3: Session Attendance
+  Map<String, dynamic>? _sessionAttendanceData;
+  Map<String, dynamic>? get sessionAttendanceData => _sessionAttendanceData;
+
+  List<MentorAttendanceStudent> _attendanceStudents = [];
+  List<MentorAttendanceStudent> get attendanceStudents => _attendanceStudents;
+
   void _setError(String? message) {
     _errorMessage = message;
     notifyListeners();
@@ -538,6 +563,209 @@ class MentorKencanaProvider extends ChangeNotifier {
       return resData['qr_token']?.toString();
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<void> fetchMentorGroups() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get('/kencana-mentor/groups');
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final groupList = resData is List ? resData : [];
+      _mentorGroups =
+          groupList.map((e) => MentorGroup.fromJson(e)).toList();
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat daftar kelompok',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchMentorGroupDetail(int groupId) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/groups/$groupId',
+      );
+      final data = response.data['data'] ?? response.data;
+      _mentorGroupDetail = MentorGroupDetail.fromJson(
+        data is Map<String, dynamic> ? data : {},
+      );
+      _scoreDefinitions =
+          data['score_definitions'] is Map
+              ? Map<String, dynamic>.from(data['score_definitions'])
+              : null;
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat detail kelompok',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchMentorNotes() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get('/kencana-mentor/notes');
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final noteList = resData is List ? resData : [];
+      _mentorNotes =
+          noteList.map((e) => MentorNote.fromJson(e)).toList();
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat catatan',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchMentorNoteDetail(int noteId) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/notes/$noteId',
+      );
+      final data = response.data['data'] ?? response.data;
+      _mentorNoteDetail = MentorNote.fromJson(
+        data is Map<String, dynamic> ? data : {},
+      );
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat detail catatan',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchEssayGrading() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/essay-grading',
+      );
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final essayList = resData is List ? resData : [];
+      _essayItems =
+          essayList.map((e) => MentorEssayItem.fromJson(e)).toList();
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat daftar essay',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> submitEssayScore(
+    int essayId,
+    double score,
+    String feedback,
+  ) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      await _apiClient.client.post(
+        '/kencana-mentor/essay-grading/$essayId/grade',
+        data: {'score': score, 'feedback': feedback},
+      );
+      await fetchEssayGrading();
+      return true;
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal menyimpan nilai essay',
+      );
+      return false;
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchSessionAttendance(int sessionId) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/attendance/session/$sessionId',
+      );
+      final data = response.data['data'] ?? response.data;
+      _sessionAttendanceData =
+          data is Map<String, dynamic> ? data : null;
+      final studentList =
+          data is Map<String, dynamic>
+              ? (data['students'] ?? data['attendances'] ?? [])
+              : [];
+      _attendanceStudents =
+          (studentList is List)
+              ? studentList
+                  .map((e) => MentorAttendanceStudent.fromJson(e))
+                  .toList()
+              : [];
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ??
+            'Gagal memuat data kehadiran sesi',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> submitSessionAttendance(
+    int sessionId,
+    List<Map<String, dynamic>> attendances,
+  ) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      await _apiClient.client.post(
+        '/kencana-mentor/sessions/$sessionId/attendance',
+        data: {'attendances': attendances},
+      );
+      return true;
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal menyimpan kehadiran',
+      );
+      return false;
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+      return false;
+    } finally {
+      _setLoading(false);
     }
   }
 

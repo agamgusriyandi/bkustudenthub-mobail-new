@@ -575,3 +575,243 @@ class MenteeHandbookData {
     );
   }
 }
+
+class MentorGroup {
+  final int id;
+  final String name;
+  final int memberCount;
+  final String createdAt;
+
+  MentorGroup({
+    required this.id,
+    required this.name,
+    required this.memberCount,
+    required this.createdAt,
+  });
+
+  factory MentorGroup.fromJson(Map<String, dynamic> json) {
+    final memberList =
+        json['members'] ??
+        json['mentees'] ??
+        json['mahasiswa'] ??
+        json['member_count_list'];
+    int count = json['member_count'] ?? json['jumlah_anggota'] ?? 0;
+    if (count == 0 && memberList is List) {
+      count = memberList.length;
+    }
+
+    return MentorGroup(
+      id: json['id'] ?? json['ID'] ?? 0,
+      name:
+          json['name'] ??
+          json['nama'] ??
+          json['group_name'] ??
+          json['Nama'] ??
+          '',
+      memberCount: count,
+      createdAt:
+          json['created_at'] ??
+          json['createdAt'] ??
+          json['tanggal_dibuat'] ??
+          '',
+    );
+  }
+}
+
+class MentorGroupDetail {
+  final int id;
+  final String name;
+  final List<MenteeData> members;
+  final Map<String, dynamic>? scoreDefinitions;
+
+  MentorGroupDetail({
+    required this.id,
+    required this.name,
+    required this.members,
+    this.scoreDefinitions,
+  });
+
+  factory MentorGroupDetail.fromJson(Map<String, dynamic> json) {
+    final memberList =
+        json['members'] ??
+        json['mentees'] ??
+        json['mahasiswa'] ??
+        [];
+    return MentorGroupDetail(
+      id: json['id'] ?? json['ID'] ?? 0,
+      name:
+          json['name'] ??
+          json['nama'] ??
+          json['group_name'] ??
+          json['Nama'] ??
+          '',
+      members:
+          memberList is List
+              ? memberList.map((m) => MenteeData.fromJson(m)).toList()
+              : [],
+      scoreDefinitions:
+          json['score_definitions'] is Map
+              ? Map<String, dynamic>.from(json['score_definitions'])
+              : null,
+    );
+  }
+}
+
+class MentorNote {
+  final int id;
+  final String title;
+  final String content;
+  final String createdAt;
+  final String studentName;
+
+  MentorNote({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.createdAt,
+    required this.studentName,
+  });
+
+  factory MentorNote.fromJson(Map<String, dynamic> json) {
+    String studentName = '';
+    if (json['student'] is Map) {
+      studentName =
+          json['student']['nama'] ?? json['student']['name'] ?? '';
+    } else if (json['student_name'] != null) {
+      studentName = json['student_name'].toString();
+    } else if (json['nama_mahasiswa'] != null) {
+      studentName = json['nama_mahasiswa'].toString();
+    }
+
+    return MentorNote(
+      id: json['id'] ?? json['ID'] ?? 0,
+      title:
+          json['title'] ??
+          json['judul'] ??
+          json['judul_catatan'] ??
+          '',
+      content:
+          json['content'] ??
+          json['notes'] ??
+          json['catatan'] ??
+          json['isi'] ??
+          '',
+      createdAt:
+          json['created_at'] ??
+          json['createdAt'] ??
+          json['tanggal'] ??
+          json['assessed_at'] ??
+          '',
+      studentName: studentName,
+    );
+  }
+}
+
+class MentorEssayItem {
+  final int id;
+  final String studentName;
+  final String nim;
+  final String question;
+  final String answer;
+  final String status;
+  final double? score;
+  final String submittedAt;
+
+  MentorEssayItem({
+    required this.id,
+    required this.studentName,
+    required this.nim,
+    required this.question,
+    required this.answer,
+    required this.status,
+    this.score,
+    required this.submittedAt,
+  });
+
+  factory MentorEssayItem.fromJson(Map<String, dynamic> json) {
+    String studentName = '';
+    String nim = '';
+    if (json['student'] is Map) {
+      studentName =
+          json['student']['nama'] ?? json['student']['name'] ?? '';
+      nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
+    } else {
+      studentName =
+          json['student_name'] ??
+          json['nama_mahasiswa'] ??
+          json['nama'] ??
+          '';
+      nim = json['nim'] ?? json['NIM'] ?? '';
+    }
+
+    return MentorEssayItem(
+      id: json['id'] ?? json['ID'] ?? 0,
+      studentName: studentName.toString(),
+      nim: nim.toString(),
+      question:
+          json['question'] ??
+          json['pertanyaan'] ??
+          json['soal'] ??
+          '',
+      answer:
+          json['answer'] ??
+          json['jawaban'] ??
+          json['answer_text'] ??
+          '',
+      status: json['status'] ?? 'pending',
+      score:
+          json['score'] != null
+              ? double.tryParse(json['score'].toString())
+              : null,
+      submittedAt:
+          json['submitted_at'] ??
+          json['created_at'] ??
+          json['tanggal'] ??
+          '',
+    );
+  }
+}
+
+class MentorAttendanceStudent {
+  final int studentId;
+  final String name;
+  final String nim;
+  final String status;
+  final String? note;
+
+  MentorAttendanceStudent({
+    required this.studentId,
+    required this.name,
+    required this.nim,
+    required this.status,
+    this.note,
+  });
+
+  factory MentorAttendanceStudent.fromJson(Map<String, dynamic> json) {
+    String name = '';
+    String nim = '';
+    int sid = 0;
+    if (json['student'] is Map) {
+      name =
+          json['student']['nama'] ?? json['student']['name'] ?? '';
+      nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
+      sid = json['student']['id'] ?? 0;
+    } else {
+      name =
+          json['student_name'] ??
+          json['name'] ??
+          json['nama'] ??
+          '';
+      nim = json['nim'] ?? json['NIM'] ?? '';
+      sid = json['student_id'] ?? json['id'] ?? 0;
+    }
+
+    return MentorAttendanceStudent(
+      studentId: sid,
+      name: name.toString(),
+      nim: nim.toString(),
+      status: json['status'] ?? json['Status'] ?? 'absent',
+      note: json['note']?.toString(),
+    );
+  }
+}

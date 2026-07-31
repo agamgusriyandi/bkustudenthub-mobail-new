@@ -53,6 +53,13 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_mentee_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_recruit_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_absence_requests_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_groups_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_group_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_available_students_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_notes_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_note_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_essay_grading_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_session_attendance_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
@@ -108,6 +115,15 @@ class AppRoutes {
   static const String mentorRecruit = '/mentor-kencana/recruit';
   static const String mentorAbsenceRequests =
       '/mentor-kencana/absence-requests';
+  static const String mentorGroups = '/mentor-kencana/groups';
+  static const String mentorGroupDetail = '/mentor-kencana/groups/:id';
+  static const String mentorAvailableStudents =
+      '/mentor-kencana/available-students';
+  static const String mentorNotes = '/mentor-kencana/notes';
+  static const String mentorNoteDetail = '/mentor-kencana/notes/:id';
+  static const String mentorEssayGrading = '/mentor-kencana/essay-grading';
+  static const String mentorSessionAttendance =
+      '/mentor-kencana/session-attendance/:sessionId';
   static const String kencanaStage = '/kencana/stage/:id';
   static const String kencanaSession = '/kencana/session/:id';
   static const String kencanaScore = '/kencana/score';
@@ -316,6 +332,47 @@ class AppRoutes {
       GoRoute(
         path: mentorAbsenceRequests,
         builder: (context, state) => const MentorAbsenceRequestsScreen(),
+      ),
+      GoRoute(
+        path: mentorGroups,
+        builder: (context, state) => const MentorGroupsScreen(),
+      ),
+      GoRoute(
+        path: mentorGroupDetail,
+        builder: (context, state) {
+          final idStr = state.pathParameters['id'] ?? '0';
+          final id = int.tryParse(idStr) ?? 0;
+          return MentorGroupDetailScreen(groupId: id);
+        },
+      ),
+      GoRoute(
+        path: mentorAvailableStudents,
+        builder: (context, state) => const MentorAvailableStudentsScreen(),
+      ),
+      GoRoute(
+        path: mentorNotes,
+        builder: (context, state) => const MentorNotesScreen(),
+      ),
+      GoRoute(
+        path: mentorNoteDetail,
+        builder: (context, state) {
+          final idStr = state.pathParameters['id'] ?? '0';
+          final id = int.tryParse(idStr) ?? 0;
+          return MentorNoteDetailScreen(noteId: id);
+        },
+      ),
+      GoRoute(
+        path: mentorEssayGrading,
+        builder: (context, state) => const MentorEssayGradingScreen(),
+      ),
+      GoRoute(
+        path: mentorSessionAttendance,
+        builder: (context, state) {
+          final sessionStr =
+              state.pathParameters['sessionId'] ?? '0';
+          final sessionId = int.tryParse(sessionStr) ?? 0;
+          return MentorSessionAttendanceScreen(sessionId: sessionId);
+        },
       ),
       GoRoute(
         path: '/kencana/stage/:id',
