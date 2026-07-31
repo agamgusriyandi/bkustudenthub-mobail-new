@@ -46,6 +46,9 @@ import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kenc
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_banding_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_qr_scan_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_handbook_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_timeline_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_remedial_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_certificate_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_mentee_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_recruit_screen.dart';
@@ -66,6 +69,7 @@ import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/manage
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -90,7 +94,11 @@ class AppRoutes {
   static const String kencanaInvitations = '/kencana/invitations';
   static const String kencanaBanding = '/kencana/banding';
   static const String kencanaHandbook = '/kencana/handbook';
+  static const String kencanaTimeline = '/kencana/timeline';
+  static const String kencanaRemedial = '/kencana/remedial';
+  static const String kencanaCertificate = '/kencana/certificate';
   static const String presensi = '/presensi';
+  static const String selfScreening = '/health/self-screening';
   static const String counselingHistory = '/counseling/history';
 
   // Counseling Routes
@@ -293,12 +301,28 @@ class AppRoutes {
         builder: (context, state) => const KencanaHandbookScreen(),
       ),
       GoRoute(
+        path: kencanaTimeline,
+        builder: (context, state) => const KencanaTimelineScreen(),
+      ),
+      GoRoute(
+        path: kencanaRemedial,
+        builder: (context, state) => const KencanaRemedialScreen(),
+      ),
+      GoRoute(
+        path: kencanaCertificate,
+        builder: (context, state) => const KencanaCertificateScreen(),
+      ),
+      GoRoute(
         path: '/kencana/qr-scan',
         builder: (context, state) => const KencanaQrScanScreen(),
       ),
       GoRoute(
         path: presensi,
         builder: (context, state) => const PresensiScreen(),
+      ),
+      GoRoute(
+        path: selfScreening,
+        builder: (context, state) => const SelfScreeningScreen(),
       ),
       GoRoute(
         path: counselingHistory,
