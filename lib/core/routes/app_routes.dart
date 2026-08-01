@@ -119,6 +119,7 @@ import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/orma
 import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/create_organisasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/ormawa_organisasi_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/edit_organisasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/rbac/presentation/pages/ormawa_rbac_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_management_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
@@ -269,6 +270,9 @@ class AppRoutes {
   static const String ormawaCreateProposal = '/ormawa/proposal/create';
   static const String ormawaProposalDetail = '/ormawa/proposal/detail';
   static const String ormawaAgendaDetail = '/ormawa/agenda/detail';
+
+  // Ormawa RBAC Route
+  static const String ormawaRbac = '/ormawa/rbac';
 
   // Ormawa Phase 2 Routes
   static const String ormawaLpj = '/ormawa/lpj';
@@ -937,6 +941,11 @@ class AppRoutes {
           final agenda = state.extra;
           return OrmawaAgendaDetailScreen(agenda: agenda as dynamic);
         },
+      ),
+      // Ormawa RBAC Route
+      GoRoute(
+        path: ormawaRbac,
+        builder: (context, state) => const OrmawaRbacScreen(),
       ),
       // Ormawa Phase 2 Routes
       GoRoute(
