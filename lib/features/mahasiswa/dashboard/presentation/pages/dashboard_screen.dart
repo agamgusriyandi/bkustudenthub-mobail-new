@@ -9,10 +9,16 @@ import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
 // Modular Widgets
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/banner_pinned.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/deadline_alert.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/today_schedule_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_service_grid.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_status_grid.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_agenda_list.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/activity_feed.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/available_scholarships.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/announcement_section.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
 
@@ -141,17 +147,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: AppSpacing.xl),
-                    _buildSectionTitle('Layanan Mahasiswa'),
-                    const SizedBox(height: AppSpacing.md),
-                    const StudentServiceGrid(),
+
+                    // 1. Banner Pinned (matches web BannerPinned.jsx)
+                    const BannerPinned(),
                     const SizedBox(height: AppSpacing.s20),
-                    const TodayScheduleCard(),
-                    const SizedBox(height: AppSpacing.s20),
-                    IpkChartCard(
-                      currentIpk: student.ipk,
-                      currentSemester: student.semester,
+
+                    // 2. Deadline Alert (matches web DeadlineAlert.jsx)
+                    DeadlineAlert(
+                      deadlines: _buildDeadlines(student),
                     ),
                     const SizedBox(height: AppSpacing.s20),
+
+                    // 3. Today Schedule (mobile extra)
+                    const TodayScheduleCard(),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 4. Status Kamu (matches web PrimaryStatsCard)
                     _buildSectionTitle('Status Kamu'),
                     const SizedBox(height: AppSpacing.md),
                     StudentStatusGrid(
@@ -162,9 +173,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       appliedScholarships: appliedScholarships,
                       latestHealth: latestHealth,
                     ),
-                    const SizedBox(height: AppSpacing.s10),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 5. Layanan Cepat (matches web DashboardQuickActions)
+                    _buildSectionTitle('Layanan Cepat'),
+                    const SizedBox(height: AppSpacing.md),
+                    const StudentServiceGrid(),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 6. Aktivitas Terbaru (matches web ActivityFeed.jsx)
+                    _buildSectionTitle('Aktivitas Terbaru'),
+                    const SizedBox(height: AppSpacing.md),
+                    ActivityFeed(
+                      activities: _buildActivities(student),
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 7. Beasiswa Tersedia (matches web AvailableScholarships.jsx)
+                    _buildSectionTitle('Beasiswa Tersedia'),
+                    const SizedBox(height: AppSpacing.md),
+                    AvailableScholarships(
+                      scholarships: _buildScholarshipItems(student),
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 8. Kalender Mini (matches web CalendarMini.jsx)
+                    CalendarMini(
+                      events: _buildCalendarEvents(student),
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 9. Pengumuman (matches web AnnouncementSection.jsx)
+                    AnnouncementSection(
+                      announcements: _buildAnnouncements(student),
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 10. IPK Chart (mobile extra)
+                    IpkChartCard(
+                      currentIpk: student.ipk,
+                      currentSemester: student.semester,
+                    ),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 11. Asuransi (mobile extra)
                     InsuranceTrackerCard(claims: student.insuranceClaims),
                     const SizedBox(height: AppSpacing.s20),
+
+                    // 12. Berita Kampus (mobile extra)
                     _buildSectionTitle('Berita Kampus'),
                     const SizedBox(height: AppSpacing.md),
                     const StudentAgendaList(),
@@ -187,5 +243,98 @@ class _DashboardScreenState extends State<DashboardScreen> {
         fontWeight: FontWeight.w900,
       ),
     );
+  }
+
+  List<DeadlineItem> _buildDeadlines(StudentProvider student) {
+    final now = DateTime.now();
+    final items = <DeadlineItem>[];
+    for (final s in student.scholarships) {
+      if (s.applicationStatus == null && s.status == 'Open') {
+        final deadline = DateTime.tryParse(s.deadline);
+        if (deadline != null && deadline.isAfter(now)) {
+          items.add(DeadlineItem(
+            name: s.title,
+            daysLeft: deadline.difference(now).inDays,
+            type: 'beasiswa',
+          ));
+        }
+      }
+    }
+    return items;
+  }
+
+  List<ActivityItem> _buildActivities(StudentProvider student) {
+    final items = <ActivityItem>[];
+    for (final a in student.achievements.take(3)) {
+      items.add(ActivityItem(
+        description: '${a.title} (${a.status})',
+        createdAt: a.date,
+        type: 'achievement',
+      ));
+    }
+    for (final cs in student.counselingSessions.take(3)) {
+      items.add(ActivityItem(
+        description: '${cs.topic} — ${cs.psychologistName}',
+        createdAt: cs.date,
+        type: 'konseling',
+      ));
+    }
+    for (final m in student.missions.take(3)) {
+      items.add(ActivityItem(
+        description: m.title ?? m.desc ?? 'Modul Kencana',
+        createdAt: DateTime.now(),
+        type: 'kencana',
+      ));
+    }
+    for (final asp in student.aspirations.take(3)) {
+      items.add(ActivityItem(
+        description: asp.title,
+        createdAt: asp.date,
+        type: 'voice',
+      ));
+    }
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items.take(6).toList();
+  }
+
+  List<ScholarshipItem> _buildScholarshipItems(StudentProvider student) {
+    return student.scholarships.where((s) => s.status == 'Open').take(4).map((s) {
+      final amount = double.tryParse(
+        s.coverAmount.replaceAll(RegExp(r'[^0-9.]'), ''),
+      ) ?? 0;
+      final deadline = DateTime.tryParse(s.deadline);
+      return ScholarshipItem(
+        id: s.id,
+        name: s.title,
+        organizer: s.provider,
+        category: s.category,
+        amount: amount,
+        deadline: deadline,
+        status: s.status,
+      );
+    }).toList();
+  }
+
+  List<CalendarEvent> _buildCalendarEvents(StudentProvider student) {
+    return student.campusEvents.take(10).map((e) {
+      return CalendarEvent(
+        title: e.judul,
+        date: e.tanggal,
+        category: e.kategori,
+      );
+    }).toList();
+  }
+
+  List<AnnouncementItem> _buildAnnouncements(StudentProvider student) {
+    return student.campusNews.take(4).map((n) {
+      return AnnouncementItem(
+        id: n.id.toString(),
+        title: n.judul,
+        summary: n.isi.length > 100 ? '${n.isi.substring(0, 100)}...' : n.isi,
+        date: n.tanggalPublish,
+        category: n.kategori,
+        imageUrl: n.gambarUrl,
+      );
+    }).toList();
   }
 }

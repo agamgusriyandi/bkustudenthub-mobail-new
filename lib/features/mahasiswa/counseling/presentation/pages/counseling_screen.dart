@@ -287,6 +287,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                             _selectedTabIndex == 0
                                                 ? FontWeight.w900
                                                 : FontWeight.bold,
+                                        fontSize: 12,
                                         color:
                                             _selectedTabIndex == 0
                                                 ? AppColors.neutral800
@@ -332,8 +333,55 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                             _selectedTabIndex == 1
                                                 ? FontWeight.w900
                                                 : FontWeight.bold,
+                                        fontSize: 12,
                                         color:
                                             _selectedTabIndex == 1
+                                                ? AppColors.neutral800
+                                                : AppColors.neutral500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap:
+                                      () =>
+                                          setState(() => _selectedTabIndex = 2),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.md,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          _selectedTabIndex == 2
+                                              ? context.appColors.surface
+                                              : Colors.transparent,
+                                      borderRadius: AppRadius.radiusMd,
+                                      boxShadow:
+                                          _selectedTabIndex == 2
+                                              ? [
+                                                BoxShadow(
+                                                  color: context.appColors.onSurface.withAlpha(
+                                                    5,
+                                                  ),
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ]
+                                              : null,
+                                    ),
+                                    child: Text(
+                                      'Rekam Medis',
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyles.labelMd.copyWith(
+                                        fontWeight:
+                                            _selectedTabIndex == 2
+                                                ? FontWeight.w900
+                                                : FontWeight.bold,
+                                        fontSize: 12,
+                                        color:
+                                            _selectedTabIndex == 2
                                                 ? AppColors.neutral800
                                                 : AppColors.neutral500,
                                       ),
@@ -471,7 +519,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                             );
                           },
                         ),
-                      ] else ...[
+                      ] else if (_selectedTabIndex == 1) ...[
                         Consumer<StudentCounselingProvider>(
                           builder: (context, provider, _) {
                             if (provider.myReferralsLoading) {
@@ -510,6 +558,68 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                     child: _buildReferralCard(
                                       context,
                                       provider.myReferrals[index],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ] else ...[
+                        Consumer<StudentCounselingProvider>(
+                          builder: (context, provider, _) {
+                            if (provider.medicalRecordLoading) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: AppSpacing.xl,
+                                ),
+                                child: BkuShimmerList(
+                                  itemCount: 2,
+                                  itemHeight: 140,
+                                ),
+                              );
+                            }
+                            final records =
+                                (provider.myMedicalRecord['records'] as List?)
+                                        ?.cast<Map<String, dynamic>>() ??
+                                    const [];
+                            if (records.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppSpacing.xxxl,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.medical_information_outlined,
+                                        size: 64,
+                                        color: context.appColors.outline
+                                            .withValues(alpha: 0.5),
+                                      ),
+                                      const SizedBox(height: AppSpacing.md),
+                                      Text(
+                                        'Belum ada rekam medis',
+                                        style: AppTextStyles.labelMd.copyWith(
+                                          color: AppColors.neutral500,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ...List.generate(
+                                  records.length,
+                                  (index) => FadeInAnimation(
+                                    delay: 0.2 + (index * 0.1),
+                                    child: _buildMedicalRecordCard(
+                                      context,
+                                      records[index],
                                     ),
                                   ),
                                 ),
@@ -2221,6 +2331,86 @@ class _CounselingScreenState extends State<CounselingScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMedicalRecordCard(BuildContext context, Map<String, dynamic> record) {
+    final title = record['title'] ?? record['judul'] ?? 'Rekam Medis';
+    final date = record['date'] ?? record['tanggal'] ?? '';
+    final psychologist = record['psychologist'] ?? record['psikolog'] ?? '-';
+    final status = record['status'] ?? 'Selesai';
+    final summary = record['summary'] ?? record['ringkasan'] ?? '';
+    final statusLower = status.toString().toLowerCase();
+    final isSuccess = statusLower == 'selesai' || statusLower == 'completed';
+    final statusColor = isSuccess ? AppColors.success : AppColors.warning;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusXl,
+        border: Border.all(color: AppColors.neutral200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                date.toString(),
+                style: AppTextStyles.labelSm.copyWith(
+                  color: AppColors.neutral500,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withAlpha(20),
+                  borderRadius: AppRadius.radiusMd,
+                ),
+                child: Text(
+                  status.toString().toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: statusColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            title.toString(),
+            style: AppTextStyles.titleSm.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Psikolog: $psychologist',
+            style: AppTextStyles.bodySm.copyWith(
+              color: context.appColors.onSurfaceVariant,
+            ),
+          ),
+          if (summary.toString().isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              summary.toString(),
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.neutral500,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
       ),
     );
   }

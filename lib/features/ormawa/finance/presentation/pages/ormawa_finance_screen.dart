@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -97,6 +98,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
             ),
 
             SliverToBoxAdapter(child: _buildSummaryHeader()),
+            SliverToBoxAdapter(child: _buildFinanceChart()),
 
             _buildTransactionList(),
 
@@ -500,6 +502,215 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildFinanceChart() {
+    return Consumer<OrmawaProvider>(
+      builder: (context, provider, child) {
+        final transactions = provider.financeList;
+        double campusMasuk = 0, campusKeluar = 0, orgMasuk = 0, orgKeluar = 0;
+        for (var t in transactions) {
+          final isIncome = t.type == 'pemasukan';
+          final isCampus = t.sumber == 'kampus';
+          if (isIncome) {
+            if (isCampus) {
+              campusMasuk += t.nominal;
+            } else {
+              orgMasuk += t.nominal;
+            }
+          } else {
+            if (isCampus) {
+              campusKeluar += t.nominal;
+            } else {
+              orgKeluar += t.nominal;
+            }
+          }
+        }
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            0,
+            AppSpacing.xl,
+            AppSpacing.lg,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: AppRadius.radiusLg,
+              border: Border.all(color: AppColors.neutral200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'RINGKASAN KEUANGAN',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: AppColors.neutral500,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  height: 160,
+                  child: BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: [
+                        campusMasuk,
+                        campusKeluar,
+                        orgMasuk,
+                        orgKeluar,
+                      ].reduce((a, b) => a > b ? a : b) *
+                          1.2,
+                      barTouchData: BarTouchData(
+                        touchTooltipData: BarTouchTooltipData(
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                            final label = _chartLabels[groupIndex];
+                            final value = rod.toY;
+                            return BarTooltipItem(
+                              '$label\n${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(value)}',
+                              AppTextStyles.caption.copyWith(
+                                color: context.appColors.onPrimary,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 28,
+                            getTitlesWidget: (value, meta) {
+                              final idx = value.toInt();
+                              if (idx >= 0 && idx < _chartLabels.length) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    _chartLabels[idx],
+                                    style: AppTextStyles.caption.copyWith(
+                                      fontSize: 8,
+                                      color: AppColors.neutral600,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ),
+                      ),
+                      gridData: const FlGridData(show: false),
+                      borderData: FlBorderData(show: false),
+                      barGroups: [
+                        BarChartGroupData(
+                          x: 0,
+                          barRods: [
+                            BarChartRodData(
+                              toY: campusMasuk,
+                              color: AppColors.info,
+                              width: 18,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BarChartGroupData(
+                          x: 1,
+                          barRods: [
+                            BarChartRodData(
+                              toY: campusKeluar,
+                              color: AppColors.infoContainer,
+                              width: 18,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BarChartGroupData(
+                          x: 2,
+                          barRods: [
+                            BarChartRodData(
+                              toY: orgMasuk,
+                              color: AppColors.success,
+                              width: 18,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BarChartGroupData(
+                          x: 3,
+                          barRods: [
+                            BarChartRodData(
+                              toY: orgKeluar,
+                              color: AppColors.successContainer,
+                              width: 18,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLegendDot(AppColors.info, 'Pagu Masuk'),
+                    const SizedBox(width: AppSpacing.lg),
+                    _buildLegendDot(AppColors.infoContainer, 'Pagu Keluar'),
+                    const SizedBox(width: AppSpacing.lg),
+                    _buildLegendDot(AppColors.success, 'Mandiri Masuk'),
+                    const SizedBox(width: AppSpacing.lg),
+                    _buildLegendDot(AppColors.successContainer, 'Mandiri Keluar'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static const _chartLabels = ['Pagu\nMasuk', 'Pagu\nKeluar', 'Mandiri\nMasuk', 'Mandiri\nKeluar'];
+
+  Widget _buildLegendDot(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.neutral600,
+            fontSize: 8,
+          ),
+        ),
+      ],
     );
   }
 

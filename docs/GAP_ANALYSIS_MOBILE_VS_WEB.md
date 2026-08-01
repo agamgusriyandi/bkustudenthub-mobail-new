@@ -1,7 +1,7 @@
 # Gap Analysis: Mobile vs Website - BKU Student Hub
 
 > Perbandingan halaman mobile (`bkustudenthub-mobail-new/`) vs website (`website-bku/siakadNew-server/`)
-> Generated: 2026-07-31 | Updated: 2026-08-01
+> Generated: 2026-07-31 | Updated: 2026-08-02
 
 ---
 
@@ -9,7 +9,7 @@
 
 | Platform | Total Halaman | Scope |
 |---|---|---|
-| **Mobile** | 163 screens | Mahasiswa, Psikolog, Nakes, Mentor Kencana, Ormawa |
+| **Mobile** | 183 screens | Mahasiswa, Psikolog, Nakes, Mentor Kencana, Ormawa |
 | **Website** | 180+ routes | Full-stack: Landing, Admin, Faculty, Semua role |
 | **Gap (Web tidak di Mobile)** | ~60+ halaman | Fitur admin, CMS (expected web-only) |
 | **Gap (Mobile tidak di Web)** | 0 | Mobile subset dari web |

@@ -228,7 +228,12 @@ class KencanaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> submitBanding(String alasan) async {
+  Future<bool> submitBanding(
+    String alasan, {
+    String type = 'universitas',
+    String? fileUrl,
+    String? linkBukti,
+  }) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -240,6 +245,10 @@ class KencanaProvider extends ChangeNotifier {
           'alasan': alasan,
           'alasan_banding': alasan,
           'reason': alasan,
+          'type': type,
+          if (fileUrl != null && fileUrl.isNotEmpty) 'file_url': fileUrl,
+          if (linkBukti != null && linkBukti.isNotEmpty)
+            'link_bukti': linkBukti,
         }),
       );
       if (response.data != null && response.data['success'] == true) {
@@ -249,6 +258,61 @@ class KencanaProvider extends ChangeNotifier {
         _errorMessage = response.data['message'] ?? 'Failed to submit banding';
         return false;
       }
+    } catch (e) {
+      _errorMessage = ErrorHelper.getMessage(e);
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<String?> uploadBandingFile(String filePath, String fileName) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+      final response = await _apiClient.client.post(
+        '/kencana-student/upload',
+        data: formData,
+      );
+      if (response.data != null && response.data['success'] == true) {
+        final data = response.data['data'];
+        if (data is Map<String, dynamic>) {
+          return (data['url'] ?? data['file_url'])?.toString();
+        }
+      }
+      return null;
+    } catch (e) {
+      _errorMessage = ErrorHelper.getMessage(e);
+      return null;
+    }
+  }
+
+  Future<bool> submitIzin({
+    required String type,
+    required String reason,
+    required String startDate,
+    required String endDate,
+    String? attachmentUrl,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await _apiClient.client.post(
+        '/kencana-student/izin',
+        data: {
+          'type': type,
+          'reason': reason,
+          'start_date': startDate,
+          'end_date': endDate,
+          if (attachmentUrl != null && attachmentUrl.isNotEmpty)
+            'attachment_url': attachmentUrl,
+        },
+      );
+      return response.data != null && response.data['success'] == true;
     } catch (e) {
       _errorMessage = ErrorHelper.getMessage(e);
       return false;

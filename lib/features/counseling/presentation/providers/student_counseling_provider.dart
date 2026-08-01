@@ -233,6 +233,7 @@ class StudentCounselingProvider extends ChangeNotifier {
     String complaint = '',
     String mode = 'Tatap Muka',
     String? attachmentPath,
+    Map<String, dynamic>? spmi,
   }) async {
     _bookingLoading = true;
     _bookingError = null;
@@ -241,33 +242,30 @@ class StudentCounselingProvider extends ChangeNotifier {
       final int parsedPsikologId = int.tryParse(psikologId.toString()) ?? 0;
       final int parsedSlotId = int.tryParse(slotId.toString()) ?? 0;
 
+      final Map<String, dynamic> basePayload = {
+        'psikolog_id': parsedPsikologId,
+        'slot_id': parsedSlotId,
+        'date': date,
+        'start': start,
+        'end': end,
+        'topic': topic,
+        'complaint': complaint,
+        'mode': mode,
+      };
+      if (spmi != null) basePayload.addAll(spmi);
+
       dynamic payload;
       if (attachmentPath != null && attachmentPath.isNotEmpty) {
-        payload = FormData.fromMap({
-          'psikolog_id': parsedPsikologId,
-          'slot_id': parsedSlotId,
-          'date': date,
-          'start': start,
-          'end': end,
-          'topic': topic,
-          'complaint': complaint,
-          'mode': mode,
+        final form = FormData.fromMap({
+          ...basePayload,
           'attachment': await MultipartFile.fromFile(
             attachmentPath,
             filename: attachmentPath.split('/').last,
           ),
         });
+        payload = form;
       } else {
-        payload = {
-          'psikolog_id': parsedPsikologId,
-          'slot_id': parsedSlotId,
-          'date': date,
-          'start': start,
-          'end': end,
-          'topic': topic,
-          'complaint': complaint,
-          'mode': mode,
-        };
+        payload = basePayload;
       }
 
       await _apiClient.client.post(

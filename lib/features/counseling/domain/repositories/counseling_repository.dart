@@ -18,6 +18,13 @@ abstract class CounselingRepository {
     String? note,
     String? linkMeeting,
   });
+  Future<void> confirmBooking(
+    String bookingId, {
+    String? meetingLink,
+    String? notes,
+  });
+  Future<void> completeBooking(String bookingId, {String? notes});
+  Future<void> rejectBooking(String bookingId, String reason);
   Future<List<Map<String, dynamic>>> getSchedules();
   Future<List<Map<String, dynamic>>> saveSchedules(
     List<Map<String, dynamic>> schedules,

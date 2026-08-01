@@ -56,6 +56,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_in
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_all_schedules_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/admin_tk_list_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/create_tk_screen.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/edit_tk_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_stage_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_session_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_score_screen.dart';
@@ -81,6 +82,8 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_materials_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_scoring_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_notifications_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_list_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
@@ -88,6 +91,7 @@ import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/orm
 import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa_aspirasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_pipeline_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_review_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
@@ -103,6 +107,7 @@ import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/create_
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/edit_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_pipeline_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_review_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_detail_screen.dart';
@@ -126,6 +131,7 @@ import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/medical_record_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/pages/berita_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/create_achievement_screen.dart';
@@ -170,6 +176,8 @@ class AppRoutes {
   static const String mentorHandbookDetail = '/mentor-kencana/handbook/:id';
   static const String mentorScoringDetail =
       '/mentor-kencana/scoring/:sessionId';
+  static const String mentorNotifications = '/mentor-kencana/notifications';
+  static const String mentorHandbookList = '/mentor-kencana/handbook';
   static const String kencanaStage = '/kencana/stage/:id';
   static const String kencanaSession = '/kencana/session/:id';
   static const String kencanaScore = '/kencana/score';
@@ -185,6 +193,7 @@ class AppRoutes {
   static const String presensi = '/presensi';
   static const String selfScreening = '/health/self-screening';
   static const String counselingHistory = '/counseling/history';
+  static const String medicalRecordDetail = '/counseling/medical-record';
   static const String studentVoice = '/student/voice';
   static const String studentVoiceDetail = '/student/voice/:id';
   static const String medicalReferral = '/health/referrals';
@@ -200,6 +209,7 @@ class AppRoutes {
 
   // Scholarship Program Routes
   static const String scholarshipProgramDetail = '/scholarship/program/:id';
+  static const String scholarshipApply = '/scholarship/apply/:id';
 
   // Counseling Routes
   static const String psychologistAnalytics = '/counseling/analytics';
@@ -245,6 +255,7 @@ class AppRoutes {
   static const String tkAllSchedules = '/tk/all-schedules';
   static const String adminTkList = '/tk/admin/list';
   static const String adminCreateTk = '/tk/admin/create';
+  static const String adminEditTk = '/tk/admin/edit';
 
   // Notification Routes
   static const String studentNotifications = '/notifications/student';
@@ -308,6 +319,8 @@ class AppRoutes {
   static const String ormawaAbsensiManagementEdit = '/ormawa/absensi-management/edit';
   static const String ormawaProposalPipeline = '/ormawa/proposal-pipeline';
   static const String ormawaLpjPipeline = '/ormawa/lpj-pipeline';
+  static const String ormawaProposalReview = '/ormawa/proposal-review';
+  static const String ormawaLpjReview = '/ormawa/lpj-review';
   static const String ormawaKeuanganCreate = '/ormawa/keuangan/create';
 
   // Compatibility aliases
@@ -489,6 +502,14 @@ class AppRoutes {
         },
       ),
       GoRoute(
+        path: mentorNotifications,
+        builder: (context, state) => const MentorNotificationsScreen(),
+      ),
+      GoRoute(
+        path: mentorHandbookList,
+        builder: (context, state) => const MentorHandbookListScreen(),
+      ),
+      GoRoute(
         path: '/kencana/stage/:id',
         builder: (context, state) {
           final stageId = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
@@ -568,6 +589,18 @@ class AppRoutes {
         builder: (context, state) => const CounselingHistoryScreen(),
       ),
       GoRoute(
+        path: medicalRecordDetail,
+        builder: (context, state) {
+          final record = state.extra;
+          if (record is! Map<String, dynamic>) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid medical record')),
+            );
+          }
+          return MedicalRecordDetailScreen(record: record);
+        },
+      ),
+      GoRoute(
         path: studentVoice,
         builder: (context, state) => const StudentVoiceScreen(),
       ),
@@ -620,6 +653,13 @@ class AppRoutes {
       ),
       GoRoute(
         path: '/scholarship/program/:id',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          return ScholarshipProgramDetailScreen(programId: id);
+        },
+      ),
+      GoRoute(
+        path: '/scholarship/apply/:id',
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           return ScholarshipProgramDetailScreen(programId: id);
@@ -861,6 +901,14 @@ class AppRoutes {
         path: adminCreateTk,
         builder: (context, state) => const CreateTkScreen(),
       ),
+      GoRoute(
+        path: adminEditTk,
+        builder: (context, state) {
+          final tkId = state.uri.queryParameters['id'] ?? '0';
+          final data = state.extra as Map<String, dynamic>?;
+          return EditTkScreen(tkId: tkId, initialData: data);
+        },
+      ),
       // Ormawa Sub-Routes
       GoRoute(
         path: ormawaSettings,
@@ -1058,6 +1106,14 @@ class AppRoutes {
       GoRoute(
         path: ormawaLpjPipeline,
         builder: (context, state) => const OrmawaLpjPipelineScreen(),
+      ),
+      GoRoute(
+        path: ormawaProposalReview,
+        builder: (context, state) => const OrmawaProposalReviewScreen(),
+      ),
+      GoRoute(
+        path: ormawaLpjReview,
+        builder: (context, state) => const OrmawaLpjReviewScreen(),
       ),
       GoRoute(
         path: ormawaKeuanganCreate,

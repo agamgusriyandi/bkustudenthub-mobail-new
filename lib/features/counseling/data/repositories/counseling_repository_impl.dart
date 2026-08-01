@@ -198,6 +198,53 @@ class CounselingRepositoryImpl implements CounselingRepository {
   }
 
   @override
+  Future<void> confirmBooking(
+    String bookingId, {
+    String? meetingLink,
+    String? notes,
+  }) async {
+    try {
+      await apiClient.client.post(
+        '/psychologist/bookings/$bookingId/confirm',
+        data: {
+          if (meetingLink != null && meetingLink.isNotEmpty)
+            'meeting_link': meetingLink,
+          if (notes != null && notes.isNotEmpty) 'notes': notes,
+        },
+      );
+    } catch (e) {
+      log('Error confirming booking: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> completeBooking(String bookingId, {String? notes}) async {
+    try {
+      await apiClient.client.post(
+        '/psychologist/bookings/$bookingId/complete',
+        data: {if (notes != null && notes.isNotEmpty) 'notes': notes},
+      );
+    } catch (e) {
+      log('Error completing booking: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> rejectBooking(String bookingId, String reason) async {
+    try {
+      await apiClient.client.post(
+        '/psychologist/bookings/$bookingId/reject',
+        data: {'reason': reason},
+      );
+    } catch (e) {
+      log('Error rejecting booking: $e');
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> getSchedules() async {
     try {
       final response = await apiClient.client.get('/psychologist/schedules');

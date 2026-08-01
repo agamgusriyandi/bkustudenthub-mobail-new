@@ -1,5 +1,7 @@
 import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/utils/error_helper.dart';
+import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/certificate_model.dart';
 
 class CertificateRepository {
@@ -20,5 +22,17 @@ class CertificateRepository {
     } catch (e) {
       throw Exception(ErrorHelper.getMessage(e));
     }
+  }
+
+  Future<List<int>> downloadCertificateBytes(KencanaCertificate cert) async {
+    final url = ApiGate.getImageUrl(cert.fileUrl ?? '');
+    final response = await _apiClient.client.get<dynamic>(
+      url,
+      options: Options(responseType: ResponseType.bytes, followRedirects: true),
+    );
+    final data = response.data;
+    if (data is List<int>) return data;
+    if (data is String) return data.codeUnits;
+    throw Exception('File sertifikat tidak dapat diunduh');
   }
 }

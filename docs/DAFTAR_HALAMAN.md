@@ -1,8 +1,8 @@
 # Daftar Halaman/Screen - BKU Student Hub Mobile
 
-> Auto-generated listing dari `lib/` — 163 screen files.
-> Total: **163 halaman** dalam **9 feature modules** + 1 core widget.
-> Updated: 2026-08-01 — Complete listing dari seluruh 163 screens.
+> Auto-generated listing dari `lib/` — 183 screen files.
+> Total: **183 halaman** dalam **9 feature modules** + 1 core widget.
+> Updated: 2026-08-02 — Complete listing dari seluruh 183 screens.
 
 ---
 

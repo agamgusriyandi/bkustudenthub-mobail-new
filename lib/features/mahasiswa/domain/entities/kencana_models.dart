@@ -47,6 +47,9 @@ class KencanaDashboardData {
   final bool hasPendingFacultyInvitation;
   final Map<String, dynamic> weights;
 
+  final bool isGraduated;
+  final bool isEnrolledGroup;
+
   KencanaDashboardData({
     required this.period,
     required this.status,
@@ -66,6 +69,8 @@ class KencanaDashboardData {
     required this.hasPendingInvitation,
     required this.hasPendingFacultyInvitation,
     required this.weights,
+    this.isGraduated = false,
+    this.isEnrolledGroup = true,
   });
 
   factory KencanaDashboardData.fromJson(Map<String, dynamic> json) {
@@ -93,6 +98,10 @@ class KencanaDashboardData {
       weights:
           json['weights'] ??
           {'cognitive': 25, 'psychomotor': 35, 'affective': 40},
+      isGraduated:
+          json['is_graduated'] == true ||
+          json['graduation_status'] == 'passed',
+      isEnrolledGroup: json['is_enrolled_group'] ?? true,
     );
   }
 }
