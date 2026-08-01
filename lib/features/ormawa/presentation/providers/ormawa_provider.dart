@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_finance.dar
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_lpj.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/repositories/ormawa_repository.dart';
@@ -52,6 +53,8 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaAnnouncement> _announcements = [];
   List<OrmawaRole> _roles = [];
   List<OrmawaDivision> _divisions = [];
+  List<OrmawaOrganisasi> _organisasiList = [];
+  List<Map<String, dynamic>> _absensiManagementList = [];
 
   List<OrmawaNotification> _notifications = [];
   List<String> _knownNotificationIds = [];
@@ -123,6 +126,8 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaAnnouncement> get announcements => _announcements;
   List<OrmawaRole> get roles => _roles;
   List<OrmawaDivision> get divisions => _divisions;
+  List<OrmawaOrganisasi> get organisasiList => _organisasiList;
+  List<Map<String, dynamic>> get absensiManagementList => _absensiManagementList;
 
   bool get isLoading => _isLoading;
 
@@ -891,6 +896,48 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
+  // ORGANISASI METHODS
+  Future<void> fetchOrganisasi() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final result = await _repository.getOrganisasiList();
+      _organisasiList = result;
+    } catch (_) {
+      // ignore
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createOrganisasi(Map<String, dynamic> data) async {
+    try {
+      await _repository.createOrganisasi(data);
+      await fetchOrganisasi();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateOrganisasi(String id, Map<String, dynamic> data) async {
+    try {
+      await _repository.updateOrganisasi(id, data);
+      await fetchOrganisasi();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteOrganisasi(String id) async {
+    try {
+      await _repository.deleteOrganisasi(id);
+      await fetchOrganisasi();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<String?> uploadFile(String filePath) async {
     try {
       _isLoading = true;
@@ -902,6 +949,42 @@ class OrmawaProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // Attendance Management Methods
+  Future<void> fetchAbsensiManagement() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _absensiManagementList = await _repository.getAbsensiManagement(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> createAbsensiManagement(Map<String, dynamic> data) async {
+    try {
+      await _repository.createAbsensiManagement(data);
+      await fetchAbsensiManagement();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getAbsensiManagementDetail(String id) async {
+    try {
+      return await _repository.getAbsensiManagementDetail(id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
+    try {
+      await _repository.updateAbsensiManagement(id, data);
+      await fetchAbsensiManagement();
+    } catch (e) {
+      rethrow;
     }
   }
 }

@@ -6,6 +6,7 @@ import '../entities/ormawa_finance.dart';
 import '../entities/ormawa_lpj.dart';
 import '../entities/ormawa_aspiration.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
 
@@ -64,6 +65,12 @@ abstract class OrmawaRepository {
     String status,
   );
 
+  // Attendance Management
+  Future<List<Map<String, dynamic>>> getAbsensiManagement(String ormawaId);
+  Future<void> createAbsensiManagement(Map<String, dynamic> data);
+  Future<Map<String, dynamic>?> getAbsensiManagementDetail(String id);
+  Future<void> updateAbsensiManagement(String id, Map<String, dynamic> data);
+
   // ROLES & DIVISIONS
   Future<List<OrmawaRole>> getRoles();
   Future<void> createRole(Map<String, dynamic> data);
@@ -99,4 +106,10 @@ abstract class OrmawaRepository {
 
   // FILE UPLOAD
   Future<String?> uploadFile(String filePath);
+
+  // ORGANISASI
+  Future<List<OrmawaOrganisasi>> getOrganisasiList();
+  Future<void> createOrganisasi(Map<String, dynamic> data);
+  Future<void> updateOrganisasi(String id, Map<String, dynamic> data);
+  Future<void> deleteOrganisasi(String id);
 }

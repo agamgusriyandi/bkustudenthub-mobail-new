@@ -115,6 +115,14 @@ import 'package:bkuhub_mobile/features/ormawa/jadwal/presentation/pages/ormawa_j
 import 'package:bkuhub_mobile/features/ormawa/staf/presentation/pages/ormawa_staf_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/gamifikasi/presentation/pages/ormawa_gamifikasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pagu/presentation/pages/ormawa_pagu_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/ormawa_organisasi_list_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/create_organisasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/ormawa_organisasi_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/edit_organisasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_management_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presensi/presentation/pages/presensi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_history_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
@@ -282,6 +290,12 @@ class AppRoutes {
   static const String ormawaStaf = '/ormawa/staf';
   static const String ormawaGamifikasi = '/ormawa/gamifikasi';
   static const String ormawaPagu = '/ormawa/pagu';
+
+  // Ormawa Organisasi Routes
+  static const String ormawaOrganisasi = '/ormawa/organisasi';
+  static const String ormawaOrganisasiCreate = '/ormawa/organisasi/create';
+  static const String ormawaOrganisasiDetail = '/ormawa/organisasi/detail';
+  static const String ormawaOrganisasiEdit = '/ormawa/organisasi/edit';
 
   // Ormawa Absensi Management Routes
   static const String ormawaAbsensiManagement = '/ormawa/absensi-management';
@@ -1054,7 +1068,7 @@ class AppRoutes {
         builder: (context, state) {
           final data = state.extra as Map<String, dynamic>?;
           final id = data?['id'] ?? '';
-          return OrmawaAbsensiDetailScreen(
+          return OrmawaAbsensiManagementDetailScreen(
             absensiId: id.toString(),
             absensiData: data ?? {},
           );
@@ -1069,6 +1083,29 @@ class AppRoutes {
             absensiId: id.toString(),
             absensiData: data ?? {},
           );
+        },
+      ),
+      // Ormawa Organisasi Routes
+      GoRoute(
+        path: ormawaOrganisasi,
+        builder: (context, state) => const OrmawaOrganisasiListScreen(),
+      ),
+      GoRoute(
+        path: ormawaOrganisasiCreate,
+        builder: (context, state) => const CreateOrganisasiScreen(),
+      ),
+      GoRoute(
+        path: ormawaOrganisasiDetail,
+        builder: (context, state) {
+          final organisasi = state.extra;
+          return OrmawaOrganisasiDetailScreen(organisasi: organisasi as dynamic);
+        },
+      ),
+      GoRoute(
+        path: ormawaOrganisasiEdit,
+        builder: (context, state) {
+          final organisasi = state.extra;
+          return EditOrganisasiScreen(organisasi: organisasi as dynamic);
         },
       ),
     ],

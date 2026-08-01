@@ -78,6 +78,18 @@ abstract class OrmawaRemoteDataSource {
   // Student Lookup
   Future<Response> getStudents();
   Future<Response> uploadFile(FormData data);
+
+  // Organisasi
+  Future<Response> getOrganisasiList();
+  Future<Response> createOrganisasi(Map<String, dynamic> data);
+  Future<Response> updateOrganisasi(String id, Map<String, dynamic> data);
+  Future<Response> deleteOrganisasi(String id);
+
+  // Attendance Management
+  Future<Response> getAbsensiManagement(String ormawaId);
+  Future<Response> createAbsensiManagement(Map<String, dynamic> data);
+  Future<Response> getAbsensiManagementDetail(String id);
+  Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data);
 }
 
 class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
@@ -401,5 +413,47 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   @override
   Future<Response> uploadFile(FormData data) async {
     return await dio.post('/ormawa/upload', data: data);
+  }
+
+  // Attendance Management
+  @override
+  Future<Response> getAbsensiManagement(String ormawaId) async {
+    return await dio.get('/ormawa/attendance', queryParameters: {'ormawa_id': ormawaId});
+  }
+
+  @override
+  Future<Response> createAbsensiManagement(Map<String, dynamic> data) async {
+    return await dio.post('/ormawa/attendance', data: data);
+  }
+
+  @override
+  Future<Response> getAbsensiManagementDetail(String id) async {
+    return await dio.get('/ormawa/attendance/$id');
+  }
+
+  @override
+  Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
+    return await dio.put('/ormawa/attendance/$id', data: data);
+  }
+
+  // Organisasi
+  @override
+  Future<Response> getOrganisasiList() async {
+    return await dio.get('/ormawa/organisasi');
+  }
+
+  @override
+  Future<Response> createOrganisasi(Map<String, dynamic> data) async {
+    return await dio.post('/ormawa/organisasi', data: data);
+  }
+
+  @override
+  Future<Response> updateOrganisasi(String id, Map<String, dynamic> data) async {
+    return await dio.put('/ormawa/organisasi/$id', data: data);
+  }
+
+  @override
+  Future<Response> deleteOrganisasi(String id) async {
+    return await dio.delete('/ormawa/organisasi/$id');
   }
 }

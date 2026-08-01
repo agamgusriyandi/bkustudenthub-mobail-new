@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_finance.dar
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_attendance.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/repositories/ormawa_repository.dart';
 import 'dart:developer';
 import 'package:dio/dio.dart';
@@ -18,6 +19,7 @@ import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_division_model.
 import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_notification_model.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_member_model.dart';
+import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_organisasi_model.dart';
 
 class OrmawaRepositoryImpl implements OrmawaRepository {
   @override
@@ -844,6 +846,99 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
       return response.data['data'] ?? response.data;
     } catch (e) {
       log('Error in delete: $e');
+      rethrow;
+    }
+  }
+
+  // Attendance Management
+  @override
+  Future<List<Map<String, dynamic>>> getAbsensiManagement(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getAbsensiManagement(ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return List<Map<String, dynamic>>.from(list);
+      }
+      return [];
+    } catch (e) {
+      log('Error in getAbsensiManagement: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> createAbsensiManagement(Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.createAbsensiManagement(data);
+    } catch (e) {
+      log('Error in createAbsensiManagement: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getAbsensiManagementDetail(String id) async {
+    try {
+      final response = await ormawaRemoteDataSource.getAbsensiManagementDetail(id);
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      log('Error in getAbsensiManagementDetail: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.updateAbsensiManagement(id, data);
+    } catch (e) {
+      log('Error in updateAbsensiManagement: $e');
+      rethrow;
+    }
+  }
+
+  // Organisasi
+  @override
+  Future<List<OrmawaOrganisasi>> getOrganisasiList() async {
+    try {
+      final response = await ormawaRemoteDataSource.getOrganisasiList();
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => OrmawaOrganisasiModel.fromJson(e)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getOrganisasiList: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> createOrganisasi(Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.createOrganisasi(data);
+    } catch (e) {
+      log('Error in createOrganisasi: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateOrganisasi(String id, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.updateOrganisasi(id, data);
+    } catch (e) {
+      log('Error in updateOrganisasi: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteOrganisasi(String id) async {
+    try {
+      await ormawaRemoteDataSource.deleteOrganisasi(id);
+    } catch (e) {
+      log('Error in deleteOrganisasi: $e');
       rethrow;
     }
   }
