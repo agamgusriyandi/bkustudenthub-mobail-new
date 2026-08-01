@@ -88,7 +88,7 @@ class AnnouncementSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +142,7 @@ class AnnouncementSection extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.info_outline_rounded,
-                      color: context.appColors.onSurfaceVariant.withOpacity(0.4),
+                      color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
                       size: 40,
                     ),
                     const SizedBox(height: 8),
@@ -173,7 +173,7 @@ class AnnouncementSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -184,7 +184,7 @@ class AnnouncementSection extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: context.appColors.surface,
-                border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+                border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
@@ -196,7 +196,7 @@ class AnnouncementSection extends StatelessWidget {
                       color: context.appColors.surface,
                       child: Icon(
                         Icons.image_rounded,
-                        color: context.appColors.onSurfaceVariant.withOpacity(0.3),
+                        color: context.appColors.onSurfaceVariant.withValues(alpha: 0.3),
                         size: 24,
                       ),
                     );
@@ -217,7 +217,7 @@ class AnnouncementSection extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: catBgColor,
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: catColor.withOpacity(0.2)),
+                        border: Border.all(color: catColor.withValues(alpha: 0.2)),
                       ),
                       child: Text(
                         item.category ?? 'Umum',
@@ -233,7 +233,7 @@ class AnnouncementSection extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.calendar_today_rounded,
-                            color: context.appColors.onSurfaceVariant.withOpacity(0.5),
+                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.5),
                             size: 10,
                           ),
                           const SizedBox(width: 4),

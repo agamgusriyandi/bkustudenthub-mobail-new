@@ -100,7 +100,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
   String _filterHari = 'Semua';
   String _filterKonselor = 'Semua';
 
-  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -112,6 +111,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       } else {
         await provider.loadAvailableSchedules();
       }
+      if (!mounted) return;
       final student = context.read<StudentProvider>();
       if (_namaOrtuCtrl.text.isEmpty && student.name.isNotEmpty) {
         // Auto-fill if possible; rawProfileData may carry parent info
@@ -1352,7 +1352,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       AppSnackbar.showWarning(context, 'Harap setujui pernyataan privasi');
       return;
     }
-    setState(() => _isSubmitting = true);
     BkuLoadingDialog.show(context);
     try {
       final psikologId = (widget.psychologist?.id ??
@@ -1414,7 +1413,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       BkuLoadingDialog.hide(context);
       AppSnackbar.showError(context, ErrorHandler.getMessage(e));
     } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      // Nothing needed here since dialog is hidden
     }
   }
 

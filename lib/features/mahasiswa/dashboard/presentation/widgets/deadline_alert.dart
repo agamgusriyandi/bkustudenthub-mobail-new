@@ -57,15 +57,15 @@ class DeadlineAlert extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            context.appColors.primary.withOpacity(0.05),
-            context.appColors.primary.withOpacity(0.1),
+            context.appColors.primary.withValues(alpha: 0.05),
+            context.appColors.primary.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.appColors.primary.withOpacity(0.2),
+          color: context.appColors.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -131,7 +131,7 @@ class DeadlineAlert extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -139,10 +139,10 @@ class DeadlineAlert extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: context.appColors.primary.withOpacity(0.1),
+              color: context.appColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: context.appColors.primary.withOpacity(0.2),
+                color: context.appColors.primary.withValues(alpha: 0.2),
               ),
             ),
             child: Icon(
@@ -168,9 +168,9 @@ class DeadlineAlert extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: urgencyColor.withOpacity(0.1),
+                    color: urgencyColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: urgencyColor.withOpacity(0.2)),
+                    border: Border.all(color: urgencyColor.withValues(alpha: 0.2)),
                   ),
                   child: Text(
                     '${item.daysLeft} Hari Lagi',
@@ -185,7 +185,7 @@ class DeadlineAlert extends StatelessWidget {
           ),
           Icon(
             Icons.chevron_right_rounded,
-            color: context.appColors.onSurfaceVariant.withOpacity(0.4),
+            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
             size: 18,
           ),
         ],

@@ -24,7 +24,6 @@ class ChartBar {
   const ChartBar({required this.label, required this.value, required this.color});
 }
 
-const Color _transparent = Color(0x00000000);
 
 class ChartHelpers {
   ChartHelpers._();

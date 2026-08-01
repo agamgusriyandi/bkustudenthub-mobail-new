@@ -66,7 +66,7 @@ class _CalendarMiniState extends State<CalendarMini> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +169,7 @@ class _CalendarMiniState extends State<CalendarMini> {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: context.appColors.outline.withOpacity(0.1),
+                  color: context.appColors.outline.withValues(alpha: 0.1),
                 ),
               ),
             ),
@@ -193,7 +193,7 @@ class _CalendarMiniState extends State<CalendarMini> {
                         children: [
                           Icon(
                             Icons.touch_app_rounded,
-                            color: context.appColors.onSurfaceVariant.withOpacity(0.4),
+                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
                             size: 32,
                           ),
                           const SizedBox(height: 8),
@@ -216,7 +216,7 @@ class _CalendarMiniState extends State<CalendarMini> {
                         children: [
                           Icon(
                             Icons.event_busy_rounded,
-                            color: context.appColors.onSurfaceVariant.withOpacity(0.4),
+                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
                             size: 32,
                           ),
                           const SizedBox(height: 8),
@@ -274,14 +274,14 @@ class _CalendarMiniState extends State<CalendarMini> {
                   height: 32,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? context.appColors.primary.withOpacity(0.2)
+                        ? context.appColors.primary.withValues(alpha: 0.2)
                         : isToday
                             ? context.appColors.primary
                             : null,
                     borderRadius: BorderRadius.circular(16),
                     border: isSelected
                         ? Border.all(
-                            color: context.appColors.primary.withOpacity(0.4),
+                            color: context.appColors.primary.withValues(alpha: 0.4),
                             width: 2,
                           )
                         : null,
@@ -293,7 +293,7 @@ class _CalendarMiniState extends State<CalendarMini> {
                         color: isToday
                             ? context.appColors.surface
                             : isPast
-                                ? context.appColors.onSurfaceVariant.withOpacity(0.4)
+                                ? context.appColors.onSurfaceVariant.withValues(alpha: 0.4)
                                 : context.appColors.onSurface,
                         fontWeight: FontWeight.bold,
                       ),
@@ -308,7 +308,7 @@ class _CalendarMiniState extends State<CalendarMini> {
                     decoration: BoxDecoration(
                       color: isToday || isSelected
                           ? context.appColors.primary
-                          : context.appColors.primary.withOpacity(0.6),
+                          : context.appColors.primary.withValues(alpha: 0.6),
                       shape: BoxShape.circle,
                     ),
                   ),

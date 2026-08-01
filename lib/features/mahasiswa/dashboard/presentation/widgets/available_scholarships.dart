@@ -70,7 +70,7 @@ class AvailableScholarships extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,8 +153,8 @@ class AvailableScholarships extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isClosed
-              ? context.appColors.outline.withOpacity(0.1)
-              : context.appColors.primary.withOpacity(0.2),
+              ? context.appColors.outline.withValues(alpha: 0.1)
+              : context.appColors.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -166,10 +166,10 @@ class AvailableScholarships extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: context.appColors.primary.withOpacity(0.1),
+                  color: context.appColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: context.appColors.primary.withOpacity(0.2),
+                    color: context.appColors.primary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
@@ -183,9 +183,9 @@ class AvailableScholarships extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: statusColor.withOpacity(0.2)),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -228,7 +228,7 @@ class AvailableScholarships extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: context.appColors.outline.withOpacity(0.1),
+                  color: context.appColors.outline.withValues(alpha: 0.1),
                   style: BorderStyle.solid,
                 ),
               ),

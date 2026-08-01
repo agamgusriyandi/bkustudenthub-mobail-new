@@ -95,7 +95,7 @@ class ActivityFeed extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withOpacity(0.1)),
+        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class ActivityFeed extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.info_outline_rounded,
-                      color: context.appColors.onSurfaceVariant.withOpacity(0.4),
+                      color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
                       size: 40,
                     ),
                     const SizedBox(height: 8),
@@ -163,7 +163,7 @@ class ActivityFeed extends StatelessWidget {
                   color: _getIconBg(item.type),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: _getIconColor(item.type).withOpacity(0.2),
+                    color: _getIconColor(item.type).withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(
@@ -176,7 +176,7 @@ class ActivityFeed extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 1,
-                    color: context.appColors.outline.withOpacity(0.1),
+                    color: context.appColors.outline.withValues(alpha: 0.1),
                   ),
                 ),
             ],
@@ -190,7 +190,7 @@ class ActivityFeed extends StatelessWidget {
                   : BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: context.appColors.outline.withOpacity(0.1),
+                          color: context.appColors.outline.withValues(alpha: 0.1),
                         ),
                       ),
                     ),
