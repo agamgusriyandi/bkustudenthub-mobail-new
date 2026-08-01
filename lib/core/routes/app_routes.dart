@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/network/api_interceptors.dart';
 import 'package:bkuhub_mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:bkuhub_mobile/features/auth/presentation/pages/forgot_password_screen.dart';
@@ -77,12 +78,16 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_note_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_essay_grading_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_session_attendance_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_materials_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_scoring_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/ormawa_recruitment_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa_aspirasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_pipeline_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
@@ -97,10 +102,12 @@ import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/create_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/edit_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_pipeline_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_keuangan_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/create_keuangan_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_mutasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/keuangan/presentation/pages/ormawa_iuran_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/jadwal/presentation/pages/create_kegiatan_screen.dart';
@@ -115,6 +122,15 @@ import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/pages/berit
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/create_achievement_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/edit_achievement_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_program_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/medical_referral_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/insurance_claim_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/quiz_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/assignment_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_application_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -141,6 +157,10 @@ class AppRoutes {
   static const String mentorEssayGrading = '/mentor-kencana/essay-grading';
   static const String mentorSessionAttendance =
       '/mentor-kencana/session-attendance/:sessionId';
+  static const String mentorMaterials = '/mentor-kencana/materials';
+  static const String mentorHandbookDetail = '/mentor-kencana/handbook/:id';
+  static const String mentorScoringDetail =
+      '/mentor-kencana/scoring/:sessionId';
   static const String kencanaStage = '/kencana/stage/:id';
   static const String kencanaSession = '/kencana/session/:id';
   static const String kencanaScore = '/kencana/score';
@@ -151,9 +171,16 @@ class AppRoutes {
   static const String kencanaTimeline = '/kencana/timeline';
   static const String kencanaRemedial = '/kencana/remedial';
   static const String kencanaCertificate = '/kencana/certificate';
+  static const String kencanaQuiz = '/kencana/quiz/:id';
+  static const String kencanaAssignment = '/kencana/assignment/:id';
   static const String presensi = '/presensi';
   static const String selfScreening = '/health/self-screening';
   static const String counselingHistory = '/counseling/history';
+  static const String studentVoice = '/student/voice';
+  static const String studentVoiceDetail = '/student/voice/:id';
+  static const String medicalReferral = '/health/referrals';
+  static const String insuranceClaim = '/health/insurance';
+  static const String scholarshipDetail = '/scholarship/pengajuan/:id';
 
   // Berita Routes
   static const String beritaDetail = '/berita/:id';
@@ -255,6 +282,9 @@ class AppRoutes {
   static const String ormawaStaf = '/ormawa/staf';
   static const String ormawaGamifikasi = '/ormawa/gamifikasi';
   static const String ormawaPagu = '/ormawa/pagu';
+  static const String ormawaProposalPipeline = '/ormawa/proposal-pipeline';
+  static const String ormawaLpjPipeline = '/ormawa/lpj-pipeline';
+  static const String ormawaKeuanganCreate = '/ormawa/keuangan/create';
 
   // Compatibility aliases
   static const String main = studentMain;
@@ -411,6 +441,30 @@ class AppRoutes {
         },
       ),
       GoRoute(
+        path: mentorMaterials,
+        builder: (context, state) => const MentorMaterialsScreen(),
+      ),
+      GoRoute(
+        path: mentorHandbookDetail,
+        builder: (context, state) {
+          final idStr = state.pathParameters['id'] ?? '0';
+          final id = int.tryParse(idStr) ?? 0;
+          return MentorHandbookReviewDetailScreen(handbookId: id);
+        },
+      ),
+      GoRoute(
+        path: mentorScoringDetail,
+        builder: (context, state) {
+          final sessionStr = state.pathParameters['sessionId'] ?? '0';
+          final sessionId = int.tryParse(sessionStr) ?? 0;
+          final title = state.uri.queryParameters['title'] ?? 'Sesi';
+          return MentorScoringDetailScreen(
+            sessionId: sessionId,
+            sessionTitle: title,
+          );
+        },
+      ),
+      GoRoute(
         path: '/kencana/stage/:id',
         builder: (context, state) {
           final stageId = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
@@ -458,6 +512,22 @@ class AppRoutes {
         builder: (context, state) => const KencanaCertificateScreen(),
       ),
       GoRoute(
+        path: kencanaQuiz,
+        builder: (context, state) {
+          final mission = state.extra as Mission?;
+          if (mission == null) return const Scaffold(body: Center(child: Text('Invalid quiz')));
+          return QuizScreen(mission: mission);
+        },
+      ),
+      GoRoute(
+        path: kencanaAssignment,
+        builder: (context, state) {
+          final mission = state.extra as Mission?;
+          if (mission == null) return const Scaffold(body: Center(child: Text('Invalid assignment')));
+          return AssignmentScreen(mission: mission);
+        },
+      ),
+      GoRoute(
         path: '/kencana/qr-scan',
         builder: (context, state) => const KencanaQrScanScreen(),
       ),
@@ -472,6 +542,33 @@ class AppRoutes {
       GoRoute(
         path: counselingHistory,
         builder: (context, state) => const CounselingHistoryScreen(),
+      ),
+      GoRoute(
+        path: studentVoice,
+        builder: (context, state) => const StudentVoiceScreen(),
+      ),
+      GoRoute(
+        path: studentVoiceDetail,
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return StudentVoiceDetailScreen(aspirationId: id);
+        },
+      ),
+      GoRoute(
+        path: medicalReferral,
+        builder: (context, state) => const MedicalReferralScreen(),
+      ),
+      GoRoute(
+        path: insuranceClaim,
+        builder: (context, state) => const InsuranceClaimScreen(),
+      ),
+      GoRoute(
+        path: scholarshipDetail,
+        builder: (context, state) {
+          final scholarship = state.extra as Scholarship?;
+          if (scholarship == null) return const Scaffold(body: Center(child: Text('Invalid scholarship')));
+          return ScholarshipApplicationDetailScreen(scholarship: scholarship);
+        },
       ),
       GoRoute(
         path: '/berita/:id',
@@ -924,6 +1021,18 @@ class AppRoutes {
       GoRoute(
         path: ormawaPagu,
         builder: (context, state) => const OrmawaPaguScreen(),
+      ),
+      GoRoute(
+        path: ormawaProposalPipeline,
+        builder: (context, state) => const OrmawaProposalPipelineScreen(),
+      ),
+      GoRoute(
+        path: ormawaLpjPipeline,
+        builder: (context, state) => const OrmawaLpjPipelineScreen(),
+      ),
+      GoRoute(
+        path: ormawaKeuanganCreate,
+        builder: (context, state) => const CreateKeuanganScreen(),
       ),
     ],
   );

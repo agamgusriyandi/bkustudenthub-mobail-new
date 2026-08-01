@@ -769,6 +769,88 @@ class MentorKencanaProvider extends ChangeNotifier {
     }
   }
 
+  // Phase 4: Mentor Materials
+  List<MentorMaterial> _materials = [];
+  List<MentorMaterial> get materials => _materials;
+
+  Future<void> fetchMentorMaterials() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get('/kencana-mentor/materials');
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final materialList = resData is List ? resData : [];
+      _materials =
+          materialList.map((e) => MentorMaterial.fromJson(e)).toList();
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat materi mentoring',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Phase 4: Handbook Detail
+  MentorHandbookDetail? _handbookDetail;
+  MentorHandbookDetail? get handbookDetail => _handbookDetail;
+
+  Future<void> fetchHandbookDetail(int handbookId) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/handbook/$handbookId',
+      );
+      final data = response.data['data'] ?? response.data;
+      _handbookDetail = MentorHandbookDetail.fromJson(
+        data is Map<String, dynamic> ? data : {},
+      );
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat detail handbook',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Phase 4: Session Scores
+  List<MentorSessionScore> _sessionScores = [];
+  List<MentorSessionScore> get sessionScores => _sessionScores;
+
+  Future<void> fetchSessionScores(int sessionId) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get(
+        '/kencana-mentor/sessions/$sessionId/scores',
+      );
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final scoreList = resData is List ? resData : [];
+      _sessionScores =
+          scoreList.map((e) => MentorSessionScore.fromJson(e)).toList();
+    } on DioException catch (e) {
+      _setError(
+        e.response?.data['message'] ?? 'Gagal memuat data penilaian sesi',
+      );
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

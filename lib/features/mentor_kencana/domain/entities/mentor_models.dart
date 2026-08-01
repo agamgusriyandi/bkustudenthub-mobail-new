@@ -772,6 +772,157 @@ class MentorEssayItem {
   }
 }
 
+class MentorMaterial {
+  final int id;
+  final String title;
+  final String description;
+  final String category;
+  final String fileUrl;
+  final String uploadedAt;
+
+  MentorMaterial({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.fileUrl,
+    required this.uploadedAt,
+  });
+
+  factory MentorMaterial.fromJson(Map<String, dynamic> json) {
+    return MentorMaterial(
+      id: json['id'] ?? json['ID'] ?? 0,
+      title: json['title'] ?? json['judul'] ?? '',
+      description: json['description'] ?? json['deskripsi'] ?? '',
+      category: json['category'] ?? json['kategori'] ?? '',
+      fileUrl: json['file_url'] ?? json['fileUrl'] ?? '',
+      uploadedAt: json['uploaded_at'] ?? json['created_at'] ?? '',
+    );
+  }
+}
+
+class MentorHandbookDetail {
+  final int id;
+  final int studentId;
+  final String studentName;
+  final String status;
+  final String feedback;
+  final String submittedAt;
+  final String reviewedAt;
+  final Map<String, dynamic>? contentJson;
+
+  MentorHandbookDetail({
+    required this.id,
+    required this.studentId,
+    required this.studentName,
+    required this.status,
+    required this.feedback,
+    required this.submittedAt,
+    required this.reviewedAt,
+    this.contentJson,
+  });
+
+  factory MentorHandbookDetail.fromJson(Map<String, dynamic> json) {
+    Map<String, dynamic>? parsedContent;
+    if (json['content_json'] != null) {
+      if (json['content_json'] is String) {
+        try {
+          final decoded = jsonDecode(json['content_json']);
+          if (decoded is Map) {
+            parsedContent = Map<String, dynamic>.from(decoded);
+          }
+        } catch (_) {}
+      } else if (json['content_json'] is Map) {
+        parsedContent = Map<String, dynamic>.from(json['content_json']);
+      }
+    }
+
+    String studentName = '';
+    if (json['student'] is Map) {
+      studentName = json['student']['nama'] ?? json['student']['name'] ?? '';
+    } else {
+      studentName = json['student_name'] ?? json['nama_mahasiswa'] ?? '';
+    }
+
+    return MentorHandbookDetail(
+      id: json['id'] ?? json['ID'] ?? 0,
+      studentId: json['student_id'] ?? 0,
+      studentName: studentName.toString(),
+      status: json['status'] ?? 'not_started',
+      feedback: json['feedback'] ?? '',
+      submittedAt: json['submitted_at'] ?? '',
+      reviewedAt: json['reviewed_at'] ?? '',
+      contentJson: parsedContent,
+    );
+  }
+}
+
+class MentorSessionScore {
+  final int studentId;
+  final String studentName;
+  final String nim;
+  final List<MentorScoreItem> items;
+  final double totalScore;
+
+  MentorSessionScore({
+    required this.studentId,
+    required this.studentName,
+    required this.nim,
+    required this.items,
+    required this.totalScore,
+  });
+
+  factory MentorSessionScore.fromJson(Map<String, dynamic> json) {
+    String studentName = '';
+    String nim = '';
+    if (json['student'] is Map) {
+      studentName = json['student']['nama'] ?? json['student']['name'] ?? '';
+      nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
+    } else {
+      studentName = json['student_name'] ?? json['nama_mahasiswa'] ?? json['nama'] ?? '';
+      nim = json['nim'] ?? json['NIM'] ?? '';
+    }
+
+    final itemsList = json['items'] ?? json['scores'] ?? [];
+    final parsedItems = itemsList is List
+        ? itemsList.map((e) => MentorScoreItem.fromJson(e)).toList()
+        : <MentorScoreItem>[];
+
+    return MentorSessionScore(
+      studentId: json['student_id'] ?? json['id'] ?? 0,
+      studentName: studentName.toString(),
+      nim: nim.toString(),
+      items: parsedItems,
+      totalScore: double.tryParse(
+        (json['total_score'] ?? json['totalScore'] ?? json['score'] ?? 0).toString(),
+      ) ?? 0.0,
+    );
+  }
+}
+
+class MentorScoreItem {
+  final String component;
+  final String itemName;
+  final double score;
+  final String notes;
+
+  MentorScoreItem({
+    required this.component,
+    required this.itemName,
+    required this.score,
+    required this.notes,
+  });
+
+  factory MentorScoreItem.fromJson(Map<String, dynamic> json) {
+    return MentorScoreItem(
+      component: json['component'] ?? json['kategori'] ?? '',
+      itemName: json['item_name'] ?? json['nama_item'] ?? '',
+      score: double.tryParse((json['score'] ?? json['nilai'] ?? 0).toString()) ?? 0.0,
+      notes: json['notes'] ?? json['catatan'] ?? '',
+    );
+  }
+}
+
 class MentorAttendanceStudent {
   final int studentId;
   final String name;
