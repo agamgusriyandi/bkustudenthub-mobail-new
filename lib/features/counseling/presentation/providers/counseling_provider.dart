@@ -93,11 +93,51 @@ class CounselingProvider extends ChangeNotifier {
         note: note,
         linkMeeting: linkMeeting,
       );
-      // Reload bookings from server to stay 100% in sync
       await loadBookings(silent: true);
       return true;
     } catch (e) {
       log('CounselingProvider.updateBookingStatus error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> confirmBooking(
+    String bookingId, {
+    String? meetingLink,
+    String? notes,
+  }) async {
+    try {
+      await _repository.confirmBooking(
+        bookingId,
+        meetingLink: meetingLink,
+        notes: notes,
+      );
+      await loadBookings(silent: true);
+      return true;
+    } catch (e) {
+      log('CounselingProvider.confirmBooking error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> completeBooking(String bookingId, {String? notes}) async {
+    try {
+      await _repository.completeBooking(bookingId, notes: notes);
+      await loadBookings(silent: true);
+      return true;
+    } catch (e) {
+      log('CounselingProvider.completeBooking error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> rejectBooking(String bookingId, String reason) async {
+    try {
+      await _repository.rejectBooking(bookingId, reason);
+      await loadBookings(silent: true);
+      return true;
+    } catch (e) {
+      log('CounselingProvider.rejectBooking error: $e');
       return false;
     }
   }

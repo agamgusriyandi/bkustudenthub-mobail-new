@@ -1005,17 +1005,35 @@ class _PsychologistBookingsScreenState
     final name = booking['name']?.toString() ?? '-';
     final nim = booking['nim']?.toString() ?? '-';
     final faculty = booking['faculty']?.toString() ?? '';
+    final prodi = booking['prodi']?.toString() ?? '';
+    final semester = booking['semester']?.toString() ?? '';
     final date =
         booking['date_full']?.toString() ?? booking['date']?.toString() ?? '-';
     final time = booking['time']?.toString() ?? '-';
     final issue =
         booking['issue']?.toString() ?? booking['topik']?.toString() ?? '-';
+    final category = booking['kategori']?.toString() ?? issue;
     final note =
         booking['note']?.toString() ?? booking['keluhan']?.toString() ?? '';
     final mode = booking['mode']?.toString() ?? 'Tatap Muka';
     final isOnline = mode == 'Online';
     final statusStr = (booking['status'] ?? '').toString().toLowerCase();
     final isConfirmed = statusStr == 'dikonfirmasi' || statusStr == 'confirmed';
+    final isDone = statusStr == 'selesai' || statusStr == 'completed';
+    final isRejected =
+        statusStr == 'ditolak' ||
+        statusStr == 'cancelled' ||
+        statusStr == 'canceled';
+
+    final linkCtrl = TextEditingController(
+      text:
+          booking['link_meeting']?.toString() ??
+          booking['meeting_link']?.toString() ??
+          '',
+    );
+    final notesCtrl = TextEditingController(
+      text: booking['catatan_tambahan']?.toString() ?? '',
+    );
 
     final avatarUrl = () {
       final possibleKeys = [
@@ -1114,7 +1132,6 @@ class _PsychologistBookingsScreenState
                       ),
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Student info
                       Row(
                         children: [
                           CircleAvatar(
@@ -1148,7 +1165,7 @@ class _PsychologistBookingsScreenState
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
                                 Text(
-                                  '$nim${faculty.isNotEmpty ? ' â€¢ $faculty' : ''}',
+                                  'NIM: $nim',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color: AppColors.neutral600,
                                   ),
@@ -1158,146 +1175,437 @@ class _PsychologistBookingsScreenState
                           ),
                         ],
                       ),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      _buildPatientInfoGrid(
+                        faculty: faculty,
+                        prodi: prodi,
+                        semester: semester,
+                      ),
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Session details
+                      _buildSectionTitle('Detail Keluhan'),
+                      const SizedBox(height: AppSpacing.sm),
+                      _buildDetailRow(
+                        Icons.category_rounded,
+                        'Kategori',
+                        category,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      _buildDetailRow(
+                        Icons.description_rounded,
+                        'Deskripsi',
+                        note.isNotEmpty ? note : issue,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      _buildSectionTitle('Jadwal Sesi'),
+                      const SizedBox(height: AppSpacing.sm),
                       _buildDetailRow(
                         Icons.calendar_today_rounded,
-                        'Jadwal',
-                        '$date, $time',
+                        'Tanggal',
+                        date,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      _buildDetailRow(
+                        Icons.access_time_rounded,
+                        'Pukul',
+                        time,
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       _buildDetailRow(
                         isOnline
                             ? Icons.videocam_rounded
                             : Icons.location_on_rounded,
-                        'Mode Konseling',
+                        'Mode',
                         mode,
-                        valueColor: isOnline ? AppColors.info : context.appColors.info,
+                        valueColor:
+                            isOnline
+                                ? AppColors.info
+                                : context.appColors.info,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
-                      _buildDetailRow(
-                        Icons.psychology_rounded,
-                        'Topik/Masalah',
-                        issue,
-                      ),
-                      if (note.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.lg),
-                        _buildDetailRow(
-                          Icons.description_rounded,
-                          'Keluhan',
-                          note,
-                        ),
-                      ],
-                      const SizedBox(height: AppSpacing.xxl),
+                      const SizedBox(height: AppSpacing.xl),
 
-                      // Actions
-                      if (isWaiting) ...[
+                      if (!isDone && !isRejected) ...[
+                        _buildSectionTitle('Link Meeting'),
+                        const SizedBox(height: AppSpacing.sm),
+                        TextField(
+                          controller: linkCtrl,
+                          style: AppTextStyles.bodySm.copyWith(fontSize: 13),
+                          decoration: InputDecoration(
+                            hintText:
+                                isOnline
+                                    ? 'https://meet.google.com/xxx-xxxx-xxx'
+                                    : 'Opsional (untuk sesi Online)',
+                            hintStyle: AppTextStyles.labelMd.copyWith(
+                              color: AppColors.neutral500.withAlpha(120),
+                              fontSize: 12,
+                            ),
+                            filled: true,
+                            fillColor: AppColors.neutral50,
+                            prefixIcon: const Icon(
+                              Icons.link_rounded,
+                              color: AppColors.info,
+                              size: 18,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: AppColors.neutral500.withAlpha(40),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: AppColors.neutral500.withAlpha(40),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: context.appColors.success,
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.md,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        _buildSectionTitle('Catatan Tambahan'),
+                        const SizedBox(height: AppSpacing.sm),
+                        TextField(
+                          controller: notesCtrl,
+                          maxLines: 3,
+                          minLines: 3,
+                          style: AppTextStyles.bodySm.copyWith(fontSize: 13),
+                          decoration: InputDecoration(
+                            hintText: 'Tambahkan catatan untuk sesi ini...',
+                            hintStyle: AppTextStyles.labelMd.copyWith(
+                              color: AppColors.neutral500.withAlpha(120),
+                              fontSize: 12,
+                            ),
+                            filled: true,
+                            fillColor: AppColors.neutral50,
+                            border: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: AppColors.neutral500.withAlpha(40),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: AppColors.neutral500.withAlpha(40),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(
+                                color: context.appColors.success,
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(AppSpacing.md),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                      ],
+
+                      if (isWaiting || isConfirmed) ...[
                         Row(
                           children: [
                             Expanded(
-                              child: OutlinedButton(
+                              child: OutlinedButton.icon(
                                 onPressed: () {
                                   Navigator.pop(sheetContext);
-                                  _showActionDialog(
+                                  _showRejectDialog(
                                     booking,
-                                    false,
                                     id,
                                     provider,
                                   );
                                 },
+                                icon: const Icon(
+                                  Icons.cancel_outlined,
+                                  size: 18,
+                                ),
+                                label: const Text('Tolak'),
                                 style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppColors.error,
-                                  side: const BorderSide(
-                                    color: AppColors.error,
+                                  foregroundColor: context.appColors.error,
+                                  side: BorderSide(
+                                    color: context.appColors.error,
                                   ),
-                                ),
-                                child: Text(
-                                  'Tolak',
-                                  style: AppTextStyles.bodyMd.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppSpacing.md,
                                   ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.lg),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(sheetContext);
-                                  _showActionDialog(
-                                    booking,
-                                    true,
-                                    id,
-                                    provider,
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: context.appColors.success,
-                                  foregroundColor: context.appColors.onPrimary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: AppRadius.br10,
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: Text(
-                                  'Konfirmasi',
-                                  style: AppTextStyles.bodyMd.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: context.appColors.onPrimary,
+                                    borderRadius: AppRadius.radiusMd,
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                      ],
-                      if (isConfirmed) ...[
-                        Row(
-                          children: [
+                            const SizedBox(width: AppSpacing.sm),
                             Expanded(
-                              child: ElevatedButton(
+                              child: OutlinedButton.icon(
                                 onPressed: () {
-                                  Navigator.pop(sheetContext);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) => SessionNoteScreen(
-                                            studentName: name,
-                                            studentId:
-                                                booking['mahasiswa_id']
-                                                    ?.toString() ??
-                                                booking['student_id']
-                                                    ?.toString() ??
-                                                booking['mahasiswa']?['id']
-                                                    ?.toString() ??
-                                                booking['nim']?.toString() ??
-                                                '',
-                                            bookingId: id,
-                                          ),
-                                    ),
-                                  );
+                                  if (isWaiting) {
+                                    Navigator.pop(sheetContext);
+                                    _showActionDialog(
+                                      booking,
+                                      true,
+                                      id,
+                                      provider,
+                                      linkCtrl: linkCtrl,
+                                      notesCtrl: notesCtrl,
+                                    );
+                                  } else {
+                                    Navigator.pop(sheetContext);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => SessionNoteScreen(
+                                              studentName: name,
+                                              studentId:
+                                                  booking['mahasiswa_id']
+                                                      ?.toString() ??
+                                                  booking['student_id']
+                                                      ?.toString() ??
+                                                  booking['mahasiswa']?['id']
+                                                      ?.toString() ??
+                                                  booking['nim']?.toString() ??
+                                                  '',
+                                              bookingId: id,
+                                            ),
+                                      ),
+                                    );
+                                  }
                                 },
-
-                                child: Text(
-                                  'Selesai',
-                                  style: AppTextStyles.bodyMd.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: context.appColors.onPrimary,
+                                icon: Icon(
+                                  isWaiting
+                                      ? Icons.check_circle_outline_rounded
+                                      : Icons.assignment_turned_in_outlined,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  isWaiting ? 'Konfirmasi' : 'Sesi Selesai',
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: context.appColors.success,
+                                  side: BorderSide(
+                                    color: context.appColors.success,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppSpacing.md,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppRadius.radiusMd,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xxl),
+                        const SizedBox(height: AppSpacing.xl),
                       ],
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+    );
+  }
+
+  Widget _buildPatientInfoGrid({
+    required String faculty,
+    required String prodi,
+    required String semester,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withAlpha(8),
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(color: AppColors.primary.withAlpha(30)),
+      ),
+      child: Column(
+        children: [
+          _buildPatientInfoRow(Icons.school_rounded, 'Program Studi', prodi),
+          if (faculty.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            _buildPatientInfoRow(
+              Icons.account_balance_rounded,
+              'Fakultas',
+              faculty,
+            ),
+          ],
+          if (semester.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            _buildPatientInfoRow(
+              Icons.layers_rounded,
+              'Semester',
+              semester,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPatientInfoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: AppColors.primary),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            label,
+            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600),
+          ),
+        ),
+        Text(
+          value.isNotEmpty ? value : '-',
+          style: AppTextStyles.labelMd.copyWith(
+            fontWeight: FontWeight.w800,
+            color: AppColors.neutral800,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String text) {
+    return Text(
+      text,
+      style: AppTextStyles.titleMd.copyWith(
+        fontWeight: FontWeight.w800,
+        color: AppColors.neutral800,
+        fontSize: 14,
+      ),
+    );
+  }
+
+  void _showRejectDialog(
+    Map<String, dynamic> booking,
+    String id,
+    CounselingProvider provider,
+  ) {
+    final name = booking['name']?.toString() ?? '-';
+    final reasonCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder:
+          (dialogContext) => CustomDialog(
+            title: 'Tolak Booking?',
+            content: 'Mahasiswa $name akan mendapat notifikasi penolakan.',
+            cancelText: 'Batal',
+            confirmText: 'Kirim Penolakan',
+            isDestructive: true,
+            onCancel: () => Navigator.pop(dialogContext),
+            onConfirm: () async {
+              final reason = reasonCtrl.text.trim();
+              if (reason.isEmpty) {
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                  SnackBar(
+                    content: const Text('Alasan penolakan wajib diisi.'),
+                    backgroundColor: AppColors.warning,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.radiusMd,
+                    ),
+                  ),
+                );
+                return;
+              }
+              Navigator.pop(dialogContext);
+              final messenger = ScaffoldMessenger.of(context);
+              BkuLoadingDialog.show(context);
+              final success = await provider.rejectBooking(id, reason);
+              if (success && mounted) {
+                context
+                    .read<PsychologistDashboardProvider>()
+                    .loadDashboardData(silent: true);
+              }
+              if (!mounted) return;
+              BkuLoadingDialog.hide(context);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    success
+                        ? 'Booking $name berhasil ditolak.'
+                        : 'Gagal menolak booking.',
+                  ),
+                  backgroundColor:
+                      success ? AppColors.error : AppColors.error,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            customChild: Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: AppColors.error.withAlpha(10),
+                borderRadius: AppRadius.radiusLg,
+                border: Border.all(color: AppColors.error.withAlpha(40)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: AppColors.error,
+                        size: 16,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        'Alasan Penolakan (Wajib)',
+                        style: AppTextStyles.labelMd.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.s10),
+                  TextField(
+                    controller: reasonCtrl,
+                    maxLines: 2,
+                    style: AppTextStyles.bodySm.copyWith(fontSize: 13),
+                    decoration: InputDecoration(
+                      hintText: 'Contoh: Jadwal bentrok, mohon ajukan ulang...',
+                      hintStyle: AppTextStyles.labelMd.copyWith(
+                        color: AppColors.neutral500.withAlpha(120),
+                        fontSize: 12,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.neutral50,
+                      border: OutlineInputBorder(
+                        borderRadius: AppRadius.radiusMd,
+                        borderSide: BorderSide(
+                          color: AppColors.error.withAlpha(60),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: AppRadius.radiusMd,
+                        borderSide: BorderSide(
+                          color: AppColors.error.withAlpha(60),
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.md,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
     );
@@ -1343,12 +1651,13 @@ class _PsychologistBookingsScreenState
     Map<String, dynamic> booking,
     bool isConfirm,
     String id,
-    CounselingProvider provider,
-  ) {
+    CounselingProvider provider, {
+    TextEditingController? linkCtrl,
+    TextEditingController? notesCtrl,
+  }) {
     final name = booking['name']?.toString() ?? '-';
     final mode = booking['mode']?.toString() ?? 'Tatap Muka';
     final isOnline = mode == 'Online';
-    final linkCtrl = TextEditingController();
 
     showDialog(
       context: context,
@@ -1364,7 +1673,7 @@ class _PsychologistBookingsScreenState
             isDestructive: !isConfirm,
             onCancel: () => Navigator.pop(dialogContext),
             onConfirm: () async {
-              if (isConfirm && isOnline && linkCtrl.text.trim().isEmpty) {
+              if (isConfirm && isOnline && linkCtrl!.text.trim().isEmpty) {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(
                   SnackBar(
                     content: const Text(
@@ -1380,20 +1689,22 @@ class _PsychologistBookingsScreenState
                 return;
               }
               Navigator.pop(dialogContext);
-              final newStatus = isConfirm ? 'Dikonfirmasi' : 'Ditolak';
               final messenger = ScaffoldMessenger.of(context);
               BkuLoadingDialog.show(context);
 
-              final success = await provider.updateBookingStatus(
-                id,
-                newStatus,
-                linkMeeting:
-                    isConfirm && isOnline ? linkCtrl.text.trim() : null,
-              );
+              final success = isConfirm
+                  ? await provider.confirmBooking(
+                      id,
+                      meetingLink:
+                          isOnline ? linkCtrl!.text.trim() : linkCtrl!.text.trim(),
+                      notes: notesCtrl?.text.trim(),
+                    )
+                  : false;
+
               if (success && mounted) {
-                context.read<PsychologistDashboardProvider>().loadDashboardData(
-                  silent: true,
-                );
+                context
+                    .read<PsychologistDashboardProvider>()
+                    .loadDashboardData(silent: true);
               }
               if (!mounted) return;
               BkuLoadingDialog.hide(context);
@@ -1414,88 +1725,6 @@ class _PsychologistBookingsScreenState
                 ),
               );
             },
-            customChild:
-                (isConfirm && isOnline)
-                    ? Container(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      decoration: BoxDecoration(
-                        color: AppColors.info.withAlpha(10),
-                        borderRadius: AppRadius.radiusLg,
-                        border: Border.all(color: AppColors.info.withAlpha(40)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.link_rounded,
-                                color: AppColors.info,
-                                size: 16,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                'Link Meeting (Wajib)',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.info,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.s10),
-                          Material(
-                            color: Colors.transparent,
-                            child: TextField(
-                              controller: linkCtrl,
-                              style: AppTextStyles.bodySm.copyWith(
-                                fontSize: 13,
-                              ),
-                              decoration: InputDecoration(
-                                hintText:
-                                    'https://meet.google.com/xxx-xxxx-xxx',
-                                hintStyle: AppTextStyles.labelMd.copyWith(
-                                  color: AppColors.neutral500.withAlpha(120),
-                                  fontSize: 12,
-                                ),
-                                filled: true,
-                                fillColor: AppColors.neutral50,
-                                border: OutlineInputBorder(
-                                  borderRadius: AppRadius.radiusMd,
-                                  borderSide: BorderSide(
-                                    color: AppColors.info.withAlpha(60),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: AppRadius.radiusMd,
-                                  borderSide: BorderSide(
-                                    color: AppColors.info.withAlpha(60),
-                                  ),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.md,
-                                ),
-                                prefixIcon: const Icon(
-                                  Icons.videocam_rounded,
-                                  color: AppColors.info,
-                                  size: 18,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            'Link akan dikirim ke mahasiswa via notifikasi.',
-                            style: AppTextStyles.labelMd.copyWith(
-                              fontSize: 10,
-                              color: AppColors.info.withAlpha(150),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                    : null,
           ),
     );
   }
