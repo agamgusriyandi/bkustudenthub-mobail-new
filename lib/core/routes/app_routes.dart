@@ -282,6 +282,12 @@ class AppRoutes {
   static const String ormawaStaf = '/ormawa/staf';
   static const String ormawaGamifikasi = '/ormawa/gamifikasi';
   static const String ormawaPagu = '/ormawa/pagu';
+
+  // Ormawa Absensi Management Routes
+  static const String ormawaAbsensiManagement = '/ormawa/absensi-management';
+  static const String ormawaAbsensiManagementCreate = '/ormawa/absensi-management/create';
+  static const String ormawaAbsensiManagementDetail = '/ormawa/absensi-management/detail';
+  static const String ormawaAbsensiManagementEdit = '/ormawa/absensi-management/edit';
   static const String ormawaProposalPipeline = '/ormawa/proposal-pipeline';
   static const String ormawaLpjPipeline = '/ormawa/lpj-pipeline';
   static const String ormawaKeuanganCreate = '/ormawa/keuangan/create';
@@ -1033,6 +1039,37 @@ class AppRoutes {
       GoRoute(
         path: ormawaKeuanganCreate,
         builder: (context, state) => const CreateKeuanganScreen(),
+      ),
+      // Ormawa Absensi Management Routes
+      GoRoute(
+        path: ormawaAbsensiManagement,
+        builder: (context, state) => const OrmawaAbsensiManagementScreen(),
+      ),
+      GoRoute(
+        path: ormawaAbsensiManagementCreate,
+        builder: (context, state) => const CreateAbsensiScreen(),
+      ),
+      GoRoute(
+        path: ormawaAbsensiManagementDetail,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          final id = data?['id'] ?? '';
+          return OrmawaAbsensiDetailScreen(
+            absensiId: id.toString(),
+            absensiData: data ?? {},
+          );
+        },
+      ),
+      GoRoute(
+        path: ormawaAbsensiManagementEdit,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          final id = data?['id'] ?? '';
+          return EditAbsensiScreen(
+            absensiId: id.toString(),
+            absensiData: data ?? {},
+          );
+        },
       ),
     ],
   );
