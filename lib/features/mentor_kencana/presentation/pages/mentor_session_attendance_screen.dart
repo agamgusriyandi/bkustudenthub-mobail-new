@@ -45,7 +45,7 @@ class _MentorSessionAttendanceScreenState
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchSessionAttendance(widget.sessionId),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -65,7 +65,7 @@ class _MentorSessionAttendanceScreenState
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -76,7 +76,7 @@ class _MentorSessionAttendanceScreenState
                   child: Text(
                     'Tidak ada data kehadiran untuk sesi ini.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -128,9 +128,7 @@ class _MentorSessionAttendanceScreenState
                                   Text(
                                     '$presentCount / ${students.length} hadir',
                                     style: AppTextStyles.labelSm.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline,
+                                      color: context.appColors.outline,
                                     ),
                                   ),
                                 ],
@@ -194,9 +192,7 @@ class _MentorSessionAttendanceScreenState
                                     Text(
                                       student.nim,
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outline,
+                                        color: context.appColors.outline,
                                       ),
                                     ),
                                   ],
@@ -363,7 +359,7 @@ class _MentorSessionAttendanceScreenState
             label,
             style: AppTextStyles.labelSm.copyWith(
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? chipColor : Theme.of(context).colorScheme.outline,
+              color: isSelected ? chipColor : context.appColors.outline,
             ),
           ),
         ),

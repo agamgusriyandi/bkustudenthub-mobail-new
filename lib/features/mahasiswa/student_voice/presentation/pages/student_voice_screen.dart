@@ -110,7 +110,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                           child: Text(
                             'Lihat Semua',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -184,7 +184,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -255,7 +255,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     color:
                         isSelected
                             ? AppColors.neutral800
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                            : context.appColors.onSurfaceVariant,
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
@@ -346,10 +346,8 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                           Text(
                             asp.description,
                             style: AppTextStyles.labelSm.copyWith(
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                          color:
+                                   context.appColors.onSurfaceVariant,
                               height: 1.5,
                               fontWeight: FontWeight.w500,
                             ),
@@ -378,19 +376,15 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withAlpha(10),
+                              color: context.appColors.primary.withAlpha(10),
                               borderRadius: AppRadius.radiusMd,
                               border: Border.all(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withAlpha(20),
+                                color: context.appColors.primary.withAlpha(20),
                               ),
                             ),
                             child: Icon(
                               Icons.picture_as_pdf_rounded,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               size: 28,
                             ),
                           ),
@@ -462,10 +456,8 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                               Text(
                                 asp.feedback!,
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
+                               color:
+                                       context.appColors.onSurfaceVariant,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                   height: 1.4,
@@ -485,14 +477,14 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     Text(
                       _formatDate(asp.date),
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       size: 20,
                     ),
                   ],
@@ -531,7 +523,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
         text = 'DITOLAK';
         break;
       default:
-        color = Theme.of(context).colorScheme.outline;
+        color = context.appColors.outline;
         text = status.toUpperCase();
     }
     return Container(
@@ -570,13 +562,13 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
           Icon(
             Icons.inbox_rounded,
             size: 64,
-            color: Theme.of(context).colorScheme.outline.withAlpha(50),
+            color: context.appColors.outline.withAlpha(50),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada riwayat aspirasi',
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -601,7 +593,7 @@ class _AspirationBanner extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(5),
+            color: context.appColors.onSurface.withAlpha(5),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),

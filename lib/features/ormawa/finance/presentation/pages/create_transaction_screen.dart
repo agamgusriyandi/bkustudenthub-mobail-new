@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -40,7 +41,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'CATAT TRANSAKSI',
         variant: AppBarVariant.ormawa,
@@ -86,7 +87,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                   'PAGU KAMPUS',
                   'kampus',
                   Icons.assured_workload_rounded,
-                  const Color(0xFF0EA5E9),
+                  context.appColors.info,
                 ),
               ],
             ),
@@ -144,18 +145,18 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
 
                 child:
                     _isSubmitting
-                        ? const SizedBox(
+                        ? SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             strokeWidth: 2,
                           ),
                         )
-                        : const Text(
+                        : Text(
                           'SIMPAN TRANSAKSI',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
                           ),
@@ -193,7 +194,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           decoration: BoxDecoration(
-            color: isSelected ? color.withAlpha(15) : Colors.white,
+            color: isSelected ? color.withAlpha(15) : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color: isSelected ? color : AppColors.neutral300,
@@ -202,12 +203,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           ),
           child: Column(
             children: [
-              Icon(icon, color: isSelected ? color : Colors.grey, size: 24),
+              Icon(icon, color: isSelected ? color : AppColors.neutral400, size: 24),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: isSelected ? color : Colors.grey,
+                  color: isSelected ? color : AppColors.neutral400,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -231,7 +232,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           decoration: BoxDecoration(
-            color: isSelected ? color.withAlpha(15) : Colors.white,
+            color: isSelected ? color.withAlpha(15) : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color: isSelected ? color : AppColors.neutral300,
@@ -240,12 +241,12 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           ),
           child: Column(
             children: [
-              Icon(icon, color: isSelected ? color : Colors.grey, size: 24),
+              Icon(icon, color: isSelected ? color : AppColors.neutral400, size: 24),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: isSelected ? color : Colors.grey,
+                  color: isSelected ? color : AppColors.neutral400,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -276,13 +277,13 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         decoration: InputDecoration(
           hintText: hint,
           prefixText: isNumber ? 'Rp ' : null,
-          prefixStyle: const TextStyle(
+          prefixStyle: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: context.appColors.onSurface,
           ),
           prefixIcon: Icon(
             icon,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             size: 20,
           ),
           border: InputBorder.none,

@@ -94,7 +94,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.appColors.onSurface,
       body: Stack(
         children: [
           // Camera Preview
@@ -102,7 +102,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
           // Glassmorphism/Dark Overlay
           Container(
-            decoration: BoxDecoration(color: Colors.black.withAlpha(150)),
+            decoration: BoxDecoration(color: context.appColors.onSurface.withAlpha(150)),
           ),
 
           // Scan Area frame
@@ -151,7 +151,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
                           child: Icon(
@@ -175,7 +175,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                             Text(
                               widget.eventTitle,
                               style: AppTextStyles.bodySm.copyWith(
-                                color: Colors.white70,
+                                color: context.appColors.surface.withValues(alpha: 0.7),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -189,7 +189,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
                           child: Icon(
@@ -259,7 +259,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(30),
+                      color: context.appColors.surface.withAlpha(30),
                       borderRadius: AppRadius.radiusXl,
                     ),
                     child: Row(
@@ -297,7 +297,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                 label: const Text('Input NIM Manual'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: context.appColors.onPrimary,
-                  side: const BorderSide(color: Colors.white70),
+                  side: BorderSide(color: context.appColors.surface.withValues(alpha: 0.7)),
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
               ),
@@ -573,7 +573,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                             Text(
                               'Catat kehadiran berdasarkan NIM mahasiswa',
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Colors.grey,
+                                color: AppColors.neutral500,
                               ),
                             ),
                           ],

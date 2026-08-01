@@ -599,7 +599,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                   boxShadow: [
                     if (isFirst)
                       BoxShadow(
-                        color: Colors.black.withAlpha(5),
+                        color: context.appColors.onSurface.withAlpha(5),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),

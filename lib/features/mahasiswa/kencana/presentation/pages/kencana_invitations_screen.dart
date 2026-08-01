@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -105,7 +105,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                       Text(
                         'Belum ada undangan DP atau Kelompok',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -162,17 +162,17 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.amber.withAlpha(20),
+          color: context.appColors.warning.withAlpha(20),
           borderRadius: AppRadius.radiusLg,
         ),
         child: Row(
           children: [
-            const Icon(Icons.info_outline_rounded, color: Colors.amber),
+            Icon(Icons.info_outline_rounded, color: context.appColors.warning),
             const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Text(
                 'Kamu belum memiliki Dewan Pembimbing (DP) yang aktif.',
-                style: AppTextStyles.labelMd.copyWith(color: Colors.amber[800]),
+                style: AppTextStyles.labelMd.copyWith(color: AppColors.warning),
               ),
             ),
           ],
@@ -275,14 +275,14 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: AppColors.neutral50,
           borderRadius: AppRadius.radiusLg,
         ),
         child: Text(
           'Belum ada undangan $type',
           textAlign: TextAlign.center,
           style: AppTextStyles.labelMd.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
       );
@@ -320,7 +320,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(12),
+                    color: context.appColors.onSurface.withAlpha(12),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -361,7 +361,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                             Text(
                               subtitle,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                             ),
                           ],

@@ -512,7 +512,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.02),
+                  color: context.appColors.onSurface.withValues(alpha: 0.02),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -569,7 +569,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                             color:
                                 _rubrikAnswers[id] == opt['value']
                                     ? AppColors.neutral800
-                                    : Theme.of(context).colorScheme.outline,
+                                    : context.appColors.outline,
                             size: 20,
                           ),
                           const SizedBox(width: AppSpacing.md),
@@ -699,8 +699,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                           final count = value.text.length;
                           final color =
                               count < 150
-                                  ? const Color(0xFFDC2626)
-                                  : const Color(0xFF0D9488);
+                                  ? context.appColors.error
+                                  : context.appColors.info;
                           return Text(
                             '$count/150 karakter minimal',
                             style: TextStyle(
@@ -789,10 +789,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
+        border: Border.all(color: AppColors.neutral200, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(6),
+            color: context.appColors.onSurface.withAlpha(6),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -811,10 +811,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
+        border: Border.all(color: AppColors.neutral200, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(6),
+            color: context.appColors.onSurface.withAlpha(6),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -825,7 +825,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           Container(
             padding: AppSpacing.padding10,
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: context.appColors.infoContainer,
               borderRadius: AppRadius.radiusMd,
             ),
             child: const Icon(
@@ -844,7 +844,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF111827),
+                    color: AppColors.neutral900,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s2),
@@ -852,7 +852,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                   widget.scholarship.provider,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF6B7280),
+                    color: AppColors.neutral500,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -916,13 +916,13 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             hint: Text(
               'Pilih $label',
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
             ),
             isExpanded: true,
             icon: Icon(
               Icons.arrow_drop_down_rounded,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
             items:
                 options.map((String value) {
@@ -1003,7 +1003,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF111827),
+            color: AppColors.neutral900,
           ),
         ),
       ],
@@ -1016,7 +1016,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
+          color: context.appColors.outline,
           fontWeight: FontWeight.w900,
           fontSize: 10,
           letterSpacing: 0.5,
@@ -1168,7 +1168,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                   textAlign: TextAlign.center,
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                   ),
                                 ),
                               ],
@@ -1312,12 +1312,12 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.br14,
         border: Border.all(
-          color: filePath != null ? AppColors.primary : const Color(0xFFE5E7EB),
+          color: filePath != null ? AppColors.primary : AppColors.neutral200,
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1348,8 +1348,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                   decoration: BoxDecoration(
                     color:
                         filePath != null
-                            ? const Color(0xFFEFF6FF)
-                            : const Color(0xFFF3F4F6),
+                            ? context.appColors.infoContainer
+                            : AppColors.neutral100,
                     borderRadius: AppRadius.br10,
                   ),
                   child: ClipRRect(
@@ -1380,7 +1380,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                                 ))
                             : Icon(
                               icon,
-                              color: const Color(0xFF6B7280),
+                              color: AppColors.neutral500,
                               size: 22,
                             ),
                   ),
@@ -1404,8 +1404,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                         style: TextStyle(
                           color:
                               fileName != null
-                                  ? const Color(0xFF4B5563)
-                                  : const Color(0xFF9CA3AF),
+                                  ? AppColors.neutral600
+                                  : AppColors.neutral400,
                           fontSize: 11,
                           fontWeight:
                               fileName != null
@@ -1425,22 +1425,22 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                       vertical: 3,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0FDFA),
+                      color: context.appColors.successContainer,
                       borderRadius: AppRadius.br6,
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.check_circle_rounded,
-                          color: Color(0xFF0D9488),
+                          color: context.appColors.info,
                           size: 12,
                         ),
                         SizedBox(width: AppSpacing.xs),
                         Text(
                           'Selesai',
                           style: TextStyle(
-                            color: Color(0xFF0D9488),
+                            color: context.appColors.info,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
                           ),
@@ -1456,7 +1456,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                       : Icons.cloud_upload_outlined,
                   color:
                       filePath != null
-                          ? const Color(0xFF6B7280)
+                          ? AppColors.neutral500
                           : AppColors.primary,
                   size: 20,
                 ),
@@ -1474,10 +1474,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.br14,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
+        border: Border.all(color: AppColors.neutral200, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1501,7 +1501,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               child: Text(
                 'Saya menyatakan bahwa semua data yang saya lampirkan adalah benar.',
                 style: TextStyle(
-                  color: Color(0xFF374151),
+                  color: AppColors.neutral700,
                   fontSize: 12,
                   height: 1.4,
                   fontWeight: FontWeight.w600,
@@ -1522,9 +1522,9 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         onPressed: !_isAgreed ? null : () => _submitForm(),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          disabledBackgroundColor: const Color(0xFFE5E7EB),
+          disabledBackgroundColor: AppColors.neutral200,
           foregroundColor: context.appColors.onPrimary,
-          disabledForegroundColor: const Color(0xFF9CA3AF),
+          disabledForegroundColor: AppColors.neutral400,
           elevation: 0,
           shape: RoundedRectangleBorder(
                       borderRadius: AppRadius.radiusMd,

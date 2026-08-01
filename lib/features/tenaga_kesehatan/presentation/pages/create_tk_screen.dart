@@ -124,11 +124,11 @@ class _CreateTkScreenState extends State<CreateTkScreen> {
                 fillColor: AppColors.neutral50,
                 border: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
               ),
               items: _scopeList
@@ -176,11 +176,11 @@ class _CreateTkScreenState extends State<CreateTkScreen> {
             fillColor: AppColors.neutral50,
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
@@ -188,7 +188,7 @@ class _CreateTkScreenState extends State<CreateTkScreen> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+              borderSide: BorderSide(color: context.appColors.error),
             ),
           ),
         ),

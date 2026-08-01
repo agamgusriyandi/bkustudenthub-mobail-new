@@ -106,7 +106,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
           if (!provider.hasPermission('create_lpj')) return const SizedBox.shrink();
           return FloatingActionButton.extended(
             onPressed: () => _showCreateLpj(),
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: context.appColors.primary,
             icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
             label: Text(
               'Buat LPJ',
@@ -159,7 +159,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -371,7 +371,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                                 vertical: AppSpacing.md),
                             decoration: BoxDecoration(
                               color: _selectedStatusFilter == s
-                                  ? Theme.of(context).colorScheme.primary
+                                  ? context.appColors.primary
                                   : AppColors.neutral100,
                               borderRadius: AppRadius.radiusXl,
                             ),
@@ -402,7 +402,9 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
       MaterialPageRoute(
         builder: (context) => const CreateLpjScreen(),
       ),
-    ).then((_) => context.read<OrmawaProvider>().refreshData());
+    ).then((_) {
+      if (mounted) context.read<OrmawaProvider>().refreshData();
+    });
   }
 
   void _showLpjDetail(dynamic lpj) {

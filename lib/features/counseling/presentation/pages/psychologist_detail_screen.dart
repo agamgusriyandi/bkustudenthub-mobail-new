@@ -53,7 +53,7 @@ class _PsychologistDetailScreenState extends State<PsychologistDetailScreen> {
                 actions: [
                   if (data != null)
                     IconButton(
-                      icon: const Icon(Icons.edit_rounded, color: Colors.white),
+                       icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
                       onPressed: () => context.push(
                         '/counseling/admin/psikolog/${widget.psychologistId}/edit',
                       ),

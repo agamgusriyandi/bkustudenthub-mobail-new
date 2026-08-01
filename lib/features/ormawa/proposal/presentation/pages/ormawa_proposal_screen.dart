@@ -96,7 +96,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       onPressed: () {
                         context.push(AppRoutes.ormawaCreateProposal);
                       },
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: context.appColors.primary,
                       elevation: 0,
                       highlightElevation: 0,
                       icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
@@ -171,7 +171,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                             Text(
                               'Proposal tidak ditemukan',
                               style: AppTextStyles.bodyMd.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                             ),
                           ],
@@ -227,7 +227,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
             borderRadius: AppRadius.radiusXl,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(8),
+                color: context.appColors.onSurface.withAlpha(8),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -376,7 +376,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),
@@ -391,12 +391,12 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(10),
+                    color: context.appColors.primary.withAlpha(10),
                     borderRadius: AppRadius.radiusLg,
                   ),
                   child: Icon(
                     Icons.description_rounded,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     size: 28,
                   ),
                 ),
@@ -416,7 +416,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       Text(
                         '${proposal.code} â€¢ ${dateFormatter.format(proposal.date).toUpperCase()}',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -456,7 +456,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     Text(
                       'ANGGARAN',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontSize: 9,
                         fontWeight: FontWeight.w900,
                       ),
@@ -464,7 +464,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     Text(
                       currencyFormatter.format(proposal.budget),
                       style: AppTextStyles.bodyLg.copyWith(
-                        color: Colors.green[700],
+                        color: context.appColors.success,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -594,7 +594,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -606,7 +606,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

@@ -92,23 +92,19 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -127,23 +123,19 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       contentPadding: const EdgeInsets.all(AppSpacing.lg),
@@ -166,7 +158,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchEssayGrading(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -187,7 +179,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -198,7 +190,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                   child: Text(
                     'Belum ada essay yang perlu dikoreksi.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -258,9 +250,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                                     Text(
                                       item.nim,
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outline,
+                                        color: context.appColors.outline,
                                       ),
                                     ),
                                   ],
@@ -297,7 +287,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                               'Pertanyaan:',
                               style: AppTextStyles.labelSm.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
@@ -305,7 +295,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                               item.question,
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
-                                    Theme.of(context).colorScheme.onSurface,
+                                    context.appColors.onSurface,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.md),
@@ -315,7 +305,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                               'Jawaban:',
                               style: AppTextStyles.labelSm.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
@@ -323,7 +313,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                               item.answer,
                               style: AppTextStyles.labelSm.copyWith(
                                 color:
-                                    Theme.of(context).colorScheme.onSurface,
+                                    context.appColors.onSurface,
                               ),
                             ),
                           ],

@@ -36,7 +36,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentorNotes(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -57,7 +57,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -68,7 +68,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                   child: Text(
                     'Belum ada catatan mentoring.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -128,9 +128,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                                             ? note.studentName
                                             : '',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.outline,
+                                          color: context.appColors.outline,
                                         ),
                                       ),
                                     ],
@@ -139,7 +137,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                                 Icon(
                                   Icons.chevron_right_rounded,
                                   color:
-                                      Theme.of(context).colorScheme.outline,
+                                      context.appColors.outline,
                                 ),
                               ],
                             ),
@@ -150,9 +148,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                                     ? '${note.content.substring(0, 120)}...'
                                     : note.content,
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                  color: context.appColors.onSurfaceVariant,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -164,9 +160,7 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                                 note.createdAt,
                                 style: AppTextStyles.labelSm.copyWith(
                                   fontSize: 11,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.outline,
+                                  color: context.appColors.outline,
                                 ),
                               ),
                             ],

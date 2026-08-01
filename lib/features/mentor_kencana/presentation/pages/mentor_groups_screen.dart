@@ -36,7 +36,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentorGroups(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -57,7 +57,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -68,7 +68,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                   child: Text(
                     'Belum ada grup yang tersedia.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -133,9 +133,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                                   Text(
                                     '${group.memberCount} Mahasiswa',
                                     style: AppTextStyles.labelSm.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline,
+                                      color: context.appColors.outline,
                                     ),
                                   ),
                                 ],
@@ -143,7 +141,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                             ),
                             Icon(
                               Icons.chevron_right_rounded,
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ],
                         ),

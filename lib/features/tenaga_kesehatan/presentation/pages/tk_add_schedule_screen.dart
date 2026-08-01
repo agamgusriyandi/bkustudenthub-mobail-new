@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -172,7 +172,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
               child: ElevatedButton.icon(
                 onPressed: _isSaving ? null : _handleSubmit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A34A),
+                  backgroundColor: context.appColors.success,
                   foregroundColor: context.appColors.onPrimary,
                   elevation: 2,
                   shape: RoundedRectangleBorder(
@@ -236,7 +236,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -280,7 +280,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                 border: Border.all(color: AppColors.neutral200.withAlpha(150)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(12),
+                    color: context.appColors.onSurface.withAlpha(12),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -343,7 +343,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
                 border: Border.all(color: AppColors.neutral200.withAlpha(150)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(12),
+                    color: context.appColors.onSurface.withAlpha(12),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -393,7 +393,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -407,8 +407,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
           const Spacer(),
           IconButton(
             onPressed: _kuota > 1 ? () => setState(() => _kuota--) : null,
-            icon: const Icon(Icons.remove_circle_outline_rounded),
-            color: AppColors.neutral700,
+            icon: Icon(Icons.remove_circle_outline_rounded), color: AppColors.neutral700,
           ),
           Container(
             padding: const EdgeInsets.symmetric(
@@ -430,8 +429,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
           ),
           IconButton(
             onPressed: () => setState(() => _kuota++),
-            icon: const Icon(Icons.add_circle_outline_rounded),
-            color: AppColors.neutral700,
+            icon: Icon(Icons.add_circle_outline_rounded), color: AppColors.neutral700,
           ),
         ],
       ),

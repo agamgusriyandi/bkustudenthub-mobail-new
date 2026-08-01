@@ -144,7 +144,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           status == 'passed'
               ? Icons.verified_rounded
               : Icons.pending_actions_rounded,
-          status == 'passed' ? themeProvider.success : Colors.amber.shade700,
+          status == 'passed' ? themeProvider.success : AppColors.warning,
         ),
         if (dashboard?.scoreFakultas != null) ...[
           _buildStatGridItem(
@@ -182,13 +182,13 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
+          color: context.appColors.outlineVariant.withAlpha(50),
         ),
       ),
       child: Column(
@@ -210,7 +210,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 child: Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.appColors.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
@@ -223,7 +223,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
               fontWeight: FontWeight.w900,
               fontSize: value.length > 8 ? 16 : 24,
             ),
@@ -241,14 +241,14 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: AppColors.neutral50,
           borderRadius: AppRadius.radiusLg,
         ),
         child: Text(
           'Belum ada rincian nilai',
           textAlign: TextAlign.center,
           style: AppTextStyles.labelMd.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
       );
@@ -272,19 +272,19 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               iconColor = AppColors.warning;
             } else if (component == 'affective') {
               icon = Icons.favorite_rounded;
-              iconColor = Colors.pinkAccent;
+              iconColor = context.appColors.error;
             }
 
             return Container(
               margin: const EdgeInsets.only(bottom: AppSpacing.md),
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
+                color: context.appColors.surface,
                 borderRadius: AppRadius.radiusLg,
                 border: Border.all(color: AppColors.neutral200, width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(10),
+                    color: context.appColors.onSurface.withAlpha(10),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -316,7 +316,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                         Text(
                           component.toUpperCase(),
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontSize: 10,
                             letterSpacing: 1,
                           ),
@@ -353,7 +353,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
         Text(
           'Jika ada nilai yang kurang pas atau kamu telah menyelesaikan semua syarat, silakan ajukan banding.',
           style: AppTextStyles.bodySm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -411,7 +411,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                     Text(
                       'Sertifikat kelulusan Anda telah diterbitkan resmi.',
                       style: AppTextStyles.bodySm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                   ],

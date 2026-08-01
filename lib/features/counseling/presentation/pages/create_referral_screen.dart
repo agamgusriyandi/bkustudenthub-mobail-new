@@ -118,7 +118,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                             hint: 'Contoh: RS Jiwa Dr. Soeharto Heerdjan',
                             controller: _targetCtrl,
                             icon: Icons.business_rounded,
-                            iconColor: const Color(0xFFF59E0B),
+                            iconColor: context.appColors.warning,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'Pihak tujuan wajib diisi';
@@ -132,7 +132,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                             hint: 'Contoh: rujukan@rsj.com',
                             controller: _emailCtrl,
                             icon: Icons.email_rounded,
-                            iconColor: const Color(0xFF10B981),
+                            iconColor: context.appColors.success,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -194,7 +194,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
             ),
             child: Text(
               'Tidak ada mahasiswa aktif untuk dirujuk.',
-              style: AppTextStyles.bodyMd.copyWith(color: Colors.red[800]),
+              style: AppTextStyles.bodyMd.copyWith(color: context.appColors.error),
             ),
           );
         }
@@ -262,9 +262,9 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.neutral50,
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.person_outline_rounded,
-              color: Color(0xFF3B82F6),
+              color: context.appColors.info,
               size: 20,
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -402,9 +402,9 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.neutral50,
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.category_rounded,
-              color: Color(0xFF8B5CF6),
+              color: context.appColors.info,
               size: 20,
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -458,7 +458,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           color: context.appColors.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(10),
+              color: context.appColors.onSurface.withAlpha(10),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -487,7 +487,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
                   child: ElevatedButton(
                     onPressed: isLoading ? null : _submit,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF16A34A),
+                      backgroundColor: context.appColors.success,
                       foregroundColor: context.appColors.onPrimary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(

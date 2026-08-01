@@ -44,7 +44,7 @@ class UpcomingAppointmentsCard extends StatelessWidget {
                   Text(
                     _todayDate(),
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.onSurface.withAlpha(150),
                     ),
                   ),
                 ],
@@ -191,7 +191,7 @@ class _HorizontalAppointmentCard extends StatelessWidget {
             color:
                 isActive
                     ? AppColors.primary.withAlpha(20)
-                    : Colors.black.withAlpha(12),
+                    : context.appColors.onSurface.withAlpha(12),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -267,12 +267,12 @@ class _HorizontalAppointmentCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Row(
             children: [
-              Icon(Icons.schedule_rounded, size: 15, color: const Color(0xFF0D9488)),
+              Icon(Icons.schedule_rounded, size: 15, color: AppColors.info),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 time,
                 style: AppTextStyles.labelMd.copyWith(
-                  color: const Color(0xFF0D9488),
+                  color: AppColors.info,
                   fontWeight: FontWeight.w800,
                   fontSize: 11,
                 ),
@@ -293,7 +293,7 @@ class _HorizontalAppointmentCard extends StatelessWidget {
               height: 44,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A34A),
+                   backgroundColor: context.appColors.success,
                   foregroundColor: context.appColors.onPrimary,
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,

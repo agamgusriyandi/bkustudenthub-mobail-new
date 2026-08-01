@@ -317,19 +317,19 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 Icons.pending_actions_rounded,
                 '${provider.belumScreening}',
                 'Menunggu',
-                Colors.amber,
+                context.appColors.warning,
               ),
               _buildSummaryItem(
                 Icons.notifications_active_rounded,
                 '${provider.perluPerhatian}',
                 'Baru\nHari Ini',
-                const Color(0xFFF43F5E),
+                context.appColors.error,
               ),
               _buildSummaryItem(
                 Icons.event_available_rounded,
                 '${provider.bookingHariIniCount}',
                 'Booking\nAktif',
-                const Color(0xFF60A5FA),
+                context.appColors.info,
               ),
             ],
           ),
@@ -398,7 +398,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.assignment_turned_in_rounded,
         label: 'Booking',
-        bg: const Color(0xFFE6FAF0),
+        bg: context.appColors.success.withAlpha(15),
         iconColor: context.appColors.success,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
@@ -408,8 +408,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.people_alt_rounded,
         label: 'Pasien',
-        bg: const Color(0xFFF0EEFF),
-        iconColor: const Color(0xFF7C3AED),
+        bg: context.appColors.info.withAlpha(15),
+        iconColor: context.appColors.info,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
           s != null ? s.setSelectedIndex(3) : context.go('/tenagakes?tab=3');
@@ -418,7 +418,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.send_rounded,
         label: 'Rujukan',
-        bg: const Color(0xFFFFF4E6),
+        bg: context.appColors.warning.withAlpha(15),
         iconColor: context.appColors.warning,
         onTap: () => context.push(AppRoutes.tkReferralManagement),
       ),
@@ -432,22 +432,22 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.shield_rounded,
         label: 'Asuransi',
-        bg: const Color(0xFFE6FAF0),
+        bg: context.appColors.success.withAlpha(15),
         iconColor: context.appColors.success,
         onTap: () => context.push('/tk/insurance-claims'),
       ),
       _ServiceItem(
         icon: Icons.article_rounded,
         label: 'BAP',
-        bg: const Color(0xFFFFF4E6),
+        bg: context.appColors.warning.withAlpha(15),
         iconColor: context.appColors.warning,
         onTap: () => context.push('/tk/bap'),
       ),
       _ServiceItem(
         icon: Icons.bar_chart_rounded,
         label: 'Lap. Klinis',
-        bg: const Color(0xFFF0EEFF),
-        iconColor: const Color(0xFF7C3AED),
+        bg: context.appColors.info.withAlpha(15),
+        iconColor: context.appColors.info,
         onTap: () => context.push('/tk/reports'),
       ),
     ];
@@ -543,7 +543,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           border: Border.all(color: AppColors.neutral200.withAlpha(150)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -611,10 +611,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     Color statusBg;
     if (status == 'Dikonfirmasi') {
       statusColor = context.appColors.success;
-      statusBg = const Color(0xFFD1FAE5);
+      statusBg = context.appColors.success.withAlpha(20);
     } else if (status == 'Menunggu Konfirmasi') {
       statusColor = context.appColors.warning;
-      statusBg = const Color(0xFFFEF3C7);
+      statusBg = context.appColors.warning.withAlpha(15);
     } else {
       statusColor = AppColors.neutral500;
       statusBg = AppColors.neutral200;
@@ -679,8 +679,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           // Name
           Text(
             name,
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
+            style: TextStyle(fontWeight: FontWeight.w800,
               fontSize: 13,
               color: AppColors.neutral800,
             ),
@@ -690,7 +689,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           const SizedBox(height: AppSpacing.s2),
           Text(
             nim,
-            style: const TextStyle(fontSize: 11, color: AppColors.neutral500),
+            style: TextStyle(fontSize: 11, color: AppColors.neutral500),
           ),
           const SizedBox(height: AppSpacing.sm),
           // Time row
@@ -700,8 +699,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               const SizedBox(width: AppSpacing.xs),
               Text(
                 time,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: AppColors.neutral800,
                 ),
@@ -721,8 +719,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               Expanded(
                 child: Text(
                   tipeLayanan,
-                  style: const TextStyle(
-                    fontSize: 11,
+                  style: TextStyle(fontSize: 11,
                     color: AppColors.neutral600,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -735,7 +732,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           SizedBox(
             width: double.infinity,
             child: Material(
-              color: isConfirmed ? context.appColors.success : const Color(0xFFF1F5F9),
+              color: isConfirmed ? context.appColors.success : AppColors.neutral200,
               borderRadius: AppRadius.radiusMd,
               child: InkWell(
                 borderRadius: AppRadius.radiusMd,
@@ -762,7 +759,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 12,
-                        color: isConfirmed ? Colors.white : AppColors.neutral800,
+                        color: isConfirmed ? context.appColors.surface : AppColors.neutral800,
                       ),
                     ],
                   ),
@@ -809,12 +806,12 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         margin: const EdgeInsets.only(bottom: AppSpacing.s10),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF1F2),
+          color: context.appColors.error.withAlpha(15),
           borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: const Color(0xFFFECACA)),
+          border: Border.all(color: context.appColors.error.withAlpha(20)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -825,7 +822,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: const Color(0xFFFEE2E2),
+                color: context.appColors.error.withAlpha(20),
                 borderRadius: AppRadius.radiusMd,
               ),
               child: Icon(
@@ -841,8 +838,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
+                    style: TextStyle(fontWeight: FontWeight.w700,
                       fontSize: 13,
                       color: AppColors.neutral800,
                     ),
@@ -850,8 +846,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   const SizedBox(height: AppSpacing.s2),
                   Text(
                     'NIM: $nim',
-                    style: const TextStyle(
-                      fontSize: 11,
+                    style: TextStyle(fontSize: 11,
                       color: AppColors.neutral500,
                     ),
                   ),
@@ -907,8 +902,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               const SizedBox(width: AppSpacing.s10),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(fontSize: 14,
                   fontWeight: FontWeight.w800,
                   color: AppColors.neutral800,
                 ),
@@ -930,12 +924,12 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     if (total == 0) return const SizedBox.shrink();
 
     final colors = [
-      const Color(0xFF3B82F6), // Blue
-      const Color(0xFF10B981), // Emerald
-      const Color(0xFFF43F5E), // Rose
-      const Color(0xFFF59E0B), // Amber
-      const Color(0xFF8B5CF6), // Purple
-      const Color(0xFF06B6D4), // Cyan
+      context.appColors.info, // Blue
+      context.appColors.success, // Emerald
+      context.appColors.error, // Rose
+      context.appColors.warning, // Amber
+      context.appColors.info, // Purple
+      context.appColors.info, // Cyan
     ];
 
     int colorIdx = 0;
@@ -949,10 +943,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             value: v,
             title: '${(v / total * 100).toStringAsFixed(0)}%',
             radius: 55,
-            titleStyle: const TextStyle(
-              fontSize: 11,
+            titleStyle: TextStyle(fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: context.appColors.surface,
             ),
           );
         }).toList();
@@ -990,8 +983,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 const SizedBox(width: AppSpacing.s6),
                 Text(
                   '${item['name']} (${item['value']})',
-                  style: const TextStyle(
-                    fontSize: 11,
+                  style: TextStyle(fontSize: 11,
                     color: AppColors.neutral600,
                   ),
                 ),
@@ -1024,8 +1016,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                     '';
                 return BarTooltipItem(
                   '$name\n${rod.toY.toInt()}',
-                  const TextStyle(
-                    color: Colors.white,
+                  TextStyle(
+                    color: context.appColors.surface,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1053,8 +1045,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       padding: const EdgeInsets.only(top: AppSpacing.sm),
                       child: Text(
                         abbr.length > 4 ? abbr.substring(0, 4) : abbr,
-                        style: const TextStyle(
-                          fontSize: 10,
+                        style: TextStyle(fontSize: 10,
                           fontWeight: FontWeight.w600,
                           color: AppColors.neutral500,
                         ),
@@ -1090,35 +1081,35 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 ) ??
                 0.0;
             final barGradients = [
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFF60A5FA), Color(0xFF2563EB)],
+                colors: [context.appColors.info, context.appColors.info],
               ),
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFF34D399), Color(0xFF059669)],
+                colors: [context.appColors.success.withAlpha(30), context.appColors.success],
               ),
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFFFBBF24), Color(0xFFD97706)],
+                colors: [context.appColors.warning.withAlpha(30), context.appColors.warning],
               ),
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFFA78BFA), Color(0xFF7C3AED)],
+                colors: [context.appColors.info.withAlpha(30), context.appColors.info],
               ),
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFFF87171), Color(0xFFDC2626)],
+                colors: [context.appColors.error.withAlpha(30), context.appColors.error],
               ),
-              const LinearGradient(
+              LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Color(0xFF2DD4BF), Color(0xFF0D9488)],
+                colors: [context.appColors.info.withAlpha(30), context.appColors.info],
               ),
             ];
             return BarChartGroupData(
@@ -1180,8 +1171,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       padding: const EdgeInsets.only(top: AppSpacing.sm),
                       child: Text(
                         dateStr,
-                        style: const TextStyle(
-                          fontSize: 9,
+                        style: TextStyle(fontSize: 9,
                           fontWeight: FontWeight.w600,
                           color: AppColors.neutral500,
                         ),
@@ -1212,8 +1202,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               spots: spots,
               isCurved: true,
               curveSmoothness: 0.3,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF8B5CF6), Color(0xFF3B82F6)],
+              gradient: LinearGradient(
+                colors: [context.appColors.info, context.appColors.info],
               ),
               barWidth: 3,
               isStrokeCapRound: true,
@@ -1222,9 +1212,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 getDotPainter:
                     (spot, percent, bar, index) => FlDotCirclePainter(
                       radius: 4,
-                      color: Colors.white,
+                      color: context.appColors.surface,
                       strokeWidth: 2,
-                      strokeColor: const Color(0xFF8B5CF6),
+                      strokeColor: context.appColors.info,
                     ),
               ),
               belowBarData: BarAreaData(
@@ -1233,8 +1223,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    const Color(0xFF8B5CF6).withAlpha(40),
-                    const Color(0xFF8B5CF6).withAlpha(0),
+                    context.appColors.info.withAlpha(40),
+                    context.appColors.info.withAlpha(0),
                   ],
                 ),
               ),
@@ -1314,12 +1304,12 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(35),
+        color: context.appColors.surface.withAlpha(35),
         borderRadius: AppRadius.br20,
-        border: Border.all(color: Colors.white.withAlpha(60), width: 1),
+        border: Border.all(color: context.appColors.surface.withAlpha(60), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -1365,8 +1355,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 17,
+              style: TextStyle(fontSize: 17,
                 fontWeight: FontWeight.w800,
                 color: AppColors.neutral800,
               ),
@@ -1374,8 +1363,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             if (subtitle != null)
               Text(
                 subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(fontSize: 12,
                   color: AppColors.neutral500,
                 ),
               ),
@@ -1386,8 +1374,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             onTap: onTap,
             child: Text(
               'Lihat Semua',
-              style: const TextStyle(
-                fontSize: 13,
+              style: TextStyle(fontSize: 13,
                 fontWeight: FontWeight.w700,
                 color: AppColors.neutral800,
               ),

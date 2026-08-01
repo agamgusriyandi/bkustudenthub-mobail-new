@@ -1,4 +1,5 @@
 ﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -192,7 +193,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -414,7 +415,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
           width: 40,
           height: 3,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             borderRadius: AppRadius.radiusXs,
           ),
         ),
@@ -460,12 +461,11 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               isExpanded: true,
               style: AppTextStyles.bodyMd.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+                color: context.appColors.onSurface,              ),
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   icon,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                   size: 20,
                 ),
                 filled: true,
@@ -491,7 +491,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusLg,
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     width: 1.5,
                   ),
                 ),
@@ -556,7 +556,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       width: 1.5,
                     ),
                   ),
@@ -606,18 +606,17 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: AppTextStyles.bodyMd.copyWith(
-                color: Theme.of(context).colorScheme.outline.withAlpha(100),
+                color: context.appColors.outline.withAlpha(100),
               ),
               prefixIcon: Icon(
                 icon,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 size: 20,
               ),
               prefixText: isPrice ? 'Rp ' : null,
               prefixStyle: AppTextStyles.bodyMd.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+                color: context.appColors.onSurface,              ),
               filled: true,
               fillColor: AppColors.neutral100,
               contentPadding: const EdgeInsets.symmetric(
@@ -641,7 +640,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
                 borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                   width: 1.5,
                 ),
               ),
@@ -676,7 +675,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               color: AppColors.neutral200,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withAlpha(30),
+                color: context.appColors.primary.withAlpha(30),
                 style: BorderStyle.solid,
               ),
             ),
@@ -684,7 +683,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               children: [
                 Icon(
                   Icons.cloud_upload_outlined,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                   size: 32,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -708,7 +707,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                   Text(
                     'Maksimal ukuran file: 10MB (PDF/DOC)',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontSize: 10,
                     ),
                   ),

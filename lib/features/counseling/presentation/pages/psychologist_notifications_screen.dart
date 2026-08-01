@@ -143,7 +143,7 @@ class _PsychologistNotificationsScreenState
         break;
       case 'assessment':
         icon = Icons.quiz_rounded;
-        color = Colors.purple;
+        color = context.appColors.info;
         break;
       case 'report':
         icon = Icons.picture_as_pdf_rounded;
@@ -159,7 +159,7 @@ class _PsychologistNotificationsScreenState
         break;
       default:
         icon = Icons.notifications_rounded;
-        color = Colors.teal;
+        color = context.appColors.info;
     }
 
     String displayTitle = title;
@@ -236,12 +236,12 @@ class _PsychologistNotificationsScreenState
             color: isUnread ? color.withAlpha(12) : context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
-              color: isUnread ? color.withAlpha(60) : Colors.grey.withAlpha(20),
+              color: isUnread ? color.withAlpha(60) : AppColors.neutral500.withAlpha(20),
               width: isUnread ? 1.5 : 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(isUnread ? 6 : 3),
+                color: context.appColors.onSurface.withAlpha(isUnread ? 6 : 3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -301,7 +301,7 @@ class _PsychologistNotificationsScreenState
                       style: AppTextStyles.bodySm.copyWith(
                         color:
                             isUnread
-                                ? const Color(0xFF334155)
+                                ? AppColors.neutral800
                                 : AppColors.neutral600,
                         height: 1.4,
                       ),

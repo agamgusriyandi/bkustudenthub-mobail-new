@@ -133,7 +133,7 @@ class OrmawaQuickStats extends StatelessWidget {
                   value,
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: context.appColors.onSurface,
                     fontSize: isFullWidth ? 22 : 18,
                   ),
                 ),
@@ -141,7 +141,7 @@ class OrmawaQuickStats extends StatelessWidget {
                 Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                     fontSize: 12,
                   ),
                   maxLines: 1,

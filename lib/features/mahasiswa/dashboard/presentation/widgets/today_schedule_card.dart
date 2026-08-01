@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -78,7 +78,7 @@ class TodayScheduleCard extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200.withAlpha(150)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -97,7 +97,7 @@ class TodayScheduleCard extends StatelessWidget {
                     Text(
                       'Kalender Kegiatan',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontSize: 12,
                       ),
                     ),
@@ -169,13 +169,13 @@ class TodayScheduleCard extends StatelessWidget {
                   Icon(
                     Icons.event_available_rounded,
                     size: 48,
-                    color: Theme.of(context).colorScheme.outline.withAlpha(100),
+                    color: context.appColors.outline.withAlpha(100),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'Tidak ada kegiatan terdekat',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -213,7 +213,7 @@ class TodayScheduleCard extends StatelessWidget {
     bool isOngoing = false,
   }) {
     final statusColor =
-        isOngoing ? AppColors.success : Theme.of(context).colorScheme.outline;
+        isOngoing ? AppColors.success : context.appColors.outline;
     String timeStr =
         '${event.tanggal.hour.toString().padLeft(2, '0')}:${event.tanggal.minute.toString().padLeft(2, '0')}';
     if (timeStr == '00:00') {
@@ -240,7 +240,7 @@ class TodayScheduleCard extends StatelessWidget {
             color:
                 isOngoing
                     ? statusColor.withAlpha(10)
-                    : Colors.black.withAlpha(12),
+                    : context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -260,7 +260,7 @@ class TodayScheduleCard extends StatelessWidget {
                   color:
                       isOngoing
                           ? statusColor
-                          : Theme.of(context).colorScheme.outline.withAlpha(50),
+                          : context.appColors.outline.withAlpha(50),
                   borderRadius: AppRadius.radiusMd,
                 ),
               ),
@@ -279,7 +279,7 @@ class TodayScheduleCard extends StatelessWidget {
                             color:
                                 isOngoing
                                     ? statusColor
-                                    : Theme.of(context).colorScheme.outline,
+                                    : context.appColors.outline,
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
                           ),
@@ -311,7 +311,7 @@ class TodayScheduleCard extends StatelessWidget {
                     Text(
                       event.judul,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: context.appColors.onSurface,
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
                       ),
@@ -331,7 +331,7 @@ class TodayScheduleCard extends StatelessWidget {
                           child: Text(
                             event.kategori,
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                               fontSize: 11,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -344,7 +344,7 @@ class TodayScheduleCard extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Theme.of(context).colorScheme.outline.withAlpha(100),
+                color: context.appColors.outline.withAlpha(100),
                 size: 20,
               ),
             ],
@@ -402,7 +402,7 @@ class TodayScheduleCard extends StatelessWidget {
                           Text(
                             'Detail Kegiatan',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ),
                           Text(

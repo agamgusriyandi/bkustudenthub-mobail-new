@@ -59,7 +59,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                       border: Border.all(color: AppColors.neutral200),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(12),
+                          color: AppColors.onSurface.withAlpha(12),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -135,7 +135,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                 builder: (context) => EditKegiatanScreen(kegiatan: k),
               ),
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: context.appColors.primary,
             icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
             label: Text('Edit',
                 style: TextStyle(
@@ -316,14 +316,14 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _handleSubmit,
                 child: _isSubmitting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 2))
-                    : const Text('SIMPAN PERUBAHAN',
+                            color: context.appColors.onPrimary, strokeWidth: 2))
+                    : Text('SIMPAN PERUBAHAN',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1)),
               ),

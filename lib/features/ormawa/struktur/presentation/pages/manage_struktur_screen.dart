@@ -182,7 +182,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
   Widget _buildSectionHeader(String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, color: Theme.of(context).colorScheme.primary, size: 18),
+        Icon(icon, color: context.appColors.primary, size: 18),
         const SizedBox(width: AppSpacing.sm),
         Text(
           title,
@@ -226,7 +226,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
               color:
                   enabled
                       ? AppColors.neutral800
-                      : Theme.of(context).colorScheme.outline,
+                      : context.appColors.outline,
             ),
             decoration: InputDecoration(
               hintText: enabled ? hint : null,
@@ -235,7 +235,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
               ),
               prefixIcon: Icon(
                 icon,
-                color: Theme.of(context).colorScheme.primary.withAlpha(150),
+                color: context.appColors.primary.withAlpha(150),
                 size: 20,
               ),
               border: InputBorder.none,
@@ -278,15 +278,15 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary.withAlpha(20),
-                  Theme.of(context).colorScheme.primary.withAlpha(5),
+                  context.appColors.primary.withAlpha(20),
+                  context.appColors.primary.withAlpha(5),
                 ],
               ),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.person_rounded,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
           const SizedBox(width: AppSpacing.lg),
@@ -297,7 +297,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                 Text(
                   role,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -366,7 +366,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                         width: 4,
                         height: 20,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                           borderRadius: AppRadius.radiusXs,
                         ),
                       ),
@@ -463,7 +463,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                       Icon(
                         Icons.people_outline_rounded,
                         size: 14,
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                       const SizedBox(width: AppSpacing.s6),
                       Text(
@@ -639,7 +639,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                     borderRadius: AppRadius.radiusMd,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withAlpha(10),
+                                        color: context.appColors.onSurface.withAlpha(10),
                                         blurRadius: 10,
                                       ),
                                     ],

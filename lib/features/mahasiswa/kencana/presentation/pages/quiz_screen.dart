@@ -371,7 +371,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           'Soal ${_currentQuestionIndex + 1}/${_questions.length}',
                           style: AppTextStyles.labelSm.copyWith(
                             color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                                context.appColors.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -396,7 +396,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               color:
                                   _isTimeAlmostUp
                                       ? AppColors.error
-                                      : Theme.of(context).colorScheme.outline,
+                                      : context.appColors.outline,
                               size: 20,
                             ),
                             const SizedBox(width: AppSpacing.s6),
@@ -601,13 +601,13 @@ class _QuizScreenState extends State<QuizScreen> {
                               decoration: BoxDecoration(
                                 color:
                                     isSelected
-                                        ? Theme.of(context).colorScheme.primary.withAlpha(15)
+                                        ? context.appColors.primary.withAlpha(15)
                                         : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color:
                   isSelected
-                      ? Theme.of(context).colorScheme.primary
+                      ? context.appColors.primary
                       : AppColors.neutral200,
               width: isSelected ? 2 : 1.5,
             ),
@@ -623,18 +623,18 @@ class _QuizScreenState extends State<QuizScreen> {
                   border: Border.all(
                     color:
                         isSelected
-                            ? Theme.of(context).colorScheme.primary
+                            ? context.appColors.primary
                             : AppColors.neutral300,
                     width: 2,
                   ),
                   color:
                       isSelected
-                          ? Theme.of(context).colorScheme.primary
+                          ? context.appColors.primary
                           : Colors.transparent,
                 ),
                 child:
                     isSelected
-                        ? const Icon(Icons.check, color: Colors.white, size: 14)
+                        ? Icon(Icons.check, color: context.appColors.surface, size: 14)
                         : null,
               ),
               const SizedBox(width: AppSpacing.lg),
@@ -642,7 +642,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: Text(
                   text,
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     fontWeight: isSelected ? FontWeight.w900 : FontWeight.bold,
                   ),
                 ),
@@ -679,10 +679,10 @@ class _QuizScreenState extends State<QuizScreen> {
               decoration: BoxDecoration(
                 color:
                     isCurrent
-                        ? Theme.of(context).colorScheme.primary
+                        ? context.appColors.primary
                         : answered
-                        ? Theme.of(context).colorScheme.primary.withAlpha(60)
-                        : Theme.of(context).colorScheme.surfaceContainerHighest,
+                        ? context.appColors.primary.withAlpha(60)
+                        : AppThemeColors.surfaceContainerHighest,
                 borderRadius: AppRadius.radiusXs,
               ),
             ),
@@ -843,13 +843,13 @@ class _QuizScreenState extends State<QuizScreen> {
             Icon(
               Icons.quiz_outlined,
               size: 72,
-              color: Theme.of(context).colorScheme.outline.withAlpha(80),
+              color: context.appColors.outline.withAlpha(80),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Soal belum tersedia',
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -930,7 +930,7 @@ class _QuizScreenState extends State<QuizScreen> {
               Text(
                 lulus ? 'Selamat, Kamu Lulus! 🎉' : 'Kuis Selesai',
                 style: AppTextStyles.display.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                   fontSize: 28,
                   fontWeight: FontWeight.w900,
                 ),
@@ -942,7 +942,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     : 'Nilai minimum adalah $_passingGrade. Kamu masih bisa mencoba lagi.',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMd.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                   height: 1.5,
                 ),
               ),
@@ -964,7 +964,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     Text(
                       'SKOR KAMU',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -980,7 +980,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     Text(
                       'dari 100',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -1004,7 +1004,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           _nilaiKumulatif.toStringAsFixed(0),
                           'Nilai\nKumulatif',
                           Icons.analytics_rounded,
-                          Theme.of(context).colorScheme.primary,
+                          context.appColors.primary,
                         ),
                       ],
                     ),
@@ -1066,7 +1066,7 @@ class _QuizScreenState extends State<QuizScreen> {
           label,
           textAlign: TextAlign.center,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontSize: 9,
             fontWeight: FontWeight.bold,
           ),

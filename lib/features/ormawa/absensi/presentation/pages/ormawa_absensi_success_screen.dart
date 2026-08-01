@@ -67,7 +67,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
     final dateFormat = DateFormat('dd MMMM yyyy, HH:mm', 'id_ID');
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+      backgroundColor: context.appColors.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),

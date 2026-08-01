@@ -74,7 +74,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                     Text(
                       provider.errorMessage!,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -113,7 +113,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                       'Sesi & Rangkaian Acara',
                       style: AppTextStyles.titleLg.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: context.appColors.onSurface,
                         fontSize: 18,
                       ),
                     ),
@@ -121,7 +121,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                     Text(
                       'Daftar sesi yang harus kamu ikuti dalam tahapan ini.',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
@@ -167,11 +167,11 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
 
   Widget _buildStageHeader(KencanaStageDetail detail) {
     final status = detail.status.toLowerCase();
-    Color statusColor = Theme.of(context).colorScheme.primary;
+    Color statusColor = context.appColors.primary;
     if (status == 'completed' || status == 'selesai') {
       statusColor = AppColors.success;
     } else if (status == 'active' || status == 'aktif') {
-      statusColor = Theme.of(context).colorScheme.primary;
+      statusColor = context.appColors.primary;
     } else {
       statusColor = AppColors.neutral500;
     }
@@ -213,13 +213,13 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                     Icon(
                       Icons.calendar_today_rounded,
                       size: 14,
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                     const SizedBox(width: AppSpacing.s6),
                     Text(
                       '${_formatDate(detail.startDate)} - ${_formatDate(detail.endDate)}',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -230,7 +230,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
           Text(
             detail.name,
             style: AppTextStyles.titleLg.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
               fontWeight: FontWeight.w900,
               fontSize: 22,
             ),
@@ -240,7 +240,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
             Text(
               detail.description!,
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
             ),
           ],
@@ -268,17 +268,17 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
     Color numberTextColor = AppColors.neutral600;
 
     if (isActive) {
-      cardBg = const Color(0xFFEFF6FF);
-      borderColor = const Color(0xFF93C5FD);
+      cardBg = context.appColors.infoContainer;
+      borderColor = context.appColors.info;
       iconBg = AppColors.primary;
       iconColor = context.appColors.onPrimary;
-      titleColor = const Color(0xFF1D4ED8);
+      titleColor = context.appColors.primary;
     } else if (isCompleted) {
-      cardBg = const Color(0xFFF0FDF4);
-      borderColor = const Color(0xFF86EFAC);
+      cardBg = context.appColors.successContainer;
+      borderColor = context.appColors.success;
       numberBg = context.appColors.success;
-      numberTextColor = Colors.white;
-      titleColor = const Color(0xFF15803D);
+      numberTextColor = context.appColors.surface;
+      titleColor = context.appColors.success;
     }
 
     return Container(
@@ -292,7 +292,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(5),
+            color: context.appColors.onSurface.withAlpha(5),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -353,19 +353,19 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                           _buildCountBadge(
                             Icons.article_rounded,
                             session.materialCount,
-                            const Color(0xFF2563EB),
+                            context.appColors.info,
                           ),
                           const SizedBox(width: AppSpacing.s10),
                           _buildCountBadge(
                             Icons.quiz_rounded,
                             session.quizCount,
-                            const Color(0xFF8B5CF6),
+                            context.appColors.info,
                           ),
                           const SizedBox(width: AppSpacing.s10),
                           _buildCountBadge(
                             Icons.assignment_rounded,
                             session.assignmentCount,
-                            const Color(0xFFD97706),
+                            context.appColors.warning,
                           ),
                         ],
                       ),

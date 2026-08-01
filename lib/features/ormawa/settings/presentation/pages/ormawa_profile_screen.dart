@@ -183,7 +183,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   }
 
   Widget _buildHeaderCard(OrmawaMember member) {
-    final theme = Theme.of(context).colorScheme;
+    final theme = context.appColors;
     return Container(
       decoration: BoxDecoration(
         color: context.appColors.surface,
@@ -191,7 +191,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         border: Border.all(color: theme.outline.withAlpha(26)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -261,10 +261,10 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                         decoration: BoxDecoration(
                           color: context.appColors.surface,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black12, width: 1),
+                          border: Border.all(color: context.appColors.onSurface.withValues(alpha: 0.12), width: 1),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(26),
+                              color: context.appColors.onSurface.withAlpha(26),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -273,7 +273,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                         child: Icon(
                           Icons.edit_rounded,
                           size: 12,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                     ),
@@ -291,8 +291,8 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 children: [
                   Text(
                     _capitalizeEachWord(member.name),
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: context.appColors.onSurface,
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
                     ),
@@ -302,8 +302,8 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                   const SizedBox(height: AppSpacing.s2),
                   Text(
                     '${member.role} • ${member.division}',
-                    style: const TextStyle(
-                      color: Colors.black87,
+                    style: TextStyle(
+                      color: context.appColors.onSurface.withValues(alpha: 0.87),
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -321,7 +321,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.surfaceContainerHighest.withAlpha(128),
+                          color: AppThemeColors.surfaceContainerHighest.withAlpha(128),
                           borderRadius: AppRadius.radiusMd,
                           border: Border.all(
                             color: theme.outline.withAlpha(13),
@@ -330,16 +330,16 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.badge_rounded,
-                              color: Colors.black87,
-                              size: 12,
+                               color: context.appColors.onSurface.withValues(alpha: 0.87),
+                               size: 12,
                             ),
                             const SizedBox(width: AppSpacing.s6),
                             Text(
                               'NIM: ${member.nim}',
-                              style: const TextStyle(
-                                color: Colors.black,
+                              style: TextStyle(
+                                color: context.appColors.onSurface,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.5,
@@ -425,7 +425,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             border: Border.all(color: AppColors.neutral300.withAlpha(30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(4),
+                color: context.appColors.onSurface.withAlpha(4),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

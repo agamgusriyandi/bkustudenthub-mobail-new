@@ -63,7 +63,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               ? Center(
                 child: Text(
                   provider.errorMessage!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: TextStyle(color: context.appColors.error),
                 ),
               )
               : mentee == null
@@ -71,7 +71,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 child: Text(
                   'Data tidak ditemukan',
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                   ),
                 ),
               )
@@ -93,15 +93,15 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                         TabBar(
                           controller: _tabController,
                           labelColor: AppColors.neutral800,
-                          unselectedLabelColor: Theme.of(context).colorScheme.outline,
+                          unselectedLabelColor: context.appColors.outline,
                           indicatorSize: TabBarIndicatorSize.tab,
                           dividerColor: Colors.transparent,
                           indicator: BoxDecoration(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             borderRadius: AppRadius.radiusMd,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha:0.05),
+                                color: context.appColors.onSurface.withValues(alpha:0.05),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -171,23 +171,23 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.error.withValues(alpha:0.06),
+                color: context.appColors.error.withValues(alpha:0.06),
                 borderRadius: AppRadius.radiusLg,
-                border: Border.all(color: Theme.of(context).colorScheme.error.withValues(alpha:0.3)),
+                border: Border.all(color: context.appColors.error.withValues(alpha:0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.warning_rounded, color: Theme.of(context).colorScheme.error, size: 20),
+                      Icon(Icons.warning_rounded, color: context.appColors.error, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'Syarat Kelulusan Belum Terpenuhi',
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.error,
+                            color: context.appColors.error,
                           ),
                         ),
                       ),
@@ -199,8 +199,8 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('• ', style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)),
-                        Expanded(child: Text(b, style: AppTextStyles.labelSm.copyWith(color: Theme.of(context).colorScheme.error))),
+                        Text('• ', style: TextStyle(color: context.appColors.error, fontWeight: FontWeight.bold)),
+                        Expanded(child: Text(b, style: AppTextStyles.labelSm.copyWith(color: context.appColors.error))),
                       ],
                     ),
                   )),
@@ -223,7 +223,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             context,
             'Pengetahuan',
             Icons.psychology_rounded,
-            Theme.of(context).colorScheme.primary,
+            context.appColors.primary,
             score['cognitive_average'],
             scoreDefs['cognitive'],
             scoreItems.where((i) => i['component']?.toString().toLowerCase() == 'cognitive').toList(),
@@ -284,7 +284,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 '$attPct%',
                 'Sesi: $attSes / $reqSes',
                 Icons.calendar_month_rounded,
-                Theme.of(context).colorScheme.primary,
+                context.appColors.primary,
                 attComplete ? 'Lengkap' : 'Kurang',
                 attComplete ? context.appColors.success : context.appColors.warning,
               ),
@@ -299,7 +299,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 Icons.track_changes_rounded,
                 context.appColors.warning,
                 'Aktif',
-                Theme.of(context).colorScheme.outline,
+                context.appColors.outline,
               ),
             ),
           ],
@@ -313,7 +313,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
           Icons.menu_book_rounded,
           context.appColors.success,
           isHbScored || hbStatus == 'approved' ? 'SUDAH' : 'PENDING',
-          isHbScored || hbStatus == 'approved' ? context.appColors.success : Theme.of(context).colorScheme.outline,
+          isHbScored || hbStatus == 'approved' ? context.appColors.success : context.appColors.outline,
         ),
       ],
     );
@@ -338,7 +338,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.2,
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -352,7 +352,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               Text(
                 subtitle,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                   fontWeight: FontWeight.bold,
                 ),
                 maxLines: 1,
@@ -391,8 +391,8 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surfaceContainerHighest)),
-              color: Theme.of(context).colorScheme.surface.withValues(alpha:0.5),
+              border: Border(bottom: BorderSide(color: AppThemeColors.surfaceContainerHighest)),
+              color: context.appColors.surface.withValues(alpha:0.5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -432,7 +432,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: defs.isEmpty ? 
               Center(
-                child: Text('Belum ada nilai', style: AppTextStyles.labelSm.copyWith(color: Theme.of(context).colorScheme.outline, fontStyle: FontStyle.italic)),
+                child: Text('Belum ada nilai', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontStyle: FontStyle.italic)),
               )
               : Column(
               children: defs.map((def) {
@@ -446,7 +446,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                       Expanded(
                         child: Text(
                           label,
-                          style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.outline),
+                          style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -455,8 +455,8 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha:0.3)),
+                          color: context.appColors.surface,
+                          border: Border.all(color: context.appColors.outline.withValues(alpha:0.3)),
                           borderRadius: AppRadius.radiusSm,
                         ),
                         child: Text(
@@ -486,7 +486,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     child: Text(
                       'Belum ada tugas yang disubmit',
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                   )
@@ -526,9 +526,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                             style: AppTextStyles.labelSm
                                                 .copyWith(
                                                   color:
-                                                      Theme.of(
-                                                        context,
-                                                      ).colorScheme.outline,
+                                                      context.appColors.outline,
                                                 ),
                                           ),
                                           const SizedBox(width: AppSpacing.sm),
@@ -583,7 +581,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                   style: AppTextStyles.labelMd.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        context.appColors.primary,
                                   ),
                                 ),
                               ],
@@ -595,7 +593,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                 'Hasil Pekerjaan:',
                                 style: AppTextStyles.labelSm.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.outline,
+                                  color: context.appColors.outline,
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.s6),
@@ -604,13 +602,11 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(AppSpacing.md),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.outline.withValues(alpha:0.1),
+                                    color: context.appColors.outline.withValues(alpha:0.1),
                                     borderRadius: AppRadius.radiusMd,
                                     border: Border.all(
                                       color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainerHighest,
+                                          AppThemeColors.surfaceContainerHighest,
                                     ),
                                   ),
                                   child: Text(
@@ -629,14 +625,10 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                     vertical: AppSpacing.sm,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary.withAlpha(12),
+                                    color: context.appColors.primary.withAlpha(12),
                                     borderRadius: AppRadius.radiusMd,
                                     border: Border.all(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withAlpha(51),
+                                      color: context.appColors.primary.withAlpha(51),
                                     ),
                                   ),
                                   child: Row(
@@ -646,9 +638,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                         Icons.link,
                                         size: 16,
                                         color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            context.appColors.primary,
                                       ),
                                       const SizedBox(width: AppSpacing.sm),
                                       Flexible(
@@ -656,9 +646,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                           task.submittedLink,
                                           style: AppTextStyles.labelSm.copyWith(
                                             color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
+                                                context.appColors.primary,
                                             decoration:
                                                 TextDecoration.underline,
                                           ),
@@ -681,25 +669,23 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                                     borderRadius: AppRadius.radiusMd,
                                     border: Border.all(
                                       color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainerHighest,
+                                          AppThemeColors.surfaceContainerHighest,
                                     ),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.download_rounded,
                                         size: 16,
-                                        color: Colors.black87,
+                                        color: context.appColors.onSurface,
                                       ),
                                       const SizedBox(width: AppSpacing.sm),
                                       Flexible(
                                         child: Text(
                                           task.submittedFile.split('/').last,
                                           style: AppTextStyles.labelSm.copyWith(
-                                            color: Colors.black87,
+                                            color: context.appColors.onSurface,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -893,11 +879,11 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
                       fillColor: AppColors.neutral50,
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
+                        borderSide: BorderSide(color: context.appColors.outline.withAlpha(50)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withAlpha(50)),
+                        borderSide: BorderSide(color: context.appColors.outline.withAlpha(50)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
@@ -934,7 +920,7 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Isi nilai untuk setiap komponen yang telah ditentukan. Kosongkan jika belum dinilai.',
-            style: AppTextStyles.labelSm.copyWith(color: Theme.of(context).colorScheme.outline),
+            style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
           ),
           const SizedBox(height: AppSpacing.xl),
           

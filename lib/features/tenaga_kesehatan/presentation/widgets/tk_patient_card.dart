@@ -24,7 +24,7 @@ class TkPatientCard extends StatelessWidget {
         border: Border.all(color: AppColors.neutral300, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -151,7 +151,7 @@ class TkPatientCard extends StatelessWidget {
   }
 
   Widget _buildInitials(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = context.appColors.primary;
     return Container(
       width: 44,
       height: 44,

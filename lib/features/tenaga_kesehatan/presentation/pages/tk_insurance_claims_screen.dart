@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -101,7 +101,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -111,7 +111,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Material(
-            color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canPrev ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -157,7 +157,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
             ),
           ),
           Material(
-            color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canNext ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -176,8 +176,8 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                         fontWeight: FontWeight.bold,
                         color:
                             canNext
-                                ? const Color(0xFF1E293B)
-                                : const Color(0xFFCBD5E1),
+                                ? AppColors.neutral800
+                                : AppColors.neutral400,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
@@ -186,8 +186,8 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                       size: 18,
                       color:
                           canNext
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFFCBD5E1),
+                              ? AppColors.neutral800
+                              : AppColors.neutral400,
                     ),
                   ],
                 ),
@@ -347,7 +347,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                         ? Center(
                           child: Text(
                             initial,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -463,7 +463,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
+          Icon(icon, size: 16, color: context.appColors.onSurfaceVariant),
           const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(
@@ -495,7 +495,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         label = 'Disetujui';
         break;
       case 'REJECTED':
-        statusColor = Theme.of(context).colorScheme.error;
+        statusColor = context.appColors.error;
         label = 'Ditolak';
         break;
       default:
@@ -634,10 +634,10 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF0FDF4),
+                          color: context.appColors.success.withAlpha(15),
                           borderRadius: AppRadius.radiusXl,
                           border: Border.all(
-                            color: const Color(0xFF86EFAC),
+                            color: context.appColors.success.withAlpha(50),
                             width: 1.5,
                           ),
                         ),
@@ -647,7 +647,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFDCFCE7),
+                                color: context.appColors.success.withAlpha(20),
                                 shape: BoxShape.circle,
                                 image:
                                     hasFoto
@@ -664,8 +664,8 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                       ? Center(
                                         child: Text(
                                           initial,
-                                          style: const TextStyle(
-                                            color: Color(0xFF16A34A),
+                                          style: TextStyle(
+                                            color: context.appColors.success,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
                                           ),
@@ -720,7 +720,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           border: Border.all(color: AppColors.neutral300.withAlpha(30)),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(4),
+                              color: context.appColors.onSurface.withAlpha(4),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -772,7 +772,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           border: Border.all(color: AppColors.neutral300.withAlpha(30)),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(4),
+                              color: context.appColors.onSurface.withAlpha(4),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -781,7 +781,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                         child: Text(
                           claim.deskripsi.isEmpty ? '-' : claim.deskripsi,
                           style: AppTextStyles.bodySm.copyWith(
-                            color: const Color(0xFF1E293B),
+                            color: AppColors.neutral800,
                             fontWeight: FontWeight.w600,
                             height: 1.4,
                           ),
@@ -795,7 +795,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           'Gambar Lampiran 1',
                           style: AppTextStyles.labelSm.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E293B),
+                            color: AppColors.neutral800,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
@@ -851,7 +851,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                           'Gambar Lampiran 2',
                           style: AppTextStyles.labelSm.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E293B),
+                            color: AppColors.neutral800,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
@@ -939,14 +939,14 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                       TextField(
                         controller: noteController,
                         maxLines: 3,
-                        style: const TextStyle(
-                          color: Color(0xFF1E293B),
+                        style: TextStyle(
+                          color: AppColors.neutral800,
                           fontWeight: FontWeight.w600,
                         ),
                         decoration: InputDecoration(
                           hintText:
                               'Tuliskan alasan jika menolak, atau catatan persetujuan...',
-                          hintStyle: const TextStyle(color: AppColors.neutral400),
+                          hintStyle: TextStyle(color: AppColors.neutral400),
                           filled: true,
                           fillColor: AppColors.neutral50,
                           border: OutlineInputBorder(
@@ -1028,7 +1028,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 18, color: const Color(0xFF475569)),
+        Icon(icon, size: 18, color: AppColors.neutral700),
         const SizedBox(width: AppSpacing.md),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -252,7 +252,7 @@ class _StudentNotificationsScreenState
                         PopupMenuButton<String>(
                           icon: Icon(
                             Icons.more_vert_rounded,
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
 
                           onSelected: (v) {
@@ -332,7 +332,7 @@ class _StudentNotificationsScreenState
                     color:
                         isSelected
                             ? AppColors.neutral800
-                            : Theme.of(context).colorScheme.outline,
+                            : context.appColors.outline,
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
@@ -397,12 +397,12 @@ class _StudentNotificationsScreenState
               color:
                   !notif.isRead
                       ? color.withAlpha(60)
-                      : Theme.of(context).colorScheme.outline.withAlpha(25),
+                      : context.appColors.outline.withAlpha(25),
               width: !notif.isRead ? 1.5 : 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(!notif.isRead ? 12 : 8),
+                color: context.appColors.onSurface.withAlpha(!notif.isRead ? 12 : 8),
                 blurRadius: 16,
                 offset: const Offset(0, 8),
               ),
@@ -432,7 +432,7 @@ class _StudentNotificationsScreenState
                             notif.title,
                             style: AppTextStyles.labelMd.copyWith(
                               fontWeight: FontWeight.w900,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: context.appColors.onSurface,
                             ),
                           ),
                         ),
@@ -452,7 +452,7 @@ class _StudentNotificationsScreenState
                     Text(
                       notif.content,
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         height: 1.4,
                       ),
                     ),
@@ -517,13 +517,13 @@ class _StudentNotificationsScreenState
             Icon(
               Icons.notifications_none_rounded,
               size: 72,
-              color: Theme.of(context).colorScheme.outline.withAlpha(50),
+              color: context.appColors.outline.withAlpha(50),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada notifikasi',
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -531,7 +531,7 @@ class _StudentNotificationsScreenState
             Text(
               'Semua update dari kampus akan muncul di sini.',
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
               textAlign: TextAlign.center,
             ),
@@ -554,7 +554,7 @@ class _StudentNotificationsScreenState
         return AppColors.error;
       case 'prestasi':
       case 'achievement':
-        return Colors.purple;
+        return context.appColors.info;
       case 'konseling':
       case 'counseling':
         return AppColors.warning;

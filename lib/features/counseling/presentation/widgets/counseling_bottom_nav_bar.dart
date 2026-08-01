@@ -84,7 +84,7 @@ class _CounselingBottomNavBarState extends State<CounselingBottomNavBar>
               color: context.appColors.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(10),
+                  color: context.appColors.onSurface.withAlpha(10),
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),

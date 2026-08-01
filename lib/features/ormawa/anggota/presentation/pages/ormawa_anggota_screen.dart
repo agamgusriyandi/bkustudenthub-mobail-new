@@ -384,7 +384,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                               border: Border.all(color: AppColors.neutral300),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(12),
+                                  color: AppColors.onSurface.withAlpha(12),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -558,10 +558,10 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                       provider.selectedPeriod == 'aktif'
                   ? FloatingActionButton.extended(
                     onPressed: () => _showAddMember(context),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    icon: const Icon(
+                    backgroundColor: context.appColors.primary,
+                    icon: Icon(
                       Icons.person_add_rounded,
-                      color: Colors.white,
+                      color: context.appColors.onPrimary,
                     ),
                     label: Text(
                       'Tambah Anggota',
@@ -589,7 +589,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 color: context.appColors.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 20),
+                  BoxShadow(color: AppColors.onSurface.withAlpha(10), blurRadius: 20),
                 ],
               ),
               child: const Icon(
@@ -628,12 +628,12 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 icon: Icon(
                   Icons.refresh_rounded,
                   size: 18,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
                 label: Text(
                   'Reset Filter',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -684,7 +684,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: AppColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -697,7 +697,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
             children: [
               Icon(
                 Icons.analytics_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -757,7 +757,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
   Color _getRoleColor(String role) {
     final r = role.toLowerCase();
     if (r.contains('ketua umum') || r == 'ketua') {
-      return Theme.of(context).colorScheme.primary;
+      return context.appColors.primary;
     }
     if (r.contains('wakil ketua')) return context.appColors.info;
     if (r.contains('sekretaris') || r.contains('bendahara')) {
@@ -798,7 +798,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: AppColors.onSurface.withAlpha(12),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -1326,7 +1326,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                 color:
                                     isEdit
                                         ? AppColors.neutral500
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 size: 24,
                               ),
                               const SizedBox(width: AppSpacing.md),
@@ -1472,11 +1472,11 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
 
                           child:
                               provider.isLoading
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                     width: 24,
                                     height: 24,
                                     child: CircularProgressIndicator(
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                       strokeWidth: 3,
                                     ),
                                   )
@@ -1484,8 +1484,8 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                                     isEdit
                                         ? 'Perbarui Data Anggota'
                                         : 'Simpan Anggota Baru',
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: context.appColors.onPrimary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                       letterSpacing: 0.5,
@@ -1671,7 +1671,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                   Text(
                     'PILIH MAHASISWA',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
                       letterSpacing: 0.5,
@@ -1696,7 +1696,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                   decoration: InputDecoration(
                     icon: Icon(
                       Icons.search_rounded,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                     ),
                     hintText: 'Cari Nama atau NIM...',
                     border: InputBorder.none,
@@ -1809,7 +1809,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
     final photoUrl = getFullImageUrl(member.fotoUrl);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -1976,7 +1976,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                           _buildActivityItem(
                             'Periode',
                             member.periode!,
-                            Theme.of(context).colorScheme.primary,
+                            context.appColors.primary,
                           ),
                         const SizedBox(height: AppSpacing.xxxl),
                       ],

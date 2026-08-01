@@ -143,7 +143,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
       backgroundColor: AppColors.neutral50,
       body: RefreshIndicator(
         onRefresh: _loadData,
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
@@ -291,7 +291,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                     color:
                         isSelected
                             ? AppColors.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                            : context.appColors.onSurfaceVariant,
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
@@ -349,7 +349,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
       border: Border.all(color: AppColors.neutral200.withAlpha(150)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -425,7 +425,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               Text(
                 scholarship.provider,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -571,8 +571,8 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
     if (cat.contains('internal') || t.contains('internal')) {
       return {
         'icon': Icons.school_rounded,
-        'color': const Color(0xFF2563EB),
-        'bg': const Color(0xFFEFF6FF),
+        'color': context.appColors.info,
+        'bg': context.appColors.infoContainer,
       };
     } else if (cat.contains('mitra') ||
         t.contains('mitra') ||
@@ -581,8 +581,8 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         t.contains('bri')) {
       return {
         'icon': Icons.handshake_rounded,
-        'color': const Color(0xFF0D9488),
-        'bg': const Color(0xFFF0FDFA),
+        'color': context.appColors.info,
+        'bg': context.appColors.successContainer,
       };
     } else if (cat.contains('eksternal') ||
         t.contains('diktis') ||
@@ -590,22 +590,22 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         t.contains('kemenag')) {
       return {
         'icon': Icons.account_balance_rounded,
-        'color': const Color(0xFF7C3AED),
-        'bg': const Color(0xFFF5F3FF),
+        'color': context.appColors.info,
+        'bg': context.appColors.infoContainer,
       };
     } else if (cat.contains('prestasi') ||
         t.contains('prestasi') ||
         t.contains('juara')) {
       return {
         'icon': Icons.emoji_events_rounded,
-        'color': const Color(0xFFE11D48),
-        'bg': const Color(0xFFFFF1F2),
+        'color': context.appColors.error,
+        'bg': context.appColors.errorContainer,
       };
     } else {
       return {
         'icon': Icons.workspace_premium_rounded,
-        'color': const Color(0xFF0284C7),
-        'bg': const Color(0xFFF0F9FF),
+        'color': context.appColors.info,
+        'bg': context.appColors.infoContainer,
       };
     }
   }
@@ -621,10 +621,10 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
+        border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -695,7 +695,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 14,
-                          color: Color(0xFF111827),
+                          color: AppColors.neutral900,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -704,7 +704,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                       Text(
                         scholarship.provider,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontSize: 11,
                         ),
                         maxLines: 1,
@@ -945,7 +945,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                               Text(
                                 scholarship.title,
                                 style: const TextStyle(
-                                  color: Color(0xFF111827),
+                                  color: AppColors.neutral900,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -954,7 +954,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                               Text(
                                 scholarship.provider,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline,
+                                  color: context.appColors.outline,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1002,7 +1002,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                               Text(
                                 scholarship.description,
                                 style: AppTextStyles.bodyMd.copyWith(
-                                  color: Theme.of(context).colorScheme.outline,
+                                  color: context.appColors.outline,
                                   height: 1.6,
                                 ),
                               ),
@@ -1224,7 +1224,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                             child: Text(
                               'Tutup',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1425,7 +1425,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         children: [
           Icon(
             Icons.check_circle_rounded,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             size: 18,
           ),
           const SizedBox(width: AppSpacing.md),
@@ -1433,7 +1433,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             child: Text(
               text,
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
             ),
           ),
@@ -1462,13 +1462,13 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               Container(
                 padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                  color: context.appColors.primary.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(
                   icon,
                   size: 16,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -1534,7 +1534,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.w600,
           ),
         ),

@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -112,7 +112,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                 Text(
                   'Jika ada nilai yang tidak sesuai atau kamu merasa telah menyelesaikan syarat yang diminta, silakan ajukan banding di sini.',
                   style: AppTextStyles.bodySm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -124,7 +124,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                       hintText:
                           'Contoh: Saya sudah mengumpulkan tugas di e-learning namun nilainya masih 0...',
                       hintStyle: AppTextStyles.bodySm.copyWith(
-                        color: Theme.of(context).colorScheme.outlineVariant,
+                        color: context.appColors.outlineVariant,
                       ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.all(AppSpacing.lg),
@@ -145,14 +145,14 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                       return Container(
                         padding: const EdgeInsets.all(AppSpacing.xl),
                         decoration: BoxDecoration(
-                          color: Colors.grey[50],
+                          color: AppColors.neutral50,
                           borderRadius: AppRadius.radiusLg,
                         ),
                         child: Text(
                           'Belum ada riwayat banding',
                           textAlign: TextAlign.center,
                           style: AppTextStyles.labelMd.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
                         ),
                       );

@@ -1,4 +1,5 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
         actions: [
           if (unreadCount > 0)
             IconButton(
-              icon: const Icon(Icons.done_all_rounded, color: Colors.white),
+              icon: Icon(Icons.done_all_rounded, color: context.appColors.surface),
               tooltip: 'Tandai semua dibaca',
               onPressed: _markAllAsRead,
             ),
@@ -151,7 +152,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
     switch (notif.type) {
       case 'booking':
         icon = Icons.event_available_rounded;
-        color = Theme.of(context).colorScheme.primary;
+        color = context.appColors.primary;
         break;
       case 'warning':
         icon = Icons.warning_amber_rounded;
@@ -159,7 +160,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
         break;
       default:
         icon = Icons.notifications_rounded;
-        color = Colors.teal;
+        color = context.appColors.info;
     }
 
     return Dismissible(
@@ -173,7 +174,7 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
           color: AppColors.error.withAlpha(20),
           borderRadius: AppRadius.radiusXl,
         ),
-        child: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
+        child: Icon(Icons.delete_outline_rounded, color: AppColors.error),
       ),
       onDismissed: (_) => _deleteNotification(notif.id),
       child: GestureDetector(
@@ -215,18 +216,18 @@ class _TkNotificationsScreenState extends State<TkNotificationsScreen> {
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: !notif.isRead ? color.withAlpha(8) : Colors.white,
+            color: !notif.isRead ? color.withAlpha(8) : context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
               color:
                   !notif.isRead
                       ? color.withAlpha(60)
-                      : Theme.of(context).colorScheme.outline.withAlpha(25),
+                      : context.appColors.onSurfaceVariant.withAlpha(25),
               width: !notif.isRead ? 1.5 : 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(!notif.isRead ? 12 : 8),
+                color: context.appColors.onSurface.withAlpha(!notif.isRead ? 12 : 8),
                 blurRadius: 16,
                 offset: const Offset(0, 8),
               ),

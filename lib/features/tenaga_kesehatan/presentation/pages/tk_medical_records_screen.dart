@@ -82,11 +82,11 @@ class _TkMedicalRecordsScreenState extends State<TkMedicalRecordsScreen> {
                     fillColor: AppColors.neutral50,
                     border: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
-                      borderSide: const BorderSide(color: AppColors.neutral200),
+                      borderSide: BorderSide(color: AppColors.neutral200),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
-                      borderSide: const BorderSide(color: AppColors.neutral200),
+                      borderSide: BorderSide(color: AppColors.neutral200),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
@@ -223,7 +223,7 @@ class _TkMedicalRecordsScreenState extends State<TkMedicalRecordsScreen> {
       case 'Perlu Perhatian':
         return context.read<ThemeProvider>().colors.warning;
       case 'Tidak Layak':
-        return Theme.of(context).colorScheme.error;
+        return context.appColors.error;
       default:
         return AppColors.neutral500;
     }

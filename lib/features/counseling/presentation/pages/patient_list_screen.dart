@@ -41,30 +41,30 @@ class _PatientListScreenState extends State<PatientListScreen> {
     {
       'label': 'Semua',
       'icon': Icons.dashboard_rounded,
-      'activeBg': const Color(0xFFF1F5F9),
-      'activeFg': const Color(0xFF0F172A),
-      'activeBorder': const Color(0xFFCBD5E1),
+      'activeBg': AppColors.neutral50,
+      'activeFg': AppColors.neutral900,
+      'activeBorder': AppColors.neutral400,
     },
     {
       'label': 'Aktif',
       'icon': Icons.autorenew_rounded,
-      'activeBg': const Color(0xFFF0FDF4),
-      'activeFg': const Color(0xFF15803D),
-      'activeBorder': const Color(0xFF86EFAC),
+      'activeBg': AppColors.success.withAlpha(15),
+      'activeFg': AppColors.success,
+      'activeBorder': AppColors.success,
     },
     {
       'label': 'Selesai',
       'icon': Icons.task_alt_rounded,
-      'activeBg': const Color(0xFFEFF6FF),
-      'activeFg': const Color(0xFF1D4ED8),
-      'activeBorder': const Color(0xFF93C5FD),
+      'activeBg': AppColors.info.withAlpha(15),
+      'activeFg': AppColors.info,
+      'activeBorder': AppColors.info,
     },
     {
       'label': 'Baru',
       'icon': Icons.fiber_new_rounded,
-      'activeBg': const Color(0xFFFEF3C7),
-      'activeFg': const Color(0xFFB45309),
-      'activeBorder': const Color(0xFFFCD34D),
+      'activeBg': AppColors.warning.withAlpha(15),
+      'activeFg': AppColors.warning,
+      'activeBorder': AppColors.warning,
     },
   ];
 
@@ -248,9 +248,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
   Widget _buildExportButton(CounselingProvider provider) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF2F2),
+        color: AppColors.error.withAlpha(15),
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFFCA5A5)),
+        border: Border.all(color: AppColors.error),
       ),
       child: IconButton(
         onPressed: () async {
@@ -307,7 +307,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
             }
           }
         },
-        icon: const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFFDC2626), size: 20),
+        icon: Icon(Icons.picture_as_pdf_rounded, color: context.appColors.error, size: 20),
         tooltip: 'Ekspor PDF Rekap Pasien',
       ),
     );
@@ -322,7 +322,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.error_outline_rounded, size: 64, color: Colors.red[300]),
+            Icon(Icons.error_outline_rounded, size: 64, color: context.appColors.error),
             const SizedBox(height: AppSpacing.lg),
             Text(
               message,
@@ -503,13 +503,13 @@ class _PatientListScreenState extends State<PatientListScreen> {
               Container(
                 padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16A34A).withAlpha(20),
+                  color: context.appColors.success.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.analytics_rounded,
                   size: 16,
-                  color: Color(0xFF16A34A),
+                  color: context.appColors.success,
                 ),
               ),
               const SizedBox(width: AppSpacing.s10),
@@ -531,8 +531,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
               child: _buildScrollableStatCard(
                 'Total',
                 '$total',
-                const Color(0xFF2563EB),
-                const Color(0xFFEFF6FF),
+                context.appColors.info,
+                AppColors.info.withAlpha(15),
                 Icons.groups_rounded,
                 true,
               ),
@@ -542,8 +542,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
               child: _buildScrollableStatCard(
                 'Aktif',
                 '$aktif',
-                const Color(0xFF16A34A),
-                const Color(0xFFF0FDF4),
+                context.appColors.success,
+                AppColors.success.withAlpha(15),
                 Icons.autorenew_rounded,
                 false,
               ),
@@ -553,8 +553,8 @@ class _PatientListScreenState extends State<PatientListScreen> {
               child: _buildScrollableStatCard(
                 'Baru',
                 '$baru',
-                const Color(0xFFD97706),
-                const Color(0xFFFEF3C7),
+                context.appColors.warning,
+                AppColors.warning.withAlpha(15),
                 Icons.fiber_new_rounded,
                 false,
               ),
@@ -703,10 +703,10 @@ class _PatientListScreenState extends State<PatientListScreen> {
         decoration: BoxDecoration(
           color: context.appColors.surface,
           borderRadius: AppRadius.br14,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: AppColors.neutral300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(8),
+              color: context.appColors.onSurface.withAlpha(8),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -716,7 +716,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Material(
-              color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canPrev ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -729,7 +729,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                       Icon(
                         Icons.chevron_left_rounded,
                         size: 16,
-                        color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Text(
@@ -737,7 +737,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                     ],
@@ -755,14 +755,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E293B),
+                      color: AppColors.neutral800,
                     ),
                   ),
                 ),
               ),
             ),
             Material(
-              color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canNext ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -777,14 +777,14 @@ class _PatientListScreenState extends State<PatientListScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
-                        color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                     ],
                   ),
@@ -946,7 +946,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
         border: Border.all(color: AppColors.neutral500.withAlpha(30)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1166,7 +1166,7 @@ class _PatientDetailsSheet extends StatelessWidget {
             width: 48,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey.withAlpha(50),
+              color: AppColors.neutral500.withAlpha(50),
               borderRadius: AppRadius.radiusMd,
             ),
           ),
@@ -1215,11 +1215,11 @@ class _PatientDetailsSheet extends StatelessWidget {
     final name = patient['name']?.toString() ?? '-';
     final faculty = patient['faculty']?.toString() ?? '';
     final prodi = patient['program_studi']?.toString() ?? '';
-    const colors = [
+    final colors = [
       AppColors.warning,
       AppColors.info,
-      Colors.purple,
-      Colors.teal,
+      AppColors.info,
+      AppColors.success,
     ];
     final color = colors[name.length % colors.length];
 
@@ -1533,10 +1533,10 @@ class _PatientDetailsSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: Colors.grey.withAlpha(20)),
+                  border: Border.all(                  color: AppColors.neutral300.withAlpha(20)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(3),
+                      color: context.appColors.onSurface.withAlpha(3),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -1707,7 +1707,7 @@ class _PatientDetailsSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: context.appColors.onSurface.withAlpha(30),
             blurRadius: 20,
             offset: Offset(0, -5),
           ),
@@ -1737,7 +1737,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                       child: Text(
                         'Kasus/Episode selesai. Mahasiswa harus membuat booking baru untuk memulai sesi konseling baru.',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: const Color(0xFF166534),
+                          color: context.appColors.success,
                         ),
                       ),
                     ),

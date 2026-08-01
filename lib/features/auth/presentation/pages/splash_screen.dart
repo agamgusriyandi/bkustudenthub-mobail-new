@@ -139,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen>
                       borderRadius: BorderRadius.circular(AppRadius.xxl + 8),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: context.appColors.onSurface.withValues(alpha: 0.2),
                           blurRadius: 40,
                           offset: const Offset(0, 20),
                         ),
@@ -176,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen>
                           letterSpacing: 2,
                           shadows: [
                             Shadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: context.appColors.onSurface.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -192,7 +192,7 @@ class _SplashScreenState extends State<SplashScreen>
                           letterSpacing: 1,
                           shadows: [
                             Shadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: context.appColors.onSurface.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -213,9 +213,9 @@ class _SplashScreenState extends State<SplashScreen>
             child: Center(
               child: Column(
                 children: [
-                  const CircularProgressIndicator(
+                  CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(context.appColors.onPrimary),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(

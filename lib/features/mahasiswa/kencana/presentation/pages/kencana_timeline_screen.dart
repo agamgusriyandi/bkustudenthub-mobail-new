@@ -71,7 +71,7 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
                       Text(
                         provider.errorMessage!,
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -101,7 +101,7 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
                       Text(
                         'Timeline belum tersedia.',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -152,12 +152,12 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
               Container(
                 padding: AppSpacing.padding6,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                  color: context.appColors.primary.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(
                   Icons.timeline_rounded,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                   size: 18,
                 ),
               ),
@@ -175,7 +175,7 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
                 '$completed/$total',
                 style: AppTextStyles.titleLg.copyWith(
                   fontWeight: FontWeight.w900,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ),
             ],
@@ -186,9 +186,9 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor:
-                  Theme.of(context).colorScheme.primary.withAlpha(20),
+                  context.appColors.primary.withAlpha(20),
               valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).colorScheme.primary,
+                context.appColors.primary,
               ),
               minHeight: 8,
             ),
@@ -197,7 +197,7 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
           Text(
             '${(progress * 100).toInt()}% selesai',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
         ],
@@ -236,26 +236,26 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
     if (isCompleted) {
       lineColor = AppColors.success;
       nodeColor = AppColors.success;
-      cardBg = const Color(0xFFF0FDF4);
-      borderColor = const Color(0xFF86EFAC);
-      badgeBg = const Color(0xFFDCFCE7);
-      badgeTextColor = const Color(0xFF16A34A);
+      cardBg = context.appColors.successContainer;
+      borderColor = AppColors.success.withAlpha(120);
+      badgeBg = context.appColors.successContainer;
+      badgeTextColor = context.appColors.success;
       badgeText = 'Selesai';
     } else if (isActive) {
-      lineColor = Theme.of(context).colorScheme.primary;
-      nodeColor = Theme.of(context).colorScheme.primary;
-      cardBg = const Color(0xFFEFF6FF);
-      borderColor = const Color(0xFF93C5FD);
-      badgeBg = const Color(0xFFDBEAFE);
-      badgeTextColor = const Color(0xFF1E40AF);
+      lineColor = context.appColors.primary;
+      nodeColor = context.appColors.primary;
+      cardBg = context.appColors.infoContainer;
+      borderColor = AppColors.info.withAlpha(120);
+      badgeBg = context.appColors.infoContainer;
+      badgeTextColor = context.appColors.onInfoContainer;
       badgeText = 'Berlangsung';
     } else {
       lineColor = AppColors.neutral300;
       nodeColor = AppColors.neutral300;
-      cardBg = const Color(0xFFF8FAFC);
-      borderColor = const Color(0xFFE2E8F0);
-      badgeBg = const Color(0xFFF1F5F9);
-      badgeTextColor = const Color(0xFF64748B);
+      cardBg = AppColors.neutral100;
+      borderColor = AppColors.neutral300;
+      badgeBg = AppColors.neutral200;
+      badgeTextColor = AppColors.neutral600;
       badgeText = 'Terkunci';
     }
 
@@ -283,15 +283,15 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
                   ),
                   child: Center(
                     child: isCompleted
-                        ? const Icon(
+                        ? Icon(
                             Icons.check_rounded,
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             size: 20,
                           )
                         : Text(
                             '$number',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.appColors.surface,
                               fontWeight: FontWeight.w900,
                               fontSize: 14,
                             ),
@@ -344,10 +344,10 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
                               fontWeight: FontWeight.w800,
                               fontSize: 15,
                               color: isCompleted
-                                  ? const Color(0xFF15803D)
+                                  ? context.appColors.success
                                   : isActive
-                                      ? const Color(0xFF1D4ED8)
-                                      : const Color(0xFF475569),
+                                      ? context.appColors.info
+                                      : AppColors.neutral700,
                             ),
                           ),
                         ),

@@ -104,7 +104,7 @@ class _ScholarshipProgramDetailScreenState extends State<ScholarshipProgramDetai
                 color: context.appColors.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(8),
+                    color: context.appColors.onSurface.withAlpha(8),
                     blurRadius: 16,
                     offset: const Offset(0, -4),
                   ),

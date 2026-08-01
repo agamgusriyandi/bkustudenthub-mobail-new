@@ -191,7 +191,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           child: Text(
                             'Belum ada riwayat organisasi yang sinkron.',
                             style: AppTextStyles.labelMd.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ),
                         ),
@@ -212,8 +212,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                   ? Icons.groups_rounded
                                   : Icons.diversity_3_rounded,
                               index % 2 == 0
-                                  ? const Color(0xFF2563EB)
-                                  : const Color(0xFF9333EA),
+                                  ? context.appColors.info
+                                  : context.appColors.info,
                             ),
                           ),
                         );
@@ -256,8 +256,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     final isVerified = statusVerifikasi.toLowerCase() == 'terverifikasi';
     final isPending = statusVerifikasi.toLowerCase() == 'pending';
 
-    Color statusBgColor = Colors.grey.withAlpha(20);
-    Color statusTextColor = Theme.of(context).colorScheme.outline;
+    Color statusBgColor = AppColors.neutral500.withAlpha(20);
+    Color statusTextColor = context.appColors.outline;
 
     if (isVerified) {
       statusBgColor = AppColors.success.withAlpha(20);
@@ -307,7 +307,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           type,
                           style: AppTextStyles.labelMd.copyWith(
                             color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                                context.appColors.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
                           ),
@@ -353,7 +353,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         Text(
                           'JABATAN',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontSize: 8,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.5,
@@ -384,7 +384,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         Text(
                           'PERIODE',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontSize: 8,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.5,
@@ -531,7 +531,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               label,
               textAlign: TextAlign.center,
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontSize: 8,
                 fontWeight: FontWeight.bold,
               ),
@@ -543,9 +543,9 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   }
 
   static const List<Color> _tabPillColors = [
-    Color(0xFF2563EB),
-    Color(0xFF059669),
-    Color(0xFF7C3AED),
+    AppColors.info,
+    AppColors.success,
+    AppColors.info,
   ];
 
   Widget _buildTabPill(int index, String label) {
@@ -562,7 +562,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
         decoration: BoxDecoration(
-          color: isActive ? activeColor : const Color(0xFFF1F5F9),
+          color: isActive ? activeColor : AppColors.neutral200,
           borderRadius: AppRadius.br20,
           boxShadow: isActive
               ? [
@@ -577,7 +577,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         child: Text(
           label,
           style: TextStyle(
-            color: isActive ? Colors.white : const Color(0xFF64748B),
+            color: isActive ? context.appColors.surface : AppColors.neutral600,
             fontWeight: FontWeight.w700,
             fontSize: 12,
           ),
@@ -709,8 +709,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.appColors.primary,
+                      foregroundColor: context.appColors.surface,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppRadius.radiusMd,
                       ),
@@ -896,8 +896,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         onPressed: () => _showPaymentSheet(context, id, iuran),
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor: Colors.white,
+                              context.appColors.primary,
+                          foregroundColor: context.appColors.surface,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.radiusMd,
                           ),
@@ -1035,8 +1035,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       icon: const Icon(Icons.upload_file_rounded),
                       label: const Text('Pilih Bukti Pembayaran & Kirim'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.appColors.primary,
+                        foregroundColor: context.appColors.surface,
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.radiusLg,
                         ),
@@ -1083,7 +1083,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   }
 
   Widget _buildAddButton(BuildContext context) {
-    const accentColor = Color(0xFF1E293B);
+    const accentColor = AppColors.neutral800;
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -1096,7 +1096,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
+          color: AppColors.neutral200,
           borderRadius: AppRadius.br20,
         ),
         child: const Column(
@@ -1157,7 +1157,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                   height: 4,
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                        AppThemeColors.surfaceContainerHighest,
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
@@ -1232,7 +1232,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                             ? description
                             : 'Tidak ada deskripsi kontribusi.',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: context.appColors.onSurfaceVariant,
                           height: 1.5,
                         ),
                       ),
@@ -1413,7 +1413,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 errorWidget:
                                     (ctx, err, stack) => Container(
                                       height: 100,
-                                      color: Colors.grey.shade100,
+                                      color: AppColors.neutral100,
                                       child: const Center(
                                         child: Icon(Icons.broken_image_rounded),
                                       ),
@@ -1426,22 +1426,22 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(AppSpacing.xl),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
+                            color: AppColors.neutral50,
                             borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(color: AppColors.neutral200),
                           ),
                           child: Column(
                             children: [
                               Icon(
                                 Icons.photo_library_rounded,
                                 size: 40,
-                                color: Colors.grey.shade300,
+                                color: AppColors.neutral300,
                               ),
                               const SizedBox(height: AppSpacing.md),
                               Text(
                                 'Belum ada dokumentasi',
                                 style: TextStyle(
-                                  color: Colors.grey.shade500,
+                                  color: AppColors.neutral500,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -1608,7 +1608,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               Text(
                 label,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
                 ),

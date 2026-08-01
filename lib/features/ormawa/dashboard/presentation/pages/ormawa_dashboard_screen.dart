@@ -56,7 +56,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
         onRefresh: () async {
           await context.read<OrmawaProvider>().refreshData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         backgroundColor: context.appColors.surface,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -206,12 +206,12 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(15),
+              color: context.appColors.primary.withAlpha(15),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.event_outlined,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
               size: 22,
             ),
           ),
@@ -232,7 +232,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                 Text(
                   '${DateFormat('dd MMM', 'id').format(agenda.date)} â€¢ ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.appColors.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -244,7 +244,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               vertical: 6,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(15),
+              color: context.appColors.primary.withAlpha(15),
               borderRadius: AppRadius.radiusXl,
             ),
             child: Text(
@@ -270,14 +270,14 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
         children: [
           Icon(
             Icons.event_note_rounded,
-            color: Theme.of(context).colorScheme.outlineVariant,
+            color: context.appColors.outlineVariant,
             size: 40,
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
             style: AppTextStyles.bodyMd.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: context.appColors.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),

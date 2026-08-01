@@ -216,7 +216,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                             child: Icon(
                               Icons.people_alt_outlined,
                               size: 80,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xl),
@@ -366,7 +366,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
         ],
         FloatingActionButton.extended(
           onPressed: _toggleFab,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: context.appColors.primary,
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
             progress: _animationController,
@@ -403,7 +403,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
               borderRadius: AppRadius.radiusSm,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: context.appColors.onSurface.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -462,7 +462,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                               : FontWeight.normal,
                       color:
                           _selectedStatusFilter == status
-                              ? Theme.of(context).colorScheme.primary
+                              ? context.appColors.primary
                               : AppColors.neutral900,
                     ),
                   ),
@@ -470,7 +470,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
                       _selectedStatusFilter == status
                           ? Icon(
                             Icons.check_circle_rounded,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                           )
                           : Icon(
                             Icons.circle_outlined,
@@ -598,7 +598,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                   colors:
                       _isOpenRecruitment
                           ? [
-                            Theme.of(context).colorScheme.primary,
+                            context.appColors.primary,
                             Theme.of(
                               context,
                             ).colorScheme.primary.withValues(alpha: 0.8),
@@ -659,7 +659,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     onChanged:
                         (value) => setState(() => _isOpenRecruitment = value),
                     activeThumbColor: context.appColors.onPrimary,
-                    activeTrackColor: Colors.greenAccent.shade400,
+                    activeTrackColor: context.appColors.success,
                     inactiveThumbColor: AppColors.neutral400,
                     inactiveTrackColor: AppColors.neutral300,
                   ),
@@ -751,14 +751,14 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                           borderRadius: AppRadius.radiusMd,
                         ),
                         child: Text(
                           _minIpk.toStringAsFixed(2),
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         ),
                       ),
@@ -767,11 +767,11 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                   const SizedBox(height: AppSpacing.sm),
                   SliderTheme(
                     data: SliderThemeData(
-                      activeTrackColor: Theme.of(context).colorScheme.primary,
+                      activeTrackColor: context.appColors.primary,
                       inactiveTrackColor: Theme.of(
                         context,
                       ).colorScheme.primary.withValues(alpha: 0.3),
-                      thumbColor: Theme.of(context).colorScheme.primary,
+                      thumbColor: context.appColors.primary,
                       overlayColor: Theme.of(
                         context,
                       ).colorScheme.primary.withValues(alpha: 0.3),
@@ -866,12 +866,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
 
                 child:
                     _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                           height: 24,
                           width: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 3,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                           ),
                         )
                         : Row(
@@ -1144,7 +1144,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                           : type == 'Pilihan Ganda'
                           ? Icons.check_box_rounded
                           : Icons.upload_file_rounded,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       size: 20,
                     ),
                   ),
@@ -1253,7 +1253,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.02),
+                        color: context.appColors.onSurface.withValues(alpha: 0.02),
                         blurRadius: 10,
                         offset: const Offset(0, -5),
                       ),
@@ -1267,12 +1267,12 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
 
                       child:
                           _isLoading
-                              ? const SizedBox(
+                              ? SizedBox(
                                 height: 24,
                                 width: 24,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 3,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 ),
                               )
                               : Row(
@@ -1299,7 +1299,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
             bottom: _fields.isEmpty ? 20 : 100,
             child: FloatingActionButton(
               heroTag: 'add_field_fab',
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: context.appColors.primary,
               foregroundColor: context.appColors.onPrimary,
               elevation: 4,
               onPressed: _showAddFieldSheet,
@@ -1317,7 +1317,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          color: context.appColors.outline.withValues(alpha: 0.5),
         ),
         boxShadow: [
           BoxShadow(
@@ -1363,7 +1363,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                   child: Text(
                     'Field ${index + 1}',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1451,7 +1451,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                       onChanged: (val) {
                         setState(() => field.required = val);
                       },
-                      activeThumbColor: Theme.of(context).colorScheme.primary,
+                      activeThumbColor: context.appColors.primary,
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
@@ -1508,21 +1508,21 @@ class RecruitmentApplicantCard extends StatelessWidget {
       case 'diterima':
         statusText = 'Diterima';
         badgeColor = AppColors.success.withAlpha(20);
-        textColor = const Color(0xFF15803D);
+        textColor = AppColors.onSuccessContainer;
         break;
       case 'tidak_aktif':
       case 'rejected':
       case 'ditolak':
         statusText = 'Ditolak';
         badgeColor = AppColors.error.withAlpha(20);
-        textColor = const Color(0xFFB91C1C);
+        textColor = AppColors.onDangerContainer;
         break;
       case 'pending':
       case 'menunggu':
       default:
         statusText = 'Menunggu';
         badgeColor = AppColors.warning.withAlpha(20);
-        textColor = const Color(0xFFC2410C);
+        textColor = AppColors.onWarningContainer;
         break;
     }
 
@@ -1554,7 +1554,7 @@ class RecruitmentApplicantCard extends StatelessWidget {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withAlpha(50),
+          color: context.appColors.outline.withAlpha(50),
         ),
         boxShadow: [
           BoxShadow(
@@ -1579,8 +1579,8 @@ class RecruitmentApplicantCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.primary.withAlpha(150),
+                        context.appColors.primary,
+                        context.appColors.primary.withAlpha(150),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -1793,8 +1793,8 @@ class RecruitmentHistoryCard extends StatelessWidget {
                 gradient: LinearGradient(
                   colors:
                       isAccepted
-                          ? [AppColors.success, Colors.greenAccent.shade700]
-                          : [AppColors.error, Colors.redAccent.shade400],
+                          ? [AppColors.success, context.appColors.success]
+                          : [AppColors.error, context.appColors.error],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -1862,8 +1862,8 @@ class RecruitmentHistoryCard extends StatelessWidget {
                 style: AppTextStyles.labelSm.copyWith(
                   color:
                       isAccepted
-                          ? const Color(0xFF15803D)
-                          : const Color(0xFFB91C1C),
+                          ? AppColors.onSuccessContainer
+                          : AppColors.onDangerContainer,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1941,7 +1941,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Theme.of(context).colorScheme.primary,
+                                  context.appColors.primary,
                                   Theme.of(
                                     context,
                                   ).colorScheme.primary.withAlpha(150),
@@ -2458,7 +2458,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                       color: context.appColors.surface,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(10),
+                          color: context.appColors.onSurface.withAlpha(10),
                           blurRadius: 20,
                           offset: const Offset(0, -10),
                         ),
@@ -2525,21 +2525,21 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
       case 'diterima':
         statusText = 'Diterima';
         badgeColor = AppColors.success.withAlpha(20);
-        textColor = const Color(0xFF15803D);
+        textColor = AppColors.onSuccessContainer;
         break;
       case 'tidak_aktif':
       case 'rejected':
       case 'ditolak':
         statusText = 'Ditolak';
         badgeColor = AppColors.error.withAlpha(20);
-        textColor = const Color(0xFFB91C1C);
+        textColor = AppColors.onDangerContainer;
         break;
       case 'pending':
       case 'menunggu':
       default:
         statusText = 'Menunggu';
         badgeColor = AppColors.warning.withAlpha(20);
-        textColor = const Color(0xFFC2410C);
+        textColor = AppColors.onWarningContainer;
         break;
     }
 
@@ -2579,10 +2579,10 @@ class RecruitmentInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(10),
+        color: context.appColors.primary.withAlpha(10),
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withAlpha(30),
+          color: context.appColors.primary.withAlpha(30),
         ),
       ),
       child: Column(
@@ -2591,7 +2591,7 @@ class RecruitmentInfoCard extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
               fontWeight: FontWeight.bold,
             ),
           ),

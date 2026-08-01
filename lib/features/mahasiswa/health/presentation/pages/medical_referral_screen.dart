@@ -32,7 +32,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
         onRefresh: () async {
           await student.refreshHealthData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -223,9 +223,9 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                 }
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFFDC2626),
-                side: const BorderSide(color: Color(0xFFFCA5A5)),
-                backgroundColor: const Color(0xFFFEF2F2),
+                foregroundColor: context.appColors.error,
+                side: BorderSide(color: context.appColors.error),
+                backgroundColor: context.appColors.errorContainer,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: AppRadius.br10,

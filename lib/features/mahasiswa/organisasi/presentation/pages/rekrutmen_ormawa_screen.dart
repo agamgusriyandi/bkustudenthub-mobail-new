@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/daftar_ormawa_screen.dart';
@@ -51,7 +52,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
     final student = context.watch<StudentProvider>();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Rekrutmen Ormawa',
         variant: AppBarVariant.student,
@@ -201,15 +202,15 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
             if (minIpk > 0) ...[
               Row(
                 children: [
-                  Icon(Icons.star_rounded, size: 16, color: Colors.amber[700]),
+                  Icon(Icons.star_rounded, size: 16, color: AppColors.warning),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Syarat IPK: ${minIpk.toStringAsFixed(2)}',
                     style: AppTextStyles.labelSm.copyWith(
                       color:
                           student.ipk < minIpk && !isNewStudent
-                              ? Colors.red[700]
-                              : Colors.green[700],
+                              ? AppColors.danger
+                              : AppColors.success,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

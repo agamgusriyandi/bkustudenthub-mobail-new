@@ -1,6 +1,7 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -78,7 +79,7 @@ class _MentorAbsenceRequestsScreenState
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchAbsenceRequests(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -99,7 +100,7 @@ class _MentorAbsenceRequestsScreenState
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -110,7 +111,7 @@ class _MentorAbsenceRequestsScreenState
                   child: Text(
                     'Tidak ada permohonan izin.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -181,7 +182,7 @@ class _MentorAbsenceRequestsScreenState
                           Text(
                             req.nim,
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
@@ -195,7 +196,7 @@ class _MentorAbsenceRequestsScreenState
                           Text(
                             'Tanggal: ${req.date}',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.s10),
@@ -207,15 +208,13 @@ class _MentorAbsenceRequestsScreenState
                               borderRadius: AppRadius.radiusMd,
                               border: Border.all(
                                 color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
+                                    AppThemeColors.surfaceContainerHighest,
                               ),
                             ),
                             child: Text(
                               req.reason,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Colors.black87,
+                                color: context.appColors.onSurface,
                               ),
                             ),
                           ),

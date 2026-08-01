@@ -43,7 +43,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentorGroupDetail(widget.groupId),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -63,7 +63,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                   child: Text(
                     'Detail grup tidak tersedia.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -126,9 +126,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                       Text(
                                         '${detail.members.length} Anggota',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.outline,
+                                          color: context.appColors.outline,
                                         ),
                                       ),
                                     ],
@@ -220,7 +218,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                         subtitle: Text(
                           '${member.nim} \u2022 ${member.faculty}',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
                         ),
                         trailing: Container(

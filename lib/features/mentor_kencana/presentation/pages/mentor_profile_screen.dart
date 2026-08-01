@@ -29,7 +29,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
   }
 
   Future<void> _pickAvatar(BuildContext context) async {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final primaryColor = context.appColors.primary;
     final result = await ImagePicker().pickImage(
       source: ImageSource.gallery,
       maxWidth: 1000,
@@ -44,7 +44,8 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
           AndroidUiSettings(
             toolbarTitle: 'Potong Foto',
             toolbarColor: primaryColor,
-            toolbarWidgetColor: Colors.white,
+            // ignore: use_build_context_synchronously
+            toolbarWidgetColor: context.appColors.surface,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
           ),
@@ -149,7 +150,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
             setState(() {});
           }
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -219,7 +220,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           'Ubah Password',
                           'Ganti kata sandi akun Anda',
                           Icons.lock_outline_rounded,
-                          Colors.redAccent,
+                           context.appColors.error,
                           () => showChangePasswordDialog(context),
                         ),
                       ]),
@@ -246,7 +247,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
     String username,
     String fotoUrl,
   ) {
-    final theme = Theme.of(context).colorScheme;
+    final theme = context.appColors;
 
     return Container(
       decoration: BoxDecoration(
@@ -255,7 +256,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
         border: Border.all(color: theme.outline.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: context.appColors.onSurface.withValues(alpha: 0.03),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -328,19 +329,19 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                       decoration: BoxDecoration(
                         color: context.appColors.surface,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black12, width: 1),
+                        border: Border.all(color: AppColors.neutral300, width: 1),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
+                            color: context.appColors.onSurface.withValues(alpha: 0.1),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.edit_rounded,
                         size: 12,
-                        color: Colors.black87,
+                        color: context.appColors.onSurface,
                       ),
                     ),
                   ),
@@ -354,8 +355,8 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: context.appColors.onSurface,
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
                     ),
@@ -363,10 +364,10 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacing.s2),
-                  const Text(
+                  Text(
                     'BKU HUB MEMBER',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: context.appColors.onSurface,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -384,7 +385,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.surfaceContainerHighest.withValues(
+                          color: AppThemeColors.surfaceContainerHighest.withValues(
                             alpha: 0.5,
                           ),
                           borderRadius: AppRadius.radiusMd,
@@ -395,19 +396,18 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.badge_rounded,
-                              color: Colors.black87,
+                              color: context.appColors.onSurface,
                               size: 12,
                             ),
                             const SizedBox(width: AppSpacing.s6),
                             Text(
                               'ID: $username',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
+                              style: TextStyle(
+                                color: context.appColors.onSurface,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
@@ -482,7 +482,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
             border: Border.all(color: AppColors.neutral300.withAlpha(30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(4),
+                color: context.appColors.onSurface.withAlpha(4),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -545,14 +545,14 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
         subtitle: Text(
           subtitle,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
         trailing:
             onTap != null
                 ? Icon(
                   Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                 )
                 : null,
       ),

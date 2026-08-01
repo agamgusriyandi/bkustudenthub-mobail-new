@@ -72,7 +72,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                       Text(
                         provider.errorMessage!,
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -102,7 +102,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                       Text(
                         'Tidak ada tugas remedial.',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -110,7 +110,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                       Text(
                         'Kamu tidak memiliki tugas remedial saat ini.',
                         style: AppTextStyles.bodySm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                       ),
                     ],
@@ -450,7 +450,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                 decoration: InputDecoration(
                   hintText: 'Tulis jawaban atau penjelasan...',
                   hintStyle: AppTextStyles.bodySm.copyWith(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+                    color: context.appColors.outlineVariant,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.radiusMd,
@@ -464,7 +464,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                 decoration: InputDecoration(
                   hintText: 'Link Google Drive (opsional)',
                   hintStyle: AppTextStyles.bodySm.copyWith(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+                    color: context.appColors.outlineVariant,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.radiusMd,
@@ -524,7 +524,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
       case 'psychomotor':
         return AppColors.warning;
       case 'affective':
-        return Colors.pinkAccent;
+        return context.appColors.error;
       default:
         return AppColors.neutral600;
     }

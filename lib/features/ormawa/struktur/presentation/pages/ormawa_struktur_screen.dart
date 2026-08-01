@@ -229,7 +229,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       onPressed: () {
         context.push(AppRoutes.ormawaStrukturManage);
       },
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: context.appColors.primary,
       elevation: 8,
       icon: Icon(Icons.auto_fix_high_rounded, color: context.appColors.onPrimary),
       label: Text(
@@ -254,7 +254,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
           border: Border.all(color: context.appColors.onPrimary.withAlpha(50), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withAlpha(12),
+              color: context.appColors.primary.withAlpha(12),
               blurRadius: 40,
               offset: const Offset(0, 10),
             ),
@@ -267,8 +267,8 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Theme.of(context).colorScheme.primary.withAlpha(30),
-                    Theme.of(context).colorScheme.primary.withAlpha(10),
+                    context.appColors.primary.withAlpha(30),
+                    context.appColors.primary.withAlpha(10),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -277,7 +277,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               ),
               child: Icon(
                 Icons.account_tree_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 size: 32,
               ),
             ),
@@ -334,7 +334,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 width: 4,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: context.appColors.secondary,
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
@@ -342,7 +342,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               Text(
                 title,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: const Color(0xFF334155),
+                  color: AppColors.neutral800,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.5,
                   fontSize: 11,
@@ -388,7 +388,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(15),
+                  color: context.appColors.primary.withAlpha(15),
                   shape: BoxShape.circle,
                   image:
                       member.fotoUrl != null && member.fotoUrl!.isNotEmpty
@@ -404,7 +404,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     member.fotoUrl == null || member.fotoUrl!.isEmpty
                         ? Icon(
                           icon,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                           size: 24,
                         )
                         : null,
@@ -442,16 +442,16 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(15),
+                  color: context.appColors.primary.withAlpha(15),
                   borderRadius: AppRadius.radiusSm,
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(30),
+                    color: context.appColors.primary.withAlpha(30),
                   ),
                 ),
                 child: Text(
                   'BPH',
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     fontSize: 9,
                     fontWeight: FontWeight.w900,
                   ),
@@ -499,7 +499,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(15),
+                  color: context.appColors.primary.withAlpha(15),
                   shape: BoxShape.circle,
                   image:
                       member.fotoUrl != null && member.fotoUrl!.isNotEmpty
@@ -515,7 +515,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     member.fotoUrl == null || member.fotoUrl!.isEmpty
                         ? Icon(
                           icon,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                           size: 24,
                         )
                         : null,
@@ -592,7 +592,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   width: 4,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
@@ -657,7 +657,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       isHead
                           ? LinearGradient(
                             colors: [
-                              Theme.of(context).colorScheme.primary,
+                              context.appColors.primary,
                               Theme.of(
                                 context,
                               ).colorScheme.primary.withAlpha(200),
@@ -697,7 +697,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                               color:
                                   isHead
                                       ? context.appColors.onPrimary
-                                      : Theme.of(context).colorScheme.primary,
+                                      : context.appColors.primary,
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
                             ),
@@ -724,7 +724,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       style: AppTextStyles.labelSm.copyWith(
                         color:
                             isHead
-                                ? Theme.of(context).colorScheme.primary
+                                ? context.appColors.primary
                                 : AppColors.neutral500,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,

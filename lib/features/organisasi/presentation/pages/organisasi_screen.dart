@@ -364,8 +364,8 @@ class OrganisasiScreen extends StatelessWidget {
                                     ? Icons.groups_rounded
                                     : Icons.diversity_3_rounded,
                                 isBEM
-                                    ? const Color(0xFF2563EB)
-                                    : const Color(0xFF9333EA),
+                                    ? context.appColors.info
+                                    : context.appColors.info,
                               ),
                             );
                           },
@@ -475,7 +475,7 @@ class OrganisasiScreen extends StatelessWidget {
         border: Border.all(color: AppColors.surfaceVariant, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -670,7 +670,7 @@ class OrganisasiScreen extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(10),
+                color: context.appColors.onSurface.withAlpha(10),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -682,7 +682,7 @@ class OrganisasiScreen extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withAlpha(180)],
+                colors: [Colors.transparent, context.appColors.onSurface.withAlpha(180)],
               ),
             ),
             padding: const EdgeInsets.all(AppSpacing.lg),

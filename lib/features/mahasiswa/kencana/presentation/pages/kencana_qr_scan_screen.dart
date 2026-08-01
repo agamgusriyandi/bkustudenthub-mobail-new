@@ -1,7 +1,8 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -135,7 +136,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.appColors.onSurface,
       body: Stack(
         children: [
           // Camera Preview
@@ -143,7 +144,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
 
           // Overlay
           Container(
-            decoration: BoxDecoration(color: Colors.black.withAlpha(150)),
+            decoration: BoxDecoration(color: context.appColors.onSurface.withAlpha(150)),
           ),
 
           // Scan Area
@@ -156,10 +157,10 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                   height: 280 + _animation.value * 2,
                   decoration: BoxDecoration(
                     borderRadius: AppRadius.radiusXl,
-                    border: Border.all(color: Colors.white, width: 3),
+                    border: Border.all(color: context.appColors.surface, width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withAlpha(80),
+                        color: context.appColors.surface.withAlpha(80),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -188,7 +189,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
                            child: Icon(
@@ -212,7 +213,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                             Text(
                               'Arahkan kamera ke QR Code Sesi Kencana',
                               style: AppTextStyles.bodySm.copyWith(
-                                color: Colors.white70,
+                                color: AppColors.neutral700,
                               ),
                             ),
                           ],
@@ -223,7 +224,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
                            child: Icon(
@@ -247,7 +248,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
             child: Column(
               children: [
                 if (_isProcessing) ...[
-                  const CircularProgressIndicator(color: Colors.white),
+    CircularProgressIndicator(color: context.appColors.surface),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Memproses data...',
@@ -260,7 +261,7 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(30),
+                      color: context.appColors.surface.withAlpha(30),
                       borderRadius: AppRadius.radiusXl,
                     ),
                     child: Row(

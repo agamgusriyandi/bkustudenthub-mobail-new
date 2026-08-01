@@ -81,11 +81,11 @@ class _TkAllSchedulesScreenState extends State<TkAllSchedulesScreen> {
                     fillColor: AppColors.neutral50,
                     border: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
-                      borderSide: const BorderSide(color: AppColors.neutral200),
+                      borderSide: BorderSide(color: AppColors.neutral200),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
-                      borderSide: const BorderSide(color: AppColors.neutral200),
+                      borderSide: BorderSide(color: AppColors.neutral200),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusMd,
@@ -183,13 +183,13 @@ class _TkAllSchedulesScreenState extends State<TkAllSchedulesScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isFull ? Theme.of(context).colorScheme.error.withAlpha(20) : context.read<ThemeProvider>().colors.success.withAlpha(20),
+                  color: isFull ? context.appColors.error.withAlpha(20) : context.read<ThemeProvider>().colors.success.withAlpha(20),
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
                   isFull ? 'PENUH' : '$slotsAvailable SLOT',
                   style: AppTextStyles.labelSm.copyWith(
-                    color: isFull ? Theme.of(context).colorScheme.error : context.read<ThemeProvider>().colors.success,
+                    color: isFull ? context.appColors.error : context.read<ThemeProvider>().colors.success,
                     fontWeight: FontWeight.w900,
                     fontSize: 10,
                   ),

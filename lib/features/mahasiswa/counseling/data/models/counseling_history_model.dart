@@ -5,6 +5,7 @@ enum CounselingType { individu, kelompok }
 class CounselingHistoryModel {
   final int id;
   final String psychologistName;
+  final String psychologistSpecialization;
   final String psychologistPhoto;
   final DateTime date;
   final String time;
@@ -18,6 +19,7 @@ class CounselingHistoryModel {
   const CounselingHistoryModel({
     required this.id,
     required this.psychologistName,
+    required this.psychologistSpecialization,
     required this.psychologistPhoto,
     required this.date,
     required this.time,
@@ -33,6 +35,7 @@ class CounselingHistoryModel {
     return CounselingHistoryModel(
       id: json['id'] ?? 0,
       psychologistName: json['psychologist_name'] ?? '',
+      psychologistSpecialization: json['psychologist_specialization'] ?? '',
       psychologistPhoto: json['psychologist_photo'] ?? '',
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
       time: json['time'] ?? '',

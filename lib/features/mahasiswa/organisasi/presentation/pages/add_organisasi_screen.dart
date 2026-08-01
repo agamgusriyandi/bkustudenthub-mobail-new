@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -122,7 +123,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               isSuccess: true,
               cancelText: '',
               confirmText: 'Kembali',
-              confirmColor: const Color(0xFF10B981),
+              confirmColor: context.appColors.success,
               onCancel: () {},
               onConfirm: () {
                 Navigator.pop(context);
@@ -162,16 +163,16 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF334155),
+                  color: AppColors.neutral700,
                 ),
               ),
               if (isRequired)
-                const Text(
+    Text(
                   ' *',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFEF4444),
+                    color: context.appColors.error,
                   ),
                 ),
             ],
@@ -185,22 +186,22 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0F172A),
+              color: AppColors.neutral900,
             ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: const TextStyle(
-                color: Color(0xFF94A3B8),
+                color: AppColors.neutral500,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
               filled: true,
-              fillColor: const Color(0xFFF8FAFC),
+              fillColor: AppColors.neutral100,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
-              prefixIcon: Icon(icon, size: 19, color: const Color(0xFF64748B)),
+              prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
@@ -212,17 +213,17 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(
-                  color: Color(0xFF334155),
+                  color: AppColors.neutral700,
                   width: 1.8,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(color: Color(0xFFFCA5A5)),
+                borderSide: BorderSide(color: context.appColors.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.8),
+                borderSide: BorderSide(color: context.appColors.error, width: 1.8),
               ),
             ),
           ),
@@ -251,16 +252,16 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF334155),
+                  color: AppColors.neutral700,
                 ),
               ),
               if (isRequired)
-                const Text(
+    Text(
                   ' *',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFEF4444),
+                    color: context.appColors.error,
                   ),
                 ),
             ],
@@ -278,7 +279,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF0F172A),
+                            color: AppColors.neutral900,
                           ),
                         ),
                       ),
@@ -287,12 +288,12 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             onChanged: onChanged,
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFF8FAFC),
+              fillColor: AppColors.neutral100,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
-              prefixIcon: Icon(icon, size: 19, color: const Color(0xFF64748B)),
+              prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
                 borderSide: BorderSide.none,
@@ -304,7 +305,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
                 borderSide: const BorderSide(
-                  color: Color(0xFF334155),
+                  color: AppColors.neutral700,
                   width: 1.8,
                 ),
               ),
@@ -329,7 +330,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
         borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 18,
             offset: const Offset(0, 5),
           ),
@@ -354,7 +355,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.neutral900,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -370,7 +371,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
         title: 'Laporkan Keaktifan Organisasi',
         variant: AppBarVariant.student,
@@ -386,7 +387,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Informasi Organisasi',
                 Icons.business_rounded,
-                const Color(0xFF2563EB),
+                context.appColors.info,
                 [
                   _buildField(
                     controller: _namaController,
@@ -430,7 +431,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Periode Jabatan',
                 Icons.date_range_rounded,
-                const Color(0xFF0D9488),
+                context.appColors.info,
                 [
                   Row(
                     children: [
@@ -481,7 +482,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Detail Kegiatan',
                 Icons.assignment_outlined,
-                const Color(0xFFE11D48),
+                context.appColors.error,
                 [
                   _buildField(
                     controller: _deskripsiController,
@@ -500,20 +501,20 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.sm),
+    SizedBox(height: AppSpacing.sm),
               Container(
                 height: 52,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: AppRadius.radiusLg,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF10B981), Color(0xFF059669)],
+                  gradient: LinearGradient(
+                    colors: [context.appColors.success, context.appColors.success],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF10B981).withAlpha(40),
+                      color: context.appColors.success.withAlpha(40),
                       blurRadius: 14,
                       offset: const Offset(0, 5),
                     ),
@@ -530,11 +531,11 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                     ),
                   ),
                   child: _isSubmitting
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             strokeWidth: 2.5,
                           ),
                         )

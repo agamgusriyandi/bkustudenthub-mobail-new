@@ -71,7 +71,7 @@ class InsuranceTrackerCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              _buildStatusBadge(status),
+              _buildStatusBadge(context, status),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -94,6 +94,7 @@ class InsuranceTrackerCard extends StatelessWidget {
           Row(
             children: [
               _buildStepNode(
+                context: context,
                 step: 1,
                 activeStep: currentStep,
                 label: 'Diajukan',
@@ -101,6 +102,7 @@ class InsuranceTrackerCard extends StatelessWidget {
               ),
               _buildStepLine(active: currentStep >= 2),
               _buildStepNode(
+                context: context,
                 step: 2,
                 activeStep: currentStep,
                 label: 'Verifikasi TK',
@@ -108,6 +110,7 @@ class InsuranceTrackerCard extends StatelessWidget {
               ),
               _buildStepLine(active: currentStep >= 3 && !isRejected),
               _buildStepNode(
+                context: context,
                 step: 3,
                 activeStep: currentStep,
                 label: isRejected ? 'Ditolak' : 'Selesai',
@@ -145,26 +148,26 @@ class InsuranceTrackerCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(String status) {
+  Widget _buildStatusBadge(BuildContext context, String status) {
     Color bg = AppColors.neutral100;
     Color text = AppColors.neutral600;
     String label = 'Diajukan';
 
     if (status == 'PENDING_VERIFICATION') {
-      bg = Colors.amber.shade50;
-      text = Colors.amber.shade800;
+      bg = context.appColors.warningContainer;
+      text = context.appColors.warning;
       label = 'Proses Awal';
     } else if (status == 'APPROVED_TK') {
-      bg = Colors.blue.shade50;
-      text = Colors.blue.shade800;
+      bg = context.appColors.infoContainer;
+      text = context.appColors.info;
       label = 'Verifikasi TK';
     } else if (status == 'APPROVED_FINAL' || status == 'FINAL') {
-      bg = Colors.green.shade50;
-      text = Colors.green.shade800;
+      bg = context.appColors.successContainer;
+      text = context.appColors.success;
       label = 'Disetujui';
     } else if (status == 'REJECTED') {
-      bg = Colors.red.shade50;
-      text = Colors.red.shade800;
+      bg = context.appColors.errorContainer;
+      text = context.appColors.error;
       label = 'Ditolak';
     }
 
@@ -189,6 +192,7 @@ class InsuranceTrackerCard extends StatelessWidget {
   }
 
   Widget _buildStepNode({
+    required BuildContext context,
     required int step,
     required int activeStep,
     required String label,
@@ -200,25 +204,25 @@ class InsuranceTrackerCard extends StatelessWidget {
     Color nodeColor = AppColors.neutral300;
     Widget icon = Text(
       '$step',
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: context.appColors.surface,
       ),
     );
 
     if (isRejected && step == 3) {
       nodeColor = AppColors.danger;
-      icon = const Icon(
+      icon = Icon(
         Icons.close_rounded,
-        color: Colors.white,
+        color: context.appColors.surface,
         size: 12,
       );
     } else if (isCompleted) {
       nodeColor = AppColors.success;
-      icon = const Icon(
+      icon = Icon(
         Icons.check_rounded,
-        color: Colors.white,
+        color: context.appColors.surface,
         size: 12,
       );
     } else if (isActive) {

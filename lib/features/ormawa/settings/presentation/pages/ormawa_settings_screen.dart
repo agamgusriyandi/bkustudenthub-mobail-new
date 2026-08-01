@@ -177,7 +177,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -215,10 +215,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.error.withAlpha(10),
+          color: context.appColors.error.withAlpha(10),
           borderRadius: AppRadius.radiusXl,
           border: Border.all(
-            color: Theme.of(context).colorScheme.error.withAlpha(50),
+            color: context.appColors.error.withAlpha(50),
           ),
         ),
         child: Material(
@@ -227,31 +227,31 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
             leading: Container(
               padding: AppSpacing.padding9,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.error.withAlpha(20),
+                color: context.appColors.error.withAlpha(20),
                 borderRadius: AppRadius.radiusMd,
               ),
               child: Icon(
                 Icons.logout_rounded,
-                color: Theme.of(context).colorScheme.error,
+                color: context.appColors.error,
                 size: 20,
               ),
             ),
             title: Text(
               'Keluar Portal',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.error,
+                color: context.appColors.error,
                 fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(
               'Anda akan keluar dari sesi administrasi',
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.error.withAlpha(150),
+                color: context.appColors.error.withAlpha(150),
               ),
             ),
             trailing: Icon(
               Icons.chevron_right_rounded,
-              color: Theme.of(context).colorScheme.error,
+              color: context.appColors.error,
             ),
             onTap: () => _showLogoutDialog(),
           ),
@@ -272,12 +272,12 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.errorContainer,
+                    color: context.appColors.errorContainer,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.logout_rounded,
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.appColors.error,
                     size: 36,
                   ),
                 ),
@@ -293,7 +293,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                   'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.appColors.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
@@ -307,7 +307,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                         child: Text(
                           'Batal',
                           style: AppTextStyles.labelLg.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                       ),
@@ -323,7 +323,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          backgroundColor: context.appColors.error,
                           foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(

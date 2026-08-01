@@ -31,34 +31,34 @@ class TkBookingScreen extends StatefulWidget {
 class _TkBookingScreenState extends State<TkBookingScreen> {
   int _selectedTabIndex = 0;
 
-  final List<Map<String, dynamic>> _tabs = [
+  List<Map<String, dynamic>> _buildTabs() => [
     {
       'label': 'Menunggu',
       'icon': Icons.hourglass_empty_rounded,
-      'activeBg': const Color(0xFFFEF3C7),
-      'activeFg': const Color(0xFFB45309),
-      'activeBorder': const Color(0xFFFCD34D),
+      'activeBg': context.appColors.warning.withAlpha(15),
+      'activeFg': context.appColors.warning,
+      'activeBorder': context.appColors.warning.withAlpha(50),
     },
     {
       'label': 'Dikonfirmasi',
       'icon': Icons.check_circle_outline_rounded,
-      'activeBg': const Color(0xFFEFF6FF),
-      'activeFg': const Color(0xFF1D4ED8),
-      'activeBorder': const Color(0xFF93C5FD),
+      'activeBg': context.appColors.info.withAlpha(15),
+      'activeFg': context.appColors.info,
+      'activeBorder': context.appColors.info.withAlpha(50),
     },
     {
       'label': 'Selesai',
       'icon': Icons.task_alt_rounded,
-      'activeBg': const Color(0xFFF0FDF4),
-      'activeFg': const Color(0xFF15803D),
-      'activeBorder': const Color(0xFF86EFAC),
+      'activeBg': context.appColors.success.withAlpha(15),
+      'activeFg': context.appColors.success,
+      'activeBorder': context.appColors.success.withAlpha(50),
     },
     {
       'label': 'Ditolak',
       'icon': Icons.cancel_outlined,
-      'activeBg': const Color(0xFFFEF2F2),
-      'activeFg': const Color(0xFFB91C1C),
-      'activeBorder': const Color(0xFFFCA5A5),
+      'activeBg': context.appColors.error.withAlpha(15),
+      'activeFg': context.appColors.error,
+      'activeBorder': context.appColors.error.withAlpha(50),
     },
   ];
 
@@ -100,8 +100,8 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Row(
-                children: List.generate(_tabs.length, (index) {
-                  final tab = _tabs[index];
+                children: List.generate(_buildTabs().length, (index) {
+                  final tab = _buildTabs()[index];
                   final isSelected = _selectedTabIndex == index;
                   final activeBg = tab['activeBg'] as Color;
                   final activeFg = tab['activeFg'] as Color;
@@ -118,7 +118,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                           vertical: AppSpacing.sm,
                         ),
                         decoration: BoxDecoration(
-                          color: isSelected ? activeBg : const Color(0xFFF8FAFC),
+                          color: isSelected ? activeBg : AppColors.neutral100,
                           borderRadius: AppRadius.radiusXl,
                           border: Border.all(
                             color: isSelected ? activeBorder : AppColors.neutral200,
@@ -162,12 +162,12 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                 margin: const EdgeInsets.all(AppSpacing.lg),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
+                  color: context.appColors.warning.withAlpha(15),
                   borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: const Color(0xFFFCD34D), width: 1),
+                  border: Border.all(color: context.appColors.warning.withAlpha(50), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(8),
+                      color: context.appColors.onSurface.withAlpha(8),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -178,12 +178,10 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                     Container(
                       padding: AppSpacing.padding10,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFDE68A),
+                        color: context.appColors.warning.withAlpha(20),
                         borderRadius: AppRadius.radiusMd,
                       ),
-                      child: const Icon(
-                        Icons.pending_actions_rounded,
-                        color: Color(0xFFB45309),
+                      child: Icon(Icons.pending_actions_rounded, color: context.appColors.warning,
                         size: 20,
                       ),
                     ),
@@ -196,13 +194,13 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             '$pendingCount Booking Menunggu Konfirmasi',
                             style: AppTextStyles.bodyMd.copyWith(
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFFB45309),
+                              color: context.appColors.warning,
                             ),
                           ),
                           Text(
                             'Segera proses booking untuk jadwal hari ini',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: const Color(0xFF92400E),
+                              color: context.appColors.warning.withAlpha(150),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -238,7 +236,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF16A34A).withAlpha(70),
+              color: context.appColors.success.withAlpha(70),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),
@@ -357,7 +355,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
     }
 
     return RefreshIndicator(
-      color: Theme.of(context).colorScheme.primary,
+      color: context.appColors.primary,
       onRefresh: () => context.read<TkBookingProvider>().loadBookings(),
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(
@@ -500,8 +498,8 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             onPressed: () => _handleReject(bookingId),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: context.appColors.error,
-                              side: const BorderSide(color: Color(0xFFFCA5A5)),
-                              backgroundColor: const Color(0xFFFEF2F2),
+                              side: BorderSide(color: context.appColors.error.withAlpha(50)),
+                              backgroundColor: context.appColors.error.withAlpha(15),
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: AppRadius.br10,
@@ -556,9 +554,9 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                             child: OutlinedButton.icon(
                               onPressed: () => context.push('/tk/patient/$mahasiswaId'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF1D4ED8),
-                                side: const BorderSide(color: Color(0xFF93C5FD)),
-                                backgroundColor: const Color(0xFFEFF6FF),
+                                foregroundColor: context.appColors.info,
+                                side: BorderSide(color: context.appColors.info.withAlpha(50)),
+                                backgroundColor: context.appColors.info.withAlpha(15),
                                 padding: const EdgeInsets.symmetric(horizontal: 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: AppRadius.br10,
@@ -612,9 +610,9 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                           child: OutlinedButton.icon(
                             onPressed: () => context.push('/tk/patient/$mahasiswaId'),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFF334155),
-                              side: const BorderSide(color: Color(0xFFCBD5E1)),
-                              backgroundColor: const Color(0xFFF8FAFC),
+                              foregroundColor: AppColors.neutral700,
+                              side: BorderSide(color: AppColors.neutral400),
+                              backgroundColor: AppColors.neutral100,
                               padding: const EdgeInsets.symmetric(horizontal: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: AppRadius.br10,
@@ -723,33 +721,33 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
 
     switch (status) {
       case 'Dikonfirmasi':
-        textColor = const Color(0xFF1D4ED8);
-        bgColor = const Color(0xFFEFF6FF);
-        borderColor = const Color(0xFF93C5FD);
+        textColor = context.appColors.info;
+        bgColor = context.appColors.info.withAlpha(15);
+        borderColor = context.appColors.info.withAlpha(50);
         icon = Icons.check_circle_outline_rounded;
         break;
       case 'Menunggu Konfirmasi':
-        textColor = const Color(0xFFB45309);
-        bgColor = const Color(0xFFFEF3C7);
-        borderColor = const Color(0xFFFCD34D);
+        textColor = context.appColors.warning;
+        bgColor = context.appColors.warning.withAlpha(15);
+        borderColor = context.appColors.warning.withAlpha(50);
         icon = Icons.hourglass_empty_rounded;
         break;
       case 'Selesai':
-        textColor = const Color(0xFF15803D);
-        bgColor = const Color(0xFFF0FDF4);
-        borderColor = const Color(0xFF86EFAC);
+        textColor = context.appColors.success;
+        bgColor = context.appColors.success.withAlpha(15);
+        borderColor = context.appColors.success.withAlpha(50);
         icon = Icons.task_alt_rounded;
         break;
       case 'Ditolak':
-        textColor = const Color(0xFFB91C1C);
-        bgColor = const Color(0xFFFEF2F2);
-        borderColor = const Color(0xFFFCA5A5);
+        textColor = context.appColors.error;
+        bgColor = context.appColors.error.withAlpha(15);
+        borderColor = context.appColors.error.withAlpha(50);
         icon = Icons.cancel_outlined;
         break;
       default:
-        textColor = const Color(0xFF475569);
-        bgColor = const Color(0xFFF8FAFC);
-        borderColor = const Color(0xFFE2E8F0);
+        textColor = AppColors.neutral700;
+        bgColor = AppColors.neutral100;
+        borderColor = AppColors.neutral300;
         icon = Icons.info_outline_rounded;
     }
 
@@ -829,7 +827,7 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                     'Tolak Booking',
                     style: AppTextStyles.titleMd.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -964,9 +962,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cari Nama atau NIM...',
-                prefixIcon: const Icon(
-                  Icons.search_rounded,
-                  color: AppColors.neutral500,
+                prefixIcon: Icon(Icons.search_rounded, color: AppColors.neutral500,
                 ),
                 filled: true,
                 fillColor: AppColors.neutral50,
@@ -1049,7 +1045,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(12),
+                              color: context.appColors.onSurface.withAlpha(12),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -1071,7 +1067,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                   Container(
                                     width: 48,
                                     height: 48,
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       color: AppColors.neutral200,
                                       shape: BoxShape.circle,
                                     ),
@@ -1092,7 +1088,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                                 return Center(
                                                   child: Text(
                                                     patient.initials,
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
                                                       color:
                                                           AppColors.neutral700,
                                                       fontWeight:
@@ -1106,7 +1102,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                             : Center(
                                               child: Text(
                                                 patient.initials,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: AppColors.neutral700,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -1121,8 +1117,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                       children: [
                                         Text(
                                           patient.nama,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                          style: TextStyle(fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
                                           maxLines: 1,
@@ -1131,7 +1126,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                         const SizedBox(height: AppSpacing.xs),
                                         Text(
                                           'NIM: ${patient.nim}',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: AppColors.neutral500,
                                             fontSize: 14,
                                           ),
@@ -1139,9 +1134,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                       ],
                                     ),
                                   ),
-                                  const Icon(
-                                    Icons.chevron_right_rounded,
-                                    color: AppColors.neutral400,
+                                  Icon(Icons.chevron_right_rounded, color: AppColors.neutral400,
                                   ),
                                 ],
                               ),
@@ -1158,24 +1151,24 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0FDF4),
+                color: context.appColors.success.withAlpha(15),
                 borderRadius: AppRadius.radiusXl,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(8),
+                    color: context.appColors.onSurface.withAlpha(8),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
                 ],
-                border: Border.all(color: const Color(0xFF86EFAC), width: 1.5),
+                border: Border.all(color: context.appColors.success.withAlpha(50), width: 1.5),
               ),
               child: Row(
                 children: [
                   Container(
                     width: 48,
                     height: 48,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFDCFCE7),
+                    decoration: BoxDecoration(
+                      color: context.appColors.success.withAlpha(20),
                       shape: BoxShape.circle,
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -1189,8 +1182,8 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                                 return Center(
                                   child: Text(
                                     _selectedPatient!.initials,
-                                    style: const TextStyle(
-                                      color: Color(0xFF15803D),
+                                    style: TextStyle(
+                                      color: context.appColors.success,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -1201,8 +1194,8 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                             : Center(
                               child: Text(
                                 _selectedPatient!.initials,
-                                style: const TextStyle(
-                                  color: Color(0xFF15803D),
+                                style: TextStyle(
+                                  color: context.appColors.success,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -1218,28 +1211,27 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                             Flexible(
                               child: Text(
                                 _selectedPatient!.nama,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
+                                style: TextStyle(fontWeight: FontWeight.w800,
                                   fontSize: 15,
-                                  color: Color(0xFF1E293B),
+                                  color: AppColors.neutral800,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             const SizedBox(width: AppSpacing.s6),
-                            const Icon(
+                            Icon(
                               Icons.check_circle_rounded,
                               size: 16,
-                              color: Color(0xFF16A34A),
+                              color: context.appColors.success,
                             ),
                           ],
                         ),
                         const SizedBox(height: AppSpacing.s2),
                         Text(
                           'NIM: ${_selectedPatient!.nim}',
-                          style: const TextStyle(
-                            color: Color(0xFF64748B),
+                          style: TextStyle(
+                            color: AppColors.neutral600,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
@@ -1248,9 +1240,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      color: Color(0xFF94A3B8),
+                    icon: Icon(Icons.close_rounded, color: AppColors.neutral500,
                     ),
                     onPressed: () {
                       setState(() {

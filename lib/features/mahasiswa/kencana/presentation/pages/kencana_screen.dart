@@ -91,7 +91,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       Text(
                         provider.errorMessage!,
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
@@ -149,7 +149,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         'Timeline Tahapan',
                         style: AppTextStyles.titleLg.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: context.appColors.onSurface,
                           fontSize: 18,
                         ),
                       ),
@@ -157,7 +157,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       Text(
                         'Pilih tahapan untuk melihat sesi, materi, tugas, dan kuis.',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -227,7 +227,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             child: Icon(
               Icons.stars_rounded,
               size: 100,
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: AppThemeColors.surfaceContainerHighest,
             ),
           ),
           Column(
@@ -239,22 +239,22 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0FDFA),
+                  color: context.appColors.successContainer,
                   borderRadius: AppRadius.br6,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.check_circle_rounded,
-                      color: Color(0xFF0D9488),
+                      color: context.appColors.info,
                       size: 12,
                     ),
                     SizedBox(width: AppSpacing.xs),
                     Text(
                       'Status PMB Kencana',
                       style: TextStyle(
-                        color: Color(0xFF0D9488),
+                        color: context.appColors.info,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -267,7 +267,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               Text(
                 dashboard.activeStage['name'] ?? 'Menunggu jadwal',
                 style: AppTextStyles.headlineMd.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: context.appColors.onSurface,
                   fontSize: 22,
                   height: 1.2,
                   fontWeight: FontWeight.w900,
@@ -279,7 +279,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     ? 'Status Univ: ${(dashboard.graduationStatus.replaceAll('_', ' ')).toUpperCase()} | Status Fak: ${(dashboard.scoreFakultas!['graduation_status']?.toString().replaceAll('_', ' ') ?? '').toUpperCase()}'
                     : 'Status Kelulusan: ${(dashboard.graduationStatus.replaceAll('_', ' ')).toUpperCase()}',
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: context.appColors.onSurfaceVariant,
                   height: 1.4,
                   fontWeight: FontWeight.w500,
                 ),
@@ -321,7 +321,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           'Periode',
           dashboard.period.year.toString(),
           Icons.calendar_month_rounded,
-          Theme.of(context).colorScheme.onSurfaceVariant,
+          context.appColors.onSurfaceVariant,
         ),
         _buildStatCard(
           context,
@@ -383,7 +383,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 child: Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.appColors.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
@@ -396,7 +396,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           Text(
             value,
             style: AppTextStyles.titleLg.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
               fontWeight: FontWeight.w900,
               fontSize: 20,
             ),
@@ -422,12 +422,12 @@ class _KencanaScreenState extends State<KencanaScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  color: AppThemeColors.surfaceContainer,
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Icon(
                   Icons.pie_chart_rounded,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: context.appColors.onSurfaceVariant,
                   size: 20,
                 ),
               ),
@@ -440,7 +440,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     style: AppTextStyles.labelSm.copyWith(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       letterSpacing: 1,
                     ),
                   ),
@@ -448,7 +448,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     'Bobot Penilaian Maksimal',
                     style: AppTextStyles.labelMd.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: context.appColors.onSurface,
                     ),
                   ),
                 ],
@@ -483,7 +483,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             label,
             style: AppTextStyles.labelSm.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
         ),
@@ -548,7 +548,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           context,
           'Buku Saku',
           Icons.menu_book_rounded,
-          Theme.of(context).colorScheme.primary,
+          context.appColors.primary,
           () {
             context.push('/kencana/handbook');
           },
@@ -617,31 +617,31 @@ class _KencanaScreenState extends State<KencanaScreen> {
     String badgeText;
 
     if (isCompleted) {
-      cardBg = const Color(0xFFF0FDF4);
-      borderColor = const Color(0xFF86EFAC);
-      numberBg = const Color(0xFF16A34A);
-      numberTextColor = Colors.white;
-      titleColor = const Color(0xFF15803D);
-      badgeBg = const Color(0xFFDCFCE7);
-      badgeTextColor = const Color(0xFF16A34A);
+      cardBg = context.appColors.successContainer;
+      borderColor = context.appColors.success;
+      numberBg = context.appColors.success;
+      numberTextColor = context.appColors.surface;
+      titleColor = context.appColors.success;
+      badgeBg = context.appColors.successContainer;
+      badgeTextColor = context.appColors.success;
       badgeText = 'Selesai';
     } else if (isActive) {
-      cardBg = const Color(0xFFEFF6FF);
-      borderColor = const Color(0xFF93C5FD);
+      cardBg = context.appColors.infoContainer;
+      borderColor = context.appColors.info;
       numberBg = AppColors.primary;
-      numberTextColor = Colors.white;
-      titleColor = const Color(0xFF1D4ED8);
-      badgeBg = const Color(0xFFDBEAFE);
-      badgeTextColor = const Color(0xFF1E40AF);
+      numberTextColor = context.appColors.surface;
+      titleColor = context.appColors.primary;
+      badgeBg = context.appColors.infoContainer;
+      badgeTextColor = context.appColors.primary;
       badgeText = 'Berlangsung';
     } else {
-      cardBg = const Color(0xFFF8FAFC);
-      borderColor = const Color(0xFFE2E8F0);
-      numberBg = const Color(0xFFE2E8F0);
-      numberTextColor = const Color(0xFF64748B);
-      titleColor = const Color(0xFF475569);
-      badgeBg = const Color(0xFFF1F5F9);
-      badgeTextColor = const Color(0xFF64748B);
+      cardBg = AppColors.neutral100;
+      borderColor = AppColors.neutral300;
+      numberBg = AppColors.neutral300;
+      numberTextColor = AppColors.neutral600;
+      titleColor = AppColors.neutral700;
+      badgeBg = AppColors.neutral200;
+      badgeTextColor = AppColors.neutral600;
       badgeText = 'Belum Mulai';
     }
 
@@ -682,7 +682,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(5),
+              color: context.appColors.onSurface.withAlpha(5),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -827,8 +827,8 @@ class _KencanaScreenState extends State<KencanaScreen> {
               fontWeight: FontWeight.w900,
               color:
                   isCompleted
-                      ? Theme.of(context).colorScheme.outlineVariant
-                      : Theme.of(context).colorScheme.primary,
+                      ? context.appColors.outlineVariant
+                      : context.appColors.primary,
             ),
           ),
           const SizedBox(width: AppSpacing.xs),
@@ -838,8 +838,8 @@ class _KencanaScreenState extends State<KencanaScreen> {
               fontSize: 10,
               color:
                   isCompleted
-                      ? Theme.of(context).colorScheme.outlineVariant
-                      : Theme.of(context).colorScheme.outline,
+                      ? context.appColors.outlineVariant
+                      : context.appColors.outline,
             ),
           ),
         ],
@@ -868,7 +868,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -883,7 +883,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             style: AppTextStyles.labelSm.copyWith(
               fontSize: 10,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -892,7 +892,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             style: AppTextStyles.titleLg.copyWith(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
             ),
           ),
         ],
@@ -910,7 +910,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           'PENGUMUMAN KENCANA',
           style: AppTextStyles.labelSm.copyWith(
             fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             fontSize: 10,
             letterSpacing: 0.5,
           ),
@@ -952,7 +952,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                             judul,
                             style: AppTextStyles.labelMd.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: context.appColors.onSurface,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -961,7 +961,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         Text(
                           tanggalStr,
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontSize: 10,
                           ),
                         ),
@@ -971,7 +971,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     Text(
                       isi,
                       style: AppTextStyles.bodySm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -1000,7 +1000,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           'DEWAN PEMBIMBING (DP)',
           style: AppTextStyles.labelSm.copyWith(
             fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontSize: 10,
             letterSpacing: 0.5,
           ),
@@ -1057,7 +1057,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 Text(
                   name,
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: context.appColors.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1073,17 +1073,17 @@ class _KencanaScreenState extends State<KencanaScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(15),
+        color: context.appColors.primary.withAlpha(15),
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withAlpha(30),
+          color: context.appColors.primary.withAlpha(30),
         ),
       ),
       child: Row(
         children: [
           Icon(
             Icons.mail_rounded,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             size: 24,
           ),
           const SizedBox(width: AppSpacing.md),
@@ -1094,7 +1094,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 Text(
                   'Ada Undangan Kelompok DP $scope!',
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1106,7 +1106,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   child: Text(
                     'Lihat Undangan >',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.w900,
                       decoration: TextDecoration.underline,
                     ),
@@ -1136,7 +1136,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
             child: Text(
               message,
               style: AppTextStyles.labelMd.copyWith(
-                color: Colors.grey[600],
+                color: AppColors.neutral600,
                 fontWeight: FontWeight.bold,
               ),
             ),

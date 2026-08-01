@@ -1,4 +1,5 @@
 ﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -50,9 +51,9 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                 actions: [
                   if (notifications.any((n) => !n.isRead))
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.done_all_rounded,
-                        color: Colors.white,
+                        color: context.appColors.onPrimary,
                       ),
                       tooltip: 'Tandai Semua Dibaca',
                       onPressed: () async {
@@ -128,11 +129,11 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                           break;
                         case 'event':
                           notifIcon = Icons.event_available_rounded;
-                          notifColor = Colors.indigo;
+                          notifColor = context.appColors.info;
                           break;
                         default:
                           notifIcon = Icons.notifications_active_rounded;
-                          notifColor = Theme.of(context).colorScheme.primary;
+                          notifColor = context.appColors.primary;
                       }
 
                       return Dismissible(
@@ -143,12 +144,12 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                           padding: const EdgeInsets.only(right: AppSpacing.xl),
                           margin: const EdgeInsets.only(bottom: AppSpacing.md),
                           decoration: BoxDecoration(
-                            color: Colors.redAccent,
+                            color: context.appColors.error,
                             borderRadius: AppRadius.radiusXl,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.delete_sweep_rounded,
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             size: 28,
                           ),
                         ),
@@ -168,7 +169,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isUnread
-                                      ? Colors.white
+                                      ? context.appColors.surface
                                       : AppColors.neutral100,
                               borderRadius: AppRadius.radiusXl,
                               border: Border.all(

@@ -41,7 +41,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
         onRefresh: () async {
           await student.refreshHealthData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -79,7 +79,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               width: 4,
                               height: 18,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: context.appColors.primary,
                                 borderRadius: AppRadius.radiusXs,
                               ),
                             ),
@@ -111,7 +111,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               border: Border.all(color: AppColors.neutral200),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(2),
+                                  color: context.appColors.onSurface.withAlpha(2),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -131,7 +131,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                     Icons.calendar_today_rounded,
                                     size: 32,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        context.appColors.primary,
                                   ),
                                 ),
                                 const SizedBox(height: AppSpacing.lg),
@@ -139,7 +139,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                   'Belum Ada Janji Temu Aktif',
                                   style: AppTextStyles.labelMd.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        context.appColors.primary,
                                     fontWeight: FontWeight.w900,
                                     fontSize: 14,
                                   ),
@@ -150,7 +150,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                   textAlign: TextAlign.center,
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                     fontSize: 11,
                                     height: 1.4,
                                     fontWeight: FontWeight.bold,
@@ -184,7 +184,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               width: 4,
                               height: 18,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: context.appColors.primary,
                                 borderRadius: AppRadius.radiusXs,
                               ),
                             ),
@@ -272,7 +272,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -314,7 +314,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         Text(
                           'Antrean #${booking.id}',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -342,7 +342,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     Text(
                       schedule.tenagaKes?.spesialisasi ?? 'Dokter Umum',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -440,7 +440,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -469,7 +469,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   decoration: BoxDecoration(
                     color: (worker.spesialisasi.contains('Gizi')
                             ? AppColors.warning
-                            : Colors.teal)
+                            : context.appColors.success)
                         .withAlpha(15),
                     borderRadius: AppRadius.radiusSm,
                   ),
@@ -479,7 +479,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                       color:
                           worker.spesialisasi.contains('Gizi')
                               ? AppColors.warning
-                              : Colors.teal,
+                              : context.appColors.success,
                       fontSize: 8,
                       fontWeight: FontWeight.w900,
                     ),
@@ -491,7 +491,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     Icon(
                       Icons.location_on_rounded,
                       size: 12,
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Expanded(
@@ -502,7 +502,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -786,7 +786,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
+          Icon(icon, size: 16, color: context.appColors.outline),
           const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(

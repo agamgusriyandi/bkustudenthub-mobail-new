@@ -86,7 +86,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchDashboard(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -128,7 +128,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -345,7 +345,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
           Text(
             description,
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontSize: 10,
             ),
             maxLines: 2,
@@ -364,7 +364,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
           child: Text(
             'Tidak ada pengumuman terbaru.',
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
         ),
@@ -423,7 +423,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               Text(
                 _cleanHtml(ann.content),
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: context.appColors.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -431,7 +431,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                 _formatDate(ann.date),
                 style: AppTextStyles.labelSm.copyWith(
                   fontSize: 10,
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                 ),
               ),
             ],

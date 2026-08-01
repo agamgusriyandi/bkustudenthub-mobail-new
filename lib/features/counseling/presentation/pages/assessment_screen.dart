@@ -193,7 +193,7 @@ class AssessmentScreen extends StatelessWidget {
             child: Text(
               'Jawab dengan jujur. Hasil asesmen bersifat rahasia dan hanya dilihat oleh psikolog BKU.',
               style: AppTextStyles.labelMd.copyWith(
-                color: Colors.blue[800],
+                color: AppColors.info,
                 height: 1.4,
               ),
             ),
@@ -372,7 +372,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
             Text(
               '${(progress * 100).toInt()}%',
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.onSurface.withAlpha(150),
               ),
             ),
           ],
@@ -442,8 +442,8 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                       border: Border.all(
                         color:
                             isSelected
-                                ? context.appColors.onPrimary
-                                : Theme.of(context).colorScheme.outline,
+                            ? context.appColors.onPrimary
+                            : context.appColors.onSurface.withAlpha(150),
                         width: 2,
                       ),
                       color: isSelected ? context.appColors.onPrimary : Colors.transparent,
@@ -579,7 +579,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                   recommendation,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodySm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.onSurface.withAlpha(150),
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -659,7 +659,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                   child: Text(
                     'Tutup tanpa menyimpan',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.onSurface.withAlpha(150),
                       fontSize: 12,
                     ),
                   ),

@@ -270,7 +270,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                           _selectedTabIndex == 0
                                               ? [
                                                 BoxShadow(
-                                                  color: Colors.black.withAlpha(
+                                                  color: context.appColors.onSurface.withAlpha(
                                                     5,
                                                   ),
                                                   blurRadius: 4,
@@ -315,7 +315,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                           _selectedTabIndex == 1
                                               ? [
                                                 BoxShadow(
-                                                  color: Colors.black.withAlpha(
+                                                  color: context.appColors.onSurface.withAlpha(
                                                     5,
                                                   ),
                                                   blurRadius: 4,
@@ -555,7 +555,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
               'Statistik Layanan',
               style: AppTextStyles.labelSm.copyWith(
                 fontWeight: FontWeight.w900,
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 letterSpacing: 0.5,
               ),
             ),
@@ -625,7 +625,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontSize: 9,
             fontWeight: FontWeight.bold,
           ),
@@ -700,7 +700,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
             Text(
               detail,
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
@@ -714,7 +714,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
             value: progress,
             minHeight: 8,
             backgroundColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest,
+                AppThemeColors.surfaceContainerHighest,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.neutral800),
           ),
         ),
@@ -763,36 +763,36 @@ class _CounselingScreenState extends State<CounselingScreen> {
     switch (statusStr.toLowerCase()) {
       case 'dikonfirmasi':
         statusColor = context.appColors.info;
-        statusBg = const Color(0xFFEFF6FF);
-        statusBorder = const Color(0xFF93C5FD);
+        statusBg = context.appColors.infoContainer;
+        statusBorder = context.appColors.info;
         cardIcon = Icons.event_available_rounded;
-        iconBgColor = const Color(0xFFDBEAFE);
-        iconColor = const Color(0xFF1D4ED8);
+        iconBgColor = context.appColors.infoContainer;
+        iconColor = context.appColors.primary;
         break;
       case 'selesai':
         statusColor = context.appColors.success;
-        statusBg = const Color(0xFFF0FDF4);
-        statusBorder = const Color(0xFF86EFAC);
+        statusBg = context.appColors.successContainer;
+        statusBorder = context.appColors.success;
         cardIcon = Icons.task_alt_rounded;
-        iconBgColor = const Color(0xFFDCFCE7);
-        iconColor = const Color(0xFF15803D);
+        iconBgColor = context.appColors.successContainer;
+        iconColor = context.appColors.success;
         break;
       case 'ditolak':
       case 'dibatalkan':
         statusColor = context.appColors.error;
-        statusBg = const Color(0xFFFEF2F2);
-        statusBorder = const Color(0xFFFCA5A5);
+        statusBg = context.appColors.errorContainer;
+        statusBorder = context.appColors.error;
         cardIcon = Icons.cancel_rounded;
-        iconBgColor = const Color(0xFFFEE2E2);
-        iconColor = const Color(0xFFB91C1C);
+        iconBgColor = context.appColors.errorContainer;
+        iconColor = context.appColors.error;
         break;
       default: // Menunggu
         statusColor = context.appColors.warning;
-        statusBg = const Color(0xFFFEF3C7);
-        statusBorder = const Color(0xFFFCD34D);
+        statusBg = context.appColors.warningContainer;
+        statusBorder = context.appColors.warning;
         cardIcon = Icons.hourglass_top_rounded;
-        iconBgColor = const Color(0xFFFEF3C7);
-        iconColor = const Color(0xFFB45309);
+        iconBgColor = context.appColors.warningContainer;
+        iconColor = context.appColors.warning;
     }
 
     return Container(
@@ -803,7 +803,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
         border: Border.all(color: statusBorder, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -849,7 +849,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                       Text(
                         psikologName,
                         style: const TextStyle(
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
                         ),
@@ -865,13 +865,13 @@ class _CounselingScreenState extends State<CounselingScreen> {
                               const Icon(
                                 Icons.access_time_rounded,
                                 size: 13,
-                                color: Color(0xFF64748B),
+                                color: AppColors.neutral600,
                               ),
                               const SizedBox(width: AppSpacing.xs),
                               Text(
                                 timeStr,
                                 style: const TextStyle(
-                                  color: Color(0xFF64748B),
+                                  color: AppColors.neutral600,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -884,13 +884,13 @@ class _CounselingScreenState extends State<CounselingScreen> {
                               const Icon(
                                 Icons.date_range_rounded,
                                 size: 13,
-                                color: Color(0xFF64748B),
+                                color: AppColors.neutral600,
                               ),
                               const SizedBox(width: AppSpacing.xs),
                               Text(
                                 fullDateStr,
                                 style: const TextStyle(
-                                  color: Color(0xFF64748B),
+                                  color: AppColors.neutral600,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1043,7 +1043,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                   height: 4,
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                        AppThemeColors.surfaceContainerHighest,
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
@@ -1432,12 +1432,12 @@ class _CounselingScreenState extends State<CounselingScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: AppThemeColors.surfaceContainerHighest,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1485,7 +1485,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                       Text(
                         session.psychologistName,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1691,8 +1691,8 @@ class _CounselingScreenState extends State<CounselingScreen> {
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: context.appColors.error,
-                side: const BorderSide(color: Color(0xFFFCA5A5)),
-                backgroundColor: const Color(0xFFFEF2F2),
+                side: BorderSide(color: context.appColors.error),
+                backgroundColor: context.appColors.errorContainer,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: AppRadius.br10,
@@ -1732,7 +1732,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                   height: 4,
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                        AppThemeColors.surfaceContainerHighest,
                     borderRadius: AppRadius.radiusXs,
                   ),
                 ),
@@ -2093,7 +2093,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         gradient: LinearGradient(
                           colors: () {
                             if (!isActive) {
-                              return [Colors.grey, Colors.grey.shade400];
+                              return [AppColors.neutral500, AppColors.neutral400];
                             }
                             final primaryColor = AppColors.neutral800;
                             final hslPrimary = HSLColor.fromColor(primaryColor);
@@ -2161,7 +2161,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         width: 14,
                         height: 14,
                           decoration: BoxDecoration(
-                            color: isActive ? AppColors.success : Colors.grey,
+                            color: isActive ? AppColors.success : AppColors.neutral500,
                             shape: BoxShape.circle,
                             border: Border.all(color: context.appColors.surface, width: 2.5),
                         ),
@@ -2186,7 +2186,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                   spec.split('&')[0].trim(),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -2233,13 +2233,13 @@ class _CounselingScreenState extends State<CounselingScreen> {
           Icon(
             Icons.psychology_outlined,
             size: 64,
-            color: Theme.of(context).colorScheme.outline.withAlpha(50),
+            color: context.appColors.outline.withAlpha(50),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada riwayat konseling',
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -2261,7 +2261,7 @@ class _CounselingBanner extends StatelessWidget {
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(15),
+            color: context.appColors.onSurface.withAlpha(15),
             blurRadius: 20,
             spreadRadius: 2,
             offset: const Offset(0, 10),

@@ -79,7 +79,7 @@ class AvailabilityToggle extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black26,
+                      color: context.appColors.onSurface.withAlpha(66),
                       blurRadius: 6,
                       offset: Offset(0, 2),
                     ),

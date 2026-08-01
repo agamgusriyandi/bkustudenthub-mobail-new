@@ -495,7 +495,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                       isDone
                           ? (isError
                               ? AppColors.error
-                              : (isWarning ? AppColors.warning : Colors.black))
+                              : (isWarning ? AppColors.warning : context.appColors.onSurface))
                           : AppColors.neutral500,
                 ),
               ),
@@ -574,7 +574,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Status Pengajuan Saat Ini',
-                  style: AppTextStyles.bodyMd.copyWith(color: Colors.black54),
+                  style: AppTextStyles.bodyMd.copyWith(color: AppColors.onSurface.withValues(alpha: 0.54)),
                 ),
               ],
             ),

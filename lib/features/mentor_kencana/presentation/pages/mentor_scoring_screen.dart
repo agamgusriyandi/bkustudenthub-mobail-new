@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -159,18 +160,18 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
         border: OutlineInputBorder(
           borderRadius: AppRadius.radiusMd,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: AppThemeColors.surfaceContainerHighest,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusMd,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: AppThemeColors.surfaceContainerHighest,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusMd,
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+          borderSide: BorderSide(color: context.appColors.primary),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
@@ -192,7 +193,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentees(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -212,7 +213,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -226,15 +227,13 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                       Icon(
                         Icons.people_outline_rounded,
                         size: 64,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.outline.withAlpha(80),
+                        color: context.appColors.outline.withAlpha(80),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       Text(
                         'Anda tidak memiliki mahasiswa bimbingan yang aktif untuk dinilai.',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -314,9 +313,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> {
                                         'NIM: ${mentee.nim}',
                                         style: AppTextStyles.labelSm.copyWith(
                                           color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.outline,
+                                              context.appColors.outline,
                                         ),
                                       ),
                                       const SizedBox(height: AppSpacing.sm),

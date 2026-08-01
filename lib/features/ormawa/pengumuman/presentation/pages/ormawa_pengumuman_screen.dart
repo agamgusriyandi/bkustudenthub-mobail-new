@@ -40,12 +40,12 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       case 'umum':
         return AppColors.neutral600;
       case 'kegiatan':
-        return const Color(0xFF2563EB);
+        return context.appColors.info;
       case 'penting':
         return AppColors.error;
       case 'info':
       case 'informasi':
-        return const Color(0xFF0EA5E9);
+        return context.appColors.info;
       default:
         return AppColors.neutral600;
     }
@@ -138,7 +138,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
           canCreateAnnouncement
               ? FloatingActionButton.extended(
                 onPressed: () => _showAddPengumuman(context),
-                backgroundColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: context.appColors.primary,
                 icon: Icon(Icons.campaign_rounded, color: context.appColors.onPrimary),
                 label: Text(
                   'Buat Pengumuman',
@@ -216,7 +216,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -495,23 +495,23 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
         );
         break;
       case 'kegiatan':
-        categoryGradient = const LinearGradient(
-          colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
+        categoryGradient = LinearGradient(
+          colors: [context.appColors.info, context.appColors.info],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
         break;
       case 'penting':
-        categoryGradient = const LinearGradient(
-          colors: [AppColors.error, Color(0xFFDC2626)],
+        categoryGradient = LinearGradient(
+          colors: [AppColors.error, AppColors.error],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
         break;
       case 'info':
       case 'informasi':
-        categoryGradient = const LinearGradient(
-          colors: [Color(0xFF0EA5E9), Color(0xFF0284C7)],
+        categoryGradient = LinearGradient(
+          colors: [context.appColors.info, context.appColors.info],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
@@ -964,7 +964,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -976,7 +976,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1082,7 +1082,7 @@ class _OrmawaCreatePengumumanScreenState
                         ),
                         child: Icon(
                           Icons.campaign_rounded,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.lg),
@@ -1102,7 +1102,7 @@ class _OrmawaCreatePengumumanScreenState
                               child: Text(
                                 'ANNOUNCEMENT',
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: context.appColors.primary,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 8,
                                 ),
@@ -1300,7 +1300,7 @@ class _OrmawaCreatePengumumanScreenState
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -1322,7 +1322,7 @@ class _OrmawaCreatePengumumanScreenState
         'id': 'kegiatan',
         'label': 'KEGIATAN',
         'icon': Icons.event_rounded,
-        'color': const Color(0xFF2563EB),
+        'color': context.appColors.info,
       },
       {
         'id': 'penting',
@@ -1334,7 +1334,7 @@ class _OrmawaCreatePengumumanScreenState
         'id': 'info',
         'label': 'INFORMASI',
         'icon': Icons.info_rounded,
-        'color': const Color(0xFF0EA5E9),
+        'color': context.appColors.info,
       },
     ];
 
@@ -1455,7 +1455,7 @@ class _OrmawaCreatePengumumanScreenState
                 return Theme(
                   data: Theme.of(context).copyWith(
                     colorScheme: ColorScheme.light(
-                      primary: Theme.of(context).colorScheme.primary,
+                      primary: context.appColors.primary,
                       onPrimary: context.appColors.onPrimary,
                       onSurface: AppColors.neutral800,
                     ),

@@ -220,12 +220,12 @@ class OrmawaServiceGridModal extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.errorContainer,
+                    color: context.appColors.errorContainer,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.logout_rounded,
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.appColors.error,
                     size: 36,
                   ),
                 ),
@@ -241,7 +241,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                   'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.appColors.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
@@ -255,7 +255,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                         child: Text(
                           'Batal',
                           style: AppTextStyles.labelLg.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                       ),
@@ -272,7 +272,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          backgroundColor: context.appColors.error,
                           foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(

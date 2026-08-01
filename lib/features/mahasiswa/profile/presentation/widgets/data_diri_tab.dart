@@ -98,9 +98,9 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
-                Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                Icon(Icons.check_circle_rounded, color: context.appColors.surface, size: 20),
                 SizedBox(width: AppSpacing.s10),
                 Text(
                   'Profil berhasil diperbarui',
@@ -108,7 +108,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 ),
               ],
             ),
-            backgroundColor: const Color(0xFF10B981),
+            backgroundColor: context.appColors.success,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: AppRadius.radiusMd,
@@ -122,7 +122,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
+                Icon(Icons.error_outline_rounded, color: context.appColors.surface, size: 20),
                 const SizedBox(width: AppSpacing.s10),
                 Expanded(
                   child: Text(
@@ -132,7 +132,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 ),
               ],
             ),
-            backgroundColor: const Color(0xFFEF4444),
+            backgroundColor: context.appColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: AppRadius.radiusMd,
@@ -170,12 +170,12 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 ),
               ),
               if (required)
-                const Text(
+    Text(
                   ' *',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFEF4444),
+                    color: context.appColors.error,
                   ),
                 ),
             ],
@@ -205,11 +205,11 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0F172A),
+              color: AppColors.neutral900,
             ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFF8FAFC),
+              fillColor: AppColors.neutral100,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
@@ -238,11 +238,11 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(color: Color(0xFFFCA5A5)),
+                borderSide: BorderSide(color: context.appColors.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.8),
+                borderSide: BorderSide(color: context.appColors.error, width: 1.8),
               ),
             ),
             onSaved: (val) => _formData[key] = val,
@@ -272,7 +272,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
         borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 18,
             offset: const Offset(0, 5),
           ),
@@ -301,7 +301,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.neutral900,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -324,7 +324,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           _buildSectionCard(
             'Data Pribadi Mahasiswa',
             Icons.person_rounded,
-            const Color(0xFF3B82F6),
+            context.appColors.info,
             [
               _buildField('NIK', 'nik', required: true, prefixIcon: Icons.badge_outlined),
               _buildField('NISN', 'nisn', prefixIcon: Icons.subtitles_outlined),
@@ -343,7 +343,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           _buildSectionCard(
             'Kontak & Domisili',
             Icons.contact_phone_rounded,
-            const Color(0xFF0D9488),
+            context.appColors.info,
             [
               _buildField('Email Personal', 'email_personal', prefixIcon: Icons.mail_outline_rounded),
               _buildField('Nomor HP/WA', 'phone', required: true, prefixIcon: Icons.phone_android_rounded),
@@ -353,25 +353,25 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           _buildSectionCard(
             'Keluarga',
             Icons.family_restroom_rounded,
-            const Color(0xFFE11D48),
+            context.appColors.error,
             [
               _buildField('Nama Ibu Kandung', 'nama_ibu_kandung', required: true, prefixIcon: Icons.woman_rounded),
               _buildField('Nama Ayah', 'nama_ayah', prefixIcon: Icons.man_rounded),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+    SizedBox(height: AppSpacing.sm),
           Container(
             height: 52,
             decoration: BoxDecoration(
               borderRadius: AppRadius.radiusLg,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF10B981), Color(0xFF059669)],
+              gradient: LinearGradient(
+                colors: [context.appColors.success, context.appColors.success],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF10B981).withAlpha(40),
+                  color: context.appColors.success.withAlpha(40),
                   blurRadius: 14,
                   offset: const Offset(0, 5),
                 ),
@@ -382,7 +382,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
-                foregroundColor: Colors.white,
+                foregroundColor: context.appColors.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: AppRadius.radiusLg,
                 ),

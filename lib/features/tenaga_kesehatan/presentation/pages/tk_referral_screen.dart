@@ -316,10 +316,10 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                     Container(
                       padding: AppSpacing.paddingLg,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0FDF4),
+                        color: context.appColors.success.withAlpha(15),
                         borderRadius: AppRadius.radiusLg,
                         border: Border.all(
-                          color: const Color(0xFF86EFAC),
+                          color: context.appColors.success.withAlpha(50),
                           width: 1.5,
                         ),
                       ),
@@ -329,7 +329,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFDCFCE7),
+                              color: context.appColors.success.withAlpha(20),
                               shape: BoxShape.circle,
                               image: hasFoto
                                   ? DecorationImage(
@@ -344,8 +344,8 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                 ? Center(
                                     child: Text(
                                       initial,
-                                      style: const TextStyle(
-                                        color: Color(0xFF16A34A),
+                                      style: TextStyle(
+                                        color: context.appColors.success,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
                                       ),
@@ -362,7 +362,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                   nama,
                                   style: AppTextStyles.bodyLg.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF16A34A),
+                                    color: context.appColors.success,
                                   ),
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
@@ -395,37 +395,37 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       Icons.local_hospital_rounded,
                       'Faskes Tujuan',
                       faskes,
-                      const Color(0xFF2563EB),
+                      context.appColors.info,
                     ),
                     _buildDetailItem(
                       Icons.calendar_today_rounded,
                       'Tanggal Rujukan',
                       tanggal,
-                      const Color(0xFFD97706),
+                      context.appColors.warning,
                     ),
                     _buildDetailItem(
                       Icons.coronavirus_rounded,
                       'Diagnosis Sementara',
                       diagnosis,
-                      const Color(0xFFDC2626),
+                      context.appColors.error,
                     ),
                     _buildDetailItem(
                       Icons.medical_services_rounded,
                       'Keluhan Utama',
                       keluhan,
-                      const Color(0xFF9333EA),
+                      context.appColors.info,
                     ),
                     _buildDetailItem(
                       Icons.description_rounded,
                       'Alasan Rujukan',
                       alasan,
-                      const Color(0xFF0D9488),
+                      context.appColors.info,
                     ),
                     _buildDetailItem(
                       Icons.shield_rounded,
                       'Rekomendasi Asuransi',
                       asuransi,
-                      const Color(0xFF059669),
+                      context.appColors.success,
                     ),
                     if (pdfUrl != null && pdfUrl.toString().isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.xxl),
@@ -463,7 +463,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFDC2626),
+                            backgroundColor: context.appColors.error,
                             shape: RoundedRectangleBorder(
                               borderRadius: AppRadius.radiusMd,
                             ),
@@ -537,10 +537,10 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -550,7 +550,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Material(
-            color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canPrev ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -562,7 +562,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                     Icon(
                       Icons.chevron_left_rounded,
                       size: 18,
-                      color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                      color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
@@ -570,7 +570,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                     ),
                   ],
@@ -580,14 +580,13 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
           ),
           Text(
             'Halaman $_currentPage dari $totalPages',
-            style: const TextStyle(
-              fontSize: 12,
+            style: TextStyle(fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E293B),
+              color: AppColors.neutral800,
             ),
           ),
           Material(
-            color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canNext ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -601,14 +600,14 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
-                      color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                      color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                     ),
                   ],
                 ),
@@ -658,9 +657,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                 }),
                 decoration: InputDecoration(
                   hintText: 'Cari nama mahasiswa, NIM, Faskes, atau Diagnosis...',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: AppColors.neutral500,
+                  prefixIcon: Icon(Icons.search, color: AppColors.neutral500,
                   ),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
@@ -676,15 +673,15 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                       : null,
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.radiusMd,
-                    borderSide: const BorderSide(color: AppColors.neutral300),
+                    borderSide: BorderSide(color: AppColors.neutral300),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusMd,
-                    borderSide: const BorderSide(color: AppColors.neutral300),
+                    borderSide: BorderSide(color: AppColors.neutral300),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusMd,
-                    borderSide: const BorderSide(color: Color(0xFF16A34A), width: 1.5),
+                    borderSide: BorderSide(color: context.appColors.success, width: 1.5),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -759,7 +756,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                 border: Border.all(color: AppColors.neutral200),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withAlpha(5),
+                                    color: context.appColors.onSurface.withAlpha(5),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
@@ -799,7 +796,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                             ? Center(
                                                 child: Text(
                                                   initial,
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     color: AppColors.primary,
                                                     fontWeight:
                                                         FontWeight.bold,
@@ -857,9 +854,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                           ],
                                         ),
                                       ),
-                                      const Icon(
-                                        Icons.chevron_right_rounded,
-                                        color: AppColors.neutral400,
+                                      Icon(Icons.chevron_right_rounded, color: AppColors.neutral400,
                                       ),
                                     ],
                                   ),
@@ -867,7 +862,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                   Container(
                                     padding: AppSpacing.paddingMd,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFF8FAFC),
+                                      color: AppColors.neutral100,
                                       borderRadius: AppRadius.br10,
                                     ),
                                     child: Column(
@@ -875,10 +870,10 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.local_hospital_rounded,
                                               size: 14,
-                                              color: Color(0xFF2563EB),
+                                              color: context.appColors.info,
                                             ),
                                             const SizedBox(width: AppSpacing.s6),
                                             Expanded(

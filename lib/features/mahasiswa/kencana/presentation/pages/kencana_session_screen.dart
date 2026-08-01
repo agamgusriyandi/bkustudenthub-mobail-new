@@ -77,7 +77,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                     Text(
                       provider.errorMessage!,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -146,13 +146,13 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               Icon(
                 Icons.access_time_filled_rounded,
                 size: 16,
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
                 style: AppTextStyles.labelMd.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -163,7 +163,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           Text(
             session.description!,
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
       ],
@@ -227,7 +227,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         final isCompleted = attemptsUsed > 0;
 
         IconData iconData = Icons.lock_rounded;
-        Color iconColor = Colors.grey;
+        Color iconColor = AppColors.neutral500;
         if (isCompleted) {
           iconData = Icons.check_circle_rounded;
           iconColor = AppColors.success;
@@ -294,7 +294,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               isSubmitted
                   ? Icons.check_circle_rounded
                   : Icons.upload_file_rounded,
-          iconColor: isSubmitted ? AppColors.success : Colors.purple,
+          iconColor: isSubmitted ? AppColors.success : context.appColors.info,
           onTap: () async {
             final result = await Navigator.push(
               context,
@@ -354,7 +354,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: AppColors.neutral50,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
                 color: Theme.of(
@@ -365,7 +365,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
             child: Text(
               emptyMessage,
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
               ),
               textAlign: TextAlign.center,
             ),
@@ -424,7 +424,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                     Text(
                       subtitle,
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                   ],
@@ -433,7 +433,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               if (onTap != null)
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.outline,
                   size: 24,
                 ),
             ],

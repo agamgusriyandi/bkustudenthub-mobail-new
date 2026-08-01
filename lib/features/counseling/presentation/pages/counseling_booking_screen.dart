@@ -427,7 +427,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                                     isDisabled
                                         ? AppColors.neutral500
                                       : isSelected
-                                      ? Colors.white70
+                                        ? context.appColors.onPrimary
                                       : outlineColor,
                               ),
                             ),
@@ -439,7 +439,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                                       isDisabled
                                           ? AppColors.neutral500
                                         : isSelected
-                                        ? Colors.white70
+                                      ? context.appColors.onPrimary
                                         : primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -481,7 +481,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                           Text(
                             'Sisa $sisaKuota/$kuota',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: isSelected ? Colors.white70 : outlineColor,
+                              color: isSelected ? context.appColors.onPrimary : outlineColor,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

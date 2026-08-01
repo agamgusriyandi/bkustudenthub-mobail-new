@@ -73,7 +73,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
                       Text(
                         provider.errorMessage!,
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -104,7 +104,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
                       Text(
                         'Sertifikat belum tersedia.',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -112,7 +112,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
                       Text(
                         'Sertifikat akan diterbitkan setelah kamu dinyatakan lulus.',
                         style: AppTextStyles.bodySm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -185,7 +185,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
           Text(
             'Program Kencana ${cert.periodName ?? ''}',
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -215,7 +215,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
             'INFORMASI SERTIFIKAT',
             style: AppTextStyles.labelSm.copyWith(
               fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontSize: 10,
               letterSpacing: 0.5,
             ),
@@ -243,7 +243,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
         Text(
           label,
           style: AppTextStyles.labelMd.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
         const SizedBox(width: AppSpacing.md),

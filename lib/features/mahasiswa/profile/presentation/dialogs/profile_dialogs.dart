@@ -155,7 +155,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                         'Kartu Mahasiswa Digital',
                         style: AppTextStyles.titleLg.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -166,7 +166,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                           borderRadius: AppRadius.radiusXl,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(8),
+                              color: context.appColors.onSurface.withAlpha(8),
                               blurRadius: 25,
                             ),
                           ],
@@ -210,7 +210,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                             Text(
                               student.nim,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1,
                               ),
@@ -365,9 +365,9 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                     controller: tempatLahirController,
                     decoration: InputDecoration(
                       hintText: 'Contoh: Bandung',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.location_city_rounded,
-                        color: Colors.pink,
+                        color: context.appColors.error,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusLg,
@@ -402,8 +402,8 @@ void showEditPersonalData(BuildContext context, StudentProvider student) {
                               colorScheme: ColorScheme.light(
                                 primary:
                                     Theme.of(stateContext).colorScheme.primary,
-                                onPrimary: Colors.white,
-                                onSurface: Colors.black,
+                                onPrimary: context.appColors.surface,
+                                onSurface: context.appColors.onSurface,
                               ),
                             ),
                             child: child!,
@@ -622,7 +622,7 @@ void showCertificatesBottomSheet(
                   'E-Sertifikat Saya',
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                   ),
                 ),
                 Container(
@@ -706,7 +706,7 @@ void showCertificatesBottomSheet(
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(5),
+                                  color: context.appColors.onSurface.withAlpha(5),
                                   blurRadius: 15,
                                   offset: const Offset(0, 5),
                                 ),

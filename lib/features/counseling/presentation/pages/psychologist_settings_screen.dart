@@ -221,12 +221,11 @@ class _PsychologistSettingsScreenState
       subtitle: Text(
         'Kelengkapan data profil',
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
-        ),
+          color: context.appColors.onSurface.withAlpha(150),        ),
       ),
       trailing: Icon(
         Icons.chevron_right_rounded,
-        color: Theme.of(context).colorScheme.outline,
+        color: context.appColors.onSurface.withAlpha(150),
       ),
       onTap: () => _showProfileBottomSheet(profile),
     );
@@ -373,14 +372,14 @@ class _PsychologistSettingsScreenState
                                 children: [
                                   Icon(
                                     Icons.verified_rounded,
-                                    color: Color(0xFF34D399),
+                                    color: context.appColors.success,
                                     size: 12,
                                   ),
                                   SizedBox(width: AppSpacing.xs),
                                   Text(
                                     'Verified',
                                     style: AppTextStyles.labelMd.copyWith(
-                                      color: Color(0xFF34D399),
+                                      color: context.appColors.success,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -413,12 +412,12 @@ class _PsychologistSettingsScreenState
       leading: Container(
         padding: AppSpacing.padding9,
         decoration: BoxDecoration(
-          color: const Color(0xFFFCE7F3),
+           color: AppColors.error.withAlpha(15),
           borderRadius: AppRadius.radiusMd,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.password_rounded,
-          color: Color(0xFFBE185D),
+          color:                      context.appColors.error,
           size: 20,
         ),
       ),
@@ -429,12 +428,11 @@ class _PsychologistSettingsScreenState
       subtitle: Text(
         'Ganti password akun Anda',
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
-        ),
+          color: context.appColors.onSurface.withAlpha(150),        ),
       ),
       trailing: Icon(
         Icons.chevron_right_rounded,
-        color: Theme.of(context).colorScheme.outline,
+        color: context.appColors.onSurface.withAlpha(150),
       ),
       onTap: () => _showChangePwSheet(),
     );
@@ -477,12 +475,11 @@ class _PsychologistSettingsScreenState
       subtitle: Text(
         subtitle,
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
-        ),
+          color: context.appColors.onSurface.withAlpha(150),        ),
       ),
       trailing: Icon(
         Icons.chevron_right_rounded,
-        color: Theme.of(context).colorScheme.outline,
+        color: context.appColors.onSurface.withAlpha(150),
       ),
       onTap: onTap,
     );
@@ -562,8 +559,7 @@ class _PsychologistSettingsScreenState
                   'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                    height: 1.5,
+                    color: context.appColors.onSurface.withAlpha(150),                    height: 1.5,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s28),
@@ -654,12 +650,12 @@ class _PsychologistSettingsScreenState
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE0E7FF),
+                      color: context.appColors.info.withAlpha(15),
                       borderRadius: AppRadius.radiusMd,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.history_rounded,
-                      color: Color(0xFF4338CA),
+                      color:                        context.appColors.info,
                       size: 20,
                     ),
                   ),
@@ -903,12 +899,12 @@ class _ChangePwBottomSheetState extends State<_ChangePwBottomSheet> {
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFCE7F3),
+                      color: AppColors.error.withAlpha(15),
                       borderRadius: AppRadius.radiusMd,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.lock_rounded,
-                      color: Color(0xFFBE185D),
+                      color:                      context.appColors.error,
                       size: 22,
                     ),
                   ),
@@ -1232,7 +1228,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(20),
+                          color: context.appColors.onSurface.withAlpha(20),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -1249,7 +1245,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withAlpha(120),
+                        color: context.appColors.onSurface.withAlpha(120),
                         shape: BoxShape.circle,
                       ),
                       child:  Center(
@@ -1314,37 +1310,37 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                   Icons.email_rounded,
                   'Email',
                   email,
-                  const Color(0xFFD1FAE5),
-                  const Color(0xFF065F46),
+                       AppColors.success.withAlpha(15),
+                       AppColors.success,
                 ),
                 _infoTile(
                   Icons.phone_rounded,
                   'No. HP',
                   phone,
-                  const Color(0xFFFEF3C7),
-                  const Color(0xFFB45309),
+                       AppColors.warning.withAlpha(15),
+                       AppColors.warning,
                 ),
                 _infoTile(
                   Icons.location_on_rounded,
                   'Lokasi',
                   location,
-                  const Color(0xFFE0E7FF),
-                  const Color(0xFF4338CA),
+                   context.appColors.info.withAlpha(15),
+                   context.appColors.info,
                 ),
                 _infoTile(
                   Icons.language_rounded,
                   'Bahasa',
                   languages,
-                  const Color(0xFFFCE7F3),
-                  const Color(0xFFBE185D),
+                   AppColors.error.withAlpha(15),
+                   context.appColors.error,
                 ),
                 if (bio.isNotEmpty)
                   _infoTile(
                     Icons.notes_rounded,
                     'Bio',
                     bio,
-                    const Color(0xFFF0FDF4),
-                    const Color(0xFF16A34A),
+                     AppColors.success.withAlpha(15),
+                     context.appColors.success,
                   ),
               ],
             ),
@@ -1559,7 +1555,7 @@ class _NotificationReminderBottomSheetState
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(80),
+                color: AppColors.neutral500.withAlpha(80),
                 borderRadius: AppRadius.radiusMd,
               ),
             ),
@@ -1624,7 +1620,7 @@ class _NotificationReminderBottomSheetState
                     decoration: BoxDecoration(
                       color: AppColors.neutral200,
                       borderRadius: AppRadius.radiusMd,
-                      border: Border.all(color: Colors.grey.withAlpha(40)),
+                      border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<int>(

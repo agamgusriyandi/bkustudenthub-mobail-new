@@ -79,7 +79,7 @@ class _OrmawaMutasiScreenState extends State<OrmawaMutasiScreen> {
                     horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? Theme.of(context).colorScheme.primary
+                      ? context.appColors.primary
                       : AppColors.neutral200,
                   borderRadius: AppRadius.radiusXl,
                 ),

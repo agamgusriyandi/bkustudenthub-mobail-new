@@ -375,7 +375,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: context.appColors.onSurface.withAlpha(30),
             blurRadius: 20,
             offset: Offset(0, -5),
           ),

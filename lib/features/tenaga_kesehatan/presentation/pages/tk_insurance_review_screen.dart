@@ -232,7 +232,7 @@ class _TkInsuranceReviewScreenState extends State<TkInsuranceReviewScreen> {
       case 'Menunggu':
         return context.read<ThemeProvider>().colors.warning;
       case 'Ditolak':
-        return Theme.of(context).colorScheme.error;
+        return context.appColors.error;
       default:
         return AppColors.neutral500;
     }

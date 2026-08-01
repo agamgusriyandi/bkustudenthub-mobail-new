@@ -448,22 +448,22 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
 
                 switch (doc['type']) {
                   case 'id':
-                    bgAccent = const Color(0xFFEEF2FF);
-                    iconColor = const Color(0xFF4F46E5);
+                    bgAccent = context.appColors.infoContainer;
+                    iconColor = context.appColors.primary;
                     docIcon = Icons.badge_rounded;
                     break;
                   case 'academic':
-                    bgAccent = const Color(0xFFF0FDFA);
-                    iconColor = const Color(0xFF0D9488);
+                    bgAccent = context.appColors.successContainer;
+                    iconColor = context.appColors.info;
                     docIcon = Icons.school_rounded;
                     break;
                   case 'certificate':
-                    bgAccent = const Color(0xFFF3E8FF);
-                    iconColor = const Color(0xFF9333EA);
+                    bgAccent = context.appColors.infoContainer;
+                    iconColor = context.appColors.info;
                     docIcon = Icons.workspace_premium_rounded;
                     break;
                   default:
-                    bgAccent = const Color(0xFFEFF6FF);
+                    bgAccent = context.appColors.infoContainer;
                     iconColor = AppColors.primary;
                     docIcon = Icons.description_rounded;
                 }
@@ -479,12 +479,12 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                         color: context.appColors.surface,
                         borderRadius: AppRadius.br14,
                         border: Border.all(
-                          color: const Color(0xFFE5E7EB),
+                          color: AppColors.neutral200,
                           width: 1.2,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withAlpha(6),
+                            color: context.appColors.onSurface.withAlpha(6),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -599,7 +599,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(12),
+                          color: context.appColors.onSurface.withAlpha(12),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -662,7 +662,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                           scholarship.provider,
                           textAlign: TextAlign.center,
                           style: AppTextStyles.bodySm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
@@ -682,13 +682,13 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                         Container(
                           padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEEF2FF),
+                            color: context.appColors.infoContainer,
                             borderRadius: AppRadius.radiusSm,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.assignment_ind_rounded,
                             size: 18,
-                            color: Color(0xFF4F46E5),
+                            color: context.appColors.primary,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s10),
@@ -743,7 +743,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                               : Icons
                                                   .chat_bubble_outline_rounded,
                                           size: 16,
-                                          color: const Color(0xFF4F46E5),
+                                          color: context.appColors.primary,
                                         ),
                                         const SizedBox(width: AppSpacing.sm),
                                         Expanded(
@@ -772,16 +772,16 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                             vertical: 6,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFFEEF2FF),
+                                            color: context.appColors.infoContainer,
                                             borderRadius: AppRadius.radiusSm,
                                           ),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              const Icon(
+                                              Icon(
                                                 Icons.link_rounded,
                                                 size: 16,
-                                                color: Color(0xFF4F46E5),
+                                                color: context.appColors.primary,
                                               ),
                                               const SizedBox(width: AppSpacing.s6),
                                               Text(
@@ -790,7 +790,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                                                     .copyWith(
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      color: const Color(0xFF4F46E5),
+                                                      color: context.appColors.primary,
                                                     ),
                                               ),
                                             ],
@@ -823,13 +823,13 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                         Container(
                           padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF0FDFA),
+                            color: context.appColors.successContainer,
                             borderRadius: AppRadius.radiusSm,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.folder_shared_rounded,
                             size: 18,
-                            color: Color(0xFF0D9488),
+                            color: context.appColors.info,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s10),

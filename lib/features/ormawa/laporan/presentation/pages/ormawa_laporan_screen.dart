@@ -103,7 +103,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           canCreateLPJ
               ? FloatingActionButton.extended(
                 onPressed: () => _showAddLaporan(context),
-                backgroundColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: context.appColors.primary,
                 icon: Icon(Icons.note_add_rounded, color: context.appColors.onPrimary),
                 label: Text(
                   'Buat LPJ',
@@ -219,7 +219,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -318,7 +318,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
       case 'draft':
         return AppColors.neutral600;
       case 'diajukan':
-        return const Color(0xFF2563EB);
+        return context.appColors.info;
       case 'disetujui':
         return AppColors.success;
       case 'revisi':
@@ -326,7 +326,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
       case 'ditolak':
         return AppColors.error;
       case 'selesai':
-        return const Color(0xFF6366F1);
+        return context.appColors.info;
       default:
         return AppColors.neutral600;
     }
@@ -370,7 +370,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           vertical: 6,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFE8F5E9),
+          color: AppColors.successContainer,
           borderRadius: AppRadius.radiusMd,
         ),
         child: Row(
@@ -388,7 +388,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: const Color(0xFF166534),
+                  color: AppColors.onSuccessContainer,
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                 ),
@@ -404,7 +404,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           vertical: 6,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFEBEE),
+          color: AppColors.dangerContainer,
           borderRadius: AppRadius.radiusMd,
         ),
         child: Row(
@@ -422,7 +422,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: const Color(0xFF991B1B),
+                   color: AppColors.onDangerContainer,
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                 ),
@@ -598,9 +598,9 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
             style: AppTextStyles.labelSm.copyWith(
               color:
                   isLate
-                      ? const Color(0xFF991B1B)
-                      : (isUrgent
-                          ? const Color(0xFF7C2D12)
+                       ? AppColors.onDangerContainer
+                       : (isUrgent
+                           ? AppColors.onWarningContainer
                           : AppColors.neutral600),
               fontWeight: FontWeight.bold,
               fontSize: 10,
@@ -713,7 +713,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         decimalDigits: 0,
                       ).format(report.realisasiAnggaran),
                       style: AppTextStyles.bodyMd.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.w900,
                         fontSize: 13,
                       ),
@@ -816,7 +816,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     Text(
                       'DETAIL LAPORAN',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -893,7 +893,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                 'Penyerapan Anggaran',
                                 style: AppTextStyles.bodySm.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF334155),
+                                   color: AppColors.neutral800,
                                 ),
                               ),
                               Text(
@@ -901,9 +901,9 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                 style: AppTextStyles.bodySm.copyWith(
                                   fontWeight: FontWeight.w900,
                                   color:
-                                      isOver
-                                          ? const Color(0xFF991B1B)
-                                          : const Color(0xFF166534),
+                                       isOver
+                                           ? AppColors.onDangerContainer
+                                           : AppColors.onSuccessContainer,
                                 ),
                               ),
                             ],
@@ -942,8 +942,8 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
                                         isOver
-                                            ? const Color(0xFF7F1D1D)
-                                            : const Color(0xFF14532D),
+                                            ? AppColors.onErrorContainer
+                                            : AppColors.onSuccessContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 9.5,
                                   ),
@@ -976,7 +976,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                             ? 'Tidak ada catatan evaluasi.'
                             : report.catatan,
                         style: AppTextStyles.bodyMd.copyWith(
-                          color: const Color(0xFF334155),
+                          color: AppColors.neutral800,
                         ),
                       ),
                     ),
@@ -1249,7 +1249,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -1261,7 +1261,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1440,7 +1440,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       child: Text(
                         'Format: ${currencyFormatter.format(double.tryParse(_totalAnggaranController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: const Color(0xFF1E40AF),
+                          color: AppColors.onInfoContainer,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1463,7 +1463,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                       child: Text(
                         'Format: ${currencyFormatter.format(double.tryParse(_realisasiController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: const Color(0xFF166534),
+                          color: AppColors.onSuccessContainer,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1753,7 +1753,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                         ),
                         child: Icon(
                           Icons.note_add_rounded,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.lg),
@@ -1773,7 +1773,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                               child: Text(
                                 'NEW DOCUMENT',
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: context.appColors.primary,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 8,
                                 ),
@@ -1822,7 +1822,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                             child: Text(
                               'Anggaran Terencana (Pagu): ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(_selectedProposal!.budget)}',
                               style: AppTextStyles.labelSm.copyWith(
-                                color: const Color(0xFF1E3A8A),
+                                color: AppColors.onInfoContainer,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1854,7 +1854,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                         child: Text(
                           'Format: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(double.tryParse(_totalAnggaranController.text.replaceAll('.', '')) ?? 0.0)}',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: const Color(0xFF1E40AF),
+                            color: AppColors.onInfoContainer,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1878,7 +1878,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       child: Text(
                         'Format: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(double.tryParse(_realisasiController.text.replaceAll('.', '')) ?? 0.0)}',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: const Color(0xFF166534),
+                          color: AppColors.onSuccessContainer,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1933,12 +1933,12 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                                 Icons.send_rounded,
                                 color: context.appColors.onPrimary,
                               ),
-                              label: const FittedBox(
+                              label: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   'KIRIM LAPORAN',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                     letterSpacing: 0.5,

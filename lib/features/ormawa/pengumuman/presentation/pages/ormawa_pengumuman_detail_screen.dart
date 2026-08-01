@@ -11,7 +11,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
 
   const OrmawaPengumumanDetailScreen({super.key, required this.announcement});
 
-  LinearGradient _getCategoryGradient(String target) {
+  LinearGradient _getCategoryGradient(BuildContext context, String target) {
     switch (target.toLowerCase()) {
       case 'umum':
         return const LinearGradient(
@@ -19,18 +19,18 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight);
       case 'kegiatan':
-        return const LinearGradient(
-            colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
+        return LinearGradient(
+            colors: [context.appColors.info, context.appColors.infoContainer],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight);
       case 'penting':
-        return const LinearGradient(
-            colors: [AppColors.error, Color(0xFFDC2626)],
+        return LinearGradient(
+            colors: [context.appColors.error, context.appColors.danger],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight);
       default:
-        return const LinearGradient(
-            colors: [Color(0xFF0EA5E9), Color(0xFF0284C7)],
+        return LinearGradient(
+            colors: [context.appColors.info, context.appColors.infoContainer],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight);
     }
@@ -39,7 +39,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = announcement;
-    final gradient = _getCategoryGradient(a.target);
+    final gradient = _getCategoryGradient(context, a.target);
     final displayDate = a.tanggalMulai ?? a.createdAt;
 
     return Scaffold(

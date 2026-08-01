@@ -48,7 +48,7 @@ class OrmawaKeuanganDetailScreen extends StatelessWidget {
                       border: Border.all(color: AppColors.neutral200),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(12),
+                          color: context.appColors.onSurface.withAlpha(12),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -134,7 +134,7 @@ class OrmawaKeuanganDetailScreen extends StatelessWidget {
                 builder: (context) => EditKeuanganScreen(transaksi: t),
               ),
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: context.appColors.primary,
             icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
             label: Text(
               'Edit',
@@ -317,12 +317,12 @@ class _EditKeuanganScreenState extends State<EditKeuanganScreen> {
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _handleSubmit,
                 child: _isSubmitting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 24, height: 24,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('SIMPAN PERUBAHAN',
+                        child: CircularProgressIndicator(color: context.appColors.onPrimary, strokeWidth: 2))
+                    : Text('SIMPAN PERUBAHAN',
                         style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                            color: context.appColors.onPrimary, fontWeight: FontWeight.bold, letterSpacing: 1)),
               ),
             ),
           ],
@@ -350,11 +350,11 @@ class _EditKeuanganScreenState extends State<EditKeuanganScreen> {
             border: Border.all(color: isSelected ? color : AppColors.neutral300, width: 2),
           ),
           child: Column(children: [
-            Icon(icon, color: isSelected ? color : Colors.grey, size: 24),
+            Icon(icon, color: isSelected ? color : AppColors.neutral500, size: 24),
             const SizedBox(height: AppSpacing.sm),
             Text(label,
                 style: AppTextStyles.labelSm
-                    .copyWith(color: isSelected ? color : Colors.grey, fontWeight: FontWeight.bold)),
+                    .copyWith(color: isSelected ? color : AppColors.neutral500, fontWeight: FontWeight.bold)),
           ]),
         ),
       ),

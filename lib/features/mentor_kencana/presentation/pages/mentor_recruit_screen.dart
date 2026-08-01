@@ -1,4 +1,5 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -59,7 +60,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchAvailableStudents(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -84,24 +85,20 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                       borderRadius: AppRadius.radiusLg,
                       borderSide: BorderSide(
                         color:
-                            Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
+                            AppThemeColors.surfaceContainerHighest,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusLg,
                       borderSide: BorderSide(
                         color:
-                            Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
+                            AppThemeColors.surfaceContainerHighest,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: AppRadius.radiusLg,
                       borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                       ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
@@ -124,7 +121,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -135,7 +132,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                   child: Text(
                     'Tidak ada mahasiswa baru tersedia',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -197,7 +194,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                                   '${student.nim} â€¢ ${student.faculty}',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                   ),
                                 ),
                               ],

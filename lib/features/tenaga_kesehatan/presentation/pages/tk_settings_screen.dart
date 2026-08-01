@@ -167,7 +167,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey.withAlpha(80),
+                        color: AppColors.neutral500.withAlpha(80),
                         borderRadius: AppRadius.radiusMd,
                       ),
                     ),
@@ -181,9 +181,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           color: AppColors.neutral200,
                           borderRadius: AppRadius.radiusMd,
                         ),
-                        child: const Icon(
-                          Icons.notifications_active_rounded,
-                          color: AppColors.neutral900,
+                        child: Icon(Icons.notifications_active_rounded, color: AppColors.neutral900,
                           size: 20,
                         ),
                       ),
@@ -202,7 +200,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     icon: Icons.notifications_none_rounded,
                     title: 'Notifikasi Booking',
                     subtitle: 'Aktifkan notifikasi booking baru',
-                    color: const Color(0xFF2563EB),
+                    color: context.appColors.info,
                     value: _notifBooking,
                     onChanged: (v) {
                       setSheetState(() => _notifBooking = v);
@@ -214,7 +212,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     icon: Icons.event_rounded,
                     title: 'Pengingat Jadwal',
                     subtitle: 'Notifikasi pengingat pemeriksaan',
-                    color: const Color(0xFF16A34A),
+                    color: context.appColors.success,
                     value: _notifReminder,
                     onChanged: (v) {
                       setSheetState(() => _notifReminder = v);
@@ -226,7 +224,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     icon: Icons.warning_amber_rounded,
                     title: 'Notifikasi Perhatian',
                     subtitle: 'Alert mahasiswa perlu perhatian',
-                    color: const Color(0xFFD97706),
+                    color: context.appColors.warning,
                     value: _notifAlert,
                     onChanged: (v) {
                       setSheetState(() => _notifAlert = v);
@@ -246,9 +244,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF2563EB),
-                        backgroundColor: const Color(0xFFEFF6FF),
-                        side: const BorderSide(color: Color(0xFFBFDBFE)),
+                        foregroundColor: context.appColors.info,
+                        backgroundColor: context.appColors.info.withAlpha(15),
+                        side: BorderSide(color: context.appColors.info.withAlpha(30)),
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.br10,
                         ),
@@ -262,7 +260,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(sheetContext),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF16A34A),
+                        backgroundColor: context.appColors.success,
                         foregroundColor: context.appColors.onPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.br10,
@@ -360,21 +358,21 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           icon: Icons.alternate_email_rounded,
                           title: 'Email Institusi',
                           subtitle: email,
-                          color: const Color(0xFF2563EB),
+                          color: context.appColors.info,
                           onTap: null,
                         ),
                         _buildSettingsTile(
                           icon: Icons.phone_android_rounded,
                           title: 'Nomor WhatsApp',
                           subtitle: phone,
-                          color: const Color(0xFF16A34A),
+                          color: context.appColors.success,
                           onTap: null,
                         ),
                         _buildSettingsTile(
                           icon: Icons.location_on_rounded,
                           title: 'Lokasi Dinas/Praktek',
                           subtitle: lokasi,
-                          color: const Color(0xFFE11D48),
+                          color: context.appColors.error,
                           onTap: null,
                         ),
                       ]),
@@ -388,14 +386,14 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           icon: Icons.person_rounded,
                           title: 'Edit Profil',
                           subtitle: 'Ubah informasi pribadi',
-                          color: const Color(0xFF2563EB),
+                          color: context.appColors.info,
                           onTap: () => _showEditProfileSheet(provider),
                         ),
                         _buildSettingsTile(
                           icon: Icons.lock_outline_rounded,
                           title: 'Ubah Password',
                           subtitle: 'Update kata sandi akun',
-                          color: const Color(0xFFD97706),
+                          color: context.appColors.warning,
                           onTap: () => _showChangePasswordSheet(provider),
                         ),
                       ]),
@@ -409,7 +407,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           icon: Icons.notifications_active_rounded,
                           title: 'Notifikasi & Reminder',
                           subtitle: 'Atur preferensi notifikasi sistem',
-                          color: const Color(0xFF9333EA),
+                          color: context.appColors.info,
                           onTap: _showNotificationsSheet,
                         ),
                       ]),
@@ -515,8 +513,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                                     child: Center(
                                       child: Text(
                                         initials,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w900,
+                                        style: TextStyle(fontWeight: FontWeight.w900,
                                           color: AppColors.neutral600,
                                           fontSize: 20,
                                         ),
@@ -533,8 +530,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                                 child: Center(
                                   child: Text(
                                     initials,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w900,
+                                    style: TextStyle(fontWeight: FontWeight.w900,
                                       color: AppColors.neutral600,
                                       fontSize: 20,
                                     ),
@@ -644,14 +640,14 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
         subtitle: Text(
           subtitle,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.onSurfaceVariant,
           ),
         ),
         trailing:
             onTap != null
                 ? Icon(
                   Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.outline,
+                  color: context.appColors.onSurfaceVariant,
                 )
                 : null,
       ),
@@ -691,13 +687,13 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
         subtitle: Text(
           subtitle,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.onSurfaceVariant,
           ),
         ),
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeThumbColor: Theme.of(context).colorScheme.primary,
+          activeThumbColor: context.appColors.primary,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),
@@ -738,7 +734,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                   'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
@@ -863,9 +859,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           BkuTextField(
                             controller: namaController,
                             label: 'Nama Lengkap',
-                            prefixIcon: const Icon(
-                              Icons.person_rounded,
-                              color: Color(0xFF2563EB),
+                            prefixIcon: Icon(Icons.person_rounded, color: context.appColors.info,
                               size: 20,
                             ),
                           ),
@@ -873,9 +867,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           BkuTextField(
                             controller: emailController,
                             label: 'Email',
-                            prefixIcon: const Icon(
-                              Icons.email_rounded,
-                              color: Color(0xFF16A34A),
+                            prefixIcon: Icon(Icons.email_rounded, color: context.appColors.success,
                               size: 20,
                             ),
                           ),
@@ -883,9 +875,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           BkuTextField(
                             controller: noHpController,
                             label: 'No HP',
-                            prefixIcon: const Icon(
-                              Icons.phone_rounded,
-                              color: Color(0xFF0D9488),
+                            prefixIcon: Icon(Icons.phone_rounded, color: context.appColors.info,
                               size: 20,
                             ),
                           ),
@@ -893,9 +883,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                           BkuTextField(
                             controller: lokasiController,
                             label: 'Lokasi',
-                            prefixIcon: const Icon(
-                              Icons.location_on_rounded,
-                              color: Color(0xFFE11D48),
+                            prefixIcon: Icon(Icons.location_on_rounded, color: context.appColors.error,
                               size: 20,
                             ),
                           ),
@@ -928,7 +916,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF16A34A),
+                            backgroundColor: context.appColors.success,
                             foregroundColor: context.appColors.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: AppRadius.br10,
@@ -1008,9 +996,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                             controller: oldPasswordController,
                             obscureText: true,
                             label: 'Password Lama',
-                            prefixIcon: const Icon(
-                              Icons.lock_outline_rounded,
-                              color: Color(0xFFD97706),
+                            prefixIcon: Icon(Icons.lock_outline_rounded, color: context.appColors.warning,
                               size: 20,
                             ),
                           ),
@@ -1019,9 +1005,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                             controller: newPasswordController,
                             obscureText: true,
                             label: 'Password Baru',
-                            prefixIcon: const Icon(
-                              Icons.lock_rounded,
-                              color: Color(0xFF2563EB),
+                            prefixIcon: Icon(Icons.lock_rounded, color: context.appColors.info,
                               size: 20,
                             ),
                           ),
@@ -1030,9 +1014,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                             controller: confirmPasswordController,
                             obscureText: true,
                             label: 'Konfirmasi Password Baru',
-                            prefixIcon: const Icon(
-                              Icons.lock_clock_rounded,
-                              color: Color(0xFF9333EA),
+                            prefixIcon: Icon(Icons.lock_clock_rounded, color: context.appColors.info,
                               size: 20,
                             ),
                           ),
@@ -1089,7 +1071,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF16A34A),
+                            backgroundColor: context.appColors.success,
                             foregroundColor: context.appColors.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: AppRadius.br10,

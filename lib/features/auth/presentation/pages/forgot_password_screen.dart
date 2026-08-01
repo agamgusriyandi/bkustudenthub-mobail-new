@@ -145,7 +145,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             content: const Text(
               'Kata sandi berhasil diatur ulang. Silakan masuk.',
             ),
-            backgroundColor: Colors.green.shade600,
+            backgroundColor: context.appColors.success,
           ),
         );
         context.go(AppRoutes.login);
@@ -253,7 +253,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.1),
+                                      color: context.appColors.onSurface.withValues(alpha: 0.1),
                                       blurRadius: 24,
                                       offset: const Offset(0, -8),
                                     ),
@@ -346,7 +346,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               letterSpacing: 2.5,
               shadows: [
                 Shadow(
-                  color: Colors.black.withValues(alpha: 0.3),
+                  color: context.appColors.onSurface.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -362,7 +362,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               letterSpacing: 0.8,
               shadows: [
                 Shadow(
-                  color: Colors.black.withValues(alpha: 0.3),
+                  color: context.appColors.onSurface.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),

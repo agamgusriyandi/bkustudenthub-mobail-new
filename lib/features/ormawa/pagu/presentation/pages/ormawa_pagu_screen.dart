@@ -100,7 +100,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         _buildDetailRow(
                           'Sisa Pagu',
                           _formatCurrency(sisaPagu),
-                          Theme.of(context).colorScheme.primary,
+                          context.appColors.primary,
                           Icons.savings_rounded,
                         ),
                         const SizedBox(height: AppSpacing.xl),
@@ -129,7 +129,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: AppColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -141,7 +141,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
           Row(
             children: [
               Icon(Icons.account_balance_rounded,
-                  color: Theme.of(context).colorScheme.primary, size: 20),
+                  color: context.appColors.primary, size: 20),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'RINGKASAN PAGU',
@@ -159,7 +159,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             style: AppTextStyles.titleLg.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
           Text(
@@ -180,7 +180,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                     ? AppColors.error
                     : persentase > 50
                         ? AppColors.warning
-                        : Theme.of(context).colorScheme.primary,
+                        : context.appColors.primary,
               ),
             ),
           ),

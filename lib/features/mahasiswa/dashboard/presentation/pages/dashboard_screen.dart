@@ -68,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => student.loadAllData(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         backgroundColor: context.appColors.surface,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(
@@ -91,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         errorWidget: (context, url, error) {
                           return Icon(
                             Icons.person_rounded,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                             size: 28,
                           );
                         },
@@ -99,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       )
                       : Icon(
                         Icons.person_rounded,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                         size: 28,
                       ),
               showNotification: true,
@@ -117,9 +117,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: Colors.white,
+                    color: context.appColors.surface,
                   ),
                   tooltip: 'Scan Presensi',
                 ),

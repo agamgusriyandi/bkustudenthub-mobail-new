@@ -91,12 +91,12 @@ class _TkClinicalReportsScreenState extends State<TkClinicalReportsScreen> {
         showBackButton: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.download_rounded, color: Colors.white),
+            icon: Icon(Icons.download_rounded, color: context.appColors.surface),
             tooltip: 'Ekspor Excel',
             onPressed: _handleExportExcel,
           ),
           IconButton(
-            icon: const Icon(Icons.picture_as_pdf_rounded, color: Colors.white),
+            icon: Icon(Icons.picture_as_pdf_rounded, color: context.appColors.surface),
             tooltip: 'Unduh Laporan Klinis PDF',
             onPressed: _handleExportPdf,
           ),

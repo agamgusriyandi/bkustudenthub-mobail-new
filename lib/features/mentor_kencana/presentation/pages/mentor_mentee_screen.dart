@@ -40,7 +40,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentees(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -60,7 +60,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -71,7 +71,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                   child: Text(
                     'Belum ada mahasiswa yang terdaftar.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -137,7 +137,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                           subtitle: Text(
                             '${group.mentees.length} Mahasiswa',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                           ),
                           children:
@@ -223,7 +223,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                     '${mentee.nim} • ${mentee.faculty}',
                                     style: AppTextStyles.labelSm.copyWith(
                                       color:
-                                          Theme.of(context).colorScheme.outline,
+                                          context.appColors.outline,
                                     ),
                                   ),
                                   trailing: Row(
@@ -355,7 +355,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
         onPressed: () {
           context.push('/mentor-kencana/recruit');
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: context.appColors.primary,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
         icon: Icon(Icons.person_add_rounded, color: context.appColors.onPrimary),

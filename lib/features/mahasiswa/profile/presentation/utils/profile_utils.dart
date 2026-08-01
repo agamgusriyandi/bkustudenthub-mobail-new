@@ -1,5 +1,6 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
@@ -11,7 +12,7 @@ import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 
 Future<void> pickAvatar(BuildContext context) async {
   final provider = context.read<StudentProvider>();
-  final primaryColor = Theme.of(context).colorScheme.primary;
+  final primaryColor = context.appColors.primary;
   final result = await ImagePicker().pickImage(
     source: ImageSource.gallery,
     maxWidth: 1000,
@@ -27,7 +28,8 @@ Future<void> pickAvatar(BuildContext context) async {
           AndroidUiSettings(
             toolbarTitle: 'Potong Foto',
             toolbarColor: primaryColor,
-            toolbarWidgetColor: Colors.white,
+            // ignore: use_build_context_synchronously
+            toolbarWidgetColor: context.appColors.surface,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
           ),
@@ -51,7 +53,7 @@ Future<void> pickAvatar(BuildContext context) async {
                   isSuccess: true,
                   cancelText: '',
                   confirmText: 'Tutup',
-                  confirmColor: const Color(0xFF10B981),
+                  confirmColor: context.appColors.success,
                   onCancel: () {},
                   onConfirm: () => Navigator.pop(ctx),
                 ),

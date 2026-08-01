@@ -33,7 +33,7 @@ class PsychologistServiceGrid extends StatelessWidget {
             _ServiceItem(
               title: 'Kelola Jadwal',
               icon: Icons.calendar_month_rounded,
-              color: const Color(0xFF003399),
+              color: context.appColors.primary,
               onTap: () => context.push(AppRoutes.scheduleManagement),
             ),
             _ServiceItem(

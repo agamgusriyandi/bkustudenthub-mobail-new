@@ -70,7 +70,7 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
                             border: Border.all(color: AppColors.neutral200),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withAlpha(12),
+                                color: context.appColors.onSurface.withAlpha(12),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -83,7 +83,7 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
                                 children: [
                                   Icon(Icons.payments_rounded,
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                          context.appColors.primary,
                                       size: 20),
                                   const SizedBox(width: AppSpacing.sm),
                                   Text(

@@ -119,7 +119,7 @@ class _CounselingHistoryScreenState extends State<CounselingHistoryScreen> {
             selected: isSelected,
             onSelected: (_) => provider.setFilter(filter.value),
             selectedColor: context.appColors.primary,
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor: AppThemeColors.surfaceContainerHighest,
             labelStyle: AppTextStyles.labelMd.copyWith(
               color: isSelected
                   ? context.appColors.onPrimary
@@ -166,6 +166,17 @@ class _CounselingHistoryScreenState extends State<CounselingHistoryScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      if (booking.psychologistSpecialization.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          booking.psychologistSpecialization,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: context.appColors.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         booking.typeLabel,
@@ -397,6 +408,13 @@ class _CounselingHistoryScreenState extends State<CounselingHistoryScreen> {
                             color: context.appColors.onSurface,
                           ),
                         ),
+                        if (booking.psychologistSpecialization.isNotEmpty)
+                          Text(
+                            booking.psychologistSpecialization,
+                            style: AppTextStyles.bodySm.copyWith(
+                              color: context.appColors.onSurfaceVariant,
+                            ),
+                          ),
                         Text(
                           booking.typeLabel,
                           style: AppTextStyles.bodySm.copyWith(

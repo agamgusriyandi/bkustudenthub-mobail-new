@@ -169,7 +169,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Sistem Mahasiswa',
         variant: AppBarVariant.student,
@@ -370,10 +370,10 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        color: AppThemeColors.surfaceContainerLow,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withAlpha(20),
+          color: context.appColors.outline.withAlpha(20),
         ),
       ),
       child: Column(
@@ -383,7 +383,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             children: [
               Icon(
                 Icons.account_balance_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -399,7 +399,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           Text(
             '(Opsional) Lengkapi data ini untuk pelaporan ke kementerian.',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontSize: 10,
             ),
           ),
@@ -479,10 +479,10 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(15),
+        color: context.appColors.primary.withAlpha(15),
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withAlpha(40),
+          color: context.appColors.primary.withAlpha(40),
         ),
       ),
       child: Row(
@@ -490,7 +490,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
         children: [
           Icon(
             Icons.info_outline_rounded,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -515,7 +515,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           text: text,
           style: AppTextStyles.labelSm.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: context.appColors.onSurface,
           ),
           children: [
             if (required)
@@ -557,19 +557,19 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
         border: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+            color: context.appColors.outline.withAlpha(30),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+            color: context.appColors.outline.withAlpha(30),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             width: 1.5,
           ),
         ),
@@ -589,7 +589,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withAlpha(30),
+          color: context.appColors.outline.withAlpha(30),
         ),
       ),
       child: DropdownButtonHideUnderline(
@@ -601,7 +601,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           isExpanded: true,
           icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
           items:
               items.map((String value) {
@@ -631,7 +631,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             return Theme(
               data: Theme.of(context).copyWith(
                 colorScheme: ColorScheme.light(
-                  primary: Theme.of(context).colorScheme.primary,
+                  primary: context.appColors.primary,
                 ),
               ),
               child: child!,
@@ -654,7 +654,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
           color: context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+            color: context.appColors.outline.withAlpha(30),
           ),
         ),
         child: Row(
@@ -666,7 +666,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             ),
             Icon(
               Icons.calendar_today_rounded,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               size: 20,
             ),
           ],
@@ -685,15 +685,15 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: BoxDecoration(
-          color: hasFile ? const Color(0xFFF0FDF4) : context.appColors.background,
+          color: hasFile ? context.appColors.successContainer : context.appColors.background,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: hasFile ? const Color(0xFF86EFAC) : AppColors.neutral200,
+            color: hasFile ? context.appColors.success : AppColors.neutral200,
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(4),
+              color: context.appColors.onSurface.withAlpha(4),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -704,7 +704,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             Container(
               padding: AppSpacing.padding14,
               decoration: BoxDecoration(
-                color: hasFile ? const Color(0xFFDCFCE7) : const Color(0xFFEFF6FF),
+                color: hasFile ? context.appColors.successContainer : context.appColors.infoContainer,
                 shape: BoxShape.circle,
               ),
               child: Icon(

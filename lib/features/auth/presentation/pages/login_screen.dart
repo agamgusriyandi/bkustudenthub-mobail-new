@@ -259,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
+                                    color: context.appColors.onSurface.withValues(alpha: 0.1),
                                     blurRadius: 24,
                                     offset: const Offset(0, -8),
                                   ),
@@ -432,7 +432,7 @@ class _LoginScreenState extends State<LoginScreen> {
               letterSpacing: 2.5,
               shadows: [
                 Shadow(
-                  color: Colors.black.withValues(alpha: 0.3),
+                  color: context.appColors.onSurface.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -448,7 +448,7 @@ class _LoginScreenState extends State<LoginScreen> {
               letterSpacing: 0.8,
               shadows: [
                 Shadow(
-                  color: Colors.black.withValues(alpha: 0.3),
+                  color: context.appColors.onSurface.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -812,7 +812,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                         borderRadius: AppRadius.radiusLg,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.02),
+                            color: context.appColors.onSurface.withValues(alpha: 0.02),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),

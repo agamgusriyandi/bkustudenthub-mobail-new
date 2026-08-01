@@ -212,7 +212,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                     child: TabBar(
                       controller: _tabController,
                       indicator: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                         borderRadius: AppRadius.br10,
                       ),
                       labelColor: context.appColors.onPrimary,
@@ -337,12 +337,12 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
             borderRadius: AppRadius.radiusLg,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(5),
+                color: context.appColors.onSurface.withAlpha(5),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
             ],
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: AppColors.neutral200),
           ),
           child: Row(
             children: [
@@ -463,7 +463,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(3),
+                color: context.appColors.onSurface.withAlpha(3),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -475,7 +475,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
             enabled: !isReadOnly,
             style: AppTextStyles.bodyMd.copyWith(
               color:
-                  isReadOnly ? Colors.grey[600] : theme.colorScheme.onSurface,
+                  isReadOnly ? AppColors.neutral600 : theme.colorScheme.onSurface,
             ),
             decoration: InputDecoration(
               hintText: 'Tulis ${label.toLowerCase()} di sini...',
@@ -498,7 +498,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                borderSide: BorderSide(color: AppColors.neutral200, width: 1),
               ),
             ),
           ),

@@ -126,10 +126,10 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(15),
+        color: context.appColors.primary.withAlpha(15),
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withAlpha(50),
+          color: context.appColors.primary.withAlpha(50),
         ),
       ),
       child: Row(
@@ -138,12 +138,12 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(30),
+              color: context.appColors.primary.withAlpha(30),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.security_rounded,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
           const SizedBox(width: AppSpacing.lg),
@@ -190,7 +190,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -300,7 +300,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
               ),
             ),
             suffixIcon: IconButton(

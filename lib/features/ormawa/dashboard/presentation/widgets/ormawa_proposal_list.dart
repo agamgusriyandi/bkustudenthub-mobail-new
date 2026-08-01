@@ -1,4 +1,5 @@
 ﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -34,7 +35,7 @@ class OrmawaProposalList extends StatelessWidget {
           child: Text(
             'Belum ada proposal terbaru',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
         ),
@@ -57,19 +58,19 @@ class OrmawaProposalList extends StatelessWidget {
         if (statusLower.contains('disetujui') || statusLower == 'selesai') {
           statusColor = AppColors.success; // Emerald green
           statusIcon = Icons.check_circle_rounded;
-          gradientColors = [const Color(0xFFD1FAE5), const Color(0xFFA7F3D0)];
+          gradientColors = [AppColors.successContainer, AppColors.successContainer];
         } else if (statusLower.contains('tolak') || statusLower == 'batal') {
           statusColor = AppColors.error; // Red
           statusIcon = Icons.cancel_rounded;
-          gradientColors = [const Color(0xFFFEE2E2), const Color(0xFFFECACA)];
+          gradientColors = [AppColors.dangerContainer, AppColors.dangerContainer];
         } else if (statusLower.contains('revisi')) {
           statusColor = AppColors.warning; // Amber
           statusIcon = Icons.edit_document;
-          gradientColors = [const Color(0xFFFEF3C7), const Color(0xFFFDE68A)];
+          gradientColors = [AppColors.warningContainer, AppColors.warningContainer];
         } else {
           statusColor = AppColors.info; // Blue
           statusIcon = Icons.file_present_rounded;
-          gradientColors = [const Color(0xFFDBEAFE), const Color(0xFFBFDBFE)];
+          gradientColors = [AppColors.infoContainer, AppColors.infoContainer];
         }
 
         return FadeInAnimation(
@@ -114,7 +115,7 @@ class OrmawaProposalList extends StatelessWidget {
                             Text(
                               proposal.code,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -151,7 +152,7 @@ class OrmawaProposalList extends StatelessWidget {
                           Icon(
                             Icons.access_time_rounded,
                             size: 14,
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
                           const SizedBox(width: AppSpacing.s6),
                           Text(
@@ -160,7 +161,7 @@ class OrmawaProposalList extends StatelessWidget {
                               'id',
                             ).format(proposal.date),
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                               fontSize: 10,
                             ),
                           ),
@@ -183,7 +184,7 @@ class OrmawaProposalList extends StatelessWidget {
                             Text(
                               'Lihat Detail',
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: context.appColors.primary,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 11,
                               ),
@@ -191,7 +192,7 @@ class OrmawaProposalList extends StatelessWidget {
                             const SizedBox(width: AppSpacing.s2),
                             Icon(
                               Icons.arrow_forward_rounded,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               size: 14,
                             ),
                           ],

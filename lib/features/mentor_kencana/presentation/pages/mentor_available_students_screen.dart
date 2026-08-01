@@ -1,6 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +38,7 @@ class _MentorAvailableStudentsScreenState
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchAvailableStudents(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -60,7 +59,7 @@ class _MentorAvailableStudentsScreenState
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -71,7 +70,7 @@ class _MentorAvailableStudentsScreenState
                   child: Text(
                     'Tidak ada mahasiswa tersedia untuk direkrut.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -133,9 +132,7 @@ class _MentorAvailableStudentsScreenState
                                     Text(
                                       '${student.nim} \u2022 ${student.faculty}',
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outline,
+                                        color: context.appColors.outline,
                                       ),
                                     ),
                                   ],

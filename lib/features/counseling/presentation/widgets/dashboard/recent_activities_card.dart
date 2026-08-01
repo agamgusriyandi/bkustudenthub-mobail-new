@@ -105,7 +105,7 @@ class _ActivityItem extends StatelessWidget {
         border: Border.all(color: AppColors.neutral500.withAlpha(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

@@ -1,4 +1,5 @@
 ﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -130,7 +131,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                                   initial,
                                   style: AppTextStyles.titleLg.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        context.appColors.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),

@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -173,16 +174,16 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                         child: ElevatedButton(
                           onPressed: _isSubmitting ? null : _handleSubmit,
                           child: _isSubmitting
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2),
+                                      color: context.appColors.onPrimary, strokeWidth: 2),
                                 )
-                              : const Text(
+                              : Text(
                                   'SIMPAN LPJ',
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1),
                                 ),
@@ -234,7 +235,7 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
         decoration: InputDecoration(
           hintText: hint,
           prefixIcon:
-              Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+              Icon(icon, color: context.appColors.primary, size: 20),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg, vertical: AppSpacing.lg),

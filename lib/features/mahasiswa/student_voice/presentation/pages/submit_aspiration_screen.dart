@@ -78,7 +78,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Sampaikan Aspirasi',
         variant: AppBarVariant.student,
@@ -137,7 +137,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
           isExpanded: true,
           icon: Icon(
             Icons.arrow_drop_down_rounded,
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
           items:
               [
@@ -187,7 +187,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                   Text(
                     'Identitasmu akan disembunyikan',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ],
@@ -218,7 +218,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
+          color: context.appColors.outline,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -249,7 +249,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                 color:
                     isSelected
                         ? AppColors.neutral800
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                        : context.appColors.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               backgroundColor: context.appColors.surface,
@@ -329,20 +329,20 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
           Icon(
             Icons.add_a_photo_rounded,
             size: 40,
-            color: Theme.of(context).colorScheme.outline.withAlpha(50),
+            color: context.appColors.outline.withAlpha(50),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             'Klik untuk unggah Foto atau Dokumen',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Maksimal 10MB',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline.withAlpha(50),
+              color: context.appColors.outline.withAlpha(50),
               fontSize: 10,
             ),
           ),

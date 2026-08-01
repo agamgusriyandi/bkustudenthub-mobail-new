@@ -32,7 +32,7 @@ class TkStatCard extends StatelessWidget {
         border: Border.all(color: AppColors.neutral300, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -100,8 +100,7 @@ class TkStatCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.s2),
           Text(
             label,
-              style: const TextStyle(
-              fontSize: 12,
+              style: TextStyle(fontSize: 12,
               fontWeight: FontWeight.w600,
               color: AppColors.neutral600,
             ),

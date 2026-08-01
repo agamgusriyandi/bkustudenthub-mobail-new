@@ -173,9 +173,9 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(context).colorScheme.primary,
+              primary: context.appColors.primary,
               onPrimary: context.appColors.onPrimary,
-              onSurface: Theme.of(context).colorScheme.primary,
+              onSurface: context.appColors.primary,
             ),
           ),
           child: child!,
@@ -192,7 +192,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Input Data Kesehatan',
         variant: AppBarVariant.student,
@@ -316,12 +316,12 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               _buildInputCard(
                 '3. Kategori Mental (Self-report)',
                 Icons.psychology_rounded,
-                Colors.purple,
+                context.appColors.info,
                 [
                   Text(
                     'Tingkat Stres (1-10)',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontWeight: FontWeight.bold,
                       fontSize: 11,
                     ),
@@ -331,10 +331,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       Expanded(
                         child: SliderTheme(
                           data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: Colors.purple,
-                            inactiveTrackColor: Colors.purple.withAlpha(50),
-                            thumbColor: Colors.purple,
-                            overlayColor: Colors.purple.withAlpha(30),
+                            activeTrackColor: context.appColors.info,
+                            inactiveTrackColor: context.appColors.info.withAlpha(50),
+                            thumbColor: context.appColors.info,
+                            overlayColor: context.appColors.info.withAlpha(30),
                           ),
                           child: Slider(
                             value: _selectedStressLevel,
@@ -353,13 +353,13 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.purple.withAlpha(30),
+                          color: context.appColors.info.withAlpha(30),
                           borderRadius: AppRadius.radiusMd,
                         ),
                         child: Text(
                           '${_selectedStressLevel.toInt()}',
                           style: AppTextStyles.labelMd.copyWith(
-                            color: Colors.purple,
+                            color: context.appColors.info,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -458,7 +458,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               _buildInputCard(
                 '5. Kategori Opsional (Alat/Klinik)',
                 Icons.query_stats_rounded,
-                Colors.blueGrey,
+                AppColors.neutral400,
                 [
                   Row(
                     children: [
@@ -569,12 +569,12 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(40),
+              color: context.appColors.surface.withAlpha(40),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.speed_rounded,
-              color: Colors.white,
+              color: context.appColors.surface,
               size: 32,
             ),
           ),
@@ -586,7 +586,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 Text(
                   'Prediksi BMI Kamu',
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Colors.white70,
+                    color: AppColors.neutral700,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -594,7 +594,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 Text(
                   _currentBMI > 0 ? _currentBMI.toStringAsFixed(1) : '--',
                   style: AppTextStyles.headlineMd.copyWith(
-                    color: Colors.white,
+                    color: context.appColors.surface,
                     fontWeight: FontWeight.w900,
                     fontSize: 28,
                   ),
@@ -608,7 +608,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               vertical: 6,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusMd,
             ),
             child: Text(
@@ -644,7 +644,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 title,
                 style: AppTextStyles.labelMd.copyWith(
                   fontWeight: FontWeight.w900,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ),
             ],
@@ -673,7 +673,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           color:
               isSelected
                   ? AppColors.error.withAlpha(25)
-                  : Theme.of(context).colorScheme.surface.withAlpha(150),
+                  : context.appColors.surface.withAlpha(150),
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
             color:
@@ -694,7 +694,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               color:
                   isSelected
                       ? AppColors.error
-                      : Theme.of(context).colorScheme.outline,
+                      : context.appColors.outline,
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
@@ -705,7 +705,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                   color:
                       isSelected
                           ? AppColors.error
-                          : Theme.of(context).colorScheme.primary,
+                          : context.appColors.primary,
                   fontSize: 11,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -730,7 +730,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.bold,
             fontSize: 11,
           ),
@@ -743,15 +743,15 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: Theme.of(context).colorScheme.outline.withAlpha(100),
+              color: context.appColors.outline.withAlpha(100),
             ),
             prefixIcon: Icon(
               icon,
               size: 18,
-              color: Theme.of(context).colorScheme.primary.withAlpha(150),
+              color: context.appColors.primary.withAlpha(150),
             ),
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surface.withAlpha(150),
+            fillColor: context.appColors.surface.withAlpha(150),
             contentPadding: const EdgeInsets.all(AppSpacing.lg),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -760,7 +760,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -790,7 +790,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.bold,
             fontSize: 11,
           ),
@@ -805,7 +805,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               vertical: AppSpacing.lg,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface.withAlpha(150),
+              color: context.appColors.surface.withAlpha(150),
               borderRadius: AppRadius.radiusLg,
             ),
             child: Row(
@@ -813,7 +813,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 Icon(
                   icon,
                   size: 18,
-                  color: Theme.of(context).colorScheme.primary.withAlpha(150),
+                  color: context.appColors.primary.withAlpha(150),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -828,7 +828,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 Icon(
                   Icons.calendar_today_rounded,
                   size: 16,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ],
             ),
@@ -851,7 +851,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.bold,
             fontSize: 11,
           ),
@@ -883,7 +883,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               child: Icon(
                 icon,
                 size: 14,
-                color: Theme.of(context).colorScheme.primary.withAlpha(150),
+                color: context.appColors.primary.withAlpha(150),
               ),
             ),
             prefixIconConstraints: const BoxConstraints(
@@ -891,7 +891,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               minHeight: 0,
             ),
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surface.withAlpha(150),
+            fillColor: context.appColors.surface.withAlpha(150),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.md,
@@ -918,7 +918,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         Text(
           label,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.bold,
             fontSize: 11,
           ),
@@ -931,18 +931,18 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: Theme.of(context).colorScheme.outline.withAlpha(100),
+              color: context.appColors.outline.withAlpha(100),
             ),
             prefixIcon: Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
               child: Icon(
                 icon,
                 size: 18,
-                color: Theme.of(context).colorScheme.primary.withAlpha(150),
+                color: context.appColors.primary.withAlpha(150),
               ),
             ),
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surface.withAlpha(150),
+            fillColor: context.appColors.surface.withAlpha(150),
             contentPadding: const EdgeInsets.all(AppSpacing.lg),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
@@ -951,7 +951,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -974,7 +974,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withAlpha(100),
+            color: context.appColors.primary.withAlpha(100),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -1257,7 +1257,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                         Text(
                           'Hasil analisis kebugaran & gaya hidup',
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Colors.white70,
+                            color: AppColors.neutral700,
                           ),
                         ),
                       ],
@@ -1290,7 +1290,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                       child: CircularProgressIndicator(
                                         value: score / 100.0,
                                         strokeWidth: 6,
-                                        backgroundColor: Colors.grey.shade200,
+                                        backgroundColor: AppColors.neutral200,
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
                                               ringColor,
@@ -1311,7 +1311,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                         const Text(
                                           'SKOR',
                                           style: TextStyle(
-                                            color: Colors.grey,
+                                            color: AppColors.neutral500,
                                             fontSize: 7,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1406,10 +1406,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                           style: TextStyle(
                                             color:
                                                 delta['type'] == 'success'
-                                                    ? const Color(0xFF14532D)
+                                                    ? context.appColors.success
                                                     : delta['type'] == 'warning'
-                                                    ? const Color(0xFF7F1D1D)
-                                                    : const Color(0xFF1E3A8A),
+                                                    ? context.appColors.error
+                                                    : context.appColors.primary,
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1420,10 +1420,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                           style: TextStyle(
                                             color:
                                                 delta['type'] == 'success'
-                                                    ? const Color(0xFF166534)
+                                                    ? context.appColors.success
                                                     : delta['type'] == 'warning'
-                                                    ? const Color(0xFF991B1B)
-                                                    : const Color(0xFF1E40AF),
+                                                    ? context.appColors.error
+                                                    : context.appColors.primary,
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,
                                             height: 1.3,
@@ -1443,9 +1443,9 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                             Container(
                               padding: const EdgeInsets.all(AppSpacing.lg),
                               decoration: BoxDecoration(
-                                color: Colors.blue.shade50,
+                                color: context.appColors.infoContainer,
                                 borderRadius: AppRadius.radiusXl,
-                                border: Border.all(color: Colors.blue.shade100),
+                                border: Border.all(color: context.appColors.infoContainer),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1479,10 +1479,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: AppSpacing.sm),
-                                  const Text(
+    Text(
                                     'Tingkat stresmu atau BMI terdeteksi memerlukan perhatian khusus. Kamu bisa menjadwalkan konseling psikologis gratis & rahasia.',
                                     style: TextStyle(
-                                      color: Colors.blueGrey,
+                                      color: AppColors.neutral400,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                       height: 1.3,
@@ -1503,7 +1503,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                         Text(
                                           'Jadwalkan Konseling Sekarang',
                                           style: TextStyle(
-                                            color: const Color(0xFF1E3A8A),
+                                            color: context.appColors.primary,
                                             fontSize: 10,
                                             fontWeight: FontWeight.w900,
                                             decoration:
@@ -1514,7 +1514,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                         Icon(
                                           Icons.arrow_forward_rounded,
                                           size: 10,
-                                          color: const Color(0xFF1E3A8A),
+                                          color: context.appColors.primary,
                                         ),
                                       ],
                                     ),

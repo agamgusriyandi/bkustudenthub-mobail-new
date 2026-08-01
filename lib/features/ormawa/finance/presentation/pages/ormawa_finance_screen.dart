@@ -69,7 +69,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         ),
                       ).then((_) => provider.refreshData());
                     },
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: context.appColors.primary,
                     elevation: 8,
                     icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                     label: Text(
@@ -164,7 +164,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           _obscureNominal
                               ? 'Masuk: Rp â€¢â€¢â€¢ | Keluar: Rp â€¢â€¢â€¢'
                               : 'Masuk: Rp ${_formatNominal(totalMasuk)} | Keluar: Rp ${_formatNominal(totalKeluar)}',
-                      accentColor: Theme.of(context).colorScheme.primary,
+                      accentColor: context.appColors.primary,
                       icon: Icons.account_balance_rounded,
                       showVisibilityToggle: true,
                     ),
@@ -176,7 +176,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           _obscureNominal
                               ? 'Hibah: Rp â€¢â€¢â€¢ | LPJ: Rp â€¢â€¢â€¢'
                               : 'Hibah: Rp ${_formatNominal(campusMasuk)} | LPJ: Rp ${_formatNominal(campusKeluar)}',
-                      accentColor: const Color(0xFF0284C7),
+                      accentColor: context.appColors.info,
                       icon: Icons.assured_workload_rounded,
                     ),
                     const SizedBox(width: AppSpacing.lg),
@@ -187,7 +187,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           _obscureNominal
                               ? 'Iuran: Rp â€¢â€¢â€¢ | Mandiri: Rp â€¢â€¢â€¢'
                               : 'Iuran: Rp ${_formatNominal(orgMasuk)} | Mandiri: Rp ${_formatNominal(orgKeluar)}',
-                      accentColor: const Color(0xFF059669),
+                      accentColor: context.appColors.success,
                       icon: Icons.payments_rounded,
                     ),
                   ],
@@ -247,7 +247,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: AppColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -462,7 +462,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   size: 10,
                                   color:
                                       isCampus
-                                        ? const Color(0xFF1D4ED8)
+                                        ? context.appColors.info
                                         : AppColors.neutral600,
                                 ),
                                 const SizedBox(width: AppSpacing.xs),
@@ -473,7 +473,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                     fontWeight: FontWeight.w900,
                                     color:
                                         isCampus
-                                            ? const Color(0xFF1D4ED8)
+                                            ? context.appColors.info
                                             : AppColors.neutral600,
                                     letterSpacing: 0.5,
                                   ),
@@ -676,13 +676,13 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? Theme.of(context).colorScheme.primary
+                  ? context.appColors.primary
                   : AppColors.neutral200,
           borderRadius: AppRadius.radiusXl,
           border: Border.all(
             color:
                 isSelected
-                    ? Theme.of(context).colorScheme.primary
+                    ? context.appColors.primary
                     : AppColors.neutral300,
           ),
         ),

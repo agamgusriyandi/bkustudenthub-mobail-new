@@ -164,7 +164,7 @@ class QuickStatsCard extends StatelessWidget {
                 Icons.notification_important_rounded,
                 newAppointments,
                 'Baru\nHari Ini',
-                const Color(0xFFF43F5E),
+                context.appColors.error,
                 onTap: () {
                   // Navigate to Booking tab (index 1) and sub-tab Menunggu (index 1)
                   context.read<NavigationProvider>().navigateToBookingsWithTab(
@@ -176,7 +176,7 @@ class QuickStatsCard extends StatelessWidget {
                 Icons.calendar_month_rounded,
                 finishedMonth,
                 'Selesai\nBulan Ini',
-                const Color(0xFF60A5FA),
+                context.appColors.info,
                 onTap: () {
                   // Navigate to Booking tab (index 1) and sub-tab Selesai (index 3)
                   context.read<NavigationProvider>().navigateToBookingsWithTab(

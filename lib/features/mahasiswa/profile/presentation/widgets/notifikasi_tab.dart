@@ -68,7 +68,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
         borderRadius: AppRadius.br22,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -95,7 +95,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
-                    color: Color(0xFF0F172A),
+                    color: AppColors.neutral900,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s3),
@@ -159,7 +159,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF0F172A),
+                        color: AppColors.neutral900,
                       ),
                     ),
                     SizedBox(height: AppSpacing.s3),
@@ -167,7 +167,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
                       'Atur saluran pemberitahuan yang ingin Anda aktifkan',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF475569),
+                        color: AppColors.neutral700,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -183,7 +183,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
           'Notifikasi Email',
           'Info tagihan, tugas, dan pesan penting ke email Anda',
           Icons.mail_outline_rounded,
-          const Color(0xFF3B82F6),
+          context.appColors.info,
           _emailNotif,
           (val) {
             setState(() => _emailNotif = val);
@@ -194,7 +194,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
           'Push Notifications',
           'Pemberitahuan instan di layar handphone Anda',
           Icons.notifications_outlined,
-          const Color(0xFFF59E0B),
+          context.appColors.warning,
           _pushNotif,
           (val) {
             setState(() => _pushNotif = val);
@@ -205,7 +205,7 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
           'In-App Notifikasi',
           'Peringatan saat Anda sedang membuka aplikasi',
           Icons.devices_rounded,
-          const Color(0xFF10B981),
+          context.appColors.success,
           _inAppNotif,
           (val) {
             setState(() => _inAppNotif = val);

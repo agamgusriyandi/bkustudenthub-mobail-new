@@ -2,6 +2,7 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
@@ -121,7 +122,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
         border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: AppColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -222,7 +223,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(3),
+            color: AppColors.onSurface.withAlpha(3),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -262,7 +263,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               Icons.payments_rounded,
               'Estimasi Anggaran',
               formatRp(agenda.estimasiDana),
-              valueColor: Colors.green[700],
+              valueColor: AppColors.success,
               isBold: true,
             ),
           ],
@@ -319,7 +320,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(3),
+            color: AppColors.onSurface.withAlpha(3),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -414,7 +415,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
       child: Text(
         content,
         style: const TextStyle(
-          color: Color(0xFF334155),
+          color: AppColors.neutral800,
           height: 1.6,
           fontSize: 13,
           fontWeight: FontWeight.w500,
@@ -441,11 +442,11 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
             ),
           );
         },
-        icon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
-        label: const Text(
+        icon: Icon(Icons.qr_code_scanner_rounded, color: context.appColors.onPrimary),
+        label: Text(
           'BUKA ABSENSI KEGIATAN',
           style: TextStyle(
-            color: Colors.white,
+            color: context.appColors.onPrimary,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
           ),

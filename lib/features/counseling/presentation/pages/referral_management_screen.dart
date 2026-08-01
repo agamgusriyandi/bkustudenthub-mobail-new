@@ -37,37 +37,37 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
     {
       'label': 'Semua',
       'icon': Icons.dashboard_rounded,
-      'activeBg': const Color(0xFFF1F5F9),
-      'activeFg': const Color(0xFF0F172A),
-      'activeBorder': const Color(0xFFCBD5E1),
+      'activeBg': AppColors.neutral50,
+      'activeFg': AppColors.neutral900,
+      'activeBorder': AppColors.neutral400,
     },
     {
       'label': 'Pending',
       'icon': Icons.hourglass_empty_rounded,
-      'activeBg': const Color(0xFFFEF3C7),
-      'activeFg': const Color(0xFFB45309),
-      'activeBorder': const Color(0xFFFCD34D),
+      'activeBg': AppColors.warning.withAlpha(15),
+      'activeFg': AppColors.warning,
+      'activeBorder': AppColors.warning,
     },
     {
       'label': 'Sent',
       'icon': Icons.send_rounded,
-      'activeBg': const Color(0xFFEFF6FF),
-      'activeFg': const Color(0xFF1D4ED8),
-      'activeBorder': const Color(0xFF93C5FD),
+      'activeBg': AppColors.info.withAlpha(15),
+      'activeFg': AppColors.info,
+      'activeBorder': AppColors.info,
     },
     {
       'label': 'Selesai',
       'icon': Icons.check_circle_rounded,
-      'activeBg': const Color(0xFFF0FDF4),
-      'activeFg': const Color(0xFF15803D),
-      'activeBorder': const Color(0xFF86EFAC),
+      'activeBg': AppColors.success.withAlpha(15),
+      'activeFg': AppColors.success,
+      'activeBorder': AppColors.success,
     },
     {
       'label': 'Ditolak',
       'icon': Icons.cancel_outlined,
-      'activeBg': const Color(0xFFFEF2F2),
-      'activeFg': const Color(0xFFB91C1C),
-      'activeBorder': const Color(0xFFFCA5A5),
+      'activeBg': AppColors.error.withAlpha(15),
+      'activeFg': AppColors.error,
+      'activeBorder': AppColors.error,
     },
   ];
 
@@ -261,13 +261,13 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                               Icon(
                                 Icons.error_outline_rounded,
                                 size: 48,
-                                color: Theme.of(context).colorScheme.error,
+                                color: context.appColors.error,
                               ),
                               const SizedBox(height: AppSpacing.lg),
                               Text(
                                 provider.error!,
                                 style: AppTextStyles.bodyMd.copyWith(
-                                  color: Theme.of(context).colorScheme.error,
+                                  color: context.appColors.error,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -385,7 +385,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+                color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -499,10 +499,10 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
         decoration: BoxDecoration(
           color: context.appColors.surface,
           borderRadius: AppRadius.br14,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: AppColors.neutral300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(8),
+              color: context.appColors.onSurface.withAlpha(8),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -512,7 +512,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Material(
-              color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canPrev ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -525,7 +525,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                       Icon(
                         Icons.chevron_left_rounded,
                         size: 16,
-                        color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Text(
@@ -533,7 +533,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                     ],
@@ -551,14 +551,14 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E293B),
+                      color: AppColors.neutral800,
                     ),
                   ),
                 ),
               ),
             ),
             Material(
-              color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canNext ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -573,14 +573,14 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
-                        color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                     ],
                   ),
@@ -1315,7 +1315,7 @@ class _ReferralCard extends StatelessWidget {
                                         'Tidak dapat membuka tautan PDF',
                                       ),
                                       backgroundColor:
-                                          Theme.of(context).colorScheme.error,
+                                          context.appColors.error,
                                     ),
                                   );
                                 }

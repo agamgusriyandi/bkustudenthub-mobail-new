@@ -95,7 +95,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                           Icon(
                             Icons.lock_outline_rounded,
                             size: 64,
-                            color: Colors.red[400],
+                            color: context.appColors.error,
                           ),
                           const SizedBox(height: AppSpacing.lg),
                           Text(
@@ -183,7 +183,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               provider.hasPermission('create_calendar')
                   ? FloatingActionButton.extended(
                     onPressed: () => _showAddJadwal(context),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: context.appColors.primary,
                     icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                     label: Text(
                       'Tambah Kegiatan',
@@ -206,7 +206,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -234,19 +234,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
           markerDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withAlpha(40),
+            color: context.appColors.primary.withAlpha(40),
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             shape: BoxShape.circle,
           ),
           todayTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -254,11 +254,11 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
           formatButtonVisible: true,
           titleCentered: true,
           formatButtonDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withAlpha(20),
+            color: context.appColors.primary.withAlpha(20),
             borderRadius: AppRadius.radiusMd,
           ),
           formatButtonTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -592,7 +592,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -604,7 +604,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -983,7 +983,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(10),
+        color: context.appColors.primary.withAlpha(10),
         borderRadius: AppRadius.radiusMd,
       ),
       child: Text(
@@ -1003,14 +1003,14 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
         Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withAlpha(15),
+            color: context.appColors.primary.withAlpha(15),
             shape: BoxShape.circle,
           ),
           child: Icon(
             isEdit
                 ? Icons.edit_calendar_rounded
                 : Icons.event_available_rounded,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.appColors.primary,
             size: 26,
           ),
         ),
@@ -1089,7 +1089,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -1148,7 +1148,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusLg,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),

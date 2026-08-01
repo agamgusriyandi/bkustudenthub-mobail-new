@@ -364,12 +364,12 @@ class _PsychologistDashboardScreenState
       height: 36,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(45),
+        color: context.appColors.surface.withAlpha(45),
         borderRadius: AppRadius.br20,
-        border: Border.all(color: Colors.white.withAlpha(90), width: 1.2),
+        border: Border.all(color: context.appColors.surface.withAlpha(90), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(15),
+            color: context.appColors.onSurface.withAlpha(15),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -392,7 +392,7 @@ class _PsychologistDashboardScreenState
                   letterSpacing: 0.2,
                   shadows: [
                     Shadow(
-                      color: Colors.black.withAlpha(50),
+                      color: context.appColors.onSurface.withAlpha(50),
                       blurRadius: 4,
                       offset: const Offset(0, 1),
                     ),
@@ -408,7 +408,7 @@ class _PsychologistDashboardScreenState
 
   Widget _buildInitialsAvatar(String initials) {
     return Container(
-      color: const Color(0xFF001A4D),
+      color: context.appColors.primary,
       child: Center(
         child: Text(
           initials,

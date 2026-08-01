@@ -85,11 +85,11 @@ class _AdminTkListScreenState extends State<AdminTkListScreen> {
                       fillColor: AppColors.neutral50,
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
-                        borderSide: const BorderSide(color: AppColors.neutral200),
+                        borderSide: BorderSide(color: AppColors.neutral200),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
-                        borderSide: const BorderSide(color: AppColors.neutral200),
+                        borderSide: BorderSide(color: AppColors.neutral200),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,

@@ -56,7 +56,7 @@ class AkademikTabWidget extends StatelessWidget {
                 'Jalur Masuk & Asal Sekolah',
                 '$jalurMasuk â€¢ $asalSekolah',
                 Icons.school_rounded,
-                Colors.blue,
+                context.appColors.info,
                 () => showUneditableInfoDialog(context),
               ),
             ],
@@ -102,7 +102,7 @@ class AkademikTabWidget extends StatelessWidget {
                 'Portofolio Digital',
                 'Lihat Jejak Rekam Organisasi',
                 Icons.auto_stories_rounded,
-                Colors.cyan,
+                context.appColors.info,
                 () => context.push(AppRoutes.organisasi),
               ),
               buildMenuItem(

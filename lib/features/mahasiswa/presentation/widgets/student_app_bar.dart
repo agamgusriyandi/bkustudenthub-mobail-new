@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -97,7 +97,7 @@ class StudentAppBar extends StatelessWidget {
                       width: 140,
                       height: 140,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(10),
+                        color: context.appColors.surface.withAlpha(10),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -109,7 +109,7 @@ class StudentAppBar extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(5),
+                        color: context.appColors.surface.withAlpha(5),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -130,10 +130,10 @@ class StudentAppBar extends StatelessWidget {
                                 vertical: AppSpacing.xs,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withAlpha(30),
+                                color: context.appColors.surface.withAlpha(30),
                                 borderRadius: AppRadius.radiusMd,
                                 border: Border.all(
-                                  color: Colors.white.withAlpha(20),
+                                  color: context.appColors.surface.withAlpha(20),
                                 ),
                               ),
                               child: Text(

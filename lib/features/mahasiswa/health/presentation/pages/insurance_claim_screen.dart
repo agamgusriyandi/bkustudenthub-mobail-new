@@ -41,7 +41,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
         onRefresh: () async {
           await student.refreshHealthData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -82,7 +82,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                             width: 4,
                             height: 18,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               borderRadius: AppRadius.radiusXs,
                             ),
                           ),
@@ -92,7 +92,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                             style: AppTextStyles.titleLg.copyWith(
                               fontSize: 18,
                               fontWeight: FontWeight.w900,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                           ),
                         ],
@@ -165,7 +165,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
 
     if (currentStatus == 'APPROVED_TK' || currentStatus == 'APPROVED TK') {
       statusLabel = 'Disetujui Nakes';
-      statusColor = Colors.teal;
+      statusColor = context.appColors.success;
     } else if (currentStatus == 'APPROVED_FINAL' ||
         currentStatus == 'APPROVED FINAL' ||
         currentStatus == 'FINAL APPROVED' ||
@@ -193,7 +193,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -209,7 +209,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                 claim.jenisProvider.replaceAll('_', ' '),
                 style: AppTextStyles.titleSm.copyWith(
                   fontWeight: FontWeight.w900,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ),
               Container(
@@ -362,13 +362,13 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: Theme.of(context).colorScheme.outline),
+          Icon(icon, size: 16, color: context.appColors.outline),
           const SizedBox(width: AppSpacing.s10),
           Expanded(
             child: Text(
               text,
               style: AppTextStyles.labelSm.copyWith(
-                color: Colors.black, // requested by user
+                color: context.appColors.onSurface, // requested by user
                 fontWeight: FontWeight.bold,
                 height: 1.3,
               ),
@@ -402,7 +402,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                   'Pilih Sumber File',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.appColors.primary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -498,19 +498,19 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
           vertical: AppSpacing.md,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: AppColors.neutral200),
           borderRadius: AppRadius.radiusLg,
-          color: Colors.grey[50],
+          color: AppColors.neutral50,
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                color: context.appColors.primary.withAlpha(20),
                 borderRadius: AppRadius.radiusMd,
               ),
-              child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+              child: Icon(icon, color: context.appColors.primary),
             ),
             const SizedBox(width: AppSpacing.lg),
             Expanded(
@@ -637,14 +637,14 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                             'Pengajuan Klaim Asuransi',
                             style: AppTextStyles.titleLg.copyWith(
                               fontWeight: FontWeight.w900,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xl),
                           Text(
                             'Provider Asuransi',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -684,7 +684,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           Text(
                             'Tanggal Kejadian',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -727,7 +727,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                     Icons.calendar_today_rounded,
                                     size: 18,
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                   ),
                                 ],
                               ),
@@ -737,7 +737,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           Text(
                             'Fasilitas Kesehatan (Faskes)',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -765,7 +765,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           Text(
                             'Estimasi Total Biaya (Rp)',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -805,7 +805,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           Text(
                             'Deskripsi & Kronologi Singkat',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -833,7 +833,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           Text(
                             'Unggah Kwitansi / Berkas',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

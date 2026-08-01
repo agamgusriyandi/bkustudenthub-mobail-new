@@ -25,41 +25,41 @@ class TkBookingCard extends StatelessWidget {
   Color get statusColor {
     final s = booking.status.toLowerCase();
     if (s.contains('dikonfirmasi') || s.contains('terjadwal') || s.contains('confirmed')) {
-      return const Color(0xFF1D4ED8);
+      return AppColors.info;
     } else if (s.contains('selesai') || s.contains('completed')) {
-      return const Color(0xFF15803D);
+      return AppColors.success;
     } else if (s.contains('menunggu') || s.contains('pending')) {
-      return const Color(0xFFB45309);
+      return AppColors.warning;
     } else if (s.contains('ditolak') || s.contains('dibatalkan') || s.contains('rejected')) {
-      return const Color(0xFFB91C1C);
+      return AppColors.danger;
     }
-    return const Color(0xFF475569);
+    return AppColors.neutral700;
   }
 
   Color get statusBgColor {
     final s = booking.status.toLowerCase();
     if (s.contains('dikonfirmasi') || s.contains('terjadwal') || s.contains('confirmed')) {
-      return const Color(0xFFEFF6FF);
+      return AppColors.info.withAlpha(15);
     } else if (s.contains('selesai') || s.contains('completed')) {
-      return const Color(0xFFF0FDF4);
+      return AppColors.success.withAlpha(15);
     } else if (s.contains('menunggu') || s.contains('pending')) {
-      return const Color(0xFFFEF3C7);
+      return AppColors.warning.withAlpha(15);
     } else if (s.contains('ditolak') || s.contains('dibatalkan') || s.contains('rejected')) {
-      return const Color(0xFFFEF2F2);
+      return AppColors.danger.withAlpha(15);
     }
-    return const Color(0xFFF8FAFC);
+    return AppColors.neutral100;
   }
 
   Color get statusBorderColor {
     final s = booking.status.toLowerCase();
     if (s.contains('dikonfirmasi') || s.contains('terjadwal') || s.contains('confirmed')) {
-      return const Color(0xFF93C5FD);
+      return AppColors.info.withAlpha(50);
     } else if (s.contains('selesai') || s.contains('completed')) {
-      return const Color(0xFF86EFAC);
+      return AppColors.success.withAlpha(50);
     } else if (s.contains('menunggu') || s.contains('pending')) {
-      return const Color(0xFFFCD34D);
+      return AppColors.warning.withAlpha(50);
     } else if (s.contains('ditolak') || s.contains('dibatalkan') || s.contains('rejected')) {
-      return const Color(0xFFFCA5A5);
+      return AppColors.danger.withAlpha(50);
     }
     return AppColors.neutral300;
   }
@@ -77,7 +77,7 @@ class TkBookingCard extends StatelessWidget {
           border: Border.all(color: AppColors.neutral300, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(4),
+              color: context.appColors.onSurface.withAlpha(4),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -94,7 +94,7 @@ class TkBookingCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: context.appColors.infoContainer,
+                    color: AppColors.infoContainer,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -103,7 +103,7 @@ class TkBookingCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: context.appColors.info,
+                        color: AppColors.info,
                       ),
                     ),
                   ),
@@ -237,9 +237,9 @@ class TkBookingCard extends StatelessWidget {
                     child: OutlinedButton.icon(
                       onPressed: onReject,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: context.appColors.error,
-                        side: const BorderSide(color: Color(0xFFFCA5A5)),
-                        backgroundColor: const Color(0xFFFEF2F2),
+                        foregroundColor: AppColors.danger,
+                        side: BorderSide(color: AppColors.danger.withAlpha(50)),
+                        backgroundColor: AppColors.danger.withAlpha(15),
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.br10,
@@ -258,7 +258,7 @@ class TkBookingCard extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: onAccept,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.success,
+                        backgroundColor: AppColors.success,
                         foregroundColor: context.appColors.onPrimary,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(horizontal: 14),

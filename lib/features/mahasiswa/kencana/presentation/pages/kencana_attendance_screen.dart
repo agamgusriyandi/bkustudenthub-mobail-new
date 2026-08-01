@@ -148,7 +148,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
       case 'permission':
         return AppColors.warning;
       case 'permission_requested':
-        return Theme.of(context).colorScheme.primary;
+        return context.appColors.primary;
       default:
         return AppColors.error;
     }
@@ -220,7 +220,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                       'Rincian Presensi',
                       style: AppTextStyles.titleMd.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -233,7 +233,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/kencana/qr-scan'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: context.appColors.primary,
         icon: Icon(Icons.qr_code_scanner_rounded, color: context.appColors.onPrimary),
         label: Text(
           'Scan Presensi',
@@ -277,7 +277,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                 'Persentase',
                 '${percentage.toStringAsFixed(0)}%',
                 Icons.percent_rounded,
-                Colors.blue,
+                context.appColors.info,
               ),
             ),
           ],
@@ -290,13 +290,13 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
             borderRadius: AppRadius.radiusLg,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(8),
+                color: context.appColors.onSurface.withAlpha(8),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
             ],
             border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant.withAlpha(55),
+              color: context.appColors.outlineVariant.withAlpha(55),
             ),
           ),
           child: Row(
@@ -305,7 +305,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                 'Progress Kehadiran',
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: context.appColors.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: AppSpacing.lg),
@@ -356,13 +356,13 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(55),
+          color: context.appColors.outlineVariant.withAlpha(55),
         ),
       ),
       child: Column(
@@ -386,7 +386,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
             value,
             style: AppTextStyles.titleMd.copyWith(
               fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -396,7 +396,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
             title,
             style: AppTextStyles.labelSm.copyWith(
               fontSize: 10,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: context.appColors.onSurfaceVariant,
               fontWeight: FontWeight.w700,
             ),
             maxLines: 1,
@@ -420,7 +420,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
           'Belum ada sesi presensi',
           textAlign: TextAlign.center,
           style: AppTextStyles.labelMd.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
         ),
       );
@@ -482,14 +482,14 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           title,
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           status == 'present' ? 'Hadir: $timeStr' : label,
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                           ),
                         ),
                         if (canSubmit)
@@ -515,7 +515,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                     Icon(
                                       Icons.edit_note_rounded,
                                       size: 16,
-                                      color: Colors.orange[800],
+                                      color: AppColors.warning,
                                     ),
                                     const SizedBox(width: AppSpacing.xs),
                                     Text(

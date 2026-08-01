@@ -222,7 +222,7 @@ class _MentorHandbookReviewScreenState
                   color: context.appColors.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(12),
+                      color: context.appColors.onSurface.withAlpha(12),
                       blurRadius: 10,
                       offset: const Offset(0, -4),
                     ),
@@ -274,7 +274,7 @@ class _MentorHandbookReviewScreenState
         statusIcon = Icons.pending_actions_rounded;
         break;
       default:
-        statusColor = Colors.grey;
+        statusColor = AppColors.neutral500;
         statusText = 'Belum Dikirim';
         statusIcon = Icons.info_rounded;
     }
@@ -308,7 +308,7 @@ class _MentorHandbookReviewScreenState
                   Text(
                     'Catatan: ${data.feedback}',
                     style: AppTextStyles.bodySm.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: context.appColors.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -318,7 +318,7 @@ class _MentorHandbookReviewScreenState
                   Text(
                     'Disubmit: ${data.submittedAt}',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.appColors.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -331,7 +331,6 @@ class _MentorHandbookReviewScreenState
   }
 
   Widget _buildJsonEntry(String key, dynamic value) {
-    final theme = Theme.of(context);
     return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -350,7 +349,7 @@ class _MentorHandbookReviewScreenState
           Text(
             value?.toString() ?? '-',
             style: AppTextStyles.bodyMd.copyWith(
-              color: theme.colorScheme.onSurface,
+              color: context.appColors.onSurface,
               height: 1.5,
             ),
           ),

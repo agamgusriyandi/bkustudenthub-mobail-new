@@ -39,7 +39,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentorNoteDetail(widget.noteId),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -59,7 +59,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -70,7 +70,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                   child: Text(
                     'Catatan tidak ditemukan.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -130,9 +130,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                                               style:
                                                   AppTextStyles.labelSm
                                                       .copyWith(
-                                                        color: Theme.of(
-                                                          context,
-                                                        ).colorScheme.outline,
+                                                        color: context.appColors.outline,
                                                       ),
                                             ),
                                           ),
@@ -164,12 +162,8 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                                 style: AppTextStyles.labelMd.copyWith(
                                   color:
                                       note.content.isNotEmpty
-                                          ? Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface
-                                          : Theme.of(
-                                            context,
-                                          ).colorScheme.outline,
+                                          ? context.appColors.onSurface
+                                          : context.appColors.outline,
                                   height: 1.6,
                                 ),
                               ),
@@ -183,13 +177,13 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                               Icon(
                                 Icons.access_time_rounded,
                                 size: 16,
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                               const SizedBox(width: AppSpacing.sm),
                               Text(
                                 note.createdAt,
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: Theme.of(context).colorScheme.outline,
+                                  color: context.appColors.outline,
                                 ),
                               ),
                             ],

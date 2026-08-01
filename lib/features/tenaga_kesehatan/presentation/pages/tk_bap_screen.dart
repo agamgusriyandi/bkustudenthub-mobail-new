@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
@@ -49,10 +49,10 @@ class _TkBapScreenState extends State<TkBapScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.neutral300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -62,7 +62,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Material(
-            color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canPrev ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -80,7 +80,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                               color:
                             canPrev
                                 ? context.appColors.secondary
-                                : const Color(0xFFCBD5E1),
+                                : AppColors.neutral400,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
@@ -91,7 +91,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                         color:
                             canPrev
                                 ? context.appColors.secondary
-                                : const Color(0xFFCBD5E1),
+                                : AppColors.neutral400,
                       ),
                     ),
                   ],
@@ -108,7 +108,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
             ),
           ),
           Material(
-            color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canNext ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -128,7 +128,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                         color:
                             canNext
                                 ? context.appColors.secondary
-                                : const Color(0xFFCBD5E1),
+                                : AppColors.neutral400,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
@@ -138,7 +138,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
                       color:
                           canNext
                               ? context.appColors.secondary
-                              : const Color(0xFFCBD5E1),
+                              : AppColors.neutral400,
                     ),
                   ],
                 ),
@@ -264,8 +264,8 @@ class _TkBapScreenState extends State<TkBapScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFEF2F2),
+              decoration: BoxDecoration(
+                color: context.appColors.error.withAlpha(15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -350,7 +350,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
   Widget _buildBapCard(BuildContext context, TkBapModel bap) {
     final isFinal = bap.status == 'FINAL';
     final statusColor = isFinal ? context.appColors.success : context.appColors.warning;
-    final statusBg = isFinal ? const Color(0xFFF0FDF4) : const Color(0xFFFEF3C7);
+    final statusBg = isFinal ? context.appColors.success.withAlpha(15) : context.appColors.warning.withAlpha(15);
 
     return Material(
       color: Colors.transparent,
@@ -365,7 +365,7 @@ class _TkBapScreenState extends State<TkBapScreen> {
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(5),
+                color: context.appColors.onSurface.withAlpha(5),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -615,9 +615,9 @@ class _TkBapScreenState extends State<TkBapScreen> {
     final s = status.toLowerCase();
     final isFinal = s == 'final' || s == 'selesai';
 
-    final color = isFinal ? const Color(0xFF15803D) : const Color(0xFFB45309);
-    final bg = isFinal ? const Color(0xFFF0FDF4) : const Color(0xFFFEF3C7);
-    final border = isFinal ? const Color(0xFF86EFAC) : const Color(0xFFFCD34D);
+    final color = isFinal ? context.appColors.success : context.appColors.warning;
+    final bg = isFinal ? context.appColors.success.withAlpha(15) : context.appColors.warning.withAlpha(15);
+    final border = isFinal ? context.appColors.success.withAlpha(50) : context.appColors.warning.withAlpha(50);
     final text = isFinal ? 'Selesai' : 'Menunggu';
 
     return Container(

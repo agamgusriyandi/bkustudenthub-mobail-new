@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +96,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         Icon(
                           Icons.error_outline_rounded,
                           size: 56,
-                          color: Colors.red[300],
+                          color: AppColors.neutral300,
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
@@ -161,7 +161,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -284,7 +284,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         gradient: LinearGradient(
                           colors: () {
                             if (!isActive) {
-                              return [Colors.grey, Colors.grey.shade400];
+                              return [AppColors.neutral500, AppColors.neutral400];
                             }
                             final primaryColor = AppColors.neutral600;
                             final hslPrimary = HSLColor.fromColor(primaryColor);
@@ -353,9 +353,9 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                         width: 14,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: isActive ? AppColors.success : Colors.grey,
+                          color: isActive ? AppColors.success : AppColors.neutral500,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          border: Border.all(color: context.appColors.surface, width: 2),
                         ),
                       ),
                     ),
@@ -397,14 +397,14 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                               color:
                                   isActive
                                       ? AppColors.success.withAlpha(15)
-                                      : Colors.grey.withAlpha(15),
+                                      : AppColors.neutral500.withAlpha(15),
                               borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
                               isActive ? 'Tersedia' : 'Tidak Tersedia',
                               style: TextStyle(
                                 color:
-                                    isActive ? AppColors.success : Colors.grey,
+                                    isActive ? AppColors.success : AppColors.neutral500,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -518,7 +518,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.withAlpha(60),
+                      color: AppColors.neutral500.withAlpha(60),
                       borderRadius: AppRadius.radiusXs,
                     ),
                   ),
@@ -573,7 +573,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppRadius.radiusLg,
-                        side: BorderSide(color: Colors.grey.withAlpha(30)),
+                        side: BorderSide(color: AppColors.neutral500.withAlpha(30)),
                       ),
                       tileColor: context.appColors.surface,
                     ),

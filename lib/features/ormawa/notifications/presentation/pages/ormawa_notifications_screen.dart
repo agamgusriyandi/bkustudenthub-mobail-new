@@ -136,18 +136,18 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
       return AppColors.info;
     }
     if (typeLower == 'finance' || titleLower.contains('kas')) {
-      return const Color(0xFF14B8A6);
+      return context.appColors.success;
     }
     if (typeLower == 'aspiration' || titleLower.contains('aspirasi')) {
-      return const Color(0xFFF97316);
+      return context.appColors.warning;
     }
     if (titleLower.contains('anggota')) {
-      return const Color(0xFF2563EB);
+      return context.appColors.info;
     }
     if (titleLower.contains('agenda') || titleLower.contains('kegiatan')) {
-      return const Color(0xFF06B6D4);
+      return context.appColors.info;
     }
-    if (titleLower.contains('lpj')) return const Color(0xFF6366F1);
+    if (titleLower.contains('lpj')) return context.appColors.info;
     if (titleLower.contains('pengumuman')) {
       return AppColors.warning;
     }
@@ -248,13 +248,13 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               decoration: BoxDecoration(
                 color:
                     isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.white,
+                        ? context.appColors.primary
+                        : context.appColors.surface,
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(
                   color:
                       isSelected
-                          ? Theme.of(context).colorScheme.primary
+                          ? context.appColors.primary
                           : AppColors.neutral300,
                 ),
                 boxShadow:
@@ -273,7 +273,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               child: Text(
                 _tabs[index],
                 style: AppTextStyles.labelMd.copyWith(
-                  color: isSelected ? Colors.white : AppColors.neutral600,
+                  color: isSelected ? context.appColors.surface : AppColors.neutral600,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                 ),
               ),
@@ -377,12 +377,12 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: notification.isRead ? Colors.white : color.withAlpha(6),
+            color: notification.isRead ? context.appColors.surface : color.withAlpha(6),
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
               color:
                   notification.isRead
-                      ? Theme.of(context).colorScheme.surfaceContainerHighest
+                      ? context.appColors.surface
                       : color.withAlpha(30),
               width: notification.isRead ? 1 : 1.5,
             ),
@@ -421,7 +421,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                             notification.title,
                             style: AppTextStyles.labelMd.copyWith(
                               fontWeight: FontWeight.w900,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: context.appColors.onSurface,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -479,8 +479,8 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
       builder:
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.6,
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
             ),
             padding: const EdgeInsets.all(AppSpacing.xl),
@@ -517,7 +517,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                           ),
                         ],
                       ),
-                      child: Icon(icon, color: Colors.white, size: 28),
+                      child: Icon(icon, color: context.appColors.onPrimary, size: 28),
                     ),
                     const SizedBox(width: AppSpacing.lg),
                     Expanded(

@@ -261,7 +261,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                       child: Text(
                         'â†’ Surat rujukan otomatis dibuat & dikirim ke Referral',
                         style: AppTextStyles.caption.copyWith(
-                          color: Colors.indigo,
+                          color: context.appColors.info,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -360,7 +360,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
             child: Text(
               'DOKUMEN RAHASIA: Catatan ini hanya dapat diakses oleh Psikolog yang berwenang.',
               style: AppTextStyles.labelSm.copyWith(
-                color: Colors.red[800],
+                color: context.appColors.error,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -401,7 +401,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                 Text(
                   'NIM: ${widget.studentId}',
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.onSurface.withAlpha(150),
                   ),
                 ),
               ],
@@ -419,7 +419,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
               Text(
                 dateStr,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
+                   color: context.appColors.onSurface.withAlpha(150),
                 ),
               ),
             ],

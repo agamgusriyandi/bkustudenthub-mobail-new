@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import '../../../../core/error/error_handler.dart';
@@ -56,7 +57,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.appColors.onSurface,
       body: Stack(
         children: [
           // Camera Preview
@@ -64,7 +65,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
 
           // Overlay
           Container(
-            decoration: BoxDecoration(color: Colors.black.withAlpha(150)),
+            decoration: BoxDecoration(color: context.appColors.onSurface.withAlpha(150)),
           ),
 
           // Scan Area (transparent cutout)
@@ -77,10 +78,10 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                   height: 280 + _animation.value * 2,
                   decoration: BoxDecoration(
                     borderRadius: AppRadius.radiusXl,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: context.appColors.surface, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withAlpha(40),
+                        color: context.appColors.surface.withAlpha(40),
                         blurRadius: 15,
                         spreadRadius: 2,
                       ),
@@ -109,12 +110,10 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
-                            Icons.close_rounded,
-                            color: Colors.white,
+                          child: Icon(Icons.close_rounded, color: context.appColors.surface,
                           ),
                         ),
                       ),
@@ -126,14 +125,14 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                             Text(
                               'Scan QR Code',
                               style: AppTextStyles.titleLg.copyWith(
-                                color: Colors.white,
+                                color: context.appColors.surface,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
                               'Arahkan kamera ke QR Code mahasiswa',
                               style: AppTextStyles.bodySm.copyWith(
-                                color: Colors.white70,
+                                color: context.appColors.surface.withAlpha(179),
                               ),
                             ),
                           ],
@@ -145,12 +144,10 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: const Icon(
-                            Icons.flash_on_rounded,
-                            color: Colors.white,
+                          child: Icon(Icons.flash_on_rounded, color: context.appColors.surface,
                           ),
                         ),
                       ),
@@ -169,11 +166,11 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
             child: Column(
               children: [
                 if (_isProcessing) ...[
-                  const CircularProgressIndicator(color: Colors.white),
+                  CircularProgressIndicator(color: context.appColors.surface),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Memproses data...',
-                    style: AppTextStyles.bodyMd.copyWith(color: Colors.white),
+                    style: AppTextStyles.bodyMd.copyWith(color: context.appColors.surface),
                   ),
                 ] else if (_hasScanned) ...[
                   Container(
@@ -192,15 +189,13 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.white,
+                        Icon(Icons.check_circle_rounded, color: context.appColors.surface,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           'QR Terdeteksi!',
                           style: AppTextStyles.bodyMd.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -214,22 +209,20 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(30),
+                      color: context.appColors.surface.withAlpha(30),
                       borderRadius: AppRadius.radiusXl,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white,
+                        Icon(Icons.info_outline_rounded, color: context.appColors.surface,
                           size: 20,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Posisi QR Code di dalam frame',
                           style: AppTextStyles.bodySm.copyWith(
-                            color: Colors.white,
+                            color: context.appColors.surface,
                           ),
                         ),
                       ],
@@ -251,8 +244,8 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                 icon: const Icon(Icons.keyboard_rounded),
                 label: const Text('Input NIM Manual'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white70),
+                  foregroundColor: context.appColors.surface,
+                  side: BorderSide(color: context.appColors.surface.withAlpha(179)),
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
               ),
@@ -311,7 +304,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_rounded, color: Colors.white),
+                Icon(Icons.check_circle_rounded, color: context.appColors.surface),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(child: Text('Mahasiswa ditemukan: ${patient.nama}')),
               ],
@@ -338,19 +331,19 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.error_outline_rounded, color: Colors.white),
+                  Icon(Icons.error_outline_rounded, color: context.appColors.surface),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text('Mahasiswa dengan NIM $nim tidak ditemukan'),
                   ),
                 ],
               ),
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: context.appColors.error,
               behavior: SnackBarBehavior.floating,
 
               action: SnackBarAction(
                 label: 'Input Manual',
-                textColor: Colors.white,
+                textColor: context.appColors.surface,
                 onPressed: () => _showManualInputDialog(),
               ),
             ),
@@ -383,8 +376,8 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
             ),
             child: Padding(

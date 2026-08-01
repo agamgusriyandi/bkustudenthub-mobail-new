@@ -137,11 +137,11 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
                 fillColor: AppColors.neutral50,
                 border: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
@@ -176,7 +176,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
                   subtitle: Text('${p.nim} • ${p.prodi}'),
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.radiusMd,
-                    side: const BorderSide(color: AppColors.neutral200),
+                    side: BorderSide(color: AppColors.neutral200),
                   ),
                 ),
               ),
@@ -383,7 +383,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
         const SizedBox(width: AppSpacing.sm),
         _buildStatusChip('Perlu Perhatian', context.appColors.warning),
         const SizedBox(width: AppSpacing.sm),
-        _buildStatusChip('Tidak Layak', Theme.of(context).colorScheme.error),
+        _buildStatusChip('Tidak Layak', context.appColors.error),
       ],
     );
   }
@@ -447,11 +447,11 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
             fillColor: AppColors.neutral50,
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,

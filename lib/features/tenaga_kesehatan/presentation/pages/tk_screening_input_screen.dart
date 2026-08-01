@@ -306,12 +306,12 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             decoration: BoxDecoration(
             color: context.appColors.surface,
             borderRadius: AppRadius.radiusMd,
-            border: Border.all(color: const Color(0xFF86EFAC), width: 1.5),
+            border: Border.all(color: context.appColors.success.withAlpha(50), width: 1.5),
             ),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: const Color(0xFFDCFCE7),
+                  backgroundColor: context.appColors.success.withAlpha(20),
                   child: Text(
                     selectedPatient.initials,
                     style: TextStyle(
@@ -344,7 +344,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 IconButton(
                   icon: Icon(
                     Icons.clear_rounded,
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.appColors.error,
                   ),
                   onPressed: () {
                     provider.clearSelection();
@@ -374,7 +374,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               border: Border.all(color: AppColors.neutral200),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(5),
+                  color: context.appColors.onSurface.withAlpha(5),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -422,9 +422,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                     color: AppColors.neutral100,
                     borderRadius: AppRadius.radiusSm,
                   ),
-                  child: const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: AppColors.neutral600,
+                  child: Icon(Icons.arrow_forward_rounded, color: AppColors.neutral600,
                     size: 20,
                   ),
                 ),
@@ -525,7 +523,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                             backgroundColor: AppColors.neutral200,
                             child: Text(
                               patient.initials,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.neutral700,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -584,7 +582,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(3),
+            color: context.appColors.onSurface.withAlpha(3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -666,11 +664,11 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
@@ -764,7 +762,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(3),
+                color: context.appColors.onSurface.withAlpha(3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -785,8 +783,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       _bmi.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 32,
+                      style: TextStyle(fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: AppColors.neutral800,
                       ),
@@ -996,7 +993,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             _buildGridInputCard(
               title: 'SpO2',
               icon: Icons.opacity_rounded,
-              iconColor: Colors.blueAccent,
+              iconColor: context.appColors.info,
               unit: '%',
               inputWidget: TextField(
                 controller: _spo2Controller,
@@ -1020,7 +1017,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             _buildGridInputCard(
               title: 'Gula Darah',
               icon: Icons.water_drop_rounded,
-              iconColor: Colors.deepOrange,
+              iconColor: context.appColors.warning,
               unit: 'mg/dL',
               inputWidget: TextField(
                 controller: _gulaController,
@@ -1043,7 +1040,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             _buildGridInputCard(
               title: 'Goldar',
               icon: Icons.bloodtype_rounded,
-              iconColor: Colors.red,
+              iconColor: context.appColors.error,
               inputWidget: DropdownButton<String>(
                 value: _golonganDarah,
                 underline: const SizedBox(),
@@ -1081,12 +1078,10 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               Container(
                 padding: AppSpacing.paddingSm,
                 decoration: BoxDecoration(
-                  color: Colors.purple.withAlpha(26),
+                  color: context.appColors.info.withAlpha(26),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.visibility_rounded,
-                  color: Colors.purple,
+                child: Icon(Icons.visibility_rounded, color: context.appColors.info,
                   size: 20,
                 ),
               ),
@@ -1235,30 +1230,30 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             _buildPsychologicalCard(
               title: 'Normal',
               icon: Icons.sentiment_satisfied_alt_rounded,
-              activeColor: const Color(0xFF16A34A),
-              activeBg: const Color(0xFFF0FDF4),
-              activeBorder: const Color(0xFF86EFAC),
+              activeColor: context.appColors.success,
+              activeBg: context.appColors.success.withAlpha(15),
+              activeBorder: context.appColors.success.withAlpha(50),
             ),
             _buildPsychologicalCard(
               title: 'Cemas',
               icon: Icons.warning_amber_rounded,
-              activeColor: const Color(0xFFD97706),
-              activeBg: const Color(0xFFFEF3C7),
-              activeBorder: const Color(0xFFFCD34D),
+              activeColor: context.appColors.warning,
+              activeBg: context.appColors.warning.withAlpha(15),
+              activeBorder: context.appColors.warning.withAlpha(50),
             ),
             _buildPsychologicalCard(
               title: 'Stres',
               icon: Icons.error_outline_rounded,
-              activeColor: const Color(0xFFEA580C),
-              activeBg: const Color(0xFFFFEDD5),
-              activeBorder: const Color(0xFFFDBA74),
+              activeColor: context.appColors.warning,
+              activeBg: context.appColors.warning.withAlpha(15),
+              activeBorder: context.appColors.warning.withAlpha(50),
             ),
             _buildPsychologicalCard(
               title: 'Perlu Rujukan Psikolog',
               icon: Icons.psychology_alt_rounded,
-              activeColor: const Color(0xFF9333EA),
-              activeBg: const Color(0xFFF3E8FF),
-              activeBorder: const Color(0xFFD8B4FE),
+              activeColor: context.appColors.info,
+              activeBg: context.appColors.info.withAlpha(15),
+              activeBorder: context.appColors.info.withAlpha(50),
             ),
           ],
         ),
@@ -1382,7 +1377,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                   child: Text(
                     'Gagal memuat psikolog: ${provider.error}',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 );
@@ -1472,7 +1467,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           ),
           value: _eskalasiFaskes,
           onChanged: (v) => setState(() => _eskalasiFaskes = v),
-          activeThumbColor: Theme.of(context).colorScheme.error,
+          activeThumbColor: context.appColors.error,
         ),
         if (_eskalasiFaskes)
           Container(
@@ -1671,7 +1666,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         color: context.appColors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -1736,7 +1731,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           maxLines: 3,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: AppColors.neutral400),
+            hintStyle: TextStyle(color: AppColors.neutral400),
             filled: true,
             fillColor: AppColors.neutral50,
             contentPadding: AppSpacing.paddingLg,
@@ -1746,7 +1741,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
@@ -1778,7 +1773,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           color: isSelected ? color.withAlpha(20) : context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: isSelected ? color : const Color(0xFFE2E8F0),
+            color: isSelected ? color : AppColors.neutral300,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -1865,10 +1860,10 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? activeBg : const Color(0xFFF8FAFC),
+          color: isSelected ? activeBg : AppColors.neutral100,
           borderRadius: AppRadius.radiusMd,
           border: Border.all(
-            color: isSelected ? activeBorder : const Color(0xFFE2E8F0),
+            color: isSelected ? activeBorder : AppColors.neutral300,
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -1877,13 +1872,13 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
             Container(
               padding: AppSpacing.padding6,
               decoration: BoxDecoration(
-                color: isSelected ? activeColor.withAlpha(30) : const Color(0xFFE2E8F0),
+                color: isSelected ? activeColor.withAlpha(30) : AppColors.neutral300,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 16,
-                color: isSelected ? activeColor : const Color(0xFF64748B),
+                color: isSelected ? activeColor : AppColors.neutral600,
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -1893,7 +1888,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color: isSelected ? activeColor : const Color(0xFF334155),
+                  color: isSelected ? activeColor : AppColors.neutral700,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -1933,7 +1928,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
   Color _getNyeriColor(int value) {
     if (value <= 3) return context.watch<ThemeProvider>().colors.success;
     if (value <= 6) return context.watch<ThemeProvider>().colors.warning;
-    return Theme.of(context).colorScheme.error;
+    return context.appColors.error;
   }
 
   void _goToNextStep() {

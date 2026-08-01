@@ -37,37 +37,37 @@ class _PsychologistBookingsScreenState
     {
       'label': 'Semua',
       'icon': Icons.dashboard_rounded,
-      'activeBg': const Color(0xFFF1F5F9),
-      'activeFg': const Color(0xFF0F172A),
-      'activeBorder': const Color(0xFFCBD5E1),
+      'activeBg': AppColors.neutral50,
+      'activeFg': AppColors.neutral900,
+      'activeBorder': AppColors.neutral400,
     },
     {
       'label': 'Menunggu',
       'icon': Icons.hourglass_top_rounded,
-      'activeBg': const Color(0xFFFEF3C7),
-      'activeFg': const Color(0xFFB45309),
-      'activeBorder': const Color(0xFFFCD34D),
+      'activeBg': AppColors.warning.withAlpha(15),
+      'activeFg': AppColors.warning,
+      'activeBorder': AppColors.warning,
     },
     {
       'label': 'Dikonfirmasi',
       'icon': Icons.check_circle_rounded,
-      'activeBg': const Color(0xFFEFF6FF),
-      'activeFg': const Color(0xFF1D4ED8),
-      'activeBorder': const Color(0xFF93C5FD),
+      'activeBg': AppColors.info.withAlpha(15),
+      'activeFg': AppColors.info,
+      'activeBorder': AppColors.info,
     },
     {
       'label': 'Selesai',
       'icon': Icons.task_alt_rounded,
-      'activeBg': const Color(0xFFF0FDF4),
-      'activeFg': const Color(0xFF15803D),
-      'activeBorder': const Color(0xFF86EFAC),
+      'activeBg': AppColors.success.withAlpha(15),
+      'activeFg': AppColors.success,
+      'activeBorder': AppColors.success,
     },
     {
       'label': 'Ditolak',
       'icon': Icons.cancel_rounded,
-      'activeBg': const Color(0xFFFEF2F2),
-      'activeFg': const Color(0xFFB91C1C),
-      'activeBorder': const Color(0xFFFCA5A5),
+      'activeBg': AppColors.error.withAlpha(15),
+      'activeFg': AppColors.error,
+      'activeBorder': AppColors.error,
     },
   ];
 
@@ -270,7 +270,7 @@ class _PsychologistBookingsScreenState
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.error_outline_rounded, size: 64, color: Colors.red[300]),
+            Icon(Icons.error_outline_rounded, size: 64, color: context.appColors.error),
             const SizedBox(height: AppSpacing.lg),
             Text(
               message,
@@ -315,7 +315,7 @@ class _PsychologistBookingsScreenState
               child: Text(
                 '$count permintaan booking menunggu konfirmasi kamu!',
                 style: AppTextStyles.labelMd.copyWith(
-                  color: const Color(0xFF92400E),
+                   color: AppColors.warning,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -351,7 +351,7 @@ class _PsychologistBookingsScreenState
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
-              prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF16A34A)),
+              prefixIcon: Icon(Icons.search_rounded, color: context.appColors.success),
               filled: true,
               fillColor: AppColors.neutral50,
               contentPadding: const EdgeInsets.symmetric(
@@ -366,9 +366,9 @@ class _PsychologistBookingsScreenState
                 borderRadius: AppRadius.radiusLg,
                 borderSide: BorderSide(color: AppColors.neutral500.withAlpha(40)),
               ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: Color(0xFF16A34A), width: 1.5),
+                borderSide: BorderSide(color: context.appColors.success, width: 1.5),
               ),
             ),
           ),
@@ -390,9 +390,9 @@ class _PsychologistBookingsScreenState
                     child: DropdownButton<String>(
                       isExpanded: true,
                       value: _sortOrder,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.sort_rounded,
-                        color: Color(0xFF16A34A),
+                        color: context.appColors.success,
                         size: 18,
                       ),
                       style: AppTextStyles.labelMd.copyWith(
@@ -438,9 +438,9 @@ class _PsychologistBookingsScreenState
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.tune_rounded,
-                        color: Color(0xFF16A34A),
+                        color: context.appColors.success,
                         size: 18,
                       ),
                       style: AppTextStyles.labelMd.copyWith(
@@ -563,10 +563,10 @@ class _PsychologistBookingsScreenState
         decoration: BoxDecoration(
           color: context.appColors.surface,
           borderRadius: AppRadius.br14,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: AppColors.neutral300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(8),
+              color: context.appColors.onSurface.withAlpha(8),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -576,7 +576,7 @@ class _PsychologistBookingsScreenState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Material(
-              color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canPrev ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -589,7 +589,7 @@ class _PsychologistBookingsScreenState
                       Icon(
                         Icons.chevron_left_rounded,
                         size: 16,
-                        color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Text(
@@ -597,7 +597,7 @@ class _PsychologistBookingsScreenState
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canPrev ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canPrev ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                     ],
@@ -615,14 +615,14 @@ class _PsychologistBookingsScreenState
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E293B),
+                      color: AppColors.neutral800,
                     ),
                   ),
                 ),
               ),
             ),
             Material(
-              color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+              color: canNext ? AppColors.neutral50 : AppColors.neutral50,
               borderRadius: AppRadius.br10,
               child: InkWell(
                 borderRadius: AppRadius.br10,
@@ -637,14 +637,14 @@ class _PsychologistBookingsScreenState
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                          color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.s2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
-                        color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                        color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                       ),
                     ],
                   ),
@@ -796,10 +796,10 @@ class _PsychologistBookingsScreenState
       return null;
     }();
 
-    const avatarColors = [
+    final avatarColors = [
       AppColors.info,
       AppColors.success,
-      Color(0xFF8B5CF6),
+      context.appColors.info,
       AppColors.warning,
       AppColors.error,
     ];
@@ -929,7 +929,7 @@ class _PsychologistBookingsScreenState
                             color:
                                 isOnline
                                     ? AppColors.info.withAlpha(20)
-                                    : Colors.teal.withAlpha(20),
+                                    : context.appColors.info.withAlpha(20),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -939,7 +939,7 @@ class _PsychologistBookingsScreenState
                                     ? Icons.videocam_rounded
                                     : Icons.location_on_rounded,
                                 size: 11,
-                                color: isOnline ? AppColors.info : Colors.teal,
+                                color: isOnline ? AppColors.info : context.appColors.info,
                               ),
                               const SizedBox(width: AppSpacing.xs),
                               Text(
@@ -948,7 +948,7 @@ class _PsychologistBookingsScreenState
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                   color:
-                                      isOnline ? AppColors.info : Colors.teal,
+                                      isOnline ? AppColors.info : context.appColors.info,
                                 ),
                               ),
                             ],
@@ -1173,7 +1173,7 @@ class _PsychologistBookingsScreenState
                             : Icons.location_on_rounded,
                         'Mode Konseling',
                         mode,
-                        valueColor: isOnline ? AppColors.info : Colors.teal,
+                        valueColor: isOnline ? AppColors.info : context.appColors.info,
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       _buildDetailRow(
@@ -1233,7 +1233,7 @@ class _PsychologistBookingsScreenState
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF16A34A),
+                                  backgroundColor: context.appColors.success,
                                   foregroundColor: context.appColors.onPrimary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: AppRadius.br10,
@@ -1455,7 +1455,7 @@ class _PsychologistBookingsScreenState
                                 hintText:
                                     'https://meet.google.com/xxx-xxxx-xxx',
                                 hintStyle: AppTextStyles.labelMd.copyWith(
-                                  color: Colors.grey.withAlpha(120),
+                                  color: AppColors.neutral500.withAlpha(120),
                                   fontSize: 12,
                                 ),
                                 filled: true,

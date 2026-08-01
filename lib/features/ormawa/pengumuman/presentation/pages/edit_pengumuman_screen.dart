@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -105,14 +106,14 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _handleSubmit,
                 child: _isSubmitting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 2))
-                    : const Text('SIMPAN PERUBAHAN',
+                            color: context.appColors.onPrimary, strokeWidth: 2))
+                    : Text('SIMPAN PERUBAHAN',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1)),
               ),
@@ -151,12 +152,12 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     decoration: BoxDecoration(
                       color: _selectedTarget == c['id']
-                          ? Theme.of(context).colorScheme.primary.withAlpha(15)
+                          ? context.appColors.primary.withAlpha(15)
                           : AppColors.neutral100,
                       borderRadius: AppRadius.radiusMd,
                       border: Border.all(
                         color: _selectedTarget == c['id']
-                            ? Theme.of(context).colorScheme.primary
+                            ? context.appColors.primary
                             : AppColors.neutral300,
                       ),
                     ),
@@ -164,7 +165,7 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                       children: [
                         Icon(c['icon'] as IconData,
                             color: _selectedTarget == c['id']
-                                ? Theme.of(context).colorScheme.primary
+                                ? context.appColors.primary
                                 : AppColors.neutral500,
                             size: 20),
                         const SizedBox(height: 4),
@@ -173,7 +174,7 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                                 fontSize: 9,
                                 fontWeight: FontWeight.w900,
                                 color: _selectedTarget == c['id']
-                                    ? Theme.of(context).colorScheme.primary
+                                    ? context.appColors.primary
                                     : AppColors.neutral600)),
                       ],
                     ),

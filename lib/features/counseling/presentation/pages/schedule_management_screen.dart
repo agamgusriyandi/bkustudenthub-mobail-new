@@ -135,7 +135,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             cancelText: '',
             confirmText: 'Tutup',
             isSuccess: success,
-            confirmColor: const Color(0xFF16A34A),
+            confirmColor: context.appColors.success,
             onCancel: () {},
             onConfirm: () => Navigator.pop(context),
           ),
@@ -242,7 +242,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                             children: [
                               _buildSectionTitle('Slot Waktu'),
                               Material(
-                                color: const Color(0xFFEFF6FF),
+                                color: AppColors.info.withAlpha(15),
                                 borderRadius: AppRadius.radiusMd,
                                 child: InkWell(
                                   borderRadius: AppRadius.radiusMd,
@@ -260,7 +260,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: AppRadius.radiusMd,
                                       border: Border.all(
-                                        color: const Color(0xFFBFDBFE),
+                                        color: AppColors.info,
                                       ),
                                     ),
                                     padding: const EdgeInsets.symmetric(
@@ -268,18 +268,18 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                                       vertical: 7,
                                     ),
                                     child: Row(
-                                      children: const [
+                                      children: [
                                         Icon(
                                           Icons.add_rounded,
                                           size: 18,
-                                          color: Color(0xFF2563EB),
-                                        ),
-                                        SizedBox(width: AppSpacing.xs),
-                                        Text(
-                                          'Tambah Slot',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF2563EB),
+                                           color: context.appColors.info,
+                                         ),
+                                         const SizedBox(width: AppSpacing.xs),
+                                         Text(
+                                           'Tambah Slot',
+                                           style: TextStyle(
+                                             fontWeight: FontWeight.bold,
+                                             color: context.appColors.info,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -309,7 +309,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     delay: 0.2,
                     child: FloatingActionButton.extended(
                       onPressed: _isSaving ? null : _saveSchedules,
-                      backgroundColor: const Color(0xFF16A34A),
+                      backgroundColor: context.appColors.success,
                       elevation: 4,
                       icon:
                           _isSaving
@@ -400,7 +400,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: const Color(0xFF16A34A),
+                          primary: context.appColors.success,
                           onPrimary: context.appColors.onPrimary,
                           onSurface: AppColors.neutral900,
                         ),
@@ -421,10 +421,10 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                   shape: BoxShape.circle,
                     border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.calendar_today_rounded,
                   size: 18,
-                  color: Color(0xFF16A34A),
+                   color: context.appColors.success,
                 ),
               ),
             ),
@@ -462,7 +462,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 gradient:
                     isSelected
                         ? const LinearGradient(
-                          colors: [Color(0xFF0D9488), Color(0xFF10B981)],
+                          colors: [AppColors.info, AppColors.success],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         )
@@ -473,14 +473,14 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     isSelected
                         ? [
                           BoxShadow(
-                            color: const Color(0xFF0D9488).withAlpha(90),
+                            color: AppColors.info.withAlpha(90),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
                         ]
                         : [
                           BoxShadow(
-                            color: Colors.black.withAlpha(10),
+                            color: context.appColors.onSurface.withAlpha(10),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -489,7 +489,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                     isSelected
                         ? null
                         : Border.all(
-                          color: const Color(0xFFE2E8F0),
+                          color: AppColors.neutral300,
                           width: 1.5,
                         ),
               ),
@@ -563,7 +563,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
         border: Border.all(color: AppColors.neutral500.withAlpha(20)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(12),
+              color: context.appColors.onSurface.withAlpha(12),
               blurRadius: 24,
               offset: const Offset(0, 10),
             ),
@@ -630,7 +630,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
                 isAvailable
                     ? [
                       BoxShadow(
-                        color: Colors.black.withAlpha(8),
+                        color: context.appColors.onSurface.withAlpha(8),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -771,7 +771,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
             border: Border.all(color: AppColors.neutral500.withAlpha(20)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(2),
+                color: context.appColors.onSurface.withAlpha(2),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

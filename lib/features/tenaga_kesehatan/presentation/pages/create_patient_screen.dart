@@ -139,11 +139,11 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
                 fillColor: AppColors.neutral50,
                 border: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
               ),
               items: _fakultasList
@@ -164,11 +164,11 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
                 fillColor: AppColors.neutral50,
                 border: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusMd,
-                  borderSide: const BorderSide(color: AppColors.neutral200),
+                  borderSide: BorderSide(color: AppColors.neutral200),
                 ),
               ),
               items: List.generate(14, (i) => i + 1)
@@ -269,11 +269,11 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
             fillColor: AppColors.neutral50,
             border: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(color: AppColors.neutral200),
+              borderSide: BorderSide(color: AppColors.neutral200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
@@ -281,7 +281,7 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+              borderSide: BorderSide(color: context.appColors.error),
             ),
           ),
         ),

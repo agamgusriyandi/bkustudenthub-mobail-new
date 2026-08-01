@@ -108,7 +108,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
           color: context.appColors.surface,
           borderRadius: AppRadius.radiusSm,
           border: Border.all(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: AppThemeColors.surfaceContainerHighest,
           ),
         ),
         child: Column(
@@ -116,13 +116,13 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
             Icon(
               Icons.newspaper_rounded,
               size: 48,
-              color: Theme.of(context).colorScheme.outline.withAlpha(100),
+              color: context.appColors.outline.withAlpha(100),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'Belum ada berita kampus',
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -130,7 +130,7 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
             Text(
               'Berita terbaru dari kampus akan tampil di sini.',
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline.withAlpha(180),
+                color: context.appColors.outline.withAlpha(180),
               ),
               textAlign: TextAlign.center,
             ),
@@ -226,7 +226,7 @@ class _NewsCard extends StatelessWidget {
                       top: 20,
                       right: 20,
                       child: CircleAvatar(
-                        backgroundColor: Colors.black.withAlpha(100),
+                        backgroundColor: context.appColors.onSurface.withAlpha(100),
                         child: IconButton(
                           onPressed: () => Navigator.pop(context),
                           icon: Icon(
@@ -250,7 +250,7 @@ class _NewsCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.grey.withAlpha(20),
+                            color: AppColors.neutral500.withAlpha(20),
                             borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
@@ -258,7 +258,7 @@ class _NewsCard extends StatelessWidget {
                                 ? news.kategori.toUpperCase()
                                 : 'BERITA KAMPUS',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: context.appColors.onSurface,
                               fontWeight: FontWeight.bold,
                               fontSize: 10,
                             ),
@@ -268,7 +268,7 @@ class _NewsCard extends StatelessWidget {
                         Text(
                           news.judul,
                           style: AppTextStyles.titleLg.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                             fontWeight: FontWeight.w900,
                             fontSize: 22,
                             height: 1.3,
@@ -280,13 +280,13 @@ class _NewsCard extends StatelessWidget {
                             Icon(
                               Icons.calendar_today_rounded,
                               size: 14,
-                              color: Theme.of(context).colorScheme.outline,
+                              color: context.appColors.outline,
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Text(
                               _formatDate(news.tanggalPublish),
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
+                                color: context.appColors.outline,
                               ),
                             ),
                           ],
@@ -295,7 +295,7 @@ class _NewsCard extends StatelessWidget {
                         Text(
                           _parseHtmlString(news.isi),
                           style: AppTextStyles.bodyMd.copyWith(
-                            color: Colors.black87,
+                            color: context.appColors.onSurface,
                             height: 1.7,
                             fontSize: 15,
                           ),
@@ -354,8 +354,8 @@ class _NewsCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withAlpha(90),
-                      Colors.black.withAlpha(230),
+                      context.appColors.onSurface.withAlpha(90),
+                      context.appColors.onSurface.withAlpha(230),
                     ],
                     stops: const [0.25, 0.60, 1.0],
                   ),
@@ -400,7 +400,7 @@ class _NewsCard extends StatelessWidget {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.black.withAlpha(120),
+                              color: context.appColors.onSurface.withAlpha(120),
                               borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
@@ -435,10 +435,10 @@ class _NewsCard extends StatelessWidget {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(40),
+                            color: context.appColors.surface.withAlpha(40),
                             borderRadius: AppRadius.radiusXs,
                             border: Border.all(
-                              color: Colors.white.withAlpha(100),
+                              color: context.appColors.surface.withAlpha(100),
                               width: 1,
                             ),
                           ),

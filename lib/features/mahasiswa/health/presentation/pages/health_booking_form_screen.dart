@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -126,7 +126,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
         onRefresh: () async {
           await student.refreshHealthData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -372,7 +372,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                 Text(
                   worker.spesialisasi,
                   style: AppTextStyles.labelMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -382,7 +382,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                     Icon(
                       Icons.location_on_rounded,
                       size: 14,
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
@@ -390,7 +390,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                           ? worker.lokasi
                           : 'Klinik Kampus',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -421,7 +421,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
       padding: const EdgeInsets.all(AppSpacing.xxl),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(color: AppColors.neutral200),
       ),
@@ -437,7 +437,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
             Text(
               'Tidak ada jadwal praktek tersedia',
               style: AppTextStyles.labelMd.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -494,17 +494,17 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                 decoration: BoxDecoration(
                   color:
                       isFull
-                          ? Colors.grey.withAlpha(10)
+                          ? AppColors.neutral500.withAlpha(10)
                           : isSelected
-                          ? Theme.of(context).colorScheme.primary
+                          ? context.appColors.primary
                           : context.appColors.surface,
                   borderRadius: AppRadius.radiusXl,
                   border: Border.all(
                     color:
                         isFull
-                            ? Colors.grey.withAlpha(30)
+                            ? AppColors.neutral500.withAlpha(30)
                             : isSelected
-                            ? Theme.of(context).colorScheme.primary
+                            ? context.appColors.primary
                             : AppColors.neutral300,
                     width: isSelected ? 2 : 1,
                   ),
@@ -528,9 +528,9 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                       decoration: BoxDecoration(
                         color:
                             isFull
-                                ? Colors.grey.withAlpha(20)
+                                ? AppColors.neutral500.withAlpha(20)
                                 : isSelected
-                                ? Colors.white.withAlpha(30)
+                                ? context.appColors.surface.withAlpha(30)
                                 : AppColors.neutral100,
                         borderRadius: AppRadius.radiusMd,
                       ),
@@ -538,7 +538,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                         isFull ? Icons.block_rounded : Icons.schedule_rounded,
                         color:
                             isFull
-                                ? Colors.grey
+                                ? AppColors.neutral500
                                 : isSelected
                                 ? context.appColors.onPrimary
                                 : AppColors.neutral700,
@@ -556,7 +556,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                               fontWeight: FontWeight.w900,
                               color:
                                   isFull
-                                      ? Colors.grey
+                                      ? AppColors.neutral500
                                       : isSelected
                                       ? context.appColors.onPrimary
                                       : AppColors.neutral900,
@@ -568,10 +568,10 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                             style: AppTextStyles.labelSm.copyWith(
                               color:
                                   isFull
-                                      ? Colors.grey
+                                      ? AppColors.neutral500
                                       : isSelected
-                                      ? Colors.white70
-                                      : Theme.of(context).colorScheme.outline,
+                                      ? AppColors.neutral700
+                                      : context.appColors.outline,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -586,15 +586,15 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                                 decoration: BoxDecoration(
                                   color:
                                       isSelected
-                                          ? Colors.white.withAlpha(30)
-                                          : Colors.teal.withAlpha(15),
+                                          ? context.appColors.surface.withAlpha(30)
+                                          : context.appColors.success.withAlpha(15),
                                   borderRadius: AppRadius.radiusXs,
                                 ),
                                 child: Text(
                                   lokasi.isNotEmpty ? lokasi : 'Klinik Kampus',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        isSelected ? context.appColors.onPrimary : Colors.teal,
+                                        isSelected ? context.appColors.onPrimary : context.appColors.success,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -623,7 +623,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
         hintText:
             'Tuliskan gejala atau keluhan yang Anda rasakan secara detail...',
         hintStyle: AppTextStyles.labelMd.copyWith(
-          color: Theme.of(context).colorScheme.outline.withAlpha(100),
+          color: context.appColors.outline.withAlpha(100),
           fontWeight: FontWeight.bold,
         ),
         filled: true,

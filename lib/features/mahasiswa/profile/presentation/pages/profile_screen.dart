@@ -27,10 +27,10 @@ class _ProfileScreenState extends State<ProfileScreen>
   late TabController _tabController;
 
   static const List<Color> _tabColors = [
-    Color(0xFF2563EB),
-    Color(0xFF059669),
-    Color(0xFF7C3AED),
-    Color(0xFFEA580C),
+    AppColors.info,
+    AppColors.success,
+    AppColors.info,
+    AppColors.warning,
   ];
 
   @override
@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     final student = context.watch<StudentProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.neutral100,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -205,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 'Ubah Kata Sandi',
                 'Perbarui password Anda secara berkala untuk perlindungan akun',
                 Icons.lock_outline_rounded,
-                const Color(0xFF7C3AED),
+                context.appColors.info,
                 () => showChangePasswordDialog(context),
               ),
             ],
@@ -239,7 +239,7 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Container(
-      color: const Color(0xFFF8FAFC),
+      color: AppColors.neutral100,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.xs,
@@ -250,7 +250,7 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
           borderRadius: AppRadius.radiusLg,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(10),
+              color: context.appColors.onSurface.withAlpha(10),
               blurRadius: 14,
               offset: const Offset(0, 4),
             ),

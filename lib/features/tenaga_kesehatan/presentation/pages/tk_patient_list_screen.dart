@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/widgets/tk_patient_card.dart';
@@ -295,13 +296,13 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                         Container(
                           padding: AppSpacing.padding6,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEFF6FF),
+                            color: context.appColors.info.withAlpha(15),
                             borderRadius: AppRadius.radiusSm,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.tune_rounded,
                             size: 18,
-                            color: Color(0xFF2563EB),
+                            color: context.appColors.info,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s10),
@@ -426,9 +427,9 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   onPressed: () => _exportExcel(filteredPatients),
                                   text: 'Export Excel',
                                   icon: Icons.table_chart_rounded,
-                                  bgColor: const Color(0xFFF0FDF4),
-                                  fgColor: const Color(0xFF16A34A),
-                                  border: const BorderSide(color: Color(0xFF86EFAC)),
+                                  bgColor: context.appColors.success.withAlpha(15),
+                                  fgColor: context.appColors.success,
+                                  border: BorderSide(color: context.appColors.success.withAlpha(50)),
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.sm),
@@ -437,9 +438,9 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   onPressed: () => _exportPdf(filteredPatients),
                                   text: 'Export PDF',
                                   icon: Icons.picture_as_pdf_rounded,
-                                  bgColor: const Color(0xFFFEF2F2),
-                                  fgColor: const Color(0xFFDC2626),
-                                  border: const BorderSide(color: Color(0xFFFCA5A5)),
+                                  bgColor: context.appColors.error.withAlpha(15),
+                                  fgColor: context.appColors.error,
+                                  border: BorderSide(color: context.appColors.error.withAlpha(50)),
                                 ),
                               ),
                             ],
@@ -452,9 +453,9 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   onPressed: _handleOfflineForm,
                                   text: 'Form Offline',
                                   icon: Icons.description_rounded,
-                                  bgColor: const Color(0xFFF8FAFC),
-                                  fgColor: const Color(0xFF334155),
-                                  border: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  bgColor: AppColors.neutral100,
+                                  fgColor: AppColors.neutral700,
+                                  border: BorderSide(color: AppColors.neutral400),
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.sm),
@@ -463,8 +464,8 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                   onPressed: _showManualBookingSheet,
                                   text: 'Registrasi Manual',
                                   icon: Icons.person_add_rounded,
-                                  bgColor: const Color(0xFF16A34A),
-                                  fgColor: Colors.white,
+                                  bgColor: context.appColors.success,
+                                  fgColor: context.appColors.surface,
                                 ),
                               ),
                             ],
@@ -511,7 +512,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: isSelected ? const Color(0xFF15803D) : const Color(0xFF64748B),
+            color: isSelected ? context.appColors.success : AppColors.neutral600,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
           ),
         ),
@@ -532,10 +533,10 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
               vertical: AppSpacing.md,
             ),
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFFF0FDF4) : const Color(0xFFF8FAFC),
+              color: isSelected ? context.appColors.success.withAlpha(15) : AppColors.neutral100,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
-                color: isSelected ? const Color(0xFF86EFAC) : const Color(0xFFCBD5E1),
+                color: isSelected ? context.appColors.success.withAlpha(50) : AppColors.neutral400,
                 width: isSelected ? 1.5 : 1.0,
               ),
             ),
@@ -547,7 +548,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                     value,
                     style: TextStyle(
                       fontSize: 14,
-                      color: isSelected ? const Color(0xFF16A34A) : const Color(0xFF1E293B),
+                      color: isSelected ? context.appColors.success : AppColors.neutral800,
                       fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -557,7 +558,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                 Icon(
                   Icons.expand_more_rounded,
                   size: 20,
-                  color: isSelected ? const Color(0xFF16A34A) : const Color(0xFF64748B),
+                  color: isSelected ? context.appColors.success : AppColors.neutral600,
                 ),
               ],
             ),
@@ -575,7 +576,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
   }) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
@@ -609,14 +610,12 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                         'Pilih $title',
                         style: AppTextStyles.titleLg.copyWith(
                           fontWeight: FontWeight.w900,
-                          color: const Color(0xFF1E293B),
+                          color: AppColors.neutral800,
                         ),
                       ),
                       const Spacer(),
                       IconButton(
-                        icon: const Icon(
-                          Icons.close_rounded,
-                          color: Color(0xFF64748B),
+                        icon: Icon(Icons.close_rounded, color: AppColors.neutral600,
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -641,8 +640,8 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                           style: AppTextStyles.bodyMd.copyWith(
                             color:
                                 isSelected
-                                    ? const Color(0xFF16A34A)
-                                    : const Color(0xFF1E293B),
+                                    ? context.appColors.success
+                                    : AppColors.neutral800,
                             fontWeight:
                                 isSelected
                                     ? FontWeight.w800
@@ -651,9 +650,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                         ),
                         trailing:
                             isSelected
-                                ? const Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Color(0xFF16A34A),
+                                ? Icon(Icons.check_circle_rounded, color: context.appColors.success,
                                 )
                                 : null,
                         onTap: () {

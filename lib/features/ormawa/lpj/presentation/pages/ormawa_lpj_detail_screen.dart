@@ -65,7 +65,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                       border: Border.all(color: AppColors.neutral200),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(12),
+                          color: context.appColors.onSurface.withAlpha(12),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -179,7 +179,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                 ),
               ).then((_) => provider.refreshData());
             },
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: context.appColors.primary,
             icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
             label: Text(
               'Edit LPJ',
@@ -205,7 +205,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

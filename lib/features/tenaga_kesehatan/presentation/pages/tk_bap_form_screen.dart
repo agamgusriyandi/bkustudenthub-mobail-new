@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -265,7 +265,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       isAlreadyFinal,
                       isRequired: true,
                       icon: Icons.event_note_rounded,
-                      iconColor: const Color(0xFF2563EB),
+                      iconColor: context.appColors.info,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildInput(
@@ -273,7 +273,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       _tempatController,
                       isAlreadyFinal,
                       icon: Icons.location_on_rounded,
-                      iconColor: const Color(0xFF16A34A),
+                      iconColor: context.appColors.success,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildDatePicker(isAlreadyFinal),
@@ -286,7 +286,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                             _waktuMulaiController,
                             isAlreadyFinal,
                             icon: Icons.access_time_rounded,
-                            iconColor: const Color(0xFF0D9488),
+                            iconColor: context.appColors.info,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.lg),
@@ -296,7 +296,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                             _waktuSelesaiController,
                             isAlreadyFinal,
                             icon: Icons.access_time_filled_rounded,
-                            iconColor: const Color(0xFF9333EA),
+                            iconColor: context.appColors.info,
                           ),
                         ),
                       ],
@@ -357,7 +357,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                             'Tdk Layak',
                             _tdkLayakController,
                             isAlreadyFinal,
-                            color: Theme.of(context).colorScheme.error,
+                            color: context.appColors.error,
                           ),
                         ),
                       ],
@@ -385,7 +385,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       _ttdKepalaNamaController,
                       isAlreadyFinal,
                       icon: Icons.person_rounded,
-                      iconColor: const Color(0xFF2563EB),
+                      iconColor: context.appColors.info,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildInput(
@@ -393,7 +393,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       _ttdKepalaNikController,
                       isAlreadyFinal,
                       icon: Icons.badge_rounded,
-                      iconColor: const Color(0xFF475569),
+                      iconColor: AppColors.neutral700,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     Text(
@@ -409,7 +409,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       _ttdMedisNamaController,
                       isAlreadyFinal,
                       icon: Icons.medical_services_rounded,
-                      iconColor: const Color(0xFF16A34A),
+                      iconColor: context.appColors.success,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildInput(
@@ -417,7 +417,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                       _ttdMedisNikController,
                       isAlreadyFinal,
                       icon: Icons.badge_rounded,
-                      iconColor: const Color(0xFF475569),
+                      iconColor: AppColors.neutral700,
                     ),
                   ],
                 ),
@@ -535,9 +535,9 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF2563EB),
-                    backgroundColor: const Color(0xFFEFF6FF),
-                    side: const BorderSide(color: Color(0xFFBFDBFE)),
+                    foregroundColor: context.appColors.info,
+                    backgroundColor: context.appColors.info.withAlpha(15),
+                    side: BorderSide(color: context.appColors.info.withAlpha(30)),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
@@ -610,7 +610,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(AppSpacing.xs),
-                                  decoration: const BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: AppColors.error,
                                     shape: BoxShape.circle,
                                   ),
@@ -679,7 +679,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(AppSpacing.xs),
-                                  decoration: const BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: AppColors.error,
                                     shape: BoxShape.circle,
                                   ),
@@ -702,7 +702,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                   child: Text(
                     'Belum ada foto dokumentasi',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: AppColors.neutral500),
                   ),
                 ),
             ],
@@ -724,7 +724,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
     IconData? icon,
     Color? iconColor,
   }) {
-    final effectiveColor = iconColor ?? const Color(0xFF2563EB);
+    final effectiveColor = iconColor ?? context.appColors.info;
     return BkuTextField(
       controller: controller,
       readOnly: readOnly,
@@ -747,7 +747,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                 : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusMd,
-          borderSide: const BorderSide(color: AppColors.neutral300),
+          borderSide: BorderSide(color: AppColors.neutral300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusMd,
@@ -876,7 +876,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: color ?? Theme.of(context).colorScheme.primary,
+            color: color ?? context.appColors.primary,
             width: 2,
           ),
         ),
@@ -903,7 +903,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: Theme.of(context).colorScheme.primary,
+                          primary: context.appColors.primary,
                         ),
                       ),
                       child: child!,
@@ -926,7 +926,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
           children: [
             Icon(
               Icons.calendar_month_rounded,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
               size: 20,
             ),
             const SizedBox(width: AppSpacing.md),

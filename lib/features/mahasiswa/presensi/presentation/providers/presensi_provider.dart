@@ -29,7 +29,7 @@ class PresensiProvider extends ChangeNotifier {
     try {
       _presensiList = await _repository.getPresensi(date: _formattedDate);
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -47,7 +47,7 @@ class PresensiProvider extends ChangeNotifier {
       await _repository.checkIn(presensi.id);
       await loadPresensi();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
       notifyListeners();
     }
   }

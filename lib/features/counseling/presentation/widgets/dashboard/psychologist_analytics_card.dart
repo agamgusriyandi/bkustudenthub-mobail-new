@@ -52,7 +52,7 @@ class PsychologistAnalyticsCard extends StatelessWidget {
                       Text(
                         'Ringkasan data minggu ini',
                         style: AppTextStyles.labelMd.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.onSurface.withAlpha(150),
                         ),
                       ),
                     ],
@@ -286,7 +286,7 @@ class _SimpleBar extends StatelessWidget {
                 borderRadius: AppRadius.radiusMd,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2563EB).withAlpha(40),
+                    color: context.appColors.info.withAlpha(40),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),

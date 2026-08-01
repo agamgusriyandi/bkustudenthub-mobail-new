@@ -26,10 +26,10 @@ class _OrmawaStafScreenState extends State<OrmawaStafScreen> {
 
   Color _getRoleColor(String name) {
     final n = name.toLowerCase();
-    if (n.contains('ketua')) return Theme.of(context).colorScheme.primary;
+    if (n.contains('ketua')) return context.appColors.primary;
     if (n.contains('wakil')) return AppColors.info;
     if (n.contains('sekretaris') || n.contains('bendahara')) {
-      return const Color(0xFF0EA5E9);
+      return context.appColors.info;
     }
     if (n.contains('kepala') || n.contains('kadiv')) return AppColors.warning;
     return AppColors.success;
@@ -101,7 +101,7 @@ class _OrmawaStafScreenState extends State<OrmawaStafScreen> {
                               border: Border.all(color: AppColors.neutral200),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(12),
+                                  color: context.appColors.onSurface.withAlpha(12),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),

@@ -73,14 +73,14 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                 children: [
                   Container(
                     padding: AppSpacing.padding20,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFEFF6FF),
+                    decoration: BoxDecoration(
+                      color: context.appColors.info.withAlpha(15),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.event_busy_rounded,
                       size: 48,
-                      color: Color(0xFF2563EB),
+                      color: context.appColors.info,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -242,20 +242,20 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
     final lowerService = schedule.tipeLayanan.toLowerCase();
     if (lowerService.contains('gigi')) {
       serviceIcon = Icons.medical_information_rounded;
-      iconBg = const Color(0xFFEFF6FF);
-      iconColor = const Color(0xFF2563EB);
+      iconBg = context.appColors.info.withAlpha(15);
+      iconColor = context.appColors.info;
     } else if (lowerService.contains('konsultasi') || lowerService.contains('spesialis')) {
       serviceIcon = Icons.health_and_safety_rounded;
-      iconBg = const Color(0xFFF3E8FF);
-      iconColor = const Color(0xFF9333EA);
+      iconBg = context.appColors.info.withAlpha(15);
+      iconColor = context.appColors.info;
     } else if (lowerService.contains('darurat') || lowerService.contains('gawat')) {
       serviceIcon = Icons.volunteer_activism_rounded;
-      iconBg = const Color(0xFFFEF2F2);
-      iconColor = const Color(0xFFDC2626);
+      iconBg = context.appColors.error.withAlpha(15);
+      iconColor = context.appColors.error;
     } else {
       serviceIcon = Icons.medical_services_rounded;
-      iconBg = const Color(0xFFECFDF5);
-      iconColor = const Color(0xFF059669);
+      iconBg = context.appColors.success.withAlpha(15);
+      iconColor = context.appColors.success;
     }
 
     final bool isAvailable = schedule.hasKuota;
@@ -265,10 +265,10 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+        border: Border.all(color: AppColors.neutral300, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: context.appColors.onSurface.withAlpha(10),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -307,13 +307,13 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                         const Icon(
                           Icons.access_time_filled_rounded,
                           size: 13,
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           schedule.waktuFormat,
                           style: AppTextStyles.labelSm.copyWith(
-                            color: const Color(0xFF64748B),
+                            color: AppColors.neutral600,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -328,10 +328,10 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: isAvailable ? const Color(0xFFF0FDF4) : const Color(0xFFFEF2F2),
+                  color: isAvailable ? context.appColors.success.withAlpha(15) : context.appColors.error.withAlpha(15),
                   borderRadius: AppRadius.br20,
                   border: Border.all(
-                    color: isAvailable ? const Color(0xFF86EFAC) : const Color(0xFFFCA5A5),
+                    color: isAvailable ? context.appColors.success.withAlpha(50) : context.appColors.error.withAlpha(50),
                     width: 1,
                   ),
                 ),
@@ -368,14 +368,14 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
               const Icon(
                 Icons.location_on_rounded,
                 size: 14,
-                color: Color(0xFF64748B),
+                color: AppColors.neutral600,
               ),
               const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   schedule.lokasi,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: const Color(0xFF64748B),
+                    color: AppColors.neutral600,
                     fontWeight: FontWeight.w600,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -386,20 +386,19 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                 decoration: BoxDecoration(
                   color: context.appColors.background,
                   borderRadius: AppRadius.radiusSm,
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: AppColors.neutral300),
                 ),
                 child: Text(
                   'Kuota: ${schedule.kuota}',
-                  style: const TextStyle(
-                    fontSize: 10,
+                  style: TextStyle(fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF64748B),
+                    color: AppColors.neutral600,
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.s10),
               Material(
-                color: const Color(0xFFFEF2F2),
+                color: context.appColors.error.withAlpha(15),
                 borderRadius: AppRadius.br10,
                 child: InkWell(
                   borderRadius: AppRadius.br10,
@@ -407,7 +406,7 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                   child: Container(
                     padding: AppSpacing.padding7,
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFFCA5A5), width: 1),
+                      border: Border.all(color: context.appColors.error.withAlpha(50), width: 1),
                       borderRadius: AppRadius.br10,
                     ),
                     child: Icon(
@@ -427,21 +426,21 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
               decoration: BoxDecoration(
                 color: context.appColors.surface,
                 borderRadius: AppRadius.br10,
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(color: AppColors.neutral300),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
                     size: 14,
-                    color: Color(0xFF64748B),
+                    color: AppColors.neutral600,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       schedule.catatan!,
                       style: AppTextStyles.labelSm.copyWith(
-                        color: const Color(0xFF475569),
+                        color: AppColors.neutral700,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -536,10 +535,10 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
       decoration: BoxDecoration(
                   color: context.appColors.surface,
                   borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: AppColors.neutral300),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(8),
+                      color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -549,7 +548,7 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Material(
-            color: canPrev ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canPrev ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -561,7 +560,7 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                     Icon(
                       Icons.chevron_left_rounded,
                       size: 18,
-                      color: canPrev ? context.appColors.secondary : const Color(0xFFCBD5E1),
+                      color: canPrev ? context.appColors.secondary : AppColors.neutral400,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
@@ -569,7 +568,7 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: canPrev ? context.appColors.secondary : const Color(0xFFCBD5E1),
+                        color: canPrev ? context.appColors.secondary : AppColors.neutral400,
                       ),
                     ),
                   ],
@@ -579,14 +578,13 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
           ),
           Text(
             'Halaman $_currentPage dari $totalPages',
-            style: const TextStyle(
-              fontSize: 12,
+            style: TextStyle(fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E293B),
+              color: AppColors.neutral800,
             ),
           ),
           Material(
-            color: canNext ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
+            color: canNext ? AppColors.neutral200 : AppColors.neutral100,
             borderRadius: AppRadius.br10,
             child: InkWell(
               borderRadius: AppRadius.br10,
@@ -600,14 +598,14 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: canNext ? context.appColors.secondary : const Color(0xFFCBD5E1),
+                        color: canNext ? context.appColors.secondary : AppColors.neutral400,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
-                      color: canNext ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+                      color: canNext ? AppColors.neutral800 : AppColors.neutral400,
                     ),
                   ],
                 ),

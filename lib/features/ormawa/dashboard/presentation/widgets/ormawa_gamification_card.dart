@@ -39,49 +39,49 @@ class OrmawaGamificationCard extends StatelessWidget {
     if (rank == 1) {
       // Gold
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFFFD54F), const Color(0xFFFF8F00)],
-        titleColor: const Color(0xFFE65100),
-        textColor: const Color(0xFFE65100),
-        valueColor: const Color(0xFFBF360C),
-        iconColor: const Color(0xFFE65100),
-        iconBgColor: Colors.white.withAlpha(150),
-        progressBgColor: Colors.white.withAlpha(100),
-        progressColor: const Color(0xFFE65100),
+        gradientColors: [AppColors.secondaryFixed, AppColors.secondary],
+        titleColor: context.appColors.secondary,
+        textColor: context.appColors.secondary,
+        valueColor: AppColors.onWarningContainer,
+        iconColor: context.appColors.secondary,
+        iconBgColor: context.appColors.surface.withAlpha(150),
+        progressBgColor: context.appColors.surface.withAlpha(100),
+        progressColor: context.appColors.secondary,
         borderColor: Colors.transparent,
       );
     } else if (rank == 2) {
       // Silver
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFE0E0E0), const Color(0xFF9E9E9E)],
-        titleColor: const Color(0xFF212121),
-        textColor: const Color(0xFF424242),
-        valueColor: const Color(0xFF212121),
-        iconColor: const Color(0xFF212121),
-        iconBgColor: Colors.white.withAlpha(150),
-        progressBgColor: Colors.white.withAlpha(100),
-        progressColor: const Color(0xFF212121),
+        gradientColors: [AppColors.neutral200, AppColors.neutral500],
+        titleColor: AppColors.neutral900,
+        textColor: AppColors.neutral700,
+        valueColor: AppColors.neutral900,
+        iconColor: AppColors.neutral900,
+        iconBgColor: context.appColors.surface.withAlpha(150),
+        progressBgColor: context.appColors.surface.withAlpha(100),
+        progressColor: AppColors.neutral900,
         borderColor: Colors.transparent,
       );
     } else if (rank == 3) {
       // Bronze
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFBCAAA4), const Color(0xFF795548)],
-        titleColor: Colors.white,
-        textColor: Colors.white70,
-        valueColor: Colors.white,
-        iconColor: Colors.white,
-        iconBgColor: Colors.white.withAlpha(50),
-        progressBgColor: Colors.black.withAlpha(50),
-        progressColor: Colors.white,
+        gradientColors: [AppColors.neutral300, AppColors.neutral700],
+        titleColor: context.appColors.surface,
+        textColor: context.appColors.surface.withAlpha(178),
+        valueColor: context.appColors.surface,
+        iconColor: context.appColors.surface,
+        iconBgColor: context.appColors.surface.withAlpha(50),
+        progressBgColor: context.appColors.onSurface.withAlpha(50),
+        progressColor: context.appColors.surface,
         borderColor: Colors.transparent,
       );
     } else {
       // Default (Polos Putih)
       return _GamificationTheme(
         gradientColors: [context.appColors.surface, context.appColors.surface],
-        titleColor: Colors.black87,
+        titleColor: context.appColors.onSurface,
         textColor: AppColors.neutral600,
-        valueColor: Colors.black87,
+        valueColor: context.appColors.onSurface,
         iconColor: AppColors.warning,
         iconBgColor: AppColors.warning.withAlpha(30),
         progressBgColor: AppColors.neutral200,
@@ -128,7 +128,7 @@ class OrmawaGamificationCard extends StatelessWidget {
           border: Border.all(color: theme.borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(10),
+              color: AppColors.onSurface.withAlpha(10),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

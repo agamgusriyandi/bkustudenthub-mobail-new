@@ -16,8 +16,8 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
   final displaySemester = student.semester > 0 ? 'Sem ${student.semester}' : 'Aktif';
   final displayNim = student.nim.isNotEmpty ? student.nim : '-';
 
-  const accentColor = Color(0xFF334155);
-  const accentLight = Color(0xFFF1F5F9);
+  const accentColor = AppColors.neutral700;
+  const accentLight = AppColors.neutral200;
 
   return Container(
     decoration: BoxDecoration(
@@ -25,7 +25,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
       borderRadius: AppRadius.radiusXl,
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withAlpha(12),
+          color: context.appColors.onSurface.withAlpha(12),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
@@ -72,7 +72,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                     ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withAlpha(30),
+                                color: context.appColors.onSurface.withAlpha(30),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -132,7 +132,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withAlpha(30),
+                                    color: context.appColors.onSurface.withAlpha(30),
                                     blurRadius: 6,
                                     offset: const Offset(0, 2),
                                   ),
@@ -266,7 +266,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                  color: Color(0xFFECFDF5),
+                  color: context.appColors.successContainer,
                   borderRadius: AppRadius.br20,
                 ),
                 child: Row(
@@ -279,7 +279,7 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF10B981).withAlpha(100),
+                                    color: context.appColors.success.withAlpha(100),
                                     blurRadius: 6,
                                     spreadRadius: 1,
                                   ),
@@ -287,10 +287,10 @@ Widget buildRoleCard(BuildContext context, StudentProvider student) {
                               ),
                             ),
                             const SizedBox(width: AppSpacing.s6),
-                            const Text(
+    Text(
                               'AKTIF',
                               style: TextStyle(
-                                color: Color(0xFF047857),
+                                color: context.appColors.success,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.4,
@@ -327,20 +327,20 @@ Widget buildMenuSection(
             Container(
               padding: AppSpacing.padding6,
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color: AppColors.neutral200,
                 borderRadius: AppRadius.radiusSm,
               ),
               child: Icon(
                 headerIcon ?? Icons.grid_view_rounded,
                 size: 14,
-                color: const Color(0xFF334155),
+                color: AppColors.neutral700,
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
               title,
               style: const TextStyle(
-                color: Color(0xFF0F172A),
+                color: AppColors.neutral900,
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.2,
@@ -355,7 +355,7 @@ Widget buildMenuSection(
       borderRadius: AppRadius.br22,
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withAlpha(10),
+          color: context.appColors.onSurface.withAlpha(10),
           blurRadius: 18,
           offset: const Offset(0, 5),
         ),
@@ -420,14 +420,14 @@ Widget buildMenuItem(
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
-                      color: Color(0xFF1E293B),
+                      color: AppColors.neutral800,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s2),
                   Text(
                     subtitle,
                     style: const TextStyle(
-                      color: Color(0xFF64748B),
+                      color: AppColors.neutral600,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -462,7 +462,7 @@ Widget buildLogoutButton(BuildContext context) {
       borderRadius: AppRadius.br22,
       boxShadow: [
         BoxShadow(
-          color: Colors.red.withAlpha(12),
+          color: context.appColors.error.withAlpha(12),
           blurRadius: 16,
           offset: const Offset(0, 5),
         ),

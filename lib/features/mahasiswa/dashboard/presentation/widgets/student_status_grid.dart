@@ -201,7 +201,7 @@ class _StatusItem extends StatelessWidget {
         border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(8),
+            color: context.appColors.onSurface.withAlpha(8),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -269,7 +269,7 @@ class _StatusItem extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -280,7 +280,7 @@ class _StatusItem extends StatelessWidget {
                 Icon(
                   Icons.chevron_right_rounded,
                   size: 16,
-                  color: Theme.of(context).colorScheme.outline.withAlpha(120),
+                  color: context.appColors.outline.withAlpha(120),
                 ),
               ],
             ),

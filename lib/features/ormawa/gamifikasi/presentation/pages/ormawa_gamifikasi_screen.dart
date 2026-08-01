@@ -77,7 +77,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
         border: Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: AppColors.onSurface.withAlpha(12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -88,11 +88,11 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(10),
+              color: context.appColors.primary.withAlpha(10),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.emoji_events_rounded,
-                color: Theme.of(context).colorScheme.primary, size: 40),
+                color: context.appColors.primary, size: 40),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
@@ -100,7 +100,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
             style: AppTextStyles.titleLg.copyWith(
               fontSize: 36,
               fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
           Text(
@@ -197,7 +197,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
             Icons.emoji_events_rounded,
             'Peringkat',
             'Peringkat #${provider.gamifikasiPeringkat} dari ${provider.totalOrmawa}',
-            Theme.of(context).colorScheme.primary,
+            context.appColors.primary,
           ),
         ],
       ),

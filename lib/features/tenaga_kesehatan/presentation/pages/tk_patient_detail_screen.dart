@@ -212,14 +212,14 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                         label: 'NIM: ${patient.nim}',
                         color: theme.surfaceContainerHighest.withAlpha(120),
                         borderColor: theme.outline.withAlpha(15),
-                        textColor: Colors.black87,
+                        textColor: context.appColors.onSurface,
                       ),
                       _buildBadge(
                         icon: Icons.calendar_month_rounded,
                         label: 'SMT ${patient.semester}',
                         color: AppColors.info.withAlpha(25),
                         borderColor: AppColors.info.withAlpha(50),
-                        textColor: const Color(0xFF1D4ED8),
+                        textColor: context.appColors.info,
                       ),
                       if (patient.golonganDarah != null)
                         _buildBadge(
@@ -284,7 +284,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       child: Center(
         child: Text(
           initials,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.neutral600,
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -319,19 +319,19 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             'Jenis Kelamin',
             patient.jenisKelamin,
             Icons.wc_rounded,
-            Colors.pink,
+            context.appColors.error,
           ),
           _buildGridItem(
             'Fakultas',
             patient.fakultas,
             Icons.account_balance_rounded,
-            Colors.indigo,
+            context.appColors.primary,
           ),
           _buildGridItem(
             'Program Studi',
             patient.prodi,
             Icons.school_rounded,
-            Colors.teal,
+            context.appColors.info,
           ),
           _buildGridItem(
             'Semester',
@@ -374,17 +374,17 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.error.withAlpha(15),
+                color: context.appColors.error.withAlpha(15),
                 borderRadius: AppRadius.radiusXl,
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.error.withAlpha(30),
+                  color: context.appColors.error.withAlpha(30),
                 ),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.warning_amber_rounded,
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.appColors.error,
                     size: 22,
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -392,7 +392,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     child: Text(
                       patient.alergiObat!,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
+                        color: context.appColors.error,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -452,7 +452,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         border: Border.all(color: AppColors.neutral300.withAlpha(30)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -525,7 +525,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         border: Border.all(color: AppColors.neutral300.withAlpha(30)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -672,7 +672,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       backgroundColor: Colors.transparent,
       builder: (context) {
       return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.success,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppRadius.xxl),
@@ -872,7 +872,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           width: 4,
           height: 18,
           decoration: BoxDecoration(
-            color: const Color(0xFF16A34A),
+            color: context.appColors.success,
             borderRadius: AppRadius.br2,
           ),
         ),
@@ -906,7 +906,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.neutral100,
         borderRadius: AppRadius.radiusLg,
       ),
@@ -937,7 +937,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.neutral100,
         borderRadius: AppRadius.radiusLg,
       ),
@@ -972,10 +972,10 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.error.withAlpha(15),
+        color: context.appColors.error.withAlpha(15),
         borderRadius: AppRadius.radiusSm,
         border: Border.all(
-          color: Theme.of(context).colorScheme.error.withAlpha(50),
+          color: context.appColors.error.withAlpha(50),
         ),
       ),
       width: double.infinity,
@@ -986,14 +986,14 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
             children: [
               Icon(
                 Icons.warning_amber_rounded,
-                color: Theme.of(context).colorScheme.error,
+                color: context.appColors.error,
                 size: 14,
               ),
               const SizedBox(width: AppSpacing.s6),
               Text(
                 label,
                 style: AppTextStyles.caption.copyWith(
-                  color: Theme.of(context).colorScheme.error,
+                  color: context.appColors.error,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1003,7 +1003,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           Text(
             value,
             style: AppTextStyles.bodyMd.copyWith(
-              color: Theme.of(context).colorScheme.error,
+              color: context.appColors.error,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1039,7 +1039,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         return context.watch<ThemeProvider>().colors.warning;
       case 'Tidak Layak':
       case 'kritis':
-        return Theme.of(context).colorScheme.error;
+        return context.appColors.error;
       default:
         return context.watch<ThemeProvider>().colors.info;
     }
@@ -1085,10 +1085,10 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: AppRadius.radiusXl,
-            border: Border.all(color: Colors.grey.withAlpha(30)),
+            border: Border.all(color: AppColors.neutral500.withAlpha(30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(4),
+                color: context.appColors.onSurface.withAlpha(4),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -1141,7 +1141,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                                     status.toString().toLowerCase() == 'selesai'
                                 ? context.watch<ThemeProvider>().colors.success
                                 : status.toString().toLowerCase() == 'ditolak'
-                                ? Theme.of(context).colorScheme.error
+                                ? context.appColors.error
                                 : context.watch<ThemeProvider>().colors.warning,
                       ),
                     ),
@@ -1181,13 +1181,13 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFEF2F2),
-                      foregroundColor: const Color(0xFFDC2626),
+                      backgroundColor: context.appColors.error.withAlpha(15),
+                      foregroundColor: context.appColors.error,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: AppRadius.br10,
-                        side: const BorderSide(color: Color(0xFFFCA5A5)),
+                        side: BorderSide(color: context.appColors.error.withAlpha(50)),
                       ),
                     ),
                     icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),

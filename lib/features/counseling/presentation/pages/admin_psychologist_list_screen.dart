@@ -63,7 +63,7 @@ class _AdminPsychologistListScreenState
                 showBackButton: true,
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.add_rounded, color: Colors.white),
+                    icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
                     onPressed: () => context.push('/counseling/admin/psikolog/create'),
                   ),
                 ],

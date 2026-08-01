@@ -195,7 +195,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
           context,
           'Rekam Medis',
           Icons.medical_information_rounded,
-          Colors.teal,
+          context.appColors.info,
           null,
           onTap: () => _showMedicalRecord(context),
         ),
@@ -428,7 +428,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
           color:
               isActive
                   ? context.watch<ThemeProvider>().success.withAlpha(30)
-                  : Colors.grey.withAlpha(30),
+                   : AppColors.neutral500.withAlpha(30),
         ),
       ),
       child: Row(
@@ -453,7 +453,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                     color:
                         isActive
                             ? context.watch<ThemeProvider>().success
-                            : Colors.grey,
+                            : AppColors.neutral500,
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.neutral300, width: 2),
                   ),
@@ -485,7 +485,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
                     color:
                         isActive
                             ? context.watch<ThemeProvider>().success
-                            : Colors.grey,
+                            : AppColors.neutral500,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -601,7 +601,7 @@ class _MyBookingsSheet extends StatelessWidget {
             width: 48,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey.withAlpha(50),
+              color: AppColors.neutral500.withAlpha(50),
               borderRadius: AppRadius.radiusMd,
             ),
           ),
@@ -745,7 +745,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                                 .watch<ThemeProvider>()
                                                 .info
                                                 .withAlpha(20)
-                                            : Colors.teal.withAlpha(20),
+                                            : context.appColors.info.withAlpha(20),
                                     borderRadius: AppRadius.radiusSm,
                                   ),
                                   child: Row(
@@ -761,7 +761,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                                 ? context
                                                     .watch<ThemeProvider>()
                                                     .info
-                                                : Colors.teal,
+                                                : context.appColors.info,
                                       ),
                                       SizedBox(width: AppSpacing.xs),
                                       Text(
@@ -774,7 +774,7 @@ class _MyBookingsSheet extends StatelessWidget {
                                                   ? context
                                                       .watch<ThemeProvider>()
                                                       .info
-                                                  : Colors.teal,
+                                                  : context.appColors.info,
                                         ),
                                       ),
                                     ],
@@ -1296,7 +1296,7 @@ class _MedicalRecordSheet extends StatelessWidget {
             width: 48,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey.withAlpha(50),
+              color: AppColors.neutral500.withAlpha(50),
               borderRadius: AppRadius.radiusMd,
             ),
           ),

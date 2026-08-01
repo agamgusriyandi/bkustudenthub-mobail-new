@@ -1,6 +1,7 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -81,10 +82,10 @@ class StudentDashboardAppBar extends StatelessWidget {
                                   width: 34,
                                   height: 34,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withAlpha(40),
+                                    color: context.appColors.surface.withAlpha(40),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white.withAlpha(30),
+                                      color: context.appColors.surface.withAlpha(30),
                                     ),
                                   ),
                                   child: Icon(
@@ -109,7 +110,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                               width: 38,
                               height: 38,
                               decoration: BoxDecoration(
-                                color: Colors.white.withAlpha(20),
+                                color: context.appColors.surface.withAlpha(20),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -131,7 +132,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                       width: 180,
                       height: 180,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(10),
+                        color: context.appColors.surface.withAlpha(10),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -143,7 +144,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(5),
+                        color: context.appColors.surface.withAlpha(5),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -161,10 +162,10 @@ class StudentDashboardAppBar extends StatelessWidget {
                             width: 54,
                             height: 54,
                             decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(30),
+                              color: context.appColors.surface.withAlpha(30),
                               borderRadius: AppRadius.radiusLg,
                               border: Border.all(
-                                color: Colors.white.withAlpha(20),
+                                color: context.appColors.surface.withAlpha(20),
                               ),
                             ),
                             child: Icon(
@@ -181,7 +182,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                                 Text(
                                   'Selamat Datang Kembali,',
                                   style: AppTextStyles.labelSm.copyWith(
-                                    color: Colors.white70,
+                                    color: AppColors.neutral700,
                                     fontSize: 11,
                                     letterSpacing: 0.5,
                                   ),
@@ -202,7 +203,7 @@ class StudentDashboardAppBar extends StatelessWidget {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(25),
+                              color: context.appColors.surface.withAlpha(25),
                               borderRadius: AppRadius.radiusLg,
                             ),
                             child: Icon(
@@ -228,22 +229,22 @@ class StudentDashboardAppBar extends StatelessWidget {
                           horizontal: AppSpacing.xl,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(20),
+                          color: context.appColors.surface.withAlpha(20),
                           borderRadius: AppRadius.radiusLg,
-                          border: Border.all(color: Colors.white.withAlpha(20)),
+                          border: Border.all(color: context.appColors.surface.withAlpha(20)),
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.search_rounded,
-                              color: Colors.white60,
+                              color: AppColors.neutral600,
                               size: 22,
                             ),
                             const SizedBox(width: AppSpacing.s14),
                             Text(
                               'Cari info akademik atau layanan...',
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Colors.white60,
+                                color: AppColors.neutral600,
                                 fontSize: 14,
                               ),
                             ),

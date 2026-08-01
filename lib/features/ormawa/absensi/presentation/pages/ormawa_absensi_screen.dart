@@ -54,7 +54,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       Icon(
                         Icons.lock_outline_rounded,
                         size: 64,
-                        color: Colors.red[400],
+                        color: context.appColors.error,
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       Text(
@@ -229,7 +229,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       size: 24,
                     ),
                     border: InputBorder.none,
@@ -257,7 +257,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                 ),
                 child: Icon(
                   Icons.filter_list_rounded,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.appColors.primary,
                 ),
               ),
             ),
@@ -298,7 +298,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     'Filter Status',
                     style: AppTextStyles.titleLg.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -315,7 +315,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight:
                                     isSelected
                                         ? FontWeight.bold
@@ -330,7 +330,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               }
                             },
                             selectedColor:
-                                Theme.of(context).colorScheme.primary,
+                                context.appColors.primary,
                             backgroundColor: AppColors.neutral200,
                             side: BorderSide.none,
 
@@ -443,7 +443,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   value,
                   style: AppTextStyles.titleLg.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: context.appColors.onSurface,
                     fontSize: 18,
                   ),
                 ),
@@ -451,7 +451,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                 Text(
                   title,
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                     fontSize: 11,
                   ),
                   maxLines: 1,
@@ -580,7 +580,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                             'Lihat Peserta',
                             style: AppTextStyles.bodyMd.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -604,7 +604,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                             child: Text(
                               'Tampilkan QR',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -717,7 +717,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
           borderRadius: AppRadius.radiusXl,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(20),
+              color: context.appColors.onSurface.withAlpha(20),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -793,7 +793,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                           widget.title,
                           style: AppTextStyles.titleLg.copyWith(
                             fontSize: 20,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.w900,
                           ),
                           textAlign: TextAlign.center,
@@ -832,7 +832,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                               Text(
                                 '$attendedCount Mahasiswa Hadir',
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: const Color(0xFF166534),
+                                  color: AppColors.onSuccessContainer,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -851,9 +851,7 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withAlpha(10),
+                                color: context.appColors.primary.withAlpha(10),
                                 blurRadius: 25,
                                 offset: const Offset(0, 10),
                               ),
@@ -865,11 +863,11 @@ class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
                             size: 180.0,
                             eyeStyle: QrEyeStyle(
                               eyeShape: QrEyeShape.square,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                             dataModuleStyle: QrDataModuleStyle(
                               dataModuleShape: QrDataModuleShape.square,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.appColors.primary,
                             ),
                           ),
                         ),
@@ -1036,7 +1034,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                       borderRadius: AppRadius.radiusXl,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(12),
+                          color: context.appColors.onSurface.withAlpha(12),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -1050,7 +1048,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                           widget.title,
                           style: AppTextStyles.titleMd.copyWith(
                             fontWeight: FontWeight.w900,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                             fontSize: 16,
                           ),
                         ),
@@ -1075,7 +1073,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                     horizontal: AppSpacing.md,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFE8F5E9),
+                                    color: AppColors.successContainer,
                                     borderRadius: AppRadius.radiusMd,
                                   ),
                                   child: Row(
@@ -1089,7 +1087,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                       Text(
                                         '$attendedCount Hadir',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: const Color(0xFF166534),
+                                          color: AppColors.onSuccessContainer,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -1105,7 +1103,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                     horizontal: AppSpacing.md,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFFEBEE),
+                                    color: AppColors.dangerContainer,
                                     borderRadius: AppRadius.radiusMd,
                                   ),
                                   child: Row(
@@ -1119,7 +1117,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                       Text(
                                         '$absentCount Alpa',
                                         style: AppTextStyles.labelSm.copyWith(
-                                          color: const Color(0xFF991B1B),
+                                          color: AppColors.onDangerContainer,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -1180,7 +1178,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                               borderRadius: AppRadius.radiusXl,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(3),
+                                  color: context.appColors.onSurface.withAlpha(3),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),

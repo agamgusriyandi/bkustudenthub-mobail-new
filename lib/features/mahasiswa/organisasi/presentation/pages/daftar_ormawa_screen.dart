@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -254,7 +254,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: BkuStaticAppBar(
         title: 'Daftar ${widget.namaOrmawa}',
         variant: AppBarVariant.student,
@@ -321,7 +321,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                         Text(
                           'Pilih Divisi (Prioritas 1)',
                           style: AppTextStyles.titleLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
@@ -389,7 +389,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                         Text(
                           'Pilih Divisi (Prioritas 2 - Opsional)',
                           style: AppTextStyles.titleLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
@@ -460,7 +460,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                         Text(
                           'Mengapa Anda ingin bergabung dengan ${widget.namaOrmawa}?',
                           style: AppTextStyles.titleLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.lg),
@@ -508,7 +508,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                         Text(
                           'Lampiran Pendukung (CV/Portofolio)',
                           style: AppTextStyles.titleLarge.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.lg),
@@ -611,7 +611,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                       Text(
                                         ' *',
                                         style: TextStyle(
-                                          color: Colors.red[700],
+                                          color: AppColors.danger,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

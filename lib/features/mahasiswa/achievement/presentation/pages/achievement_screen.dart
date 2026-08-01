@@ -43,7 +43,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => student.loadAllData(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -107,7 +107,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
           color: context.appColors.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(8),
+              color: context.appColors.onSurface.withAlpha(8),
               blurRadius: 16,
               offset: const Offset(0, -4),
             ),
@@ -172,9 +172,9 @@ class _RecapSection extends StatelessWidget {
                   color: AppColors.neutral100,
                   borderRadius: AppRadius.radiusLg,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.military_tech_rounded,
-                  color: Colors.amber,
+                  color: context.appColors.warning,
                   size: 32,
                 ),
               ),
@@ -213,7 +213,7 @@ class _RecapSection extends StatelessWidget {
                   'Synced',
                   '${student.syncedAchievements}',
                   Icons.sync_rounded,
-                  Colors.teal,
+                  context.appColors.success,
                 ),
               ),
             ],
@@ -358,22 +358,22 @@ class _AchievementCard extends StatelessWidget {
                                   vertical: AppSpacing.xs,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.teal.withAlpha(15),
+                                  color: context.appColors.success.withAlpha(15),
                                   borderRadius: AppRadius.radiusSm,
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.sync_rounded,
-                                      color: Colors.teal,
+                                      color: context.appColors.success,
                                       size: 12,
                                     ),
                                     const SizedBox(width: AppSpacing.s6),
                                     Text(
                                       'SIMKATMAWA',
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Colors.teal,
+                                        color: context.appColors.success,
                                         fontWeight: FontWeight.w900,
                                         fontSize: 9,
                                       ),
@@ -395,7 +395,7 @@ class _AchievementCard extends StatelessWidget {
                         Text(
                           achievement.organizer,
                           style: AppTextStyles.labelSm.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -480,7 +480,7 @@ class _AchievementCard extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: AppColors.neutral200,
                       borderRadius: AppRadius.radiusXs,
                     ),
                   ),
@@ -524,7 +524,7 @@ class _AchievementCard extends StatelessWidget {
                                   'Status Verifikasi',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -546,7 +546,7 @@ class _AchievementCard extends StatelessWidget {
                         Text(
                           achievement.organizer,
                           style: AppTextStyles.labelMd.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
+                            color: context.appColors.outline,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -585,8 +585,8 @@ class _AchievementCard extends StatelessWidget {
                               : 'Belum Sinkron',
                           color:
                               achievement.isSynced
-                                  ? Colors.teal
-                                  : Theme.of(context).colorScheme.outline,
+                                  ? context.appColors.success
+                                  : context.appColors.outline,
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Text(
@@ -722,7 +722,7 @@ class _AchievementCard extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.outline,
+                                        context.appColors.outline,
                                     fontSize: 11,
                                   ),
                                 ),
@@ -892,14 +892,14 @@ class _AchievementCard extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: Theme.of(context).colorScheme.outline.withAlpha(100),
+            color: context.appColors.outline.withAlpha(100),
             size: 20,
           ),
           const SizedBox(width: AppSpacing.lg),
           Text(
             label,
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -919,12 +919,12 @@ class _AchievementCard extends StatelessWidget {
   Widget _buildTag(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: Theme.of(context).colorScheme.outline, size: 14),
+        Icon(icon, color: context.appColors.outline, size: 14),
         const SizedBox(width: AppSpacing.s6),
         Text(
           text,
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontSize: 11,
             fontWeight: FontWeight.bold,
           ),
@@ -948,13 +948,13 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.emoji_events_outlined,
             size: 80,
-            color: Theme.of(context).colorScheme.outline.withAlpha(50),
+            color: context.appColors.outline.withAlpha(50),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Belum ada prestasi',
             style: AppTextStyles.titleLg.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -962,7 +962,7 @@ class _EmptyState extends StatelessWidget {
           Text(
             'Yuk, mulai lapor prestasi mandiri kamu!',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ),
         ],

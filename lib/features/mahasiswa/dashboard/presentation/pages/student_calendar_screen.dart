@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +112,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                       ),
                       child: Icon(
                         Icons.event_available_rounded,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: context.appColors.primary,
                         size: 28,
                       ),
                     ),
@@ -159,14 +159,14 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                   children: [
                     const Icon(
                       Icons.access_time_rounded,
-                      color: Colors.grey,
+                      color: AppColors.neutral500,
                       size: 20,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Text(
                       _formatDate(event.tanggal),
                       style: AppTextStyles.labelMd.copyWith(
-                        color: Colors.black87,
+                        color: context.appColors.onSurface,
                       ),
                     ),
                   ],
@@ -177,7 +177,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                     children: [
                       const Icon(
                         Icons.location_on_rounded,
-                        color: Colors.grey,
+                        color: AppColors.neutral500,
                         size: 20,
                       ),
                       const SizedBox(width: AppSpacing.md),
@@ -185,7 +185,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         child: Text(
                           event.lokasi,
                           style: AppTextStyles.labelMd.copyWith(
-                            color: Colors.black87,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                       ),
@@ -199,7 +199,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                     children: [
                       const Icon(
                         Icons.description_rounded,
-                        color: Colors.grey,
+                        color: AppColors.neutral500,
                         size: 20,
                       ),
                       const SizedBox(width: AppSpacing.md),
@@ -207,7 +207,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                         child: Text(
                           event.deskripsi,
                           style: AppTextStyles.labelMd.copyWith(
-                            color: Colors.black87,
+                            color: context.appColors.onSurface,
                           ),
                         ),
                       ),
@@ -364,7 +364,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                             Color iconColor = AppColors.neutral800;
                             if (event.kategori.toLowerCase() == 'konseling') {
                               iconData = Icons.health_and_safety_rounded;
-                              iconColor = Colors.teal;
+                              iconColor = context.appColors.success;
                             } else if (event.kategori.toLowerCase() ==
                                 'beasiswa') {
                               iconData = Icons.school_rounded;
@@ -373,7 +373,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                     'pkkmb' ||
                                 event.kategori.toLowerCase() == 'kencana') {
                               iconData = Icons.emoji_events_rounded;
-                              iconColor = Colors.amber;
+                              iconColor = context.appColors.warning;
                             }
 
                             return InkWell(
@@ -393,7 +393,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withAlpha(6),
+                                      color: context.appColors.onSurface.withAlpha(6),
                                       blurRadius: 16,
                                       offset: const Offset(0, 8),
                                     ),

@@ -494,7 +494,7 @@ class _AssessmentManagementScreenState
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(5),
+            color: context.appColors.onSurface.withAlpha(5),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -828,7 +828,7 @@ class _AssessmentManagementScreenState
                           child: BkuButton(
                             text: 'Batal',
                             variant: BkuButtonVariant.outline,
-                            customFgColor: Colors.black,
+                            customFgColor: context.appColors.onSurface,
                             onPressed: () => Navigator.pop(ctx),
                           ),
                         ),

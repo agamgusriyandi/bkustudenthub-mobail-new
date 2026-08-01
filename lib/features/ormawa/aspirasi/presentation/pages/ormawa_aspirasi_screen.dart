@@ -126,7 +126,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
             border: Border.all(color: AppColors.neutral200),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
+                color: context.appColors.onSurface.withValues(alpha: 0.03),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -234,12 +234,12 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                   Icon(
                     Icons.speaker_notes_off_rounded,
                     size: 48,
-                    color: Colors.grey.withAlpha(50),
+                    color: AppColors.neutral500.withAlpha(50),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Tidak ada aspirasi ditemukan',
-                    style: AppTextStyles.labelMd.copyWith(color: Colors.grey),
+                    style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
                   ),
                 ],
               ),
@@ -281,7 +281,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
           border: Border.all(color: AppColors.neutral200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: context.appColors.onSurface.withValues(alpha: 0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -390,7 +390,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                           ? Icon(
                             Icons.person_rounded,
                             size: 16,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: context.appColors.primary,
                           )
                           : null,
                 ),
@@ -484,7 +484,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 height: 4,
                                 margin: const EdgeInsets.only(bottom: AppSpacing.xl),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.3),
+                                  color: context.appColors.surface.withValues(alpha: 0.3),
                                   borderRadius: AppRadius.radiusXs,
                                 ),
                               ),
@@ -495,10 +495,10 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.1),
+                                    color: context.appColors.surface.withValues(alpha: 0.1),
                                     borderRadius: AppRadius.radiusLg,
                                     border: Border.all(
-                                      color: Colors.white.withValues(
+                                      color: context.appColors.surface.withValues(
                                         alpha: 0.2,
                                       ),
                                     ),
@@ -521,7 +521,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                             'INCIDENT AUDIT',
                                             style: AppTextStyles.labelSm
                                                 .copyWith(
-                                                  color: Colors.blue.shade200,
+                                                  color: context.appColors.info.withValues(alpha: 0.6),
                                                   fontWeight: FontWeight.w900,
                                                   letterSpacing: 2,
                                                   fontSize: 10,
@@ -532,8 +532,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                             width: 4,
                                             height: 4,
                                             decoration: BoxDecoration(
-                                              color: Colors.blue.shade200
-                                                  .withValues(alpha: 0.5),
+                                              color: context.appColors.info.withValues(alpha: 0.3),
                                               shape: BoxShape.circle,
                                             ),
                                           ),
@@ -582,7 +581,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     Text(
                                       'Oleh: ',
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: Colors.blue.shade100,
+                                        color: context.appColors.info.withValues(alpha: 0.4),
                                         fontSize: 11,
                                       ),
                                     ),
@@ -661,7 +660,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(
+                                    color: context.appColors.onSurface.withValues(
                                       alpha: 0.02,
                                     ),
                                     blurRadius: 10,
@@ -817,7 +816,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     Icons.article_rounded,
                                     size: 20,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        context.appColors.primary,
                                   ),
                                   const SizedBox(width: AppSpacing.sm),
                                   Text(
@@ -843,7 +842,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(
+                                      color: context.appColors.onSurface.withValues(
                                         alpha: 0.02,
                                       ),
                                       blurRadius: 10,
@@ -946,7 +945,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(
+                                        color: context.appColors.onSurface.withValues(
                                           alpha: 0.02,
                                         ),
                                         blurRadius: 8,
@@ -983,7 +982,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xl),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: context.appColors.surface.withValues(alpha: 0.9),
                             border: Border(
                               top: BorderSide(color: AppColors.neutral200),
                             ),
@@ -1186,7 +1185,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -1198,7 +1197,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1234,7 +1233,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Theme.of(context).colorScheme.primary
+                                      ? context.appColors.primary
                                       : Theme.of(
                                         context,
                                       ).colorScheme.primary.withAlpha(10),
@@ -1246,7 +1245,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 color:
                                     isSelected
                                         ? context.appColors.onPrimary
-                                        : Theme.of(context).colorScheme.primary,
+                                        : context.appColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

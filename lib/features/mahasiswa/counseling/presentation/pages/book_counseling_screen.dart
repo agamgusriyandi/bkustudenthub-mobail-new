@@ -88,7 +88,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Form Pendaftaran Sesi',
         variant: AppBarVariant.student,
@@ -177,7 +177,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                       Text(
                         'Psikolog Pilihan',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                         ),
                       ),
                       Text(
@@ -189,7 +189,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                       Text(
                         widget.psychologist!.specialization,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           fontSize: 10,
                         ),
                       ),
@@ -229,7 +229,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                     Text(
                       'Topik Konseling',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                     Text(
@@ -258,7 +258,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       child: Text(
         text,
         style: AppTextStyles.labelSm.copyWith(
-          color: Theme.of(context).colorScheme.outline,
+          color: context.appColors.outline,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -277,13 +277,13 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
         border: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: AppThemeColors.surfaceContainerHighest,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.radiusLg,
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            color: AppThemeColors.surfaceContainerHighest,
           ),
         ),
       ),
@@ -306,7 +306,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: AppThemeColors.surfaceContainerHighest,
         ),
       ),
       child: DropdownButtonHideUnderline(
@@ -346,7 +346,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
             Icon(
               Icons.calendar_today_rounded,
               size: 20,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
             const SizedBox(width: AppSpacing.md),
             Text(
@@ -356,14 +356,14 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
               style: AppTextStyles.labelMd.copyWith(
                 color:
                     _selectedDate == null
-                        ? Theme.of(context).colorScheme.outline
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                        ? context.appColors.outline
+                        : context.appColors.onSurfaceVariant,
               ),
             ),
             const Spacer(),
             Icon(
               Icons.keyboard_arrow_down_rounded,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
             ),
           ],
         ),
@@ -518,7 +518,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
                     color:
                         isSelected
                             ? AppColors.neutral800
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                            : context.appColors.onSurfaceVariant,
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                   ),

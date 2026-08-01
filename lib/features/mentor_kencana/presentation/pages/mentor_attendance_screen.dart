@@ -58,7 +58,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                 Text(
                   'Minta mahasiswa untuk scan QR Code ini dari aplikasi mereka.',
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -119,25 +119,19 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -155,25 +149,19 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color:
-                              Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
+                          color: AppThemeColors.surfaceContainerHighest,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMd,
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -205,7 +193,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
       backgroundColor: AppColors.neutral100,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchSessions(),
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -237,7 +225,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                   child: Text(
                     provider.errorMessage!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.appColors.error,
                     ),
                   ),
                 ),
@@ -248,7 +236,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                   child: Text(
                     'Belum ada jadwal sesi aktif.',
                     style: AppTextStyles.labelMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                     ),
                   ),
                 ),
@@ -314,9 +302,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                       '${session.stageName} â€¢ ${session.date}',
                                       style: AppTextStyles.labelSm.copyWith(
                                         color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
+                                            context.appColors.outline,
                                       ),
                                     ),
                                   ],
@@ -334,22 +320,18 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> {
                                     Text(
                                       'Kehadiran Mahasiswa',
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
+                                          color:
+                                              context.appColors.outline,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.xs),
-                                    Text(
-                                      '${session.attendanceCount} / ${session.totalMentees}',
-                                      style: AppTextStyles.titleLg.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                      const SizedBox(height: AppSpacing.xs),
+                                      Text(
+                                        '${session.attendanceCount} / ${session.totalMentees}',
+                                        style: AppTextStyles.titleLg.copyWith(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900,
+                                          color:
+                                              context.appColors.primary,
                                       ),
                                     ),
                                   ],

@@ -65,7 +65,7 @@ class _HealthScreenState extends State<HealthScreen> {
         onRefresh: () async {
           await student.refreshHealthData();
         },
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -441,10 +441,10 @@ class _HealthScreenState extends State<HealthScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey[200]!, width: 1),
+        border: Border.all(color: AppColors.neutral200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(5),
+            color: context.appColors.onSurface.withAlpha(5),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -538,10 +538,10 @@ class _HealthScreenState extends State<HealthScreen> {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: Colors.grey[200]!, width: 1),
+        border: Border.all(color: AppColors.neutral200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(5),
+            color: context.appColors.onSurface.withAlpha(5),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -651,7 +651,7 @@ class _HealthScreenState extends State<HealthScreen> {
                   Text(
                     'Indeks Massa Tubuh (BMI)',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -756,11 +756,11 @@ class _HealthScreenState extends State<HealthScreen> {
                       height: 8,
                       width: 8,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appColors.surface,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withAlpha(50),
+                            color: context.appColors.onSurface.withAlpha(50),
                             blurRadius: 4,
                           ),
                         ],
@@ -780,7 +780,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       v,
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 10,
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                       ),
                     ),
                   )
@@ -962,7 +962,7 @@ class _HealthScreenState extends State<HealthScreen> {
             Text(
               label,
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+                color: context.appColors.outline,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 letterSpacing: -0.2,
@@ -987,7 +987,7 @@ class _HealthScreenState extends State<HealthScreen> {
                     TextSpan(
                       text: ' $unit',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
+                        color: context.appColors.outline,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1084,7 +1084,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             desc,
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               height: 1.3,
               fontWeight: FontWeight.bold,
             ),
@@ -1105,37 +1105,37 @@ class _HealthScreenState extends State<HealthScreen> {
 
     final statusLower = record.bmiStatus.toLowerCase();
     if (statusLower.contains('normal') || statusLower.contains('sehat') || statusLower.contains('ideal')) {
-      cardBg = const Color(0xFFF0FDF4);
-      borderColor = const Color(0xFF86EFAC);
-      iconBgColor = const Color(0xFFDCFCE7);
-      iconColor = const Color(0xFF16A34A);
+      cardBg = context.appColors.successContainer;
+      borderColor = context.appColors.success;
+      iconBgColor = context.appColors.successContainer;
+      iconColor = context.appColors.success;
       cardIcon = Icons.health_and_safety_rounded;
-      statusTextColor = const Color(0xFF15803D);
-      statusBadgeBg = const Color(0xFFDCFCE7);
+      statusTextColor = context.appColors.success;
+      statusBadgeBg = context.appColors.successContainer;
     } else if (statusLower.contains('underweight') || statusLower.contains('kurang')) {
-      cardBg = const Color(0xFFEFF6FF);
-      borderColor = const Color(0xFF93C5FD);
-      iconBgColor = const Color(0xFFDBEAFE);
-      iconColor = const Color(0xFF2563EB);
+      cardBg = context.appColors.infoContainer;
+      borderColor = context.appColors.info;
+      iconBgColor = context.appColors.infoContainer;
+      iconColor = context.appColors.info;
       cardIcon = Icons.monitor_weight_rounded;
-      statusTextColor = const Color(0xFF1D4ED8);
-      statusBadgeBg = const Color(0xFFDBEAFE);
+      statusTextColor = context.appColors.primary;
+      statusBadgeBg = context.appColors.infoContainer;
     } else if (statusLower.contains('overweight') || statusLower.contains('kelebihan')) {
-      cardBg = const Color(0xFFFEF3C7);
-      borderColor = const Color(0xFFFCD34D);
-      iconBgColor = const Color(0xFFFEF3C7);
-      iconColor = const Color(0xFFD97706);
+      cardBg = context.appColors.warningContainer;
+      borderColor = context.appColors.warning;
+      iconBgColor = context.appColors.warningContainer;
+      iconColor = context.appColors.warning;
       cardIcon = Icons.warning_amber_rounded;
-      statusTextColor = const Color(0xFFB45309);
-      statusBadgeBg = const Color(0xFFFEF3C7);
+      statusTextColor = context.appColors.warning;
+      statusBadgeBg = context.appColors.warningContainer;
     } else {
-      cardBg = const Color(0xFFFEF2F2);
-      borderColor = const Color(0xFFFCA5A5);
-      iconBgColor = const Color(0xFFFEE2E2);
-      iconColor = const Color(0xFFDC2626);
+      cardBg = context.appColors.errorContainer;
+      borderColor = context.appColors.error;
+      iconBgColor = context.appColors.errorContainer;
+      iconColor = context.appColors.error;
       cardIcon = Icons.error_outline_rounded;
-      statusTextColor = const Color(0xFFB91C1C);
-      statusBadgeBg = const Color(0xFFFEE2E2);
+      statusTextColor = context.appColors.error;
+      statusBadgeBg = context.appColors.errorContainer;
     }
 
     return Container(
@@ -1146,7 +1146,7 @@ class _HealthScreenState extends State<HealthScreen> {
         border: Border.all(color: borderColor, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(4),
+            color: context.appColors.onSurface.withAlpha(4),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1266,7 +1266,7 @@ class _HealthScreenState extends State<HealthScreen> {
                   Text(
                     '${record.date.day}/${record.date.month}/${record.date.year}',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1329,7 +1329,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             'Keluhan / Catatan:',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1338,10 +1338,10 @@ class _HealthScreenState extends State<HealthScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: AppThemeColors.surfaceContainerHighest,
               ),
             ),
             child: Text(
@@ -1373,7 +1373,7 @@ class _HealthScreenState extends State<HealthScreen> {
         Text(
           'Gaya Hidup & Mental:',
           style: AppTextStyles.labelSm.copyWith(
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -1381,10 +1381,10 @@ class _HealthScreenState extends State<HealthScreen> {
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: context.appColors.surface,
             borderRadius: AppRadius.radiusXl,
             border: Border.all(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: AppThemeColors.surfaceContainerHighest,
             ),
           ),
           child: Column(
@@ -1416,7 +1416,7 @@ class _HealthScreenState extends State<HealthScreen> {
               Divider(
                 height: 24,
                 thickness: 1,
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: AppThemeColors.surfaceContainerHighest,
               ),
               _buildDetailInfoRow(
                 'Tingkat Stres',
@@ -1444,7 +1444,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             'Keluhan yang Dirasakan:',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1492,7 +1492,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             'Catatan Tambahan:',
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1501,17 +1501,17 @@ class _HealthScreenState extends State<HealthScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: context.appColors.surface,
               borderRadius: AppRadius.radiusLg,
               border: Border.all(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: AppThemeColors.surfaceContainerHighest,
               ),
             ),
             child: Text(
               catatanTambahan,
               style: AppTextStyles.labelMd.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
               ),
             ),
           ),
@@ -1535,7 +1535,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             label,
             style: AppTextStyles.labelSm.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
               fontSize: 12,
             ),
@@ -1576,7 +1576,7 @@ class _HealthScreenState extends State<HealthScreen> {
           Text(
             label,
             style: AppTextStyles.labelMd.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1634,7 +1634,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
                 Icon(
                   Icons.lock_outline_rounded,
-                  color: Theme.of(context).colorScheme.outline.withAlpha(60),
+                  color: context.appColors.outline.withAlpha(60),
                   size: 14,
                 ),
               ],
@@ -1643,7 +1643,7 @@ class _HealthScreenState extends State<HealthScreen> {
             Text(
               label,
               style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(context).colorScheme.outline.withAlpha(150),
+                color: context.appColors.outline.withAlpha(150),
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),
@@ -1658,13 +1658,13 @@ class _HealthScreenState extends State<HealthScreen> {
                   style: AppTextStyles.labelMd.copyWith(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
-                    color: Theme.of(context).colorScheme.primary.withAlpha(60),
+                    color: context.appColors.primary.withAlpha(60),
                   ),
                 ),
                 Text(
                   ' $unit',
                   style: AppTextStyles.labelSm.copyWith(
-                    color: Theme.of(context).colorScheme.outline.withAlpha(80),
+                    color: context.appColors.outline.withAlpha(80),
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1691,7 +1691,7 @@ class _HealthScreenState extends State<HealthScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
+          color: context.appColors.outlineVariant.withAlpha(50),
         ),
       ),
       child: Material(
@@ -1729,7 +1729,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       Text(
                         desc,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           height: 1.3,
                           fontWeight: FontWeight.w600,
                         ),
@@ -1768,11 +1768,11 @@ class _HealthScreenState extends State<HealthScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
+          color: context.appColors.outlineVariant.withAlpha(50),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(2),
+            color: context.appColors.onSurface.withAlpha(2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1818,7 +1818,7 @@ class _HealthScreenState extends State<HealthScreen> {
                       Text(
                         desc,
                         style: AppTextStyles.labelSm.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.appColors.outline,
                           height: 1.3,
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
@@ -1830,7 +1830,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 14,
-                  color: Theme.of(context).colorScheme.outline.withAlpha(100),
+                  color: context.appColors.outline.withAlpha(100),
                 ),
               ],
             ),

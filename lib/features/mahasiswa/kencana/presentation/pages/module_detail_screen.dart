@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
@@ -22,7 +23,7 @@ class ModuleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -64,10 +65,10 @@ class ModuleDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           padding: AppSpacing.paddingLg,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEFF6FF),
+                            color: context.appColors.infoContainer,
                             borderRadius: AppRadius.radiusLg,
                             border: Border.all(
-                              color: const Color(0xFF93C5FD),
+                              color: context.appColors.info,
                               width: 1.2,
                             ),
                           ),
@@ -79,14 +80,14 @@ class ModuleDetailScreen extends StatelessWidget {
                                   color: AppColors.primary,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.attach_file_rounded,
-                                  color: Colors.white,
+                                  color: context.appColors.surface,
                                   size: 22,
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.s14),
-                              const Expanded(
+    Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -95,23 +96,23 @@ class ModuleDetailScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
-                                        color: Color(0xFF1D4ED8),
+                                        color: context.appColors.primary,
                                       ),
                                     ),
                                     SizedBox(height: AppSpacing.s3),
                                     Text(
                                       'Ketuk untuk membuka file atau tautan',
                                       style: TextStyle(
-                                        color: Color(0xFF3B82F6),
+                                        color: context.appColors.info,
                                         fontSize: 12,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              const Icon(
+    Icon(
                                 Icons.chevron_right_rounded,
-                                color: Color(0xFF2563EB),
+                                color: context.appColors.info,
                                 size: 22,
                               ),
                             ],
@@ -130,7 +131,7 @@ class ModuleDetailScreen extends StatelessWidget {
                   Text(
                     'Diposting oleh Panitia PKKMB Kencana',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -138,7 +139,7 @@ class ModuleDetailScreen extends StatelessWidget {
                   Text(
                     mission.content ?? 'Tidak ada deskripsi materi.',
                     style: AppTextStyles.bodyMd.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
+                      color: context.appColors.outline,
                       height: 1.6,
                     ),
                   ),

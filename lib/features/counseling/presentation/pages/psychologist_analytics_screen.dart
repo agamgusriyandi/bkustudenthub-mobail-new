@@ -338,11 +338,11 @@ class _PsychologistAnalyticsScreenState
                       .map((e) => FlSpot(e.key.toDouble(), e.value))
                       .toList(),
               isCurved: true,
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [
-                  Color(0xFF3B82F6), // Blue
-                  Color(0xFF8B5CF6), // Purple
-                  Color(0xFFF59E0B), // Orange
+                  context.appColors.info,
+                  context.appColors.info,
+                  context.appColors.warning,
                 ],
               ),
               barWidth: 4,
@@ -354,7 +354,7 @@ class _PsychologistAnalyticsScreenState
                       radius: 4,
                       color: context.appColors.surface,
                       strokeWidth: 2,
-                      strokeColor: const Color(0xFF8B5CF6),
+                      strokeColor: context.appColors.info,
                     ),
               ),
               belowBarData: BarAreaData(
@@ -363,8 +363,8 @@ class _PsychologistAnalyticsScreenState
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    const Color(0xFF8B5CF6).withAlpha(50),
-                    const Color(0xFF8B5CF6).withAlpha(0),
+                    context.appColors.info.withAlpha(50),
+                    context.appColors.info.withAlpha(0),
                   ],
                 ),
               ),
@@ -390,7 +390,7 @@ class _PsychologistAnalyticsScreenState
       AppColors.primary,
       AppColors.success,
       AppColors.warning,
-      const Color(0xFF8B5CF6),
+      context.appColors.info,
       AppColors.error,
     ];
 
@@ -402,7 +402,7 @@ class _PsychologistAnalyticsScreenState
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -498,7 +498,7 @@ class _PsychologistAnalyticsScreenState
         borderRadius: AppRadius.radiusXl,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(12),
+            color: context.appColors.onSurface.withAlpha(12),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -631,7 +631,7 @@ class _PsychologistAnalyticsScreenState
 
     final colors = [
       AppColors.primary,
-      const Color(0xFF8B5CF6),
+      context.appColors.info,
       AppColors.warning,
       AppColors.success,
       AppColors.error,
@@ -732,9 +732,9 @@ class _PsychologistAnalyticsScreenState
             final isWarning = rec['type'] == 'warning';
             final color = isWarning ? AppColors.warning : AppColors.success;
             final bgColor =
-                isWarning ? const Color(0xFFFFFBEB) : const Color(0xFFF0FDF4);
+                isWarning ? AppColors.warning.withAlpha(15) : AppColors.success.withAlpha(15);
             final borderColor =
-                isWarning ? const Color(0xFFFDE68A) : const Color(0xFFBBF7D0);
+                isWarning ? AppColors.warning : AppColors.success;
 
             return Container(
               margin: const EdgeInsets.only(bottom: AppSpacing.s10),

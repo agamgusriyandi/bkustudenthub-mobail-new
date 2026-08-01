@@ -232,7 +232,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -263,9 +263,9 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
-                color: Colors.redAccent,
+                color: context.appColors.error,
                 size: 60,
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -317,7 +317,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           Text(
             title,
             style: AppTextStyles.titleLarge.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -330,7 +330,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 color:
                     _isPastDue(dueDate)
                         ? AppColors.error
-                        : Theme.of(context).colorScheme.outline,
+                        : context.appColors.outline,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
@@ -339,7 +339,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                   color:
                       _isPastDue(dueDate)
                           ? AppColors.error
-                          : Theme.of(context).colorScheme.outline,
+                          : context.appColors.outline,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -352,7 +352,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               'Deskripsi Tugas',
               style: AppTextStyles.titleMd.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: context.appColors.onSurface,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -360,7 +360,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               desc,
               style: AppTextStyles.bodyMd.copyWith(
                 height: 1.6,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: context.appColors.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: AppSpacing.xxl),
@@ -370,7 +370,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
             'Pengumpulan',
             style: AppTextStyles.titleMd.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: context.appColors.onSurface,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -401,7 +401,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
       statusColor = AppColors.warning;
       statusText = 'Dikumpulkan Terlambat';
     } else if (status == 'graded') {
-      statusColor = Theme.of(context).colorScheme.primary;
+      statusColor = context.appColors.primary;
       statusText = 'Sudah Dinilai';
     }
 
@@ -434,7 +434,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                   Text(
                     'Nilai: ${_submissionData!['score']}',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -459,19 +459,19 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: context.appColors.outlineVariant,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: context.appColors.outlineVariant,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
         ),
@@ -487,19 +487,19 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: context.appColors.outlineVariant,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: context.appColors.outlineVariant,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusMd,
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
+              color: context.appColors.primary,
             ),
           ),
         ),
@@ -516,13 +516,13 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           ),
           decoration: BoxDecoration(
             color: _selectedFile != null
-                ? Theme.of(context).colorScheme.primary.withAlpha(15)
-                : Theme.of(context).colorScheme.surface,
+                ? context.appColors.primary.withAlpha(15)
+                : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color: _selectedFile != null
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.outlineVariant,
+                  ? context.appColors.primary
+                  : context.appColors.outlineVariant,
               width: _selectedFile != null ? 1.5 : 1.0,
             ),
           ),
@@ -532,8 +532,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: _selectedFile != null
-                      ? Theme.of(context).colorScheme.primary.withAlpha(30)
-                      : Theme.of(context).colorScheme.onSurface.withAlpha(15),
+                      ? context.appColors.primary.withAlpha(30)
+                      : context.appColors.onSurface.withAlpha(15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -542,8 +542,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                       : Icons.cloud_upload_rounded,
                   size: 28,
                   color: _selectedFile != null
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ? context.appColors.primary
+                      : context.appColors.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -554,8 +554,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 style: AppTextStyles.titleSm.copyWith(
                   color:
                       _selectedFile != null
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                          ? context.appColors.primary
+                          : context.appColors.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -564,7 +564,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 Text(
                   'Format: PDF, DOCX, JPG, PNG, MP4',
                   style: AppTextStyles.bodySm.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: context.appColors.outline,
                   ),
                 ),
               ],

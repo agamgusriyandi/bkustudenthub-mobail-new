@@ -108,10 +108,10 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
                       CircleAvatar(
                         radius: 24,
                         backgroundColor:
-                            Theme.of(context).colorScheme.primary.withAlpha(20),
+                            context.appColors.primary.withAlpha(20),
                         child: Text(widget.member.initial,
                             style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
+                                color: context.appColors.primary,
                                 fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: AppSpacing.lg),
@@ -182,14 +182,14 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
                   child: ElevatedButton(
                     onPressed: _isSubmitting ? null : _handleSubmit,
                     child: _isSubmitting
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2))
-                        : const Text('SIMPAN PERUBAHAN',
+                                color: context.appColors.onPrimary, strokeWidth: 2))
+                        : Text('SIMPAN PERUBAHAN',
                             style: TextStyle(
-                                color: Colors.white,
+                                color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1)),
                   ),
@@ -260,7 +260,7 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
         decoration: InputDecoration(
           hintText: hint,
           prefixIcon:
-              Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+              Icon(icon, color: context.appColors.primary, size: 20),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg, vertical: AppSpacing.lg),

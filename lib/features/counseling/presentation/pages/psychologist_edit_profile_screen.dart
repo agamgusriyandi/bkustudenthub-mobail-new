@@ -269,7 +269,7 @@ class _PsychologistEditProfileScreenState
                                 width: 90,
                                 height: 90,
                                 decoration: BoxDecoration(
-                                  color: Colors.black54,
+                                   color: context.appColors.onSurface.withAlpha(134),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
@@ -289,7 +289,7 @@ class _PsychologistEditProfileScreenState
                                       shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withAlpha(20),
+                                         color: context.appColors.onSurface.withAlpha(20),
                                         blurRadius: 8,
                                       ),
                                     ],
@@ -314,7 +314,7 @@ class _PsychologistEditProfileScreenState
                         controller: _namaCtrl,
                         label: 'Nama Lengkap',
                         icon: Icons.person_rounded,
-                        iconColor: const Color(0xFF3B82F6),
+                        iconColor: context.appColors.info,
                         validator:
                             (v) =>
                                 v == null || v.isEmpty
@@ -325,7 +325,7 @@ class _PsychologistEditProfileScreenState
                         controller: _emailCtrl,
                         label: 'Email',
                         icon: Icons.email_rounded,
-                        iconColor: const Color(0xFF10B981),
+                        iconColor: context.appColors.success,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) {
                           if (v == null || v.isEmpty) {
@@ -341,7 +341,7 @@ class _PsychologistEditProfileScreenState
                         controller: _phoneCtrl,
                         label: 'No. HP',
                         icon: Icons.phone_rounded,
-                        iconColor: const Color(0xFF8B5CF6),
+                        iconColor: context.appColors.info,
                         keyboardType: TextInputType.phone,
                       ),
                     ]),
@@ -354,21 +354,21 @@ class _PsychologistEditProfileScreenState
                         controller: _spesialisasiCtrl,
                         label: 'Spesialisasi',
                         icon: Icons.workspace_premium_rounded,
-                        iconColor: const Color(0xFFF59E0B),
+                        iconColor: context.appColors.warning,
                         hint: 'Contoh: Psikologi Klinis',
                       ),
                       _buildField(
                         controller: _lokasiCtrl,
                         label: 'Lokasi / Ruangan',
                         icon: Icons.location_on_rounded,
-                        iconColor: const Color(0xFFEF4444),
+                        iconColor: context.appColors.error,
                         hint: 'Contoh: Ruang Konseling A',
                       ),
                       _buildField(
                         controller: _bahasaCtrl,
                         label: 'Bahasa',
                         icon: Icons.language_rounded,
-                        iconColor: const Color(0xFF06B6D4),
+                        iconColor: context.appColors.info,
                         hint: 'Contoh: Indonesia, Inggris',
                       ),
                     ]),
@@ -381,7 +381,7 @@ class _PsychologistEditProfileScreenState
                         controller: _bioCtrl,
                         label: 'Bio',
                         icon: Icons.notes_rounded,
-                        iconColor: const Color(0xFF6366F1),
+                        iconColor: context.appColors.info,
                         maxLines: 4,
                         hint: 'Ceritakan sedikit tentang diri Anda...',
                       ),
@@ -393,7 +393,7 @@ class _PsychologistEditProfileScreenState
                       child: ElevatedButton(
                         onPressed: _isSaving ? null : _save,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF16A34A),
+                          backgroundColor: context.appColors.success,
                           foregroundColor: context.appColors.onPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 14),

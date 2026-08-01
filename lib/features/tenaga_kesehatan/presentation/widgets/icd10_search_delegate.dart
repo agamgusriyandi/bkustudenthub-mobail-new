@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -81,10 +81,10 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
             onChanged: _filter,
             decoration: InputDecoration(
               hintText: 'Cari penyakit atau kode (misal: ISPA, A09)...',
-              prefixIcon: const Icon(Icons.search, color: AppColors.neutral500),
+              prefixIcon: Icon(Icons.search, color: AppColors.neutral500),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.radiusMd,
-                borderSide: const BorderSide(color: AppColors.neutral300),
+                borderSide: BorderSide(color: AppColors.neutral300),
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,

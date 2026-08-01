@@ -84,19 +84,19 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      color: context.appColors.outline.withAlpha(30),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      color: context.appColors.outline.withAlpha(30),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       width: 1.5,
                     ),
                   ),
@@ -140,19 +140,19 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
                   border: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      color: context.appColors.outline.withAlpha(30),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline.withAlpha(30),
+                      color: context.appColors.outline.withAlpha(30),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: AppRadius.radiusLg,
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.appColors.primary,
                       width: 1.5,
                     ),
                   ),
@@ -223,7 +223,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
           text: text,
           style: AppTextStyles.labelSm.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: context.appColors.onSurface,
           ),
           children: [
             if (required)
@@ -248,7 +248,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
         color: context.appColors.surface,
         borderRadius: AppRadius.radiusLg,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withAlpha(30),
+          color: context.appColors.outline.withAlpha(30),
         ),
       ),
       child: DropdownButtonHideUnderline(
@@ -257,7 +257,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
           isExpanded: true,
           icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: Theme.of(context).colorScheme.outline,
+            color: context.appColors.outline,
           ),
           items: items.map((String value) {
             return DropdownMenuItem<String>(
@@ -297,7 +297,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
           color: context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withAlpha(30),
+            color: context.appColors.outline.withAlpha(30),
           ),
         ),
         child: Row(
@@ -309,7 +309,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
             ),
             Icon(
               Icons.calendar_today_rounded,
-              color: Theme.of(context).colorScheme.outline,
+              color: context.appColors.outline,
               size: 20,
             ),
           ],
@@ -327,10 +327,10 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: BoxDecoration(
-          color: hasFile ? const Color(0xFFF0FDF4) : context.appColors.background,
+          color: hasFile ? context.appColors.success.withAlpha(30) : context.appColors.background,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: hasFile ? const Color(0xFF86EFAC) : AppColors.neutral200,
+            color: hasFile ? context.appColors.success.withAlpha(80) : AppColors.neutral200,
             width: 1.2,
           ),
         ),
@@ -339,7 +339,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
             Container(
               padding: AppSpacing.padding14,
               decoration: BoxDecoration(
-                color: hasFile ? const Color(0xFFDCFCE7) : const Color(0xFFEFF6FF),
+                color: hasFile ? context.appColors.success.withAlpha(50) : context.appColors.primary.withAlpha(30),
                 shape: BoxShape.circle,
               ),
               child: Icon(

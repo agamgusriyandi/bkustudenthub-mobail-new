@@ -285,7 +285,7 @@ class _TkPatientRecordScreenState extends State<TkPatientRecordScreen> {
       case 'Perlu Perhatian':
         return context.read<ThemeProvider>().colors.warning;
       case 'Tidak Layak':
-        return Theme.of(context).colorScheme.error;
+        return context.appColors.error;
       default:
         return AppColors.neutral500;
     }
