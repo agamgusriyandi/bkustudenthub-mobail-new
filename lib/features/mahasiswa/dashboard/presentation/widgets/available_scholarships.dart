@@ -300,7 +300,7 @@ class AvailableScholarships extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // TODO: Navigate to scholarship detail
+                // Navigate to scholarship detail
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.appColors.primary,

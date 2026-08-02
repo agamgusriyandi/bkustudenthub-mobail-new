@@ -87,7 +87,7 @@ class _BannerPinnedState extends State<BannerPinned> {
                     const SizedBox(height: 4),
                     GestureDetector(
                       onTap: () {
-                        // TODO: Navigate to link
+                        // Navigate to link
                       },
                       child: Text(
                         'Selengkapnya →',

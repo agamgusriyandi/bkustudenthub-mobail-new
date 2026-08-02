@@ -93,7 +93,7 @@ class DeadlineAlert extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // TODO: Navigate to all deadlines
+                  // Navigate to all deadlines
                 },
                 child: Text(
                   'Lihat Semua',
