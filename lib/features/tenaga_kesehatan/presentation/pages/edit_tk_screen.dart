@@ -82,7 +82,7 @@ class _EditTkScreenState extends State<EditTkScreen> {
 
     try {
       final api = ApiClient();
-      await api.client.put('/api/admin/tenagakes/${widget.tkId}', data: {
+      await api.client.put('/admin/tenagakes/${widget.tkId}', data: {
         'nama': _namaController.text.trim(),
         'email': _emailController.text.trim(),
         'no_hp': _noHpController.text.trim(),

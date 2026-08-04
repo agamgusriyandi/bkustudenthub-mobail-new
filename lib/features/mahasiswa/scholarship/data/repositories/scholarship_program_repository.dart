@@ -10,7 +10,7 @@ class ScholarshipProgramRepository {
 
   Future<ScholarshipProgramModel> getProgramDetail(int id) async {
     try {
-      final response = await _apiClient.client.get('/scholarship/program/$id');
+      final response = await _apiClient.client.get('/scholarship/$id');
       final data = response.data['data'] ?? response.data;
       return ScholarshipProgramModel.fromJson(data as Map<String, dynamic>);
     } catch (e) {
@@ -21,7 +21,7 @@ class ScholarshipProgramRepository {
 
   Future<void> applyProgram(int id) async {
     try {
-      await _apiClient.client.post('/scholarship/apply/$id');
+      await _apiClient.client.post('/scholarship/$id/daftar');
     } catch (e) {
       log('Error applying scholarship: $e');
       throw Exception('Gagal mengajukan beasiswa');

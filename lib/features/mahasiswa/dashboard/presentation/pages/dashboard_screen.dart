@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
@@ -20,6 +21,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/announcement_section.dart';
 
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
@@ -40,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<StudentProvider>().loadAllData();
+        context.read<HealthViewModel>().loadInitialData();
       }
     });
   }
@@ -47,6 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
+    final health = context.watch<HealthViewModel>();
     final navProvider = context.read<NavigationProvider>();
     final name = student.name;
     final stats = student.dashboardStats;
@@ -57,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         student.missions.where((m) => m.isCompleted).length;
     final pendingAspirations =
         stats['student_voice']?['jumlah_aktif'] ?? student.pendingAspirations;
-    final latestHealth = student.latestHealthRecord;
+    final latestHealth = health.latestHealthRecord;
 
     // Beasiswa uses 'jumlah_proses' + 'jumlah_menunggu' from stats, fallback to provider logic
     final statsBeasiswa = stats['beasiswa'];
@@ -72,7 +76,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
-        onRefresh: () => student.loadAllData(),
+        onRefresh: () async {
+          await student.loadAllData();
+          if (mounted) {
+            await context.read<HealthViewModel>().loadInitialData();
+          }
+        },
         color: context.appColors.primary,
         backgroundColor: context.appColors.surface,
         child: CustomScrollView(
@@ -90,8 +99,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               showProfileOnCollapse: true,
               profileImage:
                   student.fotoUrl != null && student.fotoUrl!.isNotEmpty
-                      ? CachedNetworkImage(imageUrl: 
-                        ApiGate.getImageUrl(student.fotoUrl!),
+                      ? CachedNetworkImage(
+                        imageUrl: ApiGate.getImageUrl(student.fotoUrl!),
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) {
                           return Icon(
@@ -100,7 +109,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             size: 28,
                           );
                         },
-                        placeholder: (context, url) => Container(color: AppColors.neutral200),
+                        placeholder:
+                            (context, url) =>
+                                Container(color: AppColors.neutral200),
                       )
                       : Icon(
                         Icons.person_rounded,
@@ -152,9 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: AppSpacing.s20),
 
                     // 2. Deadline Alert (matches web DeadlineAlert.jsx)
-                    DeadlineAlert(
-                      deadlines: _buildDeadlines(student),
-                    ),
+                    DeadlineAlert(deadlines: _buildDeadlines(student)),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 3. Today Schedule (mobile extra)
@@ -183,9 +192,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     // 6. Aktivitas Terbaru (matches web ActivityFeed.jsx)
                     _buildSectionTitle('Aktivitas Terbaru'),
                     const SizedBox(height: AppSpacing.md),
-                    ActivityFeed(
-                      activities: _buildActivities(student),
-                    ),
+                    ActivityFeed(activities: _buildActivities(student)),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 7. Beasiswa Tersedia (matches web AvailableScholarships.jsx)
@@ -197,8 +204,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: AppSpacing.s20),
 
                     // 8. Kalender Mini (matches web CalendarMini.jsx)
-                    CalendarMini(
-                      events: _buildCalendarEvents(student),
+                    CalendarMini(events: _buildCalendarEvents(student)),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 9. Pengumuman (matches web AnnouncementSection.jsx)
+                    AnnouncementSection(
+                      announcements:
+                          student.dashboardStats['pengumuman'] is List
+                              ? student.dashboardStats['pengumuman']
+                              : [],
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
@@ -210,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: AppSpacing.s20),
 
                     // 11. Asuransi (mobile extra)
-                    InsuranceTrackerCard(claims: student.insuranceClaims),
+                    InsuranceTrackerCard(claims: health.insuranceClaims),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 12. Berita Kampus (mobile extra)
@@ -245,11 +259,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (s.applicationStatus == null && s.status == 'Open') {
         final deadline = DateTime.tryParse(s.deadline);
         if (deadline != null && deadline.isAfter(now)) {
-          items.add(DeadlineItem(
-            name: s.title,
-            daysLeft: deadline.difference(now).inDays,
-            type: 'beasiswa',
-          ));
+          items.add(
+            DeadlineItem(
+              name: s.title,
+              daysLeft: deadline.difference(now).inDays,
+              type: 'beasiswa',
+            ),
+          );
         }
       }
     }
@@ -259,42 +275,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<ActivityItem> _buildActivities(StudentProvider student) {
     final items = <ActivityItem>[];
     for (final a in student.achievements.take(3)) {
-      items.add(ActivityItem(
-        description: '${a.title} (${a.status})',
-        createdAt: a.date,
-        type: 'achievement',
-      ));
+      items.add(
+        ActivityItem(
+          description: '${a.title} (${a.status})',
+          createdAt: a.date,
+          type: 'achievement',
+        ),
+      );
     }
     for (final cs in student.counselingSessions.take(3)) {
-      items.add(ActivityItem(
-        description: '${cs.topic} — ${cs.psychologistName}',
-        createdAt: cs.date,
-        type: 'konseling',
-      ));
+      items.add(
+        ActivityItem(
+          description: '${cs.topic} — ${cs.psychologistName}',
+          createdAt: cs.date,
+          type: 'konseling',
+        ),
+      );
     }
     for (final m in student.missions.take(3)) {
-      items.add(ActivityItem(
-        description: m.title ?? m.desc ?? 'Modul Kencana',
-        createdAt: DateTime.now(),
-        type: 'kencana',
-      ));
+      items.add(
+        ActivityItem(
+          description: m.title ?? m.desc ?? 'Modul Kencana',
+          createdAt: DateTime.now(),
+          type: 'kencana',
+        ),
+      );
     }
     for (final asp in student.aspirations.take(3)) {
-      items.add(ActivityItem(
-        description: asp.title,
-        createdAt: asp.date,
-        type: 'voice',
-      ));
+      items.add(
+        ActivityItem(
+          description: asp.title,
+          createdAt: asp.date,
+          type: 'voice',
+        ),
+      );
     }
     items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return items.take(6).toList();
   }
 
   List<ScholarshipItem> _buildScholarshipItems(StudentProvider student) {
-    return student.scholarships.where((s) => s.status == 'Open').take(4).map((s) {
-      final amount = double.tryParse(
-        s.coverAmount.replaceAll(RegExp(r'[^0-9.]'), ''),
-      ) ?? 0;
+    return student.scholarships.where((s) => s.status == 'Open').take(4).map((
+      s,
+    ) {
+      final amount =
+          double.tryParse(s.coverAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+          0;
       final deadline = DateTime.tryParse(s.deadline);
       return ScholarshipItem(
         id: s.id,

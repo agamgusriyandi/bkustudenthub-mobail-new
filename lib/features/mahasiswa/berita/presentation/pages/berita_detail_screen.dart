@@ -126,6 +126,19 @@ class _BeritaContent extends StatelessWidget {
   final dynamic berita;
   const _BeritaContent({required this.berita});
 
+  String _parseHtmlString(String htmlString) {
+    if (htmlString.isEmpty) return '';
+    var document = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+    document = document
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
+    return document.trim();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -230,7 +243,7 @@ class _BeritaContent extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                berita.content,
+                _parseHtmlString(berita.content),
                 style: AppTextStyles.bodyLg.copyWith(
                   color: context.appColors.onSurface.withValues(alpha: 0.85),
                   height: 1.7,

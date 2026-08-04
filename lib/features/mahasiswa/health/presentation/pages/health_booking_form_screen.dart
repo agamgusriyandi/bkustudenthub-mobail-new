@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 
@@ -49,12 +50,13 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
+    final health = context.watch<HealthViewModel>();
     final themeProvider = context.watch<ThemeProvider>();
     final isReschedule = widget.rescheduleBookingId != null;
 
     final today = DateTime.now().subtract(const Duration(minutes: 5));
     final schedules =
-        student.healthSchedules.where((s) {
+        health.healthSchedules.where((s) {
           if (s.tenagaKesId != widget.worker.id) return false;
 
           DateTime slotEnd = s.tanggal;
@@ -124,7 +126,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.refreshHealthData();
+          await health.refreshHealthData();
         },
         color: context.appColors.primary,
         child: CustomScrollView(
@@ -680,12 +682,12 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
 
     try {
       if (isReschedule) {
-        await student.rescheduleHealthBooking(
+        await context.read<HealthViewModel>().rescheduleHealthBooking(
           widget.rescheduleBookingId!,
           _selectedSchedule!.id,
         );
       } else {
-        await student.createHealthBooking(
+        await context.read<HealthViewModel>().createHealthBooking(
           _selectedSchedule!.id,
           _complaintCtrl.text.trim(),
         );

@@ -20,6 +20,9 @@ abstract class OrmawaRemoteDataSource {
   // Ormawa Role Dashboards
   Future<Response> getOrmawaStats(String ormawaId);
   Future<Response> getOrmawaGamifikasi();
+  Future<Response> getOrmawaGamifikasiHistory();
+  Future<Response> getOrmawaGamifikasiLeaderboard();
+  Future<Response> getOrmawaGamifikasiRules();
   Future<Response> getProposals(String ormawaId);
   Future<Response> addProposal(Map<String, dynamic> data);
   Future<Response> updateProposal(String id, Map<String, dynamic> data);
@@ -33,6 +36,7 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> getFinance(String ormawaId);
   Future<Response> addFinance(String ormawaId, Map<String, dynamic> data);
   Future<Response> getLPJs(String ormawaId);
+  Future<Response> getLpjDocuments(String lpjId);
   Future<Response> addLPJ(Map<String, dynamic> data);
   Future<Response> updateLPJ(String id, Map<String, dynamic> data);
   Future<Response> deleteLPJ(String id);
@@ -90,6 +94,9 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> createAbsensiManagement(Map<String, dynamic> data);
   Future<Response> getAbsensiManagementDetail(String id);
   Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data);
+
+  // RBAC Roles
+  Future<Response> getRoleDetails(String roleId);
 }
 
 class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
@@ -184,6 +191,21 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   }
 
   @override
+  Future<Response> getOrmawaGamifikasiHistory() async {
+    return await dio.get('/ormawa/gamifikasi/history');
+  }
+
+  @override
+  Future<Response> getOrmawaGamifikasiLeaderboard() async {
+    return await dio.get('/ormawa/gamifikasi/leaderboard');
+  }
+
+  @override
+  Future<Response> getOrmawaGamifikasiRules() async {
+    return await dio.get('/ormawa/gamifikasi/rules');
+  }
+
+  @override
   Future<Response> getProposals(String ormawaId) async {
     return await dio.get('/ormawa/proposals');
   }
@@ -239,6 +261,11 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   @override
   Future<Response> getLPJs(String ormawaId) async {
     return await dio.get('/ormawa/lpjs');
+  }
+
+  @override
+  Future<Response> getLpjDocuments(String lpjId) async {
+    return await dio.get('/ormawa/lpjs/documents/$lpjId');
   }
 
   @override
@@ -434,6 +461,11 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   @override
   Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
     return await dio.put('/ormawa/attendance/$id', data: data);
+  }
+
+  @override
+  Future<Response> getRoleDetails(String roleId) async {
+    return await dio.get('/ormawa/roles/$roleId');
   }
 
   // Organisasi

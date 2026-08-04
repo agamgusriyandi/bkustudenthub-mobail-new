@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/insurance_claim.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -34,12 +35,13 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
+    final health = context.watch<HealthViewModel>();
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.refreshHealthData();
+          await health.refreshHealthData();
         },
         color: context.appColors.primary,
         child: CustomScrollView(
@@ -98,7 +100,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      if (student.insuranceClaims.isEmpty)
+                      if (health.insuranceClaims.isEmpty)
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
@@ -128,7 +130,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           ),
                         )
                       else
-                        ...student.insuranceClaims.map(
+                        ...health.insuranceClaims.map(
                           (claim) =>
                               _buildInsuranceClaimCard(context, student, claim),
                         ),
@@ -549,7 +551,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
       if (context.mounted) {
         BkuLoadingDialog.show(context, message: 'Mengunggah dokumen...');
       }
-      await student.uploadInsuranceFile(claimId, filePath, 1);
+      await context.read<HealthViewModel>().uploadInsuranceFile(claimId, filePath, 1);
       if (context.mounted) {
         BkuLoadingDialog.hide(context);
         showDialog(
@@ -992,7 +994,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                       context,
                                       'Mengajukan klaim asuransi...',
                                     );
-                                    await student.submitInsuranceClaim(
+                                    await context.read<HealthViewModel>().submitInsuranceClaim(
                                       provider: selectedProvider,
                                       tanggal: formattedDateStr,
                                       faskes: faskesController.text,

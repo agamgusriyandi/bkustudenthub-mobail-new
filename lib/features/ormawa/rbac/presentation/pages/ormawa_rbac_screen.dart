@@ -34,7 +34,7 @@ class _OrmawaRbacScreenState extends State<OrmawaRbacScreen> {
 
     try {
       final dio = Dio();
-      final response = await dio.get('/api/ormawa/roles');
+      final response = await dio.get('/ormawa/roles');
       final data = response.data;
 
       List<OrmawaRole> roles;

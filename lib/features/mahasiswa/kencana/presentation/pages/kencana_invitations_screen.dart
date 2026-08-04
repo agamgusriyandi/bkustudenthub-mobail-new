@@ -126,7 +126,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                     _buildActiveMentorCard(),
                     const SizedBox(height: AppSpacing.xxl),
                     Text(
-                      'Undangan Dewan Pembimbing (DP)',
+                      'Undangan Fasilitator',
                       style: AppTextStyles.titleMd.copyWith(
                         fontWeight: FontWeight.w900,
                         color: AppColors.onSurface,
@@ -171,7 +171,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
             const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Text(
-                'Kamu belum memiliki Dewan Pembimbing (DP) yang aktif.',
+                'Kamu belum memiliki Fasilitator yang aktif.',
                 style: AppTextStyles.labelMd.copyWith(color: AppColors.warning),
               ),
             ),
@@ -241,7 +241,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      mentor['name'] ?? 'Dewan Pembimbing',
+                      mentor['name'] ?? 'Fasilitator',
                       style: AppTextStyles.titleLg.copyWith(
                         color: AppColors.neutral800,
                         fontWeight: FontWeight.bold,
@@ -298,10 +298,10 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
             String subtitle = '';
 
             if (type == 'mentor') {
-              title = item['mentor']?['name'] ?? 'Dewan Pembimbing';
+              title = item['mentor']?['name'] ?? 'Fasilitator';
               subtitle =
-                  'Undangan sebagai DP dari ${item['mentor']?['fakultas']?['name'] ?? 'Universitas'}';
-            } else {
+                  'Undangan sebagai Fasilitator dari ${item['mentor']?['fakultas']?['name'] ?? 'Universitas'}';
+            } else if (type == 'team') {
               title = item['group']?['name'] ?? 'Kelompok';
               subtitle =
                   'Kelompok: ${item['group']?['code'] ?? ''} - Anggota: ${item['group']?['members']?.length ?? 0}';

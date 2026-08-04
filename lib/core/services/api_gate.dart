@@ -31,11 +31,11 @@ class ApiGate {
       if (cleanUrl.endsWith('/')) {
         cleanUrl = cleanUrl.substring(0, cleanUrl.length - 1);
       }
-      return cleanUrl.endsWith('/api') ? cleanUrl : '$cleanUrl/api';
+      return cleanUrl;
     }
 
     // Default hardcoded URL as requested
-    return 'https://tukang.bkustudenthub.com/api';
+    return 'https://tukang.bkustudenthub.com';
   }
 
   /// Current environment: 'development' or 'production'

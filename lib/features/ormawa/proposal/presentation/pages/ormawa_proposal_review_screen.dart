@@ -51,7 +51,7 @@ class _OrmawaProposalReviewScreenState
     try {
       final api = ApiClient();
       final response = await api.client.get(
-        '/api/ormawa/proposals',
+        '/ormawa/proposals',
         queryParameters: {'status': 'pending'},
       );
       final data = response.data;

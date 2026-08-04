@@ -48,7 +48,7 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
     try {
       final api = ApiClient();
       final response = await api.client.get(
-        '/api/ormawa/lpjs',
+        '/ormawa/lpjs',
         queryParameters: {'status': 'pending'},
       );
       final data = response.data;

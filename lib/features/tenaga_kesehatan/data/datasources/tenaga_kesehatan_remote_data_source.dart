@@ -39,22 +39,22 @@ class TenagaKesehatanRemoteDataSourceImpl
 
   @override
   Future<Response> getActivities() async {
-    return await dio.get('/api/activities');
+    return await dio.get('/tenagakes/activities');
   }
 
   @override
   Future<Response> getBookings() async {
-    return await dio.get('/api/bookings');
+    return await dio.get('/tenagakes/bookings');
   }
 
   @override
   Future<Response> createManualBooking(Map<String, dynamic> data) async {
-    return await dio.post('/api/bookings/manual', data: data);
+    return await dio.post('/tenagakes/bookings/manual', data: data);
   }
 
   @override
   Future<Response> getBookingDetail(String id) async {
-    return await dio.get('/api/bookings/$id');
+    return await dio.get('/tenagakes/bookings/$id');
   }
 
   @override
@@ -62,18 +62,18 @@ class TenagaKesehatanRemoteDataSourceImpl
     String id,
     Map<String, dynamic> data,
   ) async {
-    return await dio.put('/api/bookings/$id/status', data: data);
+    return await dio.put('/tenagakes/bookings/$id/status', data: data);
   }
 
   @override
   Future<Response> getAllMedicalRecords() async {
-    return await dio.get('/api/medical-records');
+    return await dio.get('/tenagakes/medical-records');
   }
 
   @override
   Future<Response> exportMedicalRecordPDF(String id) async {
     return await dio.get(
-      '/api/medical-records/$id/export-pdf',
+      '/tenagakes/medical-records/$id/export-pdf',
       options: Options(responseType: ResponseType.bytes),
     );
   }
@@ -83,28 +83,28 @@ class TenagaKesehatanRemoteDataSourceImpl
     String recordId,
     Map<String, dynamic> data,
   ) async {
-    return await dio.put('/api/medical-records/$recordId', data: data);
+    return await dio.put('/tenagakes/medical-records/$recordId', data: data);
   }
 
   @override
   Future<Response> getPatients() async {
-    return await dio.get('/api/patients');
+    return await dio.get('/tenagakes/patients');
   }
 
   @override
   Future<Response> getMedicalRecord(String id) async {
-    return await dio.get('/api/patients/$id/medical-record');
+    return await dio.get('/tenagakes/patients/$id/medical-record');
   }
 
   @override
   Future<Response> createScreening(String id, Map<String, dynamic> data) async {
-    return await dio.post('/api/patients/$id/screening', data: data);
+    return await dio.post('/tenagakes/patients/$id/screening', data: data);
   }
 
   @override
   Future<Response> exportExcel() async {
     return await dio.get(
-      '/api/reports/export-excel',
+      '/reports/export-excel',
       options: Options(responseType: ResponseType.bytes),
     );
   }
@@ -112,7 +112,7 @@ class TenagaKesehatanRemoteDataSourceImpl
   @override
   Future<Response> exportRegistrationFormPDF() async {
     return await dio.get(
-      '/api/reports/export-offline-form',
+      '/reports/export-offline-form',
       options: Options(responseType: ResponseType.bytes),
     );
   }
@@ -120,35 +120,35 @@ class TenagaKesehatanRemoteDataSourceImpl
   @override
   Future<Response> exportPDF() async {
     return await dio.get(
-      '/api/reports/export-pdf',
+      '/reports/export-pdf',
       options: Options(responseType: ResponseType.bytes),
     );
   }
 
   @override
   Future<Response> getSchedules() async {
-    return await dio.get('/api/schedules');
+    return await dio.get('/tenagakes/schedules');
   }
 
   @override
   Future<Response> createSchedule(Map<String, dynamic> data) async {
-    return await dio.post('/api/schedules', data: data);
+    return await dio.post('/tenagakes/schedules', data: data);
   }
 
   @override
   Future<Response> updateSchedule(String id, Map<String, dynamic> data) async {
-    return await dio.put('/api/schedules/$id', data: data);
+    return await dio.put('/tenagakes/schedules/$id', data: data);
   }
 
   @override
   Future<Response> deleteSchedule(String id) async {
-    return await dio.delete('/api/schedules/$id');
+    return await dio.delete('/tenagakes/schedules/$id');
   }
 
   @override
   Future<Response> exportPatientsRecapPDF() async {
     return await dio.get(
-      '/api/patients/export-pdf',
+      '/patients/export-pdf',
       options: Options(responseType: ResponseType.bytes),
     );
   }
@@ -158,7 +158,7 @@ class TenagaKesehatanRemoteDataSourceImpl
     String id,
     Map<String, dynamic> data,
   ) async {
-    return await dio.post('/api/patients/$id/session-notes', data: data);
+    return await dio.post('/psychologist/patients/$id/session-notes', data: data);
   }
 
   @override
@@ -166,11 +166,11 @@ class TenagaKesehatanRemoteDataSourceImpl
     String studentId,
     Map<String, dynamic> data,
   ) async {
-    return await dio.put('/api/patients/$studentId/status', data: data);
+    return await dio.put('/psychologist/patients/$studentId/status', data: data);
   }
 
   @override
   Future<Response> saveSchedules(Map<String, dynamic> data) async {
-    return await dio.put('/api/schedules', data: data);
+    return await dio.put('/tenagakes/schedules', data: data);
   }
 }

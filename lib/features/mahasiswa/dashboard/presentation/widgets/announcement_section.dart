@@ -1,279 +1,289 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-
-class AnnouncementItem {
-  final String id;
-  final String title;
-  final String? summary;
-  final DateTime? date;
-  final String? category;
-  final String? imageUrl;
-  final String? link;
-
-  AnnouncementItem({
-    required this.id,
-    required this.title,
-    this.summary,
-    this.date,
-    this.category,
-    this.imageUrl,
-    this.link,
-  });
-}
+import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/pages/berita_detail_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AnnouncementSection extends StatelessWidget {
-  final List<AnnouncementItem> announcements;
-  final VoidCallback? onViewAll;
+  final List<dynamic> announcements;
 
-  const AnnouncementSection({
-    super.key,
-    this.announcements = const [],
-    this.onViewAll,
-  });
+  const AnnouncementSection({super.key, required this.announcements});
 
-  Color _getCategoryColor(String? category) {
-    switch ((category ?? '').toLowerCase()) {
+  Color _getKategoriColor(BuildContext context, String kategori) {
+    final k = kategori.toLowerCase();
+    switch (k) {
       case 'umum':
-        return const Color(0xFF0EA5E9);
+        return AppColors.info;
       case 'akademik':
-        return const Color(0xFF7C3AED);
+        return AppColors.tertiary;
       case 'kemahasiswaan':
-        return const Color(0xFF16A34A);
+        return AppColors.success;
       case 'urgent':
-        return const Color(0xFFDC2626);
+        return AppColors.error;
       case 'event':
-        return const Color(0xFFF59E0B);
+        return AppColors.warning;
       case 'beasiswa':
-        return const Color(0xFF2563EB);
+        return context.appColors.primary;
       default:
-        return const Color(0xFF6B7280);
+        return AppColors.neutral500;
     }
   }
 
-  Color _getCategoryBgColor(String? category) {
-    switch ((category ?? '').toLowerCase()) {
-      case 'umum':
-        return const Color(0xFFE0F2FE);
-      case 'akademik':
-        return const Color(0xFFF3E8FF);
-      case 'kemahasiswaan':
-        return const Color(0xFFDCFCE7);
-      case 'urgent':
-        return const Color(0xFFFEE2E2);
-      case 'event':
-        return const Color(0xFFFEF3C7);
-      case 'beasiswa':
-        return const Color(0xFFDBEAFE);
-      default:
-        return const Color(0xFFF3F4F6);
+  String _formatDate(String dateStr) {
+    if (dateStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateStr);
+      final months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'Mei',
+        'Jun',
+        'Jul',
+        'Ags',
+        'Sep',
+        'Okt',
+        'Nov',
+        'Des',
+      ];
+      return '${date.day} ${months[date.month - 1]}';
+    } catch (e) {
+      return '';
     }
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
-    ];
-    return '${date.day} ${months[date.month - 1]}';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.feed_rounded,
-                    color: context.appColors.primary,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Berita',
-                    style: AppTextStyles.titleSm.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: onViewAll,
-                child: Row(
-                  children: [
-                    Text(
-                      'Lihat Semua',
-                      style: AppTextStyles.caption.copyWith(
-                        color: context.appColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: context.appColors.primary,
-                      size: 14,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (announcements.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
-                      size: 40,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Belum ada berita terbaru',
-                      style: AppTextStyles.bodySm.copyWith(
-                        color: context.appColors.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            ...announcements.map((item) => _buildAnnouncementCard(context, item)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnnouncementCard(BuildContext context, AnnouncementItem item) {
-    final catColor = _getCategoryColor(item.category);
-    final catBgColor = _getCategoryBgColor(item.category);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          if (item.imageUrl != null && item.imageUrl!.isNotEmpty)
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: context.appColors.surface,
-                border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  item.imageUrl!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: context.appColors.surface,
-                      child: Icon(
-                        Icons.image_rounded,
-                        color: context.appColors.onSurfaceVariant.withValues(alpha: 0.3),
-                        size: 24,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          if (item.imageUrl != null && item.imageUrl!.isNotEmpty)
-            const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: catBgColor,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: catColor.withValues(alpha: 0.2)),
-                      ),
-                      child: Text(
-                        item.category ?? 'Umum',
-                        style: AppTextStyles.caption.copyWith(
-                          color: catColor,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                    if (item.date != null) ...[
-                      const SizedBox(width: 8),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_rounded,
-                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.5),
-                            size: 10,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            _formatDate(item.date),
-                            style: AppTextStyles.caption.copyWith(
-                              color: context.appColors.onSurfaceVariant,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
+                Icon(
+                  Icons.feed_rounded,
+                  color: context.appColors.primary,
+                  size: 20,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
-                  item.title,
-                  style: AppTextStyles.bodySm.copyWith(
-                    fontWeight: FontWeight.bold,
+                  'Pengumuman',
+                  style: AppTextStyles.titleLg.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                if (item.summary != null && item.summary!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    item.summary!,
-                    style: AppTextStyles.caption.copyWith(
-                      color: context.appColors.onSurfaceVariant,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
               ],
             ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        if (announcements.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: AppRadius.radiusXl,
+              border: Border.all(color: AppColors.neutral200),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: AppColors.neutral300,
+                  size: 40,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Belum ada pengumuman terbaru.',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: AppColors.neutral500,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: announcements.length,
+            separatorBuilder:
+                (context, index) => const SizedBox(height: AppSpacing.md),
+            itemBuilder: (context, index) {
+              final item = announcements[index];
+              if (item == null || item is! Map) return const SizedBox.shrink();
+
+              final kategori = item['kategori']?.toString() ?? 'Umum';
+              final judul = item['judul']?.toString() ?? 'Pengumuman';
+              final isi = item['isi_singkat']?.toString() ?? '';
+              final tanggal = item['tanggal']?.toString() ?? '';
+              final gambarRaw = item['gambar_url']?.toString() ?? '';
+              final link = item['link']?.toString();
+              final id = item['id'] ?? item['ID'];
+
+              String? gambarUrl;
+              if (gambarRaw.isNotEmpty) {
+                gambarUrl =
+                    gambarRaw.startsWith('http')
+                        ? gambarRaw
+                        : ApiGate.getImageUrl(gambarRaw);
+              }
+
+              final katColor = _getKategoriColor(context, kategori);
+
+              final cleanIsi =
+                  isi.replaceAll(RegExp(r'<[^>]*>|&nbsp;'), ' ').trim();
+
+              return GestureDetector(
+                onTap: () async {
+                  if (link != null && link.startsWith('http')) {
+                    final uri = Uri.tryParse(link);
+                    if (uri != null && await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  } else if (id != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BeritaDetailScreen(beritaId: int.tryParse(id.toString()) ?? 0),
+                      ),
+                    );
+                  }
+                },
+                child: BkuCard(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (gambarUrl != null) ...[
+                        ClipRRect(
+                          borderRadius: AppRadius.radiusLg,
+                          child: CachedNetworkImage(
+                            imageUrl: gambarUrl,
+                            width: 72,
+                            height: 72,
+                            fit: BoxFit.cover,
+                            placeholder:
+                                (context, url) => Container(
+                                  color: AppColors.neutral200,
+                                  width: 72,
+                                  height: 72,
+                                ),
+                            errorWidget:
+                                (context, url, error) => Container(
+                                  color: AppColors.neutral200,
+                                  width: 72,
+                                  height: 72,
+                                  child: const Icon(
+                                    Icons.image_not_supported_rounded,
+                                    color: AppColors.neutral400,
+                                  ),
+                                ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                      ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.sm,
+                                    vertical: AppSpacing.xs,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: katColor.withAlpha(20),
+                                    borderRadius: AppRadius.radiusSm,
+                                    border: Border.all(
+                                      color: katColor.withAlpha(50),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    kategori.toUpperCase(),
+                                    style: AppTextStyles.labelSm.copyWith(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                      color: katColor,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                                if (tanggal.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.calendar_today_rounded,
+                                        size: 10,
+                                        color: AppColors.neutral500,
+                                      ),
+                                      const SizedBox(width: AppSpacing.xs),
+                                      Text(
+                                        _formatDate(tanggal),
+                                        style: AppTextStyles.labelSm.copyWith(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.neutral500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              judul,
+                              style: AppTextStyles.bodyLg.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (cleanIsi.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                cleanIsi,
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.neutral500,
+                                  fontSize: 11,
+                                  height: 1.3,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-        ],
-      ),
+      ],
     );
   }
 }

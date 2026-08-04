@@ -1110,7 +1110,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'DEWAN PEMBIMBING (DP)',
+          'FASILITATOR',
           style: AppTextStyles.labelSm.copyWith(
             fontWeight: FontWeight.w900,
             color: context.appColors.outline,
@@ -1120,19 +1120,19 @@ class _KencanaScreenState extends State<KencanaScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
         if (mentorUniv != null)
-          _buildMentorCard('DP Universitas', mentorUniv['name'] ?? '-')
+          _buildMentorCard('Fasilitator Universitas', mentorUniv['name'] ?? '-')
         else if (dashboard.hasPendingInvitation)
           _buildPendingInvitationCard(context, 'Universitas')
         else
-          _buildNoMentorCard('Belum ada pembimbing Universitas'),
+          _buildNoMentorCard('Belum ada fasilitator Universitas'),
         const SizedBox(height: AppSpacing.md),
         if (dashboard.scoreFakultas != null) ...[
           if (mentorFak != null)
-            _buildMentorCard('DP Fakultas', mentorFak['name'] ?? '-')
+            _buildMentorCard('Fasilitator Fakultas', mentorFak['name'] ?? '-')
           else if (dashboard.hasPendingFacultyInvitation)
             _buildPendingInvitationCard(context, 'Fakultas')
           else
-            _buildNoMentorCard('Belum ada pembimbing Fakultas'),
+            _buildNoMentorCard('Belum ada fasilitator Fakultas'),
         ],
       ],
     );

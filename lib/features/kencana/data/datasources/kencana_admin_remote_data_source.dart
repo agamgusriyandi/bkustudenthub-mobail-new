@@ -59,7 +59,7 @@ class KencanaAdminRemoteDataSourceImpl implements KencanaAdminRemoteDataSource {
 
   @override
   Future<Response> syncFromSevimaPeriod(Map<String, dynamic> data) async {
-    return await dio.post('/api/kencana/auto/SyncFromSevimaPeriod', data: data);
+    return await dio.post('/kencana/auto/SyncFromSevimaPeriod', data: data);
   }
 
   @override

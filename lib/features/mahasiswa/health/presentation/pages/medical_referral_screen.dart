@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -25,12 +26,13 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
+    final health = context.watch<HealthViewModel>();
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.refreshHealthData();
+          await health.refreshHealthData();
         },
         color: context.appColors.primary,
         child: CustomScrollView(
@@ -80,7 +82,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      if (student.rujukans.isEmpty)
+                      if (health.rujukans.isEmpty)
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
@@ -110,7 +112,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                           ),
                         )
                       else
-                        ...student.rujukans.map(
+                        ...health.rujukans.map(
                           (ref) => _buildRujukanCard(context, ref),
                         ),
                     ],

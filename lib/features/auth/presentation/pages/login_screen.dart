@@ -16,6 +16,7 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/biometric_service.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -89,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (_authService.currentRole == UserRole.student) {
       Provider.of<StudentProvider>(context, listen: false).loadAllData();
+      Provider.of<HealthViewModel>(context, listen: false).loadInitialData();
       context.go(AppRoutes.studentMain);
     } else if (_authService.currentRole == UserRole.mentorKencana) {
       context.go(AppRoutes.mentorKencanaMain);

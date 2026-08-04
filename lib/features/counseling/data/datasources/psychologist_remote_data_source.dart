@@ -26,35 +26,35 @@ class PsychologistRemoteDataSourceImpl implements PsychologistRemoteDataSource {
 
   @override
   Future<Response> listPsychologists() async {
-    return await dio.get('/api/psychologists');
+    return await dio.get('/tenagakes/psychologists');
   }
 
   @override
   Future<Response> getPsychologistSchedules(String id) async {
-    return await dio.get('/api/psychologists/$id/schedules');
+    return await dio.get('/tenagakes/psychologists/$id/schedules');
   }
 
   @override
   Future<Response> getAnalytics() async {
-    return await dio.get('/api/analytics');
+    return await dio.get('/psychologist/analytics');
   }
 
   @override
   Future<Response> exportAnalyticsPDF() async {
     return await dio.get(
-      '/api/analytics/export-pdf',
+      '/psychologist/analytics/export-pdf',
       options: Options(responseType: ResponseType.bytes),
     );
   }
 
   @override
   Future<Response> getAssessments() async {
-    return await dio.get('/api/assessments');
+    return await dio.get('/psychologist/assessments');
   }
 
   @override
   Future<Response> createAssessment(Map<String, dynamic> data) async {
-    return await dio.post('/api/assessments', data: data);
+    return await dio.post('/psychologist/assessments', data: data);
   }
 
   @override
@@ -96,13 +96,13 @@ class PsychologistRemoteDataSourceImpl implements PsychologistRemoteDataSource {
     String id,
     Map<String, dynamic> data,
   ) async {
-    return await dio.put('/api/session-notes/$id', data: data);
+    return await dio.put('/psychologist/session-notes/$id', data: data);
   }
 
   @override
   Future<Response> exportSessionNotePDF(String id) async {
     return await dio.get(
-      '/api/session-notes/$id/export-pdf',
+      '/psychologist/session-notes/$id/export-pdf',
       options: Options(responseType: ResponseType.bytes),
     );
   }

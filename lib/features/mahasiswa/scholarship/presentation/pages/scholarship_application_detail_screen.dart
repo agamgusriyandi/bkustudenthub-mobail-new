@@ -610,24 +610,29 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.neutral100,
-                                borderRadius: AppRadius.radiusMd,
-                              ),
-                              child: Text(
-                                scholarship.category,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 10,
-                                  color: AppColors.neutral700,
+                            Flexible(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neutral100,
+                                  borderRadius: AppRadius.radiusMd,
+                                ),
+                                child: Text(
+                                  scholarship.category,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 10,
+                                    color: AppColors.neutral700,
+                                  ),
                                 ),
                               ),
                             ),
+                            const SizedBox(width: AppSpacing.sm),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,

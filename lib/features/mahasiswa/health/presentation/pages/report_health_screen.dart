@@ -14,6 +14,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -66,8 +67,8 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
     _weightController.addListener(_calculateBMI);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final student = Provider.of<StudentProvider>(context, listen: false);
-      final latest = student.latestHealthRecord;
+      final health = context.watch<HealthViewModel>();
+      final latest = health.latestHealthRecord;
       if (latest != null) {
         setState(() {
           _heightController.text = latest.height.toString();
@@ -1188,8 +1189,8 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
   }
 
   void _showSuccessDialog() {
-    final provider = context.read<StudentProvider>();
-    final records = provider.healthRecords;
+    final health = context.read<HealthViewModel>();
+    final records = health.healthRecords;
 
     final currentRecord = records.isNotEmpty ? records.first : null;
     final previousRecord = records.length > 1 ? records[1] : null;

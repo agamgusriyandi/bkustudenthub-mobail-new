@@ -30,7 +30,7 @@ class _MentorNotificationsScreenState extends State<MentorNotificationsScreen> {
     setState(() => _isLoading = true);
     try {
       final api = ApiClient();
-      final response = await api.client.get('/api/kencana-mentor/notifications');
+      final response = await api.client.get('/kencana-mentor/notifications');
       final data = response.data;
       if (data is List) {
         _notifications = List<Map<String, dynamic>>.from(data);
@@ -50,7 +50,7 @@ class _MentorNotificationsScreenState extends State<MentorNotificationsScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: BkuStaticAppBar(
-        title: 'Notifikasi Mentor',
+        title: 'Notifikasi Fasilitator',
         variant: AppBarVariant.student,
         showBackButton: true,
         showNotification: false,

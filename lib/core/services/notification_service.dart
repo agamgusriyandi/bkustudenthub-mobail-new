@@ -281,7 +281,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications';
+        endpoint = '/tenagakes/notifikasi';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications';
       }
@@ -310,7 +310,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/unread-count';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications/unread-count';
+        endpoint = '/tenagakes/notifikasi/unread-count';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications/unread-count';
       }
@@ -328,7 +328,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/$id/baca';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications/$id/read';
+        endpoint = '/tenagakes/notifikasi/$id/baca';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications/$id/read';
       }
@@ -352,7 +352,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/baca-semua';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications/read-all';
+        endpoint = '/tenagakes/notifikasi/baca-semua';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications/read-all';
       }
@@ -374,7 +374,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/$id';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications/$id';
+        endpoint = '/tenagakes/notifikasi/$id';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications/$id';
       }
@@ -395,7 +395,7 @@ class NotificationService extends ChangeNotifier {
       final role = AuthService().currentRole;
       String endpoint = '/notifikasi/hapus-dibaca';
       if (role == UserRole.tenagaKesehatan) {
-        endpoint = '/tenagakes/notifications/delete-read';
+        endpoint = '/tenagakes/notifikasi/hapus-dibaca';
       } else if (role == UserRole.psychologist) {
         endpoint = '/psychologist/notifications/delete-read';
       }
@@ -414,7 +414,7 @@ class NotificationService extends ChangeNotifier {
     try {
       await _apiClient.client.delete(
         AuthService().currentRole == UserRole.tenagaKesehatan
-            ? '/tenagakes/notifications/bulk-delete'
+            ? '/tenagakes/notifikasi/hapus-bulk'
             : (AuthService().currentRole == UserRole.psychologist
                 ? '/psychologist/notifications/bulk-delete'
                 : '/notifikasi/hapus-bulk'),

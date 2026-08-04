@@ -56,37 +56,37 @@ class MahasiswaRemoteDataSourceImpl implements MahasiswaRemoteDataSource {
 
   @override
   Future<Response> getAkademikData() async {
-    return await dio.get('/api/mahasiswa/akademik');
+    return await dio.get('/mahasiswa/akademik');
   }
 
   @override
   Future<Response> changePasswordAuth(Map<String, dynamic> data) async {
-    return await dio.post('/api/mahasiswa/auto/ChangePasswordAuth', data: data);
+    return await dio.post('/auth/change-password', data: data);
   }
 
   @override
   Future<Response> login(Map<String, dynamic> data) async {
-    return await dio.post('/api/mahasiswa/auto/Login', data: data);
+    return await dio.post('/auth/login', data: data);
   }
 
   @override
   Future<Response> logout(Map<String, dynamic> data) async {
-    return await dio.post('/api/mahasiswa/auto/Logout', data: data);
+    return await dio.post('/auth/logout', data: data);
   }
 
   @override
   Future<Response> refreshToken(Map<String, dynamic> data) async {
-    return await dio.post('/api/mahasiswa/auto/RefreshToken', data: data);
+    return await dio.post('/auth/refresh', data: data);
   }
 
   @override
   Future<Response> getKegiatan() async {
-    return await dio.get('/api/mahasiswa/kegiatan');
+    return await dio.get('/mahasiswa/kegiatan');
   }
 
   @override
   Future<Response> getStudentSummary() async {
-    return await dio.get('/api/mahasiswa/summary');
+    return await dio.get('/mahasiswa/summary');
   }
 
   @override

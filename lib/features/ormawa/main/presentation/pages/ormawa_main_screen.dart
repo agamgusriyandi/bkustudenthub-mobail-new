@@ -47,6 +47,7 @@ class _OrmawaMainScreenState extends State<OrmawaMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: UnifiedBottomNavBar.ormawa(
         currentIndex: _currentIndex,

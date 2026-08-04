@@ -109,7 +109,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
     final authService = context.watch<AuthService>();
     final userData =
         authService.userData?['user'] ?? authService.userData ?? {};
-    final name = userData['name'] ?? userData['nama'] ?? 'Mentor Kencana';
+    final name = userData['name'] ?? userData['nama'] ?? 'Fasilitator';
     final email = userData['email'] ?? '';
     final username =
         userData['username'] ?? userData['nim'] ?? userData['NIM'] ?? '-';

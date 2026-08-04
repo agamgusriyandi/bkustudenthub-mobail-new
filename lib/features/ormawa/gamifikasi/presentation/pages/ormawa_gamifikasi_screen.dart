@@ -12,8 +12,7 @@ class OrmawaGamifikasiScreen extends StatefulWidget {
   const OrmawaGamifikasiScreen({super.key});
 
   @override
-  State<OrmawaGamifikasiScreen> createState() =>
-      _OrmawaGamifikasiScreenState();
+  State<OrmawaGamifikasiScreen> createState() => _OrmawaGamifikasiScreenState();
 }
 
 class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
@@ -27,42 +26,256 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => context.read<OrmawaProvider>().refreshData(),
-        child: CustomScrollView(
-          slivers: [
-            BkuAppBar(
-              title: 'GAMIFIKASI',
-              subtitle: 'POIN & PERINGKAT',
-              variant: AppBarVariant.ormawa,
-              expandedHeight: 130.0,
-              showBackButton: true,
-              isExpandable: false,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: AppColors.neutral100,
+        body: RefreshIndicator(
+          onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+          child: CustomScrollView(
+            slivers: [
+              BkuAppBar(
+                title: 'GAMIFIKASI',
+                subtitle: 'POIN & PERINGKAT',
+                variant: AppBarVariant.ormawa,
+                expandedHeight: 130.0,
+                showBackButton: true,
+                isExpandable: false,
+              ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SliverAppBarDelegate(
+                  TabBar(
+                    labelColor: context.appColors.primary,
+                    unselectedLabelColor: AppColors.neutral500,
+                    indicatorColor: context.appColors.primary,
+                    indicatorWeight: 3,
+                    labelStyle: AppTextStyles.labelSm.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    tabs: const [
+                      Tab(text: 'Ringkasan'),
+                      Tab(text: 'Peringkat'),
+                      Tab(text: 'Riwayat'),
+                    ],
+                  ),
+                ),
+              ),
+              SliverFillRemaining(
                 child: Consumer<OrmawaProvider>(
                   builder: (context, provider, _) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    return TabBarView(
                       children: [
-                        _buildMainCard(provider),
-                        const SizedBox(height: AppSpacing.xl),
-                        _buildLeaderboardSection(provider),
-                        const SizedBox(height: AppSpacing.xl),
-                        _buildAchievementsSection(provider),
-                        const SizedBox(height: AppSpacing.s100),
+                        _buildRingkasanTab(provider),
+                        _buildLeaderboardTab(provider),
+                        _buildHistoryTab(provider),
                       ],
                     );
                   },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRingkasanTab(OrmawaProvider provider) {
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      children: [
+        _buildMainCard(provider),
+        const SizedBox(height: AppSpacing.xl),
+        _buildRulesSection(provider),
+        const SizedBox(height: AppSpacing.s100),
+      ],
+    );
+  }
+
+  Widget _buildLeaderboardTab(OrmawaProvider provider) {
+    if (provider.isLoading && provider.gamifikasiLeaderboard.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.gamifikasiLeaderboard.isEmpty) {
+      return _buildEmptyState('Belum ada papan peringkat saat ini.');
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      itemCount: provider.gamifikasiLeaderboard.length,
+      separatorBuilder:
+          (context, index) => const SizedBox(height: AppSpacing.md),
+      itemBuilder: (context, index) {
+        final item = provider.gamifikasiLeaderboard[index];
+        final isTop3 = index < 3;
+        final color = isTop3 ? AppColors.warning : AppColors.neutral300;
+
+        return Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: AppRadius.radiusLg,
+            border: Border.all(color: AppColors.neutral200),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color.withAlpha(20),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  '${index + 1}',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: isTop3 ? AppColors.warning : AppColors.neutral700,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.lg),
+              Expanded(
+                child: Text(
+                  item['nama']?.toString() ?? 'Ormawa',
+                  style: AppTextStyles.bodyMd.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: context.appColors.primary.withAlpha(15),
+                  borderRadius: AppRadius.radiusMd,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.stars_rounded,
+                      color: context.appColors.primary,
+                      size: 14,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      '${item['total_poin'] ?? 0} Poin',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: context.appColors.primary,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHistoryTab(OrmawaProvider provider) {
+    if (provider.isLoading && provider.gamifikasiHistory.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.gamifikasiHistory.isEmpty) {
+      return _buildEmptyState('Belum ada riwayat poin.');
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      itemCount: provider.gamifikasiHistory.length,
+      separatorBuilder:
+          (context, index) => const SizedBox(height: AppSpacing.md),
+      itemBuilder: (context, index) {
+        final item = provider.gamifikasiHistory[index];
+        final poin = int.tryParse(item['poin']?.toString() ?? '0') ?? 0;
+        final isMinus = poin < 0;
+        final color = isMinus ? AppColors.error : AppColors.success;
+
+        return Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: AppRadius.radiusLg,
+            border: Border.all(color: AppColors.neutral200),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: color.withAlpha(15),
+                  borderRadius: AppRadius.radiusMd,
+                ),
+                child: Icon(
+                  isMinus
+                      ? Icons.remove_circle_rounded
+                      : Icons.add_circle_rounded,
+                  color: color,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['deskripsi']?.toString() ?? 'Aktivitas',
+                      style: AppTextStyles.bodyMd.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      item['created_at'] != null
+                          ? item['created_at'].toString().split('T').first
+                          : '',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: AppColors.neutral500,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '${isMinus ? '' : '+'}$poin',
+                style: AppTextStyles.bodyLg.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.inbox_rounded, color: AppColors.neutral300, size: 64),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            message,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.neutral500,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -91,8 +304,11 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
               color: context.appColors.primary.withAlpha(10),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.emoji_events_rounded,
-                color: context.appColors.primary, size: 40),
+            child: Icon(
+              Icons.emoji_events_rounded,
+              color: context.appColors.primary,
+              size: 40,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
@@ -159,7 +375,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
     );
   }
 
-  Widget _buildLeaderboardSection(OrmawaProvider provider) {
+  Widget _buildRulesSection(OrmawaProvider provider) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -172,7 +388,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'PENCAPAIAN',
+            'ATURAN POIN',
             style: AppTextStyles.labelSm.copyWith(
               color: AppColors.neutral500,
               fontWeight: FontWeight.w900,
@@ -181,96 +397,82 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          _buildAchievementTile(
-            Icons.check_circle_rounded,
-            'Progres Aktif',
-            'Terus pertahankan performa ormawa',
-            AppColors.success,
-          ),
-          _buildAchievementTile(
-            Icons.star_rounded,
-            'Poin Terkumpul',
-            '${provider.gamifikasiPoin} poin dari kegiatan',
-            AppColors.warning,
-          ),
-          _buildAchievementTile(
-            Icons.emoji_events_rounded,
-            'Peringkat',
-            'Peringkat #${provider.gamifikasiPeringkat} dari ${provider.totalOrmawa}',
-            context.appColors.primary,
-          ),
+          if (provider.gamifikasiRules.isEmpty)
+            Text(
+              'Poin gamifikasi diperoleh dari partisipasi aktif dalam kegiatan ormawa, '
+              'pengiriman proposal, pelaporan LPJ, dan pencapaian lainnya. '
+              'Peringkat ormawa ditentukan berdasarkan jumlah poin yang terkumpul.',
+              style: AppTextStyles.bodyMd.copyWith(
+                color: AppColors.neutral600,
+                height: 1.5,
+                fontSize: 13,
+              ),
+            )
+          else
+            ...provider.gamifikasiRules.map((rule) {
+              final poin = int.tryParse(rule['poin']?.toString() ?? '0') ?? 0;
+              final isMinus = poin < 0;
+              final color = isMinus ? AppColors.error : AppColors.success;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: color.withAlpha(15),
+                        borderRadius: AppRadius.radiusMd,
+                      ),
+                      child: Icon(Icons.star_rounded, color: color, size: 16),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Text(
+                        rule['aksi']?.toString() ?? 'Aktivitas',
+                        style: AppTextStyles.bodyMd.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${isMinus ? '' : '+'}$poin',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
         ],
       ),
     );
   }
+}
 
-  Widget _buildAchievementTile(
-      IconData icon, String title, String subtitle, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: color.withAlpha(15),
-              borderRadius: AppRadius.radiusMd,
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: AppTextStyles.bodyMd
-                        .copyWith(fontWeight: FontWeight.w900, fontSize: 13)),
-                Text(subtitle,
-                    style: AppTextStyles.labelSm
-                        .copyWith(color: AppColors.neutral500, fontSize: 11)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar _tabBar;
+
+  _SliverAppBarDelegate(this._tabBar);
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(color: context.appColors.surface, child: _tabBar);
   }
 
-  Widget _buildAchievementsSection(OrmawaProvider provider) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'TENTANG GAMIFIKASI',
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            'Poin gamifikasi diperoleh dari partisipasi aktif dalam kegiatan ormawa, '
-            'pengiriman proposal, pelaporan LPJ, dan pencapaian lainnya. '
-            'Peringkat ormawa ditentukan berdasarkan jumlah poin yang terkumpul.',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral600,
-              height: 1.5,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

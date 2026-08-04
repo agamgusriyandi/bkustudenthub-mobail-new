@@ -21,6 +21,8 @@ class OrmawaProvider extends ChangeNotifier {
   final OrmawaRepository _repository;
   final AuthService _authService = AuthService();
 
+  OrmawaRepository get repository => _repository;
+
   OrmawaProvider(this._repository);
 
   // Organization Info - populated from API
@@ -42,6 +44,9 @@ class OrmawaProvider extends ChangeNotifier {
   int _gamifikasiPoin = 0;
   int _gamifikasiPeringkat = 0;
   int _totalOrmawa = 0;
+  List<Map<String, dynamic>> _gamifikasiHistory = [];
+  List<Map<String, dynamic>> _gamifikasiLeaderboard = [];
+  List<Map<String, dynamic>> _gamifikasiRules = [];
 
   List<OrmawaProposal> _proposals = [];
   List<OrmawaAgenda> _agendas = [];
@@ -93,6 +98,9 @@ class OrmawaProvider extends ChangeNotifier {
   int get gamifikasiPoin => _gamifikasiPoin;
   int get gamifikasiPeringkat => _gamifikasiPeringkat;
   int get totalOrmawa => _totalOrmawa;
+  List<Map<String, dynamic>> get gamifikasiHistory => _gamifikasiHistory;
+  List<Map<String, dynamic>> get gamifikasiLeaderboard => _gamifikasiLeaderboard;
+  List<Map<String, dynamic>> get gamifikasiRules => _gamifikasiRules;
 
   int get approvalRate {
     if (_proposals.isEmpty) return 0;
@@ -268,6 +276,9 @@ class OrmawaProvider extends ChangeNotifier {
         _repository.getDivisions(ormawaId: ormawaId), // Divisions
         _repository.getNotifications(ormawaId), // Notifications
         _repository.getOrmawaSettings(ormawaId), // Settings
+        _repository.getGamifikasiHistory(), // 14
+        _repository.getGamifikasiLeaderboard(), // 15
+        _repository.getGamifikasiRules(), // 16
       ]);
 
       // Parse results - order matches Future.wait() order
@@ -285,6 +296,9 @@ class OrmawaProvider extends ChangeNotifier {
       final divisions = results[11] as List<OrmawaDivision>;
       final notifications = results[12] as List<OrmawaNotification>;
       final ormawaSettings = results[13] as Map<String, dynamic>;
+      final gHistory = results[14] as List<Map<String, dynamic>>;
+      final gLeaderboard = results[15] as List<Map<String, dynamic>>;
+      final gRules = results[16] as List<Map<String, dynamic>>;
 
       // Update stats
       _totalMembers = (stats['totalMembers'] as num?)?.toInt() ?? 0;
@@ -296,6 +310,9 @@ class OrmawaProvider extends ChangeNotifier {
       _gamifikasiPoin = (gamSummary['poin'] as num?)?.toInt() ?? 0;
       _gamifikasiPeringkat = (gamSummary['peringkat'] as num?)?.toInt() ?? 0;
       _totalOrmawa = (gamSummary['total_ormawa'] as num?)?.toInt() ?? 0;
+      _gamifikasiHistory = gHistory;
+      _gamifikasiLeaderboard = gLeaderboard;
+      _gamifikasiRules = gRules;
 
       // Update academic year
       if (activeYear != null && activeYear.isNotEmpty) {

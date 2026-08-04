@@ -30,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     final currentIndex = navProvider.currentIndex;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: UnifiedBottomNavBar.mahasiswa(
         currentIndex: currentIndex,

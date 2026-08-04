@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
@@ -30,8 +31,9 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
+    final health = context.watch<HealthViewModel>();
     final activeBookings =
-        student.healthBookings
+        health.healthBookings
             .where((b) => b.status != 'Dibatalkan' && b.status != 'Ditolak')
             .toList();
 
@@ -39,7 +41,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.refreshHealthData();
+          await health.refreshHealthData();
         },
         color: context.appColors.primary,
         child: CustomScrollView(
@@ -201,7 +203,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
-                      if (student.healthWorkers.isEmpty)
+                      if (health.healthWorkers.isEmpty)
                         FadeInAnimation(
                           delay: 0.4,
                           child: Center(
@@ -220,13 +222,13 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         )
                       else
                         ...List.generate(
-                          student.healthWorkers.length,
+                          health.healthWorkers.length,
                           (index) => FadeInAnimation(
                             delay: 0.4 + (index * 0.05),
                             child: _buildHealthWorkerCard(
                               context,
                               student,
-                              student.healthWorkers[index],
+                              health.healthWorkers[index],
                             ),
                           ),
                         ),
@@ -408,7 +410,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                             booking.id.toString(),
                                       ),
                                 ),
-                              ).then((_) => student.refreshHealthData());
+                              ).then((_) => context.read<HealthViewModel>().refreshHealthData());
                             }
                           },
                           text: 'Jadwal Ulang',
@@ -522,7 +524,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     builder:
                         (context) => HealthBookingFormScreen(worker: worker),
                   ),
-                ).then((_) => student.refreshHealthData()),
+                ).then((_) => context.read<HealthViewModel>().refreshHealthData()),
             text: 'Booking',
             width: 95,
             height: 40,
@@ -762,7 +764,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                               booking.id.toString(),
                                         ),
                                   ),
-                                ).then((_) => student.refreshHealthData());
+                                ).then((_) => context.read<HealthViewModel>().refreshHealthData());
                               }
                             },
                             text: 'Jadwal Ulang',
@@ -835,7 +837,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   Navigator.pop(dialogContext); // Close confirm dialog
                   BkuLoadingDialog.show(context);
                   try {
-                    await student.cancelHealthBooking(booking.id.toString());
+                    await context.read<HealthViewModel>().cancelHealthBooking(booking.id.toString());
                     if (context.mounted) {
                       BkuLoadingDialog.hide(context);
                       showDialog(

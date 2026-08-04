@@ -374,26 +374,30 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral100,
-                      borderRadius: AppRadius.radiusMd,
-                    ),
-                    child: Text(
-                      scholarship.category,
-                      style: AppTextStyles.labelSm.copyWith(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 9,
-                        color: AppColors.neutral700,
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.neutral100,
+                        borderRadius: AppRadius.radiusMd,
+                      ),
+                      child: Text(
+                        scholarship.category,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.labelSm.copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 9,
+                          color: AppColors.neutral700,
+                        ),
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: AppSpacing.sm),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
@@ -660,25 +664,29 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: iconBg,
-                              borderRadius: AppRadius.br6,
-                            ),
-                            child: Text(
-                              scholarship.category.toUpperCase(),
-                              style: TextStyle(
-                                color: iconColor,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 9,
-                                letterSpacing: 0.5,
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: iconBg,
+                                borderRadius: AppRadius.br6,
+                              ),
+                              child: Text(
+                                scholarship.category.toUpperCase(),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: iconColor,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 9,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
                           ),
+                          const SizedBox(width: AppSpacing.sm),
                           Text(
                             _formatCurrency(scholarship.coverAmount),
                             style: TextStyle(

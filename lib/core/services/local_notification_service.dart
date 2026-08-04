@@ -19,6 +19,7 @@ class LocalNotificationService {
         InitializationSettings(
           android: initializationSettingsAndroid,
           iOS: initializationSettingsDarwin,
+          macOS: initializationSettingsDarwin,
         );
 
     await _notificationsPlugin.initialize(
@@ -63,6 +64,7 @@ class LocalNotificationService {
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: darwinPlatformChannelSpecifics,
+      macOS: darwinPlatformChannelSpecifics,
     );
 
     await _notificationsPlugin.show(id, title, body, platformChannelSpecifics);

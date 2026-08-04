@@ -22,6 +22,9 @@ abstract class OrmawaRepository {
 
   Future<Map<String, dynamic>> getStats(String ormawaId);
   Future<Map<String, dynamic>> getGamifikasiSummary();
+  Future<List<Map<String, dynamic>>> getGamifikasiHistory();
+  Future<List<Map<String, dynamic>>> getGamifikasiLeaderboard();
+  Future<List<Map<String, dynamic>>> getGamifikasiRules();
 
   Future<void> addProposal(OrmawaProposal proposal);
   Future<void> updateProposal(OrmawaProposal proposal);
@@ -43,6 +46,7 @@ abstract class OrmawaRepository {
 
   // LPJ
   Future<List<OrmawaLPJ>> getLPJs(String ormawaId);
+  Future<List<dynamic>> getLpjDocuments(String lpjId);
   Future<void> addLPJ(Map<String, dynamic> data);
   Future<void> updateLPJ(String id, Map<String, dynamic> data);
   Future<void> deleteLPJ(String id);
@@ -70,6 +74,9 @@ abstract class OrmawaRepository {
   Future<void> createAbsensiManagement(Map<String, dynamic> data);
   Future<Map<String, dynamic>?> getAbsensiManagementDetail(String id);
   Future<void> updateAbsensiManagement(String id, Map<String, dynamic> data);
+
+  // RBAC Roles
+  Future<Map<String, dynamic>> getRoleDetails(String roleId);
 
   // ROLES & DIVISIONS
   Future<List<OrmawaRole>> getRoles();

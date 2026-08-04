@@ -44,7 +44,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
     }
     try {
       final response =
-          await _apiClient.client.get('/api/admin/psychologists');
+          await _apiClient.client.get('/admin/psychologists');
       final data = response.data['data'];
       if (data is List) {
         _psychologists = data.cast<Map<String, dynamic>>();
@@ -65,7 +65,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
 
   Future<bool> createPsychologist(Map<String, dynamic> data) async {
     try {
-      await _apiClient.client.post('/api/admin/psychologists', data: data);
+      await _apiClient.client.post('/admin/psychologists', data: data);
       await loadPsychologists(silent: true);
       return true;
     } catch (e) {
@@ -80,7 +80,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final response =
-          await _apiClient.client.get('/api/admin/psychologists/$id');
+          await _apiClient.client.get('/admin/psychologists/$id');
       final data = response.data['data'];
       if (data is Map<String, dynamic>) {
         _selectedPsychologist = data;
@@ -96,7 +96,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
   Future<bool> updatePsychologist(String id, Map<String, dynamic> data) async {
     try {
       await _apiClient.client
-          .put('/api/admin/psychologists/$id', data: data);
+          .put('/admin/psychologists/$id', data: data);
       await loadPsychologists(silent: true);
       return true;
     } catch (e) {
@@ -112,7 +112,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final response = await _apiClient.client
-          .get('/api/psychologist/patients/$patientId/medical-record');
+          .get('/psychologist/patients/$patientId/medical-record');
       final data = response.data['data'];
       if (data is Map<String, dynamic>) {
         _medicalRecord = data;
@@ -130,7 +130,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
   Future<bool> createMedicalRecord(Map<String, dynamic> data) async {
     try {
       await _apiClient.client
-          .post('/api/psychologist/medical-records', data: data);
+          .post('/admin/psychologists/medical-records', data: data);
       return true;
     } catch (e) {
       log('AdminPsychologistProvider.createMedicalRecord error: $e');
@@ -145,7 +145,7 @@ class AdminPsychologistProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final response =
-          await _apiClient.client.get('/api/psychologist/schedules');
+          await _apiClient.client.get('/fakultas/psychologist-all-schedules');
       final data = response.data['data'];
       if (data is List) {
         _allSchedules = data.cast<Map<String, dynamic>>();

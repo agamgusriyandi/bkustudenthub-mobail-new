@@ -51,6 +51,7 @@ class _MentorMainScreenState extends State<MentorMainScreen> {
     debugPrint('MentorMainScreen build with selectedIndex: $_selectedIndex');
     return Scaffold(
       extendBody: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: UnifiedBottomNavBar.mentorKencana(
         currentIndex: _selectedIndex,

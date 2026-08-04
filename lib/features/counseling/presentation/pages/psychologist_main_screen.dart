@@ -45,6 +45,7 @@ class _PsychologistMainScreenState extends State<PsychologistMainScreen> {
     final navProvider = context.watch<NavigationProvider>();
     return Scaffold(
       extendBody: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: navProvider.currentIndex, children: _pages),
       bottomNavigationBar: UnifiedBottomNavBar.psychologist(
         currentIndex: navProvider.currentIndex,

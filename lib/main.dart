@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/providers/achievement_provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -81,6 +82,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(
           create: (_) => StudentProvider(repository: studentRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => HealthViewModel(repository: studentRepository),
         ),
         ChangeNotifierProvider(create: (_) => ScholarshipProvider()),
         ChangeNotifierProvider(create: (_) => AchievementProvider()),

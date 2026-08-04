@@ -11,6 +11,6 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   @override
   Future<Response> loginAPI(Map<String, dynamic> data) async {
-    return await dio.post('/api/auth/login', data: data);
+    return await dio.post('/auth/login', data: data);
   }
 }

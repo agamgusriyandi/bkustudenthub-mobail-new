@@ -101,6 +101,23 @@ class IpkChartCard extends StatelessWidget {
               LineChartData(
                 gridData: const FlGridData(show: false),
                 borderData: FlBorderData(show: false),
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (spot) => context.appColors.onSurface.withValues(alpha: 0.9),
+                    getTooltipItems: (touchedSpots) {
+                      return touchedSpots.map((touchedSpot) {
+                        return LineTooltipItem(
+                          touchedSpot.y.toStringAsFixed(2),
+                          TextStyle(
+                            color: context.appColors.surface,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ),
                 titlesData: FlTitlesData(
                   topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),

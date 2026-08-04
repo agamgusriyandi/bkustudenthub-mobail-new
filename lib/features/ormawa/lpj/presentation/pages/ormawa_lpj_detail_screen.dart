@@ -9,11 +9,44 @@ import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_sc
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class OrmawaLpjDetailScreen extends StatelessWidget {
+class OrmawaLpjDetailScreen extends StatefulWidget {
   final dynamic lpj;
 
   const OrmawaLpjDetailScreen({super.key, required this.lpj});
+
+  @override
+  State<OrmawaLpjDetailScreen> createState() => _OrmawaLpjDetailScreenState();
+}
+
+class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
+  List<dynamic> _documents = [];
+  bool _isLoadingDocs = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDocuments();
+  }
+
+  Future<void> _loadDocuments() async {
+    try {
+      final docs = await context.read<OrmawaProvider>().repository.getLpjDocuments(widget.lpj.id.toString());
+      if (mounted) {
+        setState(() {
+          _documents = docs;
+          _isLoadingDocs = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingDocs = false;
+        });
+      }
+    }
+  }
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
@@ -36,7 +69,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor(lpj.status);
+    final statusColor = _getStatusColor(widget.lpj.status);
 
     return Scaffold(
       backgroundColor: AppColors.neutral100,
@@ -79,7 +112,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                lpj.judul,
+                                widget.lpj.judul,
                                 style: AppTextStyles.titleLg.copyWith(
                                   fontWeight: FontWeight.w900,
                                 ),
@@ -94,7 +127,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                                 borderRadius: AppRadius.radiusSm,
                               ),
                               child: Text(
-                                lpj.status.toUpperCase(),
+                                widget.lpj.status.toUpperCase(),
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: statusColor,
                                   fontWeight: FontWeight.w900,
@@ -104,10 +137,10 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        if (lpj.proposalTitle != null) ...[
+                        if (widget.lpj.proposalTitle != null) ...[
                           const SizedBox(height: AppSpacing.md),
                           Text(
-                            lpj.proposalTitle!,
+                            widget.lpj.proposalTitle!,
                             style: AppTextStyles.labelMd.copyWith(
                               color: AppColors.neutral600,
                             ),
@@ -122,23 +155,23 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                     'ANGGARAN',
                     [
                       _buildInfoRow('Total Anggaran',
-                          _formatCurrency(lpj.totalAnggaran)),
+                          _formatCurrency(widget.lpj.totalAnggaran)),
                       _buildInfoRow('Realisasi',
-                          _formatCurrency(lpj.realisasiAnggaran)),
+                          _formatCurrency(widget.lpj.realisasiAnggaran)),
                       _buildInfoRow(
                           'Sisa',
                           _formatCurrency(
-                              lpj.totalAnggaran - lpj.realisasiAnggaran)),
+                              widget.lpj.totalAnggaran - widget.lpj.realisasiAnggaran)),
                     ],
                   ),
-                  if (lpj.catatan.isNotEmpty) ...[
+                  if (widget.lpj.catatan.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.lg),
                     _buildInfoCard(
                       context,
                       'CATATAN',
                       [
                         Text(
-                          lpj.catatan,
+                          widget.lpj.catatan,
                           style: AppTextStyles.bodyMd.copyWith(
                             color: AppColors.neutral700,
                             height: 1.5,
@@ -147,7 +180,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ],
-                  if (lpj.createdAt != null) ...[
+                  if (widget.lpj.createdAt != null) ...[
                     const SizedBox(height: AppSpacing.lg),
                     _buildInfoCard(
                       context,
@@ -156,10 +189,12 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
                         _buildInfoRow(
                             'Dibuat',
                             DateFormat('dd MMMM yyyy', 'id')
-                                .format(lpj.createdAt!)),
+                                .format(widget.lpj.createdAt!)),
                       ],
                     ),
                   ],
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildDocumentsCard(context),
                   const SizedBox(height: AppSpacing.s100),
                 ],
               ),
@@ -175,7 +210,7 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditLpjScreen(lpj: lpj),
+                  builder: (context) => EditLpjScreen(lpj: widget.lpj),
                 ),
               ).then((_) => provider.refreshData());
             },
@@ -190,6 +225,85 @@ class OrmawaLpjDetailScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildDocumentsCard(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusXl,
+        border: Border.all(color: AppColors.neutral200),
+        boxShadow: [
+          BoxShadow(
+            color: context.appColors.onSurface.withAlpha(12),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'DOKUMEN LAMPIRAN',
+            style: AppTextStyles.labelSm.copyWith(
+              color: AppColors.neutral500,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          if (_isLoadingDocs)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppSpacing.md),
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else if (_documents.isEmpty)
+            Text(
+              'Tidak ada dokumen terlampir.',
+              style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: _documents.length,
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                final doc = _documents[index];
+                final url = doc['file_url'] ?? doc['url'];
+                final name = doc['file_name'] ?? doc['nama_dokumen'] ?? 'Dokumen ${index + 1}';
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.picture_as_pdf_rounded,
+                    color: context.appColors.primary,
+                  ),
+                  title: Text(
+                    name,
+                    style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(Icons.download_rounded, color: context.appColors.primary),
+                  onTap: () async {
+                    if (url != null) {
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      }
+                    }
+                  },
+                );
+              },
+            ),
+        ],
       ),
     );
   }

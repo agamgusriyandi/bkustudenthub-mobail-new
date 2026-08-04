@@ -22,6 +22,11 @@ class ApiInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // Ensure path has /api prefix (avoids URI resolution issues with leading slashes)
+    if (!options.path.startsWith('http') && !options.path.startsWith('/api')) {
+      options.path = '/api${options.path.startsWith('/') ? '' : '/'}${options.path}';
+    }
+
     // Inject token if available
     final sharedPrefs = await prefs;
     final token = sharedPrefs.getString('access_token');

@@ -560,28 +560,7 @@ class StudentProvider extends ChangeNotifier {
               return <FacultyProgress>[];
             }),
         _repository.getAspirations(), // Aspirations
-        _repository.getHealthRecords(), // Health records
-        _repository.getRujukans(), // Rujukans
-        _repository
-            .getHealthWorkers() // Health workers (may fail, wrapped)
-            .catchError((e) {
-              return <HealthWorker>[];
-            }),
-        _repository
-            .getHealthSchedules() // Health schedules (may fail, wrapped)
-            .catchError((e) {
-              return <HealthSchedule>[];
-            }),
-        _repository
-            .getHealthBookings() // Health bookings (may fail, wrapped)
-            .catchError((e) {
-              return <HealthBooking>[];
-            }),
-        _repository
-            .getInsuranceClaims() // Insurance claims (may fail, wrapped)
-            .catchError((e) {
-              return <InsuranceClaim>[];
-            }),
+
         _repository.getOrganizationHistory(), // Organization history
         _repository
             .getPendaftaranList() // Pendaftaran list (may fail, wrapped)
@@ -646,18 +625,18 @@ class StudentProvider extends ChangeNotifier {
       }
       _facultyProgress = results[5] as List<FacultyProgress>;
       _aspirations = results[6] as List<Aspiration>;
-      _healthRecords = results[7] as List<HealthRecord>;
-      _rujukans = results[8] as List<Map<String, dynamic>>;
-      _healthSchedules = results[10] as List<HealthSchedule>;
-      _processHealthWorkers(results[9] as List<HealthWorker>);
-      _healthBookings = results[11] as List<HealthBooking>;
+      _healthRecords = [];
+      _rujukans = [];
+      _healthSchedules = [];
+      _processHealthWorkers([]);
+      _healthBookings = [];
       _applyLocalRescheduledBookings();
-      _insuranceClaims = results[12] as List<InsuranceClaim>;
-      final history = results[13] as List<OrganizationHistory>;
-      final pendaftaran = results[14] as List<Map<String, dynamic>>;
-      _campusEvents = results[15] as List<CampusEventSchedule>;
-      _campusNews = results[16] as List<CampusNews>;
-      _dashboardStats = results[17] as Map<String, dynamic>;
+      _insuranceClaims = [];
+      final history = results[7] as List<OrganizationHistory>;
+      final pendaftaran = results[8] as List<Map<String, dynamic>>;
+      _campusEvents = results[9] as List<CampusEventSchedule>;
+      _campusNews = results[10] as List<CampusNews>;
+      _dashboardStats = results[11] as Map<String, dynamic>;
 
       // Process pendaftaran list
       List<OrganizationHistory> filteredPendaftaran =

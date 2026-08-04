@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
@@ -33,7 +34,8 @@ class _HealthScreenState extends State<HealthScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentProvider>();
-    final latest = student.latestHealthRecord;
+    final health = context.watch<HealthViewModel>();
+    final latest = health.latestHealthRecord;
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
@@ -63,7 +65,7 @@ class _HealthScreenState extends State<HealthScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.refreshHealthData();
+          await health.refreshHealthData();
         },
         color: context.appColors.primary,
         child: CustomScrollView(
@@ -163,7 +165,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           child: _buildHealthInsights(latest),
                         ),
                         const SizedBox(height: AppSpacing.xxl),
-                        if (student.healthRecords.isEmpty) ...[
+                        if (health.healthRecords.isEmpty) ...[
                           Text(
                             'Riwayat Skrining Mandiri',
                             style: AppTextStyles.titleLg.copyWith(
@@ -188,14 +190,14 @@ class _HealthScreenState extends State<HealthScreen> {
                           ),
                         ] else ...[
                           () {
-                            final totalRecords = student.healthRecords.length;
+                            final totalRecords = health.healthRecords.length;
                             final totalPages = (totalRecords / _screeningPerPage).ceil();
                             final validPage = _currentScreeningPage.clamp(1, totalPages > 0 ? totalPages : 1);
                             final startIndex = (validPage - 1) * _screeningPerPage;
                             final endIndex = (startIndex + _screeningPerPage < totalRecords)
                                 ? startIndex + _screeningPerPage
                                 : totalRecords;
-                            final paginatedRecords = student.healthRecords.sublist(startIndex, endIndex);
+                            final paginatedRecords = health.healthRecords.sublist(startIndex, endIndex);
 
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

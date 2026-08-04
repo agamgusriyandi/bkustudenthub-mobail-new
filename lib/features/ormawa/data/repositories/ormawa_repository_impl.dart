@@ -79,6 +79,45 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
   }
 
   @override
+  Future<List<Map<String, dynamic>>> getGamifikasiHistory() async {
+    try {
+      final response = await ormawaRemoteDataSource.getOrmawaGamifikasiHistory();
+      final data = response.data['data'];
+      if (data is List) return List<Map<String, dynamic>>.from(data);
+      return [];
+    } catch (e) {
+      log('Error in getGamifikasiHistory: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getGamifikasiLeaderboard() async {
+    try {
+      final response = await ormawaRemoteDataSource.getOrmawaGamifikasiLeaderboard();
+      final data = response.data['data'];
+      if (data is List) return List<Map<String, dynamic>>.from(data);
+      return [];
+    } catch (e) {
+      log('Error in getGamifikasiLeaderboard: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getGamifikasiRules() async {
+    try {
+      final response = await ormawaRemoteDataSource.getOrmawaGamifikasiRules();
+      final data = response.data['data'];
+      if (data is List) return List<Map<String, dynamic>>.from(data);
+      return [];
+    } catch (e) {
+      log('Error in getGamifikasiRules: $e');
+      return [];
+    }
+  }
+
+  @override
   Future<void> addProposal(OrmawaProposal proposal) async {
     try {
       final model = OrmawaProposalModel(
@@ -894,6 +933,34 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     } catch (e) {
       log('Error in updateAbsensiManagement: $e');
       rethrow;
+    }
+  }
+
+  // RBAC Roles
+  @override
+  Future<Map<String, dynamic>> getRoleDetails(String roleId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getRoleDetails(roleId);
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      log('Error in getRoleDetails: $e');
+      return {};
+    }
+  }
+
+  // LPJ
+  @override
+  Future<List<dynamic>> getLpjDocuments(String lpjId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getLpjDocuments(lpjId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list;
+      }
+      return [];
+    } catch (e) {
+      log('Error in getLpjDocuments: $e');
+      return [];
     }
   }
 
