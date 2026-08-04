@@ -414,7 +414,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        '${proposal.code} â€¢ ${dateFormatter.format(proposal.date).toUpperCase()}',
+                        '${proposal.code} • ${dateFormatter.format(proposal.date).toUpperCase()}',
                         style: AppTextStyles.labelSm.copyWith(
                           color: context.appColors.outline,
                           fontWeight: FontWeight.bold,

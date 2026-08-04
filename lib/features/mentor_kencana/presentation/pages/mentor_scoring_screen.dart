@@ -4,12 +4,11 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -20,337 +19,522 @@ class MentorScoringScreen extends StatefulWidget {
   State<MentorScoringScreen> createState() => _MentorScoringScreenState();
 }
 
-class _MentorScoringScreenState extends State<MentorScoringScreen> {
+class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSavingBulk = false;
+
+  // Map to hold bulk scores input: { studentId: { compositeKey: scoreStr } }
+  final Map<int, Map<String, TextEditingController>> _bulkControllers = {};
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<MentorKencanaProvider>().fetchMentees();
+        context.read<MentorKencanaProvider>().fetchBulkScores();
       }
     });
   }
 
-  void _showScoringDialog(
-    BuildContext context,
-    int studentId,
-    String menteeName,
-  ) {
-    final provider = context.read<MentorKencanaProvider>();
-    final scoreDefs = provider.scoreDefinitions;
-    
-    final Map<String, TextEditingController> controllers = {};
-    final List<Widget> inputFields = [];
-    
-    if (scoreDefs != null) {
-      for (final category in ['cognitive', 'psychomotor', 'affective']) {
-        final items = scoreDefs[category] as List<dynamic>? ?? [];
-        final manualItems = items.where((it) => it['manual'] == true).toList();
-        
-        if (manualItems.isNotEmpty) {
-          inputFields.add(
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.xs),
-              child: Text(
-                category.toUpperCase(),
-                style: AppTextStyles.labelSm.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.neutral700,
-                ),
-              ),
-            ),
-          );
-          
-          for (final item in manualItems) {
-            final key = "${category}_${item['key']}";
-            final controller = TextEditingController();
-            controllers[key] = controller;
-            
-            inputFields.add(
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildScoreInput(item['label'] ?? item['key'], controller),
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    if (controllers.isEmpty) {
-      controllers['cognitive_Handbook'] = TextEditingController();
-      controllers['psychomotor_Evaluasi Psikomotor'] = TextEditingController();
-      controllers['affective_Evaluasi Afektif'] = TextEditingController();
-      
-      inputFields.addAll([
-        _buildScoreInput('Kognitif (Kuis/Tugas)', controllers['cognitive_Handbook']!),
-        const SizedBox(height: AppSpacing.md),
-        _buildScoreInput('Psikomotor (Kehadiran)', controllers['psychomotor_Evaluasi Psikomotor']!),
-        const SizedBox(height: AppSpacing.md),
-        _buildScoreInput('Afektif (Sikap/Keaktifan)', controllers['affective_Evaluasi Afektif']!),
-      ]);
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        bool isSubmitting = false;
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return CustomDialog(
-              title: 'Input Nilai',
-              content: 'Masukkan nilai untuk mahasiswa $menteeName',
-              confirmText: 'Simpan',
-              cancelText: 'Batal',
-              isLoading: isSubmitting,
-              onCancel: () => Navigator.pop(context),
-              onConfirm: () async {
-                setState(() => isSubmitting = true);
-                
-                final List<Map<String, dynamic>> itemsPayload = [];
-                controllers.forEach((compositeKey, controller) {
-                  final parts = compositeKey.split('_');
-                  final category = parts[0];
-                  final itemKey = parts.sublist(1).join('_');
-                  final score = double.tryParse(controller.text) ?? 0.0;
-                  
-                  itemsPayload.add({
-                    'component': category,
-                    'item_name': itemKey,
-                    'score': score,
-                    'notes': 'Diinput via Mobile',
-                  });
-                });
-
-                final success = await context
-                    .read<MentorKencanaProvider>()
-                    .submitBulkScores(
-                      studentId: studentId,
-                      items: itemsPayload,
-                    );
-                if (!context.mounted) return;
-                Navigator.pop(context);
-                if (success) {
-                  AppSnackbar.showSuccess(context, 'Nilai berhasil disimpan');
-                } else {
-                  AppSnackbar.showError(context, 'Gagal menyimpan nilai');
-                }
-              },
-              customChild: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: inputFields,
-              ),
-            );
-          },
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    _bulkControllers.forEach((_, map) {
+      map.forEach((_, c) => c.dispose());
+    });
+    super.dispose();
   }
 
-  Widget _buildScoreInput(String label, TextEditingController controller) {
-    return BkuTextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: AppTextStyles.labelSm,
-        filled: true,
-        fillColor: AppColors.neutral100,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.radiusMd,
-          borderSide: BorderSide(
-            color: AppThemeColors.surfaceContainerHighest,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusMd,
-          borderSide: BorderSide(
-            color: AppThemeColors.surfaceContainerHighest,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusMd,
-          borderSide: BorderSide(color: context.appColors.primary),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.md,
-        ),
-      ),
-    );
+  void _saveBulkScores() async {
+    setState(() => _isSavingBulk = true);
+    final provider = context.read<MentorKencanaProvider>();
+
+    final List<Map<String, dynamic>> bulkPayload = [];
+    _bulkControllers.forEach((studentId, controllers) {
+      final List<Map<String, dynamic>> itemsPayload = [];
+      controllers.forEach((compositeKey, controller) {
+        final text = controller.text.trim();
+        if (text.isNotEmpty) {
+          final score = double.tryParse(text) ?? 0.0;
+          final parts = compositeKey.split('_');
+          final category = parts[0];
+          final itemKey = parts.sublist(1).join('_');
+          itemsPayload.add({
+            'component': category,
+            'item_name': itemKey,
+            'score': score,
+          });
+        }
+      });
+
+      if (itemsPayload.isNotEmpty) {
+        bulkPayload.add({
+          'student_id': studentId,
+          'items': itemsPayload,
+        });
+      }
+    });
+
+    if (bulkPayload.isEmpty) {
+      setState(() => _isSavingBulk = false);
+      AppSnackbar.showError(context, 'Belum ada nilai yang diinput');
+      return;
+    }
+
+    try {
+      final response = await provider.submitBulkScoresPayload({'scores': bulkPayload});
+      if (mounted) {
+        setState(() => _isSavingBulk = false);
+        if (response) {
+          AppSnackbar.showSuccess(context, 'Berhasil menyimpan semua nilai');
+          provider.fetchBulkScores();
+        } else {
+          AppSnackbar.showError(context, 'Gagal menyimpan nilai kolektif');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSavingBulk = false);
+        AppSnackbar.showError(context, 'Gagal menyimpan nilai kolektif');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
-    final totalMentees = provider.groups.fold<int>(
-      0,
-      (sum, g) => sum + g.mentees.length,
-    );
+    final mentees = provider.groups.expand((g) => g.mentees).toList();
+    final bulkData = provider.bulkScoresData;
+
+    final filtered = mentees.where((m) {
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        return m.name.toLowerCase().contains(q) || m.nim.toLowerCase().contains(q);
+      }
+      return true;
+    }).toList();
+
+    // Map scores from bulkData
+    final scoresList = (bulkData?['scores'] as List?) ?? [];
+    final mentorScope = bulkData?['mentor_scope'] ?? 'university';
+    final weights = (bulkData?['weights'] as Map?) ?? {};
+    final cogW = weights['cognitive_weight'] ?? 25;
+    final psyW = weights['psychomotor_weight'] ?? 40;
+    final affW = weights['affective_weight'] ?? 35;
+
+    final Map<int, Map<String, dynamic>> scoreMap = {};
+    for (final sc in scoresList) {
+      if (sc is Map && sc['student_id'] != null) {
+        scoreMap[sc['student_id']] = Map<String, dynamic>.from(sc);
+      }
+    }
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => provider.fetchMentees(),
-        color: context.appColors.primary,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
+      backgroundColor: context.appColors.surface,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
             BkuAppBar(
               title: 'Penilaian Akhir (Skoring)',
+              info: 'Input dan edit nilai sikap, keterampilan, serta nilai akhir mahasiswa.',
               variant: AppBarVariant.student,
               isExpandable: false,
               showBackButton: true,
+              onBack: () => context.pop(),
             ),
-            if (provider.isLoading && provider.groups.isEmpty)
-              const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (provider.errorMessage != null && provider.groups.isEmpty)
-              SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    provider.errorMessage!,
-                    style: TextStyle(
-                      color: context.appColors.error,
-                    ),
-                  ),
-                ),
-              )
-            else if (provider.groups.isEmpty || totalMentees == 0)
-              SliverFillRemaining(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.people_outline_rounded,
-                        size: 64,
-                        color: context.appColors.outline.withAlpha(80),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Text(
-                        'Anda tidak memiliki mahasiswa bimbingan yang aktif untuk dinilai.',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: context.appColors.outline,
-                        ),
-                        textAlign: TextAlign.center,
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverTabBarDelegate(
+                TabBar(
+                  controller: _tabController,
+                  labelColor: context.appColors.onPrimary,
+                  unselectedLabelColor: context.appColors.onSurface.withValues(alpha: 0.7),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  indicator: BoxDecoration(
+                    color: context.appColors.primary,
+                    borderRadius: AppRadius.radiusMd,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl,
-                  vertical: AppSpacing.xl,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final group = provider.groups[index];
-                    if (group.mentees.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          group.name,
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.neutral900,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        ...group.mentees.map((mentee) {
-                          return BkuCard(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.neutral200,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.neutral300,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      mentee.name.isNotEmpty
-                                          ? mentee.name
-                                              .substring(0, 1)
-                                              .toUpperCase()
-                                          : '',
-                                      style: const TextStyle(
-                                        color: AppColors.neutral700,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        mentee.name,
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.xs),
-                                      Text(
-                                        'NIM: ${mentee.nim}',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color:
-                                              context.appColors.outline,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.sm),
-                                      Text(
-                                        'Skor Sementara: ${mentee.score}',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.neutral700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.sm),
-                                BkuButton(
-                                  onPressed:
-                                      () => _showScoringDialog(
-                                        context,
-                                        mentee.id,
-                                        mentee.name,
-                                      ),
-                                  text: 'Input Nilai',
-                                  fullWidth: false,
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                        const SizedBox(height: AppSpacing.xl),
-                      ],
-                    );
-                  }, childCount: provider.groups.length),
+                  tabs: const [
+                    Tab(icon: Icon(Icons.workspace_premium_rounded, size: 18), text: 'Rekapitulasi Nilai'),
+                    Tab(icon: Icon(Icons.grid_on_rounded, size: 18), text: 'Pengisian Kolektif'),
+                  ],
                 ),
               ),
-          ],
+            ),
+          ];
+        },
+        body: TabBarView(
+        controller: _tabController,
+        children: [
+          // TAB 1: Rekapitulasi Nilai Akhir
+          RefreshIndicator(
+            onRefresh: () async {
+              await provider.fetchMentees();
+              await provider.fetchBulkScores();
+            },
+            color: context.appColors.primary,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Rekapitulasi Nilai Akhir & Kelulusan',
+                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Nilai Akhir dihitung otomatis berdasarkan pembobotan Kencana = Kognitif ($cogW%) + Psikomotor ($psyW%) + Afektif ($affW%).',
+                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Manajemen Data', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                                  Text('Menampilkan daftar data yang terdaftar dalam sistem.', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColors.neutral200.withAlpha(150),
+                                borderRadius: AppRadius.radiusXl,
+                              ),
+                              child: Text(
+                                'TOTAL DATA ${filtered.length}',
+                                style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+
+                        TextField(
+                          controller: _searchController,
+                          onChanged: (val) => setState(() => _searchQuery = val),
+                          decoration: InputDecoration(
+                            hintText: 'Cari nama atau NIM mahasiswa...',
+                            prefixIcon: const Icon(Icons.search_rounded),
+                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                if (provider.isLoading && mentees.isEmpty)
+                  const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+                else if (filtered.isEmpty)
+                  SliverFillRemaining(
+                    child: Center(child: Text('Tidak ada mahasiswa bimbingan', style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline))),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: 80),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final m = filtered[index];
+                        final sc = scoreMap[m.id] ?? {};
+
+                        final double cogVal = double.tryParse((mentorScope == 'faculty' ? sc['cognitive_average_faculty'] : sc['cognitive_average_univ'])?.toString() ?? '') ?? 0.0;
+                        final double psyVal = double.tryParse((mentorScope == 'faculty' ? sc['psychomotor_average_faculty'] : sc['psychomotor_average_univ'])?.toString() ?? '') ?? 0.0;
+                        final double affVal = double.tryParse((mentorScope == 'faculty' ? sc['affective_average_faculty'] : sc['affective_average_univ'])?.toString() ?? '') ?? 0.0;
+                        final double finalVal = double.tryParse((mentorScope == 'faculty' ? sc['final_score_faculty'] : sc['final_score_univ'])?.toString() ?? '') ?? 0.0;
+                        final String gradStatus = (mentorScope == 'faculty' ? sc['graduation_status_faculty'] : sc['graduation_status_univ'])?.toString() ?? 'in_progress';
+
+                        return BkuCard(
+                          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(m.nim, style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.primary)),
+                                        Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                                        Text(m.faculty, style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: gradStatus == 'passed' ? AppColors.success.withAlpha(20) : AppColors.neutral200,
+                                      borderRadius: AppRadius.radiusSm,
+                                    ),
+                                    child: Text(
+                                      gradStatus.replaceAll('_', ' ').toUpperCase(),
+                                      style: AppTextStyles.labelSm.copyWith(
+                                        color: gradStatus == 'passed' ? AppColors.success : AppColors.neutral700,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+
+                              // Scores Breakdown Row
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _buildScoreColumn('KOGNITIF', cogVal.toStringAsFixed(1)),
+                                  _buildScoreColumn('PSIKOMOTOR', psyVal.toStringAsFixed(1)),
+                                  _buildScoreColumn('AFEKTIF', affVal.toStringAsFixed(1)),
+                                  _buildScoreColumn('NILAI AKHIR', finalVal.toStringAsFixed(1), isHighlighted: true),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    context.push('/mentor-kencana/notes/${m.id}');
+                                  },
+                                  icon: const Icon(Icons.edit_outlined, size: 14),
+                                  label: const Text('Edit Nilai', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: context.appColors.primary,
+                                    side: BorderSide(color: context.appColors.primary.withAlpha(50)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                                    backgroundColor: context.appColors.primary.withAlpha(10),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }, childCount: filtered.length),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
+          // TAB 2: Pengisian Kolektif (Bulk Input)
+          RefreshIndicator(
+            onRefresh: () async {
+              await provider.fetchMentees();
+              await provider.fetchBulkScores();
+            },
+            color: context.appColors.primary,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text('Lembar Pengisian Kolektif', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: AppRadius.radiusSm),
+                                    child: Text('${mentorScope.toUpperCase()} SCOPE', style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Masukkan nilai (0-100) langsung ke form di bawah.',
+                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              BkuButton(
+                                text: 'Simpan Semua Nilai',
+                                icon: Icons.save_outlined,
+                                isLoading: _isSavingBulk,
+                                fullWidth: true,
+                                onPressed: _saveBulkScores,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                if (filtered.isEmpty)
+                  SliverFillRemaining(
+                    child: Center(child: Text('Tidak ada mahasiswa bimbingan', style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline))),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: 80),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final m = filtered[index];
+                        if (!_bulkControllers.containsKey(m.id)) {
+                          _bulkControllers[m.id] = {
+                            'cognitive_TEST': TextEditingController(),
+                            'cognitive_TUGAS 1': TextEditingController(),
+                            'cognitive_YEL YEL': TextEditingController(),
+                            'affective_WOY': TextEditingController(),
+                          };
+                        }
+
+                        final map = _bulkControllers[m.id]!;
+
+                        return BkuCard(
+                          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                              Text('NIM: ${m.nim}', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
+                                children: [
+                                  Expanded(child: _buildMiniScoreInput('TEST', map['cognitive_TEST']!)),
+                                  const SizedBox(width: 6),
+                                  Expanded(child: _buildMiniScoreInput('TUGAS 1', map['cognitive_TUGAS 1']!)),
+                                  const SizedBox(width: 6),
+                                  Expanded(child: _buildMiniScoreInput('YEL YEL', map['cognitive_YEL YEL']!)),
+                                  const SizedBox(width: 6),
+                                  Expanded(child: _buildMiniScoreInput('WOY', map['affective_WOY']!)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }, childCount: filtered.length),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+  }
+
+  Widget _buildScoreColumn(String label, String val, {bool isHighlighted = false}) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
+        const SizedBox(height: 2),
+        Text(
+          val,
+          style: TextStyle(
+            fontSize: isHighlighted ? 15 : 13,
+            fontWeight: isHighlighted ? FontWeight.w900 : FontWeight.bold,
+            color: isHighlighted ? AppColors.primary : AppColors.neutral900,
+          ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildMiniScoreInput(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600), overflow: TextOverflow.ellipsis),
+        const SizedBox(height: 2),
+        TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+            isDense: true,
+            hintText: '-',
+            contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            border: OutlineInputBorder(borderRadius: AppRadius.radiusSm),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  _SliverTabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => 64.0;
+  @override
+  double get maxExtent => 64.0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: context.appColors.surface,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: AppColors.neutral200.withAlpha(150),
+          borderRadius: AppRadius.radiusLg,
+        ),
+        padding: const EdgeInsets.all(4),
+        child: tabBar,
       ),
     );
+  }
+
+  @override
+  bool shouldRebuild(_SliverTabBarDelegate oldDelegate) {
+    return false;
   }
 }

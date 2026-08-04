@@ -191,7 +191,7 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
                                 Text(
-                                  '${student.nim} â€¢ ${student.faculty}',
+                                  '${student.nim} • ${student.faculty}',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color:
                                         context.appColors.outline,

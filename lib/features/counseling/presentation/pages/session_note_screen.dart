@@ -234,7 +234,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.lg),
                       child: Text(
-                        'âš  Booking akan dikunci setelah disimpan',
+                        '⚠️ Booking akan dikunci setelah disimpan',
                         style: AppTextStyles.caption.copyWith(
                           color: context.watch<ThemeProvider>().primary,
                           fontWeight: FontWeight.bold,
@@ -259,7 +259,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.lg),
                       child: Text(
-                        'â†’ Surat rujukan otomatis dibuat & dikirim ke Referral',
+                        '→ Surat rujukan otomatis dibuat & dikirim ke Referral',
                         style: AppTextStyles.caption.copyWith(
                           color: context.appColors.info,
                           fontWeight: FontWeight.bold,

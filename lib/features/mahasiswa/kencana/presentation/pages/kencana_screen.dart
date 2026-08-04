@@ -119,6 +119,11 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       FadeInAnimation(
+                        delay: 0.12,
+                        child: _buildBlockersAndAlerts(dashboard),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      FadeInAnimation(
                         delay: 0.15,
                         child: _buildAnnouncements(context, provider),
                       ),
@@ -897,6 +902,114 @@ class _KencanaScreenState extends State<KencanaScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBlockersAndAlerts(KencanaDashboardData dashboard) {
+    final blockers = dashboard.blockers;
+    final notifications = dashboard.notifications
+        .where((n) => n['title'] != 'Syarat Kencana')
+        .toList();
+
+    if (blockers.isEmpty && notifications.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'INFORMASI STATUS & ALERTS',
+          style: AppTextStyles.labelSm.copyWith(
+            fontWeight: FontWeight.w900,
+            color: context.appColors.outline,
+            fontSize: 10,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        if (blockers.isNotEmpty) ...[
+          ...blockers.map((b) => Container(
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.error.withAlpha(15),
+              borderRadius: AppRadius.radiusLg,
+              border: Border.all(color: AppColors.error.withAlpha(30)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.cancel_rounded,
+                  color: AppColors.error,
+                  size: 16,
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Text(
+                    b,
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: AppColors.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+        if (notifications.isNotEmpty) ...[
+          ...notifications.map((n) {
+            final title = n['title'] ?? 'Pemberitahuan';
+            final msg = n['message'] ?? '';
+            return Container(
+              margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withAlpha(15),
+                borderRadius: AppRadius.radiusLg,
+                border: Border.all(color: AppColors.warning.withAlpha(30)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_rounded,
+                        color: AppColors.warning,
+                        size: 16,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Text(
+                        title,
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: AppColors.warning,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (msg.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 28.0),
+                      child: Text(
+                        msg,
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: AppColors.neutral700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }),
+        ],
+        const SizedBox(height: AppSpacing.md),
+      ],
     );
   }
 

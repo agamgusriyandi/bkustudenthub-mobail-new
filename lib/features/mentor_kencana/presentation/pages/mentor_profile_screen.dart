@@ -155,11 +155,11 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             BkuAppBar(
-              title: 'PROFIL MENTOR',
+              title: 'PROFIL FASILITATOR',
               variant: AppBarVariant.student,
               showNotification: false,
               isExpandable: false,
-              showBackButton: true,
+              showBackButton: false,
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -175,7 +175,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                     const SizedBox(height: AppSpacing.xxl),
                     FadeInAnimation(
                       delay: 0.15,
-                      child: _buildMenuSection(context, 'Data Pribadi Mentor', [
+                      child: _buildMenuSection(context, 'Data Pribadi Fasilitator', [
                         _buildMenuItem(
                           context,
                           'ID / Username',
@@ -435,7 +435,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              'MENTOR KENCANA',
+                              'FASILITATOR KENCANA',
                               style: TextStyle(
                                 color: context.appColors.success,
                                 fontSize: 10,

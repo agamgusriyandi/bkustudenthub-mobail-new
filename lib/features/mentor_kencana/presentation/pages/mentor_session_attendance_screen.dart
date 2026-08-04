@@ -1,367 +1,459 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:async';
 
 class MentorSessionAttendanceScreen extends StatefulWidget {
   final int sessionId;
-  const MentorSessionAttendanceScreen({super.key, required this.sessionId});
+  final String sessionTitle;
+
+  const MentorSessionAttendanceScreen({
+    super.key,
+    required this.sessionId,
+    required this.sessionTitle,
+  });
 
   @override
-  State<MentorSessionAttendanceScreen> createState() =>
-      _MentorSessionAttendanceScreenState();
+  State<MentorSessionAttendanceScreen> createState() => _MentorSessionAttendanceScreenState();
 }
 
-class _MentorSessionAttendanceScreenState
-    extends State<MentorSessionAttendanceScreen> {
-  final Map<int, String> _attendanceStatus = {};
+class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceScreen> {
+  List<SessionAttendanceData> _attendances = [];
+  bool _isLoading = true;
+  bool _isSaving = false;
+  
+  String _searchQuery = '';
+  String _selectedStatus = 'all';
+  String _selectedFaculty = 'all';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<MentorKencanaProvider>().fetchSessionAttendance(
-          widget.sessionId,
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() => _isLoading = true);
+    final provider = context.read<MentorKencanaProvider>();
+    final data = await provider.fetchSessionAttendanceList(widget.sessionId);
+    if (mounted) {
+      setState(() {
+        _attendances = data;
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _savePresensi() async {
+    setState(() => _isSaving = true);
+    final provider = context.read<MentorKencanaProvider>();
+    final List<Map<String, dynamic>> payload = _attendances.map((e) => {
+      'student_id': e.id,
+      'status': e.status,
+    }).toList();
+
+    final success = await provider.submitBulkSessionAttendance(widget.sessionId, payload);
+    if (mounted) {
+      setState(() => _isSaving = false);
+      if (success) {
+        AppSnackbar.showSuccess(context, 'Berhasil menyimpan presensi');
+        context.pop();
+      } else {
+        AppSnackbar.showError(context, 'Gagal menyimpan presensi');
+      }
+    }
+  }
+
+  void _updateStatus(int studentId, String status) {
+    setState(() {
+      final idx = _attendances.indexWhere((e) => e.id == studentId);
+      if (idx != -1) {
+        final old = _attendances[idx];
+        _attendances[idx] = SessionAttendanceData(
+          id: old.id,
+          name: old.name,
+          nim: old.nim,
+          programStudi: old.programStudi,
+          faculty: old.faculty,
+          status: status,
         );
       }
     });
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final provider = context.watch<MentorKencanaProvider>();
-    final students = provider.attendanceStudents;
+    final filtered = _attendances.where((e) {
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        if (!e.name.toLowerCase().contains(q) && !e.nim.toLowerCase().contains(q)) {
+          return false;
+        }
+      }
+      if (_selectedStatus != 'all') {
+        if (e.status.toLowerCase() != _selectedStatus.toLowerCase()) return false;
+      }
+      if (_selectedFaculty != 'all') {
+        if (e.faculty.toLowerCase() != _selectedFaculty.toLowerCase()) return false;
+      }
+      return true;
+    }).toList();
+
+    final uniqueFaculties = _attendances.map((e) => e.faculty).where((e) => e.isNotEmpty).toSet().toList()..sort();
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => provider.fetchSessionAttendance(widget.sessionId),
-        color: context.appColors.primary,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            BkuAppBar(
-              title: 'Absensi Sesi',
-              variant: AppBarVariant.student,
-              isExpandable: false,
-              showBackButton: true,
-            ),
-            if (provider.isLoading && students.isEmpty)
-              const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (provider.errorMessage != null && students.isEmpty)
-              SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    provider.errorMessage!,
-                    style: TextStyle(
-                      color: context.appColors.error,
-                    ),
-                  ),
+      backgroundColor: context.appColors.surface,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+              slivers: [
+                BkuAppBar(
+                  title: 'Validasi Kehadiran Sesi',
+                  info: 'Sesi: ${widget.sessionTitle}',
+                  variant: AppBarVariant.student,
+                  showBackButton: true,
+                  isExpandable: false,
+                  onBack: () => context.pop(),
                 ),
-              )
-            else if (students.isEmpty)
-              SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'Tidak ada data kehadiran untuk sesi ini.',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: context.appColors.outline,
-                    ),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl,
-                  vertical: AppSpacing.xl,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index == 0) {
-                      final presentCount = students.where((s) {
-                        final st =
-                            _attendanceStatus[s.studentId] ?? s.status;
-                        return st.toLowerCase() == 'present' ||
-                            st.toLowerCase() == 'hadir';
-                      }).length;
-                      return BkuCard(
-                        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                        padding: const EdgeInsets.all(AppSpacing.xl),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              decoration: BoxDecoration(
-                                color: context.appColors.info.withAlpha(15),
-                                borderRadius: AppRadius.radiusLg,
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Info Card
+                        BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Daftar Hadir Mahasiswa',
+                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              child: Icon(
-                                Icons.how_to_reg_rounded,
-                                color: context.appColors.info,
-                                size: 24,
+                              const SizedBox(height: 4),
+                              Text(
+                                'Tandai kehadiran (Hadir, Izin, atau Alpha) lalu klik Simpan.',
+                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
                               ),
-                            ),
-                            const SizedBox(width: AppSpacing.lg),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
                                 children: [
-                                  Text(
-                                    'Ringkasan Kehadiran',
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: BkuButton(
+                                      text: 'QR Presensi',
+                                      variant: BkuButtonVariant.outline,
+                                      onPressed: () {
+                                        showDialog(context: context, builder: (_) => SessionQrModal(sessionId: widget.sessionId));
+                                      },
                                     ),
                                   ),
-                                  const SizedBox(height: AppSpacing.xs),
-                                  Text(
-                                    '$presentCount / ${students.length} hadir',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: context.appColors.outline,
+                                  const SizedBox(width: AppSpacing.sm),
+                                  Expanded(
+                                    child: BkuButton(
+                                      text: 'Simpan',
+                                      isLoading: _isSaving,
+                                      onPressed: _savePresensi,
                                     ),
                                   ),
                                 ],
                               ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Manajemen Data', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                                  Text('Menampilkan daftar data yang terdaftar dalam sistem.', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColors.neutral200.withAlpha(150),
+                                borderRadius: AppRadius.radiusXl,
+                              ),
+                              child: Text(
+                                'TOTAL DATA ${filtered.length}',
+                                style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10),
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    }
+                        const SizedBox(height: AppSpacing.lg),
 
-                    final student = students[index - 1];
-                    final currentStatus =
-                        _attendanceStatus[student.studentId] ??
-                        student.status;
-
-                    return BkuCard(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral200,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.neutral300,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    student.name.isNotEmpty
-                                        ? student.name
-                                            .substring(0, 1)
-                                            .toUpperCase()
-                                        : '',
-                                    style: const TextStyle(
-                                      color: AppColors.neutral700,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.lg),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      student.name,
-                                      style: AppTextStyles.labelMd.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppSpacing.xs),
-                                    Text(
-                                      student.nim,
-                                      style: AppTextStyles.labelSm.copyWith(
-                                        color: context.appColors.outline,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                        // Filters
+                        TextField(
+                          controller: _searchController,
+                          onChanged: (val) => setState(() => _searchQuery = val),
+                          decoration: InputDecoration(
+                            hintText: 'Cari NIM atau nama mahasiswa...',
+                            prefixIcon: const Icon(Icons.search_rounded),
+                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           ),
-                          const SizedBox(height: AppSpacing.lg),
-                          Row(
-                            children: [
-                              _buildStatusChip(
-                                context,
-                                'Hadir',
-                                currentStatus.toLowerCase() == 'present' ||
-                                    currentStatus.toLowerCase() == 'hadir',
-                                () {
-                                  setState(() {
-                                    _attendanceStatus[student.studentId] =
-                                        'present';
-                                  });
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _selectedStatus,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                                ),
+                                style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
+                                isExpanded: true,
+                                items: const [
+                                  DropdownMenuItem(value: 'all', child: Text('Semua Status', overflow: TextOverflow.ellipsis, maxLines: 1)),
+                                  DropdownMenuItem(value: 'Hadir', child: Text('Hadir')),
+                                  DropdownMenuItem(value: 'Izin', child: Text('Izin')),
+                                  DropdownMenuItem(value: 'Sakit', child: Text('Sakit')),
+                                  DropdownMenuItem(value: 'Alpha', child: Text('Alpha')),
+                                ],
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedStatus = val);
                                 },
                               ),
-                              const SizedBox(width: AppSpacing.sm),
-                              _buildStatusChip(
-                                context,
-                                'Izin',
-                                currentStatus.toLowerCase() == 'permission' ||
-                                    currentStatus.toLowerCase() == 'izin',
-                                () {
-                                  setState(() {
-                                    _attendanceStatus[student.studentId] =
-                                        'permission';
-                                  });
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _selectedFaculty,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                                ),
+                                style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
+                                isExpanded: true,
+                                items: [
+                                  const DropdownMenuItem(value: 'all', child: Text('Semua Fakultas', overflow: TextOverflow.ellipsis, maxLines: 1)),
+                                  ...uniqueFaculties.map((e) => DropdownMenuItem(value: e, child: Text(e, overflow: TextOverflow.ellipsis, maxLines: 1))),
+                                ],
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedFaculty = val);
                                 },
                               ),
-                              const SizedBox(width: AppSpacing.sm),
-                              _buildStatusChip(
-                                context,
-                                'Alpa',
-                                currentStatus.toLowerCase() == 'absent' ||
-                                    currentStatus.toLowerCase() == 'alpa',
-                                () {
-                                  setState(() {
-                                    _attendanceStatus[student.studentId] =
-                                        'absent';
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }, childCount: students.length + 1),
-                ),
-              ),
-            if (students.isNotEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: BkuButton(
-                    onPressed: () async {
-                      final attendances =
-                          _attendanceStatus.entries
-                              .map(
-                                (e) => {
-                                  'student_id': e.key,
-                                  'status': e.value,
-                                },
-                              )
-                              .toList();
-                      if (attendances.isEmpty) {
-                        final attendancesFromServer =
-                            students
-                                .map(
-                                  (s) => {
-                                    'student_id': s.studentId,
-                                    'status': s.status,
-                                  },
-                                )
-                                .toList();
-                        final success = await provider
-                            .submitSessionAttendance(
-                              widget.sessionId,
-                              attendancesFromServer,
-                            );
-                        if (context.mounted) {
-                          if (success) {
-                            AppSnackbar.showSuccess(
-                              context,
-                              'Absensi berhasil disimpan',
-                            );
-                          } else {
-                            AppSnackbar.showError(
-                              context,
-                              'Gagal menyimpan absensi',
-                            );
-                          }
-                        }
-                        return;
-                      }
-                      final success = await provider.submitSessionAttendance(
-                        widget.sessionId,
-                        attendances,
-                      );
-                      if (context.mounted) {
-                        if (success) {
-                          AppSnackbar.showSuccess(
-                            context,
-                            'Absensi berhasil disimpan',
-                          );
-                        } else {
-                          AppSnackbar.showError(
-                            context,
-                            'Gagal menyimpan absensi',
-                          );
-                        }
-                      }
-                    },
-                    icon: Icons.save_rounded,
-                    text: 'Simpan Absensi',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
-      ),
+
+                if (filtered.isEmpty)
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Text('Tidak ada data yang cocok', style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline)),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, bottom: 80),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final mentee = filtered[index];
+                        return BkuCard(
+                          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                mentee.name,
+                                style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'NIM: ${mentee.nim} • ${mentee.programStudi} • ${mentee.faculty}',
+                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
+                                children: [
+                                  _buildSegmentedButton('Hadir', mentee.id, mentee.status, context.appColors.success, matchStatus: ['Hadir', 'hadir', 'present', 'attended']),
+                                  const SizedBox(width: 4),
+                                  _buildSegmentedButton('Izin / Sakit', mentee.id, mentee.status, context.appColors.warning, matchStatus: ['Izin', 'Sakit', 'izin', 'sakit']),
+                                  const SizedBox(width: 4),
+                                  _buildSegmentedButton('Alpha', mentee.id, mentee.status, context.appColors.error, matchStatus: ['Alpha', 'alpha', 'absent']),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }, childCount: filtered.length),
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 
-  Widget _buildStatusChip(
-    BuildContext context,
-    String label,
-    bool isSelected,
-    VoidCallback onTap,
-  ) {
-    Color chipColor;
-    switch (label) {
-      case 'Hadir':
-        chipColor = context.appColors.success;
-        break;
-      case 'Izin':
-        chipColor = context.appColors.warning;
-        break;
-      default:
-        chipColor = context.appColors.error;
-    }
-
+  Widget _buildSegmentedButton(String label, int studentId, String currentStatus, Color activeColor, {List<String>? matchStatus}) {
+    final isActive = matchStatus != null 
+        ? matchStatus.map((e)=>e.toLowerCase()).contains(currentStatus.toLowerCase()) 
+        : currentStatus.toLowerCase() == label.toLowerCase();
+    
     return Expanded(
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () {
+          String newStatus = label;
+          if (label == 'Izin / Sakit') newStatus = 'Izin'; // default to Izin if they tap the grouped one, usually UI handles it specifically but this is fine
+          _updateStatus(studentId, newStatus);
+        },
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? chipColor.withAlpha(15) : Colors.transparent,
-            border: Border.all(
-              color: isSelected ? chipColor : AppColors.neutral300,
-              width: isSelected ? 2 : 1,
-            ),
-            borderRadius: AppRadius.radiusSm,
+            color: isActive ? activeColor : Colors.transparent,
+            border: Border.all(color: isActive ? activeColor : AppColors.neutral300),
+            borderRadius: AppRadius.radiusMd,
           ),
           alignment: Alignment.center,
           child: Text(
             label,
-            style: AppTextStyles.labelSm.copyWith(
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? chipColor : context.appColors.outline,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: isActive ? Colors.white : AppColors.neutral600,
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SessionQrModal extends StatefulWidget {
+  final int sessionId;
+  const SessionQrModal({super.key, required this.sessionId});
+
+  @override
+  State<SessionQrModal> createState() => _SessionQrModalState();
+}
+
+class _SessionQrModalState extends State<SessionQrModal> {
+  late Timer _timer;
+  int _countdown = 45;
+  String _qrData = '';
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchToken();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      setState(() {
+        if (_countdown > 0) {
+          _countdown--;
+        } else {
+          _fetchToken();
+        }
+      });
+    });
+  }
+
+  Future<void> _fetchToken() async {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+    });
+    final token = await context.read<MentorKencanaProvider>().fetchSessionQrToken(widget.sessionId);
+    if (!mounted) return;
+    setState(() {
+      _qrData = token ?? 'kencana-presensi-${widget.sessionId}-${DateTime.now().millisecondsSinceEpoch}';
+      _countdown = 45;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
+      backgroundColor: context.appColors.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('QR Code Presensi Sesi', style: AppTextStyles.titleMd.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+            const SizedBox(height: 8),
+            Text('Otomatis diperbarui dalam $_countdown detik', style: AppTextStyles.labelSm.copyWith(color: context.appColors.error, fontWeight: FontWeight.bold)),
+            const SizedBox(height: AppSpacing.lg),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.neutral200, // Neutral soft background instead of stark white
+                borderRadius: AppRadius.radiusMd,
+                border: Border.all(color: context.appColors.outline.withAlpha(50)),
+              ),
+              child: _isLoading && _qrData.isEmpty
+                  ? const SizedBox(
+                      width: 200.0,
+                      height: 200.0,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : QrImageView(
+                      data: _qrData,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                      eyeStyle: const QrEyeStyle(
+                        eyeShape: QrEyeShape.square,
+                        color: AppColors.neutral900,
+                      ),
+                      dataModuleStyle: const QrDataModuleStyle(
+                        dataModuleShape: QrDataModuleShape.square,
+                        color: AppColors.neutral900,
+                      ),
+                    ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            SizedBox(
+              width: double.infinity,
+              child: BkuButton(
+                text: 'Tutup',
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -81,12 +81,12 @@ class StudentStatusGrid extends StatelessWidget {
                 healthColor = AppColors.error;
               } else if (stres >= 5 || record.bmiStatus == 'Overweight') {
                 healthStatus = 'Waspada';
-                healthSub = 'Stres: $stres/10 â€¢ Mood: $mood';
+                healthSub = 'Stres: $stres/10 • Mood: $mood';
                 healthIcon = Icons.monitor_heart_rounded;
                 healthColor = AppColors.warning;
               } else {
                 healthStatus = 'Sangat Fit';
-                healthSub = 'Tidur Cukup â€¢ Mood: $mood';
+                healthSub = 'Tidur Cukup • Mood: $mood';
                 healthIcon = Icons.spa_rounded;
                 healthColor = AppColors.info;
               }

@@ -1,8 +1,12 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:bkuhub_mobile/core/widgets/scanner_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -100,9 +104,18 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
           // Camera Preview
           MobileScanner(controller: _scannerController, onDetect: _onDetect),
 
-          // Glassmorphism/Dark Overlay
-          Container(
-            decoration: BoxDecoration(color: context.appColors.onSurface.withAlpha(150)),
+          // Glassmorphism/Dark Overlay with Hole Punch
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return CustomPaint(
+                size: Size.infinite,
+                painter: ScannerOverlayPainter(
+                  overlayColor: context.appColors.onSurface.withAlpha(150),
+                  animationValue: _animation.value,
+                ),
+              );
+            },
           ),
 
           // Scan Area frame
@@ -121,16 +134,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: (_hasScanned ? AppColors.success : context.appColors.onPrimary)
-                            .withAlpha(80),
-                        blurRadius: 20,
-                        spreadRadius: 5,
+                        color: _hasScanned
+                            ? AppColors.success.withAlpha(60)
+                            : context.appColors.onPrimary.withAlpha(40),
+                        blurRadius: 15,
+                        spreadRadius: 2,
                       ),
                     ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: AppRadius.radiusXl,
-                    child: Container(color: Colors.transparent),
                   ),
                 );
               },
@@ -329,6 +339,21 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
     });
 
     try {
+      final lowerCode = code.toLowerCase().trim();
+      final isExternalUrl = lowerCode.contains('http://') ||
+          lowerCode.contains('https://') ||
+          lowerCode.startsWith('//') ||
+          lowerCode.contains('.com') ||
+          lowerCode.contains('.html') ||
+          lowerCode.contains('.net') ||
+          lowerCode.contains('.org');
+      final isOfficialEventUrl = lowerCode.contains('eventid=') || lowerCode.contains('student/presensi');
+      final isJwtToken = code.startsWith('eyJ') && code.split('.').length == 3;
+
+      if (isExternalUrl && !isOfficialEventUrl && !isJwtToken) {
+        throw Exception('QR Code tidak valid! Harap pindai QR Code Presensi Sesi Kencana / Kegiatan resmi.');
+      }
+
       // Robust parsing of student NIM
       String nim = code;
       if (code.contains('?')) {
@@ -345,6 +370,32 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       String? resolvedId;
       String? studentName;
       String targetEventId = widget.eventId;
+
+      // Mode 3: Scanning a Kencana Mentor Session QR Code (JWT)
+      if (code.startsWith('eyJ') && code.split('.').length == 3) {
+        final response = await ApiClient().client.post(
+          '/kencana-student/attendance',
+          data: {'qr_code': code, 'status': 'present'},
+        );
+
+        if (!mounted) return;
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          setState(() {
+            _isProcessing = false;
+            _hasScanned = true;
+          });
+          AppSnackbar.showSuccess(
+            context,
+            'Berhasil mencatat presensi Kencana (PKKMB) Anda!',
+          );
+          await Future.delayed(const Duration(seconds: 2));
+          if (mounted) Navigator.pop(context);
+          return;
+        } else {
+          throw Exception(response.data['message'] ?? 'Gagal mencatat presensi Kencana');
+        }
+      }
 
       if (code.contains('eventId=') || code.contains('student/presensi')) {
         // Mode 1: Scanning an Event QR Code to check in the logged-in student (Self-Presensi)
@@ -584,7 +635,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                   const SizedBox(height: AppSpacing.xl),
                   TextField(
                     controller: nimController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'NIM Mahasiswa',

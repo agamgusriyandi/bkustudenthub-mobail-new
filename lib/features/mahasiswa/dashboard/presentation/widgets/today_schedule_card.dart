@@ -273,7 +273,7 @@ class TodayScheduleCard extends StatelessWidget {
                       children: [
                         Text(
                           isOngoing
-                              ? 'HARI INI â€¢ $timeStr'
+                              ? 'HARI INI • $timeStr'
                               : _formatDate(event.tanggal),
                           style: AppTextStyles.labelSm.copyWith(
                             color:

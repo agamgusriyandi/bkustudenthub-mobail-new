@@ -11,6 +11,8 @@ import 'package:bkuhub_mobile/features/ormawa/main/presentation/pages/ormawa_mai
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/organisasi_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/psychologist_main_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/student_counseling_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
+
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/session_note_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/counseling_booking_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/schedule_management_screen.dart';
@@ -81,9 +83,12 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_session_attendance_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_materials_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_detail_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_scoring_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_notifications_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_list_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_banding_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_banding_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
@@ -172,12 +177,16 @@ class AppRoutes {
   static const String mentorEssayGrading = '/mentor-kencana/essay-grading';
   static const String mentorSessionAttendance =
       '/mentor-kencana/session-attendance/:sessionId';
+  static const String mentorSessionAttendanceAlt =
+      '/mentor-kencana/attendance/session/:sessionId';
   static const String mentorMaterials = '/mentor-kencana/materials';
   static const String mentorHandbookDetail = '/mentor-kencana/handbook/:id';
-  static const String mentorScoringDetail =
-      '/mentor-kencana/scoring/:sessionId';
+  static const String mentorHandbookReview = '/mentor-kencana/handbook/review/:id';
+  static const String mentorScoringDetail = '/mentor-kencana/scoring/:sessionId';
   static const String mentorNotifications = '/mentor-kencana/notifications';
   static const String mentorHandbookList = '/mentor-kencana/handbook';
+  static const String mentorBanding = '/mentor-banding';
+  static const String mentorBandingDetail = '/mentor-banding-detail';
   static const String kencanaStage = '/kencana/stage/:id';
   static const String kencanaSession = '/kencana/session/:id';
   static const String kencanaScore = '/kencana/score';
@@ -466,7 +475,11 @@ class AppRoutes {
       ),
       GoRoute(
         path: mentorEssayGrading,
-        builder: (context, state) => const MentorEssayGradingScreen(),
+        builder: (context, state) {
+          final qIdStr = state.uri.queryParameters['quiz_id'];
+          final qId = qIdStr != null ? int.tryParse(qIdStr) : null;
+          return MentorEssayGradingScreen(quizId: qId);
+        },
       ),
       GoRoute(
         path: mentorSessionAttendance,
@@ -474,7 +487,18 @@ class AppRoutes {
           final sessionStr =
               state.pathParameters['sessionId'] ?? '0';
           final sessionId = int.tryParse(sessionStr) ?? 0;
-          return MentorSessionAttendanceScreen(sessionId: sessionId);
+          final title = state.uri.queryParameters['title'] ?? '';
+          return MentorSessionAttendanceScreen(sessionId: sessionId, sessionTitle: title);
+        },
+      ),
+      GoRoute(
+        path: mentorSessionAttendanceAlt,
+        builder: (context, state) {
+          final sessionStr =
+              state.pathParameters['sessionId'] ?? '0';
+          final sessionId = int.tryParse(sessionStr) ?? 0;
+          final title = state.uri.queryParameters['title'] ?? '';
+          return MentorSessionAttendanceScreen(sessionId: sessionId, sessionTitle: title);
         },
       ),
       GoRoute(
@@ -487,6 +511,18 @@ class AppRoutes {
           final idStr = state.pathParameters['id'] ?? '0';
           final id = int.tryParse(idStr) ?? 0;
           return MentorHandbookReviewDetailScreen(handbookId: id);
+        },
+      ),
+      GoRoute(
+        path: mentorHandbookReview,
+        builder: (context, state) {
+          final idStr = state.pathParameters['id'] ?? '0';
+          final id = int.tryParse(idStr) ?? 0;
+          final name = state.uri.queryParameters['name'] ?? '';
+          return MentorHandbookReviewScreen(
+            studentId: id,
+            studentName: name,
+          );
         },
       ),
       GoRoute(
@@ -508,6 +544,17 @@ class AppRoutes {
       GoRoute(
         path: mentorHandbookList,
         builder: (context, state) => const MentorHandbookListScreen(),
+      ),
+      GoRoute(
+        path: mentorBanding,
+        builder: (context, state) => const MentorBandingScreen(),
+      ),
+      GoRoute(
+        path: mentorBandingDetail,
+        builder: (context, state) {
+          final item = state.extra as BandingModel;
+          return MentorBandingDetailScreen(banding: item);
+        },
       ),
       GoRoute(
         path: '/kencana/stage/:id',

@@ -372,7 +372,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                     ),
                     const SizedBox(height: AppSpacing.s2),
                     Text(
-                      '$nim â€¢ $prodi',
+                      '$nim • $prodi',
                       style: AppTextStyles.bodySm.copyWith(
                         color: AppColors.neutral600,
                       ),
@@ -687,7 +687,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                       ),
                       const SizedBox(height: AppSpacing.s2),
                       Text(
-                        '$nim â€¢ $prodi',
+                        '$nim • $prodi',
                         style: AppTextStyles.caption.copyWith(
                           color: context.appColors.secondaryContainer,
                                       fontWeight: FontWeight.bold,

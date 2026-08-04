@@ -164,7 +164,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       balance: balance,
                       subtitle:
                           _obscureNominal
-                              ? 'Masuk: Rp â€¢â€¢â€¢ | Keluar: Rp â€¢â€¢â€¢'
+                              ? 'Masuk: Rp ••• | Keluar: Rp •••'
                               : 'Masuk: Rp ${_formatNominal(totalMasuk)} | Keluar: Rp ${_formatNominal(totalKeluar)}',
                       accentColor: context.appColors.primary,
                       icon: Icons.account_balance_rounded,
@@ -176,7 +176,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       balance: campusBalance,
                       subtitle:
                           _obscureNominal
-                              ? 'Hibah: Rp â€¢â€¢â€¢ | LPJ: Rp â€¢â€¢â€¢'
+                              ? 'Hibah: Rp ••• | LPJ: Rp •••'
                               : 'Hibah: Rp ${_formatNominal(campusMasuk)} | LPJ: Rp ${_formatNominal(campusKeluar)}',
                       accentColor: context.appColors.info,
                       icon: Icons.assured_workload_rounded,
@@ -187,7 +187,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       balance: orgBalance,
                       subtitle:
                           _obscureNominal
-                              ? 'Iuran: Rp â€¢â€¢â€¢ | Mandiri: Rp â€¢â€¢â€¢'
+                              ? 'Iuran: Rp ••• | Mandiri: Rp •••'
                               : 'Iuran: Rp ${_formatNominal(orgMasuk)} | Mandiri: Rp ${_formatNominal(orgKeluar)}',
                       accentColor: context.appColors.success,
                       icon: Icons.payments_rounded,
@@ -279,7 +279,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
             children: [
               Text(
                 _obscureNominal
-                    ? 'Rp â€¢â€¢â€¢â€¢â€¢â€¢'
+                    ? 'Rp ••••••'
                     : NumberFormat.currency(
                       locale: 'id',
                       symbol: 'Rp ',
@@ -432,7 +432,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             ),
                           ),
                           Text(
-                            '${t.category} â€¢ ${DateFormat('dd MMM yyyy', 'id').format(t.date)}',
+                            '${t.category} • ${DateFormat('dd MMM yyyy', 'id').format(t.date)}',
                             style: AppTextStyles.labelSm.copyWith(
                               color: AppColors.neutral500,
                             ),
@@ -488,7 +488,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     ),
                     Text(
                       _obscureNominal
-                          ? '${isIncome ? '+' : '-'} â€¢â€¢â€¢â€¢â€¢â€¢'
+                          ? '${isIncome ? '+' : '-'} ••••••'
                           : '${isIncome ? '+' : '-'} ${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(t.nominal)}',
                       style: AppTextStyles.labelMd.copyWith(
                         color: isIncome ? AppColors.success : AppColors.error,

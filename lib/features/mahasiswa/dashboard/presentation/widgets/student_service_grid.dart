@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -8,13 +8,15 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 // Screens
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/health_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/medical_referral_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/insurance_claim_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_handbook_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/achievement_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/organisasi_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/profile/presentation/pages/profile_screen.dart';
 
 class StudentServiceGrid extends StatelessWidget {
   const StudentServiceGrid({super.key});
@@ -24,21 +26,57 @@ class StudentServiceGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isTablet = constraints.maxWidth >= 600;
-        final crossAxisCount = isTablet ? 8 : 4;
-        final aspectRatio = isTablet ? 1.0 : 0.70;
+        final crossAxisCount = isTablet ? 10 : 5;
+        final aspectRatio = isTablet ? 1.0 : 0.72;
 
         return GridView.count(
           shrinkWrap: true,
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: crossAxisCount,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 8,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 6,
           childAspectRatio: aspectRatio,
           children: [
             _ServiceIcon(
-              label: 'Beasiswa',
+              label: 'Kencana',
               icon: Icons.school_rounded,
+              color: AppColors.primary,
+              target: const KencanaScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Handbook',
+              icon: Icons.menu_book_rounded,
+              color: AppColors.warning,
+              target: const KencanaHandbookScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Konseling',
+              icon: Icons.psychology_rounded,
+              color: context.appColors.tertiary,
+              target: const CounselingScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Kesehatan',
+              icon: Icons.monitor_heart_rounded,
+              color: context.appColors.info,
+              target: const HealthScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Rujukan',
+              icon: Icons.medical_information_rounded,
+              color: AppColors.info,
+              target: const MedicalReferralScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Asuransi',
+              icon: Icons.verified_user_rounded,
+              color: AppColors.success,
+              target: const InsuranceClaimScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Beasiswa',
+              icon: Icons.workspace_premium_rounded,
               color: AppColors.success,
               target: const ScholarshipScreen(),
             ),
@@ -49,40 +87,16 @@ class StudentServiceGrid extends StatelessWidget {
               target: const AchievementScreen(),
             ),
             _ServiceIcon(
-              label: 'Kencana',
-              icon: Icons.auto_awesome_rounded,
-              color: AppColors.warning,
-              target: const KencanaScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Konseling',
-              icon: Icons.psychology_rounded,
-              color: context.appColors.tertiary,
-              target: const CounselingScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Aspirasi',
-              icon: Icons.campaign_rounded,
-              color: AppColors.error,
-              target: const StudentVoiceScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Kesehatan',
-              icon: Icons.monitor_heart_rounded,
-              color: context.appColors.info,
-              target: const HealthScreen(),
-            ),
-            _ServiceIcon(
               label: 'Organisasi',
               icon: Icons.groups_rounded,
               color: context.appColors.info,
               target: const OrganisasiScreen(),
             ),
             _ServiceIcon(
-              label: 'Profil',
-              icon: Icons.person_rounded,
-              color: AppColors.neutral600,
-              target: const ProfileScreen(),
+              label: 'Aspirasi',
+              icon: Icons.campaign_rounded,
+              color: AppColors.error,
+              target: const StudentVoiceScreen(),
             ),
           ],
         );

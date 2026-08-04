@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -20,22 +21,17 @@ class KencanaHandbookScreen extends StatefulWidget {
   State<KencanaHandbookScreen> createState() => _KencanaHandbookScreenState();
 }
 
-class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
   final _refleksiController = TextEditingController();
   final _komitmenController = TextEditingController();
   final _rencanaController = TextEditingController();
 
-  String _currentScope = 'university';
   Map<String, dynamic>? _selectedHandbookData;
   bool _isInit = true;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_handleTabChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
@@ -43,25 +39,15 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
 
   @override
   void dispose() {
-    _tabController.removeListener(_handleTabChange);
-    _tabController.dispose();
     _refleksiController.dispose();
     _komitmenController.dispose();
     _rencanaController.dispose();
     super.dispose();
   }
 
-  void _handleTabChange() {
-    if (_tabController.indexIsChanging) return;
-    setState(() {
-      _currentScope = _tabController.index == 0 ? 'university' : 'faculty';
-      _populateFormForCurrentScope();
-    });
-  }
-
   Future<void> _loadData() async {
     await context.read<KencanaProvider>().fetchHandbook();
-    _populateFormForCurrentScope();
+    _populateForm();
     if (mounted) {
       setState(() {
         _isInit = false;
@@ -69,29 +55,27 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
     }
   }
 
-  void _populateFormForCurrentScope() {
+  void _populateForm() {
     final provider = context.read<KencanaProvider>();
     final resp = provider.handbookResponse;
     if (resp == null) return;
 
-    final history = resp['history'] as List? ?? [];
-    final matching = history.firstWhere(
-      (h) => h['scope_type'] == _currentScope,
-      orElse: () => null,
-    );
+    final handbook = resp['handbook'] as Map<String, dynamic>? ??
+        (resp['data'] is Map ? resp['data']['handbook'] as Map<String, dynamic>? : null) ??
+        {};
 
     setState(() {
-      _selectedHandbookData = matching;
-      if (matching != null && matching['content_json'] != null) {
-        final content = matching['content_json'] as Map<String, dynamic>? ?? {};
-        _refleksiController.text = content['refleksi']?.toString() ?? '';
-        _komitmenController.text = content['komitmen']?.toString() ?? '';
-        _rencanaController.text = content['rencana']?.toString() ?? '';
-      } else {
-        _refleksiController.clear();
-        _komitmenController.clear();
-        _rencanaController.clear();
+      _selectedHandbookData = handbook.isNotEmpty ? handbook : null;
+      dynamic rawContent = handbook['content_json'];
+      if (rawContent is String) {
+        try {
+          rawContent = jsonDecode(rawContent);
+        } catch (_) {}
       }
+      final content = rawContent is Map<String, dynamic> ? rawContent : {};
+      _refleksiController.text = content['refleksi']?.toString() ?? '';
+      _komitmenController.text = content['komitmen']?.toString() ?? '';
+      _rencanaController.text = content['rencana']?.toString() ?? '';
     });
   }
 
@@ -99,7 +83,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
     BkuLoadingDialog.show(context, message: 'Menyimpan draft...');
     final provider = context.read<KencanaProvider>();
     final success = await provider.saveHandbookDraft(
-      _currentScope,
+      'university',
       _refleksiController.text.trim(),
       _komitmenController.text.trim(),
       _rencanaController.text.trim(),
@@ -109,7 +93,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
 
     if (success) {
       AppSnackbar.showSuccess(context, 'Draft berhasil disimpan');
-      _populateFormForCurrentScope();
+      _populateForm();
     } else {
       AppSnackbar.showError(
         context,
@@ -151,7 +135,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
     BkuLoadingDialog.show(context, message: 'Mengirim handbook...');
     final provider = context.read<KencanaProvider>();
     final success = await provider.submitHandbook(
-      _currentScope,
+      'university',
       _refleksiController.text.trim(),
       _komitmenController.text.trim(),
       _rencanaController.text.trim(),
@@ -161,7 +145,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
 
     if (success) {
       AppSnackbar.showSuccess(context, 'Handbook berhasil dikumpulkan');
-      _populateFormForCurrentScope();
+      _populateForm();
     } else {
       AppSnackbar.showError(
         context,
@@ -202,33 +186,6 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
               padding: AppSpacing.padding20,
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  Container(
-                    padding: AppSpacing.paddingXs,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral50,
-                      borderRadius: AppRadius.radiusLg,
-                      border: Border.all(color: AppColors.neutral300),
-                    ),
-                    child: TabBar(
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        color: context.appColors.primary,
-                        borderRadius: AppRadius.br10,
-                      ),
-                      labelColor: context.appColors.onPrimary,
-                      unselectedLabelColor: AppColors.neutral600,
-                      labelStyle: AppTextStyles.labelMd.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      dividerColor: Colors.transparent,
-                      tabs: const [
-                        Tab(text: 'Universitas'),
-                        Tab(text: 'Fakultas'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
                   _buildStatusCard(status, feedback),
                   const SizedBox(height: AppSpacing.xl),
                   _buildField(
@@ -316,7 +273,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
     if (status == 'submitted') {
       textColor = AppColors.warning;
       icon = Icons.pending_actions_rounded;
-      statusText = 'Menunggu Review Mentor';
+      statusText = 'Menunggu Review Fasilitator';
     } else if (status == 'approved') {
       textColor = AppColors.success;
       icon = Icons.verified_rounded;
@@ -403,7 +360,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen>
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      'Catatan Revisi Mentor:',
+                      'Catatan Revisi Fasilitator:',
                       style: AppTextStyles.labelMd.copyWith(
                         color: AppColors.warning,
                         fontWeight: FontWeight.bold,

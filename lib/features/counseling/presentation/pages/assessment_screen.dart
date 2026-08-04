@@ -9,7 +9,7 @@ import 'package:bkuhub_mobile/features/counseling/presentation/providers/student
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
-// â”€â”€â”€ Data Model Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Data Model Asesmen ───────────────────────────────────────────────────────
 
 class _AssessmentType {
   final String name;
@@ -31,9 +31,9 @@ class _AssessmentType {
 
 // DASS-21: Depression Anxiety Stress Scale
 // Skor per jawaban: 0=Tidak Pernah, 1=Kadang, 2=Sering, 3=Hampir Selalu
-// Depresi: soal 3,5,10,13,16,17,21 â†’ skor x2
-// Kecemasan: soal 2,4,7,9,15,19,20 â†’ skor x2
-// Stres: soal 1,6,8,11,12,14,18 â†’ skor x2
+// Depresi: soal 3,5,10,13,16,17,21 → skor x2
+// Kecemasan: soal 2,4,7,9,15,19,20 → skor x2
+// Stres: soal 1,6,8,11,12,14,18 → skor x2
 final _dass21 = _AssessmentType(
   name: 'DASS-21',
   kategori: 'Kesehatan Mental',
@@ -126,7 +126,7 @@ final List<_AssessmentType> _allAssessments = [
   _anxietyCheck,
 ];
 
-// â”€â”€â”€ Screen Pilih Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Screen Pilih Asesmen ─────────────────────────────────────────────────────
 
 class AssessmentScreen extends StatelessWidget {
   const AssessmentScreen({super.key});
@@ -298,7 +298,7 @@ class AssessmentScreen extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Screen Quiz Asesmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Screen Quiz Asesmen ──────────────────────────────────────────────────────
 
 class _AssessmentQuizScreen extends StatefulWidget {
   final _AssessmentType assessment;

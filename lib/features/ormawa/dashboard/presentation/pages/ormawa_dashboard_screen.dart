@@ -230,7 +230,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  '${DateFormat('dd MMM', 'id').format(agenda.date)} â€¢ ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
+                  '${DateFormat('dd MMM', 'id').format(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
                   style: AppTextStyles.labelMd.copyWith(
                     color: context.appColors.onSurfaceVariant,
                   ),

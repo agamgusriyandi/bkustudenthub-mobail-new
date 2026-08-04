@@ -5,12 +5,20 @@ class MentorDashboardData {
   final int totalGroups;
   final int pendingScoring;
   final int unreadAnnouncements;
+  final int passedStudents;
+  final int remedialStudents;
+  final int pendingHandbooks;
+  final Map<String, dynamic> rawData;
 
   MentorDashboardData({
     required this.totalMentees,
     required this.totalGroups,
     required this.pendingScoring,
     required this.unreadAnnouncements,
+    this.passedStudents = 0,
+    this.remedialStudents = 0,
+    this.pendingHandbooks = 0,
+    this.rawData = const {},
   });
 
   factory MentorDashboardData.fromJson(Map<String, dynamic> json) {
@@ -46,6 +54,25 @@ class MentorDashboardData {
             json['notifikasi'] ??
             json['Notifikasi'],
       ),
+      passedStudents: parseIntStrict(
+        json['passed_students'] ??
+            json['passedStudents'] ??
+            json['lulus'] ??
+            json['Lulus'],
+      ),
+      remedialStudents: parseIntStrict(
+        json['remedial_students'] ??
+            json['remedialStudents'] ??
+            json['remedial'] ??
+            json['Remedial'],
+      ),
+      pendingHandbooks: parseIntStrict(
+        json['pending_handbooks'] ??
+            json['pendingHandbooks'] ??
+            json['menunggu_persetujuan'] ??
+            json['Menunggu'],
+      ),
+      rawData: json,
     );
   }
 }
@@ -480,20 +507,46 @@ class AvailableStudentData {
   final String name;
   final String nim;
   final String faculty;
+  final String prodi;
+  final bool alreadyHasMentor;
+  final String? mentorName;
 
   AvailableStudentData({
     required this.id,
     required this.name,
     required this.nim,
     required this.faculty,
+    this.prodi = '',
+    this.alreadyHasMentor = false,
+    this.mentorName,
   });
 
   factory AvailableStudentData.fromJson(Map<String, dynamic> json) {
+    String facultyValue = '';
+    if (json['fakultas'] is Map) {
+      facultyValue = json['fakultas']['nama'] ?? json['fakultas']['name'] ?? '';
+    } else {
+      facultyValue = json['fakultas']?.toString() ?? json['faculty']?.toString() ?? json['Fakultas']?.toString() ?? '';
+    }
+
+    String prodiValue = '';
+    if (json['program_studi'] is Map) {
+      prodiValue = json['program_studi']['nama'] ?? json['program_studi']['name'] ?? '';
+    } else {
+      prodiValue = json['program_studi']?.toString() ?? json['prodi']?.toString() ?? json['ProgramStudi']?.toString() ?? '';
+    }
+
+    final hasMentorRaw = json['already_has_mentor'];
+    final hasMentor = hasMentorRaw == true || hasMentorRaw == 'true' || (json['mentor_name'] != null && json['mentor_name'].toString().isNotEmpty);
+
     return AvailableStudentData(
       id: json['id'] ?? json['ID'] ?? 0,
       name: json['name'] ?? json['nama'] ?? json['Nama'] ?? '',
       nim: json['nim'] ?? json['NIM'] ?? '',
-      faculty: json['faculty'] ?? json['fakultas'] ?? json['Fakultas'] ?? '',
+      faculty: facultyValue,
+      prodi: prodiValue,
+      alreadyHasMentor: hasMentor,
+      mentorName: json['mentor_name']?.toString(),
     );
   }
 }
@@ -633,10 +686,7 @@ class MentorGroupDetail {
 
   factory MentorGroupDetail.fromJson(Map<String, dynamic> json) {
     final memberList =
-        json['members'] ??
-        json['mentees'] ??
-        json['mahasiswa'] ??
-        [];
+        json['members'] ?? json['mentees'] ?? json['mahasiswa'] ?? [];
     return MentorGroupDetail(
       id: json['id'] ?? json['ID'] ?? 0,
       name:
@@ -675,8 +725,7 @@ class MentorNote {
   factory MentorNote.fromJson(Map<String, dynamic> json) {
     String studentName = '';
     if (json['student'] is Map) {
-      studentName =
-          json['student']['nama'] ?? json['student']['name'] ?? '';
+      studentName = json['student']['nama'] ?? json['student']['name'] ?? '';
     } else if (json['student_name'] != null) {
       studentName = json['student_name'].toString();
     } else if (json['nama_mahasiswa'] != null) {
@@ -685,11 +734,7 @@ class MentorNote {
 
     return MentorNote(
       id: json['id'] ?? json['ID'] ?? 0,
-      title:
-          json['title'] ??
-          json['judul'] ??
-          json['judul_catatan'] ??
-          '',
+      title: json['title'] ?? json['judul'] ?? json['judul_catatan'] ?? '',
       content:
           json['content'] ??
           json['notes'] ??
@@ -716,6 +761,7 @@ class MentorEssayItem {
   final String status;
   final double? score;
   final String submittedAt;
+  final String? feedback;
 
   MentorEssayItem({
     required this.id,
@@ -726,48 +772,36 @@ class MentorEssayItem {
     required this.status,
     this.score,
     required this.submittedAt,
+    this.feedback,
   });
 
   factory MentorEssayItem.fromJson(Map<String, dynamic> json) {
     String studentName = '';
     String nim = '';
     if (json['student'] is Map) {
-      studentName =
-          json['student']['nama'] ?? json['student']['name'] ?? '';
+      studentName = json['student']['nama'] ?? json['student']['name'] ?? '';
       nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
     } else {
       studentName =
-          json['student_name'] ??
-          json['nama_mahasiswa'] ??
-          json['nama'] ??
-          '';
+          json['student_name'] ?? json['nama_mahasiswa'] ?? json['nama'] ?? '';
       nim = json['nim'] ?? json['NIM'] ?? '';
     }
 
+    final qText = json['question_text'] ?? json['question'] ?? json['pertanyaan'] ?? json['soal'] ?? json['text'] ?? '';
+    final aText = json['student_answer'] ?? json['answer_text'] ?? json['answer'] ?? json['jawaban'] ?? json['response'] ?? '';
+    final scoreVal = json['score'] ?? json['nilai'] ?? json['point'];
+    final feedbackText = json['feedback'] ?? json['catatan'] ?? json['notes'] ?? '';
+
     return MentorEssayItem(
-      id: json['id'] ?? json['ID'] ?? 0,
+      id: json['id'] ?? json['ID'] ?? json['essay_id'] ?? json['submission_id'] ?? 0,
       studentName: studentName.toString(),
       nim: nim.toString(),
-      question:
-          json['question'] ??
-          json['pertanyaan'] ??
-          json['soal'] ??
-          '',
-      answer:
-          json['answer'] ??
-          json['jawaban'] ??
-          json['answer_text'] ??
-          '',
-      status: json['status'] ?? 'pending',
-      score:
-          json['score'] != null
-              ? double.tryParse(json['score'].toString())
-              : null,
-      submittedAt:
-          json['submitted_at'] ??
-          json['created_at'] ??
-          json['tanggal'] ??
-          '',
+      question: qText.toString(),
+      answer: aText.toString(),
+      status: json['status']?.toString() ?? (scoreVal != null ? 'graded' : 'pending'),
+      score: scoreVal != null ? double.tryParse(scoreVal.toString()) : null,
+      submittedAt: json['submitted_at'] ?? json['created_at'] ?? json['tanggal'] ?? '',
+      feedback: feedbackText.toString(),
     );
   }
 }
@@ -879,23 +913,28 @@ class MentorSessionScore {
       studentName = json['student']['nama'] ?? json['student']['name'] ?? '';
       nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
     } else {
-      studentName = json['student_name'] ?? json['nama_mahasiswa'] ?? json['nama'] ?? '';
+      studentName =
+          json['student_name'] ?? json['nama_mahasiswa'] ?? json['nama'] ?? '';
       nim = json['nim'] ?? json['NIM'] ?? '';
     }
 
     final itemsList = json['items'] ?? json['scores'] ?? [];
-    final parsedItems = itemsList is List
-        ? itemsList.map((e) => MentorScoreItem.fromJson(e)).toList()
-        : <MentorScoreItem>[];
+    final parsedItems =
+        itemsList is List
+            ? itemsList.map((e) => MentorScoreItem.fromJson(e)).toList()
+            : <MentorScoreItem>[];
 
     return MentorSessionScore(
       studentId: json['student_id'] ?? json['id'] ?? 0,
       studentName: studentName.toString(),
       nim: nim.toString(),
       items: parsedItems,
-      totalScore: double.tryParse(
-        (json['total_score'] ?? json['totalScore'] ?? json['score'] ?? 0).toString(),
-      ) ?? 0.0,
+      totalScore:
+          double.tryParse(
+            (json['total_score'] ?? json['totalScore'] ?? json['score'] ?? 0)
+                .toString(),
+          ) ??
+          0.0,
     );
   }
 }
@@ -917,7 +956,9 @@ class MentorScoreItem {
     return MentorScoreItem(
       component: json['component'] ?? json['kategori'] ?? '',
       itemName: json['item_name'] ?? json['nama_item'] ?? '',
-      score: double.tryParse((json['score'] ?? json['nilai'] ?? 0).toString()) ?? 0.0,
+      score:
+          double.tryParse((json['score'] ?? json['nilai'] ?? 0).toString()) ??
+          0.0,
       notes: json['notes'] ?? json['catatan'] ?? '',
     );
   }
@@ -943,16 +984,11 @@ class MentorAttendanceStudent {
     String nim = '';
     int sid = 0;
     if (json['student'] is Map) {
-      name =
-          json['student']['nama'] ?? json['student']['name'] ?? '';
+      name = json['student']['nama'] ?? json['student']['name'] ?? '';
       nim = json['student']['nim'] ?? json['student']['NIM'] ?? '';
       sid = json['student']['id'] ?? 0;
     } else {
-      name =
-          json['student_name'] ??
-          json['name'] ??
-          json['nama'] ??
-          '';
+      name = json['student_name'] ?? json['name'] ?? json['nama'] ?? '';
       nim = json['nim'] ?? json['NIM'] ?? '';
       sid = json['student_id'] ?? json['id'] ?? 0;
     }
@@ -963,6 +999,231 @@ class MentorAttendanceStudent {
       nim: nim.toString(),
       status: json['status'] ?? json['Status'] ?? 'absent',
       note: json['note']?.toString(),
+    );
+  }
+}
+
+class BandingModel {
+  final int id;
+  final String studentName;
+  final String studentNim;
+  final String type;
+  final String reason;
+  final String status;
+  final String? adminResponse;
+  final String? createdAt;
+
+  BandingModel({
+    required this.id,
+    required this.studentName,
+    required this.studentNim,
+    required this.type,
+    required this.reason,
+    required this.status,
+    this.adminResponse,
+    this.createdAt,
+  });
+
+  factory BandingModel.fromJson(Map<String, dynamic> json) {
+    final student = json['student'] ?? {};
+    return BandingModel(
+      id: json['id'] ?? 0,
+      studentName: student['Nama'] ?? student['nama'] ?? '-',
+      studentNim: student['NIM'] ?? student['nim'] ?? '-',
+      type: json['type'] ?? 'fakultas',
+      reason: json['reason'] ?? '',
+      status: json['status'] ?? 'pending',
+      adminResponse: json['admin_response'],
+      createdAt: json['created_at'],
+    );
+  }
+}
+
+class BandingScoreItemModel {
+  final int id;
+  final String itemName;
+  final double score;
+  final double? maxScore;
+  final double? weight;
+
+  BandingScoreItemModel({
+    required this.id,
+    required this.itemName,
+    required this.score,
+    this.maxScore,
+    this.weight,
+  });
+
+  factory BandingScoreItemModel.fromJson(Map<String, dynamic> json) {
+    double parseDoubleStrict(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      return double.tryParse(value.toString()) ?? 0.0;
+    }
+
+    return BandingScoreItemModel(
+      id: json['id'] ?? 0,
+      itemName: json['item_name'] ?? json['ItemName'] ?? '',
+      score: parseDoubleStrict(json['score'] ?? json['Score']),
+      maxScore: parseDoubleStrict(json['max_score'] ?? json['MaxScore'] ?? 100),
+      weight: parseDoubleStrict(json['weight'] ?? json['Weight']),
+    );
+  }
+}
+
+class SessionAttendanceData {
+  final int id;
+  final String nim;
+  final String name;
+  final String programStudi;
+  final String faculty;
+  final String status; // Hadir, Izin, Sakit, Alpha, Pending
+
+  SessionAttendanceData({
+    required this.id,
+    required this.nim,
+    required this.name,
+    required this.programStudi,
+    required this.faculty,
+    required this.status,
+  });
+
+  factory SessionAttendanceData.fromJson(Map<String, dynamic> json) {
+    String nameValue = '';
+    String nimValue = '';
+    String prodiValue = '';
+    String facultyValue = '';
+
+    if (json['student'] is Map) {
+      final st = json['student'];
+      nameValue = st['nama'] ?? st['name'] ?? '';
+      nimValue = st['nim'] ?? st['NIM'] ?? '';
+      
+      if (st['program_studi'] is Map) {
+        prodiValue = st['program_studi']['nama'] ?? st['program_studi']['name'] ?? '';
+      } else {
+        prodiValue = st['program_studi']?.toString() ?? st['prodi']?.toString() ?? '';
+      }
+
+      if (st['fakultas'] is Map) {
+        facultyValue = st['fakultas']['nama'] ?? st['fakultas']['name'] ?? '';
+      } else {
+        facultyValue = st['fakultas']?.toString() ?? st['faculty']?.toString() ?? '';
+      }
+    } else {
+      nameValue = json['name'] ?? json['nama'] ?? '';
+      nimValue = json['nim'] ?? json['NIM'] ?? '';
+      prodiValue = json['program_studi'] ?? json['prodi'] ?? '';
+      facultyValue = json['faculty'] ?? json['fakultas'] ?? '';
+    }
+
+    String statusStr = 'Alpha';
+    final rawStatus = (json['status'] ?? json['attendance_status'] ?? '').toString().toLowerCase();
+    final isAttended = json['is_attended'] == true || 
+                       json['is_attended'] == 1 || 
+                       json['scanned_at'] != null || 
+                       json['attended_at'] != null || 
+                       json['qr_scanned'] == true || 
+                       json['qr_scanned'] == 1;
+
+    if (isAttended || rawStatus == 'hadir' || rawStatus == 'present' || rawStatus == 'attended' || rawStatus == '1' || rawStatus == 'true') {
+      statusStr = 'Hadir';
+    } else if (rawStatus == 'izin' || rawStatus == 'sakit' || rawStatus.contains('izin') || rawStatus.contains('sakit')) {
+      statusStr = 'Izin';
+    } else if (rawStatus == 'alpha' || rawStatus == 'absent' || rawStatus == '0' || rawStatus == 'false') {
+      statusStr = 'Alpha';
+    } else if (rawStatus.isNotEmpty) {
+      statusStr = rawStatus[0].toUpperCase() + rawStatus.substring(1);
+    }
+
+    return SessionAttendanceData(
+      id: json['id'] ?? json['student_id'] ?? 0,
+      name: nameValue,
+      nim: nimValue,
+      programStudi: prodiValue,
+      faculty: facultyValue,
+      status: statusStr,
+    );
+  }
+}
+
+class SessionMaterialItem {
+  final int id;
+  final String title;
+  final String description;
+  final String fileUrl;
+  final String component;
+  final String status;
+
+  SessionMaterialItem({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.fileUrl,
+    required this.component,
+    required this.status,
+  });
+
+  factory SessionMaterialItem.fromJson(Map<String, dynamic> json) {
+    return SessionMaterialItem(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? json['judul'] ?? json['nama'] ?? '',
+      description: json['description'] ?? json['instruction'] ?? json['instruksi'] ?? '',
+      fileUrl: json['file_url'] ?? json['fileUrl'] ?? json['file_path'] ?? json['file'] ?? '',
+      component: json['component'] ?? json['komponen'] ?? 'Cognitive',
+      status: json['status'] ?? 'published',
+    );
+  }
+}
+
+class SessionMaterialData {
+  final int id;
+  final String title;
+  final String description;
+  final String stageType;
+  final String status;
+  final bool isRequired;
+  final String startDate;
+  final String endDate;
+  final List<SessionMaterialItem> materials;
+  final List<SessionMaterialItem> quizzes;
+  final List<SessionMaterialItem> assignments;
+
+  SessionMaterialData({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.stageType,
+    required this.status,
+    required this.isRequired,
+    required this.startDate,
+    required this.endDate,
+    required this.materials,
+    required this.quizzes,
+    required this.assignments,
+  });
+
+  factory SessionMaterialData.fromJson(Map<String, dynamic> json) {
+    final stageObj = json['stage'] is Map ? json['stage'] : {};
+    final stageTypeValue = stageObj['type'] ?? json['stage_type'] ?? 'pra_kencana';
+
+    final mats = (json['materials'] as List?)?.map((e) => SessionMaterialItem.fromJson(e)).toList() ?? [];
+    final qzs = (json['quizzes'] as List?)?.map((e) => SessionMaterialItem.fromJson(e)).toList() ?? [];
+    final assns = (json['assignments'] as List?)?.map((e) => SessionMaterialItem.fromJson(e)).toList() ?? [];
+
+    return SessionMaterialData(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? json['name'] ?? '',
+      description: json['description'] ?? '',
+      stageType: stageTypeValue.toString(),
+      status: json['status'] ?? 'active',
+      isRequired: json['is_required'] == true || json['is_required'] == 1,
+      startDate: json['start_date'] ?? json['startDate'] ?? '',
+      endDate: json['end_date'] ?? json['endDate'] ?? '',
+      materials: mats,
+      quizzes: qzs,
+      assignments: assns,
     );
   }
 }

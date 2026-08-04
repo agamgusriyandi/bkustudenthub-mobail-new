@@ -25,7 +25,7 @@ class KencanaBandingScreen extends StatefulWidget {
 class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
   final _reasonController = TextEditingController();
   final _linkBuktiController = TextEditingController();
-  String _selectedType = 'akademik';
+  String _selectedType = 'universitas';
   String? _fileUrl;
   String? _fileName;
   bool _isUploadingFile = false;
@@ -116,7 +116,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
       setState(() {
         _fileUrl = null;
         _fileName = null;
-        _selectedType = 'akademik';
+        _selectedType = 'universitas';
       });
       if (!mounted) return;
       AppSnackbar.showSuccess(context, 'Pengajuan banding berhasil dikirim');
@@ -343,17 +343,17 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
         children: [
           Expanded(
             child: _buildTypeChip(
-              label: 'Akademik',
+              label: 'Universitas',
               icon: Icons.school_rounded,
-              value: 'akademik',
+              value: 'universitas',
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: _buildTypeChip(
-              label: 'Non-Akademik',
+              label: 'Fakultas',
               icon: Icons.groups_rounded,
-              value: 'non_akademik',
+              value: 'fakultas',
             ),
           ),
         ],

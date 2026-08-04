@@ -133,9 +133,9 @@ class BkuAppBar extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    if (info != null)
+                    if (info != null || subtitle != null)
                       Text(
-                        info!,
+                        info ?? subtitle!,
                         style: AppTextStyles.labelSm.copyWith(
                           color: onColor.withAlpha(160),
                           fontSize: 9,
@@ -579,7 +579,7 @@ class BkuAppBar extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    // â”€â”€ child widget (e.g. AvailabilityToggle) moved to right â”€â”€
+                                    // ── child widget (e.g. AvailabilityToggle) moved to right ──
                                     if (child != null) ...[
                                       const SizedBox(width: AppSpacing.sm),
                                       child!,

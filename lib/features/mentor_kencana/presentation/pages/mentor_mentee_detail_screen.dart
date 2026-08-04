@@ -11,6 +11,8 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/men
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import '../../domain/entities/mentor_models.dart';
 import 'mentor_handbook_review_screen.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -82,8 +84,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                       title: 'Detail Mentee',
                       subtitle: mentee.name,
                       variant: AppBarVariant.student,
-                      isExpandable: true,
-                      expandedHeight: 120,
+                      isExpandable: false,
                       showBackButton: true,
                       onBack: () => context.pop(),
                     ),
@@ -108,9 +109,9 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                             ],
                           ),
                           tabs: const [
-                            Tab(text: 'Progres'),
-                            Tab(text: 'Tugas'),
-                            Tab(text: 'Form Nilai'),
+                            Tab(text: 'Rincian Nilai'),
+                            Tab(text: 'Input & Edit Nilai'),
+                            Tab(text: 'Tugas & Submisi'),
                           ],
                         ),
                       ),
@@ -121,8 +122,8 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   controller: _tabController,
                   children: [
                     _buildProgressTab(context, mentee),
-                    _buildTasksTab(context, mentee),
                     _buildScoreFormTab(context, mentee),
+                    _buildTasksTab(context, mentee),
                   ],
                 ),
               ),
@@ -226,7 +227,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             context.appColors.primary,
             score['cognitive_average'],
             scoreDefs['cognitive'],
-            scoreItems.where((i) => i['component']?.toString().toLowerCase() == 'cognitive').toList(),
+            scoreItems,
           ),
           const SizedBox(height: AppSpacing.md),
           
@@ -237,7 +238,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             context.appColors.warning,
             score['psychomotor_average'],
             scoreDefs['psychomotor'],
-            scoreItems.where((i) => i['component']?.toString().toLowerCase() == 'psychomotor').toList(),
+            scoreItems,
           ),
           const SizedBox(height: AppSpacing.md),
           
@@ -248,7 +249,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             context.appColors.error,
             score['affective_average'],
             scoreDefs['affective'],
-            scoreItems.where((i) => i['component']?.toString().toLowerCase() == 'affective').toList(),
+            scoreItems,
           ),
           const SizedBox(height: AppSpacing.xl),
           
@@ -389,39 +390,46 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppThemeColors.surfaceContainerHighest)),
-              color: context.appColors.surface.withValues(alpha:0.5),
+              color: color.withValues(alpha:0.05),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Icon(icon, size: 20, color: color),
-                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, size: 20, color: color),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
                     Text(
                       title.toUpperCase(),
-                      style: AppTextStyles.labelSm.copyWith(
+                      style: AppTextStyles.labelMd.copyWith(
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
+                        letterSpacing: 0.5,
+                        color: context.appColors.onSurface,
                       ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha:0.2),
-                    border: Border.all(color: color.withValues(alpha:0.5)),
-                    borderRadius: AppRadius.radiusSm,
+                    color: color,
+                    borderRadius: AppRadius.radiusLg,
                   ),
                   child: Text(
                     num.tryParse(average?.toString() ?? '0')?.toStringAsFixed(1) ?? '0.0',
-                    style: AppTextStyles.labelMd.copyWith(
+                    style: AppTextStyles.titleSm.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: color,
+                      color: context.appColors.onPrimary,
                     ),
                   ),
                 ),
@@ -436,9 +444,28 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
               )
               : Column(
               children: defs.map((def) {
-                final key = def['key']?.toString() ?? '';
-                final label = def['label']?.toString() ?? key;
-                final item = items.where((i) => i['item_name']?.toString().toLowerCase() == key.toLowerCase()).firstOrNull;
+                final key = def['key']?.toString() ?? def['id']?.toString() ?? def['item_name']?.toString() ?? '';
+                final label = def['label']?.toString() ?? def['name']?.toString() ?? def['title']?.toString() ?? key;
+                
+                final item = items.where((i) {
+                  final iName = i['item_name']?.toString().toLowerCase() ?? i['key']?.toString().toLowerCase() ?? i['name']?.toString().toLowerCase() ?? i['title']?.toString().toLowerCase() ?? '';
+                  final iId = i['score_item_id']?.toString() ?? i['id']?.toString() ?? '';
+                  final targetKey = key.toLowerCase();
+                  final targetLabel = label.toLowerCase();
+
+                  final cleanedTarget = targetLabel.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
+                  final cleanedName = iName.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
+
+                  return iName == targetKey || 
+                         iId == key || 
+                         iName == targetLabel || 
+                         (targetKey.isNotEmpty && iName.contains(targetKey)) || 
+                         (iName.isNotEmpty && targetKey.contains(iName)) ||
+                         (cleanedTarget.isNotEmpty && cleanedName.isNotEmpty && (cleanedTarget.contains(cleanedName) || cleanedName.contains(cleanedTarget)));
+                }).firstOrNull;
+
+                final scoreDisplay = item?['score']?.toString() ?? item?['value']?.toString() ?? item?['nilai']?.toString() ?? '-';
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Row(
@@ -460,7 +487,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                           borderRadius: AppRadius.radiusSm,
                         ),
                         child: Text(
-                          item?['score']?.toString() ?? '-',
+                          scoreDisplay,
                           style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -843,56 +870,57 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
     if (defs.isEmpty) return const SizedBox();
 
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title.toUpperCase(),
-            style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w900, color: context.appColors.primary),
+          Center(
+            child: Text(
+              title.toUpperCase(),
+              style: AppTextStyles.titleSm.copyWith(
+                fontWeight: FontWeight.w900, 
+                color: context.appColors.primary,
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.xl),
           ...defs.map((def) {
-            final key = def['key']?.toString() ?? '';
-            final label = def['label']?.toString() ?? key;
+            final key = def['key']?.toString() ?? def['id']?.toString() ?? def['item_name']?.toString() ?? '';
+            final label = def['label']?.toString() ?? def['name']?.toString() ?? def['title']?.toString() ?? key;
             final mapKey = '$component||$key';
             
+            final existingItem = itemsData.where((i) {
+              final iComp = i['component']?.toString().toLowerCase() ?? '';
+              final iName = i['item_name']?.toString().toLowerCase() ?? i['key']?.toString().toLowerCase() ?? i['name']?.toString().toLowerCase() ?? i['title']?.toString().toLowerCase() ?? '';
+              final iId = i['score_item_id']?.toString() ?? i['id']?.toString() ?? '';
+              final targetKey = key.toLowerCase();
+              final targetLabel = label.toLowerCase();
+
+              final cleanedTarget = targetLabel.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
+              final cleanedName = iName.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
+
+              return (iComp == component.toLowerCase() || iComp.isEmpty) && 
+                     (iName == targetKey || iId == key || iName == targetLabel || iName.contains(targetKey) || targetKey.contains(iName) || (cleanedTarget.isNotEmpty && cleanedName.isNotEmpty && (cleanedTarget.contains(cleanedName) || cleanedName.contains(cleanedTarget))));
+            }).firstOrNull;
+
+            final fetchedScore = existingItem?['score']?.toString() ?? existingItem?['value']?.toString() ?? existingItem?['nilai']?.toString() ?? '';
+
             if (!_controllers.containsKey(mapKey)) {
-              final existingItem = itemsData.where((i) => i['component']?.toString().toLowerCase() == component && i['item_name']?.toString().toLowerCase() == key.toLowerCase()).firstOrNull;
-              _controllers[mapKey] = TextEditingController(text: existingItem?['score']?.toString() ?? '');
+              _controllers[mapKey] = TextEditingController(text: fetchedScore);
+            } else if (_controllers[mapKey]!.text != fetchedScore && fetchedScore.isNotEmpty) {
+              _controllers[mapKey]!.text = fetchedScore;
             }
             
             return Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: AppSpacing.xs),
-                  TextField(
-                    controller: _controllers[mapKey],
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      hintText: 'Nilai (0-100)',
-                      filled: true,
-                      fillColor: AppColors.neutral50,
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: context.appColors.outline.withAlpha(50)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: context.appColors.outline.withAlpha(50)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: context.appColors.primary),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+              child: BkuTextField(
+                controller: _controllers[mapKey]!,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                label: label,
+                hint: 'Masukkan nilai (0-100)',
               ),
             );
           }),

@@ -1,22 +1,21 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
-import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class MentorHandbookReviewScreen extends StatefulWidget {
   final int studentId;
   final String studentName;
-
+  
   const MentorHandbookReviewScreen({
     super.key,
     required this.studentId,
@@ -24,337 +23,280 @@ class MentorHandbookReviewScreen extends StatefulWidget {
   });
 
   @override
-  State<MentorHandbookReviewScreen> createState() =>
-      _MentorHandbookReviewScreenState();
+  State<MentorHandbookReviewScreen> createState() => _MentorHandbookReviewScreenState();
 }
 
-class _MentorHandbookReviewScreenState
-    extends State<MentorHandbookReviewScreen> {
-  MenteeHandbookData? _handbookData;
-  bool _isLoading = true;
+class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen> {
+  String _reviewStatus = 'approved';
+  final TextEditingController _feedbackController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    _loadHandbook();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<MentorKencanaProvider>().fetchMenteeDetail(widget.studentId);
+      }
+    });
   }
 
-  Future<void> _loadHandbook() async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
+  void _submitReview() async {
     final provider = context.read<MentorKencanaProvider>();
-    final data = await provider.fetchStudentHandbook(widget.studentId);
-    if (mounted) {
-      setState(() {
-        _handbookData = data;
-        _isLoading = false;
-      });
+    final handbookData = provider.handbookData;
+    
+    if (handbookData == null || handbookData['status'] == 'not_started') {
+      AppSnackbar.showError(context, 'Mahasiswa belum membuat atau mengirimkan handbook.');
+      return;
     }
-  }
 
-  void _showReviewDialog(String action) {
-    final feedbackController = TextEditingController(
-      text: _handbookData?.feedback ?? '',
+    setState(() => _isSubmitting = true);
+    final success = await provider.reviewHandbook(
+      studentId: widget.studentId,
+      action: _reviewStatus,
+      feedback: _feedbackController.text,
     );
+    setState(() => _isSubmitting = false);
 
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        bool isSubmitting = false;
-        return StatefulBuilder(
-          builder: (ctx, setState) {
-            return CustomDialog(
-              title:
-                  action == 'approved'
-                      ? 'Setujui Handbook'
-                      : 'Tolak / Perlu Perbaikan',
-              content: 'Berikan catatan/feedback untuk mahasiswa (opsional).',
-              confirmText: 'Kirim Review',
-              cancelText: 'Batal',
-              isLoading: isSubmitting,
-              onCancel: () => Navigator.pop(ctx),
-              onConfirm: () async {
-                setState(() => isSubmitting = true);
-                final success = await context
-                    .read<MentorKencanaProvider>()
-                    .reviewStudentHandbook(
-                      widget.studentId,
-                      action,
-                      feedbackController.text,
-                    );
-                if (!mounted) return;
-                if (!ctx.mounted) return;
-                Navigator.pop(ctx);
-
-                if (success) {
-                  AppSnackbar.showSuccess(context, 'Review berhasil dikirim');
-                  _loadHandbook();
-                } else {
-                  AppSnackbar.showError(context, 'Gagal mengirim review');
-                }
-              },
-              customChild: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Catatan Review',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: feedbackController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.neutral100,
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+    if (mounted) {
+      if (success) {
+        AppSnackbar.showSuccess(context, 'Review handbook berhasil disimpan!');
+        context.pop();
+      } else {
+        AppSnackbar.showError(context, 'Gagal menyimpan review handbook');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<MentorKencanaProvider>();
+    final mentee = provider.menteeDetail;
+    final handbookData = provider.handbookData;
+    
+    if (provider.isLoading && mentee == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (mentee == null) {
+      return Scaffold(
+        backgroundColor: context.appColors.surface,
+        body: CustomScrollView(
+          slivers: [
+            BkuAppBar(
+              title: 'Review Handbook',
+              variant: AppBarVariant.student,
+              isExpandable: false,
+              showBackButton: true,
+              onBack: () => context.pop(),
+            ),
+            const SliverFillRemaining(
+              child: Center(child: Text('Data mahasiswa tidak ditemukan')),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final isNotStarted = handbookData == null || handbookData['status'] == 'not_started';
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
             title: 'Review Handbook',
-            subtitle: widget.studentName,
+            subtitle: mentee.name,
             variant: AppBarVariant.student,
             isExpandable: false,
             showBackButton: true,
+            onBack: () => context.pop(),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Student Info Header
+            Text(
+              'Review Handbook: ${mentee.name.toUpperCase()}',
+              style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w900, color: context.appColors.primary),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'NIM: ${mentee.nim} • ${mentee.faculty}',
+              style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
+            ),
+            const SizedBox(height: AppSpacing.xl),
 
-          if (_isLoading)
-            const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
-            )
-          else if (_handbookData == null ||
-              _handbookData!.status == 'not_started' || _handbookData!.status == '')
-            SliverFillRemaining(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            // Left Section equivalent: ISIAN HANDBOOK
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.xl),
-                        decoration: BoxDecoration(
-                          color: context.appColors.warning.withAlpha(15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.menu_book_rounded,
-                          size: 48,
-                          color: context.appColors.warning,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
+                      Icon(Icons.menu_book_rounded, color: context.appColors.primary, size: 20),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'Belum Ada Handbook',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.appColors.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Mahasiswa belum mengirimkan handbook kencana.',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: context.appColors.onSurfaceVariant,
-                        ),
+                        'ISIAN HANDBOOK',
+                        style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Review isian handbook yang telah dikumpulkan mahasiswa.',
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  if (isNotStarted)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl * 2),
+                        child: Column(
+                          children: [
+                            Icon(Icons.warning_amber_rounded, size: 48, color: context.appColors.warning),
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              'MAHASISWA BELUM MENGIRIMKAN HANDBOOK',
+                              style: AppTextStyles.labelSm.copyWith(
+                                color: context.appColors.warning,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    // Here we'd render the actual JSON handbook content, 
+                    // for now placeholder since the web just maps over content_json.
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: Text(
+                          'Data handbook tersedia untuk direview.',
+                          style: AppTextStyles.labelMd.copyWith(color: context.appColors.primary),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            )
-          else
-            SliverPadding(
+            ),
+            
+            const SizedBox(height: AppSpacing.xl),
+
+            // Right Section equivalent: KEPUTUSAN EVALUASI
+            BkuCard(
               padding: const EdgeInsets.all(AppSpacing.xl),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _buildStatusCard(_handbookData!),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.fact_check_outlined, color: context.appColors.primary, size: 20),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        'KEPUTUSAN EVALUASI',
+                        style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w900),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Sebagai Fasilitator, Anda wajib memverifikasi keabsahan handbook sebelum menyetujuinya.',
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Example Warning Block if not active
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.neutral100,
+                      borderRadius: AppRadius.radiusMd,
+                      border: Border.all(color: AppColors.neutral300),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.warning_rounded, size: 16, color: context.appColors.outline),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            'Penilaian handbook tidak dapat dilakukan. Tahap Pasca Kencana belum aktif.',
+                            style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
 
                   Text(
-                    'Isian Handbook:',
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.neutral800,
-                      fontSize: 18,
+                    'STATUS PERSETUJUAN',
+                    style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  DropdownButtonFormField<String>(
+                    initialValue: _reviewStatus,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'approved', child: Text('Setujui (Approved)')),
+                      DropdownMenuItem(value: 'rejected', child: Text('Perlu Perbaikan (Rejected)')),
+                    ],
+                    onChanged: (val) {
+                      if (val != null) setState(() => _reviewStatus = val);
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  Text(
+                    'FEEDBACK / CATATAN',
+                    style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  TextField(
+                    controller: _feedbackController,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      hintText: 'Tuliskan catatan perbaikan...',
+                      border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.xl),
 
-                  if (_handbookData!.contentJson != null)
-                    ..._handbookData!.contentJson!.entries.map(
-                      (e) => _buildJsonEntry(e.key, e.value),
-                    )
-                  else
-                    const Text('Tidak ada konten terstruktur.'),
-
-                  const SizedBox(height: AppSpacing.xxl),
-                ]),
+                  BkuButton(
+                    onPressed: _submitReview,
+                    text: 'SIMPAN EVALUASI',
+                    icon: Icons.save_rounded,
+                    isLoading: _isSubmitting,
+                    width: double.infinity,
+                  ),
+                ],
               ),
             ),
-        ],
+            const SizedBox(height: 120),
+          ],
+        ),
       ),
-      bottomNavigationBar:
-          _handbookData != null && _handbookData!.status == 'submitted'
-              ? Container(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                decoration: BoxDecoration(
-                  color: context.appColors.surface,
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.appColors.onSurface.withAlpha(12),
-                      blurRadius: 10,
-                      offset: const Offset(0, -4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: BkuButton(
-                        onPressed: () => _showReviewDialog('rejected'),
-                        variant: BkuButtonVariant.danger,
-                        text: 'Tolak / Perbaikan',
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: BkuButton(
-                        onPressed: () => _showReviewDialog('approved'),
-                        variant: BkuButtonVariant.success,
-                        text: 'Setujui',
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              : null,
-    );
-  }
-
-  Widget _buildStatusCard(MenteeHandbookData data) {
-    Color statusColor;
-    String statusText;
-    IconData statusIcon;
-
-    switch (data.status) {
-      case 'approved':
-        statusColor = AppColors.success;
-        statusText = 'Disetujui';
-        statusIcon = Icons.check_circle_rounded;
-        break;
-      case 'rejected':
-        statusColor = AppColors.error;
-        statusText = 'Perlu Perbaikan';
-        statusIcon = Icons.cancel_rounded;
-        break;
-      case 'submitted':
-        statusColor = AppColors.warning;
-        statusText = 'Menunggu Review';
-        statusIcon = Icons.pending_actions_rounded;
-        break;
-      default:
-        statusColor = AppColors.neutral500;
-        statusText = 'Belum Dikirim';
-        statusIcon = Icons.info_rounded;
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: statusColor.withAlpha(25),
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: statusColor.withAlpha(50)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(statusIcon, color: statusColor),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  statusText.toUpperCase(),
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: statusColor,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                if (data.feedback.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Catatan: ${data.feedback}',
-                    style: AppTextStyles.bodySm.copyWith(
-                      color: context.appColors.onSurface,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-                if (data.submittedAt.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Disubmit: ${data.submittedAt}',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildJsonEntry(String key, dynamic value) {
-    return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            key.replaceAll('_', ' ').toUpperCase(),
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral800,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.2,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            value?.toString() ?? '-',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: context.appColors.onSurface,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
+    ),
+  ],
+),
+);
   }
 }

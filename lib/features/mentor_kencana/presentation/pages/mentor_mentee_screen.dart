@@ -1,6 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorMenteeScreen extends StatefulWidget {
@@ -22,6 +21,11 @@ class MentorMenteeScreen extends StatefulWidget {
 }
 
 class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
+  String _searchQuery = '';
+  String _selectedFacultyFilter = 'all';
+
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -33,11 +37,51 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<MenteeData> _getAllMentees(List<MenteeGroup> groups) {
+    final List<MenteeData> list = [];
+    for (var g in groups) {
+      list.addAll(g.mentees);
+    }
+    return list;
+  }
+
+  List<MenteeData> _getFilteredMentees(List<MenteeData> mentees) {
+    return mentees.where((m) {
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        final matchName = m.name.toLowerCase().contains(q);
+        final matchNim = m.nim.toLowerCase().contains(q);
+        if (!matchName && !matchNim) return false;
+      }
+      if (_selectedFacultyFilter != 'all') {
+        if (m.faculty.toLowerCase() != _selectedFacultyFilter.toLowerCase()) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
+    final allMentees = _getAllMentees(provider.groups);
+    final filteredMentees = _getFilteredMentees(allMentees);
+
+    final uniqueFaculties = allMentees
+        .map((m) => m.faculty.trim())
+        .where((f) => f.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentees(),
         color: context.appColors.primary,
@@ -45,11 +89,98 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             BkuAppBar(
-              title: 'Kelompok Saya',
+              title: 'Daftar Bimbingan',
+              info: 'Daftar mahasiswa yang Anda bimbing',
               variant: AppBarVariant.student,
               isExpandable: false,
-              showBackButton: true,
+              showBackButton: false,
             ),
+            
+            // Header Stats & Search
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Mahasiswa Aktif',
+                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'Daftar bimbingan beserta NIM, Prodi, dan Status.',
+                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () => context.push('/mentor-kencana/available-students'),
+                          icon: const Icon(Icons.person_add_rounded, size: 14),
+                          label: const Text('+ Tambah Bimbingan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.appColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            elevation: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    
+                    // Search Bar
+                    TextField(
+                      controller: _searchController,
+                      onChanged: (val) => setState(() => _searchQuery = val),
+                      decoration: InputDecoration(
+                        hintText: 'Cari NIM, Nama...',
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Filter Dropdown
+                    if (uniqueFaculties.isNotEmpty)
+                      DropdownButtonFormField<String>(
+                        initialValue: _selectedFacultyFilter,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                        ),
+                        style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
+                        items: [
+                          const DropdownMenuItem(value: 'all', child: Text('Semua Fakultas')),
+                          ...uniqueFaculties.map((f) => DropdownMenuItem(value: f, child: Text(f))),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) setState(() => _selectedFacultyFilter = val);
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
             if (provider.isLoading && provider.groups.isEmpty)
               const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator()),
@@ -59,13 +190,11 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                 child: Center(
                   child: Text(
                     provider.errorMessage!,
-                    style: TextStyle(
-                      color: context.appColors.error,
-                    ),
+                    style: TextStyle(color: context.appColors.error),
                   ),
                 ),
               )
-            else if (provider.groups.isEmpty)
+            else if (filteredMentees.isEmpty)
               SliverFillRemaining(
                 child: Center(
                   child: Text(
@@ -79,289 +208,121 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
             else
               SliverPadding(
                 padding: const EdgeInsets.only(
-                  left: AppSpacing.xl,
-                  right: AppSpacing.xl,
-                  top: AppSpacing.xl,
+                  left: AppSpacing.lg,
+                  right: AppSpacing.lg,
                   bottom: 120,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final group = provider.groups[index];
+                    final mentee = filteredMentees[index];
                     return BkuCard(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                      padding: EdgeInsets.zero,
-                      child: Theme(
-                        data: Theme.of(
-                          context,
-                        ).copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          collapsedShape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.radiusXl,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.radiusXl,
-                          ),
-                          leading: Container(
-                            padding: const EdgeInsets.all(AppSpacing.md),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      onTap: () => context.push('/mentor-kencana/mentee/${mentee.id}'),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
                             decoration: BoxDecoration(
-                              color: [
-                                context.appColors.info,
-                                context.appColors.success,
-                                context.appColors.warning,
-                                AppColors.neutral700,
-                                context.appColors.info,
-                                context.appColors.info,
-                              ][index % 6].withAlpha(15),
-                              borderRadius: AppRadius.radiusLg,
+                              color: context.appColors.primary.withAlpha(20),
+                              shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              Icons.groups_rounded,
-                              color:
-                                  [
-                                    context.appColors.info,
-                                    context.appColors.success,
-                                    context.appColors.warning,
-                                    AppColors.neutral700,
-                                    context.appColors.info,
-                                    context.appColors.info,
-                                  ][index % 6],
-                              size: 24,
-                            ),
-                          ),
-                          title: Text(
-                            group.name,
-                            style: AppTextStyles.labelMd.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '${group.mentees.length} Mahasiswa',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.outline,
-                            ),
-                          ),
-                          children:
-                              group.mentees.map((mentee) {
-                                return ListTile(
-                                  onTap: () {
-                                    context.push(
-                                      '/mentor-kencana/mentee/${mentee.id}',
-                                    );
-                                  },
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.xl,
-                                    vertical: 6,
-                                  ),
-                                  leading: Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.neutral200,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppColors.neutral300,
-                                      ),
-                                    ),
-                                    child: ClipOval(
-                                      child:
-                                          mentee.avatarUrl != null &&
-                                                  mentee.avatarUrl!.isNotEmpty
-                                              ? CachedNetworkImage(imageUrl: 
-                                                ApiGate.getImageUrl(
-                                                  mentee.avatarUrl,
-                                                ),
-                                                width: 44,
-                                                height: 44,
-                                                fit: BoxFit.cover,
-                                                errorWidget:
-                                                    (
-                                                      context,
-                                                      error,
-                                                      stackTrace,
-                                                    ) => Center(
-                                                      child: Text(
-                                                        mentee.name.isNotEmpty
-                                                            ? mentee.name
-                                                                .substring(0, 1)
-                                                                .toUpperCase()
-                                                            : '',
-                                                        style: const TextStyle(
-                                                          color:
-                                                              AppColors
-                                                                  .neutral700,
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          fontSize: 16,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                placeholder: (context, url) => Container(color: AppColors.neutral200),
-                                              )
-                                              : Center(
-                                                child: Text(
-                                                  mentee.name.isNotEmpty
-                                                      ? mentee.name
-                                                          .substring(0, 1)
-                                                          .toUpperCase()
-                                                      : '',
-                                                  style: const TextStyle(
-                                                    color: AppColors.neutral700,
-                                                    fontWeight: FontWeight.w900,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                    ),
-                                  ),
-                                  title: Text(
-                                    mentee.name,
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '${mentee.nim} • ${mentee.faculty}',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color:
-                                          context.appColors.outline,
-                                    ),
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSpacing.md,
-                                          vertical: AppSpacing.xs,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              mentee.status == 'Lulus'
-                                                  ? context.appColors.success.withAlpha(
-                                                    15,
-                                                  )
-                                                  : context.appColors.warning.withAlpha(
-                                                    15,
-                                                  ),
-                                          border: Border.all(
-                                            color:
-                                                mentee.status == 'Lulus'
-                                                    ? context.appColors.success
-                                                        .withAlpha(30)
-                                                    : context.appColors.warning
-                                                        .withAlpha(30),
-                                          ),
-                                          borderRadius: AppRadius.radiusSm,
-                                        ),
+                            child: ClipOval(
+                              child: mentee.avatarUrl != null && mentee.avatarUrl!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl: ApiGate.getImageUrl(mentee.avatarUrl),
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, error, stackTrace) => Center(
                                         child: Text(
-                                          mentee.status,
-                                          style: AppTextStyles.labelSm.copyWith(
-                                            fontSize: 10,
+                                          mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                          style: TextStyle(
+                                            color: context.appColors.primary,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                                mentee.status == 'Lulus'
-                                                    ? context.appColors.success
-                                                    : context.appColors.warning,
+                                            fontSize: 16,
                                           ),
                                         ),
                                       ),
-                                      PopupMenuButton<String>(
-                                        icon: const Icon(
-                                          Icons.more_vert_rounded,
-                                          size: 20,
+                                      placeholder: (context, url) => Container(color: AppColors.neutral200),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                        style: TextStyle(
+                                          color: context.appColors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: AppRadius.radiusMd,
-                                        ),
-                                        onSelected: (value) async {
-                                          if (value == 'remove') {
-                                            final confirm = await showDialog<
-                                              bool
-                                            >(
-                                              context: context,
-                                              builder:
-                                                  (ctx) => CustomDialog(
-                                                    title:
-                                                        'Keluarkan Mahasiswa',
-                                                    content:
-                                                        'Apakah Anda yakin ingin mengeluarkan mahasiswa ini dari grup?',
-                                                    cancelText: 'Batal',
-                                                    confirmText: 'Keluarkan',
-                                                    isDestructive: true,
-                                                    onCancel:
-                                                        () => Navigator.pop(
-                                                          ctx,
-                                                          false,
-                                                        ),
-                                                    onConfirm:
-                                                        () => Navigator.pop(
-                                                          ctx,
-                                                          true,
-                                                        ),
-                                                  ),
-                                            );
-                                            if (confirm == true &&
-                                                context.mounted) {
-                                              final success = await context
-                                                  .read<MentorKencanaProvider>()
-                                                  .removeGroupMember(
-                                                    group.id,
-                                                    mentee.id,
-                                                  );
-                                              if (context.mounted) {
-                                                if (success) {
-                                                  AppSnackbar.showSuccess(
-                                                    context,
-                                                    'Berhasil dikeluarkan',
-                                                  );
-                                                } else {
-                                                  AppSnackbar.showError(
-                                                    context,
-                                                    'Gagal mengeluarkan mahasiswa',
-                                                  );
-                                                }
-                                              }
-                                            }
-                                          }
-                                        },
-                                        itemBuilder:
-                                            (BuildContext context) =>
-                                                <PopupMenuEntry<String>>[
-                                                  PopupMenuItem<String>(
-                                                    value: 'remove',
-                                                    child: Text(
-                                                      'Keluarkan dari Grup',
-                                                      style: TextStyle(
-                                                        color: AppColors.error,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
                                       ),
-                                    ],
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  mentee.name,
+                                  style: AppTextStyles.labelMd.copyWith(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                );
-                              }).toList(),
-                        ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'NIM: ${mentee.nim}',
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    color: context.appColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                if (mentee.faculty.isNotEmpty) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    mentee.faculty,
+                                    style: AppTextStyles.labelSm.copyWith(
+                                      color: AppColors.neutral500,
+                                      fontSize: 10,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          
+                          // Status Badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.success.withAlpha(20),
+                              borderRadius: AppRadius.radiusSm,
+                            ),
+                            child: Text(
+                              'DISETUJUI',
+                              style: TextStyle(
+                                color: AppColors.success,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(Icons.chevron_right_rounded, color: AppColors.neutral400),
+                        ],
                       ),
                     );
-                  }, childCount: provider.groups.length),
+                  }, childCount: filteredMentees.length),
                 ),
               ),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push('/mentor-kencana/recruit');
-        },
-        backgroundColor: context.appColors.primary,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
-        icon: Icon(Icons.person_add_rounded, color: context.appColors.onPrimary),
-        label: Text(
-          'Rekrut Mahasiswa',
-          style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
         ),
       ),
     );

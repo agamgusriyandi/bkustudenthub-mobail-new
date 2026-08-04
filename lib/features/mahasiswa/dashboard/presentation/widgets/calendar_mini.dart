@@ -74,21 +74,26 @@ class _CalendarMiniState extends State<CalendarMini> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_month_rounded,
-                    color: context.appColors.primary,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Kalender Kegiatan',
-                    style: AppTextStyles.titleSm.copyWith(
-                      fontWeight: FontWeight.w900,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_month_rounded,
+                      color: context.appColors.primary,
+                      size: 18,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Kalender Kegiatan',
+                        style: AppTextStyles.titleSm.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -108,13 +113,15 @@ class _CalendarMiniState extends State<CalendarMini> {
                     constraints: const BoxConstraints(),
                   ),
                   SizedBox(
-                    width: 100,
+                    width: 90,
                     child: Text(
                       '${_months[month - 1]} $year',
                       style: AppTextStyles.caption.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
@@ -137,31 +144,41 @@ class _CalendarMiniState extends State<CalendarMini> {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: _days.map((d) {
-              return SizedBox(
-                width: 36,
-                child: Text(
-                  d,
-                  style: AppTextStyles.caption.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    fontWeight: FontWeight.w900,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columnWidth = constraints.maxWidth / 7;
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: _days.map((d) {
+                      return SizedBox(
+                        width: columnWidth,
+                        child: Text(
+                          d,
+                          style: AppTextStyles.caption.copyWith(
+                            color: context.appColors.onSurfaceVariant,
+                            fontWeight: FontWeight.w900,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                  const SizedBox(height: 8),
+                  _buildCalendarGrid(
+                    context,
+                    startDay,
+                    daysInMonth,
+                    today,
+                    eventDates,
+                    year,
+                    month,
+                    columnWidth,
+                  ),
+                ],
               );
-            }).toList(),
-          ),
-          const SizedBox(height: 8),
-          _buildCalendarGrid(
-            context,
-            startDay,
-            daysInMonth,
-            today,
-            eventDates,
-            year,
-            month,
+            }
           ),
           const SizedBox(height: 12),
           Container(
@@ -248,11 +265,12 @@ class _CalendarMiniState extends State<CalendarMini> {
     Set<int> eventDates,
     int year,
     int month,
+    double columnWidth,
   ) {
     final cells = <Widget>[];
 
     for (int i = 0; i < startDay; i++) {
-      cells.add(const SizedBox(height: 36));
+      cells.add(SizedBox(width: columnWidth, height: 42));
     }
 
     for (int d = 1; d <= daysInMonth; d++) {
@@ -265,7 +283,8 @@ class _CalendarMiniState extends State<CalendarMini> {
         GestureDetector(
           onTap: hasEvent ? () => setState(() => _selectedDay = d) : null,
           child: SizedBox(
-            height: 36,
+            width: columnWidth,
+            height: 42,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -321,7 +340,7 @@ class _CalendarMiniState extends State<CalendarMini> {
 
     return Wrap(
       spacing: 0,
-      runSpacing: 0,
+      runSpacing: 4, // added slight vertical spacing between rows
       children: cells,
     );
   }

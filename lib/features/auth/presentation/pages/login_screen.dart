@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -737,7 +737,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
                       color: AppColors.neutral800,
                     ),
                   ),
-                  const TextSpan(text: '! ðŸ‘‹'),
+                  const TextSpan(text: '! 👋'),
                 ],
               ),
             ),

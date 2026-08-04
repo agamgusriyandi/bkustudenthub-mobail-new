@@ -281,7 +281,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
           obscureText: obscureText,
           style: AppTextStyles.bodyLg,
           decoration: InputDecoration(
-            hintText: 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢',
+            hintText: '••••••••',
             hintStyle: TextStyle(color: AppColors.neutral400),
             filled: true,
             fillColor: AppColors.neutral50,

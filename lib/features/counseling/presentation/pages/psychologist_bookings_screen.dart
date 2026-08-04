@@ -858,7 +858,7 @@ class _PsychologistBookingsScreenState
                           ),
                           const SizedBox(height: AppSpacing.s2),
                           Text(
-                            '$nim${faculty.isNotEmpty ? ' â€¢ $faculty' : ''}',
+                            '$nim${faculty.isNotEmpty ? ' • $faculty' : ''}',
                             style: AppTextStyles.labelSm.copyWith(
                               color: AppColors.neutral600,
                             ),

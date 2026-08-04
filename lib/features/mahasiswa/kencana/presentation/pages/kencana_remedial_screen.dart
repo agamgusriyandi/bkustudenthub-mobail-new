@@ -369,7 +369,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Text(
-                  'Menunggu penilaian mentor',
+                  'Menunggu penilaian fasilitator',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelSm.copyWith(
                     color: AppColors.info,

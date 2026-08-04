@@ -332,38 +332,38 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
             'Landasan Kegiatan',
             agenda.landasanKegiatan?.isNotEmpty == true
                 ? agenda.landasanKegiatan!
-                : 'â€”',
+                : '—',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Bentuk Kegiatan',
             agenda.bentukKegiatan?.isNotEmpty == true
                 ? agenda.bentukKegiatan!
-                : 'â€”',
+                : '—',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Sasaran Kegiatan',
             agenda.sasaranKegiatan?.isNotEmpty == true
                 ? agenda.sasaranKegiatan!
-                : 'â€”',
+                : '—',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Mitra Kerja',
-            agenda.mitra?.isNotEmpty == true ? agenda.mitra! : 'â€”',
+            agenda.mitra?.isNotEmpty == true ? agenda.mitra! : '—',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Sumber Dana',
-            agenda.sumberDana?.isNotEmpty == true ? agenda.sumberDana! : 'â€”',
+            agenda.sumberDana?.isNotEmpty == true ? agenda.sumberDana! : '—',
           ),
           const Divider(height: 20, color: AppColors.neutral100),
           _buildTechnicalItem(
             'Indikator Keberhasilan',
             agenda.indikatorKeberhasilan?.isNotEmpty == true
                 ? agenda.indikatorKeberhasilan!
-                : 'â€”',
+                : '—',
           ),
         ],
       ),

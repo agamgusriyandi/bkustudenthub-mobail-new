@@ -189,7 +189,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                             child: _buildAbsensiCard(
                               agenda.id,
                               agenda.title,
-                              '${agenda.date.day}/${agenda.date.month}/${agenda.date.year} â€¢ ${agenda.date.hour}:${agenda.date.minute.toString().padLeft(2, '0')}',
+                              '${agenda.date.day}/${agenda.date.month}/${agenda.date.year} • ${agenda.date.hour}:${agenda.date.minute.toString().padLeft(2, '0')}',
                               status,
                               statusColor,
                             ),

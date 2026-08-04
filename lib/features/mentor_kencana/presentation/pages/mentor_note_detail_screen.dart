@@ -1,16 +1,19 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class MentorNoteDetailScreen extends StatefulWidget {
-  final int noteId;
+  final int noteId; // This is actually studentId
   const MentorNoteDetailScreen({super.key, required this.noteId});
 
   @override
@@ -18,185 +21,283 @@ class MentorNoteDetailScreen extends StatefulWidget {
 }
 
 class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
+  final TextEditingController _noteController = TextEditingController();
+  bool _isSubmitting = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<MentorKencanaProvider>().fetchMentorNoteDetail(
-          widget.noteId,
-        );
+        context.read<MentorKencanaProvider>().fetchMenteeDetail(widget.noteId);
       }
     });
   }
 
   @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  void _submitNote() async {
+    final text = _noteController.text.trim();
+    if (text.isEmpty) {
+      AppSnackbar.showError(context, 'Catatan tidak boleh kosong');
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    final provider = context.read<MentorKencanaProvider>();
+    final success = await provider.createScoreItem(widget.noteId, {
+      'component': 'note',
+      'notes': text,
+    });
+
+    if (mounted) {
+      setState(() => _isSubmitting = false);
+      if (success) {
+        AppSnackbar.showSuccess(context, 'Catatan berhasil ditambahkan');
+        _noteController.clear();
+      } else {
+        AppSnackbar.showError(context, 'Gagal menambahkan catatan');
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
-    final note = provider.mentorNoteDetail;
+    final menteeDetail = provider.menteeDetail;
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => provider.fetchMentorNoteDetail(widget.noteId),
-        color: context.appColors.primary,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            BkuAppBar(
-              title: 'Detail Catatan',
-              variant: AppBarVariant.student,
-              isExpandable: false,
-              showBackButton: true,
-            ),
-            if (provider.isLoading && note == null)
-              const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (provider.errorMessage != null && note == null)
-              SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    provider.errorMessage!,
-                    style: TextStyle(
-                      color: context.appColors.error,
-                    ),
-                  ),
-                ),
-              )
-            else if (note == null)
-              SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'Catatan tidak ditemukan.',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: context.appColors.outline,
-                    ),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BkuCard(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(
-                                      AppSpacing.md,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: context.appColors.secondary
-                                          .withAlpha(15),
-                                      borderRadius: AppRadius.radiusLg,
-                                    ),
-                                    child: Icon(
-                                      Icons.note_alt_rounded,
-                                      color: context.appColors.secondary,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppSpacing.lg),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          note.title.isNotEmpty
-                                              ? note.title
-                                              : 'Catatan #${note.id}',
-                                          style: AppTextStyles.titleLg
-                                              .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        if (note.studentName.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: AppSpacing.xs,
-                                            ),
-                                            child: Text(
-                                              note.studentName,
-                                              style:
-                                                  AppTextStyles.labelSm
-                                                      .copyWith(
-                                                        color: context.appColors.outline,
-                                                      ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        BkuCard(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Isi Catatan',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.md),
-                              Text(
-                                note.content.isNotEmpty
-                                    ? note.content
-                                    : 'Tidak ada isi catatan.',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color:
-                                      note.content.isNotEmpty
-                                          ? context.appColors.onSurface
-                                          : context.appColors.outline,
-                                  height: 1.6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (note.createdAt.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.lg),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time_rounded,
-                                size: 16,
-                                color: context.appColors.outline,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                note.createdAt,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: context.appColors.outline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ],
-                    );
-                  }, childCount: 1),
+      backgroundColor: context.appColors.surface,
+      body: CustomScrollView(
+        slivers: [
+          BkuAppBar(
+            title: 'Catatan Bimbingan',
+            subtitle: 'Tulis dan tinjau catatan bimbingan berkala untuk mahasiswa.',
+            variant: AppBarVariant.student,
+            showBackButton: true,
+            isExpandable: false,
+            onBack: () => context.pop(),
+          ),
+          if (provider.isLoading && menteeDetail == null)
+            const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+          else if (menteeDetail == null)
+            SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'Data mahasiswa tidak ditemukan',
+                  style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
+            )
+          else
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header Profile Card
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              menteeDetail.name,
+                              style: AppTextStyles.titleLg.copyWith(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: context.appColors.primary.withAlpha(15),
+                                    borderRadius: AppRadius.radiusSm,
+                                    border: Border.all(color: context.appColors.primary.withAlpha(30)),
+                                  ),
+                                  child: Text(
+                                    menteeDetail.nim,
+                                    style: AppTextStyles.labelSm.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: context.appColors.primary,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '• ${menteeDetail.faculty}',
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    color: context.appColors.outline,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Form Tambah Catatan Card
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.add, color: context.appColors.primary, size: 18),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'TAMBAH CATATAN',
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            TextField(
+                              controller: _noteController,
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                hintText: 'Tulis progres, evaluasi, atau kendala mahasiswa disini...',
+                                hintStyle: TextStyle(color: context.appColors.outline.withAlpha(150), fontSize: 13),
+                                border: OutlineInputBorder(
+                                  borderRadius: AppRadius.radiusLg,
+                                  borderSide: BorderSide(color: AppThemeColors.surfaceContainerHighest),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: AppRadius.radiusLg,
+                                  borderSide: BorderSide(color: AppThemeColors.surfaceContainerHighest),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: AppRadius.radiusLg,
+                                  borderSide: BorderSide(color: context.appColors.primary),
+                                ),
+                                contentPadding: const EdgeInsets.all(16),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BkuButton(
+                                text: 'SIMPAN CATATAN',
+                                icon: Icons.save_outlined,
+                                isLoading: _isSubmitting,
+                                onPressed: _submitNote,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Riwayat Catatan Card
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.chat_bubble_outline_rounded, color: context.appColors.secondary, size: 18),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'RIWAYAT CATATAN (${menteeDetail.notes.length})',
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            if (menteeDetail.notes.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 24),
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.chat_bubble_outline_rounded,
+                                        size: 48,
+                                        color: context.appColors.outline.withAlpha(80),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Belum ada catatan bimbingan',
+                                        style: AppTextStyles.labelMd.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: context.appColors.outline,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Tambahkan catatan pertama Anda menggunakan form di atas.',
+                                        style: AppTextStyles.labelSm.copyWith(
+                                          color: context.appColors.outline,
+                                          fontSize: 11,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            else
+                              ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: menteeDetail.notes.length,
+                                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                                itemBuilder: (context, index) {
+                                  final n = menteeDetail.notes[index];
+                                  return Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.neutral100,
+                                      borderRadius: AppRadius.radiusMd,
+                                      border: Border.all(color: AppThemeColors.surfaceContainerHighest),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          n.notes,
+                                          style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface),
+                                        ),
+                                        if (n.assessedAt.isNotEmpty) ...[
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            n.assessedAt,
+                                            style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 9),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
   }
 }

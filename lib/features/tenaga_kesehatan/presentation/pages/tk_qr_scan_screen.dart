@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/scanner_overlay.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import '../../../../core/error/error_handler.dart';
 
@@ -63,9 +64,18 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
           // Camera Preview
           MobileScanner(controller: _scannerController, onDetect: _onDetect),
 
-          // Overlay
-          Container(
-            decoration: BoxDecoration(color: context.appColors.onSurface.withAlpha(150)),
+          // Overlay with Hole Punch
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return CustomPaint(
+                size: Size.infinite,
+                painter: ScannerOverlayPainter(
+                  overlayColor: context.appColors.onSurface.withAlpha(150),
+                  animationValue: _animation.value,
+                ),
+              );
+            },
           ),
 
           // Scan Area (transparent cutout)
@@ -86,10 +96,6 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                         spreadRadius: 2,
                       ),
                     ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: AppRadius.radiusXl,
-                    child: Container(color: Colors.transparent),
                   ),
                 );
               },
@@ -436,7 +442,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                   const SizedBox(height: AppSpacing.xl),
                   TextField(
                     controller: nimController,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'NIM',

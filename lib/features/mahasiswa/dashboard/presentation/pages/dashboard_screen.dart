@@ -18,7 +18,6 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/activity_feed.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/available_scholarships.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/announcement_section.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
 
@@ -203,12 +202,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 9. Pengumuman (matches web AnnouncementSection.jsx)
-                    AnnouncementSection(
-                      announcements: _buildAnnouncements(student),
-                    ),
-                    const SizedBox(height: AppSpacing.s20),
-
                     // 10. IPK Chart (mobile extra)
                     IpkChartCard(
                       currentIpk: student.ipk,
@@ -321,19 +314,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: e.judul,
         date: e.tanggal,
         category: e.kategori,
-      );
-    }).toList();
-  }
-
-  List<AnnouncementItem> _buildAnnouncements(StudentProvider student) {
-    return student.campusNews.take(4).map((n) {
-      return AnnouncementItem(
-        id: n.id.toString(),
-        title: n.judul,
-        summary: n.isi.length > 100 ? '${n.isi.substring(0, 100)}...' : n.isi,
-        date: n.tanggalPublish,
-        category: n.kategori,
-        imageUrl: n.gambarUrl,
       );
     }).toList();
   }

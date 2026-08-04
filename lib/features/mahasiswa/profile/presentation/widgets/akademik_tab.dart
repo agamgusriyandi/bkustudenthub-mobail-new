@@ -54,7 +54,7 @@ class AkademikTabWidget extends StatelessWidget {
               buildMenuItem(
                 context,
                 'Jalur Masuk & Asal Sekolah',
-                '$jalurMasuk â€¢ $asalSekolah',
+                '$jalurMasuk • $asalSekolah',
                 Icons.school_rounded,
                 context.appColors.info,
                 () => showUneditableInfoDialog(context),
