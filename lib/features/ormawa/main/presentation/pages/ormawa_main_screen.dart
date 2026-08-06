@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_bottom_nav_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/pages/ormawa_dashboard_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
@@ -49,7 +49,7 @@ class _OrmawaMainScreenState extends State<OrmawaMainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: UnifiedBottomNavBar.ormawa(
+      bottomNavigationBar: BkuBottomNavBar.ormawa(
         currentIndex: _currentIndex,
         onTap: _onNavigate,
       ),

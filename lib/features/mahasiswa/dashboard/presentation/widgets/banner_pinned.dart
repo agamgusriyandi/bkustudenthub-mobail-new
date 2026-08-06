@@ -59,7 +59,7 @@ class _BannerPinnedState extends State<BannerPinned> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: context.appColors.onPrimary.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -109,7 +109,7 @@ class _BannerPinnedState extends State<BannerPinned> {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: context.appColors.onPrimary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Icon(

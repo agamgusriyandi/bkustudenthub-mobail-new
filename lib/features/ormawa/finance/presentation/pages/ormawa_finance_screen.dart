@@ -8,10 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import '../../../../../core/theme/app_text_styles.dart';
-import '../../../../../core/widgets/bku_app_bar.dart';
+import '../../../../../core/widgets/bku_design/bku_app_bar.dart';
 import '../../../../../core/widgets/fade_in_animation.dart';
 import '../../../../../core/widgets/ormawa_list_header.dart';
 import 'create_transaction_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaFinanceScreen extends StatefulWidget {
   final bool showBackButton;
@@ -851,7 +852,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
 
                       child: Text(
                         'Terapkan Filter',

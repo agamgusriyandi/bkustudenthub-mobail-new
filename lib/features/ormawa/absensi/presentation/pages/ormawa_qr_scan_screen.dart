@@ -14,6 +14,7 @@ import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_prov
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_success_screen.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaQrScanScreen extends StatefulWidget {
   final String eventId;
@@ -157,7 +158,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.pop(),
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
@@ -390,7 +391,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             'Berhasil mencatat presensi Kencana (PKKMB) Anda!',
           );
           await Future.delayed(const Duration(seconds: 2));
-          if (mounted) Navigator.pop(context);
+          if (mounted) context.pop();
           return;
         } else {
           throw Exception(response.data['message'] ?? 'Gagal mencatat presensi Kencana');
@@ -651,7 +652,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
 
                           child: const Text('Batal'),
                         ),
@@ -662,7 +663,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           onPressed: () {
                             final nim = nimController.text.trim();
                             if (nim.isNotEmpty) {
-                              Navigator.pop(context);
+                              context.pop();
                               _processQrCode(nim);
                             }
                           },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 
 class CalendarEvent {
   final String title;
@@ -391,17 +392,17 @@ class _CalendarMiniState extends State<CalendarMini> {
       case 'kencana':
         return context.appColors.primary;
       case 'beasiswa':
-        return const Color(0xFF16A34A);
+        return AppColors.serviceEmerald;
       case 'konseling':
-        return const Color(0xFF7C3AED);
+        return AppColors.servicePurple;
       case 'kampus':
-        return const Color(0xFF0284C7);
+        return AppColors.serviceSky;
       case 'organisasi':
-        return const Color(0xFFF59E0B);
-      case 'kesehatan':
-        return const Color(0xFFDC2626);
+        return AppColors.serviceAmber;
+      case 'libur':
+        return AppColors.serviceRose;
       default:
-        return context.appColors.onSurfaceVariant;
+        return AppColors.neutral500;
     }
   }
 

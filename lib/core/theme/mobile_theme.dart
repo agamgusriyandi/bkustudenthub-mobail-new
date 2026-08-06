@@ -42,6 +42,10 @@ class MobileThemeColors {
   // Branding URLs
   final String? logoUrl;
   final String? splashLogoUrl;
+  
+  // Tipografi dari API
+  final String? fontHeadline;
+  final String? fontBody;
 
   const MobileThemeColors({
     required this.primary,
@@ -66,27 +70,29 @@ class MobileThemeColors {
     required this.info,
     this.logoUrl,
     this.splashLogoUrl,
+    this.fontHeadline,
+    this.fontBody,
   });
 
-  /// Default colors matching BKU branding
+  /// Default BKU Student HUB Theme (Fallback)hing new Orange branding
   factory MobileThemeColors.defaults() {
     return const MobileThemeColors(
-      primary: Color(0xFF1B3A6B),
-      primaryContainer: Color(0xFF152F58),
-      secondary: Color(0xFFC9A84C),
-      secondaryContainer: Color(0xFFB8973E),
-      background: Color(0xFFF8FAFC),
-      surface: Color(0xFFFFFFFF),
+      primary: Color(0xFFF29130),
+      primaryContainer: Color(0xFFF5BD29), 
+      secondary: Color(0xFFE3B886),
+      secondaryContainer: Color(0xFFF29130), // Updated to match screenshot
+      background: Color(0xFFFFFFFF), // Updated to match screenshot
+      surface: Color(0xFFFFFFFF), // Updated to match screenshot
       onSurface: Color(0xFF1B1C1C),
       onSurfaceVariant: Color(0xFF444653),
       outline: Color(0xFF747684),
       outlineVariant: Color(0xFFC4C5D5),
-      gradientStart: Color(0xFF1B3A6B),
-      gradientMiddle: Color(0xFF1E4280),
-      gradientEnd: Color(0xFF295BB3),
-      gradientSecondaryStart: Color(0xFFC9A84C),
-      gradientSecondaryMiddle: Color(0xFFD6B55C),
-      gradientSecondaryEnd: Color(0xFFEBC246),
+      gradientStart: Color(0xFFF5BD29), // Bright yellowish orange for highlight
+      gradientMiddle: Color(0xFFF29130), // Brand primary orange
+      gradientEnd: Color(0xFFE85D04), // Deep reddish orange for contrast
+      gradientSecondaryStart: Color(0xFFE3B886),
+      gradientSecondaryMiddle: Color(0xFFD3A876),
+      gradientSecondaryEnd: Color(0xFFC39866),
       success: Color(0xFF16A34A),
       warning: Color(0xFFD97706),
       error: Color(0xFFDC2626),
@@ -94,82 +100,54 @@ class MobileThemeColors {
     );
   }
 
-  /// Helper to check if a color configuration is customized from the default
-  static bool _isCustomColor(dynamic value, String defaultHex) {
-    if (value == null) return false;
-    final valStr = value.toString().replaceAll('#', '').trim().toLowerCase();
-    final defStr = defaultHex.replaceAll('#', '').trim().toLowerCase();
-    return valStr.isNotEmpty && valStr != defStr;
-  }
 
   /// Parse from API JSON response
   factory MobileThemeColors.fromJson(Map<String, dynamic> json) {
-    final parsedPrimary = _hexToColor(
-      json['mobile_color_primary'] ?? '#E85D04',
-    );
-    final parsedPrimaryContainer =
-        _isCustomColor(json['mobile_color_primary_container'], '#D35400')
-            ? _hexToColor(json['mobile_color_primary_container'])
-            : Color.lerp(parsedPrimary, const Color(0xFFFFFFFF), 0.2) ??
-                parsedPrimary;
-
-    final parsedSecondary =
-        _isCustomColor(json['mobile_color_secondary'], '#1E293B')
-            ? _hexToColor(json['mobile_color_secondary'])
-            : const Color(0xFF1E293B); // Fallback standard secondary
-
-    final parsedSecondaryContainer =
-        _isCustomColor(json['mobile_color_secondary_container'], '#334155')
-            ? _hexToColor(json['mobile_color_secondary_container'])
-            : Color.lerp(parsedSecondary, const Color(0xFFFFFFFF), 0.2) ??
-                parsedSecondary;
+    final parsedPrimary = _hexToColor(json['mobile_color_primary']);
+    final parsedSecondary = _hexToColor(json['mobile_color_secondary']);
 
     return MobileThemeColors(
       primary: parsedPrimary,
-      primaryContainer: parsedPrimaryContainer,
+      primaryContainer: _hexToColor(json['mobile_color_primary_container']),
       secondary: parsedSecondary,
-      secondaryContainer: parsedSecondaryContainer,
-      background: _hexToColor(json['mobile_color_background'] ?? '#F8FAFC'),
-      surface: _hexToColor(json['mobile_color_surface'] ?? '#FFFFFF'),
-      onSurface: _hexToColor(json['mobile_color_on_surface'] ?? '#1B1C1C'),
-      onSurfaceVariant: _hexToColor(
-        json['mobile_color_on_surface_variant'] ?? '#444653',
-      ),
-      outline: _hexToColor(json['mobile_color_outline'] ?? '#747684'),
-      outlineVariant: _hexToColor(
-        json['mobile_color_outline_variant'] ?? '#C4C5D5',
-      ),
-      // Jika data gradient dari API kosong atau masih menggunakan warna biru bawaan, otomatis samakan dengan warna kustom Primary/Secondary
-      gradientStart:
-          _isCustomColor(json['mobile_gradient_start'], '#00164E')
-              ? _hexToColor(json['mobile_gradient_start'])
-              : parsedPrimary,
-      gradientMiddle:
-          _isCustomColor(json['mobile_gradient_middle'], '#002068')
-              ? _hexToColor(json['mobile_gradient_middle'])
-              : parsedPrimary,
-      gradientEnd:
-          _isCustomColor(json['mobile_gradient_end'], '#003399')
-              ? _hexToColor(json['mobile_gradient_end'])
-              : parsedPrimary,
-      gradientSecondaryStart:
-          _isCustomColor(json['mobile_gradient_secondary_start'], '#745B00')
-              ? _hexToColor(json['mobile_gradient_secondary_start'])
-              : parsedSecondary,
-      gradientSecondaryMiddle:
-          _isCustomColor(json['mobile_gradient_secondary_middle'], '#B48A00')
-              ? _hexToColor(json['mobile_gradient_secondary_middle'])
-              : parsedSecondary,
-      gradientSecondaryEnd:
-          _isCustomColor(json['mobile_gradient_secondary_end'], '#FDD355')
-              ? _hexToColor(json['mobile_gradient_secondary_end'])
-              : parsedSecondary,
-      success: _hexToColor(json['color_success'] ?? '#16A34A'),
-      warning: _hexToColor(json['color_warning'] ?? '#D97706'),
-      error: _hexToColor(json['color_error'] ?? '#DC2626'),
-      info: _hexToColor(json['color_info'] ?? '#2563EB'),
+      secondaryContainer: _hexToColor(json['mobile_color_secondary_container']),
+      background: _hexToColor(json['mobile_color_background']),
+      surface: _hexToColor(json['mobile_color_surface']),
+      onSurface: _hexToColor(json['mobile_color_on_surface']),
+      onSurfaceVariant: _hexToColor(json['mobile_color_on_surface_variant']),
+      outline: _hexToColor(json['mobile_color_outline']),
+      outlineVariant: _hexToColor(json['mobile_color_outline_variant']),
+      
+      // Dynamic HSL calculation for beautiful gradients based ONLY on the 6 fields from the API
+      // Since the Web Admin doesn't have gradient inputs, we ALWAYS derive them dynamically.
+      gradientStart: HSLColor.fromColor(parsedPrimary)
+          .withHue((HSLColor.fromColor(parsedPrimary).hue + 15) % 360)
+          .withLightness((HSLColor.fromColor(parsedPrimary).lightness + 0.08).clamp(0.0, 1.0))
+          .toColor(),
+      gradientMiddle: parsedPrimary,
+      gradientEnd: HSLColor.fromColor(parsedPrimary)
+          .withHue((HSLColor.fromColor(parsedPrimary).hue - 15) % 360)
+          .withLightness((HSLColor.fromColor(parsedPrimary).lightness - 0.08).clamp(0.0, 1.0))
+          .toColor(),
+              
+      gradientSecondaryStart: HSLColor.fromColor(parsedSecondary)
+          .withHue((HSLColor.fromColor(parsedSecondary).hue + 10) % 360)
+          .withLightness((HSLColor.fromColor(parsedSecondary).lightness + 0.08).clamp(0.0, 1.0))
+          .toColor(),
+      gradientSecondaryMiddle: parsedSecondary,
+      gradientSecondaryEnd: HSLColor.fromColor(parsedSecondary)
+          .withHue((HSLColor.fromColor(parsedSecondary).hue - 10) % 360)
+          .withLightness((HSLColor.fromColor(parsedSecondary).lightness - 0.08).clamp(0.0, 1.0))
+          .toColor(),
+      
+      success: _hexToColor(json['color_success']),
+      warning: _hexToColor(json['color_warning']),
+      error: _hexToColor(json['color_error']),
+      info: _hexToColor(json['color_info']),
       logoUrl: json['mobile_logo_url'] as String?,
       splashLogoUrl: json['mobile_splash_logo_url'] as String?,
+      fontHeadline: json['font_headline'] as String?,
+      fontBody: json['font_body'] as String?,
     );
   }
 
@@ -198,6 +176,8 @@ class MobileThemeColors {
       'color_info': _colorToHex(info),
       'mobile_logo_url': logoUrl,
       'mobile_splash_logo_url': splashLogoUrl,
+      'font_headline': fontHeadline,
+      'font_body': fontBody,
     };
   }
 
@@ -261,13 +241,16 @@ class MobileThemeColors {
   Color get onTertiaryContainer => _getOnContainer(tertiary);
 
   // Helper: Parse hex string to Color
-  static Color _hexToColor(String hex) {
-    hex = hex.replaceAll('#', '');
+  static Color _hexToColor(dynamic hexValue) {
+    if (hexValue == null || hexValue.toString().trim().isEmpty) {
+      return const Color(0xFFF29130); // Default fallback to Orange, not Blue!
+    }
+    String hex = hexValue.toString().replaceAll('#', '').trim();
     if (hex.length == 3) {
       hex = '${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
     }
     if (hex.length != 6) {
-      return const Color(0xFF002068); // Default fallback
+      return const Color(0xFFF29130); // Default fallback to Orange
     }
     return Color(int.parse('FF$hex', radix: 16));
   }
@@ -301,6 +284,8 @@ class MobileThemeColors {
     Color? info,
     String? logoUrl,
     String? splashLogoUrl,
+    String? fontHeadline,
+    String? fontBody,
   }) {
     return MobileThemeColors(
       primary: primary ?? this.primary,
@@ -327,6 +312,8 @@ class MobileThemeColors {
       info: info ?? this.info,
       logoUrl: logoUrl ?? this.logoUrl,
       splashLogoUrl: splashLogoUrl ?? this.splashLogoUrl,
+      fontHeadline: fontHeadline ?? this.fontHeadline,
+      fontBody: fontBody ?? this.fontBody,
     );
   }
 }

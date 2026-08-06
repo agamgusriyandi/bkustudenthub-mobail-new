@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';

@@ -10,13 +10,13 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
@@ -84,7 +84,7 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
   }
 
   Widget _buildGreeting() {
-    final name = context.watch<StudentProvider>().name;
+    final name = context.watch<ProfileProvider>().name;
     final firstName = name.split(' ').first;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,7 +568,7 @@ class _MyBookingsSheet extends StatelessWidget {
                         cancelText: '',
                         confirmText: 'Tutup',
                         onCancel: () {},
-                        onConfirm: () => Navigator.pop(context),
+                        onConfirm: () => context.pop(),
                       ),
                 );
               }
@@ -1059,7 +1059,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
     if (mounted) {
       setState(() => _isSubmitting = false);
       if (success) {
-        Navigator.pop(context); // Close Reschedule Sheet
+        context.pop(); // Close Reschedule Sheet
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(

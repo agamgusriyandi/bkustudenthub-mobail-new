@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:developer';
+import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
 
 /// Global key to access navigator from anywhere in the app
 /// Set this in MaterialApp.router or wrap with Navigator material key
@@ -28,8 +29,7 @@ class ApiInterceptor extends Interceptor {
     }
 
     // Inject token if available
-    final sharedPrefs = await prefs;
-    final token = sharedPrefs.getString('access_token');
+    final token = await SecureStorageService().getToken();
 
     final isLoginRequest = options.path.contains('/auth/login');
 
@@ -101,8 +101,8 @@ class ApiInterceptor extends Interceptor {
           // ApiClient imports ApiInterceptors. AuthService imports ApiClient.
           // Let's just clear SharedPreferences directly and navigate.
           final sharedPrefs = await prefs;
-          await sharedPrefs.remove('access_token');
-          await sharedPrefs.remove('user_data');
+          await SecureStorageService().deleteToken();
+          await SecureStorageService().deleteUserData();
           await sharedPrefs.remove('user_role');
 
           final navigator = apiNavigatorKey.currentState;

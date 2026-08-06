@@ -8,14 +8,15 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
-import '../../../../../core/widgets/bku_loading_dialog.dart';
+import '../../../../../core/widgets/bku_design/bku_loading_dialog.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateProposalScreen extends StatefulWidget {
   final OrmawaProposal? initialProposal;
@@ -165,7 +166,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
       }
 
       if (mounted) {
-        Navigator.pop(context);
+        context.pop();
         AppSnackbar.showSuccess(
           context,
           isEdit

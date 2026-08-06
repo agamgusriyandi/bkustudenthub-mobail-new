@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -49,10 +49,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
 
     setState(() => _isSubmitting = true);
     final provider = context.read<MentorKencanaProvider>();
-    final success = await provider.createScoreItem(widget.noteId, {
-      'component': 'note',
-      'notes': text,
-    });
+    final success = await provider.submitMenteeNotes(widget.noteId, text);
 
     if (mounted) {
       setState(() => _isSubmitting = false);
@@ -80,7 +77,13 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
             variant: AppBarVariant.student,
             showBackButton: true,
             isExpandable: false,
-            onBack: () => context.pop(),
+            onBack: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/mentor-kencana/notes');
+              }
+            },
           ),
           if (provider.isLoading && menteeDetail == null)
             const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))

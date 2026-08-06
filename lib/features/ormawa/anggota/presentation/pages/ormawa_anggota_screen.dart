@@ -7,11 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:go_router/go_router.dart';
 
 String? getFullImageUrl(String? path) {
   if (path == null || path.trim().isEmpty) return null;
@@ -106,7 +107,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                 ),
                               ),
                               IconButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => context.pop(),
                                 icon: const Icon(Icons.close),
                               ),
                             ],
@@ -237,7 +238,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.pop(),
 
                         child: Text(
                           'TERAPKAN FILTER',
@@ -1031,7 +1032,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
                 child: const Text(
                   'Batal',
                   style: TextStyle(
@@ -1043,7 +1044,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
               ElevatedButton(
                 onPressed: () {
                   context.read<OrmawaProvider>().deleteMember(member.id);
-                  Navigator.pop(context);
+                  context.pop();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
@@ -1157,7 +1158,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
         await context.read<OrmawaProvider>().addMember(data);
       }
       if (mounted) {
-        Navigator.pop(context);
+        context.pop();
         AppSnackbar.showSuccess(context, 'Data anggota berhasil disimpan');
       }
     } catch (e) {
@@ -1678,7 +1679,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.close),
                   ),
                 ],

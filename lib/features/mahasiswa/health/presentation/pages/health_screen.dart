@@ -9,12 +9,13 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'report_health_screen.dart';
 import 'klinik_booking_screen.dart';
@@ -33,7 +34,7 @@ class _HealthScreenState extends State<HealthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ProfileProvider>();
     final health = context.watch<HealthViewModel>();
     final latest = health.latestHealthRecord;
 
@@ -433,7 +434,7 @@ class _HealthScreenState extends State<HealthScreen> {
     );
   }
 
-  Widget _buildEmptyWelcomeBanner(StudentProvider student) {
+  Widget _buildEmptyWelcomeBanner(ProfileProvider student) {
     final firstName = student.name.split(' ').first;
     final themeProvider = context.watch<ThemeProvider>();
 
@@ -498,7 +499,7 @@ class _HealthScreenState extends State<HealthScreen> {
   }
 
   Widget _buildDynamicWelcomeCard(
-    StudentProvider student,
+    ProfileProvider student,
     HealthRecord latest,
   ) {
     final firstName = student.name.split(' ').first;

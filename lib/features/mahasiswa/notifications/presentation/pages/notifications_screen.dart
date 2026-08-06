@@ -8,7 +8,7 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/notification_service.dart';
@@ -34,24 +34,22 @@ class _StudentNotificationsScreenState
 
   static const _filters = [
     'Semua',
+    'achievement',
     'beasiswa',
-    'prestasi',
-    'kencana',
-    'health',
     'konseling',
-    'referral',
-    'info',
+    'student_voice',
+    'kencana',
+    'sistem',
   ];
 
   static const _filterLabels = {
     'Semua': 'Semua',
+    'achievement': 'Achievement',
     'beasiswa': 'Beasiswa',
-    'prestasi': 'Prestasi',
-    'kencana': 'PKKMB',
-    'health': 'Kesehatan',
     'konseling': 'Konseling',
-    'referral': 'Rujukan',
-    'info': 'Info',
+    'student_voice': 'Student Voice',
+    'kencana': 'KENCANA',
+    'sistem': 'Sistem',
   };
 
   @override

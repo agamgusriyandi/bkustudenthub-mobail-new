@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'dart:io';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/kencana_models.dart';
 import 'package:bkuhub_mobile/core/utils/error_helper.dart';
@@ -158,14 +159,36 @@ class KencanaProvider extends ChangeNotifier {
     return {};
   }
 
-  Future<bool> submitAbsence(int sessionId, String reason) async {
+  Future<bool> submitAbsence(int sessionId, String reason, File? attachment) async {
     try {
+      String? attachmentUrl;
+      
+      if (attachment != null) {
+        final formData = FormData.fromMap({
+          'file': await MultipartFile.fromFile(attachment.path),
+        });
+        
+        final uploadRes = await _apiClient.client.post(
+          '/kencana-student/upload',
+          data: formData,
+        );
+        
+        if (uploadRes.data != null) {
+          attachmentUrl = uploadRes.data['url'] ?? uploadRes.data['data']?['url'];
+        }
+        
+        if (attachmentUrl == null) {
+          return false;
+        }
+      }
+
       final response = await _apiClient.client.post(
         '/kencana-student/attendance',
         data: {
           'session_id': sessionId,
           'status': 'permission',
           'reason': reason,
+          if (attachmentUrl != null) 'attachment_url': attachmentUrl,
         },
       );
       return response.data != null && response.data['success'] == true;

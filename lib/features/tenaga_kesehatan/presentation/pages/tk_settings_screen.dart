@@ -13,7 +13,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';

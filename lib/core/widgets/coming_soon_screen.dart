@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:go_router/go_router.dart';
 
 class ComingSoonScreen extends StatelessWidget {
   final String featureName;
@@ -18,7 +19,7 @@ class ComingSoonScreen extends StatelessWidget {
         backgroundColor: context.appColors.surface,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             color: Theme.of(context).colorScheme.primary,

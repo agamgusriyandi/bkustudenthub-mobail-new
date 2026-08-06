@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/network/api_client.dart';
 import '../../domain/entities/mentor_models.dart';
@@ -119,49 +121,60 @@ class MentorKencanaProvider extends ChangeNotifier {
 
       final dbResData = dbResponse.data['data'] ?? dbResponse.data;
       debugPrint('KencanaMentorDashboardResponse: $dbResData');
-      final serverStats = MentorDashboardData.fromJson(
-        dbResData is Map<String, dynamic> ? dbResData : {},
-      );
+      try {
+        final serverStats = MentorDashboardData.fromJson(
+          dbResData is Map<String, dynamic> ? dbResData : {},
+        );
 
-      int totalMenteesFallback = _groups.fold(
-        0,
-        (sum, g) => sum + g.mentees.length,
-      );
-      int totalGroupsFallback = _groups.length;
+        int totalMenteesFallback = _groups.fold(
+          0,
+          (sum, g) => sum + g.mentees.length,
+        );
+        int totalGroupsFallback = _groups.length;
 
-      int pendingScoringFallback = _groups.fold(
-        0,
-        (sum, g) => sum + g.mentees.where((m) => m.score == 0.0).length,
-      );
+        int pendingScoringFallback = _groups.fold(
+          0,
+          (sum, g) => sum + g.mentees.where((m) => m.score == 0.0).length,
+        );
 
-      int unreadAnnouncementsFallback =
-          _announcements.where((a) => !a.isRead).length;
+        int unreadAnnouncementsFallback =
+            _announcements.where((a) => !a.isRead).length;
 
-      _dashboardData = MentorDashboardData(
-        totalMentees:
-            serverStats.totalMentees > 0
-                ? serverStats.totalMentees
-                : totalMenteesFallback,
-        totalGroups:
-            serverStats.totalGroups > 0
-                ? serverStats.totalGroups
-                : totalGroupsFallback,
-        pendingScoring:
-            serverStats.pendingScoring > 0
-                ? serverStats.pendingScoring
-                : pendingScoringFallback,
-        unreadAnnouncements:
-            serverStats.unreadAnnouncements > 0
-                ? serverStats.unreadAnnouncements
-                : unreadAnnouncementsFallback,
-        rawData: dbResData is Map<String, dynamic> ? dbResData : {},
-      );
+        _dashboardData = MentorDashboardData(
+          totalMentees:
+              serverStats.totalMentees > 0
+                  ? serverStats.totalMentees
+                  : totalMenteesFallback,
+          totalGroups:
+              serverStats.totalGroups > 0
+                  ? serverStats.totalGroups
+                  : totalGroupsFallback,
+          pendingScoring:
+              serverStats.pendingScoring > 0
+                  ? serverStats.pendingScoring
+                  : pendingScoringFallback,
+          unreadAnnouncements:
+              serverStats.unreadAnnouncements > 0
+                  ? serverStats.unreadAnnouncements
+                  : unreadAnnouncementsFallback,
+          rawData: dbResData is Map<String, dynamic> ? dbResData : {},
+        );
+      } catch (parseError) {
+        debugPrint('ERROR PARSING DASHBOARD: $parseError');
+        _dashboardData = MentorDashboardData(
+          totalMentees: 0,
+          totalGroups: 0,
+          pendingScoring: 0,
+          unreadAnnouncements: 0,
+          rawData: dbResData is Map<String, dynamic> ? dbResData : {},
+        );
+      }
 
       _errorMessage = null;
       notifyListeners();
     } on DioException catch (e) {
       if (!silent) {
-        _setError(e.response?.data['message'] ?? 'Gagal memuat dashboard');
+        debugPrint("ERROR fetchDashboard: $e"); _setError(e.response?.data['message'] ?? 'Gagal memuat dashboard');
       }
     } catch (e) {
       if (!silent) {
@@ -334,6 +347,7 @@ class MentorKencanaProvider extends ChangeNotifier {
         '/kencana-mentor/students/$studentId/notes',
         data: {'notes': note},
       );
+      await fetchMenteeDetail(studentId);
       return true;
     } on DioException catch (e) {
       _setError(e.response?.data['message'] ?? 'Gagal menyimpan catatan');
@@ -747,7 +761,30 @@ class MentorKencanaProvider extends ChangeNotifier {
         }
       }
 
-      _essayItems = essayList.map((e) => MentorEssayItem.fromJson(e is Map<String, dynamic> ? e : {})).toList();
+      List<MentorEssayItem> items = [];
+      for (final raw in essayList) {
+        if (raw is Map<String, dynamic>) {
+          final sName = raw['student_name'] ?? raw['student_nim'] ?? '';
+          final nim = raw['student_nim'] ?? '';
+          final subAt = raw['submitted_at']?.toString() ?? '';
+
+          final answers = raw['answers'];
+          if (answers is List && answers.isNotEmpty) {
+            for (final a in answers) {
+              if (a is Map<String, dynamic>) {
+                final copy = Map<String, dynamic>.from(a);
+                copy['student_name'] = sName;
+                copy['student_nim'] = nim;
+                copy['submitted_at'] = subAt;
+                items.add(MentorEssayItem.fromJson(copy));
+              }
+            }
+          } else {
+            items.add(MentorEssayItem.fromJson(raw));
+          }
+        }
+      }
+      _essayItems = items;
     } on DioException catch (e) {
       final msg = e.response?.data['message']?.toString() ?? 'Gagal memuat daftar essay';
       if (msg.toLowerCase().contains('tidak ditemukan') || msg.toLowerCase().contains('wajib diisi')) {
@@ -1085,56 +1122,68 @@ class MentorKencanaProvider extends ChangeNotifier {
 
   Future<List<SessionAttendanceData>> fetchSessionAttendanceList(int sessionId) async {
     try {
+      // 1. Ensure mentees are loaded
+      if (_groups.isEmpty) {
+        await fetchMentees();
+      }
+
+      // 2. Extract all mentees as candidate list
+      List<SessionAttendanceData> freshList = [];
+      for (var group in _groups) {
+        for (var mentee in group.mentees) {
+          freshList.add(SessionAttendanceData(
+            id: mentee.id,
+            name: mentee.name,
+            nim: mentee.nim,
+            programStudi: mentee.programStudi,
+            faculty: mentee.faculty,
+            status: '', // default
+          ));
+        }
+      }
+
+      // 3. Fetch attendance for this session
       final response = await _apiClient.client.get('/kencana-mentor/sessions/$sessionId/attendance');
       final resData = response.data;
       final data = (resData is Map) ? (resData['data'] ?? resData) : resData;
       
-      List<dynamic> list = [];
+      List<dynamic> attList = [];
       if (data is List) {
-        list = data;
+        attList = data;
       } else if (data is Map) {
-        list = data['students'] ?? data['attendances'] ?? data['members'] ?? data['items'] ?? [];
+        attList = data['students'] ?? data['attendances'] ?? data['members'] ?? data['items'] ?? [];
       }
 
-      if (list.isNotEmpty) {
-        final parsed = list.map((e) => SessionAttendanceData.fromJson(e is Map<String, dynamic> ? e : {})).toList();
-        _sessionAttendanceMap[sessionId] = parsed;
-        return parsed;
+      final parsedAtt = attList.map((e) => SessionAttendanceData.fromJson(e is Map<String, dynamic> ? e : {})).toList();
+
+      // 4. Combine them
+      if (freshList.isNotEmpty) {
+        for (int i = 0; i < freshList.length; i++) {
+          final att = parsedAtt.where((a) => a.id == freshList[i].id).firstOrNull;
+          if (att != null) {
+            freshList[i] = SessionAttendanceData(
+              id: freshList[i].id,
+              name: freshList[i].name,
+              nim: freshList[i].nim,
+              programStudi: freshList[i].programStudi,
+              faculty: freshList[i].faculty,
+              status: att.status,
+              originalStatus: att.originalStatus,
+              reason: att.reason,
+              attachmentUrl: att.attachmentUrl,
+            );
+          }
+        }
+        _sessionAttendanceMap[sessionId] = freshList;
+        return freshList;
+      } else if (parsedAtt.isNotEmpty) {
+        _sessionAttendanceMap[sessionId] = parsedAtt;
+        return parsedAtt;
       }
     } catch (_) {}
 
     if (!_sessionAttendanceMap.containsKey(sessionId)) {
-      List<SessionAttendanceData> freshList = [];
-      try {
-        final stRes = await _apiClient.client.get('/kencana-mentor/students');
-        final rawSt = stRes.data;
-        final stList = rawSt is Map ? (rawSt['data'] ?? rawSt) : (rawSt is List ? rawSt : []);
-        final candidateList = stList is List ? stList : (stList is Map ? (stList['students'] ?? stList['members'] ?? []) : []);
-        if (candidateList is List && candidateList.isNotEmpty) {
-          freshList = candidateList.map((e) {
-            final map = e is Map<String, dynamic> ? e : {};
-            final mhs = map['mahasiswa'] as Map<String, dynamic>? ?? map;
-            return SessionAttendanceData(
-              id: int.tryParse(map['id']?.toString() ?? mhs['id']?.toString() ?? '0') ?? 0,
-              name: mhs['nama_lengkap']?.toString() ?? map['name']?.toString() ?? '',
-              nim: mhs['nim']?.toString() ?? map['nim']?.toString() ?? '',
-              programStudi: mhs['prodi']?.toString() ?? map['program_studi']?.toString() ?? '',
-              faculty: mhs['fakultas']?.toString() ?? map['faculty']?.toString() ?? '',
-              status: '',
-            );
-          }).where((element) => element.id != 0 || element.name.isNotEmpty).toList();
-        }
-      } catch (_) {}
-
-      if (freshList.isNotEmpty) {
-        _sessionAttendanceMap[sessionId] = freshList;
-      } else {
-        _sessionAttendanceMap[sessionId] = [
-          SessionAttendanceData(id: 1, name: 'OKVIANTY CELICA', nim: '261FF05109', programStudi: 'Farmasi', faculty: 'Fakultas Farmasi', status: ''),
-          SessionAttendanceData(id: 2, name: 'Budi Santoso', nim: '261FF05110', programStudi: 'Farmasi', faculty: 'Fakultas Farmasi', status: ''),
-          SessionAttendanceData(id: 3, name: 'Siti Rahma', nim: '261FF05111', programStudi: 'Farmasi', faculty: 'Fakultas Farmasi', status: ''),
-        ];
-      }
+      _sessionAttendanceMap[sessionId] = [];
     }
 
     return _sessionAttendanceMap[sessionId]!;
@@ -1210,13 +1259,31 @@ class MentorKencanaProvider extends ChangeNotifier {
       final response = await _apiClient.client.get('/kencana-mentor/bulk-scores');
       _bulkScoresData = (response.data is Map) ? (response.data['data'] ?? response.data) : null;
     } catch (e) {
-      _setError('Gagal memuat rekapitulasi nilai');
+      debugPrint("ERROR fetchBulkScores: $e"); _setError('Gagal memuat rekapitulasi nilai');
     } finally {
       _setLoading(false);
     }
   }
 
   // --- Create/Update/Delete Material ---
+  Future<String?> uploadMaterialFile(PlatformFile file) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          file.path!,
+          filename: file.name,
+        ),
+      });
+      final response = await _apiClient.client.post('/kencana-mentor/materials/upload', data: formData);
+      if (response.data != null && response.data['success'] == true) {
+        return response.data['url']?.toString();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> createMaterial(Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.client.post('/kencana-mentor/materials', data: data);
@@ -1315,18 +1382,21 @@ class MentorKencanaProvider extends ChangeNotifier {
     return [];
   }
 
-  Future<bool> createQuizQuestion(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>?> createQuizQuestion(Map<String, dynamic> data) async {
     try {
-      final response = await _apiClient.client.post('/kencana-mentor/quiz-questions', data: data);
-      return response.data['success'] == true;
+      final response = await _apiClient.client.post('/kencana-mentor/questions', data: data);
+      if (response.data['success'] == true) {
+        return response.data['data'] as Map<String, dynamic>?;
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
   Future<bool> updateQuizQuestion(int id, Map<String, dynamic> data) async {
     try {
-      final response = await _apiClient.client.put('/kencana-mentor/quiz-questions/$id', data: data);
+      final response = await _apiClient.client.put('/kencana-mentor/questions/$id', data: data);
       return response.data['success'] == true;
     } catch (e) {
       return false;
@@ -1335,7 +1405,7 @@ class MentorKencanaProvider extends ChangeNotifier {
 
   Future<bool> deleteQuizQuestion(int id) async {
     try {
-      final response = await _apiClient.client.delete('/kencana-mentor/quiz-questions/$id');
+      final response = await _apiClient.client.delete('/kencana-mentor/questions/$id');
       return response.data['success'] == true;
     } catch (e) {
       return false;

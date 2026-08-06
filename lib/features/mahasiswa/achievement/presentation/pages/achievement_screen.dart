@@ -6,18 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/report_achievement_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class AchievementScreen extends StatefulWidget {
   const AchievementScreen({super.key});
@@ -31,18 +34,19 @@ class _AchievementScreenState extends State<AchievementScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentProvider>().loadAllData();
+      context.read<AcademicProvider>().loadAcademicData();
+      context.read<ProfileProvider>().fetchProfile();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final academic = context.watch<AcademicProvider>();
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
-        onRefresh: () => student.loadAllData(),
+        onRefresh: () => academic.loadAcademicData(),
         color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -80,16 +84,16 @@ class _AchievementScreenState extends State<AchievementScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    if (student.isLoading)
+                    if (academic.isLoading)
                       const BkuShimmerList(itemCount: 3, itemHeight: 120)
-                    else if (student.achievements.isEmpty)
+                    else if (academic.achievements.isEmpty)
                       const FadeInAnimation(delay: 0.6, child: _EmptyState())
                     else
-                      ...List.generate(student.achievements.length, (index) {
+                      ...List.generate(academic.achievements.length, (index) {
                         return FadeInAnimation(
                           delay: 0.6 + (index * 0.1),
                           child: _AchievementCard(
-                            achievement: student.achievements[index],
+                            achievement: academic.achievements[index],
                           ),
                         );
                       }),
@@ -119,12 +123,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
             icon: Icons.add_rounded,
             variant: BkuButtonVariant.success,
             onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ReportAchievementScreen(),
-                  ),
-                ),
+                () => context.push(AppRoutes.createAchievement),
           ),
         ),
       ),
@@ -137,7 +136,8 @@ class _RecapSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final academic = context.watch<AcademicProvider>();
+    final profile = context.watch<ProfileProvider>();
 
     return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -157,7 +157,7 @@ class _RecapSection extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    student.ipk.toStringAsFixed(2),
+                    profile.ipk.toStringAsFixed(2),
                     style: AppTextStyles.display.copyWith(
                       color: AppColors.neutral800,
                       fontSize: 32,
@@ -187,7 +187,7 @@ class _RecapSection extends StatelessWidget {
               Expanded(
                 child: _buildStat(
                   'Total',
-                  '${student.totalAchievements}',
+                  '${academic.totalAchievements}',
                   Icons.folder_shared_rounded,
                   AppColors.info,
                 ),
@@ -195,7 +195,7 @@ class _RecapSection extends StatelessWidget {
               Expanded(
                 child: _buildStat(
                   'Valid',
-                  '${student.validatedAchievements}',
+                  '${academic.validatedAchievements}',
                   Icons.verified_rounded,
                   AppColors.success,
                 ),
@@ -203,7 +203,7 @@ class _RecapSection extends StatelessWidget {
               Expanded(
                 child: _buildStat(
                   'Pending',
-                  '${student.pendingAchievements}',
+                  '${academic.pendingAchievements}',
                   Icons.pending_rounded,
                   AppColors.warning,
                 ),
@@ -211,7 +211,7 @@ class _RecapSection extends StatelessWidget {
               Expanded(
                 child: _buildStat(
                   'Synced',
-                  '${student.syncedAchievements}',
+                  '${academic.syncedAchievements}',
                   Icons.sync_rounded,
                   context.appColors.success,
                 ),
@@ -770,7 +770,7 @@ class _AchievementCard extends StatelessWidget {
                           height: 54,
                           child: BkuButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.pop();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -807,7 +807,7 @@ class _AchievementCard extends StatelessWidget {
                     width: double.infinity,
                     height: 54,
                     child: BkuButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                       icon: Icons.close_rounded,
                       text: 'Tutup',
                       variant: BkuButtonVariant.outline,
@@ -818,7 +818,7 @@ class _AchievementCard extends StatelessWidget {
                     width: double.infinity,
                     height: 54,
                     child: BkuButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                       icon: Icons.close_rounded,
                       text: 'Tutup',
                       variant: BkuButtonVariant.outline,
@@ -848,10 +848,10 @@ class _AchievementCard extends StatelessWidget {
 
               try {
                 BkuLoadingDialog.show(context);
-                await context.read<StudentProvider>().deleteAchievement(id);
+                await context.read<AcademicProvider>().deleteAchievement(id);
                 if (context.mounted) {
                   BkuLoadingDialog.hide(context);
-                  Navigator.pop(context);
+                  context.pop();
                   AppSnackbar.showSuccess(
                     context,
                     'Laporan prestasi berhasil dihapus',

@@ -10,11 +10,12 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/counseling_session.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/psychologist_list_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -40,7 +41,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentProvider>().loadAllData();
+      context.read<ProfileProvider>().fetchProfile();
       context.read<StudentCounselingProvider>().loadPsychologists();
       context.read<StudentCounselingProvider>().loadMyReferrals();
       context.read<StudentCounselingProvider>().loadMyBookings();
@@ -63,7 +64,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ProfileProvider>();
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
@@ -71,7 +72,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
         color: AppColors.neutral800,
         onRefresh: () async {
           await Future.wait([
-            context.read<StudentProvider>().loadAllData(),
+            context.read<ProfileProvider>().fetchProfile(),
             context.read<StudentCounselingProvider>().loadPsychologists(),
             context.read<StudentCounselingProvider>().loadMyReferrals(),
             context.read<StudentCounselingProvider>().loadMyBookings(),
@@ -745,7 +746,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
   }
 
   // ignore: unused_element
-  Widget _buildFacultyMapping(StudentProvider student) {
+  Widget _buildFacultyMapping(AcademicProvider student) {
     final list = student.facultyProgress;
     if (list.isEmpty) {
       return Column(
@@ -1474,7 +1475,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                             constraints: const BoxConstraints(maxWidth: 400),
                             child: BkuButton(
                               onPressed: () {
-                                Navigator.pop(context); // Close modal
+                                context.pop(); // Close modal
                                 final psychId =
                                     (session['psychologist_id'] ??
                                             session['psikolog_id'] ??
@@ -1516,7 +1517,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 400),
                           child: BkuButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.pop(),
                             text: 'Tutup Detail',
                             variant: BkuButtonVariant.outline,
                             height: 44,
@@ -2005,7 +2006,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                           height: 54,
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              Navigator.pop(context); // Close modal
+                              context.pop(); // Close modal
                               if (isCompleted) {
                                 // Kalo udah selesai, kita arahin buat booking BARU (Konseling Lanjutan) dengan psikolog yang sama
                                 context.push(
@@ -2044,7 +2045,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         width: double.infinity,
                         height: 58,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.pop(),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.neutral100,
                               foregroundColor: AppColors.neutral800,

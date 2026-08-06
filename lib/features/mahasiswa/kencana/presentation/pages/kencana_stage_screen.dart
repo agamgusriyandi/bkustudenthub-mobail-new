@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/kencana_models.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -241,6 +241,81 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
               detail.description!,
               style: AppTextStyles.labelMd.copyWith(
                 color: context.appColors.outline,
+              ),
+            ),
+          ],
+          if (detail.group != null || detail.mentor != null) ...[
+            const SizedBox(height: AppSpacing.lg),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: context.appColors.primary.withAlpha(15),
+                borderRadius: AppRadius.radiusMd,
+                border: Border.all(
+                  color: context.appColors.primary.withAlpha(50),
+                ),
+              ),
+              child: Row(
+                children: [
+                  if (detail.group != null)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'KELOMPOK',
+                            style: AppTextStyles.labelSm.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: context.appColors.primary,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Kelompok ${detail.group!['number'] ?? '-'} - ${detail.group!['name'] ?? '-'}',
+                            style: AppTextStyles.labelMd.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: context.appColors.onSurface,
+                            ),
+                          ),
+                          Text(
+                            '(${detail.group!['code'] ?? '-'})',
+                            style: AppTextStyles.labelSm.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: context.appColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (detail.mentor != null)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'FASILITATOR',
+                            style: AppTextStyles.labelSm.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: context.appColors.primary,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            detail.mentor!['name'] ?? '-',
+                            style: AppTextStyles.labelMd.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: context.appColors.onSurface,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               ),
             ),
           ],

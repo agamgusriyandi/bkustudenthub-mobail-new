@@ -3,11 +3,11 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 
 import '../widgets/profile_widgets.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import '../dialogs/profile_dialogs.dart';
 
 import '../widgets/data_diri_tab.dart';
@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final profile = context.watch<ProfileProvider>();
 
     return Scaffold(
       backgroundColor: AppColors.neutral100,
@@ -69,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     const SizedBox(height: AppSpacing.lg),
                     FadeInAnimation(
                       delay: 0.1,
-                      child: buildRoleCard(context, student),
+                      child: buildRoleCard(context, profile),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                   ],
@@ -180,17 +180,17 @@ class _ProfileScreenState extends State<ProfileScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            DataDiriTabWidget(student: student),
-            AkademikTabWidget(student: student),
-            _buildKeamananTab(context, student),
-            NotifikasiTabWidget(student: student),
+            DataDiriTabWidget(),
+            AkademikTabWidget(),
+            _buildKeamananTab(context, profile),
+            NotifikasiTabWidget(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildKeamananTab(BuildContext context, StudentProvider student) {
+  Widget _buildKeamananTab(BuildContext context, ProfileProvider profile) {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.xl),
       children: [

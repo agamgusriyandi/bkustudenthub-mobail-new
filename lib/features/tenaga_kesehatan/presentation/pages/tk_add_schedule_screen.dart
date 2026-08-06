@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_schedule_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 
 class TkAddScheduleScreen extends StatefulWidget {
   const TkAddScheduleScreen({super.key});
@@ -497,7 +497,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
               confirmText: 'Tutup',
               isSuccess: true,
               onCancel: () {},
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () => context.pop(),
             ),
       ).then((_) {
         if (mounted) context.pop();
@@ -513,7 +513,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
               confirmText: 'Tutup',
               isDestructive: true,
               onCancel: () {},
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () => context.pop(),
             ),
       );
     }

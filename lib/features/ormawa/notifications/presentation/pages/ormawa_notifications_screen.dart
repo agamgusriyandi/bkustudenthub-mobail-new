@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_notification.dart';
 import 'package:provider/provider.dart';
@@ -556,7 +556,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      context.pop();
                       final t = notification.type.toLowerCase();
                       if (t.contains('proposal')) {
                         context.push(AppRoutes.ormawaProposal);

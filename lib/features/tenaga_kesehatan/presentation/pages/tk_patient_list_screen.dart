@@ -18,7 +18,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_booking_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_health_provider.dart';
@@ -617,7 +617,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                       IconButton(
                         icon: Icon(Icons.close_rounded, color: AppColors.neutral600,
                         ),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.pop(),
                       ),
                     ],
                   ),
@@ -654,7 +654,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                                 )
                                 : null,
                         onTap: () {
-                          Navigator.pop(context);
+                          context.pop();
                           onSelected(item);
                         },
                       );

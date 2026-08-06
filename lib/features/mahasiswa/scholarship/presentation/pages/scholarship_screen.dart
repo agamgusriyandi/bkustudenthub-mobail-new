@@ -9,16 +9,17 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_application_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/apply_scholarship_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/rejection_bottom_sheet.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
+import 'package:go_router/go_router.dart';
 
 class ScholarshipScreen extends StatefulWidget {
   const ScholarshipScreen({super.key});
@@ -43,7 +44,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
     if (!mounted) return;
     setState(() => _isLoading = true);
     try {
-      await context.read<StudentProvider>().loadAllData();
+      await context.read<ScholarshipProvider>().loadScholarships();
     } catch (_) { /* Silenced: non-critical parse fallback */ }
     if (mounted) {
       setState(() => _isLoading = false);
@@ -95,7 +96,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ScholarshipProvider>();
     final appliedScholarships =
         student.scholarships
             .where((s) => s.status == 'Applied' || s.applicationStatus != null)
@@ -1392,18 +1393,18 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               onConfirm: () {
                 setState(() => isLoading = true);
 
-                final studentProvider = context.read<StudentProvider>();
+                final scholarshipProvider = context.read<ScholarshipProvider>();
                 // Fire and forget async call to avoid VoidCallback issues
                 Future<void>(() async {
                   if (!mounted) return;
                   try {
-                    await studentProvider.cancelScholarshipApplication(
+                    await scholarshipProvider.cancelScholarshipApplication(
                       scholarship.id,
                     );
                     if (mounted && sheetContext.mounted) {
                       Navigator.pop(sheetContext); // Close dialog
                       if (context.mounted) {
-                        Navigator.pop(context); // Close modal detail
+                        context.pop(); // Close modal detail
                       }
                       AppSnackbar.showError(
                         context,

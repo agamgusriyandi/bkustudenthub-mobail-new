@@ -3,7 +3,8 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -11,7 +12,7 @@ import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 
 Future<void> pickAvatar(BuildContext context) async {
-  final provider = context.read<StudentProvider>();
+  final provider = context.read<ProfileProvider>();
   final primaryColor = context.appColors.primary;
   final result = await ImagePicker().pickImage(
     source: ImageSource.gallery,
@@ -139,9 +140,9 @@ String formatBirthPlaceDate(String val) {
   return val;
 }
 
-String getActiveOrganizationRole(StudentProvider student) {
+String getActiveOrganizationRole(OrganizationProvider organization) {
   final activeOrgs =
-      student.organizationHistory.where((org) {
+      organization.organizationHistory.where((org) {
         final status = org.statusVerifikasi.toLowerCase();
         return status == 'aktif' ||
             status == 'disetujui' ||

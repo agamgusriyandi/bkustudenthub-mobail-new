@@ -4,7 +4,14 @@ import 'package:bkuhub_mobile/features/ormawa/data/datasources/ormawa_remote_dat
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/counseling_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/providers/achievement_provider.dart';
@@ -14,7 +21,7 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/app_lifecycle_observer.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -80,13 +87,18 @@ void main() async {
         ChangeNotifierProvider.value(value: NotificationService()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(
-          create: (_) => StudentProvider(repository: studentRepository),
-        ),
+
+        ChangeNotifierProvider(create: (_) => ProfileProvider(repository: studentRepository)),
+        ChangeNotifierProvider(create: (_) => AcademicProvider(repository: studentRepository)),
+        ChangeNotifierProvider(create: (_) => MahasiswaCounselingProvider(repository: studentRepository)),
+        ChangeNotifierProvider(create: (_) => HealthProvider(repository: studentRepository)),
+        ChangeNotifierProvider(create: (_) => OrganizationProvider(repository: studentRepository)),
+        ChangeNotifierProvider(create: (_) => StudentVoiceProvider(repository: studentRepository)),
+
         ChangeNotifierProvider(
           create: (_) => HealthViewModel(repository: studentRepository),
         ),
-        ChangeNotifierProvider(create: (_) => ScholarshipProvider()),
+        ChangeNotifierProvider(create: (_) => ScholarshipProvider(repository: studentRepository)),
         ChangeNotifierProvider(create: (_) => AchievementProvider()),
         ChangeNotifierProvider(create: (_) => KencanaProvider()),
         ChangeNotifierProvider(

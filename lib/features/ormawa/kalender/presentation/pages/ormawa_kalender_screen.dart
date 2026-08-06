@@ -1,19 +1,21 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_calendar_provider.dart';
+import 'package:bkuhub_mobile/core/state/ui_state.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_agenda_detail_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaKalenderScreen extends StatefulWidget {
   const OrmawaKalenderScreen({super.key});
@@ -45,7 +47,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
       setState(() => _searchQuery = _searchController.text.toLowerCase());
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OrmawaProvider>().refreshData();
+      final ormawaProvider = context.read<OrmawaProvider>();
+      ormawaProvider.refreshData();
+      final ormawaId = ormawaProvider.ormawaId;
+      if (ormawaId != null) {
+        context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
+      }
     });
   }
 
@@ -123,15 +130,16 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
           );
         }
 
-        final selectedEvents = _getEventsForDay(
-          _selectedDay ?? _focusedDay,
-          provider.agendas,
-        );
-
         return Scaffold(
           backgroundColor: AppColors.neutral100,
           body: RefreshIndicator(
-            onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+            onRefresh: () async {
+              context.read<OrmawaProvider>().refreshData();
+              final ormawaId = context.read<OrmawaProvider>().ormawaId;
+              if (ormawaId != null) {
+                context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
+              }
+            },
             child: CustomScrollView(
               slivers: [
                 BkuAppBar(
@@ -150,29 +158,59 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       right: AppSpacing.s20,
                       bottom: AppSpacing.s100,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildCalendarCard(provider.agendas),
-                        const SizedBox(height: AppSpacing.xl),
-                        OrmawaListHeader(
-                          title:
-                              '${DateFormat('d MMMM', 'id').format(_selectedDay ?? _focusedDay).toUpperCase()} - ${selectedEvents.length} AGENDA',
-                          searchHint: 'Cari agenda...',
-                          searchController: _searchController,
-                          onRefresh:
-                              () =>
-                                  context.read<OrmawaProvider>().refreshData(),
-                          onFilterTap: () => _showFilterSheet(),
-                          onChanged:
-                              (value) => setState(() => _searchQuery = value),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        if (provider.isLoading)
-                          const BkuShimmerList(itemCount: 3, itemHeight: 90)
-                        else
-                          _buildAgendaList(selectedEvents),
-                      ],
+                    child: Consumer<OrmawaCalendarProvider>(
+                      builder: (context, calendarProvider, _) {
+                        final calendarState = calendarProvider.calendarState;
+                        
+                        if (calendarState is LoadingState) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        
+                        if (calendarState is ErrorState) {
+                          return Center(
+                            child: Text(
+                              (calendarState as ErrorState).message, 
+                              style: TextStyle(color: context.appColors.error)
+                            )
+                          );
+                        }
+                        
+                        List<OrmawaAgenda> agendas = [];
+                        if (calendarState is SuccessState<List<OrmawaAgenda>>) {
+                          agendas = calendarState.data;
+                        }
+
+                        final selectedEvents = _getEventsForDay(
+                          _selectedDay ?? _focusedDay,
+                          agendas,
+                        );
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildCalendarCard(agendas),
+                            const SizedBox(height: AppSpacing.xl),
+                            OrmawaListHeader(
+                              title:
+                                  '${DateFormat('d MMMM', 'id').format(_selectedDay ?? _focusedDay).toUpperCase()} - ${selectedEvents.length} AGENDA',
+                              searchHint: 'Cari agenda...',
+                              searchController: _searchController,
+                              onRefresh: () async {
+                                context.read<OrmawaProvider>().refreshData();
+                                final ormawaId = context.read<OrmawaProvider>().ormawaId;
+                                if (ormawaId != null) {
+                                  context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
+                                }
+                              },
+                              onFilterTap: () => _showFilterSheet(),
+                              onChanged:
+                                  (value) => setState(() => _searchQuery = value),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            _buildAgendaList(selectedEvents),
+                          ],
+                        );
+                      }
                     ),
                   ),
                 ),
@@ -340,12 +378,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrmawaAgendaDetailScreen(agenda: agenda),
-            ),
-          );
+          context.push(AppRoutes.ormawaAgendaDetail, extra: agenda);
         },
         borderRadius: AppRadius.radiusXl,
         child: Ink(
@@ -497,13 +530,13 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
                 child: const Text('BATAL'),
               ),
               TextButton(
                 onPressed: () {
                   context.read<OrmawaProvider>().deleteAgenda(agenda.id);
-                  Navigator.pop(context);
+                  context.pop();
                 },
                 child: const Text(
                   'HAPUS',
@@ -582,7 +615,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                         return GestureDetector(
                           onTap: () {
                             setState(() => _filterStatus = option);
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -618,7 +651,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterStatus = 'Semua');
-                        Navigator.pop(context);
+                        context.pop();
                       },
                       child: Text(
                         'Reset Filter',
@@ -818,7 +851,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
       } else {
         await context.read<OrmawaProvider>().addAgenda(data);
       }
-      if (mounted) Navigator.pop(context);
+      if (mounted) context.pop();
     } catch (e) {
       if (mounted) {
         AppSnackbar.showError(context, 'Gagal menyimpan: $e');
@@ -1323,7 +1356,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
 
             child: const Text(
               'BATAL',

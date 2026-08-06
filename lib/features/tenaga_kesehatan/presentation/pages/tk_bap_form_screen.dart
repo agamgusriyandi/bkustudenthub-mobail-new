@@ -19,7 +19,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -153,7 +153,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                   confirmText: 'Tutup',
                   isDestructive: true,
                   onCancel: () {},
-                  onConfirm: () => Navigator.pop(context),
+                  onConfirm: () => context.pop(),
                 ),
           );
         }
@@ -205,7 +205,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
               confirmText: 'Tutup',
               isSuccess: true,
               onCancel: () {},
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () => context.pop(),
             ),
       ).then((_) {
         if (mounted) {
@@ -224,7 +224,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
               confirmText: 'Tutup',
               isDestructive: true,
               onCancel: () {},
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () => context.pop(),
             ),
       );
     }
@@ -1011,7 +1011,7 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
                               confirmText: 'Tutup',
                               isDestructive: true,
                               onCancel: () {},
-                              onConfirm: () => Navigator.pop(context),
+                              onConfirm: () => context.pop(),
                             ),
                       );
                     }

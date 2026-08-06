@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -544,7 +544,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                     padding: const EdgeInsets.only(bottom: AppSpacing.s10),
                     child: ListTile(
                       onTap: () {
-                        Navigator.pop(context);
+                        context.pop();
                         context.push(
                           '${AppRoutes.counselingBooking}?psikolog_id=$psikologId',
                         );

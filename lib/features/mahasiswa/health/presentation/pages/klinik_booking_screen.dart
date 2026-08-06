@@ -7,11 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 
@@ -19,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'health_booking_form_screen.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:go_router/go_router.dart';
 
 class KlinikBookingScreen extends StatefulWidget {
   const KlinikBookingScreen({super.key});
@@ -30,7 +32,7 @@ class KlinikBookingScreen extends StatefulWidget {
 class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ProfileProvider>();
     final health = context.watch<HealthViewModel>();
     final activeBookings =
         health.healthBookings
@@ -246,7 +248,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
 
   Widget _buildBookingCard(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     HealthBooking booking,
   ) {
     final schedule = booking.jadwal;
@@ -410,7 +412,11 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                             booking.id.toString(),
                                       ),
                                 ),
-                              ).then((_) => context.read<HealthViewModel>().refreshHealthData());
+                              ).then((_) {
+  if (context.mounted) {
+    context.read<HealthViewModel>().refreshHealthData();
+  }
+});
                             }
                           },
                           text: 'Jadwal Ulang',
@@ -430,7 +436,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
 
   Widget _buildHealthWorkerCard(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     HealthWorker worker,
   ) {
     return Container(
@@ -524,7 +530,11 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     builder:
                         (context) => HealthBookingFormScreen(worker: worker),
                   ),
-                ).then((_) => context.read<HealthViewModel>().refreshHealthData()),
+                ).then((_) {
+  if (context.mounted) {
+    context.read<HealthViewModel>().refreshHealthData();
+  }
+}),
             text: 'Booking',
             width: 95,
             height: 40,
@@ -538,7 +548,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
 
   void _showBookingDetailModal(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     HealthBooking booking,
   ) {
     final schedule = booking.jadwal;
@@ -764,7 +774,11 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                                               booking.id.toString(),
                                         ),
                                   ),
-                                ).then((_) => context.read<HealthViewModel>().refreshHealthData());
+                                ).then((_) {
+  if (context.mounted) {
+    context.read<HealthViewModel>().refreshHealthData();
+  }
+});
                               }
                             },
                             text: 'Jadwal Ulang',
@@ -807,7 +821,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
 
   void _confirmCancelBooking(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     HealthBooking booking,
   ) {
     showDialog(
@@ -849,7 +863,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               cancelText: '',
                               confirmText: 'Tutup',
                               onCancel: () {},
-                              onConfirm: () => Navigator.pop(context),
+                              onConfirm: () => context.pop(),
                             ),
                       );
                     }
@@ -866,7 +880,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                               confirmText: 'Tutup',
                               isDestructive: true,
                               onCancel: () {},
-                              onConfirm: () => Navigator.pop(context),
+                              onConfirm: () => context.pop(),
                             ),
                       );
                     }

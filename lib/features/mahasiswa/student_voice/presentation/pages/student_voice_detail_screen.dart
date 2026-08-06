@@ -7,13 +7,13 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
 
 class TimelineEvent {
@@ -56,7 +56,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
 
   Future<void> _fetchDetail() async {
     try {
-      final provider = context.read<StudentProvider>();
+      final provider = context.read<StudentVoiceProvider>();
       final result = await provider.getAspirationDetail(widget.aspirationId);
       if (mounted) {
         setState(() {

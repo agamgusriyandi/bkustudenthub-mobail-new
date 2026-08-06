@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
 class MentorMaterialsScreen extends StatefulWidget {
   const MentorMaterialsScreen({super.key});
@@ -45,9 +46,13 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
 
   Future<void> _openFile(String url) async {
     if (url.isEmpty) return;
-    final uri = Uri.parse(url);
+    final baseUrl = ApiGate.baseUrl.replaceAll('/api', '');
+    final finalUrl = url.startsWith('http') ? url : '$baseUrl$url';
+    final uri = Uri.parse(finalUrl);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+    } else {
+      if (mounted) AppSnackbar.showError(context, 'Tidak dapat membuka URL lampiran');
     }
   }
 
@@ -134,8 +139,11 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.appColors.primary,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                        elevation: 0,
                       ),
                     ),
                   ],
@@ -287,6 +295,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     String component = 'cognitive';
     bool isMandatory = true;
     String? fileName;
+    PlatformFile? selectedFile;
+    bool isUploading = false;
 
     showModalBottomSheet(
       context: context,
@@ -444,6 +454,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           final result = await FilePicker.pickFiles();
                           if (result != null && result.files.isNotEmpty) {
                             setModalState(() {
+                              selectedFile = result.files.single;
                               fileName = result.files.single.name;
                             });
                           }
@@ -481,14 +492,28 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
-                      onPressed: () async {
+                      onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
+                        
+                        String finalFileUrl = urlController.text.trim();
+                        if (selectedFile != null) {
+                          setModalState(() => isUploading = true);
+                          final uploadedUrl = await provider.uploadMaterialFile(selectedFile!);
+                          setModalState(() => isUploading = false);
+                          if (uploadedUrl != null) {
+                            finalFileUrl = uploadedUrl;
+                          } else {
+                            if (context.mounted) AppSnackbar.showError(context, 'Gagal mengupload file');
+                            return;
+                          }
+                        }
+                        
                         final success = await provider.createMaterial({
                           'session_id': session.id,
                           'title': titleController.text.trim(),
                           'description': descController.text.trim(),
-                          'file_url': urlController.text.trim().isNotEmpty ? urlController.text.trim() : (fileName ?? ''),
+                          'file_url': finalFileUrl,
                           'component': component,
                           'is_mandatory': isMandatory,
                         });
@@ -501,7 +526,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           AppSnackbar.showError(context, 'Gagal menyimpan materi');
                         }
                       },
-                      child: const Text('Simpan Materi', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: isUploading 
+                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Text('Simpan Materi', style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -520,7 +547,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     String jenisMateri = mat.fileUrl.endsWith('.pdf') ? 'File' : 'Teks';
     String component = ['cognitive', 'psychomotor', 'affective'].contains(mat.component) ? mat.component : 'cognitive';
     bool isMandatory = true;
-    String fileName = mat.fileUrl.isNotEmpty ? mat.fileUrl.split('/').last : 'HANDBOOK KENCANA 2025 FIX.print.pdf';
+    String fileName = mat.fileUrl.isNotEmpty ? mat.fileUrl.split('/').last : 'Belum ada file terpilih';
+    PlatformFile? selectedFile;
+    bool isUploading = false;
 
     showModalBottomSheet(
       context: context,
@@ -684,6 +713,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               final result = await FilePicker.pickFiles();
                               if (result != null && result.files.isNotEmpty) {
                                 setModalState(() {
+                                  selectedFile = result.files.single;
                                   fileName = result.files.single.name;
                                 });
                               }
@@ -725,26 +755,44 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       ),
-                      onPressed: () async {
+                      onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
+                        
+                        String finalFileUrl = urlController.text.trim();
+                        if (selectedFile != null) {
+                          setModalState(() => isUploading = true);
+                          final uploadedUrl = await provider.uploadMaterialFile(selectedFile!);
+                          setModalState(() => isUploading = false);
+                          if (uploadedUrl != null) {
+                            finalFileUrl = uploadedUrl;
+                          } else {
+                            if (context.mounted) AppSnackbar.showError(context, 'Gagal mengupload file');
+                            return;
+                          }
+                        } else if (finalFileUrl.isEmpty) {
+                          finalFileUrl = mat.fileUrl; // keep the old one if no new file/url is provided
+                        }
+                        
                         final success = await provider.updateMaterial(mat.id, {
                           'title': titleController.text.trim(),
                           'description': descController.text.trim(),
-                          'file_url': urlController.text.trim().isNotEmpty ? urlController.text.trim() : fileName,
+                          'file_url': finalFileUrl,
                           'component': component,
                           'is_mandatory': isMandatory,
                         });
                         if (!context.mounted) return;
                         if (success) {
                           Navigator.pop(context);
-                          AppSnackbar.showSuccess(context, 'Materi berhasil diperbarui');
+                          AppSnackbar.showSuccess(context, 'Materi berhasil diupdate');
                           provider.fetchSessionMaterialsList();
                         } else {
-                          AppSnackbar.showError(context, 'Gagal memperbarui materi');
+                          AppSnackbar.showError(context, 'Gagal mengupdate materi');
                         }
                       },
-                      child: const Text('Simpan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                      child: isUploading 
+                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Text('Update Materi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
                     ),
                   ],
                 ),
@@ -860,6 +908,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           backgroundColor: context.appColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                          elevation: 0,
                         ),
                       ),
                     ),
@@ -1212,10 +1264,17 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     );
   }  final Map<int, List<Map<String, dynamic>>> _quizQuestionsCache = {};
 
-  void _showQuizQuestionsModal(BuildContext context, SessionMaterialItem quiz) {
-    if (!_quizQuestionsCache.containsKey(quiz.id)) {
-      _quizQuestionsCache[quiz.id] = [];
-    }
+  Future<void> _showQuizQuestionsModal(BuildContext context, SessionMaterialItem quiz) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    final provider = context.read<MentorKencanaProvider>();
+    final questions = await provider.fetchQuizQuestions(quiz.id);
+    if (!context.mounted) return;
+    Navigator.pop(context); // close loading
+    _quizQuestionsCache[quiz.id] = questions;
 
     showModalBottomSheet(
       context: context,
@@ -1263,25 +1322,33 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             quizId: quiz.id,
                             onSave: (newQuestionData) async {
                               final provider = context.read<MentorKencanaProvider>();
-                              await provider.createQuizQuestion({
+                              final createdQuestion = await provider.createQuizQuestion({
                                 'quiz_id': quiz.id,
                                 ...newQuestionData,
                               });
-                              setModalState(() {
-                                questionsList.add(newQuestionData);
-                              });
-                              if (!context.mounted) return;
-                              AppSnackbar.showSuccess(context, 'Soal berhasil disimpan');
+                              if (createdQuestion != null) {
+                                setModalState(() {
+                                  questionsList.add(createdQuestion);
+                                });
+                                if (!context.mounted) return;
+                                AppSnackbar.showSuccess(context, 'Soal berhasil disimpan');
+                              } else {
+                                if (!context.mounted) return;
+                                AppSnackbar.showError(context, 'Gagal menyimpan soal');
+                              }
                             },
                           );
                         },
                         icon: const Icon(Icons.add, size: 14),
-                        label: const Text('+ Tambah Soal', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        label: const Text('Tambah Soal', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0F172A),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          elevation: 0,
                         ),
                       ),
                     ],
@@ -1308,7 +1375,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                               Row(
                                 children: [
                                   Container(
                                     width: 24,
@@ -1321,25 +1388,22 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       child: Text('${idx + 1}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(item['question'] ?? item['pertanyaan'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                  ),
+                                  const Spacer(),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(4)),
-                                    child: Text('Bobot: ${item['weight'] ?? 25}', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                    child: Text('Bobot: ${item['weight'] ?? item['score'] ?? item['bobot'] ?? 25}', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
                                   ),
                                   const SizedBox(width: 4),
                                   InkWell(
                                     onTap: () => _showAddQuestionDialog(
                                       context,
                                       quizId: quiz.id,
-                                      initialQuestion: item['question'] ?? item['pertanyaan'],
-                                      initialAnswer: opts.isNotEmpty ? opts.first['text'] : '',
+                                      initialQuestion: item['question_text'] ?? item['question'] ?? item['pertanyaan'],
+                                      initialAnswer: opts.isNotEmpty ? opts.first['option_text'] ?? opts.first['text'] : '',
                                       onSave: (updatedData) async {
                                         final provider = context.read<MentorKencanaProvider>();
-                                        if (item['id'] != null && item['id'] is int) {
+                                        if (item['id'] != null) {
                                           await provider.updateQuizQuestion(item['id'], updatedData);
                                         }
                                         setModalState(() {
@@ -1359,7 +1423,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                   InkWell(
                                     onTap: () async {
                                       final provider = context.read<MentorKencanaProvider>();
-                                      if (item['id'] != null && item['id'] is int) {
+                                      if (item['id'] != null) {
                                         await provider.deleteQuizQuestion(item['id']);
                                       }
                                       setModalState(() {
@@ -1375,6 +1439,11 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                item['question_text'] ?? item['question'] ?? item['pertanyaan'] ?? '',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
                               ),
                               if (opts.isNotEmpty) ...[
                                 const SizedBox(height: 12),
@@ -1747,6 +1816,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           backgroundColor: context.appColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                          elevation: 0,
                         ),
                       ),
                     ),
@@ -2134,7 +2207,13 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
               variant: AppBarVariant.student,
               isExpandable: false,
               showBackButton: true,
-              onBack: () => context.pop(),
+              onBack: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/mentor-kencana');
+                }
+              },
             ),
             SliverToBoxAdapter(
               child: Padding(

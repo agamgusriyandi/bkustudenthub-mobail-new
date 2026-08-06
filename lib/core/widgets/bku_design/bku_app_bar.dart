@@ -9,6 +9,26 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/services/notification_service.dart';
 import 'package:go_router/go_router.dart';
 
+void performSafeBack(BuildContext context, VoidCallback? onBack) {
+  if (onBack != null) {
+    try {
+      onBack();
+      return;
+    } catch (_) {}
+  }
+  if (context.canPop()) {
+    context.pop();
+  } else if (Navigator.canPop(context)) {
+    Navigator.pop(context);
+  } else {
+    try {
+      context.read<NavigationProvider>().setIndex(0);
+    } catch (_) {
+      context.go('/');
+    }
+  }
+}
+
 enum AppBarVariant { student, ormawa, secondary, psychologist, nakes }
 
 class BkuAppBar extends StatelessWidget {
@@ -90,19 +110,7 @@ class BkuAppBar extends StatelessWidget {
             leading ??
             ((showBackButton ?? (onBack != null || context.canPop() || Navigator.canPop(context)))
                 ? IconButton(
-                  onPressed: () {
-                    if (onBack != null) {
-                      onBack!();
-                    } else if (context.canPop()) {
-                      context.pop();
-                    } else if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      try {
-                        context.read<NavigationProvider>().setIndex(0);
-                      } catch (_) { /* Silenced: non-critical navigation fallback */ }
-                    }
-                  },
+                  onPressed: () => performSafeBack(context, onBack),
                   icon: Icon(
                     Icons.arrow_back_ios_new_rounded,
                     size: 20,
@@ -204,16 +212,13 @@ class BkuAppBar extends StatelessWidget {
             ),
           const SizedBox(width: AppSpacing.sm),
         ],
-        flexibleSpace: Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            height: kToolbarHeight + topPadding,
+        flexibleSpace: IgnorePointer(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: kToolbarHeight + topPadding,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: gradientColors,
-              ),
+              color: gradientColors[1],
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(AppRadius.xxl),
               ),
@@ -226,11 +231,15 @@ class BkuAppBar extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: Opacity(
-                      opacity: 0.1,
-                      child: Image.asset(
-                        'assets/images/batik_pattern.png',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
+                      opacity: 0.15,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/icons.png'),
+                            repeat: ImageRepeat.repeat,
+                            scale: 4.0,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -239,7 +248,8 @@ class BkuAppBar extends StatelessWidget {
             ),
           ),
         ),
-      );
+      ),
+    );
     }
 
     // Jalur 2: EXPANDABLE APP BAR (Untuk Dashboard)
@@ -253,19 +263,7 @@ class BkuAppBar extends StatelessWidget {
           leading ??
           ((showBackButton ?? (onBack != null || context.canPop() || Navigator.canPop(context)))
               ? IconButton(
-                onPressed: () {
-                  if (onBack != null) {
-                    onBack!();
-                  } else if (context.canPop()) {
-                    context.pop();
-                  } else if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  } else {
-                    try {
-                      context.read<NavigationProvider>().setIndex(0);
-                    } catch (_) { /* Silenced: non-critical navigation fallback */ }
-                  }
-                },
+                onPressed: () => performSafeBack(context, onBack),
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 20,
@@ -348,11 +346,7 @@ class BkuAppBar extends StatelessWidget {
 
           return Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: gradientColors,
-              ),
+              color: gradientColors[1],
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(AppRadius.xxl),
               ),
@@ -365,11 +359,15 @@ class BkuAppBar extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: Opacity(
-                      opacity: 0.1,
-                      child: Image.asset(
-                        'assets/images/batik_pattern.png',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
+                      opacity: 0.15,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/icons.png'),
+                            repeat: ImageRepeat.repeat,
+                            scale: 4.0,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -661,11 +659,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: gradientColors,
-        ),
+        color: gradientColors[1],
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
         boxShadow: [
           BoxShadow(
@@ -681,11 +675,15 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Positioned.fill(
               child: Opacity(
-                opacity: 0.1,
-                child: Image.asset(
-                  'assets/images/batik_pattern.png',
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
+                opacity: 0.15,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/icons.png'),
+                      repeat: ImageRepeat.repeat,
+                      scale: 4.0,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -697,19 +695,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     if (showBackButton)
                       IconButton(
-                        onPressed: () {
-                          if (onBack != null) {
-                            onBack!();
-                          } else if (context.canPop()) {
-                            context.pop();
-                          } else if (Navigator.canPop(context)) {
-                            Navigator.pop(context);
-                          } else {
-                            try {
-                              context.read<NavigationProvider>().setIndex(0);
-                            } catch (_) { /* Silenced: non-critical navigation fallback */ }
-                          }
-                        },
+                        onPressed: () => performSafeBack(context, onBack),
                         icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
                           color: onColor,

@@ -126,6 +126,7 @@ class MenteeData {
   final int id;
   final String name;
   final String nim;
+  final String programStudi;
   final String faculty;
   final String status;
   final double score;
@@ -135,6 +136,7 @@ class MenteeData {
     required this.id,
     required this.name,
     required this.nim,
+    this.programStudi = '',
     required this.faculty,
     required this.status,
     required this.score,
@@ -189,6 +191,11 @@ class MenteeData {
           '';
     }
 
+    final prodiValue =
+        studentMap != null
+            ? (studentMap['prodi'] ?? studentMap['program_studi'] ?? '')
+            : (json['program_studi'] ?? json['prodi'] ?? '');
+
     final avatarUrlValue = () {
       final possibleKeys = [
         'foto_url',
@@ -230,6 +237,7 @@ class MenteeData {
       name: nameValue.toString(),
       nim: nimValue.toString(),
       faculty: facultyValue.toString(),
+      programStudi: prodiValue.toString(),
       status: json['status'] ?? json['Status'] ?? 'Belum Lulus',
       score:
           double.tryParse(
@@ -559,6 +567,7 @@ class AbsenceRequestData {
   final String reason;
   final String date;
   final String status;
+  final String attachmentUrl;
 
   AbsenceRequestData({
     required this.id,
@@ -568,6 +577,7 @@ class AbsenceRequestData {
     required this.reason,
     required this.date,
     required this.status,
+    this.attachmentUrl = '',
   });
 
   factory AbsenceRequestData.fromJson(Map<String, dynamic> json) {
@@ -588,6 +598,12 @@ class AbsenceRequestData {
       reason: json['reason'] ?? json['alasan'] ?? '',
       date: json['date'] ?? json['tanggal'] ?? '',
       status: json['status'] ?? json['Status'] ?? 'Pending',
+      attachmentUrl:
+          json['attachmentUrl'] ??
+          json['attachment_url'] ??
+          json['file_url'] ??
+          json['bukti'] ??
+          '',
     );
   }
 }
@@ -760,6 +776,7 @@ class MentorEssayItem {
   final String answer;
   final String status;
   final double? score;
+  final double maxScore;
   final String submittedAt;
   final String? feedback;
 
@@ -771,6 +788,7 @@ class MentorEssayItem {
     required this.answer,
     required this.status,
     this.score,
+    this.maxScore = 25.0,
     required this.submittedAt,
     this.feedback,
   });
@@ -790,16 +808,18 @@ class MentorEssayItem {
     final qText = json['question_text'] ?? json['question'] ?? json['pertanyaan'] ?? json['soal'] ?? json['text'] ?? '';
     final aText = json['student_answer'] ?? json['answer_text'] ?? json['answer'] ?? json['jawaban'] ?? json['response'] ?? '';
     final scoreVal = json['score'] ?? json['nilai'] ?? json['point'];
-    final feedbackText = json['feedback'] ?? json['catatan'] ?? json['notes'] ?? '';
+    final feedbackText = json['grading_notes'] ?? json['feedback'] ?? json['catatan'] ?? json['notes'] ?? '';
+    final maxScoreVal = json['max_score'] ?? json['maxScore'] ?? 25;
 
     return MentorEssayItem(
-      id: json['id'] ?? json['ID'] ?? json['essay_id'] ?? json['submission_id'] ?? 0,
+      id: json['answer_id'] ?? json['id'] ?? json['ID'] ?? json['essay_id'] ?? json['submission_id'] ?? 0,
       studentName: studentName.toString(),
       nim: nim.toString(),
       question: qText.toString(),
       answer: aText.toString(),
-      status: json['status']?.toString() ?? (scoreVal != null ? 'graded' : 'pending'),
+      status: json['grading_status']?.toString() ?? json['status']?.toString() ?? (scoreVal != null ? 'graded' : 'pending'),
       score: scoreVal != null ? double.tryParse(scoreVal.toString()) : null,
+      maxScore: double.tryParse(maxScoreVal.toString()) ?? 25.0,
       submittedAt: json['submitted_at'] ?? json['created_at'] ?? json['tanggal'] ?? '',
       feedback: feedbackText.toString(),
     );
@@ -1079,6 +1099,9 @@ class SessionAttendanceData {
   final String programStudi;
   final String faculty;
   final String status; // Hadir, Izin, Sakit, Alpha, Pending
+  final String originalStatus;
+  final String reason;
+  final String attachmentUrl;
 
   SessionAttendanceData({
     required this.id,
@@ -1087,6 +1110,9 @@ class SessionAttendanceData {
     required this.programStudi,
     required this.faculty,
     required this.status,
+    this.originalStatus = '',
+    this.reason = '',
+    this.attachmentUrl = '',
   });
 
   factory SessionAttendanceData.fromJson(Map<String, dynamic> json) {
@@ -1144,6 +1170,9 @@ class SessionAttendanceData {
       programStudi: prodiValue,
       faculty: facultyValue,
       status: statusStr,
+      originalStatus: rawStatus,
+      reason: json['reason']?.toString() ?? '',
+      attachmentUrl: json['attachment_url']?.toString() ?? json['file_url']?.toString() ?? '',
     );
   }
 }

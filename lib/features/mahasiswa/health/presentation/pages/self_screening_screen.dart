@@ -4,12 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/data/models/screening_model.dart';
 import '../providers/self_screening_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class SelfScreeningScreen extends StatefulWidget {
   const SelfScreeningScreen({super.key});
@@ -31,9 +32,8 @@ class _SelfScreeningScreenState extends State<SelfScreeningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.appColors.surface,
-      appBar: UnifiedStaticAppBar(
+      appBar: const BkuStaticAppBar(
         title: 'Self-Screening Kesehatan Mental',
-        showBackButton: true,
         showNotification: false,
       ),
       body: Consumer<SelfScreeningProvider>(
@@ -454,7 +454,7 @@ class _SelfScreeningScreenState extends State<SelfScreeningScreen> {
           const SizedBox(height: AppSpacing.xl),
           BkuButton.outline(
             text: 'Kembali ke Health Hub',
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             icon: Icons.arrow_back_ios_new_rounded,
           ),
           const SizedBox(height: AppSpacing.md),
@@ -703,7 +703,7 @@ class _SelfScreeningScreenState extends State<SelfScreeningScreen> {
             BkuButton.primary(
               text: 'Booking Konsultasi',
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
               icon: Icons.calendar_month_rounded,
             ),

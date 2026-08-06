@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MentorAttendanceScreen extends StatefulWidget {
   const MentorAttendanceScreen({super.key});
@@ -45,6 +48,88 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
     _sessionSearchController.dispose();
     _absenceSearchController.dispose();
     super.dispose();
+  }
+
+  void _showAttachmentDialog(BuildContext context, AbsenceRequestData req) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.appColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
+        title: Row(
+          children: [
+            Icon(Icons.description_rounded, color: context.appColors.primary),
+            const SizedBox(width: 8),
+            Text('Bukti Lampiran Izin', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Mahasiswa: ${req.studentName} (${req.nim})', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            Text('Alasan: ${req.reason}', style: AppTextStyles.labelSm),
+            const SizedBox(height: 12),
+            Text('URL / Link File Lampiran:', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            req.attachmentUrl.isNotEmpty
+                ? InkWell(
+                    onTap: () async {
+                      final urlStr = req.attachmentUrl;
+                      final baseUrl = ApiGate.baseUrl.replaceAll('/api', '');
+                      final finalUrl = urlStr.startsWith('http') ? urlStr : '$baseUrl$urlStr';
+                      final uri = Uri.parse(finalUrl);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+                      }
+                    },
+                    borderRadius: AppRadius.radiusMd,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: context.appColors.primary.withAlpha(15),
+                        borderRadius: AppRadius.radiusMd,
+                        border: Border.all(color: context.appColors.primary.withAlpha(40)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.open_in_new_rounded, size: 16, color: context.appColors.primary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Buka File Lampiran',
+                              style: AppTextStyles.labelMd.copyWith(color: context.appColors.primary, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: context.appColors.primary.withAlpha(15),
+                      borderRadius: AppRadius.radiusMd,
+                      border: Border.all(color: context.appColors.primary.withAlpha(40)),
+                    ),
+                    child: Text(
+                      'Tidak ada lampiran',
+                      style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary),
+                    ),
+                  ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Tutup', style: TextStyle(color: context.appColors.primary, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _respondAbsenceRequest(int requestId, String action) async {
@@ -96,7 +181,13 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
               variant: AppBarVariant.student,
               isExpandable: false,
               showBackButton: true,
-              onBack: () => context.pop(),
+              onBack: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/mentor-kencana');
+                }
+              },
             ),
             SliverPersistentHeader(
               pinned: true,
@@ -339,9 +430,13 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final req = filteredAbsences[index];
-                        final isPending = req.status.toLowerCase() == 'pending';
-                        final isApproved = req.status.toLowerCase() == 'approved';
-                        final statusColor = isPending ? AppColors.warning : (isApproved ? AppColors.success : AppColors.error);
+                        final statusLower = req.status.toLowerCase();
+                        final isPending = statusLower == 'permission_requested' || statusLower == 'pending' || statusLower == 'menunggu';
+                        final isApproved = statusLower == 'permission' || statusLower == 'approved' || statusLower == 'disetujui' || statusLower == 'present';
+
+                        final statusColor = isPending
+                            ? AppColors.warning
+                            : (isApproved ? AppColors.success : AppColors.error);
                         
                         return BkuCard(
                           margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -366,8 +461,33 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                     child: Text(req.sessionTitle, style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
                                   ),
                                   Expanded(
-                                    flex: 2,
-                                    child: Text(req.reason, style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
+                                    flex: 3,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(req.reason.isNotEmpty ? req.reason : '-', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
+                                        if (req.attachmentUrl.isNotEmpty) ...[
+                                          const SizedBox(height: 2),
+                                          GestureDetector(
+                                            onTap: () => _showAttachmentDialog(context, req),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.description_outlined, size: 12, color: context.appColors.primary),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  'Lihat Bukti Lampiran',
+                                                  style: AppTextStyles.labelSm.copyWith(
+                                                    color: context.appColors.primary,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -387,11 +507,9 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                           border: Border.all(color: statusColor.withAlpha(50)),
                                         ),
                                         child: Text(
-                                          (req.status.toLowerCase() == 'approved'
-                                                  ? 'DISETUJUI'
-                                                  : req.status.toLowerCase() == 'rejected'
-                                                      ? 'DITOLAK'
-                                                      : 'MENUNGGU'),
+                                          isPending
+                                              ? 'MENUNGGU'
+                                              : (isApproved ? 'DISETUJUI' : 'DITOLAK'),
                                           style: AppTextStyles.labelSm.copyWith(color: statusColor, fontSize: 9, fontWeight: FontWeight.bold),
                                         ),
                                       ),
@@ -421,12 +539,19 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                           ),
                                         ),
                                       ] else
-                                        SizedBox(
-                                          height: 28,
-                                          child: OutlinedButton(
-                                            onPressed: null,
-                                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12)),
-                                            child: const Text('Selesai', style: TextStyle(fontSize: 10)),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            borderRadius: AppRadius.radiusMd,
+                                            border: Border.all(color: context.appColors.outlineVariant),
+                                          ),
+                                          child: Text(
+                                            'Selesai',
+                                            style: AppTextStyles.labelSm.copyWith(
+                                              color: context.appColors.outline,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                     ],

@@ -1,19 +1,15 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 
 // Screens
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/health_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/medical_referral_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/insurance_claim_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/counseling_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_handbook_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_invitations_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/achievement_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/organisasi_screen.dart';
@@ -25,9 +21,14 @@ class StudentServiceGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTablet = constraints.maxWidth >= 600;
-        final crossAxisCount = isTablet ? 10 : 5;
-        final aspectRatio = isTablet ? 1.0 : 0.72;
+        // Menghitung jumlah kolom optimal (min 4, max 8) berdasarkan lebar yang tersedia
+        final crossAxisCount = (constraints.maxWidth / 80).floor().clamp(4, 8);
+        
+        // Menghitung lebar tiap item
+        final itemWidth = (constraints.maxWidth - (6 * (crossAxisCount - 1))) / crossAxisCount;
+        
+        // Tinggi fix yang dibutuhkan: Container(56) + SizedBox(8) + Text(max ~32) = ~96
+        final aspectRatio = itemWidth / 96;
 
         return GridView.count(
           shrinkWrap: true,
@@ -41,62 +42,50 @@ class StudentServiceGrid extends StatelessWidget {
             _ServiceIcon(
               label: 'Kencana',
               icon: Icons.school_rounded,
-              color: AppColors.primary,
+              color: AppColors.serviceIndigo,
               target: const KencanaScreen(),
             ),
             _ServiceIcon(
-              label: 'Handbook',
-              icon: Icons.menu_book_rounded,
-              color: AppColors.warning,
-              target: const KencanaHandbookScreen(),
+              label: 'Prestasi',
+              icon: Icons.emoji_events_rounded,
+              color: AppColors.serviceAmber,
+              target: const AchievementScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Beasiswa',
+              icon: Icons.workspace_premium_rounded,
+              color: AppColors.serviceEmerald,
+              target: const ScholarshipScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Organisasi',
+              icon: Icons.groups_rounded,
+              color: AppColors.servicePurple,
+              target: const OrganisasiScreen(),
             ),
             _ServiceIcon(
               label: 'Konseling',
-              icon: Icons.psychology_rounded,
-              color: context.appColors.tertiary,
+              icon: Icons.support_agent_rounded,
+              color: AppColors.serviceCyan,
               target: const CounselingScreen(),
             ),
             _ServiceIcon(
               label: 'Kesehatan',
               icon: Icons.monitor_heart_rounded,
-              color: context.appColors.info,
+              color: AppColors.serviceRose,
               target: const HealthScreen(),
             ),
             _ServiceIcon(
-              label: 'Rujukan',
-              icon: Icons.medical_information_rounded,
-              color: AppColors.info,
-              target: const MedicalReferralScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Asuransi',
-              icon: Icons.verified_user_rounded,
-              color: AppColors.success,
-              target: const InsuranceClaimScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Beasiswa',
-              icon: Icons.workspace_premium_rounded,
-              color: AppColors.success,
-              target: const ScholarshipScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Prestasi',
-              icon: Icons.emoji_events_rounded,
-              color: AppColors.info,
-              target: const AchievementScreen(),
-            ),
-            _ServiceIcon(
-              label: 'Organisasi',
-              icon: Icons.groups_rounded,
-              color: context.appColors.info,
-              target: const OrganisasiScreen(),
-            ),
-            _ServiceIcon(
               label: 'Aspirasi',
-              icon: Icons.campaign_rounded,
-              color: AppColors.error,
+              icon: Icons.chat_rounded, // Match web icon
+              color: AppColors.serviceSky,
               target: const StudentVoiceScreen(),
+            ),
+            _ServiceIcon(
+              label: 'Undangan\nMentor',
+              icon: Icons.group_add_rounded,
+              color: AppColors.servicePink,
+              target: const KencanaInvitationsScreen(),
             ),
           ],
         );
@@ -120,7 +109,7 @@ class _ServiceIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return BkuBounceButton(
       onTap: () {
         if (target != null) {
           Navigator.push(
@@ -129,39 +118,34 @@ class _ServiceIcon extends StatelessWidget {
           );
         }
       },
-      child: BkuCard(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xs,
-          vertical: AppSpacing.sm,
-        ),
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: color.withAlpha(20),
-                borderRadius: AppRadius.radiusLg,
-              ),
-              child: Icon(icon, color: color, size: 22),
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: color.withAlpha(30),
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(height: AppSpacing.s6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.labelSm.copyWith(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            child: Center(child: Icon(icon, color: color, size: 28)),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelSm.copyWith(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                height: 1.1,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

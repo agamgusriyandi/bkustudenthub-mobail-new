@@ -2,11 +2,12 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
 
 class PortfolioPdfGenerator {
-  static Future<void> generateAndPrintPortfolio(StudentProvider student) async {
+  static Future<void> generateAndPrintPortfolio(ProfileProvider profile, OrganizationProvider organization) async {
     final doc = pw.Document();
 
     final primaryColor = PdfColor.fromHex('#1E293B');
@@ -44,7 +45,7 @@ class PortfolioPdfGenerator {
                   ),
                 ),
                 pw.Text(
-                  'NIM: ${student.nim}',
+                  'NIM: ${profile.nim}',
                   style: pw.TextStyle(fontSize: 8, color: textMuted),
                 ),
               ],
@@ -80,7 +81,7 @@ class PortfolioPdfGenerator {
           );
         },
         build: (pw.Context context) {
-          final orgList = student.organizationHistory;
+          final orgList = organization.organizationHistory;
           final verifiedCount =
               orgList
                   .where(
@@ -170,14 +171,14 @@ class PortfolioPdfGenerator {
                           children: [
                             _buildInfoRow(
                               'Nama Lengkap',
-                              student.name,
+                              profile.name,
                               textDark,
                               textMuted,
                             ),
                             pw.SizedBox(height: AppSpacing.s6),
                             _buildInfoRow(
                               'NIM',
-                              student.nim,
+                              profile.nim,
                               textDark,
                               textMuted,
                             ),
@@ -190,14 +191,14 @@ class PortfolioPdfGenerator {
                           children: [
                             _buildInfoRow(
                               'Program Studi',
-                              student.prodi,
+                              profile.prodi,
                               textDark,
                               textMuted,
                             ),
                             pw.SizedBox(height: AppSpacing.s6),
                             _buildInfoRow(
                               'Semester',
-                              'Semester ${student.semester}',
+                              'Semester ${profile.semester}',
                               textDark,
                               textMuted,
                             ),
@@ -276,7 +277,7 @@ class PortfolioPdfGenerator {
 
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => doc.save(),
-      name: 'Portofolio_${student.nim}.pdf',
+      name: 'Portofolio_${profile.nim}.pdf',
     );
   }
 

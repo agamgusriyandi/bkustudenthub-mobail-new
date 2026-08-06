@@ -5,17 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/achievement.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:go_router/go_router.dart';
 
 class ReportAchievementScreen extends StatefulWidget {
   final Achievement? achievement;
@@ -784,7 +785,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickFromCamera();
                 },
               ),
@@ -800,7 +801,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickFromGalleryOrFiles();
                 },
               ),
@@ -899,12 +900,12 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               BkuLoadingDialog.show(context);
 
               if (isEditing) {
-                await context.read<StudentProvider>().updateAchievement(
+                await context.read<AcademicProvider>().updateAchievement(
                   widget.achievement!.id,
                   newAchievement,
                 );
               } else {
-                await context.read<StudentProvider>().addAchievement(
+                await context.read<AcademicProvider>().addAchievement(
                   newAchievement,
                 );
               }
@@ -923,7 +924,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       content: ErrorHandler.getMessage(e),
                       cancelText: '',
                       confirmText: 'Tutup',
-                      onConfirm: () => Navigator.pop(context),
+                      onConfirm: () => context.pop(),
                       onCancel: () {},
                     ),
               );
@@ -950,8 +951,8 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             cancelText: '',
             confirmText: 'Kembali ke Portofolio',
             onConfirm: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              context.pop();
+              context.pop();
             },
             onCancel: () {},
           ),

@@ -1,12 +1,12 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 
@@ -44,14 +44,13 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
 
-    // Extract list of all available quizzes from sessionMaterials
     final allQuizzes = <SessionMaterialItem>[];
     for (final mat in provider.sessionMaterials) {
       allQuizzes.addAll(mat.quizzes);
     }
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchEssayGrading(_selectedQuizId),
         color: context.appColors.primary,
@@ -64,33 +63,66 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
               isExpandable: false,
               showBackButton: true,
             ),
+            
+            // Modern Filter & Header Section
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(left: AppSpacing.xl, right: AppSpacing.xl, top: AppSpacing.lg),
-                child: BkuCard(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: context.appColors.surface,
+                    borderRadius: AppRadius.radiusLg,
+                    border: Border.all(color: context.appColors.outline.withAlpha(40)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Pilih kuis untuk melihat & menilai essay:',
-                        style: AppTextStyles.labelSm.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.appColors.outline,
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: context.appColors.primary.withAlpha(20),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.quiz_rounded,
+                              size: 18,
+                              color: context.appColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            'PILIH KUIS EVALUASI',
+                            style: AppTextStyles.labelSm.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: context.appColors.primary,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.md),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                         decoration: BoxDecoration(
                           color: context.appColors.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: context.appColors.outline.withAlpha(50)),
+                          borderRadius: AppRadius.radiusMd,
+                          border: Border.all(color: context.appColors.outline.withAlpha(60)),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<int?>(
                             value: _selectedQuizId ?? (allQuizzes.isNotEmpty ? allQuizzes.first.id : null),
                             isExpanded: true,
+                            icon: Icon(Icons.keyboard_arrow_down_rounded, color: context.appColors.primary),
                             hint: Text('Semua Kuis Evaluasi', style: AppTextStyles.labelSm),
                             items: [
                               if (allQuizzes.isEmpty)
@@ -103,7 +135,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                                   value: q.id,
                                   child: Text(
                                     q.title.isNotEmpty ? q.title : 'Kuis #${q.id}',
-                                    style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold),
+                                    style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -123,6 +155,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                 ),
               ),
             ),
+
             if (provider.isLoading && provider.essayItems.isEmpty)
               const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator()),
@@ -142,7 +175,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.assignment_turned_in_rounded, size: 48, color: context.appColors.outline.withAlpha(100)),
+                      Icon(Icons.assignment_turned_in_rounded, size: 56, color: context.appColors.outline.withAlpha(80)),
                       const SizedBox(height: 12),
                       Text(
                         'Belum ada jawaban essay yang perlu dikoreksi.',
@@ -154,7 +187,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final item = provider.essayItems[index];
@@ -162,6 +195,8 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                   }, childCount: provider.essayItems.length),
                 ),
               ),
+            
+            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
           ],
         ),
       ),
@@ -231,120 +266,263 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
     final item = widget.item;
     final isGraded = item.status == 'graded' || item.score != null;
 
-    return BkuCard(
+    return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(
+          color: isGraded ? const Color(0xFF10B981).withAlpha(60) : context.appColors.outline.withAlpha(40),
+          width: isGraded ? 1.5 : 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(8),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (item.studentName.isNotEmpty) ...[
-            Row(
-              children: [
-                const Icon(Icons.account_circle_rounded, size: 20, color: Color(0xFF64748B)),
-                const SizedBox(width: 6),
-                Text(item.studentName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A))),
-                if (item.nim.isNotEmpty) ...[
-                  const SizedBox(width: 6),
-                  Text('(${item.nim})', style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-                ],
-              ],
-            ),
-            const SizedBox(height: 10),
-          ],
-          // Question Header
-          if (item.question.isNotEmpty) ...[
-            Text(
-              item.question,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1E293B)),
-            ),
-            const SizedBox(height: 8),
-          ],
-          // Student Answer Box (styled with subtle beige background like website UI)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8F1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFFEDD5)),
-            ),
-            child: Text(
-              item.answer.isNotEmpty ? item.answer : '(Tidak ada jawaban)',
-              style: const TextStyle(fontSize: 12, color: Color(0xFF475569), height: 1.4),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Inline Input Row for Nilai & Catatan & Submit Button (Matching Web Screenshot)
+          // Student Header Row with Avatar & Badges
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Nilai Field
-              SizedBox(
-                width: 90,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Nilai (0-25)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                    const SizedBox(height: 2),
-                    TextField(
-                      controller: _scoreController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                      decoration: InputDecoration(
-                        hintText: '0-25',
-                        isDense: true,
-                        filled: true,
-                        fillColor: const Color(0xFFF8FAFC),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      ),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      context.appColors.primary,
+                      context.appColors.primary.withAlpha(180),
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    item.studentName.isNotEmpty ? item.studentName[0].toUpperCase() : 'M',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
                     ),
-                  ],
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
-              // Catatan Field
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Catatan', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                    const SizedBox(height: 2),
-                    TextField(
-                      controller: _feedbackController,
-                      style: const TextStyle(fontSize: 11),
-                      decoration: InputDecoration(
-                        hintText: 'Catatan...',
-                        isDense: true,
-                        filled: true,
-                        fillColor: const Color(0xFFF8FAFC),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    Text(
+                      item.studentName.isNotEmpty ? item.studentName : 'Mahasiswa',
+                      style: AppTextStyles.labelMd.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.onSurface,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (item.nim.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        'NIM: ${item.nim}',
+                        style: AppTextStyles.labelSm.copyWith(
+                          color: context.appColors.outline,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              // Status Badge
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isGraded 
+                      ? const Color(0xFF10B981).withAlpha(20) 
+                      : const Color(0xFFF59E0B).withAlpha(20),
+                  borderRadius: AppRadius.radiusSm,
+                  border: Border.all(
+                    color: isGraded 
+                        ? const Color(0xFF10B981).withAlpha(60) 
+                        : const Color(0xFFF59E0B).withAlpha(60),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isGraded ? Icons.check_circle_rounded : Icons.schedule_rounded,
+                      size: 13,
+                      color: isGraded ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isGraded ? 'Dinilai' : 'Belum Dinilai',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: isGraded ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              // Dinilai / Simpan Button
-              Padding(
-                padding: const EdgeInsets.only(top: 14),
-                child: ElevatedButton.icon(
-                  onPressed: _isSubmitting ? null : _submitScore,
-                  icon: _isSubmitting
-                      ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : Icon(isGraded ? Icons.check_circle_rounded : Icons.save_rounded, size: 14),
-                  label: Text(isGraded ? 'Dinilai' : 'Simpan', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isGraded ? const Color(0xFF10B981) : context.appColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          // Question Text
+          if (item.question.isNotEmpty) ...[
+            Text(
+              item.question,
+              style: AppTextStyles.labelMd.copyWith(
+                fontWeight: FontWeight.bold,
+                color: context.appColors.onSurface,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // Student Answer Blockquote Container
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8F1),
+              borderRadius: AppRadius.radiusMd,
+              border: Border.all(color: const Color(0xFFFFEDD5)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.format_quote_rounded,
+                  size: 18,
+                  color: Color(0xFFF97316),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    item.answer.isNotEmpty ? item.answer : '(Mahasiswa belum memasukkan jawaban)',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: item.answer.isNotEmpty ? const Color(0xFF334155) : const Color(0xFF94A3B8),
+                      fontStyle: item.answer.isNotEmpty ? FontStyle.normal : FontStyle.italic,
+                      height: 1.45,
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.lg),
+
+          // Grading Inputs Row
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Score Field
+              SizedBox(
+                width: 105,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NILAI (0-${item.maxScore.toInt()})',
+                      style: AppTextStyles.labelSm.copyWith(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.outline,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _scoreController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                      decoration: InputDecoration(
+                        hintText: '0-${item.maxScore.toInt()}',
+                        isDense: true,
+                        filled: true,
+                        fillColor: context.appColors.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: AppSpacing.sm),
+
+              // Notes Field
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'CATATAN MENTOR',
+                      style: AppTextStyles.labelSm.copyWith(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.outline,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _feedbackController,
+                      style: AppTextStyles.labelSm,
+                      decoration: InputDecoration(
+                        hintText: 'Catatan...',
+                        isDense: true,
+                        filled: true,
+                        fillColor: context.appColors.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: AppSpacing.sm),
+
+              // Action Button
+              BkuButton(
+                onPressed: _isSubmitting ? () {} : _submitScore,
+                isLoading: _isSubmitting,
+                icon: isGraded ? Icons.check_circle_rounded : Icons.save_rounded,
+                text: isGraded ? 'Dinilai' : 'Simpan',
+                height: 38,
+                fullWidth: false,
+                variant: isGraded ? BkuButtonVariant.success : BkuButtonVariant.primary,
               ),
             ],
           ),

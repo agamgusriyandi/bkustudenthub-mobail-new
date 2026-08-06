@@ -6,7 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/providers/kencana_timeline_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/timeline_model.dart';

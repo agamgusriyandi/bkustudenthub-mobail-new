@@ -4,11 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
@@ -46,79 +48,160 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
   Future<void> _submitAbsence(int sessionId, String sessionTitle) async {
     final reasonController = TextEditingController();
     final isSubmitting = ValueNotifier<bool>(false);
+    final selectedFile = ValueNotifier<File?>(null);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
-          (ctx) => AlertDialog(
-            title: const Text('Ajukan Izin'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sesi: $sessionTitle',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                TextField(
-                  controller: reasonController,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: 'Jelaskan alasan ketidakhadiran...',
-                    border: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusMd,
+          (ctx) => StatefulBuilder(
+            builder: (context, setStateDialog) {
+              return AlertDialog(
+                title: const Text('Ajukan Izin'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sesi: $sessionTitle',
+                      style: AppTextStyles.labelMd.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.all(AppSpacing.md),
-                  ),
+                    const SizedBox(height: AppSpacing.md),
+                    TextField(
+                      controller: reasonController,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText: 'Jelaskan alasan ketidakhadiran...',
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMd,
+                        ),
+                        contentPadding: const EdgeInsets.all(AppSpacing.md),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Dokumen Bukti *',
+                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () async {
+                        final result = await FilePicker.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+                        );
+                        if (result != null && result.files.single.path != null) {
+                          final file = File(result.files.single.path!);
+                          final sizeInMb = file.lengthSync() / (1024 * 1024);
+                          if (sizeInMb > 5) {
+                            if (ctx.mounted) {
+                              AppSnackbar.showWarning(ctx, 'Ukuran file maksimal 5MB');
+                            }
+                            return;
+                          }
+                          selectedFile.value = file;
+                          setStateDialog(() {});
+                        }
+                      },
+                      borderRadius: AppRadius.radiusMd,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: context.appColors.outline),
+                          borderRadius: AppRadius.radiusMd,
+                          color: context.appColors.surface,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.upload_file,
+                              color: context.appColors.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                selectedFile.value != null
+                                    ? selectedFile.value!.path.split('/').last
+                                    : 'Pilih file dokumen (Max 5MB)',
+                                style: AppTextStyles.bodySm.copyWith(
+                                  color: selectedFile.value != null
+                                      ? context.appColors.onSurface
+                                      : context.appColors.onSurfaceVariant,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (selectedFile.value != null)
+                              IconButton(
+                                icon: const Icon(Icons.close, size: 20),
+                                onPressed: () {
+                                  selectedFile.value = null;
+                                  setStateDialog(() {});
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Batal'),
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: isSubmitting,
-                builder: (ctx, submitting, _) {
-                  return TextButton(
-                    onPressed:
-                        submitting
-                            ? null
-                            : () async {
-                              if (reasonController.text.trim().isEmpty) {
-                                AppSnackbar.showWarning(
-                                  ctx,
-                                  'Alasan izin wajib diisi',
-                                );
-                                return;
-                              }
-                              isSubmitting.value = true;
-                              final provider = context.read<KencanaProvider>();
-                              final success = await provider.submitAbsence(
-                                sessionId,
-                                reasonController.text.trim(),
-                              );
-                              if (ctx.mounted) {
-                                isSubmitting.value = false;
-                                Navigator.pop(ctx, success);
-                              }
-                            },
-                    child:
-                        submitting
-                            ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                            : const Text('Ajukan Izin'),
-                  );
-                },
-              ),
-            ],
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text('Batal'),
+                  ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isSubmitting,
+                    builder: (ctx, submitting, _) {
+                      return TextButton(
+                        onPressed:
+                            submitting
+                                ? null
+                                : () async {
+                                  if (reasonController.text.trim().isEmpty) {
+                                    AppSnackbar.showWarning(
+                                      ctx,
+                                      'Alasan izin wajib diisi',
+                                    );
+                                    return;
+                                  }
+                                  if (selectedFile.value == null) {
+                                    AppSnackbar.showWarning(
+                                      ctx,
+                                      'Dokumen bukti wajib diunggah',
+                                    );
+                                    return;
+                                  }
+                                  isSubmitting.value = true;
+                                  final provider = context.read<KencanaProvider>();
+                                  final success = await provider.submitAbsence(
+                                    sessionId,
+                                    reasonController.text.trim(),
+                                    selectedFile.value,
+                                  );
+                                  if (ctx.mounted) {
+                                    isSubmitting.value = false;
+                                    Navigator.pop(ctx, success);
+                                  }
+                                },
+                        child:
+                            submitting
+                                ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                                : const Text('Ajukan Izin'),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }
           ),
     );
 

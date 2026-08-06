@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaAspirasiScreen extends StatefulWidget {
   const OrmawaAspirasiScreen({super.key});
@@ -1015,7 +1016,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                       },
                                                     );
                                                 if (context.mounted) {
-                                                  Navigator.pop(context);
+                                                  context.pop();
                                                 }
                                               } catch (e) {
                                                 if (context.mounted) {
@@ -1066,7 +1067,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                       },
                                                     );
                                                 if (context.mounted) {
-                                                  Navigator.pop(context);
+                                                  context.pop();
                                                 }
                                               } catch (e) {
                                                 if (context.mounted) {
@@ -1175,7 +1176,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                     '',
                                   ),
                             );
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -1223,7 +1224,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                         return GestureDetector(
                           onTap: () {
                             setState(() => _filterStatus = option);
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -1262,7 +1263,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                           _sortOrder = 'terbaru';
                           _filterStatus = 'Semua';
                         });
-                        Navigator.pop(context);
+                        context.pop();
                       },
                       child: Text(
                         'Reset',

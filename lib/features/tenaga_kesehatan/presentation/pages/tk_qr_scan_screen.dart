@@ -458,7 +458,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
 
                           child: const Text('Batal'),
                         ),
@@ -469,7 +469,7 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
                           onPressed: () {
                             final nim = nimController.text.trim();
                             if (nim.isNotEmpty) {
-                              Navigator.pop(context);
+                              context.pop();
                               _processQrCode(nim);
                             }
                           },

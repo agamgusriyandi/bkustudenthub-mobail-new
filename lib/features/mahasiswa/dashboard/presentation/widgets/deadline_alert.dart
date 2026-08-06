@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
 class DeadlineItem {
   final String name;
@@ -93,7 +94,7 @@ class DeadlineAlert extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigate to all deadlines
+                  AppSnackbar.showSuccess(context, 'Menampilkan seluruh pengingat tenggat waktu...');
                 },
                 child: Text(
                   'Lihat Semua',

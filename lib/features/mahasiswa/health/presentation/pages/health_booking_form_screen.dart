@@ -8,14 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_booking.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:go_router/go_router.dart';
 
 class HealthBookingFormScreen extends StatefulWidget {
   final HealthWorker worker;
@@ -49,7 +51,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ProfileProvider>();
     final health = context.watch<HealthViewModel>();
     final themeProvider = context.watch<ThemeProvider>();
     final isReschedule = widget.rescheduleBookingId != null;
@@ -639,7 +641,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
     );
   }
 
-  Widget _buildConfirmButton(StudentProvider student) {
+  Widget _buildConfirmButton(ProfileProvider profile) {
     final isReschedule = widget.rescheduleBookingId != null;
     return Align(
       alignment: Alignment.centerRight,
@@ -649,7 +651,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
           onPressed:
               (_selectedSchedule == null || _isSubmitting)
                   ? null
-                  : () => _submit(student),
+                  : () => _submit(profile),
           text: isReschedule ? 'Konfirmasi Reschedule' : 'Lanjutkan Booking',
           variant: BkuButtonVariant.success,
           height: 44,
@@ -658,7 +660,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
     );
   }
 
-  Future<void> _submit(StudentProvider student) async {
+  Future<void> _submit(ProfileProvider profile) async {
     if (_selectedSchedule == null) return;
 
     final themeProvider = context.read<ThemeProvider>();
@@ -707,7 +709,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
           context,
           isReschedule ? 'Reschedule Berhasil!' : 'Booking Berhasil!',
         );
-        Navigator.pop(context);
+        context.pop();
       } else {
         AppSnackbar.showError(
           context,

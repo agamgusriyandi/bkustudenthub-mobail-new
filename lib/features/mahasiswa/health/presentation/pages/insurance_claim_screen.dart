@@ -10,10 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/insurance_claim.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -22,7 +23,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 
 class InsuranceClaimScreen extends StatefulWidget {
   const InsuranceClaimScreen({super.key});
@@ -34,7 +36,7 @@ class InsuranceClaimScreen extends StatefulWidget {
 class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<ProfileProvider>();
     final health = context.watch<HealthViewModel>();
 
     return Scaffold(
@@ -148,7 +150,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
 
   Widget _buildInsuranceClaimCard(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     InsuranceClaim claim,
   ) {
     final dateStr = DateFormat(
@@ -383,7 +385,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
 
   void _uploadInsuranceDocumentPicker(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     InsuranceClaim claim,
   ) async {
     showModalBottomSheet(
@@ -543,7 +545,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
 
   void _processUpload(
     BuildContext context,
-    StudentProvider student,
+    ProfileProvider student,
     int claimId,
     String filePath,
   ) async {
@@ -563,7 +565,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                 cancelText: '',
                 confirmText: 'Tutup',
                 onCancel: () {},
-                onConfirm: () => Navigator.pop(context),
+                onConfirm: () => context.pop(),
               ),
         );
       }
@@ -580,14 +582,14 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                 confirmText: 'Tutup',
                 isDestructive: true,
                 onCancel: () {},
-                onConfirm: () => Navigator.pop(context),
+                onConfirm: () => context.pop(),
               ),
         );
       }
     }
   }
 
-  void _showInsuranceForm(BuildContext context, StudentProvider student) {
+  void _showInsuranceForm(BuildContext context, ProfileProvider student) {
     String selectedProvider = 'BKU_Assurance';
     DateTime selectedDate = DateTime.now();
     final faskesController = TextEditingController();
@@ -978,7 +980,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  Navigator.pop(context);
+                                  context.pop();
                                   try {
                                     final unformattedBiaya = biayaController
                                         .text

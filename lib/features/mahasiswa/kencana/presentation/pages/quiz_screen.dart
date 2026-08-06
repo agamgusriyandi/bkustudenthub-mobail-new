@@ -6,12 +6,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:dio/dio.dart';
 
@@ -33,7 +30,6 @@ class _QuizScreenState extends State<QuizScreen> {
   List<Map<String, dynamic>> _questions = [];
   String _quizTitle = 'Kuis Evaluasi';
   int _durasiMenit = 30;
-  int _passingGrade = 70;
   int _currentQuestionIndex = 0;
   final Map<String, int> _jawaban = {};
   final Map<String, String> _jawabanEssay = {};
@@ -46,9 +42,10 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isFinished = false;
   double _nilaiAkhir = 0;
   bool _lulus = false;
+  bool _essayGraded = true;
+  bool _hasStarted = false;
   int _jumlahBenar = 0;
   int _jumlahSalah = 0;
-  double _nilaiKumulatif = 0;
   int _attemptsUsed = 0;
   int _maxAttempts = 0;
 
@@ -87,7 +84,6 @@ class _QuizScreenState extends State<QuizScreen> {
               widget.mission.title ??
               'Kuis Evaluasi';
           _durasiMenit = (data['duration_minutes'] as num?)?.toInt() ?? 30;
-          _passingGrade = (data['passing_grade'] as num?)?.toInt() ?? 70;
           _timeLeft = _durasiMenit * 60;
           _questions = List<Map<String, dynamic>>.from(rawSoal);
           if (_questions.isNotEmpty) {
@@ -112,7 +108,7 @@ class _QuizScreenState extends State<QuizScreen> {
             final totalQuestions =
                 (lastAttempt['total_questions'] as num?)?.toInt() ?? 0;
             _jumlahSalah = totalQuestions - _jumlahBenar;
-            _nilaiKumulatif = _nilaiAkhir;
+            _essayGraded = lastAttempt['essay_graded'] == true || lastAttempt['essay_graded'] == null;
 
             _attemptsUsed = attemptsUsed;
             _maxAttempts = maxAttempts;
@@ -132,28 +128,15 @@ class _QuizScreenState extends State<QuizScreen> {
           return;
         }
 
-        // Start attempt
-        final attemptResponse = await ApiClient().client.post(
-          '/kencana-student/quizzes/$kuisId/start',
-        );
-        if (attemptResponse.data['success'] == true) {
-          setState(() {
-            _attemptId =
-                attemptResponse.data['data']['ID'] ??
-                attemptResponse.data['data']['id'];
-            _attemptsUsed = attemptsUsed + 1;
-            _maxAttempts = maxAttempts;
-            _isLoadingSoal = false;
-          });
-          _startTimer();
-        } else {
-          setState(() {
-            _errorMsg =
-                attemptResponse.data['message'] ??
-                'Gagal memulai percobaan kuis';
-            _isLoadingSoal = false;
-          });
-        }
+        setState(() {
+          _isLoadingSoal = false;
+        });
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_hasStarted && !_isFinished) {
+            _showQuizStartDialog();
+          }
+        });
       } else {
         setState(() {
           _errorMsg = response.data['message'] ?? 'Gagal memuat soal';
@@ -180,14 +163,32 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
-  // ─── Timer ──────────────────────────────────────────────────────────────
+  Future<void> _startKuis() async {
+    try {
+      final kuisId = widget.mission.id;
+      final attemptResponse = await ApiClient().client.post(
+        '/kencana-student/quizzes/$kuisId/start',
+      );
+      if (attemptResponse.data['success'] == true) {
+        setState(() {
+          _attemptId =
+              attemptResponse.data['data']['ID'] ??
+              attemptResponse.data['data']['id'];
+          _hasStarted = true;
+        });
+        _startTimer();
+      }
+    } catch (e) {
+      _showError('Gagal memulai kuis');
+    }
+  }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (_timeLeft > 0) {
         setState(() => _timeLeft--);
       } else {
-        _submitKuis(); // Otomatis kumpul saat waktu habis
+        _submitKuis();
       }
     });
   }
@@ -199,8 +200,6 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   bool get _isTimeAlmostUp => _timeLeft <= 60 && _timeLeft > 0;
-
-  // ─── Submit ke API ───────────────────────────────────────────────────────
 
   Future<void> _submitKuis() async {
     _timer?.cancel();
@@ -244,22 +243,15 @@ class _QuizScreenState extends State<QuizScreen> {
         final nilai = (data['nilai'] ?? 0.0).toDouble();
         final lulus = data['lulus'] == true;
         final jumlahBenar = (data['jumlah_benar'] ?? 0) as int;
-        final nilaiKumulatif =
-            (data['nilai_kumulatif_terbaru'] ?? 0.0).toDouble();
-
-        // Update provider agar progress kencana refresh
-        if (mounted) {
-          context.read<StudentProvider>().loadAllData();
-        }
 
         setState(() {
           _nilaiAkhir = nilai;
           _lulus = lulus;
           _jumlahBenar = jumlahBenar;
           _jumlahSalah = _questions.length - jumlahBenar;
-          _nilaiKumulatif = nilaiKumulatif;
           _isFinished = true;
           _isSubmitting = false;
+          _essayGraded = data['essay_graded'] == true || data['essay_graded'] == null;
         });
       } else {
         _showError(response.data['message'] ?? 'Gagal mengumpulkan kuis');
@@ -273,10 +265,8 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _showError(String msg) {
     if (!mounted) return;
-    AppSnackbar.showSuccess(context, msg);
+    AppSnackbar.showError(context, msg);
   }
-
-  // ─── Navigasi soal ───────────────────────────────────────────────────────
 
   void _updateQuestionIndex(int newIndex) {
     setState(() {
@@ -316,11 +306,17 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_currentQuestionIndex < _questions.length - 1) {
       _updateQuestionIndex(_currentQuestionIndex + 1);
     } else {
+      final int totalDijawab = _jawaban.length + _jawabanEssay.length;
+      if (totalDijawab < _questions.length) {
+        AppSnackbar.showError(
+          context,
+          'Anda belum mengisi SELURUH SOAL. Pastikan semua soal terjawab sebelum mengumpulkan.',
+        );
+        return;
+      }
       _submitKuis();
     }
   }
-
-  // ─── Build ───────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -328,258 +324,219 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_errorMsg != null) return _buildError();
     if (_isFinished) return _buildResultView();
     if (_questions.isEmpty) return _buildEmptySoal();
+    if (!_hasStarted) return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
     final currentQ = _questions[_currentQuestionIndex];
     final qId = currentQ['id'].toString();
     final opts =
         (currentQ['options'] as List? ?? []).cast<Map<String, dynamic>>();
 
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      body: CustomScrollView(
-        slivers: [
-          BkuAppBar(
-            title: _quizTitle,
-            info: '${_questions.length} Pertanyaan • $_durasiMenit Menit',
-            variant: AppBarVariant.student,
-            showBackButton: true,
-            isExpandable: false,
-            showNotification: false,
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header: nomor soal + timer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.lg,
-                          vertical: AppSpacing.sm,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.outlineVariant.withAlpha(60),
-                          borderRadius: AppRadius.radiusMd,
-                        ),
-                        child: Text(
-                          'Soal ${_currentQuestionIndex + 1}/${_questions.length}',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color:
-                                context.appColors.onSurfaceVariant,
-                            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _showExitDialog();
+      },
+      child: Scaffold(
+        backgroundColor: context.appColors.surface,
+        body: CustomScrollView(
+          slivers: [
+            BkuAppBar(
+              title: _quizTitle,
+              info: '${_questions.length} Pertanyaan • $_durasiMenit Menit',
+              variant: AppBarVariant.student,
+              showBackButton: true,
+              isExpandable: false,
+              showNotification: false,
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.outlineVariant.withValues(alpha: 0.24),
+                            borderRadius: AppRadius.radiusMd,
+                          ),
+                          child: Text(
+                            'Soal ${_currentQuestionIndex + 1}/${_questions.length}',
+                            style: AppTextStyles.labelSm.copyWith(
+                              color:
+                                  context.appColors.onSurfaceVariant,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              _isTimeAlmostUp
-                                  ? AppColors.error.withAlpha(15)
-                                  : Colors.transparent,
-                          borderRadius: AppRadius.radiusMd,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.timer_outlined,
-                              color:
-                                  _isTimeAlmostUp
-                                      ? AppColors.error
-                                      : context.appColors.outline,
-                              size: 20,
-                            ),
-                            const SizedBox(width: AppSpacing.s6),
-                            Text(
-                              _getFormattedTime(),
-                              style: AppTextStyles.labelMd.copyWith(
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                _isTimeAlmostUp
+                                    ? AppColors.error.withValues(alpha: 0.06)
+                                    : Colors.transparent,
+                            borderRadius: AppRadius.radiusMd,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.timer_outlined,
                                 color:
                                     _isTimeAlmostUp
                                         ? AppColors.error
-                                        : AppColors.onSurface,
-                                fontWeight: FontWeight.w900,
+                                        : context.appColors.outline,
+                                size: 20,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Progress bar
-                  ClipRRect(
-                    borderRadius: AppRadius.radiusXs,
-                    child: LinearProgressIndicator(
-                      value: (_currentQuestionIndex + 1) / _questions.length,
-                      backgroundColor: AppColors.neutral200,
-                      color: AppColors.neutral600,
-                      minHeight: 8,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxxl),
-
-                  // Pertanyaan
-                  Text(
-                    currentQ['question_text']?.toString() ?? '',
-                    style: AppTextStyles.titleLg.copyWith(
-                      color: AppColors.onSurface,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-
-                  // Opsi jawaban / Essay field
-                  if (currentQ['question_type']?.toString().toLowerCase() ==
-                      'essay')
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (currentQ['answer_guidance'] != null &&
-                            currentQ['answer_guidance']
-                                .toString()
-                                .trim()
-                                .isNotEmpty)
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: AppSpacing.md,
-                            ),
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            decoration: BoxDecoration(
-                              color: context.appColors.infoContainer,
-                              border: Border.all(color: context.appColors.info.withAlpha(60)),
-                              borderRadius: AppRadius.radiusMd,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.info_outline,
-                                  size: 20,
-                                  color: context.appColors.onInfo,
+                              const SizedBox(width: AppSpacing.s6),
+                              Text(
+                                _getFormattedTime(),
+                                style: AppTextStyles.labelMd.copyWith(
+                                  color:
+                                      _isTimeAlmostUp
+                                          ? AppColors.error
+                                          : AppColors.onSurface,
+                                  fontWeight: FontWeight.w900,
                                 ),
-                                const SizedBox(width: AppSpacing.sm),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Panduan Jawaban',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: context.appColors.onInfo,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.s2),
-                                      Text(
-                                        currentQ['answer_guidance'].toString(),
-                                        style: AppTextStyles.bodySm.copyWith(
-                                          color: context.appColors.onInfo,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        TextField(
-                          controller: _essayController,
-                          maxLines: 6,
-                          keyboardType: TextInputType.multiline,
-                          textInputAction: TextInputAction.newline,
-                          onChanged: (val) {
-                            _jawabanEssay[qId] = val;
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Tulis jawaban Anda di sini...',
-                            hintStyle: AppTextStyles.bodyMd.copyWith(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outline.withAlpha(120),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.outlineVariant,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.outlineVariant,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color: AppColors.neutral600,
-                                width: 2,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor:
-                                Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerLow,
-                            contentPadding: const EdgeInsets.all(AppSpacing.lg),
-                          ),
-                          style: AppTextStyles.bodyMd,
                         ),
                       ],
-                    )
-                  else
-                    ...opts.map((opt) {
-                      final optId = (opt['id'] as num).toInt();
-                      final isSelected = _jawaban[qId] == optId;
-                      return _buildOption(
-                        qId: qId,
-                        optId: optId,
-                        text: opt['option_text']?.toString() ?? '',
-                        isSelected: isSelected,
-                      );
-                    }),
-
-                  const SizedBox(height: AppSpacing.xxxl),
-
-                  // Tombol lanjut / kumpul
-                  BkuButton(
-                    onPressed: _handleNext,
-                    text:
-                        _currentQuestionIndex == _questions.length - 1
-                            ? 'Selesai & Kumpulkan'
-                            : 'Pertanyaan Selanjutnya',
-                    isLoading: _isSubmitting,
-                    variant: BkuButtonVariant.primary,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Navigasi soal (dot row)
-                  _buildDotNavigation(),
-                  const SizedBox(height: AppSpacing.xxxl),
-                ],
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    ClipRRect(
+                      borderRadius: AppRadius.radiusXs,
+                      child: LinearProgressIndicator(
+                        value: (_currentQuestionIndex + 1) / _questions.length,
+                        backgroundColor: AppColors.neutral200,
+                        color: AppColors.neutral600,
+                        minHeight: 8,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    Text(
+                      currentQ['question_text']?.toString() ?? '',
+                      style: AppTextStyles.titleLg.copyWith(
+                        color: AppColors.onSurface,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    if (currentQ['question_type']?.toString().toLowerCase() ==
+                        'essay')
+                      TextField(
+                        controller: _essayController,
+                        maxLines: 6,
+                        onChanged: (val) {
+                          _jawabanEssay[qId] = val;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Tulis jawaban Anda di sini...',
+                          border: OutlineInputBorder(borderRadius: AppRadius.radiusLg),
+                        ),
+                      )
+                    else
+                      ...opts.map((opt) {
+                        final optId = (opt['id'] as num).toInt();
+                        return _buildOption(
+                          qId: qId,
+                          optId: optId,
+                          text: opt['option_text']?.toString() ?? '',
+                          isSelected: _jawaban[qId] == optId,
+                        );
+                      }),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    BkuButton(
+                      onPressed: _handleNext,
+                      text:
+                          _currentQuestionIndex == _questions.length - 1
+                              ? 'Selesai & Kumpulkan'
+                              : 'Pertanyaan Selanjutnya',
+                      isLoading: _isSubmitting,
+                      variant: BkuButtonVariant.primary,
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    _buildDotNavigation(),
+                  ],
+                ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showExitDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Keluar Kuis?',
+          style: AppTextStyles.titleMd.copyWith(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Waktu akan terus berjalan jika Anda keluar. Anda yakin ingin kembali?',
+          style: AppTextStyles.bodySm.copyWith(color: Colors.grey.shade700),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Batal', style: AppTextStyles.labelLg.copyWith(color: Colors.grey.shade600)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.pop(context);
+            },
+            child: Text('Ya, Keluar', style: AppTextStyles.labelLg.copyWith(color: Colors.red)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showQuizStartDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        contentPadding: const EdgeInsets.all(AppSpacing.xxl),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.fact_check_outlined, color: Colors.blue, size: 40),
+            const SizedBox(height: AppSpacing.xl),
+            Text('Mulai $_quizTitle?', style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: AppSpacing.xl),
+            Row(
+              children: [
+                Expanded(child: TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal'))),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(child: BkuButton(text: 'Mulai', onPressed: () { Navigator.pop(ctx); _startKuis(); })),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -594,59 +551,18 @@ class _QuizScreenState extends State<QuizScreen> {
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: InkWell(
         onTap: () => setState(() => _jawaban[qId] = optId),
-        borderRadius: AppRadius.radiusLg,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              padding: const EdgeInsets.all(AppSpacing.xl),
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? context.appColors.primary.withAlpha(15)
-                                        : context.appColors.surface,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          decoration: BoxDecoration(
+            color: isSelected ? context.appColors.primary.withValues(alpha: 0.06) : context.appColors.surface,
             borderRadius: AppRadius.radiusLg,
-            border: Border.all(
-              color:
-                  isSelected
-                      ? context.appColors.primary
-                      : AppColors.neutral200,
-              width: isSelected ? 2 : 1.5,
-            ),
+            border: Border.all(color: isSelected ? context.appColors.primary : AppColors.neutral200),
           ),
           child: Row(
             children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        isSelected
-                            ? context.appColors.primary
-                            : AppColors.neutral300,
-                    width: 2,
-                  ),
-                  color:
-                      isSelected
-                          ? context.appColors.primary
-                          : Colors.transparent,
-                ),
-                child:
-                    isSelected
-                        ? Icon(Icons.check, color: context.appColors.surface, size: 14)
-                        : null,
-              ),
+              Icon(isSelected ? Icons.check_circle : Icons.circle_outlined, color: context.appColors.primary),
               const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Text(
-                  text,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.appColors.primary,
-                    fontWeight: isSelected ? FontWeight.w900 : FontWeight.bold,
-                  ),
-                ),
-              ),
+              Expanded(child: Text(text)),
             ],
           ),
         ),
@@ -661,28 +577,17 @@ class _QuizScreenState extends State<QuizScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(_questions.length, (i) {
           final qId = (_questions[i]['id'] ?? '').toString();
-          final isEssay =
-              (_questions[i]['question_type'] ?? '').toString().toLowerCase() ==
-              'essay';
-          final answered =
-              isEssay
-                  ? (_jawabanEssay[qId]?.trim().isNotEmpty ?? false)
-                  : _jawaban.containsKey(qId);
+          final isEssay = (_questions[i]['question_type'] ?? '').toString().toLowerCase() == 'essay';
+          final answered = isEssay ? (_jawabanEssay[qId]?.trim().isNotEmpty ?? false) : _jawaban.containsKey(qId);
           final isCurrent = i == _currentQuestionIndex;
           return GestureDetector(
             onTap: () => _updateQuestionIndex(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+            child: Container(
               margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
               width: isCurrent ? 28 : 10,
               height: 10,
               decoration: BoxDecoration(
-                color:
-                    isCurrent
-                        ? context.appColors.primary
-                        : answered
-                        ? context.appColors.primary.withAlpha(60)
-                        : AppThemeColors.surfaceContainerHighest,
+                color: isCurrent ? context.appColors.primary : (answered ? context.appColors.primary.withValues(alpha: 0.24) : AppColors.neutral200),
                 borderRadius: AppRadius.radiusXs,
               ),
             ),
@@ -692,353 +597,185 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  // ─── Layar loading, error, hasil ────────────────────────────────────────
+  Widget _buildLoading() => const Scaffold(body: Center(child: CircularProgressIndicator()));
 
-  Widget _buildLoading() {
+  Widget _buildError() => Scaffold(body: Center(child: Text(_errorMsg!)));
+
+  Widget _buildEmptySoal() => const Scaffold(body: Center(child: Text('Soal tidak ditemukan')));
+
+
+  Widget _buildResultView() {
+    final isPending = !_essayGraded;
+    final lulus = _lulus;
+    final skor = _nilaiAkhir.toStringAsFixed(0);
+    
+    final color = isPending ? Colors.orange : (lulus ? context.appColors.success : context.appColors.error);
+    final icon = isPending ? Icons.more_horiz : (lulus ? Icons.check_circle_outline : Icons.cancel_outlined);
+    final title = isPending ? 'Menunggu Penilaian Essay' : (lulus ? 'Selamat!' : 'Oops!');
+    final subtitle = isPending
+        ? 'Jawaban Anda sedang menunggu penilaian oleh fasilitator.'
+        : (lulus
+            ? 'Anda telah berhasil lulus dari kuis ini.'
+            : 'Nilai Anda belum mencapai batas kelulusan.');
+
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
-            title: 'MEMUAT KUIS',
+            title: 'Hasil Kuis',
             variant: AppBarVariant.student,
             showBackButton: true,
-            isExpandable: false,
-            showNotification: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 children: [
-                  const SizedBox(height: AppSpacing.s20),
-                  const BkuShimmerList(itemCount: 4, itemHeight: 72),
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: color, size: 40),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(
+                    title,
+                    style: AppTextStyles.titleLg.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: context.appColors.outline,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.xxxl),
+                  if (isPending) ...[
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.orange.shade800),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Text(
+                              'Kuis ini mengandung soal essay yang memerlukan penilaian manual oleh fasilitator. Hasil akhir dan nilai Anda akan muncul setelah dinilai.',
+                              style: AppTextStyles.bodySm.copyWith(
+                                color: Colors.orange.shade900,
+                                height: 1.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'MENUNGGU KONFIRMASI',
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        border: Border.all(color: color.withValues(alpha: 0.2)),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Nilai Anda',
+                            style: AppTextStyles.labelLg.copyWith(
+                              color: context.appColors.outline,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            skor,
+                            style: AppTextStyles.display.copyWith(
+                              color: color,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+                          const Divider(),
+                          const SizedBox(height: AppSpacing.xl),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildResultStat(
+                                '$_jumlahBenar',
+                                'Benar',
+                                Icons.check_circle_outline,
+                                context.appColors.success,
+                              ),
+                              _buildResultStat(
+                                '$_jumlahSalah',
+                                'Salah',
+                                Icons.cancel_outlined,
+                                context.appColors.error,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: AppSpacing.xxxl),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: BkuButton(
+                      text: 'Kembali ke Beranda',
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  if (!isPending && !lulus && _attemptsUsed < _maxAttempts)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: BkuButton(
+                        text: 'Ulangi Kuis',
+                        onPressed: () {
+                          setState(() {
+                            _isFinished = false;
+                            _hasStarted = false;
+                          });
+                          _loadSoal();
+                        },
+                        variant: BkuButtonVariant.secondary,
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildError() {
-    final msg = _errorMsg?.toLowerCase() ?? '';
-    final isClosed =
-        msg.contains('tutup') ||
-        msg.contains('ditutup') ||
-        msg.contains('selesai') ||
-        msg.contains('lock') ||
-        msg.contains('berakhir');
-
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      appBar: BkuStaticAppBar(
-        title: isClosed ? 'Kuis Sudah Ditutup' : 'Evaluasi Kuis',
-        variant: AppBarVariant.student,
-        showBackButton: true,
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color:
-                        isClosed
-                            ? AppColors.neutral100
-                            : context.appColors.errorContainer,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color:
-                          isClosed
-                              ? AppColors.neutral400
-                              : context.appColors.error.withAlpha(150),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Icon(
-                    isClosed
-                        ? Icons.lock_clock_rounded
-                        : Icons.error_outline_rounded,
-                    size: 44,
-                    color:
-                        isClosed
-                            ? AppColors.neutral700
-                            : context.appColors.error,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  isClosed ? 'Kuis Sudah Ditutup' : 'Gagal Memuat Kuis',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: context.appColors.secondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                Text(
-                  _errorMsg ??
-                      'Batas waktu pengerjaan kuis ini telah selesai atau kuis sudah ditutup oleh panitia.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.neutral600,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                if (isClosed)
-                  SizedBox(
-                    width: double.infinity,
-                    child: BkuButton(
-                      onPressed: () => Navigator.pop(context),
-                      text: 'Kembali',
-                      variant: BkuButtonVariant.primary,
-                    ),
-                  )
-                else
-                  Row(
-                    children: [
-                      Expanded(
-                        child: BkuButton(
-                          onPressed: () => Navigator.pop(context),
-                          text: 'Kembali',
-                          variant: BkuButtonVariant.outline,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: BkuButton(
-                          onPressed: _loadSoal,
-                          icon: Icons.refresh_rounded,
-                          text: 'Coba Lagi',
-                          variant: BkuButtonVariant.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptySoal() {
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.quiz_outlined,
-              size: 72,
-              color: context.appColors.outline.withAlpha(80),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              'Soal belum tersedia',
-              style: AppTextStyles.labelMd.copyWith(
-                color: context.appColors.outline,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Kembali'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _startNewAttempt() async {
-    setState(() {
-      _isLoadingSoal = true;
-      _errorMsg = null;
-      _isFinished = false;
-      _jawaban.clear();
-      _jawabanEssay.clear();
-      _currentQuestionIndex = 0;
-    });
-    try {
-      final kuisId = widget.mission.id;
-      final attemptResponse = await ApiClient().client.post(
-        '/kencana-student/quizzes/$kuisId/start',
-      );
-      if (attemptResponse.data['success'] == true) {
-        setState(() {
-          _attemptId =
-              attemptResponse.data['data']['ID'] ??
-              attemptResponse.data['data']['id'];
-          _attemptsUsed++;
-          _isLoadingSoal = false;
-        });
-        _startTimer();
-      } else {
-        setState(() {
-          _errorMsg = attemptResponse.data['message'] ?? 'Gagal memulai kuis';
-          _isLoadingSoal = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMsg = 'Gagal memulai kuis: $e';
-        _isLoadingSoal = false;
-      });
-    }
-  }
-
-  Widget _buildResultView() {
-    final lulus = _lulus;
-    final skor = _nilaiAkhir.toStringAsFixed(0);
-
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.xxl),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Ikon hasil
-              Container(
-                padding: AppSpacing.padding28,
-                decoration: BoxDecoration(
-                  color: (lulus ? AppColors.success : AppColors.warning)
-                      .withAlpha(15),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  lulus ? Icons.verified_rounded : Icons.emoji_events_outlined,
-                  color: lulus ? AppColors.success : AppColors.warning,
-                  size: 80,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-              Text(
-                lulus ? 'Selamat, Kamu Lulus! 🎉' : 'Kuis Selesai',
-                style: AppTextStyles.display.copyWith(
-                  color: context.appColors.primary,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                lulus
-                    ? 'Kamu berhasil melewati batas minimum nilai $_passingGrade.'
-                    : 'Nilai minimum adalah $_passingGrade. Kamu masih bisa mencoba lagi.',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: context.appColors.outline,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxxl),
-
-              // Kartu skor
-              Container(
-                width: double.infinity,
-                padding: AppSpacing.padding28,
-                decoration: BoxDecoration(
-                  color: context.appColors.surface,
-                  borderRadius: AppRadius.radiusXl,
-                  border: Border.all(
-                    color: AppColors.neutral200.withAlpha(150),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'SKOR KAMU',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      skor,
-                      style: AppTextStyles.display.copyWith(
-                        color: lulus ? AppColors.success : AppColors.warning,
-                        fontSize: 60,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    Text(
-                      'dari 100',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildResultStat(
-                          '$_jumlahBenar',
-                          'Jawaban\nBenar',
-                          Icons.check_circle_outline_rounded,
-                          AppColors.success,
-                        ),
-                        _buildResultStat(
-                          '$_jumlahSalah',
-                          'Jawaban\nSalah',
-                          Icons.cancel_outlined,
-                          AppColors.error,
-                        ),
-                        _buildResultStat(
-                          _nilaiKumulatif.toStringAsFixed(0),
-                          'Nilai\nKumulatif',
-                          Icons.analytics_rounded,
-                          context.appColors.primary,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxxl),
-
-              if (_maxAttempts == 0 || _attemptsUsed < _maxAttempts) ...[
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: BkuButton(
-                    onPressed: _startNewAttempt,
-                    text:
-                        _maxAttempts > 0
-                            ? 'Kerjakan Ulang (Sisa: ${_maxAttempts - _attemptsUsed})'
-                            : 'Kerjakan Ulang',
-                    variant: BkuButtonVariant.outline,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: BkuButton(
-                  onPressed: () => Navigator.pop(context),
-                  text: 'Kembali ke Journey',
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_section_header.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 
@@ -28,7 +28,7 @@ class OrmawaRecentMembers extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            child: UnifiedSectionHeader(title: 'Anggota Terbaru'),
+            child: BkuSectionHeader(title: 'Anggota Terbaru'),
           ),
           const SizedBox(height: AppSpacing.lg),
           Padding(
@@ -53,7 +53,7 @@ class OrmawaRecentMembers extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: UnifiedSectionHeader(
+          child: BkuSectionHeader(
             title: 'Anggota Terbaru',
             onSeeAll: () {
               Navigator.push(
@@ -144,7 +144,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                           firstName,
                           style: AppTextStyles.labelSm.copyWith(
                             fontSize: 10,
-                            color: Colors.grey[700],
+                            color: AppColors.neutral700,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,

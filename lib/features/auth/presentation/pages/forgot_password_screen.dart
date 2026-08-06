@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:pinput/pinput.dart';
 
 enum ForgotPasswordStep { email, otp, newPassword }
@@ -162,7 +163,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral900,
+      backgroundColor: context.appColors.surface,
       body: Stack(
         children: [
           // Background Image
@@ -184,8 +185,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme.of(context).colorScheme.primary.withAlpha(140),
-                    Theme.of(context).colorScheme.primary.withAlpha(217),
+                    context.appColors.primary.withAlpha(140),
+                    context.appColors.primary.withAlpha(217),
                   ],
                 ),
               ),
@@ -249,13 +250,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 decoration: BoxDecoration(
                                   color: context.appColors.surface,
                                   borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(AppRadius.radius35),
+                                    top: Radius.circular(AppRadius.xxl),
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: context.appColors.onSurface.withValues(alpha: 0.1),
-                                      blurRadius: 24,
-                                      offset: const Offset(0, -8),
+                                      color: context.appColors.onSurface.withValues(alpha: 0.15),
+                                      blurRadius: 32,
+                                      offset: const Offset(0, -12),
                                     ),
                                   ],
                                 ),
@@ -442,7 +443,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       margin: const EdgeInsets.only(bottom: AppSpacing.xl, left: AppSpacing.sm, right: AppSpacing.sm),
       color:
           isActive
-              ? Theme.of(context).colorScheme.primary
+              ? context.appColors.primary
               : AppColors.neutral200,
     );
   }
@@ -513,7 +514,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
       border: Border.all(
-        color: Theme.of(context).colorScheme.primary,
+        color: context.appColors.primary,
         width: 1.5,
       ),
       borderRadius: AppRadius.radiusMd,
@@ -568,7 +569,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   style: AppTextStyles.labelMd.copyWith(
                     color:
                         _canResendOtp
-                            ? Theme.of(context).colorScheme.primary
+                            ? context.appColors.primary
                             : AppColors.neutral400,
                     fontWeight: FontWeight.bold,
                   ),
@@ -704,7 +705,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
               borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -722,43 +723,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     required String label,
     required VoidCallback onPressed,
   }) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: AppRadius.radiusXl,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : onPressed,
-
-        child:
-            _isLoading
-                ? SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    color: context.appColors.onPrimary,
-                    strokeWidth: 3.0,
-                  ),
-                )
-                : Text(
-                  label,
-                  style: AppTextStyles.titleMd.copyWith(
-                    color: context.appColors.onPrimary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-      ),
+    return BkuButton(
+      text: label,
+      onPressed: _isLoading ? null : onPressed,
+      isLoading: _isLoading,
+      variant: BkuButtonVariant.primary,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:go_router/go_router.dart';
 
 class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -42,7 +43,7 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     if (showBackButton)
                       IconButton(
-                        onPressed: onBack ?? () => Navigator.pop(context),
+                        onPressed: onBack ?? () => context.pop(),
                         icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
                           color: context.appColors.onPrimary,

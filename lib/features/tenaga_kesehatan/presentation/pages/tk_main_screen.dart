@@ -7,7 +7,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_bo
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_patient_list_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_settings_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_bottom_nav_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 
 class TkMainScreen extends StatefulWidget {
   final int initialTab;
@@ -77,7 +77,7 @@ class TkMainScreenState extends State<TkMainScreen> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       extendBody: true,
       body: IndexedStack(index: _selectedIndex, children: _pages),
-      bottomNavigationBar: UnifiedBottomNavBar.tenagaKesehatan(
+      bottomNavigationBar: BkuBottomNavBar.tenagaKesehatan(
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {

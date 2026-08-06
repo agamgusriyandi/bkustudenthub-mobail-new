@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_bottom_nav_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_dashboard_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_mentee_screen.dart';
@@ -53,7 +53,7 @@ class _MentorMainScreenState extends State<MentorMainScreen> {
       extendBody: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: _selectedIndex, children: _pages),
-      bottomNavigationBar: UnifiedBottomNavBar.mentorKencana(
+      bottomNavigationBar: BkuBottomNavBar.mentorKencana(
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {

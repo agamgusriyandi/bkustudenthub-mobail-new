@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/psychologist_dashboard_provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:go_router/go_router.dart';
 
 class SessionNoteScreen extends StatefulWidget {
   final String studentName;
@@ -641,7 +642,7 @@ class _SessionNoteScreenState extends State<SessionNoteScreen> {
         context.read<PsychologistDashboardProvider>().loadDashboardData(
           silent: true,
         );
-        Navigator.pop(context);
+        context.pop();
       }
     }
   }

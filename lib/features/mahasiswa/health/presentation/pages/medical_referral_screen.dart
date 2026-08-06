@@ -7,9 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -25,7 +26,7 @@ class MedicalReferralScreen extends StatefulWidget {
 class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final profile = context.watch<ProfileProvider>();
     final health = context.watch<HealthViewModel>();
 
     return Scaffold(
@@ -57,7 +58,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: AppSpacing.xl),
-                    if (student.isLoading)
+                    if (profile.isLoading)
                       const BkuShimmerList(itemCount: 3, itemHeight: 120)
                     else ...[
                       Row(

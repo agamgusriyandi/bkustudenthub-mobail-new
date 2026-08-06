@@ -13,7 +13,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
@@ -1750,7 +1750,7 @@ class _PatientDetailsSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.neutral300),
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1775,7 +1775,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                         isLocked
                             ? null
                             : () {
-                              Navigator.pop(context);
+                              context.pop();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

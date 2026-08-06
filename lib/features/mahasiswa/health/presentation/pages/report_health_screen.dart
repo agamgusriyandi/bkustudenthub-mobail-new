@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 import 'package:go_router/go_router.dart';
@@ -1041,7 +1042,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                 : null,
       );
 
-      await context.read<StudentProvider>().addHealthRecord(record);
+      await context.read<HealthProvider>().addHealthRecord(record);
       if (!mounted) return;
       BkuLoadingDialog.hide(
         context,
@@ -1492,7 +1493,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                   const SizedBox(height: AppSpacing.s10),
                                   InkWell(
                                     onTap: () {
-                                      Navigator.pop(context); // close dialog
+                                      context.pop(); // close dialog
                                       Navigator.pop(
                                         context,
                                       ); // close report screen
@@ -1538,8 +1539,8 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       height: 52,
                       child: BkuButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          context.pop();
+                          context.pop();
                         },
                         text: 'Paham, Kembali',
                       ),

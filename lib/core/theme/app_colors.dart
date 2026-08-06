@@ -102,4 +102,18 @@ class AppColors {
   static const Color dangerContainer = Color(0xFFFEE2E2);
   static const Color onDanger = Color(0xFFFFFFFF);
   static const Color onDangerContainer = Color(0xFF991B1B);
+
+  // ==================== SERVICE / BRAND COLORS ====================
+  // Digunakan untuk icon dashboard agar warnanya vibrant (1:1 dengan Web)
+  static const Color serviceIndigo = Color(0xFF6366F1);
+  static const Color serviceAmber = Color(0xFFF59E0B);
+  static const Color serviceEmerald = Color(0xFF10B981);
+  static const Color servicePurple = Color(0xFFA855F7);
+  static const Color serviceCyan = Color(0xFF06B6D4);
+  static const Color serviceRose = Color(0xFFF43F5E);
+  static const Color serviceSky = Color(0xFF0EA5E9);
+  static const Color servicePink = Color(0xFFEC4899);
+  static const Color serviceViolet = Color(0xFF8B5CF6);
+  static const Color serviceTeal = Color(0xFF14B8A6);
+  static const Color serviceSlate = Color(0xFF64748B);
 }

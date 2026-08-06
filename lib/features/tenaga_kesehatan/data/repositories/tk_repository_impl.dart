@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/tk_profile.dart';
+import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/schedule.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/booking.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/patient.dart';
@@ -56,8 +56,7 @@ class TkRepositoryImpl implements TkRepository {
   @override
   Future<String> uploadAvatar(String imagePath) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = await SecureStorageService().getToken();
 
       final formData = FormData.fromMap({
         'foto': await MultipartFile.fromFile(
@@ -659,8 +658,7 @@ class TkRepositoryImpl implements TkRepository {
       if (baseUrl.endsWith('/')) {
         baseUrl = baseUrl.substring(0, baseUrl.length - 1);
       }
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token') ?? prefs.getString('token') ?? '';
+      final token = await SecureStorageService().getToken() ?? '';
       return '$baseUrl/tenagakes/bap/$id/export-pdf?token=$token';
     } catch (e) {
       log('Error getting BAP export URL: $e');
@@ -757,8 +755,7 @@ class TkRepositoryImpl implements TkRepository {
   Future<String> exportReportExcel() async {
     try {
       final baseUrl = apiClient.client.options.baseUrl;
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token') ?? '';
+      final token = await SecureStorageService().getToken() ?? '';
       return '$baseUrl/tenagakes/reports/export-excel?token=$token';
     } catch (e) {
       log('Error exporting report excel: $e');
@@ -770,8 +767,7 @@ class TkRepositoryImpl implements TkRepository {
   Future<String> exportOfflineRegistrationFormPdf() async {
     try {
       final baseUrl = apiClient.client.options.baseUrl;
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token') ?? '';
+      final token = await SecureStorageService().getToken() ?? '';
       return '$baseUrl/tenagakes/reports/export-offline-form?token=$token';
     } catch (e) {
       log('Error exporting offline form PDF: $e');
@@ -783,8 +779,7 @@ class TkRepositoryImpl implements TkRepository {
   Future<String> exportReportPdf() async {
     try {
       final baseUrl = apiClient.client.options.baseUrl;
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token') ?? '';
+      final token = await SecureStorageService().getToken() ?? '';
       return '$baseUrl/tenagakes/reports/export-pdf?token=$token';
     } catch (e) {
       log('Error exporting report PDF: $e');

@@ -2,8 +2,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -14,6 +14,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class KencanaBandingScreen extends StatefulWidget {
   const KencanaBandingScreen({super.key});
@@ -130,7 +131,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
               cancelText: '',
               confirmText: 'Tutup',
               onCancel: () {},
-              onConfirm: () => Navigator.pop(context),
+              onConfirm: () => context.pop(),
               isDestructive: true,
             ),
       );

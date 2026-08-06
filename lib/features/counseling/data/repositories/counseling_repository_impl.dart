@@ -2,8 +2,8 @@ import 'package:bkuhub_mobile/features/counseling/domain/entities/psychologist.d
 import 'package:bkuhub_mobile/features/counseling/domain/repositories/counseling_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
 import 'dart:developer';
 import 'dart:io' as io;
 import 'dart:convert' as convert;
@@ -59,8 +59,7 @@ class CounselingRepositoryImpl implements CounselingRepository {
   @override
   Future<String> uploadAvatar(String imagePath) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = await SecureStorageService().getToken();
 
       final formData = FormData.fromMap({
         'foto': await MultipartFile.fromFile(

@@ -6,7 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaPengumumanScreen extends StatefulWidget {
   const OrmawaPengumumanScreen({super.key});
@@ -850,7 +851,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                       Expanded(
                         child: BkuButton(
                           text: 'TUTUP',
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
                           variant: BkuButtonVariant.outline,
                           height: 50,
                         ),
@@ -861,7 +862,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                         child: BkuButton(
                           text: 'EDIT PENGUMUMAN',
                           onPressed: () {
-                            Navigator.pop(context);
+                            context.pop();
                             _showEditPengumuman(context, announcement);
                           },
                           variant: BkuButtonVariant.primary,
@@ -954,7 +955,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                         return GestureDetector(
                           onTap: () {
                             setState(() => _filterTarget = option);
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -990,7 +991,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterTarget = 'Semua');
-                        Navigator.pop(context);
+                        context.pop();
                       },
                       child: Text(
                         'Reset Filter',
@@ -1162,7 +1163,7 @@ class _OrmawaCreatePengumumanScreenState
                       Expanded(
                         child: BkuButton(
                           text: 'BATALKAN',
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
                           variant: BkuButtonVariant.outline,
                           height: 50,
                         ),
@@ -1215,7 +1216,7 @@ class _OrmawaCreatePengumumanScreenState
                                             .toIso8601String(),
                                 });
                               }
-                              if (context.mounted) Navigator.pop(context);
+                              if (context.mounted) context.pop();
                             } catch (e) {
                               if (context.mounted) {
                                 AppSnackbar.showError(context, 'Error: $e');

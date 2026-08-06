@@ -142,12 +142,12 @@ class HealthViewModel extends ChangeNotifier {
     try {
       await _loadRescheduledBookings();
       final results = await Future.wait([
-        _repository!.getHealthRecords().catchError((e) => <HealthRecord>[]),
-        _repository!.getRujukans().catchError((e) => <Map<String, dynamic>>[]),
-        _repository!.getHealthWorkers().catchError((e) => <HealthWorker>[]),
-        _repository!.getHealthSchedules().catchError((e) => <HealthSchedule>[]),
-        _repository!.getHealthBookings().catchError((e) => <HealthBooking>[]),
-        _repository!.getInsuranceClaims().catchError((e) => <InsuranceClaim>[]),
+        _repository.getHealthRecords().catchError((e) => <HealthRecord>[]),
+        _repository.getRujukans().catchError((e) => <Map<String, dynamic>>[]),
+        _repository.getHealthWorkers().catchError((e) => <HealthWorker>[]),
+        _repository.getHealthSchedules().catchError((e) => <HealthSchedule>[]),
+        _repository.getHealthBookings().catchError((e) => <HealthBooking>[]),
+        _repository.getInsuranceClaims().catchError((e) => <InsuranceClaim>[]),
       ]);
 
       _healthRecords = results[0] as List<HealthRecord>;
@@ -169,8 +169,8 @@ class HealthViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       if (_repository != null) {
-        await _repository!.addHealthRecord(record);
-        _healthRecords = await _repository!.getHealthRecords();
+        await _repository.addHealthRecord(record);
+        _healthRecords = await _repository.getHealthRecords();
       } else {
         _healthRecords.insert(0, record);
       }
@@ -187,7 +187,7 @@ class HealthViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       if (_repository != null) {
-        await _repository!.createHealthBooking(
+        await _repository.createHealthBooking(
           scheduleId: scheduleId,
           keluhan: keluhan,
         );
@@ -236,14 +236,14 @@ class HealthViewModel extends ChangeNotifier {
   Future<void> cancelHealthBooking(String bookingId) async {
     try {
       if (_repository != null) {
-        await _repository!.cancelHealthBooking(bookingId);
+        await _repository.cancelHealthBooking(bookingId);
         final bookingIdInt = int.tryParse(bookingId);
         if (bookingIdInt != null) {
           _localRescheduledBookings.remove(bookingIdInt);
           await _saveRescheduledBookings();
         }
-        _healthBookings = await _repository!.getHealthBookings();
-        _healthSchedules = await _repository!.getHealthSchedules();
+        _healthBookings = await _repository.getHealthBookings();
+        _healthSchedules = await _repository.getHealthSchedules();
         _applyLocalRescheduledBookings();
       }
     } catch (e) {
@@ -261,7 +261,7 @@ class HealthViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       if (_repository != null) {
-        await _repository!.rescheduleHealthBooking(bookingId, newScheduleId);
+        await _repository.rescheduleHealthBooking(bookingId, newScheduleId);
 
         final bookingIdInt = int.tryParse(bookingId);
         if (bookingIdInt != null) {
@@ -269,8 +269,8 @@ class HealthViewModel extends ChangeNotifier {
           await _saveRescheduledBookings();
         }
 
-        final updatedBookings = await _repository!.getHealthBookings();
-        final updatedSchedules = await _repository!.getHealthSchedules();
+        final updatedBookings = await _repository.getHealthBookings();
+        final updatedSchedules = await _repository.getHealthSchedules();
 
         bool backendUpdated = false;
         if (bookingIdInt != null) {
@@ -369,7 +369,7 @@ class HealthViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       if (_repository != null) {
-        final claim = await _repository!.createInsuranceClaim(
+        final claim = await _repository.createInsuranceClaim(
           provider: provider,
           tanggal: tanggal,
           faskes: faskes,
@@ -377,13 +377,13 @@ class HealthViewModel extends ChangeNotifier {
           biaya: biaya,
         );
         if (filePath != null && filePath.isNotEmpty) {
-          await _repository!.uploadInsuranceDocument(
+          await _repository.uploadInsuranceDocument(
             claimId: claim.id,
             filePath: filePath,
             docNumber: 1,
           );
         }
-        _insuranceClaims = await _repository!.getInsuranceClaims();
+        _insuranceClaims = await _repository.getInsuranceClaims();
       }
     } catch (e) {
       rethrow;
@@ -402,12 +402,12 @@ class HealthViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       if (_repository != null) {
-        await _repository!.uploadInsuranceDocument(
+        await _repository.uploadInsuranceDocument(
           claimId: claimId,
           filePath: filePath,
           docNumber: docNumber,
         );
-        _insuranceClaims = await _repository!.getInsuranceClaims();
+        _insuranceClaims = await _repository.getInsuranceClaims();
       }
     } catch (e) {
       rethrow;
@@ -420,14 +420,14 @@ class HealthViewModel extends ChangeNotifier {
   Future<void> refreshHealthData() async {
     if (_repository == null) return;
     try {
-      final rawWorkers = await _repository!.getHealthWorkers();
-      _healthSchedules = await _repository!.getHealthSchedules();
+      final rawWorkers = await _repository.getHealthWorkers();
+      _healthSchedules = await _repository.getHealthSchedules();
       _processHealthWorkers(rawWorkers);
-      _healthBookings = await _repository!.getHealthBookings();
+      _healthBookings = await _repository.getHealthBookings();
       _applyLocalRescheduledBookings();
-      _insuranceClaims = await _repository!.getInsuranceClaims();
-      _healthRecords = await _repository!.getHealthRecords();
-      _rujukans = await _repository!.getRujukans();
+      _insuranceClaims = await _repository.getInsuranceClaims();
+      _healthRecords = await _repository.getHealthRecords();
+      _rujukans = await _repository.getRujukans();
       notifyListeners();
     } catch (_) {}
   }

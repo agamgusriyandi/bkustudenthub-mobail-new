@@ -14,7 +14,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/medical_
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -735,7 +735,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                       children: [
                         IconButton(
                           icon: const Icon(Icons.close_rounded),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
                         ),
                       ],
                     ),

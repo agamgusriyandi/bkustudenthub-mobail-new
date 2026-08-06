@@ -6,19 +6,20 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
 
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:go_router/go_router.dart';
 
 class SubmitAspirationScreen extends StatefulWidget {
   const SubmitAspirationScreen({super.key});
@@ -480,7 +481,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
         tujuan: _selectedTujuan,
         isAnonim: _isAnonim,
       );
-      await context.read<StudentProvider>().addAspiration(newAsp);
+      await context.read<StudentVoiceProvider>().addAspiration(newAsp);
       if (!mounted) return;
       BkuLoadingDialog.hide(context); // Hide loading first
       _showSuccessDialog();
@@ -505,7 +506,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
             onCancel: () {},
             onConfirm: () {
               Navigator.pop(dialogContext); // Close success dialog
-              Navigator.pop(context); // Go back
+              context.pop(); // Go back
             },
           ),
     );

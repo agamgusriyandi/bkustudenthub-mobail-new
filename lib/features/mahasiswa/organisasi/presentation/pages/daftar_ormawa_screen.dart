@@ -7,13 +7,14 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import '../../../../../core/error/error_handler.dart';
+import 'package:go_router/go_router.dart';
 
 class DaftarOrmawaScreen extends StatefulWidget {
   final String ormawaId;
@@ -67,7 +68,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
       _errorMessage = null;
     });
     try {
-      final provider = context.read<StudentProvider>();
+      final provider = context.read<OrganizationProvider>();
       final divisionsList = await provider.getOrmawaDivisions(widget.ormawaId);
       final fieldsData = await provider.getRecruitmentFields(widget.ormawaId);
 
@@ -181,7 +182,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
 
     setState(() => _isSubmitting = true);
     try {
-      final provider = context.read<StudentProvider>();
+      final provider = context.read<OrganizationProvider>();
       String cvUrl = '';
       if (_lampiranPath != null && _lampiranPath!.isNotEmpty) {
         cvUrl = await provider.uploadRecruitmentFile(_lampiranPath!);
@@ -236,8 +237,8 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
               confirmText: 'Tutup',
               onCancel: () {},
               onConfirm: () {
-                Navigator.pop(context); // Close dialog
-                Navigator.pop(context); // Go back
+                context.pop(); // Close dialog
+                context.pop(); // Go back
               },
             ),
       );
@@ -301,7 +302,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: BkuButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
                           text: 'Kembali',
                         ),
                       ),

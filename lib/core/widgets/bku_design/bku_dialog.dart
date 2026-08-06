@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:go_router/go_router.dart';
 
 enum BkuDialogType { success, error, warning, info }
 
@@ -143,7 +144,7 @@ class BkuDialog extends StatelessWidget {
                       text: secondaryButtonText!,
                       onPressed:
                           onSecondaryPressed ??
-                          () => Navigator.of(context).pop(),
+                          () => context.pop(),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),

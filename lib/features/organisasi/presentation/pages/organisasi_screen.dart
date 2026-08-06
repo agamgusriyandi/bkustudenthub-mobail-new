@@ -9,8 +9,9 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
+import 'package:go_router/go_router.dart';
 
 class OrganisasiScreen extends StatelessWidget {
   const OrganisasiScreen({super.key});
@@ -176,8 +177,8 @@ class OrganisasiScreen extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              final studentProvider =
-                                  Provider.of<StudentProvider>(
+                              final organizationProvider =
+                                  Provider.of<OrganizationProvider>(
                                     context,
                                     listen: false,
                                   );
@@ -215,11 +216,11 @@ class OrganisasiScreen extends StatelessWidget {
                               );
 
                               try {
-                                await studentProvider.addOrganizationHistory(
+                                await organizationProvider.addOrganizationHistory(
                                   org,
                                 );
                                 if (context.mounted) {
-                                  Navigator.pop(context);
+                                  context.pop();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: const Text(
@@ -299,7 +300,7 @@ class OrganisasiScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    Consumer<StudentProvider>(
+                    Consumer<OrganizationProvider>(
                       builder: (context, provider, child) {
                         final orgList = provider.organizationHistory;
                         if (orgList.isEmpty) {

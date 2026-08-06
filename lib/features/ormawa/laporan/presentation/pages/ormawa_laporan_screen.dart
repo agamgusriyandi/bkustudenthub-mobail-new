@@ -9,11 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_lpj.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaLaporanScreen extends StatefulWidget {
   const OrmawaLaporanScreen({super.key});
@@ -1034,7 +1035,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               height: 52,
                               child: OutlinedButton.icon(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  context.pop();
                                   _showEditLaporan(context, report);
                                 },
 
@@ -1059,7 +1060,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               height: 52,
                               child: ElevatedButton.icon(
                                 onPressed: () async {
-                                  Navigator.pop(context);
+                                  context.pop();
                                   try {
                                     final provider =
                                         context.read<OrmawaProvider>();
@@ -1114,7 +1115,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         height: 52,
                         child: OutlinedButton.icon(
                           onPressed: () {
-                            Navigator.pop(context);
+                            context.pop();
                             _showEditLaporan(context, report);
                           },
 
@@ -1239,7 +1240,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         return GestureDetector(
                           onTap: () {
                             setState(() => _filterStatus = option);
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -1275,7 +1276,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     child: TextButton(
                       onPressed: () {
                         setState(() => _filterStatus = 'Semua');
-                        Navigator.pop(context);
+                        context.pop();
                       },
                       child: Text(
                         'Reset Filter',
@@ -1361,7 +1362,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
 
       await provider.updateLPJ(widget.report.id, payload);
       if (mounted) {
-        Navigator.pop(context);
+        context.pop();
         AppSnackbar.showSuccess(context, 'LPJ berhasil diperbarui');
       }
     } catch (e) {
@@ -1709,7 +1710,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
 
       await provider.addLPJ(payload);
       if (mounted) {
-        Navigator.pop(context);
+        context.pop();
         AppSnackbar.showSuccess(context, 'LPJ berhasil diajukan');
       }
     } catch (e) {

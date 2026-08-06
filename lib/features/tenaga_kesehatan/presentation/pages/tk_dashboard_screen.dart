@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
@@ -69,15 +69,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                       (context, variant) => context.push('/notifications/tk'),
                   profileImage:
                       imageUrl.isNotEmpty
-                          ? CachedNetworkImage(imageUrl: 
-                            ApiGate.getImageUrl(imageUrl),
+                          ? CachedNetworkImage(
+                              imageUrl: (() {
+                                final url = ApiGate.getImageUrl(imageUrl);
+                                final timestamp = DateTime.now().millisecondsSinceEpoch;
+                                return url.contains('?') ? '$url&v=$timestamp' : '$url?v=$timestamp';
+                              })(),
                             fit: BoxFit.cover,
-                            progressIndicatorBuilder:
-                                (_, url, progress) =>
-                                    _buildInitialsAvatar(initials),
+                            placeholder: (context, url) => _buildInitialsAvatar(initials),
                             errorWidget:
                                 (_, url, error) => _buildInitialsAvatar(initials),
-                            placeholder: (context, url) => Container(color: AppColors.neutral200),
+                            
                           )
                           : _buildInitialsAvatar(initials),
                   bottomChild: _buildHeaderQuickChips(provider),

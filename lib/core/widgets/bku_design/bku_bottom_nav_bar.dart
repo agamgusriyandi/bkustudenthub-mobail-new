@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 /// Navigation item definition
@@ -80,18 +80,18 @@ class BottomNavPresets {
   ];
 }
 
-/// UnifiedBottomNavBar - Single bottom navigation bar for all roles
+/// BkuBottomNavBar - Single bottom navigation bar for all roles
 ///
 /// Uses ThemeProvider to get dynamic colors from backend API.
 /// Replaces multiple bottom nav variants (CustomBottomNavBar, OrmawaBottomNavBar, etc.)
-class UnifiedBottomNavBar extends StatefulWidget {
+class BkuBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
   final List<BottomNavItem> items;
   final bool enableHaptic;
   final AppBarVariant variant;
 
-  const UnifiedBottomNavBar({
+  const BkuBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
@@ -101,12 +101,12 @@ class UnifiedBottomNavBar extends StatefulWidget {
   });
 
   /// Factory constructor for Mahasiswa
-  factory UnifiedBottomNavBar.mahasiswa({
+  factory BkuBottomNavBar.mahasiswa({
     Key? key,
     required int currentIndex,
     required Function(int) onTap,
   }) {
-    return UnifiedBottomNavBar(
+    return BkuBottomNavBar(
       key: key,
       currentIndex: currentIndex,
       onTap: onTap,
@@ -116,12 +116,12 @@ class UnifiedBottomNavBar extends StatefulWidget {
   }
 
   /// Factory constructor for Ormawa
-  factory UnifiedBottomNavBar.ormawa({
+  factory BkuBottomNavBar.ormawa({
     Key? key,
     required int currentIndex,
     required Function(int) onTap,
   }) {
-    return UnifiedBottomNavBar(
+    return BkuBottomNavBar(
       key: key,
       currentIndex: currentIndex,
       onTap: onTap,
@@ -131,12 +131,12 @@ class UnifiedBottomNavBar extends StatefulWidget {
   }
 
   /// Factory constructor for Psychologist
-  factory UnifiedBottomNavBar.psychologist({
+  factory BkuBottomNavBar.psychologist({
     Key? key,
     required int currentIndex,
     required Function(int) onTap,
   }) {
-    return UnifiedBottomNavBar(
+    return BkuBottomNavBar(
       key: key,
       currentIndex: currentIndex,
       onTap: onTap,
@@ -146,12 +146,12 @@ class UnifiedBottomNavBar extends StatefulWidget {
   }
 
   /// Factory constructor for Tenaga Kesehatan
-  factory UnifiedBottomNavBar.tenagaKesehatan({
+  factory BkuBottomNavBar.tenagaKesehatan({
     Key? key,
     required int currentIndex,
     required Function(int) onTap,
   }) {
-    return UnifiedBottomNavBar(
+    return BkuBottomNavBar(
       key: key,
       currentIndex: currentIndex,
       onTap: onTap,
@@ -161,12 +161,12 @@ class UnifiedBottomNavBar extends StatefulWidget {
   }
 
   /// Factory constructor for Mentor Kencana
-  factory UnifiedBottomNavBar.mentorKencana({
+  factory BkuBottomNavBar.mentorKencana({
     Key? key,
     required int currentIndex,
     required Function(int) onTap,
   }) {
-    return UnifiedBottomNavBar(
+    return BkuBottomNavBar(
       key: key,
       currentIndex: currentIndex,
       onTap: onTap,
@@ -176,10 +176,10 @@ class UnifiedBottomNavBar extends StatefulWidget {
   }
 
   @override
-  State<UnifiedBottomNavBar> createState() => _UnifiedBottomNavBarState();
+  State<BkuBottomNavBar> createState() => _BkuBottomNavBarState();
 }
 
-class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
+class _BkuBottomNavBarState extends State<BkuBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
@@ -187,16 +187,16 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
     final items =
         widget.items.isEmpty ? BottomNavPresets.mahasiswa : widget.items;
 
-    List<Color> gradientColors;
+    Color solidColor;
     switch (widget.variant) {
       case AppBarVariant.secondary:
-        gradientColors = themeProvider.secondaryGradient;
+        solidColor = themeProvider.secondary;
         break;
       case AppBarVariant.student:
       case AppBarVariant.ormawa:
       case AppBarVariant.psychologist:
       case AppBarVariant.nakes:
-        gradientColors = themeProvider.primaryGradient;
+        solidColor = themeProvider.primary;
         break;
     }
 
@@ -212,14 +212,10 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
         height: 64,
         decoration: BoxDecoration(
           borderRadius: AppRadius.radiusXxl,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: gradientColors,
-          ),
+          color: solidColor,
           boxShadow: [
             BoxShadow(
-              color: gradientColors.first.withAlpha(100),
+              color: solidColor.withAlpha(100),
               blurRadius: 18,
               offset: const Offset(0, 6),
             ),
@@ -230,17 +226,18 @@ class _UnifiedBottomNavBarState extends State<UnifiedBottomNavBar> {
           child: Stack(
             children: [
               Positioned.fill(
-                  child: Opacity(
-                    opacity: 0.12,
-                    child: Semantics(
-                      excludeSemantics: true,
-                      child: Image.asset(
-                        'assets/images/batik_pattern.png',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
+                child: Opacity(
+                  opacity: 0.15,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/icons.png'),
+                        repeat: ImageRepeat.repeat,
+                        scale: 4.0,
                       ),
                     ),
                   ),
+                ),
               ),
               Center(
                 child: Padding(

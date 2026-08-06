@@ -1,4 +1,4 @@
-package com.example.bkuhub_mobile
+package com.bkustudenthub.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

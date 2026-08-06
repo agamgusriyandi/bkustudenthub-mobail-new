@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class DataDiriTabWidget extends StatefulWidget {
-  final StudentProvider student;
-  const DataDiriTabWidget({super.key, required this.student});
+  const DataDiriTabWidget({super.key});
 
   @override
   State<DataDiriTabWidget> createState() => _DataDiriTabWidgetState();
@@ -19,6 +19,16 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
   bool _isLoading = false;
 
   late Map<String, dynamic> _formData;
+  final Map<String, TextEditingController> _controllers = {};
+
+
+  @override
+  void dispose() {
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -43,12 +53,25 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
     return val;
   }
 
+  bool _hasLoadedData = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final profile = context.watch<ProfileProvider>();
+    if (!_hasLoadedData && profile.rawProfileData.isNotEmpty) {
+      _initFormData();
+      _hasLoadedData = true;
+    }
+  }
+
   void _initFormData() {
-    final raw = widget.student.rawProfileData;
+    final profile = context.read<ProfileProvider>();
+    final raw = profile.rawProfileData;
     final m = raw['mahasiswa'] ?? raw;
     _formData = {
-      'nik': m['nik']?.toString() ?? '',
-      'nisn': m['nisn']?.toString() ?? '',
+      'nik': m['nik']?.toString() ?? m['NIK']?.toString() ?? '',
+      'nisn': m['nisn']?.toString() ?? m['NISN']?.toString() ?? '',
       'birth_place':
           m['tempat_lahir']?.toString() ?? m['TempatLahir']?.toString() ?? '',
       'birth_date': _cleanDateString(
@@ -65,6 +88,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
       'address':
           m['alamat_domisili']?.toString() ??
           m['AlamatDomisili']?.toString() ??
+          m['Alamat']?.toString() ??
           '',
       'nama_ibu_kandung':
           m['nama_ibu_kandung']?.toString() ??
@@ -72,6 +96,18 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
           '',
       'nama_ayah': m['nama_ayah']?.toString() ?? m['NamaAyah']?.toString() ?? '',
     };
+    
+    // Update controllers
+    _formData.forEach((key, value) {
+      if (!_controllers.containsKey(key)) {
+        _controllers[key] = TextEditingController(text: value?.toString() ?? '');
+      } else {
+        // Only update if it's different to preserve cursor position during typing
+        if (_controllers[key]!.text != value?.toString()) {
+          _controllers[key]!.text = value?.toString() ?? '';
+        }
+      }
+    });
   }
 
   Future<void> _save() async {
@@ -94,7 +130,8 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
 
     setState(() => _isLoading = true);
     try {
-      await widget.student.updateProfile(backendPayload);
+      final profile = context.read<ProfileProvider>();
+      await profile.updateProfile(backendPayload);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -126,7 +163,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                 const SizedBox(width: AppSpacing.s10),
                 Expanded(
                   child: Text(
-                    e.toString(),
+                    e.toString().replaceAll('Exception: ', '').replaceAll('FormatException: ', ''),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -152,7 +189,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
     IconData? prefixIcon,
     bool isDate = false,
   }) {
-    final controller = TextEditingController(text: _formData[key]?.toString() ?? '');
+    final controller = _controllers[key] ??= TextEditingController(text: _formData[key]?.toString() ?? '');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -163,10 +200,10 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: context.appColors.secondaryContainer,
+                  color: AppColors.neutral900,
                 ),
               ),
               if (required)
@@ -316,6 +353,15 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<ProfileProvider>();
+    
+    // Show loading spinner if data hasn't loaded yet
+    if (profile.isLoading && !_hasLoadedData) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.neutral900),
+      );
+    }
+    
     return Form(
       key: _formKey,
       child: ListView(
@@ -362,18 +408,15 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
     SizedBox(height: AppSpacing.sm),
           Container(
             height: 52,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: AppRadius.radiusLg,
-              gradient: LinearGradient(
-                colors: [context.appColors.success, context.appColors.success],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              color: AppColors.neutral900,
               boxShadow: [
                 BoxShadow(
-                  color: context.appColors.success.withAlpha(40),
-                  blurRadius: 14,
-                  offset: const Offset(0, 5),
+                  color: AppColors.neutral900.withAlpha(50),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),

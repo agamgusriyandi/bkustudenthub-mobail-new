@@ -11,11 +11,12 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/biometric_service.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 
@@ -89,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (_authService.currentRole == UserRole.student) {
-      Provider.of<StudentProvider>(context, listen: false).loadAllData();
+      Provider.of<ProfileProvider>(context, listen: false).fetchProfile();
       Provider.of<HealthViewModel>(context, listen: false).loadInitialData();
       context.go(AppRoutes.studentMain);
     } else if (_authService.currentRole == UserRole.mentorKencana) {
@@ -190,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.appColors.surface,
       body: Stack(
         children: [
           // 1. Full Screen Background Image
@@ -213,12 +214,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme.of(context).colorScheme.primary.withAlpha(
-                      140,
-                    ), // Kuat di atas (55% opacity)
-                    Theme.of(context).colorScheme.primary.withAlpha(
-                      217,
-                    ), // Sangat kuat di bawah (85% opacity)
+                    context.appColors.primary.withAlpha(140),
+                    context.appColors.primary.withAlpha(217),
                   ],
                 ),
               ),
@@ -257,13 +254,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: BoxDecoration(
                                 color: context.appColors.surface,
                                 borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(AppRadius.radius35),
+                                  top: Radius.circular(AppRadius.xxl),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: context.appColors.onSurface.withValues(alpha: 0.1),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, -8),
+                                    color: context.appColors.onSurface.withValues(alpha: 0.15),
+                                    blurRadius: 32,
+                                    offset: const Offset(0, -12),
                                   ),
                                 ],
                               ),
@@ -349,10 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     AppRoutes.forgotPassword,
                                                   ),
                                               style: TextButton.styleFrom(
-                                                foregroundColor:
-                                                    Theme.of(
-                                                      context,
-                                                    ).colorScheme.primary,
+                                                foregroundColor: context.appColors.primary,
                                                 padding: const EdgeInsets
                                                     .symmetric(
                                                   horizontal: AppSpacing.sm,
@@ -368,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 style: AppTextStyles.labelMd
                                                     .copyWith(
                                                   color: AppColors.neutral800,
-                                                  fontWeight: FontWeight.w600,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                               ),
                                             ),
@@ -466,30 +460,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       children: [
         Expanded(
-          child: SizedBox(
-            height: 48,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _handleLogin,
-              child:
-                  _isLoading
-                      ? SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          color: context.appColors.onPrimary,
-                          strokeWidth: 3.0,
-                        ),
-                      )
-                      : Text(
-                        'Masuk',
-                        style: AppTextStyles.titleMd.copyWith(
-                          color: context.appColors.onPrimary,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-            ),
+          child: BkuButton(
+            text: 'Masuk',
+            onPressed: _isLoading ? null : _handleLogin,
+            isLoading: _isLoading,
+            variant: BkuButtonVariant.primary,
           ),
         ),
         if (_isBiometricEnabled) ...[
@@ -573,8 +548,7 @@ class _LoginScreenState extends State<LoginScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.radiusMd,
               borderSide: BorderSide(
-                color:
-                    Theme.of(context).colorScheme.primary, // Gold focus border
+                color: context.appColors.primary,
                 width: 1.5,
               ),
             ),
@@ -643,12 +617,12 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
 
   Color _getColor(String? hexColor) {
     if (hexColor == null || !hexColor.startsWith('#')) {
-      return Theme.of(context).colorScheme.primary;
+      return context.appColors.primary;
     }
     try {
       return Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
     } catch (_) {
-      return Theme.of(context).colorScheme.primary;
+      return context.appColors.primary;
     }
   }
 
@@ -667,7 +641,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
 
       setState(() => _isLoading = false);
       if (success) {
-        Navigator.pop(context); // Close bottom sheet
+        context.pop(); // Close bottom sheet
         widget.onSuccess();
       } else {
         setState(() {

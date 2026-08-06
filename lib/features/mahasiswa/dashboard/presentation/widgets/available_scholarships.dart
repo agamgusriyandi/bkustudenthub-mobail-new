@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:go_router/go_router.dart';
 
 class ScholarshipItem {
   final String id;
@@ -95,7 +98,9 @@ class AvailableScholarships extends StatelessWidget {
                 ],
               ),
               GestureDetector(
-                onTap: onViewAll,
+                onTap: onViewAll ?? () {
+                  AppSnackbar.showSuccess(context, 'Menampilkan semua beasiswa...');
+                },
                 child: Row(
                   children: [
                     Text(
@@ -136,11 +141,11 @@ class AvailableScholarships extends StatelessWidget {
       statusText = 'Ditutup';
       statusIcon = Icons.event_busy_rounded;
     } else if (isUrgent) {
-      statusColor = const Color(0xFFF59E0B);
+      statusColor = AppColors.warning;
       statusText = 'Sisa $daysDiff Hari';
       statusIcon = Icons.schedule_rounded;
     } else {
-      statusColor = const Color(0xFF16A34A);
+      statusColor = AppColors.success;
       statusText = 'Terbuka';
       statusIcon = Icons.verified_rounded;
     }
@@ -242,7 +247,7 @@ class AvailableScholarships extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.payments_rounded,
-                          color: const Color(0xFF16A34A),
+                          color: AppColors.success,
                           size: 14,
                         ),
                         const SizedBox(width: 4),
@@ -271,7 +276,7 @@ class AvailableScholarships extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.calendar_today_rounded,
-                          color: const Color(0xFFF59E0B),
+                          color: context.appColors.warning,
                           size: 14,
                         ),
                         const SizedBox(width: 4),
@@ -300,7 +305,7 @@ class AvailableScholarships extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Navigate to scholarship detail
+                context.push('/scholarship/program/${item.id}');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.appColors.primary,

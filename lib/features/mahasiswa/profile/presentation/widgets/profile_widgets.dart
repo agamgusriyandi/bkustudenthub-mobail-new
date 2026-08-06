@@ -3,13 +3,13 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import '../dialogs/profile_dialogs.dart';
 import '../utils/profile_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-Widget buildRoleCard(BuildContext context, StudentProvider student) {
+Widget buildRoleCard(BuildContext context, ProfileProvider student) {
   final displayName = student.name.isNotEmpty ? student.name : 'Mahasiswa';
   final displayProdi =
       student.prodi.isNotEmpty ? student.prodi.toUpperCase() : 'MAHASISWA';

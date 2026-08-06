@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -23,6 +23,7 @@ class MentorMenteeScreen extends StatefulWidget {
 class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
   String _searchQuery = '';
   String _selectedFacultyFilter = 'all';
+  String _selectedStatusFilter = 'all';
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -60,6 +61,11 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
       }
       if (_selectedFacultyFilter != 'all') {
         if (m.faculty.toLowerCase() != _selectedFacultyFilter.toLowerCase()) {
+          return false;
+        }
+      }
+      if (_selectedStatusFilter != 'all') {
+        if (m.status != _selectedStatusFilter) {
           return false;
         }
       }
@@ -126,7 +132,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                           icon: const Icon(Icons.person_add_rounded, size: 14),
                           label: const Text('+ Tambah Bimbingan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.primary,
+                            backgroundColor: AppColors.success,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             elevation: 0,
@@ -158,24 +164,53 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
-                    // Filter Dropdown
-                    if (uniqueFaculties.isNotEmpty)
-                      DropdownButtonFormField<String>(
-                        initialValue: _selectedFacultyFilter,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                    // Filter Dropdowns
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            initialValue: _selectedStatusFilter,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                            ),
+                            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
+                            items: const [
+                              DropdownMenuItem(value: 'all', child: Text('Semua Status', overflow: TextOverflow.ellipsis)),
+                              DropdownMenuItem(value: 'active', child: Text('Disetujui', overflow: TextOverflow.ellipsis)),
+                              DropdownMenuItem(value: 'pending', child: Text('Pending', overflow: TextOverflow.ellipsis)),
+                              DropdownMenuItem(value: 'rejected', child: Text('Ditolak', overflow: TextOverflow.ellipsis)),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) setState(() => _selectedStatusFilter = val);
+                            },
+                          ),
                         ),
-                        style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
-                        items: [
-                          const DropdownMenuItem(value: 'all', child: Text('Semua Fakultas')),
-                          ...uniqueFaculties.map((f) => DropdownMenuItem(value: f, child: Text(f))),
-                        ],
-                        onChanged: (val) {
-                          if (val != null) setState(() => _selectedFacultyFilter = val);
-                        },
-                      ),
+                        if (uniqueFaculties.isNotEmpty) const SizedBox(width: AppSpacing.sm),
+                        if (uniqueFaculties.isNotEmpty)
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              initialValue: _selectedFacultyFilter,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                              ),
+                              style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
+                              items: [
+                                const DropdownMenuItem(value: 'all', child: Text('Semua Fakultas', overflow: TextOverflow.ellipsis)),
+                                ...uniqueFaculties.map((f) => DropdownMenuItem(value: f, child: Text(f, overflow: TextOverflow.ellipsis))),
+                              ],
+                              onChanged: (val) {
+                                if (val != null) setState(() => _selectedFacultyFilter = val);
+                              },
+                            ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -215,17 +250,25 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final mentee = filteredMentees[index];
+                    int? groupId;
+                    for (final g in provider.groups) {
+                      if (g.mentees.any((m) => m.id == mentee.id)) {
+                        groupId = g.id;
+                        break;
+                      }
+                    }
+
                     return BkuCard(
                       margin: const EdgeInsets.only(bottom: AppSpacing.md),
                       padding: const EdgeInsets.all(AppSpacing.md),
-                      onTap: () => context.push('/mentor-kencana/mentee/${mentee.id}'),
+                      onTap: mentee.status == 'active' ? () => context.push('/mentor-kencana/mentee/${mentee.id}') : null,
                       child: Row(
                         children: [
                           Container(
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: context.appColors.primary.withAlpha(20),
+                              color: AppColors.neutral200,
                               shape: BoxShape.circle,
                             ),
                             child: ClipOval(
@@ -239,7 +282,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                         child: Text(
                                           mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
                                           style: TextStyle(
-                                            color: context.appColors.primary,
+                                            color: AppColors.neutral800,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
@@ -251,7 +294,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                       child: Text(
                                         mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
                                         style: TextStyle(
-                                          color: context.appColors.primary,
+                                          color: AppColors.neutral800,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                         ),
@@ -276,7 +319,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                 Text(
                                   'NIM: ${mentee.nim}',
                                   style: AppTextStyles.labelSm.copyWith(
-                                    color: context.appColors.primary,
+                                    color: AppColors.neutral800,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 11,
                                   ),
@@ -298,24 +341,70 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           
-                          // Status Badge
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.success.withAlpha(20),
-                              borderRadius: AppRadius.radiusSm,
-                            ),
-                            child: Text(
-                              'DISETUJUI',
-                              style: TextStyle(
-                                color: AppColors.success,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+                          // Status Badge & Delete
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: mentee.status == 'active' ? AppColors.success.withAlpha(20) :
+                                         mentee.status == 'pending' ? AppColors.warning.withAlpha(20) :
+                                         AppColors.error.withAlpha(20),
+                                  borderRadius: AppRadius.radiusSm,
+                                ),
+                                child: Text(
+                                  mentee.status == 'active' ? 'DISETUJUI' :
+                                  mentee.status == 'pending' ? 'PENDING' : 'DITOLAK',
+                                  style: TextStyle(
+                                    color: mentee.status == 'active' ? AppColors.success :
+                                           mentee.status == 'pending' ? AppColors.warning : AppColors.error,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: AppSpacing.sm),
+                              IconButton(
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.zero,
+                                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppColors.error),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: const Text('Hapus Mahasiswa?'),
+                                      content: const Text('Mahasiswa ini akan dihapus dari daftar bimbingan Anda. Anda bisa mengundangnya kembali dari daftar mahasiswa yang tersedia jika terjadi kesalahan.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text('Batal'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            Navigator.pop(ctx);
+                                            if (groupId != null) {
+                                              final success = await provider.removeGroupMember(groupId, mentee.id);
+                                              if (context.mounted && success) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Berhasil menghapus mahasiswa dari bimbingan.')),
+                                                );
+                                              }
+                                            }
+                                          },
+                                          child: const Text('Hapus', style: TextStyle(color: AppColors.error)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              if (mentee.status == 'active') ...[
+                                const SizedBox(width: 4),
+                                Icon(Icons.chevron_right_rounded, color: AppColors.neutral400),
+                              ],
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          Icon(Icons.chevron_right_rounded, color: AppColors.neutral400),
                         ],
                       ),
                     );

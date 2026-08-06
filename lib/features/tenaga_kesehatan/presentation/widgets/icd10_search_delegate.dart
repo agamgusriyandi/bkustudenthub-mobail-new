@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/icd10_data.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:go_router/go_router.dart';
 
 class Icd10SearchBottomSheet extends StatefulWidget {
   final Function(Icd10Item) onSelected;
@@ -140,7 +141,7 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
                           ),
                           onTap: () {
                             widget.onSelected(item);
-                            Navigator.pop(context);
+                            context.pop();
                           },
                         );
                       },

@@ -10,8 +10,9 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/add_organisasi_screen.dart';
@@ -19,11 +20,12 @@ import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/d
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import '../../utils/portfolio_pdf_generator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 
 class OrganisasiScreen extends StatefulWidget {
   const OrganisasiScreen({super.key});
@@ -41,7 +43,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentProvider>().loadAllData();
+      context.read<OrganizationProvider>().loadOrganizationData();
       _loadExploreData();
     });
   }
@@ -50,7 +52,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     if (!mounted) return;
     setState(() => _isExploreLoading = true);
     try {
-      final list = await context.read<StudentProvider>().getOrmawaList();
+      final list = await context.read<OrganizationProvider>().getOrmawaList();
       if (mounted) {
         setState(() {
           _exploreOrmawaList = list;
@@ -66,7 +68,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<OrganizationProvider>();
     final orgHistory = student.organizationHistory;
 
     return Scaffold(
@@ -80,10 +82,10 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               builder:
                   (context) => const Center(child: CircularProgressIndicator()),
             );
-            await PortfolioPdfGenerator.generateAndPrintPortfolio(student);
-            if (context.mounted) Navigator.pop(context);
+            await PortfolioPdfGenerator.generateAndPrintPortfolio(context.read<ProfileProvider>(), student);
+            if (context.mounted) context.pop();
           } catch (e) {
-            if (context.mounted) Navigator.pop(context);
+            if (context.mounted) context.pop();
             if (context.mounted) {
               showDialog(
                 context: context,
@@ -737,7 +739,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     );
   }
 
-  Widget _buildTagihanIuranTab(StudentProvider student) {
+  Widget _buildTagihanIuranTab(OrganizationProvider student) {
     final list = student.iuranList;
     if (student.isLoading) {
       return const BkuShimmerList(itemCount: 2, itemHeight: 90);
@@ -990,7 +992,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        final provider = context.read<StudentProvider>();
+                        final provider = context.read<OrganizationProvider>();
                         final navigator = Navigator.of(context);
                         final picker = ImagePicker();
                         final image = await picker.pickImage(
@@ -1308,14 +1310,14 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 try {
                                   BkuLoadingDialog.show(context);
                                   await context
-                                      .read<StudentProvider>()
+                                      .read<OrganizationProvider>()
                                       .uploadOrganizationDokumentasi(
                                         org.id,
                                         pickedFile.path,
                                       );
                                   if (!context.mounted) return;
                                   BkuLoadingDialog.hide(context);
-                                  Navigator.pop(context);
+                                  context.pop();
                                   AppSnackbar.showSuccess(
                                     context,
                                     'Dokumentasi berhasil diunggah',
@@ -1458,7 +1460,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                                 height: 50,
                                 child: BkuButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    context.pop();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -1495,7 +1497,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           width: double.infinity,
                           height: 50,
                           child: BkuButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.pop(),
                             icon: Icons.close_rounded,
                             text: 'Tutup',
                             variant: BkuButtonVariant.outline,
@@ -1507,7 +1509,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                           width: double.infinity,
                           height: 50,
                           child: BkuButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.pop(),
                             icon: Icons.close_rounded,
                             text: 'Tutup',
                             variant: BkuButtonVariant.outline,
@@ -1542,11 +1544,11 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               try {
                 BkuLoadingDialog.show(context);
                 await context
-                    .read<StudentProvider>()
+                    .read<OrganizationProvider>()
                     .deleteOrganizationHistory(id);
                 if (context.mounted) {
                   BkuLoadingDialog.hide(context);
-                  Navigator.pop(context);
+                  context.pop();
                   AppSnackbar.showSuccess(
                     context,
                     'Riwayat organisasi berhasil dihapus',

@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_news.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -34,19 +35,7 @@ String _formatDate(DateTime dt) {
   return '$dayName, $dayNum $monthName ${dt.year}';
 }
 
-String _parseHtmlString(String htmlString) {
-  if (htmlString.isEmpty) return '';
-  var document = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
-  document = document
-      .replaceAll('&nbsp;', ' ')
-      .replaceAll('&amp;', '&')
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>')
-      .replaceAll('&quot;', '"')
-      .replaceAll('&#39;', "'")
-      .replaceAll('&apos;', "'");
-  return document.trim();
-}
+
 
 class StudentAgendaList extends StatefulWidget {
   const StudentAgendaList({super.key});
@@ -93,10 +82,10 @@ class _StudentAgendaListState extends State<StudentAgendaList> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
-    final newsList = student.campusNews;
+    final academic = context.watch<AcademicProvider>();
+    final newsList = academic.campusNews;
 
-    if (student.isLoading && newsList.isEmpty) {
+    if (academic.isLoading && newsList.isEmpty) {
       return const BkuShimmerList(itemCount: 1, itemHeight: 220);
     }
 
@@ -190,126 +179,9 @@ class _NewsCard extends StatelessWidget {
   const _NewsCard({required this.news});
 
   void _showNewsDetail(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.85,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-            ),
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(AppRadius.lg),
-                      ),
-                      child:
-                          news.gambarUrl.isNotEmpty
-                              ? CachedNetworkImage(imageUrl: 
-                                ApiGate.getImageUrl(news.gambarUrl),
-                                width: double.infinity,
-                                fit: BoxFit.contain,
-                                errorWidget:
-                                    (context, url, error) =>
-                                        _buildPlaceholderImage(),
-                                placeholder: (context, url) => Container(color: AppColors.neutral200),
-                              )
-                              : _buildPlaceholderImage(),
-                    ),
-                    Positioned(
-                      top: 20,
-                      right: 20,
-                      child: CircleAvatar(
-                        backgroundColor: context.appColors.onSurface.withAlpha(100),
-                        child: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: Icon(
-                            Icons.close_rounded,
-                            color: context.appColors.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: AppSpacing.padding28,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral500.withAlpha(20),
-                            borderRadius: AppRadius.radiusXs,
-                          ),
-                          child: Text(
-                            news.kategori.isNotEmpty
-                                ? news.kategori.toUpperCase()
-                                : 'BERITA KAMPUS',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.onSurface,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Text(
-                          news.judul,
-                          style: AppTextStyles.titleLg.copyWith(
-                            color: context.appColors.onSurface,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 22,
-                            height: 1.3,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today_rounded,
-                              size: 14,
-                              color: context.appColors.outline,
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              _formatDate(news.tanggalPublish),
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: context.appColors.outline,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Text(
-                          _parseHtmlString(news.isi),
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: context.appColors.onSurface,
-                            height: 1.7,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xxxl),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-    );
+    context.push('/berita/${news.id}');
   }
+
 
   Widget _buildPlaceholderImage() {
     return Image.asset(

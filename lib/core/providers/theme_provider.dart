@@ -88,6 +88,10 @@ class ThemeProvider extends ChangeNotifier {
   Color get danger => _colors.danger;
   Color get dangerContainer => _colors.dangerContainer;
 
+  /// Tipografi
+  String? get fontHeadline => _colors.fontHeadline;
+  String? get fontBody => _colors.fontBody;
+
   /// Tertiary colors
   Color get tertiary => _colors.tertiary;
   Color get tertiaryContainer => _colors.tertiaryContainer;

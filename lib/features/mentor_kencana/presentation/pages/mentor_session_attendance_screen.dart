@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -60,9 +60,17 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
   void _savePresensi() async {
     setState(() => _isSaving = true);
     final provider = context.read<MentorKencanaProvider>();
-    final List<Map<String, dynamic>> payload = _attendances.map((e) => {
-      'student_id': e.id,
-      'status': e.status,
+    final List<Map<String, dynamic>> payload = _attendances.map((e) {
+      String mappedStatus = 'absent';
+      if (e.status == 'Hadir') {
+        mappedStatus = 'present';
+      } else if (e.status == 'Izin' || e.status == 'Sakit') {
+        mappedStatus = 'permission';
+      }
+      return {
+        'student_id': e.id,
+        'status': mappedStatus,
+      };
     }).toList();
 
     final success = await provider.submitBulkSessionAttendance(widget.sessionId, payload);
@@ -89,6 +97,9 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
           programStudi: old.programStudi,
           faculty: old.faculty,
           status: status,
+          originalStatus: old.originalStatus,
+          reason: old.reason,
+          attachmentUrl: old.attachmentUrl,
         );
       }
     });
@@ -132,7 +143,13 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                   variant: AppBarVariant.student,
                   showBackButton: true,
                   isExpandable: false,
-                  onBack: () => context.pop(),
+                  onBack: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/mentor-kencana/attendance');
+                    }
+                  },
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
@@ -146,34 +163,60 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Daftar Hadir Mahasiswa',
-                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Tandai kehadiran (Hadir, Izin, atau Alpha) lalu klik Simpan.',
-                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
-                              ),
-                              const SizedBox(height: AppSpacing.md),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: BkuButton(
-                                      text: 'QR Presensi',
-                                      variant: BkuButtonVariant.outline,
-                                      onPressed: () {
-                                        showDialog(context: context, builder: (_) => SessionQrModal(sessionId: widget.sessionId));
-                                      },
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Daftar Hadir Mahasiswa',
+                                          style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Tandai kehadiran (Hadir, Izin, atau Alpha) lalu klik Simpan.',
+                                          style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(width: AppSpacing.sm),
-                                  Expanded(
-                                    child: BkuButton(
-                                      text: 'Simpan',
-                                      isLoading: _isSaving,
-                                      onPressed: _savePresensi,
-                                    ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 32,
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            showDialog(context: context, builder: (_) => SessionQrModal(sessionId: widget.sessionId));
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                                            side: BorderSide(color: context.appColors.outlineVariant),
+                                          ),
+                                          child: Text('QR Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: context.appColors.outline)),
+                                        ),
+                                      ),
+                                      const SizedBox(width: AppSpacing.sm),
+                                      SizedBox(
+                                        height: 32,
+                                        child: ElevatedButton(
+                                          onPressed: _savePresensi,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: context.appColors.primary,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                                            elevation: 0,
+                                          ),
+                                          child: _isSaving 
+                                            ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                            : const Text('Simpan Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -290,9 +333,35 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                mentee.name,
-                                style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      mentee.name,
+                                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  if (mentee.originalStatus == 'permission_requested')
+                                    GestureDetector(
+                                      onTap: () => _showPermissionModal(context, mentee),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: context.appColors.warning.withAlpha(20),
+                                          borderRadius: AppRadius.radiusSm,
+                                          border: Border.all(color: context.appColors.warning.withAlpha(50)),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.visibility_rounded, size: 12, color: context.appColors.warning),
+                                            const SizedBox(width: 4),
+                                            Text('Lihat Izin', style: AppTextStyles.labelSm.copyWith(color: context.appColors.warning, fontSize: 10, fontWeight: FontWeight.bold)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 2),
                               Text(
@@ -300,14 +369,22 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                 style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
                               ),
                               const SizedBox(height: AppSpacing.md),
-                              Row(
-                                children: [
-                                  _buildSegmentedButton('Hadir', mentee.id, mentee.status, context.appColors.success, matchStatus: ['Hadir', 'hadir', 'present', 'attended']),
-                                  const SizedBox(width: 4),
-                                  _buildSegmentedButton('Izin / Sakit', mentee.id, mentee.status, context.appColors.warning, matchStatus: ['Izin', 'Sakit', 'izin', 'sakit']),
-                                  const SizedBox(width: 4),
-                                  _buildSegmentedButton('Alpha', mentee.id, mentee.status, context.appColors.error, matchStatus: ['Alpha', 'alpha', 'absent']),
-                                ],
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: context.appColors.surface,
+                                  borderRadius: AppRadius.radiusLg,
+                                  border: Border.all(color: context.appColors.outlineVariant),
+                                ),
+                                child: Row(
+                                  children: [
+                                    _buildSegmentedButton('Hadir', mentee.id, mentee.status, context.appColors.success, matchStatus: ['Hadir', 'hadir', 'present', 'attended']),
+                                    const SizedBox(width: 4),
+                                    _buildSegmentedButton('Izin / Sakit', mentee.id, mentee.status, context.appColors.warning, matchStatus: ['Izin', 'Sakit', 'izin', 'sakit']),
+                                    const SizedBox(width: 4),
+                                    _buildSegmentedButton('Alpha', mentee.id, mentee.status, context.appColors.error, matchStatus: ['Alpha', 'alpha', 'absent']),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -317,6 +394,62 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                   ),
               ],
             ),
+    );
+  }
+
+  void _showPermissionModal(BuildContext context, SessionAttendanceData mentee) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.appColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline_rounded, color: context.appColors.primary),
+            const SizedBox(width: 8),
+            Text('Detail Izin', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Alasan:', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            Text(mentee.reason.isNotEmpty ? mentee.reason : '-', style: AppTextStyles.labelSm),
+            const SizedBox(height: 16),
+            if (mentee.attachmentUrl.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: context.appColors.primary.withAlpha(20),
+                  borderRadius: AppRadius.radiusMd,
+                  border: Border.all(color: context.appColors.primary.withAlpha(50)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.link_rounded, size: 16, color: context.appColors.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        mentee.attachmentUrl,
+                        style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Tutup', style: TextStyle(color: context.appColors.primary, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -336,7 +469,6 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isActive ? activeColor : Colors.transparent,
-            border: Border.all(color: isActive ? activeColor : AppColors.neutral300),
             borderRadius: AppRadius.radiusMd,
           ),
           alignment: Alignment.center,

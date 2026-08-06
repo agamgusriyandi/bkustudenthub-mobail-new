@@ -8,7 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:intl/intl.dart';
@@ -114,7 +115,7 @@ void showUneditableInfoDialog(BuildContext context) {
   );
 }
 
-void showDigitalID(BuildContext context, StudentProvider student) {
+void showDigitalID(BuildContext context, ProfileProvider student) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -236,7 +237,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
                 width: double.infinity,
                 height: 54,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.pop(),
 
                   child: const Text('Tutup'),
                 ),
@@ -247,7 +248,7 @@ void showDigitalID(BuildContext context, StudentProvider student) {
   );
 }
 
-void showEditPersonalData(BuildContext context, StudentProvider student) {
+void showEditPersonalData(BuildContext context, ProfileProvider student) {
   final parts = student.birthPlaceDate.split(',');
   final tempatLahirInitial = parts.isNotEmpty ? parts[0].trim() : '';
   final tglLahirInitialStr = parts.length > 1 ? parts[1].trim() : '';
@@ -550,7 +551,7 @@ void showEmailInfoDialog(BuildContext context) {
   );
 }
 
-void showAcademicInfoDialog(BuildContext context, StudentProvider student) {
+void showAcademicInfoDialog(BuildContext context, ProfileProvider student) {
   showDialog(
     context: context,
     builder:
@@ -571,7 +572,7 @@ void showAcademicInfoDialog(BuildContext context, StudentProvider student) {
 
 void showCertificatesBottomSheet(
   BuildContext context,
-  StudentProvider student,
+  AcademicProvider student,
 ) {
   final certificates =
       student.achievements.where((a) {
@@ -834,7 +835,7 @@ void showCertificatesBottomSheet(
 
 void showNotificationPreferences(
   BuildContext context,
-  StudentProvider student,
+  ProfileProvider student,
 ) {
   bool emailNotif = student.emailNotif;
   bool pushNotif = student.pushNotif;
@@ -1231,7 +1232,7 @@ void showChangePasswordDialog(BuildContext context) {
                                     });
                                     try {
                                       await context
-                                          .read<StudentProvider>()
+                                          .read<ProfileProvider>()
                                           .changePassword(
                                             oldPasswordController.text,
                                             newPasswordController.text,

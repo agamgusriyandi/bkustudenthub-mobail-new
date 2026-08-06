@@ -8,13 +8,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
   /// Jika diberikan, langsung load jadwal psikolog ini
@@ -936,7 +937,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     if (mounted) {
       setState(() => _isSubmitting = false);
       if (success) {
-        final studentProvider = context.read<StudentProvider>();
+        final profileProvider = context.read<ProfileProvider>();
 
         AppSnackbar.showSuccess(
           context,
@@ -945,8 +946,8 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
               : 'Pendaftaran konseling berhasil dikirim',
         );
 
-        studentProvider.loadAllData();
-        Navigator.pop(context);
+        profileProvider.fetchProfile();
+        context.pop();
       } else {
         AppSnackbar.showError(
           context,

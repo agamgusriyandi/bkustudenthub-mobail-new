@@ -9,12 +9,12 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/submit_aspiration_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_detail_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -47,7 +47,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final student = context.watch<StudentVoiceProvider>();
     final filteredAspirations =
         student.aspirations
             .where(
@@ -143,7 +143,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
     );
   }
 
-  Widget _buildStatsDashboard(StudentProvider student) {
+  Widget _buildStatsDashboard(StudentVoiceProvider student) {
     return Row(
       children: [
         _buildStatCard(

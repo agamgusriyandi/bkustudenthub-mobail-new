@@ -8,12 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/psychologist_dashboard_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:go_router/go_router.dart';
 
 class PsychologistEditProfileScreen extends StatefulWidget {
   const PsychologistEditProfileScreen({super.key});
@@ -37,19 +38,34 @@ class _PsychologistEditProfileScreenState
   late TextEditingController _lokasiCtrl;
   late TextEditingController _bahasaCtrl;
 
+  bool _hasLoadedData = false;
+
   @override
   void initState() {
     super.initState();
-    final profile = context.read<PsychologistDashboardProvider>().profile;
-    _namaCtrl = TextEditingController(text: profile?.name ?? '');
-    _emailCtrl = TextEditingController(text: profile?.email ?? '');
-    _phoneCtrl = TextEditingController(text: profile?.phone ?? '');
-    _spesialisasiCtrl = TextEditingController(
-      text: profile?.specialization ?? '',
-    );
-    _bioCtrl = TextEditingController(text: profile?.bio ?? '');
-    _lokasiCtrl = TextEditingController(text: profile?.location ?? '');
-    _bahasaCtrl = TextEditingController(text: profile?.languages ?? '');
+    _namaCtrl = TextEditingController();
+    _emailCtrl = TextEditingController();
+    _phoneCtrl = TextEditingController();
+    _spesialisasiCtrl = TextEditingController();
+    _bioCtrl = TextEditingController();
+    _lokasiCtrl = TextEditingController();
+    _bahasaCtrl = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final profile = context.watch<PsychologistDashboardProvider>().profile;
+    if (!_hasLoadedData && profile != null) {
+      _namaCtrl.text = profile.name;
+      _emailCtrl.text = profile.email;
+      _phoneCtrl.text = profile.phone;
+      _spesialisasiCtrl.text = profile.specialization;
+      _bioCtrl.text = profile.bio;
+      _lokasiCtrl.text = profile.location;
+      _bahasaCtrl.text = profile.languages;
+      _hasLoadedData = true;
+    }
   }
 
   @override
@@ -139,7 +155,7 @@ class _PsychologistEditProfileScreenState
           behavior: SnackBarBehavior.floating,
         ),
       );
-      Navigator.pop(context);
+      context.pop();
     } catch (e) {
       if (!mounted) return;
       AppSnackbar.showError(context, 'Gagal memperbarui profil: $e');

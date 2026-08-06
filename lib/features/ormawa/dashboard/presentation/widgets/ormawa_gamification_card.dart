@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -37,43 +37,43 @@ class OrmawaGamificationCard extends StatelessWidget {
 
   _GamificationTheme _getTheme(BuildContext context, int rank) {
     if (rank == 1) {
-      // Gold
+      // Premium Gold
       return _GamificationTheme(
-        gradientColors: [AppColors.secondaryFixed, AppColors.secondary],
-        titleColor: context.appColors.secondary,
-        textColor: context.appColors.secondary,
-        valueColor: AppColors.onWarningContainer,
-        iconColor: context.appColors.secondary,
-        iconBgColor: context.appColors.surface.withAlpha(150),
-        progressBgColor: context.appColors.surface.withAlpha(100),
-        progressColor: context.appColors.secondary,
-        borderColor: Colors.transparent,
+        gradientColors: [const Color(0xFFFFDF73), const Color(0xFFC5A017)],
+        titleColor: const Color(0xFF594300),
+        textColor: const Color(0xFF7A5C00),
+        valueColor: const Color(0xFF382900),
+        iconColor: const Color(0xFF594300),
+        iconBgColor: Colors.white.withAlpha(150),
+        progressBgColor: Colors.black.withAlpha(20),
+        progressColor: const Color(0xFF594300),
+        borderColor: const Color(0xFFFFF2AE),
       );
     } else if (rank == 2) {
-      // Silver
+      // Premium Silver
       return _GamificationTheme(
-        gradientColors: [AppColors.neutral200, AppColors.neutral500],
-        titleColor: AppColors.neutral900,
-        textColor: AppColors.neutral700,
-        valueColor: AppColors.neutral900,
-        iconColor: AppColors.neutral900,
-        iconBgColor: context.appColors.surface.withAlpha(150),
-        progressBgColor: context.appColors.surface.withAlpha(100),
-        progressColor: AppColors.neutral900,
-        borderColor: Colors.transparent,
+        gradientColors: [const Color(0xFFF5F7FA), const Color(0xFFC3CFE2)],
+        titleColor: const Color(0xFF2C3E50),
+        textColor: const Color(0xFF475B73),
+        valueColor: const Color(0xFF1A252F),
+        iconColor: const Color(0xFF2C3E50),
+        iconBgColor: Colors.white.withAlpha(150),
+        progressBgColor: Colors.black.withAlpha(20),
+        progressColor: const Color(0xFF2C3E50),
+        borderColor: Colors.white,
       );
     } else if (rank == 3) {
-      // Bronze
+      // Premium Bronze
       return _GamificationTheme(
-        gradientColors: [AppColors.neutral300, AppColors.neutral700],
-        titleColor: context.appColors.surface,
-        textColor: context.appColors.surface.withAlpha(178),
-        valueColor: context.appColors.surface,
-        iconColor: context.appColors.surface,
-        iconBgColor: context.appColors.surface.withAlpha(50),
-        progressBgColor: context.appColors.onSurface.withAlpha(50),
-        progressColor: context.appColors.surface,
-        borderColor: Colors.transparent,
+        gradientColors: [const Color(0xFFD68A59), const Color(0xFF9E5424)],
+        titleColor: Colors.white,
+        textColor: Colors.white.withAlpha(220),
+        valueColor: Colors.white,
+        iconColor: Colors.white,
+        iconBgColor: Colors.white.withAlpha(60),
+        progressBgColor: Colors.black.withAlpha(40),
+        progressColor: Colors.white,
+        borderColor: const Color(0xFFEAA983),
       );
     } else {
       // Default (Polos Putih)

@@ -8,9 +8,10 @@ import 'package:table_calendar/table_calendar.dart';
 // // import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:go_router/go_router.dart';
 
 class StudentCalendarScreen extends StatefulWidget {
   const StudentCalendarScreen({super.key});
@@ -29,7 +30,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
     super.initState();
     _selectedDay = _focusedDay;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentProvider>().refreshCampusEvents();
+      context.read<AcademicProvider>().loadAcademicData();
     });
   }
 
@@ -218,7 +219,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: BkuButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     text: 'Tutup',
                   ),
                 ),
@@ -232,7 +233,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StudentProvider>(
+    return Consumer<AcademicProvider>(
       builder: (context, provider, child) {
         final selectedEvents = _getEventsForDay(
           _selectedDay ?? _focusedDay,

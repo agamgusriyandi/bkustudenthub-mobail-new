@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
 class BkuCard extends StatelessWidget {
   final Widget child;
@@ -63,25 +64,17 @@ class BkuCard extends StatelessWidget {
             borderRadius != null
                 ? BorderRadius.circular(borderRadius!)
                 : AppRadius.radiusLg,
-        border: borderOnly ? Border.all(color: AppColors.neutral200) : null,
+        border: borderOnly ? Border.all(color: AppColors.neutral200) : Border.all(color: context.appColors.outlineVariant.withAlpha(40), width: 1),
         boxShadow:
             hasShadow
                 ? [
-                  BoxShadow(
-                    color: AppColors.neutral900.withValues(
-                      alpha: 0.04,
-                    ), // Sangat soft shadow
-                    blurRadius: 24,
-                    offset: const Offset(0, 4),
-                    spreadRadius: 0,
-                  ),
-                  BoxShadow(
-                    color: AppColors.neutral900.withValues(alpha: 0.02),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                    spreadRadius: 0,
-                  ),
-                ]
+                    BoxShadow(
+                      color: Colors.black.withAlpha(8), // Softer premium shadow
+                      blurRadius: 24,
+                      spreadRadius: -2,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
                 : null,
       ),
       child: child,

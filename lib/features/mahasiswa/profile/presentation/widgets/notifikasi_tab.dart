@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -7,32 +8,37 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class NotifikasiTabWidget extends StatefulWidget {
-  final StudentProvider student;
-
-  const NotifikasiTabWidget({super.key, required this.student});
+  const NotifikasiTabWidget({super.key});
 
   @override
   State<NotifikasiTabWidget> createState() => _NotifikasiTabWidgetState();
 }
 
 class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
-  late bool _emailNotif;
-  late bool _pushNotif;
-  late bool _inAppNotif;
+  bool _emailNotif = false;
+  bool _pushNotif = false;
+  bool _inAppNotif = false;
   bool _isLoading = false;
 
+  bool _hasLoadedData = false;
+
   @override
-  void initState() {
-    super.initState();
-    _emailNotif = widget.student.emailNotif;
-    _pushNotif = widget.student.pushNotif;
-    _inAppNotif = widget.student.inAppNotif;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final profile = context.watch<ProfileProvider>();
+    if (!_hasLoadedData && profile.rawProfileData.isNotEmpty) {
+      _emailNotif = profile.emailNotif;
+      _pushNotif = profile.pushNotif;
+      _inAppNotif = profile.inAppNotif;
+      _hasLoadedData = true;
+    }
   }
 
   Future<void> _updatePreferences() async {
     setState(() => _isLoading = true);
     try {
-      widget.student.updateNotifPreferences(
+      final profile = context.read<ProfileProvider>();
+      profile.updateNotifPreferences(
         email: _emailNotif,
         push: _pushNotif,
         inApp: _inAppNotif,

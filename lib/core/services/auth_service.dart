@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'permission_service.dart';
 import 'notification_service.dart';
 import 'package:bkuhub_mobile/core/services/biometric_service.dart';
+import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
 import '../../core/error/error_handler.dart';
 
 enum UserRole {
@@ -229,6 +230,8 @@ class AuthService extends ChangeNotifier {
         await prefs.setString('access_token', _token!);
         await prefs.setString('user_data', jsonEncode(_userData));
         await prefs.setString('user_role', roleStr);
+        await SecureStorageService().setToken(_token!);
+        await SecureStorageService().setUserData(jsonEncode(_userData));
         _loadCachedStudentAvatar(prefs);
 
         return LoginResult(success: true);
@@ -334,6 +337,8 @@ class AuthService extends ChangeNotifier {
         await prefs.setString('access_token', _token!);
         await prefs.setString('user_data', jsonEncode(_userData));
         await prefs.setString('user_role', roleStr);
+        await SecureStorageService().setToken(_token!);
+        await SecureStorageService().setUserData(jsonEncode(_userData));
         _loadCachedStudentAvatar(prefs);
 
         return true;
@@ -429,6 +434,8 @@ class AuthService extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    await SecureStorageService().deleteToken();
+    await SecureStorageService().deleteUserData();
   }
 
   Future<Map<String, dynamic>> changePassword(

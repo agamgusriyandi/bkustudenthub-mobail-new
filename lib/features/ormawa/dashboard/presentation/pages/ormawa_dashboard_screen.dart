@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 
 // Unified Core Widgets
-import 'package:bkuhub_mobile/core/widgets/unified_section_header.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 
@@ -121,14 +121,14 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                   const SizedBox(height: AppSpacing.s20),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                    child: UnifiedSectionHeader(title: 'Layanan Administrasi'),
+                    child: BkuSectionHeader(title: 'Layanan Administrasi'),
                   ),
                   const SizedBox(height: AppSpacing.s10),
                   const OrmawaServiceGrid(),
                   const SizedBox(height: AppSpacing.xxl),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                    child: UnifiedSectionHeader(title: 'Statistik Organisasi'),
+                    child: BkuSectionHeader(title: 'Statistik Organisasi'),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   const OrmawaQuickStats(),
@@ -139,7 +139,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
                     ),
-                    child: UnifiedSectionHeader(
+                    child: BkuSectionHeader(
                       title: 'Proposal Terbaru',
                       onSeeAll: () {
                         context.push(AppRoutes.ormawaProposal);
@@ -153,7 +153,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
                     ),
-                    child: UnifiedSectionHeader(
+                    child: BkuSectionHeader(
                       title: 'Agenda Kegiatan',
                       onSeeAll: () {
                         context.push(AppRoutes.ormawaAgenda);

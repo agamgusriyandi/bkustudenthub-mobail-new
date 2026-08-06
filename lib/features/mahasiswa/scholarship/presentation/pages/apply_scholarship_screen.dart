@@ -8,16 +8,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -190,7 +191,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final student = context.read<StudentProvider>();
+      final scholarshipProvider = context.read<ScholarshipProvider>();
       final prefs = await SharedPreferences.getInstance();
       final appliedList = prefs.getStringList('applied_scholarships') ?? [];
 
@@ -199,7 +200,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
           widget.scholarship.applicationStatus != null ||
           appliedList.contains(widget.scholarship.id);
 
-      final hasOtherActiveApplied = student.scholarships.any((s) {
+      final hasOtherActiveApplied = scholarshipProvider.scholarships.any((s) {
         if (s.id == widget.scholarship.id) return false;
         if (s.status.toLowerCase() == 'applied' ||
             s.applicationStatus != null ||
@@ -220,7 +221,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       if (appliedToThis || hasOtherActiveApplied) {
         Scholarship activeScholarship = widget.scholarship;
         if (hasOtherActiveApplied && !appliedToThis) {
-          final match = student.scholarships.where((s) {
+          final match = scholarshipProvider.scholarships.where((s) {
             if (s.id == widget.scholarship.id) return false;
             if (s.status.toLowerCase() == 'applied' ||
                 s.applicationStatus != null ||
@@ -248,7 +249,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       }
     });
 
-    final student = context.read<StudentProvider>();
+    final student = context.read<ProfileProvider>();
     _nameController = TextEditingController(text: student.name);
     _nimController = TextEditingController(text: student.nim);
     _ipkController = TextEditingController(
@@ -604,7 +605,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
   @override
   Widget build(BuildContext context) {
     // Watch provider so the screen rebuilds when scholarship status changes
-    context.watch<StudentProvider>();
+    context.watch<ScholarshipProvider>();
     return Scaffold(
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
@@ -1612,7 +1613,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               !path.startsWith('/uploads') &&
               !path.startsWith('http')) {
             final uploadedUrl = await context
-                .read<StudentProvider>()
+                .read<ScholarshipProvider>()
                 .uploadCustomFile(path);
             _customAnswers[label] = uploadedUrl;
           }
@@ -1624,7 +1625,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         }
 
         if (!mounted) return;
-        await context.read<StudentProvider>().applyForScholarship(
+        await context.read<ScholarshipProvider>().applyForScholarship(
           widget.scholarship.id,
           _reasonController.text,
           ktmKtpPath: _ktmKtpPath,
@@ -1643,10 +1644,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         _showSuccessDialog();
       } catch (e) {
         // Tutup loading overlay
-        if (mounted) BkuLoadingDialog.hide(context);
-
-        // Tampilkan pesan error
         if (mounted) {
+          BkuLoadingDialog.hide(context);
           showDialog(
             context: context,
             builder:

@@ -8,17 +8,18 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/features/counseling/domain/entities/psychologist.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 const List<String> kAkademikOptions = [
   'Kesulitan mengatur waktu belajar',
@@ -112,7 +113,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
         await provider.loadAvailableSchedules();
       }
       if (!mounted) return;
-      final student = context.read<StudentProvider>();
+      final student = context.read<ProfileProvider>();
       if (_namaOrtuCtrl.text.isEmpty && student.name.isNotEmpty) {
         // Auto-fill if possible; rawProfileData may carry parent info
         final raw = student.rawProfileData;
@@ -819,7 +820,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
           _buildChecklistGroup(
             'Masalah Non-Akademik',
             Icons.psychology_rounded,
-            const Color(0xFF7C3AED),
+            AppColors.servicePurple,
             kNonAkademikOptions,
             _subNonAkademik,
             (item) {
@@ -1429,8 +1430,8 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
         cancelText: '',
         confirmText: 'Tutup',
         onConfirm: () {
-          Navigator.pop(context);
-          Navigator.pop(context);
+          context.pop();
+          context.pop();
         },
         onCancel: () {},
       ),

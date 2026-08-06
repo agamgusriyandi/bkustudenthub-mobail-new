@@ -4,12 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:go_router/go_router.dart';
 
 class AddOrganisasiScreen extends StatefulWidget {
   final OrganizationHistory? organization;
@@ -104,7 +105,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
         achievements: widget.organization?.achievements ?? [],
       );
 
-      final provider = context.read<StudentProvider>();
+      final provider = context.read<OrganizationProvider>();
       if (widget.organization == null) {
         await provider.addOrganizationHistory(org);
       } else {
@@ -126,8 +127,8 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               confirmColor: context.appColors.success,
               onCancel: () {},
               onConfirm: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                context.pop();
+                context.pop();
               },
             ),
       );

@@ -1,5 +1,6 @@
 import '../../domain/entities/achievement.dart';
 import '../../domain/entities/scholarship.dart';
+import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
 import '../../domain/entities/mission.dart';
 import '../../domain/entities/counseling_session.dart';
 import '../../domain/entities/aspiration.dart';
@@ -23,7 +24,6 @@ import '../models/health_booking_model.dart';
 import '../models/insurance_claim_model.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer';
 
 class StudentRepositoryImpl implements StudentRepository {
@@ -1006,8 +1006,7 @@ class StudentRepositoryImpl implements StudentRepository {
   @override
   Future<String> uploadAvatar(String filePath) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = await SecureStorageService().getToken();
 
       final formData = FormData.fromMap({
         'foto': await MultipartFile.fromFile(

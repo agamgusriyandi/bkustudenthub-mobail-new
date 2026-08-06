@@ -10,7 +10,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/kencana_models.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -100,6 +100,87 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         text: 'Coba Lagi',
                       ),
                     ],
+                  ),
+                ),
+              )
+            else if (dashboard != null && !dashboard.isEnrolledGroup)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Center(
+                    child: FadeInAnimation(
+                      delay: 0.1,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: context.appColors.surface,
+                          borderRadius: AppRadius.br20,
+                          border: Border.all(
+                            color: AppColors.neutral200.withAlpha(150),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.appColors.onSurface.withAlpha(10),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: context.appColors.warningContainer,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.groups_rounded,
+                                  size: 40,
+                                  color: context.appColors.warning,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            Text(
+                              'Anda Belum Terdaftar\ndalam Kelompok Kencana',
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.titleLg.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: context.appColors.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              'Profil Anda belum dimasukkan ke dalam kelompok PKKMB Kencana oleh Panitia atau Admin Fakultas. Silakan menunggu pengumuman pembagian kelompok atau cek undangan fasilitator.',
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.bodyMd.copyWith(
+                                color: context.appColors.outline,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            SizedBox(
+                                width: double.infinity,
+                                child: BkuButton(
+                                  text: 'Cek Undangan Fasilitator',
+                                  icon: Icons.how_to_reg_rounded,
+                                  variant: BkuButtonVariant.primary,
+                                  customBgColor: context.appColors.warning,
+                                  customFgColor: Colors.white,
+                                  onPressed: () {
+                                    context.push('/kencana/invitations');
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               )
@@ -252,14 +333,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   children: [
                     Icon(
                       Icons.check_circle_rounded,
-                      color: context.appColors.info,
+                      color: context.appColors.success,
                       size: 12,
                     ),
                     SizedBox(width: AppSpacing.xs),
                     Text(
                       'Status PMB Kencana',
                       style: TextStyle(
-                        color: context.appColors.info,
+                        color: context.appColors.success,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -520,7 +601,10 @@ class _KencanaScreenState extends State<KencanaScreen> {
   }
 
   Widget _buildQuickActions(BuildContext context) {
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 0,
+      runSpacing: AppSpacing.lg,
       children: [
         _buildActionMenu(
           context,
@@ -558,6 +642,24 @@ class _KencanaScreenState extends State<KencanaScreen> {
             context.push('/kencana/handbook');
           },
         ),
+        _buildActionMenu(
+          context,
+          'Remedial',
+          Icons.rule_rounded,
+          context.appColors.error,
+          () {
+            context.push('/kencana/remedial');
+          },
+        ),
+        _buildActionMenu(
+          context,
+          'Banding',
+          Icons.gavel_rounded,
+          context.appColors.secondary,
+          () {
+            context.push('/kencana/banding');
+          },
+        ),
       ],
     );
   }
@@ -569,7 +671,8 @@ class _KencanaScreenState extends State<KencanaScreen> {
     Color color,
     VoidCallback onTap,
   ) {
-    return Expanded(
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - (AppSpacing.xl * 2)) / 3.01,
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.radiusLg,

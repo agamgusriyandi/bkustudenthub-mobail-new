@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 
 class ActivityItem {
   final String description;
@@ -41,47 +42,48 @@ class ActivityFeed extends StatelessWidget {
     }
   }
 
-  Color _getIconBg(String? type) {
+  Color _getIconBg(BuildContext context, String? type) {
     switch (type) {
       case 'achievement':
-        return const Color(0xFFF3E8FF);
+        return AppColors.servicePurple.withValues(alpha: 0.15);
       case 'beasiswa':
-        return const Color(0xFFDCFCE7);
+        return AppColors.serviceEmerald.withValues(alpha: 0.15);
       case 'konseling':
-        return const Color(0xFFFEE2E2);
+        return AppColors.serviceRose.withValues(alpha: 0.15);
       case 'kencana':
-        return const Color(0xFFDBEAFE);
+        return AppColors.serviceIndigo.withValues(alpha: 0.15);
       case 'voice':
-        return const Color(0xFFE0F2FE);
+        return AppColors.serviceSky.withValues(alpha: 0.15);
       case 'organisasi':
-        return const Color(0xFFFCE7F3);
+        return AppColors.servicePink.withValues(alpha: 0.15);
       default:
-        return const Color(0xFFF3F4F6);
+        return AppColors.neutral300.withValues(alpha: 0.3);
     }
   }
 
-  Color _getIconColor(String? type) {
+  Color _getIconColor(BuildContext context, String? type) {
     switch (type) {
       case 'achievement':
-        return const Color(0xFF7C3AED);
+        return AppColors.servicePurple;
       case 'beasiswa':
-        return const Color(0xFF16A34A);
+        return AppColors.serviceEmerald;
       case 'konseling':
-        return const Color(0xFFDC2626);
+        return AppColors.serviceRose;
       case 'kencana':
-        return const Color(0xFF2563EB);
+        return AppColors.serviceIndigo;
       case 'voice':
-        return const Color(0xFF0284C7);
+        return AppColors.serviceSky;
       case 'organisasi':
-        return const Color(0xFFDB2777);
+        return AppColors.servicePink;
       default:
-        return const Color(0xFF6B7280);
+        return AppColors.neutral600;
     }
   }
 
   String _formatRelativeTime(DateTime date) {
     final diff = DateTime.now().difference(date);
-    if (diff.inMinutes < 60) return '${diff.inMinutes} menit lalu';
+    if (diff.isNegative) return 'Baru saja';
+    if (diff.inMinutes < 60) return '${diff.inMinutes == 0 ? 1 : diff.inMinutes} menit lalu';
     if (diff.inHours < 24) return '${diff.inHours} jam lalu';
     if (diff.inHours < 48) return 'Kemarin';
     return '${diff.inDays} hari lalu';
@@ -100,23 +102,7 @@ class ActivityFeed extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.insights_rounded,
-                color: context.appColors.primary,
-                size: 18,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Aktivitas Terbaru',
-                style: AppTextStyles.titleSm.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+
           if (activities.isEmpty)
             Center(
               child: Padding(
@@ -160,15 +146,15 @@ class ActivityFeed extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: _getIconBg(item.type),
+                  color: _getIconBg(context, item.type),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: _getIconColor(item.type).withValues(alpha: 0.2),
+                    color: _getIconColor(context, item.type).withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(
                   _getIcon(item.type),
-                  color: _getIconColor(item.type),
+                  color: _getIconColor(context, item.type),
                   size: 20,
                 ),
               ),

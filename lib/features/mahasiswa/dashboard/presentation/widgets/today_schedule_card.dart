@@ -6,10 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/pages/student_calendar_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:go_router/go_router.dart';
 
 class TodayScheduleCard extends StatelessWidget {
   const TodayScheduleCard({super.key});
@@ -53,8 +54,8 @@ class TodayScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
-    final events = student.campusEvents;
+    final academic = context.watch<AcademicProvider>();
+    final events = academic.campusEvents;
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -146,7 +147,7 @@ class TodayScheduleCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          if (student.isLoading && upcomingEvents.isEmpty) ...[
+          if (academic.isLoading && upcomingEvents.isEmpty) ...[
             Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
@@ -446,7 +447,7 @@ class TodayScheduleCard extends StatelessWidget {
                   width: double.infinity,
                   height: 56,
                   child: BkuButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     text: 'Tutup',
                   ),
                 ),

@@ -151,6 +151,9 @@ import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/assi
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_application_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
+import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/recruitment_history_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/recruitment_form_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/recruitment_settings_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';

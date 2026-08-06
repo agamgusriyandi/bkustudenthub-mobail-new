@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -121,11 +121,42 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
 
     // Map scores from bulkData
     final scoresList = (bulkData?['scores'] as List?) ?? [];
+    final itemsList = (bulkData?['items'] as List?) ?? [];
+    final definitions = (bulkData?['score_definitions'] as Map?) ?? {};
     final mentorScope = bulkData?['mentor_scope'] ?? 'university';
     final weights = (bulkData?['weights'] as Map?) ?? {};
     final cogW = weights['cognitive_weight'] ?? 25;
     final psyW = weights['psychomotor_weight'] ?? 40;
     final affW = weights['affective_weight'] ?? 35;
+
+    final List<Map<String, dynamic>> manualItems = [];
+    for (final comp in ['cognitive', 'psychomotor', 'affective']) {
+      final list = (definitions[comp] as List?) ?? [];
+      for (final it in list) {
+        if (it is Map && it['manual'] == true) {
+          manualItems.add({
+            'component': comp,
+            'key': it['key'] ?? '',
+            'label': it['label'] ?? '',
+          });
+        }
+      }
+    }
+
+    final Map<int, Map<String, double>> existingItemsMap = {};
+    for (final it in itemsList) {
+      if (it is Map && it['student_id'] != null && it['component'] != null && it['item_name'] != null) {
+        final sId = int.tryParse(it['student_id']?.toString() ?? '') ?? 0;
+        final comp = it['component'] as String;
+        final name = it['item_name'] as String;
+        final double scoreVal = double.tryParse(it['score']?.toString() ?? '') ?? 0.0;
+        
+        if (!existingItemsMap.containsKey(sId)) {
+          existingItemsMap[sId] = {};
+        }
+        existingItemsMap[sId]!['${comp}_$name'] = scoreVal;
+      }
+    }
 
     final Map<int, Map<String, dynamic>> scoreMap = {};
     for (final sc in scoresList) {
@@ -182,6 +213,9 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
           // TAB 1: Rekapitulasi Nilai Akhir
           RefreshIndicator(
             onRefresh: () async {
+              setState(() {
+                _bulkControllers.clear();
+              });
               await provider.fetchMentees();
               await provider.fetchBulkScores();
             },
@@ -331,7 +365,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                                 alignment: Alignment.centerRight,
                                 child: OutlinedButton.icon(
                                   onPressed: () {
-                                    context.push('/mentor-kencana/notes/${m.id}');
+                                    context.push('/mentor-kencana/mentee/${m.id}');
                                   },
                                   icon: const Icon(Icons.edit_outlined, size: 14),
                                   label: const Text('Edit Nilai', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
@@ -357,6 +391,9 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
           // TAB 2: Pengisian Kolektif (Bulk Input)
           RefreshIndicator(
             onRefresh: () async {
+              setState(() {
+                _bulkControllers.clear();
+              });
               await provider.fetchMentees();
               await provider.fetchBulkScores();
             },
@@ -422,12 +459,16 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final m = filtered[index];
                         if (!_bulkControllers.containsKey(m.id)) {
-                          _bulkControllers[m.id] = {
-                            'cognitive_TEST': TextEditingController(),
-                            'cognitive_TUGAS 1': TextEditingController(),
-                            'cognitive_YEL YEL': TextEditingController(),
-                            'affective_WOY': TextEditingController(),
-                          };
+                          _bulkControllers[m.id] = {};
+                          for (final item in manualItems) {
+                            final comp = item['component'];
+                            final key = item['key'];
+                            final compositeKey = '${comp}_$key';
+                            
+                            final double? existingScore = existingItemsMap[m.id]?[compositeKey];
+                            final text = existingScore != null && existingScore > 0 ? existingScore.toStringAsFixed(1) : '';
+                            _bulkControllers[m.id]![compositeKey] = TextEditingController(text: text);
+                          }
                         }
 
                         final map = _bulkControllers[m.id]!;
@@ -441,17 +482,30 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                               Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
                               Text('NIM: ${m.nim}', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
                               const SizedBox(height: AppSpacing.md),
-                              Row(
-                                children: [
-                                  Expanded(child: _buildMiniScoreInput('TEST', map['cognitive_TEST']!)),
-                                  const SizedBox(width: 6),
-                                  Expanded(child: _buildMiniScoreInput('TUGAS 1', map['cognitive_TUGAS 1']!)),
-                                  const SizedBox(width: 6),
-                                  Expanded(child: _buildMiniScoreInput('YEL YEL', map['cognitive_YEL YEL']!)),
-                                  const SizedBox(width: 6),
-                                  Expanded(child: _buildMiniScoreInput('WOY', map['affective_WOY']!)),
-                                ],
-                              ),
+                              if (manualItems.isEmpty)
+                                Text('Tidak ada komponen nilai manual yang dapat diisi', style: TextStyle(fontSize: 11, color: context.appColors.outline))
+                              else
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: manualItems.map((item) {
+                                      final comp = item['component'];
+                                      final key = item['key'];
+                                      final label = item['label'];
+                                      final compositeKey = '${comp}_$key';
+                                      
+                                      if (!map.containsKey(compositeKey)) {
+                                        map[compositeKey] = TextEditingController();
+                                      }
+                                      
+                                      return Container(
+                                        width: 90,
+                                        margin: const EdgeInsets.only(right: 8),
+                                        child: _buildMiniScoreInput(label, map[compositeKey]!),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                             ],
                           ),
                         );

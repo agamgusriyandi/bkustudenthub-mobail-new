@@ -9,7 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:intl/intl.dart';

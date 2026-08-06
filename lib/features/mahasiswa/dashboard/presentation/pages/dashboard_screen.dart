@@ -4,9 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/counseling_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
 // Modular Widgets
@@ -21,7 +24,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/announcement_section.dart';
+
 
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
@@ -41,7 +44,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<StudentProvider>().loadAllData();
+        context.read<ProfileProvider>().fetchProfile();
+        context.read<AcademicProvider>().loadAcademicData();
+        context.read<MahasiswaCounselingProvider>().loadCounselingData();
+        context.read<ScholarshipProvider>().loadScholarships();
         context.read<HealthViewModel>().loadInitialData();
       }
     });
@@ -49,38 +55,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final profile = context.watch<ProfileProvider>();
+    final academic = context.watch<AcademicProvider>();
+    final counseling = context.watch<MahasiswaCounselingProvider>();
+    final scholarship = context.watch<ScholarshipProvider>();
     final health = context.watch<HealthViewModel>();
     final navProvider = context.read<NavigationProvider>();
-    final name = student.name;
-    final stats = student.dashboardStats;
-    final totalMissions =
-        stats['kencana']?['total_modul'] ?? student.missions.length;
-    final completedMissions =
-        stats['kencana']?['modul_selesai'] ??
-        student.missions.where((m) => m.isCompleted).length;
-    final pendingAspirations =
-        stats['student_voice']?['jumlah_aktif'] ?? student.pendingAspirations;
-    final latestHealth = health.latestHealthRecord;
+    final name = profile.name;
+    final stats = academic.dashboardStats;
+    // Web uses persentase and status
+    final statsKencana = stats['kencana'];
+    final kencanaPercentage = statsKencana?['persentase'] ?? 0.0;
+    final kencanaStatus = statsKencana?['status'] ?? 'Belum Dimulai';
 
-    // Beasiswa uses 'jumlah_proses' + 'jumlah_menunggu' from stats, fallback to provider logic
+    final statsVoice = stats['student_voice'];
+    final voiceAktif =
+        statsVoice?['jumlah_aktif'] ?? counseling.pendingAspirations;
+    final voiceMenunggu = statsVoice?['jumlah_belum_direspons'] ?? 0;
+
     final statsBeasiswa = stats['beasiswa'];
-    int appliedScholarships =
-        student.scholarships.where((s) => s.applicationStatus != null).length;
-    if (statsBeasiswa != null) {
-      appliedScholarships =
-          (statsBeasiswa['jumlah_proses'] ?? 0) +
-          (statsBeasiswa['jumlah_menunggu'] ?? 0);
-    }
+    final beasiswaTersedia = statsBeasiswa?['total_tersedia'] ?? 0;
+
+    final latestHealth = health.latestHealthRecord;
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () async {
-          await student.loadAllData();
-          if (mounted) {
-            await context.read<HealthViewModel>().loadInitialData();
-          }
+          final profileProvider = context.read<ProfileProvider>();
+          final academicProvider = context.read<AcademicProvider>();
+          final counselingProvider = context.read<MahasiswaCounselingProvider>();
+          final scholarshipProvider = context.read<ScholarshipProvider>();
+          final healthProvider = context.read<HealthViewModel>();
+          
+          await profileProvider.fetchProfile();
+          await academicProvider.loadAcademicData();
+          await counselingProvider.loadCounselingData();
+          await scholarshipProvider.loadScholarships();
+          await healthProvider.loadInitialData();
         },
         color: context.appColors.primary,
         backgroundColor: context.appColors.surface,
@@ -92,15 +104,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
             BkuAppBar(
               title: name,
               subtitle: 'SELAMAT DATANG KEMBALI',
-              info: '${student.nim} • SEMESTER ${student.semester}',
+              info: '${profile.nim} • SEMESTER ${profile.semester}',
               variant: AppBarVariant.student,
               showBackButton: false,
               expandedHeight: 130,
               showProfileOnCollapse: true,
               profileImage:
-                  student.fotoUrl != null && student.fotoUrl!.isNotEmpty
+                  profile.fotoUrl != null && profile.fotoUrl!.isNotEmpty
                       ? CachedNetworkImage(
-                        imageUrl: ApiGate.getImageUrl(student.fotoUrl!),
+                        imageUrl: ApiGate.getImageUrl(profile.fotoUrl!),
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) {
                           return Icon(
@@ -158,12 +170,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     const SizedBox(height: AppSpacing.xl),
 
-                    // 1. Banner Pinned (matches web BannerPinned.jsx)
+                    // 1. Layanan Cepat
+                    _buildSectionTitle('Layanan Cepat'),
+                    const SizedBox(height: AppSpacing.md),
+                    const StudentServiceGrid(),
+                    const SizedBox(height: AppSpacing.s20),
+
+                    // 2. Banner Pinned (matches web BannerPinned.jsx)
                     const BannerPinned(),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 2. Deadline Alert (matches web DeadlineAlert.jsx)
-                    DeadlineAlert(deadlines: _buildDeadlines(student)),
+                    DeadlineAlert(deadlines: _buildDeadlines(scholarship)),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 3. Today Schedule (mobile extra)
@@ -174,52 +192,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _buildSectionTitle('Status Kamu'),
                     const SizedBox(height: AppSpacing.md),
                     StudentStatusGrid(
-                      isLoading: student.isLoading,
-                      completedMissions: completedMissions,
-                      totalMissions: totalMissions,
-                      pendingAspirations: pendingAspirations,
-                      appliedScholarships: appliedScholarships,
+                      isLoading: profile.isLoading,
+                      kencanaPercentage: kencanaPercentage,
+                      kencanaStatus: kencanaStatus,
+                      beasiswaTersedia: beasiswaTersedia,
+                      voiceAktif: voiceAktif,
+                      voiceMenunggu: voiceMenunggu,
                       latestHealth: latestHealth,
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 5. Layanan Cepat (matches web DashboardQuickActions)
-                    _buildSectionTitle('Layanan Cepat'),
-                    const SizedBox(height: AppSpacing.md),
-                    const StudentServiceGrid(),
-                    const SizedBox(height: AppSpacing.s20),
+
 
                     // 6. Aktivitas Terbaru (matches web ActivityFeed.jsx)
                     _buildSectionTitle('Aktivitas Terbaru'),
                     const SizedBox(height: AppSpacing.md),
-                    ActivityFeed(activities: _buildActivities(student)),
+                    ActivityFeed(activities: _buildActivities(academic, counseling)),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 7. Beasiswa Tersedia (matches web AvailableScholarships.jsx)
                     _buildSectionTitle('Beasiswa Tersedia'),
                     const SizedBox(height: AppSpacing.md),
                     AvailableScholarships(
-                      scholarships: _buildScholarshipItems(student),
+                      scholarships: _buildScholarshipItems(scholarship),
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
                     // 8. Kalender Mini (matches web CalendarMini.jsx)
-                    CalendarMini(events: _buildCalendarEvents(student)),
+                    CalendarMini(events: _buildCalendarEvents(academic)),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 9. Pengumuman (matches web AnnouncementSection.jsx)
-                    AnnouncementSection(
-                      announcements:
-                          student.dashboardStats['pengumuman'] is List
-                              ? student.dashboardStats['pengumuman']
-                              : [],
-                    ),
-                    const SizedBox(height: AppSpacing.s20),
 
                     // 10. IPK Chart (mobile extra)
                     IpkChartCard(
-                      currentIpk: student.ipk,
-                      currentSemester: student.semester,
+                      currentIpk: profile.ipk,
+                      currentSemester: profile.semester,
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
@@ -252,10 +259,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  List<DeadlineItem> _buildDeadlines(StudentProvider student) {
+  List<DeadlineItem> _buildDeadlines(ScholarshipProvider scholarship) {
     final now = DateTime.now();
     final items = <DeadlineItem>[];
-    for (final s in student.scholarships) {
+    for (final s in scholarship.scholarships) {
       if (s.applicationStatus == null && s.status == 'Open') {
         final deadline = DateTime.tryParse(s.deadline);
         if (deadline != null && deadline.isAfter(now)) {
@@ -272,9 +279,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return items;
   }
 
-  List<ActivityItem> _buildActivities(StudentProvider student) {
+  List<ActivityItem> _buildActivities(AcademicProvider academic, MahasiswaCounselingProvider counseling) {
     final items = <ActivityItem>[];
-    for (final a in student.achievements.take(3)) {
+    for (final a in academic.achievements.take(3)) {
       items.add(
         ActivityItem(
           description: '${a.title} (${a.status})',
@@ -283,7 +290,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
     }
-    for (final cs in student.counselingSessions.take(3)) {
+    for (final cs in counseling.counselingSessions.take(3)) {
       items.add(
         ActivityItem(
           description: '${cs.topic} — ${cs.psychologistName}',
@@ -292,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
     }
-    for (final m in student.missions.take(3)) {
+    for (final m in academic.missions.take(3)) {
       items.add(
         ActivityItem(
           description: m.title ?? m.desc ?? 'Modul Kencana',
@@ -301,7 +308,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
     }
-    for (final asp in student.aspirations.take(3)) {
+    for (final asp in counseling.aspirations.take(3)) {
       items.add(
         ActivityItem(
           description: asp.title,
@@ -314,8 +321,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return items.take(6).toList();
   }
 
-  List<ScholarshipItem> _buildScholarshipItems(StudentProvider student) {
-    return student.scholarships.where((s) => s.status == 'Open').take(4).map((
+  List<ScholarshipItem> _buildScholarshipItems(ScholarshipProvider scholarship) {
+    return scholarship.scholarships.where((s) => s.status == 'Open').take(4).map((
       s,
     ) {
       final amount =
@@ -334,8 +341,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }).toList();
   }
 
-  List<CalendarEvent> _buildCalendarEvents(StudentProvider student) {
-    return student.campusEvents.take(10).map((e) {
+  List<CalendarEvent> _buildCalendarEvents(AcademicProvider academic) {
+    return academic.campusEvents.take(10).map((e) {
       return CalendarEvent(
         title: e.judul,
         date: e.tanggal,

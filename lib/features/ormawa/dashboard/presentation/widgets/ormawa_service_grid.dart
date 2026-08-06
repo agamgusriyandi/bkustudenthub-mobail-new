@@ -265,7 +265,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(ctx);
-                          Navigator.pop(context);
+                          context.pop();
                           await AuthService().logout();
                           if (context.mounted) {
                             context.go(AppRoutes.login);

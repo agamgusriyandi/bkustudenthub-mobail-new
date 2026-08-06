@@ -5,7 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 
@@ -13,6 +13,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/achievement/data/models/achieve
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/providers/achievement_form_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateAchievementScreen extends StatefulWidget {
   const CreateAchievementScreen({super.key});
@@ -404,7 +405,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
                 leading: const Icon(Icons.camera_alt_rounded, color: AppColors.neutral600),
                 title: Text('Kamera', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
                 onTap: () async {
-                  Navigator.pop(context);
+                  context.pop();
                   final picker = ImagePicker();
                   final image = await picker.pickImage(source: ImageSource.camera);
                   if (image != null) {
@@ -419,7 +420,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
                 leading: const Icon(Icons.folder_rounded, color: AppColors.neutral600),
                 title: Text('Galeri / File (PDF)', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
                 onTap: () async {
-                  Navigator.pop(context);
+                  context.pop();
                   final result = await FilePicker.pickFiles(
                     type: FileType.custom,
                     allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],

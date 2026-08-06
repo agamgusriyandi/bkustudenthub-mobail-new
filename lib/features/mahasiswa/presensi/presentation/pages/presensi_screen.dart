@@ -4,7 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -44,9 +44,8 @@ class _PresensiScreenState extends State<PresensiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.appColors.surface,
-      appBar: UnifiedStaticAppBar(
+      appBar: const BkuStaticAppBar(
         title: 'Presensi Kelas',
-        showBackButton: true,
         showNotification: false,
       ),
       body: Consumer<PresensiProvider>(

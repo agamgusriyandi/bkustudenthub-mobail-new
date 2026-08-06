@@ -4,12 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/daftar_ormawa_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -33,7 +34,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final list = await context.read<StudentProvider>().getOrmawaList();
+      final list = await context.read<OrganizationProvider>().getOrmawaList();
       if (mounted) {
         setState(() {
           _ormawaList = list;
@@ -49,7 +50,8 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<StudentProvider>();
+    final profile = context.watch<ProfileProvider>();
+    final organization = context.watch<OrganizationProvider>();
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
@@ -81,7 +83,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                 itemCount: _ormawaList.length,
                 itemBuilder: (context, index) {
                   final ormawa = _ormawaList[index];
-                  return _buildOrmawaCard(ormawa, student);
+                  return _buildOrmawaCard(ormawa, profile, organization);
                 },
               ),
     );
@@ -89,19 +91,20 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
 
   Widget _buildOrmawaCard(
     Map<String, dynamic> ormawa,
-    StudentProvider student,
+    ProfileProvider profile,
+    OrganizationProvider organization,
   ) {
     final minIpk = double.tryParse(ormawa['min_ipk']?.toString() ?? '0') ?? 0.0;
-    final isNewStudent = student.semester == 1;
+    final isNewStudent = profile.semester == 1;
 
     final ormawaName = ormawa['Nama'] ?? ormawa['nama'] ?? '';
-    final hasPending = student.organizationHistory.any(
+    final hasPending = organization.organizationHistory.any(
       (h) =>
           h.namaOrganisasi.toLowerCase() ==
               ormawaName.toString().toLowerCase() &&
           h.statusVerifikasi.toLowerCase() == 'pending',
     );
-    final hasDiterima = student.organizationHistory.any(
+    final hasDiterima = organization.organizationHistory.any(
       (h) =>
           h.namaOrganisasi.toLowerCase() ==
               ormawaName.toString().toLowerCase() &&
@@ -123,7 +126,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
       action = null;
     } else {
       action = () {
-        final studentIpk = student.ipk;
+        final studentIpk = profile.ipk;
         if (minIpk > 0 && studentIpk < minIpk && !isNewStudent) {
           AppSnackbar.showSuccess(
             context,
@@ -208,7 +211,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                     'Syarat IPK: ${minIpk.toStringAsFixed(2)}',
                     style: AppTextStyles.labelSm.copyWith(
                       color:
-                          student.ipk < minIpk && !isNewStudent
+                          profile.ipk < minIpk && !isNewStudent
                               ? AppColors.danger
                               : AppColors.success,
                       fontWeight: FontWeight.bold,

@@ -4,7 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_bottom_nav_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +17,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/patient.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_insurance_claim_model.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -209,7 +209,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         variant: AppBarVariant.nakes,
         showBackButton: true,
       ),
-      bottomNavigationBar: UnifiedBottomNavBar.tenagaKesehatan(
+      bottomNavigationBar: BkuBottomNavBar.tenagaKesehatan(
         currentIndex: 0,
         onTap: (index) => context.go('/tenagakes?tab=$index'),
       ),
@@ -839,7 +839,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
-                              placeholder: (context, url) => Container(color: AppColors.neutral200),
+                              
                             ),
                           ),
                         ),
@@ -895,7 +895,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                                   ),
                                 );
                               },
-                              placeholder: (context, url) => Container(color: AppColors.neutral200),
+                              
                             ),
                           ),
                         ),

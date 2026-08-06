@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/unified_bottom_nav_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/achievement_screen.dart';
@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(index: currentIndex, children: _pages),
-      bottomNavigationBar: UnifiedBottomNavBar.mahasiswa(
+      bottomNavigationBar: BkuBottomNavBar.mahasiswa(
         currentIndex: currentIndex,
         onTap: (index) => navProvider.setIndex(index),
       ),

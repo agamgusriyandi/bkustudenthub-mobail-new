@@ -3,7 +3,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -313,7 +313,7 @@ class _OrmawaProposalReviewScreenState
                 return GestureDetector(
                   onTap: () {
                     setState(() => _selectedStatus = status);
-                    Navigator.pop(context);
+                    context.pop();
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),

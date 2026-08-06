@@ -16,19 +16,21 @@ import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/page
 
 class StudentStatusGrid extends StatelessWidget {
   final bool isLoading;
-  final int completedMissions;
-  final int totalMissions;
-  final int pendingAspirations;
-  final int appliedScholarships;
+  final num kencanaPercentage;
+  final String kencanaStatus;
+  final int beasiswaTersedia;
+  final int voiceAktif;
+  final int voiceMenunggu;
   final dynamic latestHealth;
 
   const StudentStatusGrid({
     super.key,
     required this.isLoading,
-    required this.completedMissions,
-    required this.totalMissions,
-    required this.pendingAspirations,
-    required this.appliedScholarships,
+    required this.kencanaPercentage,
+    required this.kencanaStatus,
+    required this.beasiswaTersedia,
+    required this.voiceAktif,
+    required this.voiceMenunggu,
     required this.latestHealth,
   });
 
@@ -136,27 +138,27 @@ class StudentStatusGrid extends StatelessWidget {
               ),
             ] else ...[
               _StatusItem(
-                label: 'Kencana',
-                value: '$completedMissions/$totalMissions Misi',
-                subValue: 'Progres Kamu',
-                icon: Icons.auto_awesome_rounded,
-                color: AppColors.warning,
+                label: 'KENCANA',
+                value: '${kencanaPercentage.round()}%',
+                subValue: kencanaStatus == 'Selesai ✓' ? 'Selesai' : kencanaStatus,
+                icon: Icons.school_rounded,
+                color: kencanaStatus == 'Selesai ✓' ? AppColors.success : (kencanaPercentage > 0 ? AppColors.info : AppColors.secondary),
                 target: const KencanaScreen(),
               ),
               _StatusItem(
-                label: 'Aspirasi',
-                value: '$pendingAspirations Terbuka',
-                subValue: 'Menunggu',
-                icon: Icons.campaign_rounded,
-                color: AppColors.error,
+                label: 'Aspirasi Terbuka',
+                value: '$voiceAktif',
+                subValue: voiceMenunggu > 0 ? '$voiceMenunggu Menunggu' : (voiceAktif > 0 ? 'Diproses' : 'Aman'),
+                icon: Icons.chat_rounded,
+                color: voiceMenunggu > 0 ? AppColors.warning : (voiceAktif > 0 ? AppColors.info : AppColors.success),
                 target: const StudentVoiceScreen(),
               ),
               _StatusItem(
-                label: 'Beasiswa',
-                value: '$appliedScholarships Aktif',
-                subValue: 'Pendaftaran',
-                icon: Icons.school_rounded,
-                color: AppColors.success,
+                label: 'Beasiswa Aktif',
+                value: '$beasiswaTersedia',
+                subValue: beasiswaTersedia > 0 ? 'Terbuka' : 'Tutup',
+                icon: Icons.menu_book_rounded,
+                color: beasiswaTersedia > 0 ? AppColors.success : AppColors.secondary,
                 target: const ScholarshipScreen(),
               ),
               _StatusItem(
@@ -198,12 +200,11 @@ class _StatusItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.surface,
         borderRadius: AppRadius.br20,
-        border: Border.all(color: AppColors.neutral200, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: context.appColors.onSurface.withAlpha(8),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: context.appColors.onSurface.withAlpha(12),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -217,18 +218,18 @@ class _StatusItem extends StatelessWidget {
               ),
           borderRadius: AppRadius.br20,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
             child: Row(
               children: [
                 Container(
                   width: 4,
-                  height: 38,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: AppRadius.br2,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,15 +237,16 @@ class _StatusItem extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(icon, size: 13, color: color),
+                          Icon(icon, size: 16, color: color),
                           const SizedBox(width: AppSpacing.xs),
                           Expanded(
                             child: Text(
                               label,
                               style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
                                 color: color,
+                                letterSpacing: 0.5,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -252,24 +254,25 @@ class _StatusItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.s2),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         value,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.w900,
-                          color: context.appColors.secondary,
+                          color: context.appColors.onSurface,
+                          letterSpacing: -0.2,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: AppSpacing.s2),
+                      const SizedBox(height: 2),
                       Text(
                         subValue,
                         style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          color: context.appColors.outline,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: context.appColors.onSurfaceVariant,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -277,10 +280,17 @@ class _StatusItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 16,
-                  color: context.appColors.outline.withAlpha(120),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant.withAlpha(50),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.chevron_right_rounded,
+                    size: 16,
+                    color: context.appColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

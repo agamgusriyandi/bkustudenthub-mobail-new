@@ -3,14 +3,16 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_detail_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaLpjScreen extends StatefulWidget {
   const OrmawaLpjScreen({super.key});
@@ -363,7 +365,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                           onTap: () {
                             setModalState(() => _selectedStatusFilter = s);
                             setState(() {});
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -408,11 +410,6 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
   }
 
   void _showLpjDetail(dynamic lpj) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OrmawaLpjDetailScreen(lpj: lpj),
-      ),
-    );
+    context.push(AppRoutes.ormawaLpjDetail, extra: lpj);
   }
 }

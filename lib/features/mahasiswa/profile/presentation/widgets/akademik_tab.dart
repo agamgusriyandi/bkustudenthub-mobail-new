@@ -1,5 +1,8 @@
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -12,17 +15,18 @@ import '../utils/profile_utils.dart';
 import 'profile_widgets.dart';
 
 class AkademikTabWidget extends StatelessWidget {
-  final StudentProvider student;
-
-  const AkademikTabWidget({super.key, required this.student});
+  const AkademikTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final raw = student.rawProfileData;
+    final profile = context.watch<ProfileProvider>();
+    final academic = context.watch<AcademicProvider>();
+    final organization = context.watch<OrganizationProvider>();
+    final raw = profile.rawProfileData;
     final m = raw['mahasiswa'] ?? raw;
-    final status = m['StatusAkademik']?.toString() ?? 'Aktif';
-    final asalSekolah = m['asal_sekolah']?.toString() ?? '-';
-    final jalurMasuk = m['jalur_masuk']?.toString() ?? '-';
+    final status = m['StatusAkademik']?.toString() ?? m['status_akademik']?.toString() ?? 'Aktif';
+    final asalSekolah = m['asal_sekolah']?.toString() ?? m['AsalSekolah']?.toString() ?? '-';
+    final jalurMasuk = m['jalur_masuk']?.toString() ?? m['JalurMasuk']?.toString() ?? '-';
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -36,7 +40,7 @@ class AkademikTabWidget extends StatelessWidget {
               buildMenuItem(
                 context,
                 'Fakultas & Prodi',
-                '${student.fakultas} - ${student.prodi}',
+                '${profile.fakultas} - ${profile.prodi}',
                 Icons.account_balance_rounded,
                 context.appColors.info,
                 () => showUneditableInfoDialog(context),
@@ -76,7 +80,7 @@ class AkademikTabWidget extends StatelessWidget {
                 'Lihat QR Code & ID Mahasiswa',
                 Icons.qr_code_scanner_rounded,
                 AppColors.info,
-                () => showDigitalID(context, student),
+                () => showDigitalID(context, profile),
               ),
             ],
             headerIcon: Icons.qr_code_2_rounded,
@@ -92,7 +96,7 @@ class AkademikTabWidget extends StatelessWidget {
               buildMenuItem(
                 context,
                 'Jabatan Aktif',
-                getActiveOrganizationRole(student),
+                getActiveOrganizationRole(organization),
                 Icons.stars_rounded,
                 context.appColors.warning,
                 () => context.push(AppRoutes.organisasi),
@@ -108,10 +112,10 @@ class AkademikTabWidget extends StatelessWidget {
               buildMenuItem(
                 context,
                 'E-Sertifikat',
-                '${student.validatedAchievements} dari ${student.totalAchievements} Sertifikat',
+                '${academic.validatedAchievements} dari ${academic.totalAchievements} Sertifikat',
                 Icons.verified_rounded,
                 AppColors.success,
-                () => showCertificatesBottomSheet(context, student),
+                () => showCertificatesBottomSheet(context, academic),
               ),
             ],
             headerIcon: Icons.stars_rounded,

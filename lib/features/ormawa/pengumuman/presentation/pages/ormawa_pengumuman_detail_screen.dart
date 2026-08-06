@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 class OrmawaPengumumanDetailScreen extends StatelessWidget {
   final dynamic announcement;
@@ -61,7 +62,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.pop(),
                             icon: Icon(Icons.arrow_back_rounded,
                                 color: context.appColors.onPrimary),
                           ),

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import '../../domain/entities/mentor_models.dart';
 import 'mentor_handbook_review_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
@@ -86,7 +86,13 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                       variant: AppBarVariant.student,
                       isExpandable: false,
                       showBackButton: true,
-                      onBack: () => context.pop(),
+                      onBack: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/mentor-kencana');
+                        }
+                      },
                     ),
                     SliverPersistentHeader(
                       pinned: true,
@@ -141,9 +147,16 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
     
     final blockers = (scoreData['blockers'] as List?)?.map((e) => e.toString()).toList() ?? [];
     final score = scoreData['score'] ?? {};
+    final mentorScope = scoreData['mentor_scope'] ?? 'university';
     final scoreItems = (scoreData['items'] as List?)?.cast<Map<String, dynamic>>() ?? [];
     final scoreDefs = scoreData['score_definitions'] ?? {};
     
+    final finalScoreVal = mentorScope == 'faculty' ? score['final_score_faculty'] : score['final_score_univ'];
+    final graduationStatusVal = mentorScope == 'faculty' ? score['graduation_status_faculty'] : score['graduation_status_univ'];
+    
+    final finalScoreStr = num.tryParse(finalScoreVal?.toString() ?? '0')?.toStringAsFixed(1) ?? '0.0';
+    final graduationStatusStr = (graduationStatusVal?.toString() ?? 'BELUM EVALUASI').toUpperCase();
+
     final attendancePercentage = num.tryParse(attendanceData['percentage']?.toString() ?? '0') ?? 0;
     final attendedSessions = attendanceData['attended_sessions'] ?? 0;
     final requiredSessions = attendanceData['required_sessions'] ?? 0;
@@ -167,6 +180,93 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  context.appColors.primary,
+                  context.appColors.primary.withAlpha(200),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: AppRadius.radiusLg,
+              boxShadow: [
+                BoxShadow(
+                  color: context.appColors.primary.withAlpha(60),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'STATUS KELULUSAN',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: AppRadius.radiusSm,
+                      ),
+                      child: Text(
+                        graduationStatusStr == 'PASSED' ? 'LULUS' :
+                        graduationStatusStr == 'CONDITIONAL_PASS' || graduationStatusStr == 'CONDITIONAL' ? 'LULUS BERSYARAT' :
+                        graduationStatusStr == 'REMEDIAL' ? 'REMEDIAL' :
+                        'BELUM EVALUASI',
+                        style: AppTextStyles.labelMd.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: AppSpacing.lg),
+                  decoration: const BoxDecoration(
+                    border: Border(left: BorderSide(color: Colors.white24, width: 1)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'NILAI AKHIR',
+                        style: AppTextStyles.labelSm.copyWith(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        finalScoreStr,
+                        style: AppTextStyles.titleLg.copyWith(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
           if (blockers.isNotEmpty) ...[
             Container(
               width: double.infinity,
@@ -223,33 +323,52 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
           _buildScoreOverviewCard(
             context,
             'Pengetahuan',
+            'cognitive',
             Icons.psychology_rounded,
             context.appColors.primary,
             score['cognitive_average'],
             scoreDefs['cognitive'],
             scoreItems,
+            mentorScope,
           ),
           const SizedBox(height: AppSpacing.md),
           
           _buildScoreOverviewCard(
             context,
             'Keterampilan',
+            'psychomotor',
             Icons.build_rounded,
             context.appColors.warning,
             score['psychomotor_average'],
             scoreDefs['psychomotor'],
             scoreItems,
+            mentorScope,
           ),
           const SizedBox(height: AppSpacing.md),
           
           _buildScoreOverviewCard(
             context,
             'Sikap',
+            'affective',
             Icons.favorite_rounded,
             context.appColors.error,
             score['affective_average'],
             scoreDefs['affective'],
             scoreItems,
+            mentorScope,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          
+          _buildScoreOverviewCard(
+            context,
+            'Syarat Kelulusan Khusus',
+            'requirements',
+            Icons.verified_user_rounded,
+            context.appColors.success,
+            score['requirements_average'],
+            scoreDefs['requirements'],
+            scoreItems,
+            mentorScope,
           ),
           const SizedBox(height: AppSpacing.xl),
           
@@ -383,8 +502,22 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
     );
   }
   
-  Widget _buildScoreOverviewCard(BuildContext context, String title, IconData icon, Color color, dynamic average, dynamic defsData, List<Map<String, dynamic>> items) {
-    final defs = (defsData as List?)?.cast<Map<String, dynamic>>() ?? [];
+  Widget _buildScoreOverviewCard(BuildContext context, String title, String component, IconData icon, Color color, dynamic average, dynamic defsData, List<Map<String, dynamic>> items, String mentorScope) {
+    final rawDefs = (defsData as List?)?.cast<Map<String, dynamic>>() ?? [];
+    
+    // We only filter by show_in_univ / show_in_faculty for read-only view
+    final defs = rawDefs.where((d) {
+      if (mentorScope == 'faculty') {
+        if (d['show_in_faculty'] == false) return false;
+        final label = d['label']?.toString() ?? '';
+        final key = d['key']?.toString().toLowerCase() ?? '';
+        final isPra = label.contains('[Pra]') || key.contains('pra');
+        final isUnivOnly = label.contains('[Univ]') || label.contains('[Universitas]');
+        return !isPra && !isUnivOnly;
+      }
+      return true;
+    }).toList();
+
     return BkuCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -447,24 +580,19 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                 final key = def['key']?.toString() ?? def['id']?.toString() ?? def['item_name']?.toString() ?? '';
                 final label = def['label']?.toString() ?? def['name']?.toString() ?? def['title']?.toString() ?? key;
                 
+                // For progress tab read-only view, since we show ALL items for university mentor, 
+                // we should match the scope correctly. If mentor is university, Pra items are university scope.
+                final isFakultasOnly = label.contains('[Fakultas]') || key.toLowerCase().contains('fakultas') || key.toLowerCase().contains('faculty');
+                final targetScope = mentorScope == 'faculty' ? 'faculty' : (isFakultasOnly ? 'faculty' : 'university');
+
                 final item = items.where((i) {
-                  final iName = i['item_name']?.toString().toLowerCase() ?? i['key']?.toString().toLowerCase() ?? i['name']?.toString().toLowerCase() ?? i['title']?.toString().toLowerCase() ?? '';
-                  final iId = i['score_item_id']?.toString() ?? i['id']?.toString() ?? '';
-                  final targetKey = key.toLowerCase();
-                  final targetLabel = label.toLowerCase();
-
-                  final cleanedTarget = targetLabel.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
-                  final cleanedName = iName.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
-
-                  return iName == targetKey || 
-                         iId == key || 
-                         iName == targetLabel || 
-                         (targetKey.isNotEmpty && iName.contains(targetKey)) || 
-                         (iName.isNotEmpty && targetKey.contains(iName)) ||
-                         (cleanedTarget.isNotEmpty && cleanedName.isNotEmpty && (cleanedTarget.contains(cleanedName) || cleanedName.contains(cleanedTarget)));
+                  final iComp = i['component']?.toString() ?? '';
+                  final iName = i['item_name']?.toString() ?? '';
+                  final iScope = i['scope_type']?.toString() ?? 'university';
+                  return iComp == component && iName == key && iScope == targetScope;
                 }).firstOrNull;
 
-                final scoreDisplay = item?['score']?.toString() ?? item?['value']?.toString() ?? item?['nilai']?.toString() ?? '-';
+                final scoreDisplay = item?['score']?.toString() ?? '-';
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -504,266 +632,223 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
 
 
   Widget _buildTasksTab(BuildContext context, mentee) {
-    return Column(
-      children: [
-        Expanded(
-          child:
-              mentee.assignments.isEmpty
-                  ? Center(
+    final provider = context.watch<MentorKencanaProvider>();
+    final assignmentsData = provider.assignmentsData ?? [];
+    final scoreData = provider.scoreData ?? {};
+    final mentorScope = scoreData['mentor_scope'] ?? 'university';
+
+    final filteredAssignments = assignmentsData.where((item) {
+      final assignment = (item['assignment'] as Map<String, dynamic>?) ?? {};
+      final stageType = (assignment['stage_type'] ?? assignment['stage']?['type'] ?? '').toString();
+      final title = (assignment['title'] ?? '').toString();
+      if (mentorScope == 'faculty') {
+        return stageType == 'kencana_fakultas' || stageType == 'faculty' || title.contains('[Fakultas]') || stageType.isEmpty;
+      }
+      return stageType == 'pra_kencana' || stageType == 'kencana_universitas' || stageType == 'university' || title.contains('[Pra]') || title.contains('[Univ]') || stageType.isEmpty;
+    }).toList();
+
+    if (filteredAssignments.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Text(
+            'Belum ada tugas ${mentorScope == 'faculty' ? 'Fakultas' : 'Universitas'} yang tersedia.',
+            style: AppTextStyles.labelMd.copyWith(
+              color: context.appColors.outline,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      itemCount: filteredAssignments.length,
+      itemBuilder: (context, index) {
+        final item = (filteredAssignments[index] as Map<String, dynamic>?) ?? {};
+        final assignment = (item['assignment'] as Map<String, dynamic>?) ?? {};
+        final submission = (item['submission'] as Map<String, dynamic>?) ?? {};
+
+        final title = assignment['title']?.toString() ?? 'Tugas';
+        final description = assignment['description']?.toString() ?? '';
+        final status = submission['status']?.toString() ?? 'not_submitted';
+
+        final isSubmitted = status == 'submitted' || status == 'graded' || status == 'late' || (submission['id'] != null && status != 'not_submitted');
+        final isLate = status == 'late';
+
+        final answerText = submission['answer_text']?.toString() ?? '';
+        final linkUrl = submission['link_url']?.toString() ?? '';
+        final fileUrl = submission['file_url']?.toString() ?? '';
+        final submittedAtRaw = submission['submitted_at']?.toString() ?? '';
+        String submittedAtFormatted = submittedAtRaw;
+        if (submittedAtRaw.isNotEmpty) {
+          try {
+            final date = DateTime.parse(submittedAtRaw).toLocal();
+            final months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            final day = date.day.toString().padLeft(2, '0');
+            final month = months[date.month - 1];
+            final year = date.year;
+            final hour = date.hour.toString().padLeft(2, '0');
+            final minute = date.minute.toString().padLeft(2, '0');
+            submittedAtFormatted = '$day $month $year, $hour:$minute WIB';
+          } catch (_) {}
+        }
+
+        return BkuCard(
+          margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
                     child: Text(
-                      'Belum ada tugas yang disubmit',
+                      title,
                       style: AppTextStyles.labelMd.copyWith(
-                        color: context.appColors.outline,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  )
-                  : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.lg,
-                    ),
-                    itemCount: mentee.assignments.length,
-                    itemBuilder: (context, index) {
-                      final task = mentee.assignments[index];
-                      return BkuCard(
-                        margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                        padding: const EdgeInsets.all(AppSpacing.lg),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        task.title,
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.s6),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Tipe: ${task.type}',
-                                            style: AppTextStyles.labelSm
-                                                .copyWith(
-                                                  color:
-                                                      context.appColors.outline,
-                                                ),
-                                          ),
-                                          const SizedBox(width: AppSpacing.sm),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 6,
-                                              vertical: 2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  (task.status == 'submitted' ||
-                                                          task.status ==
-                                                              'graded')
-                                               ? context.appColors.success.withValues(alpha:0.15)
-                                                       : context.appColors.error.withValues(alpha:0.15),
-                                               border: Border.all(
-                                                 color:
-                                                     (task.status ==
-                                                                 'submitted' ||
-                                                             task.status ==
-                                                                 'graded')
-                                                         ? context.appColors.success.withValues(alpha:0.3)
-                                                         : context.appColors.error.withValues(alpha:0.3),
-                                              ),
-                                              borderRadius: AppRadius.radiusXs,
-                                            ),
-                                            child: Text(
-                                              (task.status == 'submitted' ||
-                                                      task.status == 'graded')
-                                                  ? 'Terkumpul'
-                                                  : 'Belum Terkumpul',
-                                              style: TextStyle(
-                                                color:
-                                                     (task.status ==
-                                                                 'submitted' ||
-                                                             task.status ==
-                                                                 'graded')
-                                                         ? context.appColors.success
-                                                         : context.appColors.error,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  'Nilai: ${task.score}',
-                                  style: AppTextStyles.labelMd.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color:
-                                        context.appColors.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (task.status == 'submitted' ||
-                                task.status == 'graded') ...[
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                'Hasil Pekerjaan:',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: context.appColors.outline,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.s6),
-                              if (task.answerText.isNotEmpty) ...[
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(AppSpacing.md),
-                                  decoration: BoxDecoration(
-                                    color: context.appColors.outline.withValues(alpha:0.1),
-                                    borderRadius: AppRadius.radiusMd,
-                                    border: Border.all(
-                                      color:
-                                          AppThemeColors.surfaceContainerHighest,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    task.answerText,
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: context.appColors.onSurface,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                              ],
-                              if (task.submittedLink.isNotEmpty) ...[
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                    vertical: AppSpacing.sm,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: context.appColors.primary.withAlpha(12),
-                                    borderRadius: AppRadius.radiusMd,
-                                    border: Border.all(
-                                      color: context.appColors.primary.withAlpha(51),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.link,
-                                        size: 16,
-                                        color:
-                                            context.appColors.primary,
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Flexible(
-                                        child: Text(
-                                          task.submittedLink,
-                                          style: AppTextStyles.labelSm.copyWith(
-                                            color:
-                                                context.appColors.primary,
-                                            decoration:
-                                                TextDecoration.underline,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                              ],
-                              if (task.submittedFile.isNotEmpty) ...[
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                    vertical: AppSpacing.sm,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.neutral200,
-                                    borderRadius: AppRadius.radiusMd,
-                                    border: Border.all(
-                                      color:
-                                          AppThemeColors.surfaceContainerHighest,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.download_rounded,
-                                        size: 16,
-                                        color: context.appColors.onSurface,
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Flexible(
-                                        child: Text(
-                                          task.submittedFile.split('/').last,
-                                          style: AppTextStyles.labelSm.copyWith(
-                                            color: context.appColors.onSurface,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ] else ...[
-                              const SizedBox(height: AppSpacing.md),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.sm,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: context.appColors.error.withAlpha(15),
-                                  borderRadius: AppRadius.radiusMd,
-                                  border: Border.all(
-                                    color: context.appColors.error.withAlpha(30),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.error_outline_rounded,
-                                      size: 16,
-                                      color: context.appColors.error,
-                                    ),
-                                    const SizedBox(width: AppSpacing.sm),
-                                    Expanded(
-                                      child: Text(
-                                        'Mahasiswa belum mengunggah jawaban untuk tugas ini.',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: context.appColors.error,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      );
-                    },
                   ),
-        ),
-      ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isSubmitted
+                          ? context.appColors.success.withAlpha(30)
+                          : context.appColors.error.withAlpha(30),
+                      border: Border.all(
+                        color: isSubmitted
+                            ? context.appColors.success.withAlpha(80)
+                            : context.appColors.error.withAlpha(80),
+                      ),
+                      borderRadius: AppRadius.radiusSm,
+                    ),
+                    child: Text(
+                      isSubmitted ? (isLate ? 'Terkumpul (Terlambat)' : 'Terkumpul') : 'Belum Terkumpul',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: isSubmitted ? context.appColors.success : context.appColors.error,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (description.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  description.replaceAll(RegExp(r'<[^>]*>'), ''),
+                  style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.md),
+              if (isSubmitted) ...[
+                Text(
+                  'Hasil Pekerjaan:',
+                  style: AppTextStyles.labelSm.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.appColors.onSurface,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                if (answerText.isNotEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
+                      borderRadius: AppRadius.radiusMd,
+                      border: Border.all(color: context.appColors.outline.withAlpha(50)),
+                    ),
+                    child: Text(
+                      answerText,
+                      style: AppTextStyles.labelSm,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                ],
+                if (linkUrl.isNotEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: context.appColors.primary.withAlpha(15),
+                      borderRadius: AppRadius.radiusMd,
+                      border: Border.all(color: context.appColors.primary.withAlpha(50)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.link, size: 16, color: context.appColors.primary),
+                        const SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            linkUrl,
+                            style: AppTextStyles.labelSm.copyWith(
+                              color: context.appColors.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                ],
+                if (fileUrl.isNotEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: context.appColors.surface,
+                      borderRadius: AppRadius.radiusMd,
+                      border: Border.all(color: context.appColors.outline.withAlpha(50)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.file_present_rounded, size: 16, color: context.appColors.onSurface),
+                        const SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            fileUrl.split('/').last,
+                            style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                ],
+                if (submittedAtRaw.isNotEmpty) ...[
+                  Text(
+                    'Dikumpulkan pada: $submittedAtFormatted',
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
+                  ),
+                ],
+              ] else ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: context.appColors.surface,
+                    borderRadius: AppRadius.radiusMd,
+                    border: Border.all(color: context.appColors.outline.withAlpha(30)),
+                  ),
+                  child: Text(
+                    'Mahasiswa belum mengunggah jawaban untuk tugas ini.',
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: context.appColors.outline,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -818,6 +903,20 @@ class _ScoreFormTabWidget extends StatefulWidget {
 class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
   final Map<String, TextEditingController> _controllers = {};
   bool _isSubmitting = false;
+  String _formStageTab = 'univ';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final provider = context.read<MentorKencanaProvider>();
+      final mentorScope = provider.scoreData?['mentor_scope'] ?? 'university';
+      if (mentorScope == 'faculty') {
+        setState(() => _formStageTab = 'faculty');
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -827,9 +926,39 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
     super.dispose();
   }
 
+  List<Map<String, dynamic>> _filterDefByStage(List<dynamic> rawDefs) {
+    final defs = rawDefs.cast<Map<String, dynamic>>();
+    if (_formStageTab == 'pra') {
+      return defs.where((d) => (d['label']?.toString() ?? '').contains('[Pra]') || (d['key']?.toString().toLowerCase() ?? '').contains('pra')).toList();
+    }
+    if (_formStageTab == 'faculty') {
+      return defs.where((d) {
+        if (d['show_in_faculty'] == false) return false;
+        final label = d['label']?.toString() ?? '';
+        final key = d['key']?.toString().toLowerCase() ?? '';
+        final isPra = label.contains('[Pra]') || key.contains('pra');
+        final isUnivOnly = label.contains('[Univ]') || label.contains('[Universitas]');
+        return !isPra && !isUnivOnly;
+      }).toList();
+    }
+    // univ
+    return defs.where((d) {
+      if (d['show_in_univ'] == false) return false;
+      final label = d['label']?.toString() ?? '';
+      final key = d['key']?.toString().toLowerCase() ?? '';
+      final isPra = label.contains('[Pra]') || key.contains('pra');
+      final isFakultasOnly = label.contains('[Fakultas]') || key.contains('fakultas') || key.contains('faculty');
+      return !isPra && !isFakultasOnly;
+    }).toList();
+  }
+
   void _submitScores() async {
     setState(() => _isSubmitting = true);
     
+    final provider = context.read<MentorKencanaProvider>();
+    final mentorScope = provider.scoreData?['mentor_scope'] ?? 'university';
+    final targetScope = mentorScope == 'faculty' ? 'faculty' : (_formStageTab == 'faculty' ? 'faculty' : 'university');
+
     final items = <Map<String, dynamic>>[];
     _controllers.forEach((key, controller) {
       if (controller.text.trim().isNotEmpty) {
@@ -839,6 +968,7 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
             'component': parts[0],
             'item_name': parts[1],
             'score': double.tryParse(controller.text) ?? 0,
+            'scope_type': targetScope,
             'notes': '',
           });
         }
@@ -851,7 +981,6 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
       return;
     }
 
-    final provider = context.read<MentorKencanaProvider>();
     final success = await provider.submitBulkScores(studentId: widget.mentee.id, items: items);
     
     if (mounted) {
@@ -865,8 +994,10 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
     }
   }
 
-  Widget _buildComponentSection(String title, String component, dynamic defsData, List<Map<String, dynamic>> itemsData) {
-    final defs = (defsData as List?)?.cast<Map<String, dynamic>>() ?? [];
+  Widget _buildComponentSection(String title, String component, dynamic defsData, List<Map<String, dynamic>> itemsData, bool isPascaKencana, String mentorScope) {
+    final rawDefs = (defsData as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final defs = _filterDefByStage(rawDefs);
+    
     if (defs.isEmpty) return const SizedBox();
 
     return BkuCard(
@@ -892,35 +1023,38 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
             final label = def['label']?.toString() ?? def['name']?.toString() ?? def['title']?.toString() ?? key;
             final mapKey = '$component||$key';
             
+            final isHandbook = key.toLowerCase() == 'handbook';
+            final isManual = def['manual'] == true;
+            final isDisabled = !isManual || (isHandbook && !isPascaKencana);
+            
+            final targetScope = mentorScope == 'faculty' ? 'faculty' : (_formStageTab == 'faculty' ? 'faculty' : 'university');
+
             final existingItem = itemsData.where((i) {
-              final iComp = i['component']?.toString().toLowerCase() ?? '';
-              final iName = i['item_name']?.toString().toLowerCase() ?? i['key']?.toString().toLowerCase() ?? i['name']?.toString().toLowerCase() ?? i['title']?.toString().toLowerCase() ?? '';
-              final iId = i['score_item_id']?.toString() ?? i['id']?.toString() ?? '';
-              final targetKey = key.toLowerCase();
-              final targetLabel = label.toLowerCase();
-
-              final cleanedTarget = targetLabel.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
-              final cleanedName = iName.replaceAll(RegExp(r'\[.*?\]'), '').replaceAll(RegExp(r'[()]'), '').trim();
-
-              return (iComp == component.toLowerCase() || iComp.isEmpty) && 
-                     (iName == targetKey || iId == key || iName == targetLabel || iName.contains(targetKey) || targetKey.contains(iName) || (cleanedTarget.isNotEmpty && cleanedName.isNotEmpty && (cleanedTarget.contains(cleanedName) || cleanedName.contains(cleanedTarget))));
+              final iComp = i['component']?.toString() ?? '';
+              final iName = i['item_name']?.toString() ?? '';
+              final iScope = i['scope_type']?.toString() ?? 'university';
+              return iComp == component && iName == key && iScope == targetScope;
             }).firstOrNull;
 
-            final fetchedScore = existingItem?['score']?.toString() ?? existingItem?['value']?.toString() ?? existingItem?['nilai']?.toString() ?? '';
+            final fetchedScore = existingItem?['score']?.toString() ?? '';
 
             if (!_controllers.containsKey(mapKey)) {
               _controllers[mapKey] = TextEditingController(text: fetchedScore);
-            } else if (_controllers[mapKey]!.text != fetchedScore && fetchedScore.isNotEmpty) {
+            } else if (_controllers[mapKey]!.text != fetchedScore) {
               _controllers[mapKey]!.text = fetchedScore;
             }
             
             return Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-              child: BkuTextField(
-                controller: _controllers[mapKey]!,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                label: label,
-                hint: 'Masukkan nilai (0-100)',
+              child: Opacity(
+                opacity: isDisabled ? 0.6 : 1.0,
+                child: BkuTextField(
+                  controller: _controllers[mapKey]!,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  label: label + (isHandbook && !isPascaKencana ? ' (Belum Pasca Kencana)' : (!isManual ? ' (Otomatis)' : '')),
+                  hint: !isManual ? 'Dihitung Otomatis' : 'Masukkan nilai (0-100)',
+                  readOnly: isDisabled,
+                ),
               ),
             );
           }),
@@ -935,6 +1069,9 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
     final scoreData = provider.scoreData ?? {};
     final scoreItems = (scoreData['items'] as List?)?.cast<Map<String, dynamic>>() ?? [];
     final scoreDefs = scoreData['score_definitions'] ?? {};
+    final mentorScope = scoreData['mentor_scope'] ?? 'university';
+    final progressData = provider.progressData ?? {};
+    final isPascaKencana = progressData['is_pasca_kencana_active'] == true;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -952,10 +1089,77 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
           ),
           const SizedBox(height: AppSpacing.xl),
           
-          _buildComponentSection('Pengetahuan (Kognitif)', 'cognitive', scoreDefs['cognitive'], scoreItems),
-          _buildComponentSection('Keterampilan (Psikomotor)', 'psychomotor', scoreDefs['psychomotor'], scoreItems),
-          _buildComponentSection('Sikap (Afektif)', 'affective', scoreDefs['affective'], scoreItems),
-          _buildComponentSection('Syarat Kelulusan Khusus', 'requirements', scoreDefs['requirements'], scoreItems),
+          if (mentorScope != 'faculty') ...[
+            Container(
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: AppRadius.radiusMd,
+                border: Border.all(color: AppColors.neutral300),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _formStageTab = 'pra'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _formStageTab == 'pra' ? context.appColors.primary.withAlpha(20) : Colors.transparent,
+                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(AppRadius.md - 1)),
+                          border: Border(
+                            bottom: BorderSide(
+                              color: _formStageTab == 'pra' ? context.appColors.primary : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '1. PRA-KENCANA',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.labelSm.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: _formStageTab == 'pra' ? context.appColors.primary : context.appColors.outline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _formStageTab = 'univ'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _formStageTab == 'univ' ? context.appColors.primary.withAlpha(20) : Colors.transparent,
+                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(AppRadius.md - 1)),
+                          border: Border(
+                            bottom: BorderSide(
+                              color: _formStageTab == 'univ' ? context.appColors.primary : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '2. KENCANA UNIV',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.labelSm.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: _formStageTab == 'univ' ? context.appColors.primary : context.appColors.outline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+          ],
+          
+          _buildComponentSection('Pengetahuan (Kognitif)', 'cognitive', scoreDefs['cognitive'], scoreItems, isPascaKencana, mentorScope),
+          _buildComponentSection('Keterampilan (Psikomotor)', 'psychomotor', scoreDefs['psychomotor'], scoreItems, isPascaKencana, mentorScope),
+          _buildComponentSection('Sikap (Afektif)', 'affective', scoreDefs['affective'], scoreItems, isPascaKencana, mentorScope),
+          _buildComponentSection('Syarat Kelulusan Khusus', 'requirements', scoreDefs['requirements'], scoreItems, isPascaKencana, mentorScope),
           
           const SizedBox(height: AppSpacing.xl),
           BkuButton(
@@ -963,6 +1167,371 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
             text: 'Simpan Semua Nilai',
             icon: Icons.save_rounded,
             isLoading: _isSubmitting,
+          ),
+          const SizedBox(height: AppSpacing.xxl),
+          _EssayGradingSectionWidget(menteeId: widget.mentee.id),
+        ],
+      ),
+    );
+  }
+}
+
+class _EssayGradingSectionWidget extends StatefulWidget {
+  final int menteeId;
+  const _EssayGradingSectionWidget({required this.menteeId});
+
+  @override
+  State<_EssayGradingSectionWidget> createState() => _EssayGradingSectionWidgetState();
+}
+
+class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> {
+  int? _selectedQuizId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        final provider = context.read<MentorKencanaProvider>();
+        if (provider.sessionMaterials.isEmpty) {
+          await provider.fetchSessionMaterialsList();
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<MentorKencanaProvider>();
+
+    final allQuizzes = <SessionMaterialItem>[];
+    for (final mat in provider.sessionMaterials) {
+      allQuizzes.addAll(mat.quizzes);
+    }
+
+    return BkuCard(
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: context.appColors.primary.withAlpha(20),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.rate_review_rounded,
+                  size: 18,
+                  color: context.appColors.primary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                '5. PENILAIAN ESSAY QUIZ',
+                style: AppTextStyles.labelMd.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: context.appColors.primary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Pilih kuis untuk melihat dan menilai jawaban essay mahasiswa ini.',
+            style: AppTextStyles.labelSm.copyWith(
+              color: context.appColors.outline,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              borderRadius: AppRadius.radiusMd,
+              border: Border.all(color: context.appColors.outline.withAlpha(60)),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<int?>(
+                value: _selectedQuizId,
+                isExpanded: true,
+                icon: Icon(Icons.keyboard_arrow_down_rounded, color: context.appColors.primary),
+                hint: Text('-- Pilih Kuis Essay --', style: AppTextStyles.labelSm),
+                items: allQuizzes.map((q) => DropdownMenuItem<int?>(
+                  value: q.id,
+                  child: Text(
+                    q.title.isNotEmpty ? q.title : 'Kuis #${q.id}',
+                    style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedQuizId = val;
+                  });
+                  if (val != null) {
+                    provider.fetchEssayGrading(val);
+                  }
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          if (_selectedQuizId != null) ...[
+            if (provider.isLoading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacing.lg),
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else if (provider.essayItems.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                decoration: BoxDecoration(
+                  color: context.appColors.surface,
+                  borderRadius: AppRadius.radiusMd,
+                  border: Border.all(color: context.appColors.outline.withAlpha(30)),
+                ),
+                child: Text(
+                  'Tidak ada jawaban essay untuk kuis ini.',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: context.appColors.outline,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              ...provider.essayItems.map((item) => _MenteeEssayCard(item: item)),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MenteeEssayCard extends StatefulWidget {
+  final MentorEssayItem item;
+  const _MenteeEssayCard({required this.item});
+
+  @override
+  State<_MenteeEssayCard> createState() => _MenteeEssayCardState();
+}
+
+class _MenteeEssayCardState extends State<_MenteeEssayCard> {
+  late TextEditingController _scoreController;
+  late TextEditingController _feedbackController;
+  bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scoreController = TextEditingController(text: widget.item.score?.toString() ?? '');
+    _feedbackController = TextEditingController(text: widget.item.feedback ?? '');
+  }
+
+  @override
+  void dispose() {
+    _scoreController.dispose();
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
+  void _submitScore() async {
+    final scoreText = _scoreController.text.trim();
+    if (scoreText.isEmpty) {
+      AppSnackbar.showWarning(context, 'Masukkan nilai terlebih dahulu');
+      return;
+    }
+    final score = double.tryParse(scoreText);
+    if (score == null) {
+      AppSnackbar.showWarning(context, 'Nilai harus berupa angka valid');
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    final provider = context.read<MentorKencanaProvider>();
+    final success = await provider.submitEssayScore(
+      widget.item.id,
+      score,
+      _feedbackController.text.trim(),
+    );
+
+    if (mounted) {
+      setState(() => _isSubmitting = false);
+      if (success) {
+        AppSnackbar.showSuccess(context, 'Nilai essay berhasil disimpan');
+      } else {
+        AppSnackbar.showError(context, 'Gagal menyimpan nilai essay');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    final isGraded = item.status == 'graded' || item.score != null;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: AppRadius.radiusLg,
+        border: Border.all(
+          color: isGraded ? const Color(0xFF10B981).withAlpha(60) : context.appColors.outline.withAlpha(40),
+          width: isGraded ? 1.5 : 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(8),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (item.question.isNotEmpty) ...[
+            Text(
+              item.question,
+              style: AppTextStyles.labelMd.copyWith(
+                fontWeight: FontWeight.bold,
+                color: context.appColors.onSurface,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8F1),
+              borderRadius: AppRadius.radiusMd,
+              border: Border.all(color: const Color(0xFFFFEDD5)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.format_quote_rounded,
+                  size: 18,
+                  color: Color(0xFFF97316),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    item.answer.isNotEmpty ? item.answer : '(Mahasiswa belum memasukkan jawaban)',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: item.answer.isNotEmpty ? const Color(0xFF334155) : const Color(0xFF94A3B8),
+                      fontStyle: item.answer.isNotEmpty ? FontStyle.normal : FontStyle.italic,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: 105,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NILAI (0-${item.maxScore.toInt()})',
+                      style: AppTextStyles.labelSm.copyWith(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.outline,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _scoreController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                      decoration: InputDecoration(
+                        hintText: '0-${item.maxScore.toInt()}',
+                        isDense: true,
+                        filled: true,
+                        fillColor: context.appColors.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'CATATAN MENTOR',
+                      style: AppTextStyles.labelSm.copyWith(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.outline,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _feedbackController,
+                      style: AppTextStyles.labelSm,
+                      decoration: InputDecoration(
+                        hintText: 'Catatan...',
+                        isDense: true,
+                        filled: true,
+                        fillColor: context.appColors.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              BkuButton(
+                onPressed: _isSubmitting ? () {} : _submitScore,
+                isLoading: _isSubmitting,
+                icon: isGraded ? Icons.check_circle_rounded : Icons.save_rounded,
+                text: isGraded ? 'Dinilai' : 'Simpan',
+                height: 38,
+                fullWidth: false,
+                variant: isGraded ? BkuButtonVariant.success : BkuButtonVariant.primary,
+              ),
+            ],
           ),
         ],
       ),
