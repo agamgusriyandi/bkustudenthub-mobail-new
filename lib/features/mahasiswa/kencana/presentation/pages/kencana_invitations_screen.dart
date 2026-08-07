@@ -291,20 +291,28 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
     return Column(
       children:
           items.map((item) {
-            final status = item['status'] ?? 'pending';
+            final rawStatus = item['status'] ?? item['Status'] ?? 'pending';
+            final status = rawStatus.toString().toLowerCase();
             final isPending = status == 'pending';
 
-            String title = '';
+            String title = 'Undangan Kencana';
             String subtitle = '';
 
             if (type == 'mentor') {
-              title = item['mentor']?['name'] ?? 'Fasilitator';
-              subtitle =
-                  'Undangan sebagai Fasilitator dari ${item['mentor']?['fakultas']?['name'] ?? 'Universitas'}';
-            } else if (type == 'team') {
-              title = item['group']?['name'] ?? 'Kelompok';
-              subtitle =
-                  'Kelompok: ${item['group']?['code'] ?? ''} - Anggota: ${item['group']?['members']?.length ?? 0}';
+              final mentor = item['mentor'] ?? item['Mentor'] ?? {};
+              final name = mentor['name'] ?? mentor['Name'] ?? 'Fasilitator';
+              final fakName = mentor['fakultas']?['name'] ?? mentor['Fakultas']?['Name'] ?? 'Universitas';
+              title = 'Undangan Fasilitator: $name';
+              subtitle = 'Fasilitator dari $fakName';
+            } else {
+              final group = item['group'] ?? item['Group'] ?? {};
+              final groupName = group['name'] ?? group['Name'] ?? item['group_name'] ?? 'Kelompok Kencana';
+              final code = group['code'] ?? group['Code'] ?? item['group_code'] ?? '';
+              final mentorObj = group['mentor'] ?? group['Mentor'];
+              final mentorName = mentorObj?['name'] ?? mentorObj?['Name'] ?? '';
+
+              title = groupName;
+              subtitle = 'Kode: ${code.isNotEmpty ? code : '-'} ${mentorName.isNotEmpty ? '• DP: $mentorName' : ''}';
             }
 
             return Container(
@@ -408,18 +416,18 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                       ),
                       decoration: BoxDecoration(
                         color:
-                            status == 'active'
+                            (status == 'active' || status == 'accepted')
                                 ? AppColors.success.withAlpha(20)
                                 : AppColors.error.withAlpha(20),
                         borderRadius: AppRadius.radiusSm,
                       ),
                       child: Text(
-                        status == 'active' ? 'DITERIMA' : 'DITOLAK',
+                        (status == 'active' || status == 'accepted') ? 'DITERIMA' : 'DITOLAK',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.labelSm.copyWith(
                           fontWeight: FontWeight.bold,
                           color:
-                              status == 'active'
+                              (status == 'active' || status == 'accepted')
                                   ? AppColors.success
                                   : AppColors.error,
                         ),
