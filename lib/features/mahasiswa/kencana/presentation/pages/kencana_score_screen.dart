@@ -62,7 +62,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             const BkuAppBar(
               title: 'REKAP NILAI',
               subtitle: 'KENCANA',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

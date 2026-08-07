@@ -69,7 +69,7 @@ class _EditAchievementScreenState extends State<EditAchievementScreen> {
       backgroundColor: context.appColors.background,
       appBar: const BkuStaticAppBar(
         title: 'Edit Prestasi',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

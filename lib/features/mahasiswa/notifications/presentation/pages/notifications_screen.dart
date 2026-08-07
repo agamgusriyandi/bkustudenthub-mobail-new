@@ -197,7 +197,7 @@ class _StudentNotificationsScreenState
             BkuAppBar(
               title: 'Notifikasi',
               subtitle: 'UPDATE TERBARU',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

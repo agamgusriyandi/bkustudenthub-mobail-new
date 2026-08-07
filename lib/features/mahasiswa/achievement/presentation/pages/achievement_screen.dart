@@ -58,7 +58,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
             BkuAppBar(
               title: 'Prestasi Mahasiswa',
               subtitle: 'Riwayat & Penghargaan',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

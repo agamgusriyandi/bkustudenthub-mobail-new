@@ -141,7 +141,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
             BkuAppBar(
               title: isReschedule ? 'Reschedule Klinik' : 'Booking Klinik',
               subtitle: 'FORMULIR PENJADWALAN MEDIS',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

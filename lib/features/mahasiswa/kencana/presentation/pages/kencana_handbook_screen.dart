@@ -169,7 +169,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
           const BkuAppBar(
             title: 'HANDBOOK MAHASISWA',
             subtitle: 'KENCANA',
-            variant: AppBarVariant.clean,
+            variant: AppBarVariant.student,
             expandedHeight: 100,
             showBackButton: true,
             isExpandable: false,

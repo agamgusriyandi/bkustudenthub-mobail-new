@@ -344,7 +344,7 @@ class _QuizScreenState extends State<QuizScreen> {
             BkuAppBar(
               title: _quizTitle,
               info: '${_questions.length} Pertanyaan • $_durasiMenit Menit',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               showBackButton: true,
               isExpandable: false,
               showNotification: false,
@@ -624,7 +624,7 @@ class _QuizScreenState extends State<QuizScreen> {
         slivers: [
           const BkuAppBar(
             title: 'Hasil Kuis',
-            variant: AppBarVariant.clean,
+            variant: AppBarVariant.student,
             showBackButton: true,
           ),
           SliverToBoxAdapter(

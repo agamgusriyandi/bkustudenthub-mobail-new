@@ -48,7 +48,7 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
       backgroundColor: context.appColors.background,
       appBar: const BkuStaticAppBar(
         title: 'Lapor Prestasi',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

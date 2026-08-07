@@ -61,7 +61,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
               const BkuAppBar(
                 title: 'Daftar Psikolog',
                 subtitle: 'PROFESIONAL KAMPUS',
-                variant: AppBarVariant.clean,
+                variant: AppBarVariant.student,
                 expandedHeight: 140,
                 showBackButton: true,
                 isExpandable: false,

@@ -267,7 +267,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
             const BkuAppBar(
               title: 'LOG PRESENSI',
               subtitle: 'KENCANA',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

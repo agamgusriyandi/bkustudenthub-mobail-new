@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           return [
             const BkuAppBar(
               title: 'Profile',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               showBackButton: true,
               showNotification: true,
               isExpandable: false,

@@ -52,7 +52,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           slivers: [
             const BkuAppBar(
               title: 'Program Kencana',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

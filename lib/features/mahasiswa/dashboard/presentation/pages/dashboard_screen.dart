@@ -105,7 +105,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: name,
               subtitle: 'SELAMAT DATANG KEMBALI',
               info: '${profile.nim} • SEMESTER ${profile.semester}',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               showBackButton: false,
               expandedHeight: 130,
               showProfileOnCollapse: true,

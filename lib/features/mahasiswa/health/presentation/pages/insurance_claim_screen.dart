@@ -56,7 +56,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
             BkuAppBar(
               title: 'Klaim Asuransi',
               subtitle: 'PENGAJUAN & RIWAYAT KLAIM',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

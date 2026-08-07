@@ -153,7 +153,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             BkuAppBar(
               title: 'Beasiswa & Bantuan',
               subtitle: 'Program Kampus',
-              variant: AppBarVariant.clean,
+              variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

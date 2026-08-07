@@ -123,7 +123,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
           const BkuAppBar(
             title: 'Organisasi & Komunitas',
             subtitle: 'KAMPUS BHAKTI KENCANA',
-            variant: AppBarVariant.clean,
+            variant: AppBarVariant.student,
             expandedHeight: 130,
             showBackButton: true,
             isExpandable: false,

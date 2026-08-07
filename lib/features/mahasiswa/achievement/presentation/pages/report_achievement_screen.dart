@@ -173,7 +173,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Sistem Mahasiswa',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

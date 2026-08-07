@@ -258,7 +258,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
       backgroundColor: context.appColors.surface,
       appBar: BkuStaticAppBar(
         title: 'Daftar ${widget.namaOrmawa}',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body:

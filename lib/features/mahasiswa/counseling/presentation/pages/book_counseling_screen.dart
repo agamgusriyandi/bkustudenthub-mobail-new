@@ -174,7 +174,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       appBar: BkuStaticAppBar(
         title: 'Form SPMI Konseling',
         subtitle: 'No.Dok: 02.01.00/FRM-4/KKA-SPMI',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body: Column(

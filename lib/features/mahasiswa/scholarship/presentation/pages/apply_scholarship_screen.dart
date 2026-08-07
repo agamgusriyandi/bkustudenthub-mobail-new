@@ -610,7 +610,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Form Pendaftaran',
-        variant: AppBarVariant.clean,
+        variant: AppBarVariant.student,
         showBackButton: true,
       ),
       body: _buildBody(context),
