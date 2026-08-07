@@ -381,7 +381,7 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                   children: [
                                     _buildSegmentedButton('Hadir', mentee.id, mentee.status, context.appColors.success, matchStatus: ['Hadir', 'hadir', 'present', 'attended']),
                                     const SizedBox(width: 4),
-                                    _buildSegmentedButton('Izin / Sakit', mentee.id, mentee.status, context.appColors.warning, matchStatus: ['Izin', 'Sakit', 'izin', 'sakit']),
+                                    _buildSegmentedButton('Izin / Sakit', mentee.id, mentee.status, context.appColors.warning, matchStatus: ['Izin', 'Sakit', 'izin', 'sakit', 'permission']),
                                     const SizedBox(width: 4),
                                     _buildSegmentedButton('Alpha', mentee.id, mentee.status, context.appColors.error, matchStatus: ['Alpha', 'alpha', 'absent']),
                                   ],

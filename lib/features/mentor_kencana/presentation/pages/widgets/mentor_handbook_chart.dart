@@ -70,26 +70,35 @@ class MentorHandbookChart extends StatelessWidget {
                     PieChartData(
                       sectionsSpace: 0,
                       centerSpaceRadius: 40,
-                      sections: [
-                        PieChartSectionData(
-                          color: context.appColors.success,
-                          value: dashboard.passedStudents.toDouble(),
-                          title: '',
-                          radius: 20,
-                        ),
-                        PieChartSectionData(
-                          color: context.appColors.error,
-                          value: dashboard.remedialStudents.toDouble(),
-                          title: '',
-                          radius: 20,
-                        ),
-                        PieChartSectionData(
-                          color: AppColors.neutral300,
-                          value: dashboard.pendingScoring.toDouble(),
-                          title: '',
-                          radius: 20,
-                        ),
-                      ],
+                      sections: (dashboard.passedStudents + dashboard.remedialStudents + dashboard.pendingScoring) == 0
+                          ? [
+                              PieChartSectionData(
+                                color: AppColors.neutral200,
+                                value: 1,
+                                title: '',
+                                radius: 20,
+                              ),
+                            ]
+                          : [
+                              PieChartSectionData(
+                                color: context.appColors.success,
+                                value: dashboard.passedStudents.toDouble(),
+                                title: '',
+                                radius: 20,
+                              ),
+                              PieChartSectionData(
+                                color: context.appColors.error,
+                                value: dashboard.remedialStudents.toDouble(),
+                                title: '',
+                                radius: 20,
+                              ),
+                              PieChartSectionData(
+                                color: AppColors.neutral300,
+                                value: dashboard.pendingScoring.toDouble(),
+                                title: '',
+                                radius: 20,
+                              ),
+                            ],
                     ),
                   ),
                 ),

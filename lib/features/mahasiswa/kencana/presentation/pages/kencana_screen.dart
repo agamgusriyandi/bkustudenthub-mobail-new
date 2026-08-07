@@ -443,9 +443,9 @@ class _KencanaScreenState extends State<KencanaScreen> {
         _buildStatCard(
           context,
           'Remedial',
-          dashboard.needsRemedial ? 'Perlu' : 'Tidak',
+          (dashboard.status == 'published' || dashboard.status == 'completed' || dashboard.activeStage['type'] == 'pasca_kencana') && dashboard.needsRemedial ? 'Perlu' : 'Tidak',
           Icons.rule_rounded,
-          dashboard.needsRemedial
+          (dashboard.status == 'published' || dashboard.status == 'completed' || dashboard.activeStage['type'] == 'pasca_kencana') && dashboard.needsRemedial
               ? context.watch<ThemeProvider>().colorError
               : context.watch<ThemeProvider>().success,
         ),
@@ -739,41 +739,33 @@ class _KencanaScreenState extends State<KencanaScreen> {
         stage.status.toLowerCase() == 'completed' ||
         stage.status.toLowerCase() == 'selesai';
 
-    Color cardBg;
-    Color borderColor;
     Color numberBg;
     Color numberTextColor;
-    Color titleColor;
     Color badgeBg;
     Color badgeTextColor;
+    IconData badgeIcon;
     String badgeText;
 
     if (isCompleted) {
-      cardBg = context.appColors.successContainer;
-      borderColor = context.appColors.success;
-      numberBg = context.appColors.success;
-      numberTextColor = context.appColors.surface;
-      titleColor = context.appColors.success;
-      badgeBg = context.appColors.successContainer;
-      badgeTextColor = context.appColors.success;
+      numberBg = const Color(0xFF10B981);
+      numberTextColor = Colors.white;
+      badgeBg = const Color(0xFFECFDF5);
+      badgeTextColor = const Color(0xFF047857);
+      badgeIcon = Icons.check_circle_rounded;
       badgeText = 'Selesai';
     } else if (isActive) {
-      cardBg = AppColors.primary.withAlpha(10);
-      borderColor = AppColors.primary.withAlpha(50);
-      numberBg = AppColors.primary;
-      numberTextColor = AppColors.surface;
-      titleColor = AppColors.onSurface;
-      badgeBg = AppColors.primary.withAlpha(15);
-      badgeTextColor = AppColors.primary;
+      numberBg = const Color(0xFF0F172A);
+      numberTextColor = Colors.white;
+      badgeBg = const Color(0xFFEFF6FF);
+      badgeTextColor = const Color(0xFF1D4ED8);
+      badgeIcon = Icons.play_circle_fill_rounded;
       badgeText = 'Berlangsung';
     } else {
-      cardBg = AppColors.neutral100;
-      borderColor = AppColors.neutral300;
-      numberBg = AppColors.neutral300;
-      numberTextColor = AppColors.neutral600;
-      titleColor = AppColors.neutral700;
-      badgeBg = AppColors.neutral200;
-      badgeTextColor = AppColors.neutral600;
+      numberBg = const Color(0xFFE2E8F0);
+      numberTextColor = const Color(0xFF64748B);
+      badgeBg = const Color(0xFFF1F5F9);
+      badgeTextColor = const Color(0xFF64748B);
+      badgeIcon = Icons.lock_rounded;
       badgeText = 'Belum Mulai';
     }
 
@@ -804,19 +796,19 @@ class _KencanaScreenState extends State<KencanaScreen> {
       borderRadius: AppRadius.radiusLg,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-        padding: AppSpacing.paddingLg,
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: cardBg,
+          color: context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: borderColor,
+            color: isActive ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0),
             width: isActive ? 1.5 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: context.appColors.onSurface.withAlpha(5),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -828,13 +820,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: numberBg,
-                borderRadius: AppRadius.radiusMd,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: isCompleted
-                    ? Icon(
-                        Icons.check_circle_rounded,
-                        color: context.appColors.onPrimary,
+                    ? const Icon(
+                        Icons.check_rounded,
+                        color: Colors.white,
                         size: 24,
                       )
                     : Text(
@@ -858,10 +850,10 @@ class _KencanaScreenState extends State<KencanaScreen> {
                       Expanded(
                         child: Text(
                           stage.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w800,
-                            fontSize: 15,
-                            color: titleColor,
+                            fontSize: 15.5,
+                            color: Color(0xFF0F172A),
                           ),
                         ),
                       ),
@@ -872,62 +864,69 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: badgeBg,
-                          borderRadius: AppRadius.br6,
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Text(
-                          badgeText,
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: badgeTextColor,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(badgeIcon, size: 12, color: badgeTextColor),
+                            const SizedBox(width: 4),
+                            Text(
+                              badgeText,
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.bold,
+                                color: badgeTextColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   if (stage.description != null &&
                       stage.description!.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: 4),
                     Text(
                       stage.description!,
                       style: const TextStyle(
-                        color: AppColors.neutral600,
+                        color: Color(0xFF64748B),
                         fontSize: 12,
+                        height: 1.3,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                   if (stage.startDate != null) ...[
-                    const SizedBox(height: AppSpacing.s10),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.calendar_today_rounded,
                           size: 13,
-                          color: AppColors.neutral500,
+                          color: Color(0xFF64748B),
                         ),
-                        const SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: 6),
                         Text(
                           '${_formatDate(stage.startDate)} - ${_formatDate(stage.endDate)}',
                           style: const TextStyle(
-                            fontSize: 10,
-                          color: AppColors.neutral600,
-                          fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                            color: Color(0xFF64748B),
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ],
-                  const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      _buildStageStat('Sesi', stage.sessionCount, isCompleted),
-                      const SizedBox(width: AppSpacing.md),
+                      _buildStageStat('Sesi', stage.sessionCount),
+                      const SizedBox(width: 8),
                       _buildStageStat(
                         'Materi/Tugas',
                         stage.quizCount + stage.assignmentCount,
-                        isCompleted,
                       ),
                     ],
                   ),
@@ -940,41 +939,38 @@ class _KencanaScreenState extends State<KencanaScreen> {
     );
   }
 
-  Widget _buildStageStat(String label, int value, bool isCompleted) {
+  Widget _buildStageStat(String label, int value) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: 6,
+        horizontal: 10,
+        vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: isCompleted ? AppColors.neutral50.withAlpha(50) : AppColors.neutral200.withAlpha(50),
-        borderRadius: AppRadius.radiusSm,
-        border: isCompleted ? Border.all(color: AppColors.neutral300) : null,
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: Row(
-        children: [
-          Text(
-            value.toString(),
-            style: AppTextStyles.labelMd.copyWith(
-              fontWeight: FontWeight.w900,
-              color:
-                  isCompleted
-                      ? AppColors.neutral600
-                      : AppColors.onSurface,
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '$value ',
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 11,
+                color: Color(0xFF0F172A),
+              ),
             ),
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              fontSize: 10,
-              color:
-                  isCompleted
-                      ? context.appColors.outlineVariant
-                      : context.appColors.outline,
+            TextSpan(
+              text: label,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 10.5,
+                color: Color(0xFF64748B),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1037,8 +1033,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
 
   Widget _buildBlockersAndAlerts(KencanaDashboardData dashboard) {
     final blockers = dashboard.blockers;
+    final isRemedialOpen = dashboard.status == 'published' ||
+        dashboard.status == 'completed' ||
+        dashboard.activeStage['type'] == 'pasca_kencana';
+
     final notifications = dashboard.notifications
         .where((n) => n['title'] != 'Syarat Kencana')
+        .where((n) => isRemedialOpen || n['title'] != 'Remedial dibuka')
         .toList();
 
     if (blockers.isEmpty && notifications.isEmpty) {

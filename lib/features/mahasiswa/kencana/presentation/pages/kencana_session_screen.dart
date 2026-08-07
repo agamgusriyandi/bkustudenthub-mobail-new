@@ -1,9 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
@@ -133,39 +131,52 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       children: [
         Text(
           session.title,
-          style: AppTextStyles.titleLg.copyWith(
-            color: AppColors.onSurface,
+          style: const TextStyle(
+            color: Color(0xFF0F172A),
             fontWeight: FontWeight.w900,
-            fontSize: 18,
+            fontSize: 20,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: 10),
         if (session.startDate != null)
-          Row(
-            children: [
-              Icon(
-                Icons.access_time_filled_rounded,
-                size: 16,
-                color: context.appColors.outline,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
-                style: AppTextStyles.labelMd.copyWith(
-                  color: context.appColors.outline,
-                  fontWeight: FontWeight.bold,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.access_time_filled_rounded,
+                  size: 14,
+                  color: Color(0xFF64748B),
                 ),
-              ),
-            ],
-          ),
-        const SizedBox(height: AppSpacing.lg),
-        if (session.description != null && session.description!.isNotEmpty)
-          Text(
-            session.description!,
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.appColors.outline,
+                const SizedBox(width: 6),
+                Text(
+                  '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11.5,
+                  ),
+                ),
+              ],
             ),
           ),
+        if (session.description != null && session.description!.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            session.description!,
+            style: const TextStyle(
+              color: Color(0xFF64748B),
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -179,19 +190,22 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         final isCompleted = item['status'] == 'completed';
         return _buildCardItem(
           title: item['title'] ?? 'Materi',
-          subtitle: item['type'] ?? 'Materi',
+          subtitle: (item['type'] ?? 'Materi').toString().toUpperCase(),
           icon:
               isCompleted
                   ? Icons.check_circle_rounded
                   : Icons.menu_book_rounded,
-          iconColor: isCompleted ? AppColors.success : AppColors.neutral600,
+          iconColor: isCompleted ? const Color(0xFF10B981) : const Color(0xFF2563EB),
           onTap: () async {
+            final fileUrlStr = (item['file_url'] ?? item['url'] ?? '')?.toString().trim();
+            final linkUrlStr = item['link_url']?.toString().trim();
             final mission = Mission(
               id: item['id']?.toString(),
               title: item['title'],
               type: 'material',
               content: item['content'],
-              fileUrl: item['file_url'],
+              fileUrl: (fileUrlStr != null && fileUrlStr.isNotEmpty) ? fileUrlStr : null,
+              linkUrl: (linkUrlStr != null && linkUrlStr.isNotEmpty) ? linkUrlStr : null,
               isCompleted: isCompleted,
             );
             final result = await Navigator.push(
@@ -227,48 +241,41 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         final isCompleted = attemptsUsed > 0;
 
         IconData iconData = Icons.lock_rounded;
-        Color iconColor = AppColors.neutral500;
+        Color iconColor = const Color(0xFF64748B);
         if (isCompleted) {
           iconData = Icons.check_circle_rounded;
-          iconColor = AppColors.success;
+          iconColor = const Color(0xFF10B981);
         } else if (isActive) {
           iconData = Icons.play_circle_fill_rounded;
-          iconColor = AppColors.primary;
+          iconColor = const Color(0xFF7C3AED);
         }
 
         return _buildCardItem(
           title: item['title'] ?? 'Kuis',
           subtitle:
               isCompleted
-                  ? 'Selesai ($attemptsUsed/$maxAttempts)'
-                  : 'Waktu: ${item['duration_minutes'] ?? 0} menit',
+                  ? 'Selesai ($attemptsUsed/$maxAttempts Selesai)'
+                  : 'Durasi: ${item['duration_minutes'] ?? 0} menit',
           icon: iconData,
           iconColor: iconColor,
-          onTap:
-              (isActive &&
-                      (!isCompleted ||
-                          attemptsUsed < maxAttempts ||
-                          maxAttempts == 0))
-                  ? () {
-                    final mission = Mission(
-                      id: item['id']?.toString(),
-                      title: item['title'],
-                      type: 'quiz',
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => QuizScreen(mission: mission),
-                      ),
-                    ).then((_) {
-                      // Refresh when returning from quiz
-                      if (!mounted) return;
-                      context.read<KencanaProvider>().fetchSessionDetails(
-                        session.id,
-                      );
-                    });
-                  }
-                  : null,
+          onTap: () {
+            final mission = Mission(
+              id: item['id']?.toString(),
+              title: item['title'],
+              type: 'quiz',
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => QuizScreen(mission: mission),
+              ),
+            ).then((_) {
+              if (!mounted) return;
+              context.read<KencanaProvider>().fetchSessionDetails(
+                session.id,
+              );
+            });
+          },
         );
       },
       emptyMessage: 'Belum ada kuis untuk sesi ini.',
@@ -289,12 +296,12 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           subtitle:
               item['due_date'] != null
                   ? 'Tenggat: ${_formatDateTime(item['due_date'])}'
-                  : 'Tugas',
+                  : 'Tugas Penugasan',
           icon:
               isSubmitted
                   ? Icons.check_circle_rounded
                   : Icons.upload_file_rounded,
-          iconColor: isSubmitted ? AppColors.success : context.appColors.info,
+          iconColor: isSubmitted ? const Color(0xFF10B981) : const Color(0xFFD97706),
           onTap: () async {
             final result = await Navigator.push(
               context,
@@ -337,36 +344,59 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.primary),
-            const SizedBox(width: AppSpacing.sm),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 16, color: const Color(0xFF0F172A)),
+            ),
+            const SizedBox(width: 8),
             Text(
               title,
-              style: AppTextStyles.titleMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.onSurface,
-                fontSize: 14,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF0F172A),
+                fontSize: 14.5,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${items.length}',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF64748B),
+                ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: 12),
         if (items.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.neutral50,
-              borderRadius: AppRadius.radiusLg,
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Theme.of(
-                  context,
-                ).colorScheme.outlineVariant.withAlpha(50),
+                color: const Color(0xFFE2E8F0),
               ),
             ),
             child: Text(
               emptyMessage,
-              style: AppTextStyles.labelMd.copyWith(
-                color: context.appColors.outline,
+              style: const TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
@@ -374,7 +404,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         else
           ...items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const EdgeInsets.only(bottom: 10),
               child: itemBuilder(item),
             ),
           ),
@@ -393,51 +423,62 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: AppRadius.radiusXl,
-        child: BkuCard(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.lg,
-            horizontal: AppSpacing.md,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 12,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
-                  color: iconColor.withAlpha(20),
-                  borderRadius: AppRadius.radiusMd,
+                  color: iconColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: iconColor, size: 24),
+                child: Icon(icon, color: iconColor, size: 22),
               ),
-              const SizedBox(width: AppSpacing.lg),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: AppTextStyles.labelMd.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.onSurface,
-                        fontSize: 13,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                        fontSize: 13.5,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: 3),
                     Text(
                       subtitle,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                        fontSize: 11,
+                      style: const TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
               if (onTap != null)
-                Icon(
+                const Icon(
                   Icons.chevron_right_rounded,
-                  color: context.appColors.outline,
-                  size: 24,
+                  color: Color(0xFF0F172A),
+                  size: 22,
                 ),
             ],
           ),

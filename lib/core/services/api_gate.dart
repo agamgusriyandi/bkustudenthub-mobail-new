@@ -35,7 +35,7 @@ class ApiGate {
     }
 
     // Default hardcoded URL as requested
-    return 'https://tukang.bkustudenthub.com';
+    return 'https://bkustudenthub.com';
   }
 
   /// Current environment: 'development' or 'production'
@@ -59,6 +59,8 @@ class ApiGate {
     if (path.startsWith('http')) {
       if (path.contains('localhost') ||
           path.contains('127.0.0.1') ||
+          path.startsWith('http://bkustudenthub.com') ||
+          path.startsWith('https://bkustudenthub.com') ||
           path.startsWith('http://tukang.bkustudenthub.com') ||
           path.startsWith('https://tukang.bkustudenthub.com')) {
         final uri = Uri.tryParse(path);

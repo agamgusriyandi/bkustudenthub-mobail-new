@@ -181,7 +181,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 color: AppColors.neutral200,
                                 borderRadius: AppRadius.radiusMd,
                               ),
-                              child: const Icon(Icons.attach_file_rounded, size: 20),
+                              child: Icon(
+                                mat.fileUrl.startsWith('http') && !mat.fileUrl.contains('.pdf') ? Icons.link_rounded : Icons.attach_file_rounded,
+                                size: 20,
+                              ),
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Expanded(
@@ -191,8 +194,12 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                   Text(mat.title, style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 2),
                                   Text(
-                                    mat.fileUrl.isNotEmpty ? mat.fileUrl.split('/').last : 'File Dokumentasi',
+                                    mat.fileUrl.isNotEmpty
+                                        ? (mat.fileUrl.startsWith('http') ? mat.fileUrl : mat.fileUrl.split('/').last)
+                                        : 'File / Tautan Dokumentasi',
                                     style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -203,7 +210,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 color: AppColors.neutral200,
                                 borderRadius: AppRadius.radiusSm,
                               ),
-                              child: Text('FILE', style: AppTextStyles.labelSm.copyWith(fontSize: 8, fontWeight: FontWeight.bold)),
+                              child: Text(
+                                mat.fileUrl.startsWith('http') && !mat.fileUrl.contains('.pdf') ? 'LINK' : 'FILE',
+                                style: AppTextStyles.labelSm.copyWith(fontSize: 8, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),
@@ -226,9 +236,20 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.open_in_new_rounded, size: 12, color: context.appColors.primary),
+                                          Icon(
+                                            mat.fileUrl.startsWith('http') && !mat.fileUrl.contains('.pdf')
+                                                ? Icons.link_rounded
+                                                : Icons.open_in_new_rounded,
+                                            size: 12,
+                                            color: context.appColors.primary,
+                                          ),
                                           const SizedBox(width: 2),
-                                          Text('Buka File', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: context.appColors.primary)),
+                                          Text(
+                                            mat.fileUrl.startsWith('http') && !mat.fileUrl.contains('.pdf')
+                                                ? 'Buka Tautan'
+                                                : 'Buka File',
+                                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: context.appColors.primary),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -505,8 +526,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.onSurface,
-                        foregroundColor: context.appColors.surface,
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -517,26 +538,31 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
                         
-                        String finalFileUrl = urlController.text.trim();
+                        String uploadedFilePath = '';
                         if (selectedFile != null) {
                           setModalState(() => isUploading = true);
                           final uploadedUrl = await provider.uploadMaterialFile(selectedFile!);
                           setModalState(() => isUploading = false);
                           if (uploadedUrl != null) {
-                            finalFileUrl = uploadedUrl;
+                            uploadedFilePath = uploadedUrl;
                           } else {
                             if (context.mounted) AppSnackbar.showError(context, 'Gagal mengupload file');
                             return;
                           }
                         }
                         
+                        final String rawType = jenisMateri.toLowerCase();
+                        final String mappedType = rawType == 'teks' ? 'text' : rawType;
+
                         final success = await provider.createMaterial({
                           'session_id': session.id,
                           'title': titleController.text.trim(),
-                          'description': descController.text.trim(),
-                          'file_url': finalFileUrl,
+                          'type': mappedType,
+                          'content': descController.text.trim(),
+                          'file_url': uploadedFilePath,
+                          'link_url': urlController.text.trim(),
                           'component': component,
-                          'is_mandatory': isMandatory,
+                          'is_required': isMandatory,
                         });
                         if (!context.mounted) return;
                         if (success) {
@@ -801,8 +827,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.onSurface,
-                        foregroundColor: context.appColors.surface,
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -813,7 +839,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
                         
-                        String finalFileUrl = urlController.text.trim();
+                        String finalFileUrl = mat.fileUrl;
                         if (selectedFile != null) {
                           setModalState(() => isUploading = true);
                           final uploadedUrl = await provider.uploadMaterialFile(selectedFile!);
@@ -824,16 +850,19 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             if (context.mounted) AppSnackbar.showError(context, 'Gagal mengupload file');
                             return;
                           }
-                        } else if (finalFileUrl.isEmpty) {
-                          finalFileUrl = mat.fileUrl; // keep the old one if no new file/url is provided
                         }
                         
+                        final String rawType = jenisMateri.toLowerCase();
+                        final String mappedType = rawType == 'teks' ? 'text' : rawType;
+
                         final success = await provider.updateMaterial(mat.id, {
                           'title': titleController.text.trim(),
-                          'description': descController.text.trim(),
+                          'type': mappedType,
+                          'content': descController.text.trim(),
                           'file_url': finalFileUrl,
+                          'link_url': urlController.text.trim(),
                           'component': component,
-                          'is_mandatory': isMandatory,
+                          'is_required': isMandatory,
                         });
                         if (!context.mounted) return;
                         if (success) {
@@ -1325,6 +1354,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
       ),
     );
   }  final Map<int, List<Map<String, dynamic>>> _quizQuestionsCache = {};
+  final Set<int> _deletedQuestionIds = {};
 
   Future<void> _showQuizQuestionsModal(BuildContext context, SessionMaterialItem quiz) async {
     showDialog(
@@ -1333,7 +1363,21 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
       builder: (_) => const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
     );
     final provider = context.read<MentorKencanaProvider>();
-    final questions = await provider.fetchQuizQuestions(quiz.id);
+    final rawQuestions = await provider.fetchQuizQuestions(quiz.id);
+    final questions = rawQuestions.where((q) {
+      final qId = q['id'] != null ? int.tryParse(q['id'].toString()) : null;
+      return qId == null || !_deletedQuestionIds.contains(qId);
+    }).toList();
+
+    if (questions.isNotEmpty) {
+      final newWeight = 100.0 / questions.length;
+      for (var q in questions) {
+        q['weight'] = newWeight;
+        q['score'] = newWeight;
+        q['bobot'] = newWeight;
+      }
+    }
+
     if (!context.mounted) return;
     Navigator.pop(context); // close loading
     _quizQuestionsCache[quiz.id] = questions;
@@ -1384,20 +1428,32 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             quizId: quiz.id,
                             onSave: (newQuestionData) async {
                               final provider = context.read<MentorKencanaProvider>();
-                              final createdQuestion = await provider.createQuizQuestion({
+                              await provider.createQuizQuestion({
                                 'quiz_id': quiz.id,
                                 ...newQuestionData,
                               });
-                              if (createdQuestion != null) {
-                                setModalState(() {
-                                  questionsList.add(createdQuestion);
-                                });
-                                if (!context.mounted) return;
-                                AppSnackbar.showSuccess(context, 'Soal berhasil disimpan');
-                              } else {
-                                if (!context.mounted) return;
-                                AppSnackbar.showError(context, 'Gagal menyimpan soal');
-                              }
+                              final rawList = await provider.fetchQuizQuestions(quiz.id);
+                              final updatedList = rawList.where((q) {
+                                final qId = q['id'] != null ? int.tryParse(q['id'].toString()) : null;
+                                return qId == null || !_deletedQuestionIds.contains(qId);
+                              }).toList();
+                              setModalState(() {
+                                if (updatedList.isNotEmpty) {
+                                  questionsList.clear();
+                                  questionsList.addAll(updatedList);
+                                } else {
+                                  questionsList.add(newQuestionData);
+                                  final newWeight = 100.0 / questionsList.length;
+                                  for (var q in questionsList) {
+                                    q['weight'] = newWeight;
+                                    q['score'] = newWeight;
+                                    q['bobot'] = newWeight;
+                                  }
+                                }
+                              });
+                              _quizQuestionsCache[quiz.id] = List.from(questionsList);
+                              if (!context.mounted) return;
+                              AppSnackbar.showSuccess(context, 'Soal berhasil disimpan');
                             },
                           );
                         },
@@ -1431,6 +1487,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       itemBuilder: (context, idx) {
                         final item = questionsList[idx];
                         final opts = (item['options'] as List<dynamic>?) ?? [];
+                        final rawWeight = double.tryParse((item['weight'] ?? item['score'] ?? item['bobot'] ?? 25).toString()) ?? 25.0;
+                        final weightText = (rawWeight % 1 == 0) ? rawWeight.toInt().toString() : rawWeight.toStringAsFixed(2);
                         return BkuCard(
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(14),
@@ -1454,7 +1512,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(4)),
-                                    child: Text('Bobot: ${item['weight'] ?? item['score'] ?? item['bobot'] ?? 25}', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                    child: Text('Bobot: $weightText', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
                                   ),
                                   const SizedBox(width: 4),
                                   InkWell(
@@ -1465,8 +1523,24 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       initialAnswer: opts.isNotEmpty ? opts.first['option_text'] ?? opts.first['text'] : '',
                                       onSave: (updatedData) async {
                                         final provider = context.read<MentorKencanaProvider>();
-                                        if (item['id'] != null) {
-                                          await provider.updateQuizQuestion(item['id'], updatedData);
+                                        final qId = item['id'] != null ? (int.tryParse(item['id'].toString()) ?? item['id']) : null;
+                                        if (qId is int) {
+                                          final success = await provider.updateQuizQuestion(qId, updatedData);
+                                          if (success) {
+                                            final rawList = await provider.fetchQuizQuestions(quiz.id);
+                                            final updatedList = rawList.where((q) {
+                                              final idVal = q['id'] != null ? int.tryParse(q['id'].toString()) : null;
+                                              return idVal == null || !_deletedQuestionIds.contains(idVal);
+                                            }).toList();
+                                            _quizQuestionsCache[quiz.id] = updatedList;
+                                            setModalState(() {
+                                              questionsList.clear();
+                                              questionsList.addAll(updatedList);
+                                            });
+                                            if (!context.mounted) return;
+                                            AppSnackbar.showSuccess(context, 'Soal berhasil diperbarui');
+                                            return;
+                                          }
                                         }
                                         setModalState(() {
                                           questionsList[idx] = {...item, ...updatedData};
@@ -1485,12 +1559,26 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                   InkWell(
                                     onTap: () async {
                                       final provider = context.read<MentorKencanaProvider>();
-                                      if (item['id'] != null) {
-                                        await provider.deleteQuizQuestion(item['id']);
-                                      }
+                                      final qId = item['id'] != null ? (int.tryParse(item['id'].toString()) ?? item['id']) : null;
+                                      
                                       setModalState(() {
                                         questionsList.removeAt(idx);
+                                        if (questionsList.isNotEmpty) {
+                                          final newWeight = 100.0 / questionsList.length;
+                                          for (var q in questionsList) {
+                                            q['weight'] = newWeight;
+                                            q['score'] = newWeight;
+                                            q['bobot'] = newWeight;
+                                          }
+                                        }
                                       });
+                                      _quizQuestionsCache[quiz.id] = List.from(questionsList);
+
+                                      if (qId is int) {
+                                        _deletedQuestionIds.add(qId);
+                                        provider.deleteQuizQuestion(qId);
+                                      }
+
                                       if (!context.mounted) return;
                                       AppSnackbar.showSuccess(context, 'Soal berhasil dihapus');
                                     },
@@ -1506,6 +1594,22 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               Text(
                                 item['question_text'] ?? item['question'] ?? item['pertanyaan'] ?? '',
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                              ),
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF1F5F9),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                                ),
+                                child: Text(
+                                  (item['question_type'] ?? item['type'] ?? 'multiple_choice').toString().toLowerCase() == 'essay' ||
+                                          (item['question_type'] ?? item['type'] ?? '').toString().toLowerCase().contains('esai')
+                                      ? 'ESAI / TEKS'
+                                      : 'PILIHAN GANDA',
+                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 0.5),
+                                ),
                               ),
                               if (opts.isNotEmpty) ...[
                                 const SizedBox(height: 12),
@@ -1613,58 +1717,84 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     final optionCCtrl = TextEditingController(text: 'Opsi C');
     final optionDCtrl = TextEditingController(text: 'Opsi D');
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(initialQuestion != null ? 'Edit Soal' : 'Buat Soal Baru', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              IconButton(onPressed: () => Navigator.pop(ctx), icon: const Icon(Icons.close, size: 18)),
-            ],
+        builder: (ctx, setDialogState) => Container(
+          decoration: BoxDecoration(
+            color: context.appColors.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          content: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Teks Pertanyaan *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF64748B))),
-                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      initialQuestion != null ? 'Edit Soal' : 'Buat Soal Baru',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF0F172A)),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      icon: const Icon(Icons.close, size: 20, color: Color(0xFF64748B)),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text('Teks Pertanyaan *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))),
+                const SizedBox(height: 6),
                 TextField(
                   controller: questionCtrl,
                   maxLines: 3,
+                  style: const TextStyle(fontSize: 12),
                   decoration: InputDecoration(
                     hintText: 'Masukkan pertanyaan di sini...',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    contentPadding: const EdgeInsets.all(10),
+                    hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    contentPadding: const EdgeInsets.all(12),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Text('Tipe Soal *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF64748B))),
-                const SizedBox(height: 4),
+                const SizedBox(height: 14),
+                const Text('Tipe Soal *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))),
+                const SizedBox(height: 6),
                 DropdownButtonFormField<String>(
                   initialValue: tipeSoal,
                   isExpanded: true,
                   decoration: InputDecoration(
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   ),
                   items: const [
-                    DropdownMenuItem(value: 'Pilihan Ganda', child: Text('Pilihan Ganda', style: TextStyle(fontSize: 11))),
-                    DropdownMenuItem(value: 'Esai', child: Text('Esai / Teks Pendek', style: TextStyle(fontSize: 11))),
+                    DropdownMenuItem(value: 'Pilihan Ganda', child: Text('Pilihan Ganda', style: TextStyle(fontSize: 12))),
+                    DropdownMenuItem(value: 'Esai', child: Text('Esai / Teks Pendek', style: TextStyle(fontSize: 12))),
                   ],
                   onChanged: (val) {
                     if (val != null) setDialogState(() => tipeSoal = val);
                   },
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 if (tipeSoal == 'Pilihan Ganda') ...[
                   Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFE2E8F0))),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1672,98 +1802,107 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text('OPSI JAWABAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF64748B))),
-                            InkWell(
-                              onTap: () => AppSnackbar.showWarning(context, 'Pilihan ganda menggunakan 4 opsi (A, B, C, D)'),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFE2E8F0),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Text('4 Opsi (A - D)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE2E8F0),
+                                borderRadius: BorderRadius.circular(6),
                               ),
+                              child: const Text('4 Opsi (A - D)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         _buildOptionInputRow(0, selectedCorrectOption, optionACtrl, (idx) => setDialogState(() => selectedCorrectOption = idx)),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         _buildOptionInputRow(1, selectedCorrectOption, optionBCtrl, (idx) => setDialogState(() => selectedCorrectOption = idx)),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         _buildOptionInputRow(2, selectedCorrectOption, optionCCtrl, (idx) => setDialogState(() => selectedCorrectOption = idx)),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         _buildOptionInputRow(3, selectedCorrectOption, optionDCtrl, (idx) => setDialogState(() => selectedCorrectOption = idx)),
                       ],
                     ),
                   ),
                 ],
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0F172A),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          if (questionCtrl.text.trim().isEmpty) return;
+                          final newQuestionData = {
+                            'id': DateTime.now().millisecondsSinceEpoch,
+                            'quiz_id': quizId,
+                            'question': questionCtrl.text.trim(),
+                            'pertanyaan': questionCtrl.text.trim(),
+                            'question_text': questionCtrl.text.trim(),
+                            'question_type': tipeSoal == 'Pilihan Ganda' ? 'multiple_choice' : 'essay',
+                            'type': tipeSoal,
+                            'weight': 25,
+                            'score': 25,
+                            'bobot': 25,
+                            'options': tipeSoal == 'Pilihan Ganda'
+                                ? [
+                                    {
+                                      'label': 'A',
+                                      'text': optionACtrl.text.trim(),
+                                      'option_text': optionACtrl.text.trim(),
+                                      'is_correct': selectedCorrectOption == 0,
+                                      'is_answer': selectedCorrectOption == 0 ? 1 : 0,
+                                    },
+                                    {
+                                      'label': 'B',
+                                      'text': optionBCtrl.text.trim(),
+                                      'option_text': optionBCtrl.text.trim(),
+                                      'is_correct': selectedCorrectOption == 1,
+                                      'is_answer': selectedCorrectOption == 1 ? 1 : 0,
+                                    },
+                                    {
+                                      'label': 'C',
+                                      'text': optionCCtrl.text.trim(),
+                                      'option_text': optionCCtrl.text.trim(),
+                                      'is_correct': selectedCorrectOption == 2,
+                                      'is_answer': selectedCorrectOption == 2 ? 1 : 0,
+                                    },
+                                    {
+                                      'label': 'D',
+                                      'text': optionDCtrl.text.trim(),
+                                      'option_text': optionDCtrl.text.trim(),
+                                      'is_correct': selectedCorrectOption == 3,
+                                      'is_answer': selectedCorrectOption == 3 ? 1 : 0,
+                                    },
+                                  ]
+                                : [],
+                          };
+                          Navigator.pop(ctx);
+                          onSave(newQuestionData);
+                        },
+                        child: const Text('Simpan Soal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.appColors.onSurface,
-                foregroundColor: context.appColors.surface,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                elevation: 0,
-              ),
-              onPressed: () {
-                if (questionCtrl.text.trim().isEmpty) return;
-                final newQuestionData = {
-                  'id': DateTime.now().millisecondsSinceEpoch,
-                  'quiz_id': quizId,
-                  'question': questionCtrl.text.trim(),
-                  'pertanyaan': questionCtrl.text.trim(),
-                  'question_text': questionCtrl.text.trim(),
-                  'question_type': tipeSoal == 'Pilihan Ganda' ? 'multiple_choice' : 'essay',
-                  'type': tipeSoal,
-                  'weight': 25,
-                  'score': 25,
-                  'bobot': 25,
-                  'options': tipeSoal == 'Pilihan Ganda'
-                      ? [
-                          {
-                            'label': 'A',
-                            'text': optionACtrl.text.trim(),
-                            'option_text': optionACtrl.text.trim(),
-                            'is_correct': selectedCorrectOption == 0,
-                            'is_answer': selectedCorrectOption == 0 ? 1 : 0,
-                          },
-                          {
-                            'label': 'B',
-                            'text': optionBCtrl.text.trim(),
-                            'option_text': optionBCtrl.text.trim(),
-                            'is_correct': selectedCorrectOption == 1,
-                            'is_answer': selectedCorrectOption == 1 ? 1 : 0,
-                          },
-                          {
-                            'label': 'C',
-                            'text': optionCCtrl.text.trim(),
-                            'option_text': optionCCtrl.text.trim(),
-                            'is_correct': selectedCorrectOption == 2,
-                            'is_answer': selectedCorrectOption == 2 ? 1 : 0,
-                          },
-                          {
-                            'label': 'D',
-                            'text': optionDCtrl.text.trim(),
-                            'option_text': optionDCtrl.text.trim(),
-                            'is_correct': selectedCorrectOption == 3,
-                            'is_answer': selectedCorrectOption == 3 ? 1 : 0,
-                          },
-                        ]
-                      : [],
-                };
-                Navigator.pop(ctx);
-                onSave(newQuestionData);
-              },
-              child: const Text('Simpan Soal'),
-            ),
-          ],
         ),
       ),
     );
@@ -2600,6 +2739,56 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             ],
                           ),
                           const SizedBox(height: AppSpacing.md),
+
+                          if (item.materials.isNotEmpty || item.quizzes.isNotEmpty || item.assignments.isNotEmpty) ...[
+                            Container(
+                              padding: const EdgeInsets.all(AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                color: context.appColors.surface,
+                                borderRadius: AppRadius.radiusSm,
+                                border: Border.all(color: context.appColors.outline.withAlpha(20)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (item.materials.isNotEmpty)
+                                    ...item.materials.map((m) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 2),
+                                      child: Row(
+                                        children: [
+                                          Container(width: 4, height: 4, decoration: const BoxDecoration(color: AppColors.info, shape: BoxShape.circle)),
+                                          const SizedBox(width: 6),
+                                          Expanded(child: Text(m.title, style: AppTextStyles.labelSm.copyWith(fontSize: 10, color: AppColors.neutral700), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                        ],
+                                      ),
+                                    )),
+                                  if (item.quizzes.isNotEmpty)
+                                    ...item.quizzes.map((q) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 2),
+                                      child: Row(
+                                        children: [
+                                          Container(width: 4, height: 4, decoration: const BoxDecoration(color: AppColors.warning, shape: BoxShape.circle)),
+                                          const SizedBox(width: 6),
+                                          Expanded(child: Text(q.title, style: AppTextStyles.labelSm.copyWith(fontSize: 10, color: AppColors.neutral700), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                        ],
+                                      ),
+                                    )),
+                                  if (item.assignments.isNotEmpty)
+                                    ...item.assignments.map((a) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 2),
+                                      child: Row(
+                                        children: [
+                                          Container(width: 4, height: 4, decoration: const BoxDecoration(color: AppColors.secondary, shape: BoxShape.circle)),
+                                          const SizedBox(width: 6),
+                                          Expanded(child: Text(a.title, style: AppTextStyles.labelSm.copyWith(fontSize: 10, color: AppColors.neutral700), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                        ],
+                                      ),
+                                    )),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                          ],
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

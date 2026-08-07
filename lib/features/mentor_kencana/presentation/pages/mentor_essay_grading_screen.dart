@@ -50,6 +50,18 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
       allQuizzes.addAll(mat.quizzes);
     }
 
+    int totalPending = 0;
+    int totalGraded = 0;
+    if (_selectedQuizId != null && !provider.isLoading) {
+      for (final item in provider.essayItems) {
+        if (item.status == 'graded' || item.score != null) {
+          totalGraded++;
+        } else {
+          totalPending++;
+        }
+      }
+    }
+
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
@@ -156,6 +168,78 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                 ),
               ),
             ),
+
+            if (_selectedQuizId != null && !provider.isLoading && provider.essayItems.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, bottom: AppSpacing.lg),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: context.appColors.surface,
+                            borderRadius: AppRadius.radiusLg,
+                            border: Border.all(color: context.appColors.outline.withAlpha(40)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                totalPending.toString(),
+                                style: AppTextStyles.titleLg.copyWith(
+                                  color: context.appColors.warning,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Belum Dinilai',
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: context.appColors.outline,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: context.appColors.surface,
+                            borderRadius: AppRadius.radiusLg,
+                            border: Border.all(color: context.appColors.outline.withAlpha(40)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                totalGraded.toString(),
+                                style: AppTextStyles.titleLg.copyWith(
+                                  color: context.appColors.success,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Sudah Dinilai',
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: context.appColors.outline,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             if (provider.isLoading && provider.essayItems.isEmpty)
               const SliverFillRemaining(

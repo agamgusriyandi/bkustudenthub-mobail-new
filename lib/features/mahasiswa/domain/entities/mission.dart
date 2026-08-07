@@ -10,6 +10,7 @@ class Mission {
   final String? type;
   final String? content;
   final String? fileUrl;
+  final String? linkUrl;
   int score;
   bool isCompleted;
 
@@ -23,6 +24,7 @@ class Mission {
     this.type,
     this.content,
     this.fileUrl,
+    this.linkUrl,
     this.score = 0,
     this.isCompleted = false,
   });

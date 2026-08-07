@@ -650,12 +650,20 @@ class MentorGroup {
   final String name;
   final int memberCount;
   final String createdAt;
+  final String groupNumber;
+  final String code;
+  final String status;
+  final int capacity;
 
   MentorGroup({
     required this.id,
     required this.name,
     required this.memberCount,
     required this.createdAt,
+    this.groupNumber = '',
+    this.code = '',
+    this.status = 'Aktif',
+    this.capacity = 40,
   });
 
   factory MentorGroup.fromJson(Map<String, dynamic> json) {
@@ -664,7 +672,7 @@ class MentorGroup {
         json['mentees'] ??
         json['mahasiswa'] ??
         json['member_count_list'];
-    int count = json['member_count'] ?? json['jumlah_anggota'] ?? 0;
+    int count = json['member_count'] ?? json['jumlah_anggota'] ?? json['members_count'] ?? 0;
     if (count == 0 && memberList is List) {
       count = memberList.length;
     }
@@ -678,11 +686,11 @@ class MentorGroup {
           json['Nama'] ??
           '',
       memberCount: count,
-      createdAt:
-          json['created_at'] ??
-          json['createdAt'] ??
-          json['tanggal_dibuat'] ??
-          '',
+      createdAt: json['created_at'] ?? '',
+      groupNumber: json['group_number']?.toString() ?? json['nomor_kelompok']?.toString() ?? '',
+      code: json['code']?.toString() ?? json['kode']?.toString() ?? '',
+      status: json['status']?.toString() ?? 'Aktif',
+      capacity: json['capacity'] ?? json['kapasitas'] ?? 40,
     );
   }
 }

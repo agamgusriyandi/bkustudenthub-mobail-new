@@ -486,30 +486,98 @@ class _QuizScreenState extends State<QuizScreen> {
   void _showExitDialog() {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => Dialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          'Keluar Kuis?',
-          style: AppTextStyles.titleMd.copyWith(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Waktu akan terus berjalan jika Anda keluar. Anda yakin ingin kembali?',
-          style: AppTextStyles.bodySm.copyWith(color: Colors.grey.shade700),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Batal', style: AppTextStyles.labelLg.copyWith(color: Colors.grey.shade600)),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF2F2),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFFEE2E2), width: 2),
+                ),
+                child: const Icon(
+                  Icons.warning_amber_rounded,
+                  color: Color(0xFFEF4444),
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Keluar Ujian?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Waktu pengerjaan akan terus berjalan jika Anda keluar. Yakin ingin meninggalkan kuis ini?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: Color(0xFF64748B),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text(
+                        'Lanjutkan',
+                        style: TextStyle(
+                          color: Color(0xFF64748B),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFEF4444),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Ya, Keluar',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              Navigator.pop(context);
-            },
-            child: Text('Ya, Keluar', style: AppTextStyles.labelLg.copyWith(color: Colors.red)),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -518,25 +586,143 @@ class _QuizScreenState extends State<QuizScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => Dialog(
         backgroundColor: Colors.white,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        contentPadding: const EdgeInsets.all(AppSpacing.xxl),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.fact_check_outlined, color: Colors.blue, size: 40),
-            const SizedBox(height: AppSpacing.xl),
-            Text('Mulai $_quizTitle?', style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: AppSpacing.xl),
-            Row(
-              children: [
-                Expanded(child: TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal'))),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(child: BkuButton(text: 'Mulai', onPressed: () { Navigator.pop(ctx); _startKuis(); })),
-              ],
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFF6FF),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFDBEAFE), width: 2),
+                ),
+                child: const Icon(
+                  Icons.assignment_turned_in_rounded,
+                  color: Color(0xFF2563EB),
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Mulai $_quizTitle?',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 17.5,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Pastikan koneksi internet Anda lancar. Waktu pengerjaan akan langsung berjalan secara otomatis setelah Anda menekan tombol Mulai.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: Color(0xFF64748B),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.timer_outlined, size: 16, color: Color(0xFF2563EB)),
+                        const SizedBox(width: 6),
+                        Text(
+                          '$_durasiMenit Menit',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(width: 1, height: 16, color: const Color(0xFFCBD5E1)),
+                    Row(
+                      children: [
+                        const Icon(Icons.help_outline_rounded, size: 16, color: Color(0xFF7C3AED)),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${_questions.length} Soal',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(
+                          color: Color(0xFF64748B),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2563EB),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        _startKuis();
+                      },
+                      child: const Text(
+                        'Mulai Ujian',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -611,8 +797,8 @@ class _QuizScreenState extends State<QuizScreen> {
     final skor = _nilaiAkhir.toStringAsFixed(0);
     
     final color = isPending ? Colors.orange : (lulus ? context.appColors.success : context.appColors.error);
-    final icon = isPending ? Icons.more_horiz : (lulus ? Icons.check_circle_outline : Icons.cancel_outlined);
-    final title = isPending ? 'Menunggu Penilaian Essay' : (lulus ? 'Selamat!' : 'Oops!');
+    final icon = isPending ? Icons.pending_actions_rounded : (lulus ? Icons.verified_rounded : Icons.cancel_rounded);
+    final title = isPending ? 'Menunggu Penilaian' : (lulus ? 'Selamat!' : 'Oops!');
     final subtitle = isPending
         ? 'Jawaban Anda sedang menunggu penilaian oleh fasilitator.'
         : (lulus
@@ -622,157 +808,213 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           const BkuAppBar(
             title: 'Hasil Kuis',
             variant: AppBarVariant.student,
             showBackButton: true,
+            isExpandable: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeOutCubic,
+                tween: Tween(begin: 0.0, end: 1.0),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: 0.95 + (0.05 * value),
+                    child: Opacity(
+                      opacity: value.clamp(0.0, 1.0),
+                      child: child,
                     ),
-                    child: Icon(icon, color: color, size: 40),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    title,
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    subtitle,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: context.appColors.outline,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  if (isPending) ...[
+                  );
+                },
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSpacing.md),
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
-                        color: Colors.orange.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.info_outline, color: Colors.orange.shade800),
-                          const SizedBox(width: AppSpacing.md),
-                          Expanded(
-                            child: Text(
-                              'Kuis ini mengandung soal essay yang memerlukan penilaian manual oleh fasilitator. Hasil akhir dan nilai Anda akan muncul setelah dinilai.',
-                              style: AppTextStyles.bodySm.copyWith(
-                                color: Colors.orange.shade900,
-                                height: 1.5,
-                              ),
-                            ),
+                        color: color.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.3),
+                            blurRadius: 30,
+                            spreadRadius: 2,
                           ),
                         ],
                       ),
+                      child: Icon(icon, color: color, size: 54),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(20),
+                    Text(
+                      title,
+                      style: AppTextStyles.display.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: context.appColors.onSurface,
+                        letterSpacing: -0.5,
                       ),
-                      child: Text(
-                        'MENUNGGU KONFIRMASI',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      subtitle,
+                      style: AppTextStyles.bodyLg.copyWith(
+                        color: context.appColors.outline,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.xxxl),
+                    if (isPending) ...[
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(Icons.history_rounded, color: Colors.orange.shade800, size: 20),
+                                ),
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: Text(
+                                    'Kuis ini mengandung soal essay yang memerlukan penilaian manual oleh fasilitator.',
+                                    style: AppTextStyles.bodyMd.copyWith(
+                                      color: Colors.orange.shade900,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(AppRadius.lg),
+                              ),
+                              child: Text(
+                                'STATUS: MENUNGGU KONFIRMASI',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.labelMd.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ] else ...[
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: color.withValues(alpha: 0.2)),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Nilai Anda',
-                            style: AppTextStyles.labelLg.copyWith(
-                              color: context.appColors.outline,
+                    ] else ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxl, horizontal: AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: context.appColors.surface,
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          border: Border.all(color: AppColors.neutral200),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.neutral900.withValues(alpha: 0.06),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            skor,
-                            style: AppTextStyles.display.copyWith(
-                              color: color,
-                              fontWeight: FontWeight.bold,
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'NILAI AKHIR',
+                              style: AppTextStyles.labelMd.copyWith(
+                                color: context.appColors.outlineVariant,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-                          const Divider(),
-                          const SizedBox(height: AppSpacing.xl),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildResultStat(
-                                '$_jumlahBenar',
-                                'Benar',
-                                Icons.check_circle_outline,
-                                context.appColors.success,
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              skor,
+                              style: AppTextStyles.display.copyWith(
+                                color: color,
+                                fontSize: 72,
+                                fontWeight: FontWeight.w900,
+                                height: 1.0,
                               ),
-                              _buildResultStat(
-                                '$_jumlahSalah',
-                                'Salah',
-                                Icons.cancel_outlined,
-                                context.appColors.error,
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(height: AppSpacing.xxxl),
+                            Container(height: 1, color: AppColors.neutral100),
+                            const SizedBox(height: AppSpacing.xl),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildResultStat(
+                                    '$_jumlahBenar',
+                                    'Jawaban Benar',
+                                    Icons.check_circle_rounded,
+                                    context.appColors.success,
+                                  ),
+                                ),
+                                Container(width: 1, height: 50, color: AppColors.neutral100),
+                                Expanded(
+                                  child: _buildResultStat(
+                                    '$_jumlahSalah',
+                                    'Jawaban Salah',
+                                    Icons.cancel_rounded,
+                                    context.appColors.error,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                  const SizedBox(height: AppSpacing.xxxl),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: BkuButton(
-                      text: 'Kembali ke Beranda',
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (!isPending && !lulus && _attemptsUsed < _maxAttempts)
+                    ],
+                    const SizedBox(height: AppSpacing.xxxl),
                     SizedBox(
                       width: double.infinity,
                       height: 56,
                       child: BkuButton(
-                        text: 'Ulangi Kuis',
-                        onPressed: () {
-                          setState(() {
-                            _isFinished = false;
-                            _hasStarted = false;
-                          });
-                          _loadSoal();
-                        },
-                        variant: BkuButtonVariant.secondary,
+                        text: 'Kembali ke Beranda',
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ),
-                ],
+                    const SizedBox(height: AppSpacing.lg),
+                    if (!isPending && !lulus && _attemptsUsed < _maxAttempts)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: BkuButton(
+                          text: 'Ulangi Kuis',
+                          onPressed: () {
+                            setState(() {
+                              _isFinished = false;
+                              _hasStarted = false;
+                            });
+                            _loadSoal();
+                          },
+                          variant: BkuButtonVariant.secondary,
+                        ),
+                      ),
+                    const SizedBox(height: AppSpacing.xxl),
+                  ],
+                ),
               ),
             ),
           ),
@@ -789,24 +1031,23 @@ class _QuizScreenState extends State<QuizScreen> {
   ) {
     return Column(
       children: [
-        Icon(icon, color: color, size: 22),
-        const SizedBox(height: AppSpacing.xs),
+        Icon(icon, color: color, size: 28),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           value,
           style: AppTextStyles.titleLg.copyWith(
             fontWeight: FontWeight.w900,
-            fontSize: 20,
+            fontSize: 24,
             color: color,
           ),
         ),
-        const SizedBox(height: AppSpacing.s2),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           label,
           textAlign: TextAlign.center,
           style: AppTextStyles.labelSm.copyWith(
             color: context.appColors.outline,
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

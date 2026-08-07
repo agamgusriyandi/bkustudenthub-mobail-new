@@ -6,6 +6,9 @@ class KencanaPeriod {
   final String? startDate;
   final String? endDate;
 
+  final double universityWeight;
+  final double facultyWeight;
+
   KencanaPeriod({
     required this.id,
     required this.name,
@@ -13,6 +16,8 @@ class KencanaPeriod {
     this.description,
     this.startDate,
     this.endDate,
+    this.universityWeight = 50.0,
+    this.facultyWeight = 50.0,
   });
 
   factory KencanaPeriod.fromJson(Map<String, dynamic> json) {
@@ -23,6 +28,8 @@ class KencanaPeriod {
       description: json['description'],
       startDate: json['start_date'],
       endDate: json['end_date'],
+      universityWeight: (json['university_weight'] ?? 50).toDouble(),
+      facultyWeight: (json['faculty_weight'] ?? 50).toDouble(),
     );
   }
 }

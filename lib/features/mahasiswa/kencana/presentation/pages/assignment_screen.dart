@@ -115,7 +115,10 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
         _isFileUploading = true;
       });
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(file.path!),
+        'file': await MultipartFile.fromFile(
+          file.path!,
+          filename: file.name,
+        ),
       });
 
       final response = await ApiClient().client.post(
@@ -385,9 +388,10 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           if (!isSubmitted)
             BkuButton(
               onPressed: _submitAssignment,
-              text: 'Kumpulkan Tugas',
+              text: _submissionData != null && _submissionData!['status'] != null ? 'Update Tugas' : 'Kumpulkan Tugas',
               isLoading: _isSubmitting || _isFileUploading,
               variant: BkuButtonVariant.primary,
+              customBgColor: _submissionData != null && _submissionData!['status'] != null ? AppColors.warning : null,
             ),
         ],
       ),

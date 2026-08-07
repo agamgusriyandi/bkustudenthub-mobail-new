@@ -31,6 +31,12 @@ class MentorServiceMenu extends StatelessWidget {
         'onTap': () => context.go('/mentor-kencana?tab=3'),
       },
       {
+        'title': 'Nilai\nEssay',
+        'icon': Icons.rate_review_rounded,
+        'color': const Color(0xFF06B6D4),
+        'onTap': () => context.push(AppRoutes.mentorEssayGrading),
+      },
+      {
         'title': 'Izin\nPresensi',
         'icon': Icons.edit_note_rounded,
         'color': const Color(0xFFF43F5E),

@@ -1266,7 +1266,6 @@ class MentorKencanaProvider extends ChangeNotifier {
     }
   }
 
-  // --- Create/Update/Delete Material ---
   Future<String?> uploadMaterialFile(PlatformFile file) async {
     try {
       final formData = FormData.fromMap({
@@ -1277,10 +1276,15 @@ class MentorKencanaProvider extends ChangeNotifier {
       });
       final response = await _apiClient.client.post('/kencana-mentor/materials/upload', data: formData);
       if (response.data != null && response.data['success'] == true) {
+        final dataMap = response.data['data'];
+        if (dataMap is Map) {
+          return dataMap['url']?.toString() ?? response.data['url']?.toString();
+        }
         return response.data['url']?.toString();
       }
       return null;
     } catch (e) {
+      debugPrint("ERROR uploadMaterialFile: $e");
       return null;
     }
   }
@@ -1383,15 +1387,12 @@ class MentorKencanaProvider extends ChangeNotifier {
     return [];
   }
 
-  Future<Map<String, dynamic>?> createQuizQuestion(Map<String, dynamic> data) async {
+  Future<bool> createQuizQuestion(Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.client.post('/kencana-mentor/questions', data: data);
-      if (response.data['success'] == true) {
-        return response.data['data'] as Map<String, dynamic>?;
-      }
-      return null;
+      return response.data['success'] == true;
     } catch (e) {
-      return null;
+      return false;
     }
   }
 

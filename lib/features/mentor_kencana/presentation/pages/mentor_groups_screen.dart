@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class MentorGroupsScreen extends StatefulWidget {
   const MentorGroupsScreen({super.key});
@@ -80,77 +79,224 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                   horizontal: AppSpacing.xl,
                   vertical: AppSpacing.xl,
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final group = provider.mentorGroups[index];
-                    return BkuCard(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: InkWell(
-                        onTap: () {
-                          context.push('/mentor-kencana/groups/${group.id}');
-                        },
-                        borderRadius: AppRadius.radiusXl,
+                sliver: SliverList.list(
+                  children: [
+                      const SizedBox(height: AppSpacing.md),
+                      // Search Bar Placeholder
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: context.appColors.surface,
+                          borderRadius: AppRadius.radiusLg,
+                          border: Border.all(color: context.appColors.outlineVariant),
+                        ),
                         child: Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              decoration: BoxDecoration(
-                                color: [
-                                  context.appColors.info,
-                                  context.appColors.success,
-                                  context.appColors.warning,
-                                  AppColors.neutral700,
-                                  context.appColors.info,
-                                  context.appColors.info,
-                                ][index % 6].withAlpha(15),
-                                borderRadius: AppRadius.radiusLg,
-                              ),
-                              child: Icon(
-                                Icons.groups_rounded,
-                                color: [
-                                  context.appColors.info,
-                                  context.appColors.success,
-                                  context.appColors.warning,
-                                  AppColors.neutral700,
-                                  context.appColors.info,
-                                  context.appColors.info,
-                                ][index % 6],
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.lg),
+                            Icon(Icons.search_rounded, color: context.appColors.outline, size: 20),
+                            const SizedBox(width: AppSpacing.sm),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    group.name,
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.xs),
-                                  Text(
-                                    '${group.memberCount} Mahasiswa',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: context.appColors.outline,
-                                    ),
-                                  ),
-                                ],
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Cari nama/kode kelompok...',
+                                  hintStyle: AppTextStyles.labelMd.copyWith(color: context.appColors.outline),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                ),
+                                style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600),
+                                onChanged: (value) {
+                                  // Add search filtering logic if needed locally,
+                                  // or implement fetching with query
+                                },
                               ),
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: context.appColors.outline,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  }, childCount: provider.mentorGroups.length),
+                      const SizedBox(height: AppSpacing.xl),
+                      ...provider.mentorGroups.map((group) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                          padding: const EdgeInsets.all(AppSpacing.xl),
+                          decoration: BoxDecoration(
+                            color: context.appColors.surface,
+                            borderRadius: AppRadius.radiusXl,
+                            border: Border.all(color: context.appColors.outlineVariant),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'KELOMPOK ${group.groupNumber.isEmpty ? '-' : group.groupNumber} • ${group.code.isEmpty ? 'Tanpa Kode' : group.code}',
+                                          style: AppTextStyles.labelSm.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: context.appColors.outline,
+                                            letterSpacing: 1.2,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          group.name,
+                                          style: AppTextStyles.titleMd.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: context.appColors.primary.withAlpha(25),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: context.appColors.primary.withAlpha(50)),
+                                    ),
+                                    child: Text(
+                                      group.status.toUpperCase(),
+                                      style: AppTextStyles.labelSm.copyWith(
+                                        color: context.appColors.primary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(AppSpacing.md),
+                                      decoration: BoxDecoration(
+                                        color: context.appColors.surface,
+                                        borderRadius: AppRadius.radiusLg,
+                                        border: Border.all(color: context.appColors.outlineVariant),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${group.memberCount}',
+                                            style: AppTextStyles.titleLg.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Anggota',
+                                            style: AppTextStyles.labelSm.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: context.appColors.outline,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(AppSpacing.md),
+                                      decoration: BoxDecoration(
+                                        color: context.appColors.surface,
+                                        borderRadius: AppRadius.radiusLg,
+                                        border: Border.all(color: context.appColors.outlineVariant),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${group.capacity}',
+                                            style: AppTextStyles.titleLg.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Kapasitas',
+                                            style: AppTextStyles.labelSm.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: context.appColors.outline,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        context.push('/mentor-kencana/groups/${group.id}');
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: context.appColors.primary,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: AppRadius.radiusLg,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                      child: Text(
+                                        'Kelola Anggota',
+                                        style: AppTextStyles.labelMd.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.sm),
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      onPressed: () {
+                                        // TODO: Implement PDF download
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Fitur unduh PDF belum tersedia di mobile.')),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.download_rounded, size: 16),
+                                      label: Text(
+                                        'PDF Rekap',
+                                        style: AppTextStyles.labelMd.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: context.appColors.primary,
+                                        side: BorderSide(color: context.appColors.outlineVariant),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: AppRadius.radiusLg,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: AppSpacing.xxl),
+                    ],
+                  ),
                 ),
-              ),
           ],
         ),
       ),

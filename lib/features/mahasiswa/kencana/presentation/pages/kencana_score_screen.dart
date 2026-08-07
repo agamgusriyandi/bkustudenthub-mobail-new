@@ -89,7 +89,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                   delegate: SliverChildListDelegate([
                     _buildSummaryCard(dashboard),
                     const SizedBox(height: AppSpacing.xl),
-                    if (certificates != null) _buildCertificateSection(certificates),
+                    if (_hasCertificate(certificates)) _buildCertificateSection(certificates!),
                     _buildSegmentedTab(),
                     const SizedBox(height: AppSpacing.lg),
                     _buildTabContent(dashboard),
@@ -110,34 +110,34 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     
     // Total final score (e.g. 82.7)
     final finalScore = double.tryParse(score['final_score']?.toString() ?? '') ??
-        dashboard?.temporaryFinalScore ?? 82.7;
+        dashboard?.temporaryFinalScore ?? 0.0;
         
-    final status = score['graduation_status'] ?? dashboard?.graduationStatus ?? 'passed';
+    final status = score['graduation_status'] ?? dashboard?.graduationStatus ?? 'not_eligible';
 
-    String statusText = 'LULUS';
+    String statusText = 'BELUM MEMENUHI SYARAT';
+    Color statusColor = context.appColors.error;
     if (status == 'passed' || status == 'lulus') {
       statusText = 'LULUS';
-    } else if (status == 'in_progress') {
+      statusColor = themeProvider.success;
+    } else if (status == 'in_progress' || status == 'ready') {
       statusText = 'IN PROGRESS';
-    } else if (status == 'failed' || status == 'tidak_lulus') {
-      statusText = 'TIDAK LULUS';
+      statusColor = AppColors.warning;
+    } else if (status == 'conditional_pass') {
+      statusText = 'LULUS BERSYARAT';
+      statusColor = AppColors.warning;
+    } else {
+      statusText = 'BELUM MEMENUHI SYARAT';
+      statusColor = context.appColors.error;
     }
 
-    // Extract scoreUniv (84.4)
-    final double scoreUnivVal = (double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ??
-        (dashboard?.scoreUniv?['final_score'] != null &&
-                (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ?? 0) != finalScore
-            ? double.tryParse(dashboard!.scoreUniv!['final_score'].toString())
-            : null) ??
-        84.4);
+    // Extract scoreUniv & scoreFak directly from score object (or dashboard fallback)
+    final double scoreUnivVal = (double.tryParse(score['final_score_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ??
+        0.0);
 
-    // Extract scoreFak (81.0)
-    final double scoreFakVal = (double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ??
-        (dashboard?.scoreFakultas?['final_score'] != null &&
-                (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ?? 0) != finalScore
-            ? double.tryParse(dashboard!.scoreFakultas!['final_score'].toString())
-            : null) ??
-        81.0);
+    final double scoreFakVal = (double.tryParse(score['final_score_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ??
+        0.0);
 
     return GridView.count(
       padding: EdgeInsets.zero,
@@ -160,7 +160,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           statusText == 'LULUS'
               ? Icons.verified_rounded
               : Icons.pending_actions_rounded,
-          statusText == 'LULUS' ? themeProvider.success : AppColors.warning,
+          statusText == 'LULUS' ? themeProvider.success : statusColor,
         ),
         _buildStatGridItem(
           'Nilai Univ',
@@ -293,33 +293,44 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
   }
 
   Widget _buildUnivBreakdown(KencanaDashboardData? dashboard) {
-    final univScore = dashboard?.scoreUniv ?? data?['score_univ'] ?? {};
-    final kognitif = (double.tryParse(univScore['cognitive_score']?.toString() ?? '') ?? 60.0);
-    final psikomotor = (double.tryParse(univScore['psychomotor_score']?.toString() ?? '') ?? 98.1);
-    final afektif = (double.tryParse(univScore['affective_score']?.toString() ?? '') ?? 87.6);
-    
-    final rawUniv = (double.tryParse(univScore['final_score_univ']?.toString() ?? '') ??
-        (double.tryParse(univScore['final_score']?.toString() ?? '') != null &&
-                (double.tryParse(univScore['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
-            ? double.tryParse(univScore['final_score'].toString())
-            : null) ??
-        84.4);
+    final scoreObj = data?['score'] ?? {};
+    final weights = data?['weights'] ?? dashboard?.weights ?? {};
+    final cogWeightPercent = (double.tryParse(weights['cognitive']?.toString() ?? '') ?? double.tryParse(weights['kognitif']?.toString() ?? '') ?? 25.0).toInt();
+    final psiWeightPercent = (double.tryParse(weights['psychomotor']?.toString() ?? '') ?? double.tryParse(weights['psikomotor']?.toString() ?? '') ?? 35.0).toInt();
+    final afekWeightPercent = (double.tryParse(weights['affective']?.toString() ?? '') ?? double.tryParse(weights['afektif']?.toString() ?? '') ?? 40.0).toInt();
 
-    final psiWeight = (psikomotor == 98.1) ? 34.35 : (psikomotor * 0.35);
+    final kognitif = (double.tryParse(scoreObj['cognitive_average_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['cognitive_average']?.toString() ?? '') ?? 0.0);
+    final psikomotor = (double.tryParse(scoreObj['psychomotor_average_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['psychomotor_average']?.toString() ?? '') ?? 0.0);
+    final afektif = (double.tryParse(scoreObj['affective_average_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['affective_average']?.toString() ?? '') ?? 0.0);
+
+    final kogWeight = (double.tryParse(scoreObj['cognitive_weighted_univ']?.toString() ?? '') ?? (kognitif * (cogWeightPercent / 100)));
+    final psiWeight = (double.tryParse(scoreObj['psychomotor_weighted_univ']?.toString() ?? '') ?? (psikomotor * (psiWeightPercent / 100)));
+    final afekWeight = (double.tryParse(scoreObj['affective_weighted_univ']?.toString() ?? '') ?? (afektif * (afekWeightPercent / 100)));
+
+    final rawUniv = (double.tryParse(scoreObj['final_score_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ?? 0.0);
+
+    final statusUniv = scoreObj['graduation_status_univ'] ?? dashboard?.scoreUniv?['graduation_status'] ?? 'not_eligible';
+    final isUnivPassed = statusUniv == 'passed' || statusUniv == 'lulus';
+    final statusUnivText = isUnivPassed ? 'LULUS' : 'BELUM MEMENUHI SYARAT';
+    final statusUnivColor = isUnivPassed ? AppColors.success : context.appColors.error;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildComponentCard('KOGNITIF UNIV', kognitif, 25, (kognitif * 0.25), Icons.psychology_rounded, AppColors.info),
-        _buildComponentCard('PSIKOMOTOR UNIV', psikomotor, 35, psiWeight, Icons.handyman_rounded, AppColors.warning),
-        _buildComponentCard('AFEKTIF UNIV', afektif, 40, (afektif * 0.40), Icons.favorite_rounded, context.appColors.error),
+        _buildComponentCard('KOGNITIF UNIV', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
+        _buildComponentCard('PSIKOMOTOR UNIV', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
+        _buildComponentCard('AFEKTIF UNIV', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
         const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.primary.withAlpha(10),
+            color: statusUnivColor.withAlpha(10),
             borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.primary.withAlpha(30)),
+            border: Border.all(color: statusUnivColor.withAlpha(30)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -329,7 +340,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 children: [
                   Text('NILAI AKHIR UNIVERSITAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
                   const SizedBox(height: 4),
-                  Text('Status Evaluasi: LULUS', style: AppTextStyles.bodySm.copyWith(color: AppColors.success, fontWeight: FontWeight.bold)),
+                  Text('Status Evaluasi: $statusUnivText', style: AppTextStyles.bodySm.copyWith(color: statusUnivColor, fontWeight: FontWeight.bold)),
                 ],
               ),
               Text(
@@ -344,31 +355,44 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
   }
 
   Widget _buildFakultasBreakdown(KencanaDashboardData? dashboard) {
-    final fakScore = dashboard?.scoreFakultas ?? data?['score_fakultas'] ?? {};
-    final kognitif = (double.tryParse(fakScore['cognitive_score']?.toString() ?? '') ?? 54.2);
-    final psikomotor = (double.tryParse(fakScore['psychomotor_score']?.toString() ?? '') ?? 90.0);
-    final afektif = (double.tryParse(fakScore['affective_score']?.toString() ?? '') ?? 90.0);
-    
-    final rawFak = (double.tryParse(fakScore['final_score_faculty']?.toString() ?? '') ??
-        (double.tryParse(fakScore['final_score']?.toString() ?? '') != null &&
-                (double.tryParse(fakScore['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
-            ? double.tryParse(fakScore['final_score'].toString())
-            : null) ??
-        81.0);
+    final scoreObj = data?['score'] ?? {};
+    final weights = data?['weights'] ?? dashboard?.weights ?? {};
+    final cogWeightPercent = (weights['cognitive'] ?? weights['kognitif'] ?? 25).toInt();
+    final psiWeightPercent = (weights['psychomotor'] ?? weights['psikomotor'] ?? 35).toInt();
+    final afekWeightPercent = (weights['affective'] ?? weights['afektif'] ?? 40).toInt();
+
+    final kognitif = (double.tryParse(scoreObj['cognitive_average_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['cognitive_average']?.toString() ?? '') ?? 0.0);
+    final psikomotor = (double.tryParse(scoreObj['psychomotor_average_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['psychomotor_average']?.toString() ?? '') ?? 0.0);
+    final afektif = (double.tryParse(scoreObj['affective_average_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['affective_average']?.toString() ?? '') ?? 0.0);
+
+    final kogWeight = (double.tryParse(scoreObj['cognitive_weighted_faculty']?.toString() ?? '') ?? (kognitif * (cogWeightPercent / 100)));
+    final psiWeight = (double.tryParse(scoreObj['psychomotor_weighted_faculty']?.toString() ?? '') ?? (psikomotor * (psiWeightPercent / 100)));
+    final afekWeight = (double.tryParse(scoreObj['affective_weighted_faculty']?.toString() ?? '') ?? (afektif * (afekWeightPercent / 100)));
+
+    final rawFak = (double.tryParse(scoreObj['final_score_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ?? 0.0);
+
+    final statusFak = scoreObj['graduation_status_faculty'] ?? dashboard?.scoreFakultas?['graduation_status'] ?? 'not_eligible';
+    final isFakPassed = statusFak == 'passed' || statusFak == 'lulus';
+    final statusFakText = isFakPassed ? 'LULUS' : 'BELUM MEMENUHI SYARAT';
+    final statusFakColor = isFakPassed ? AppColors.success : context.appColors.error;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildComponentCard('KOGNITIF FAKULTAS', kognitif, 25, (kognitif * 0.25), Icons.psychology_rounded, AppColors.info),
-        _buildComponentCard('PSIKOMOTOR FAKULTAS', psikomotor, 35, (psikomotor * 0.35), Icons.handyman_rounded, AppColors.warning),
-        _buildComponentCard('AFEKTIF FAKULTAS', afektif, 40, (afektif * 0.40), Icons.favorite_rounded, context.appColors.error),
+        _buildComponentCard('KOGNITIF FAKULTAS', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
+        _buildComponentCard('PSIKOMOTOR FAKULTAS', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
+        _buildComponentCard('AFEKTIF FAKULTAS', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
         const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.primary.withAlpha(10),
+            color: statusFakColor.withAlpha(10),
             borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.primary.withAlpha(30)),
+            border: Border.all(color: statusFakColor.withAlpha(30)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -378,7 +402,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 children: [
                   Text('NILAI AKHIR FAKULTAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
                   const SizedBox(height: 4),
-                  Text('Status Evaluasi: LULUS', style: AppTextStyles.bodySm.copyWith(color: AppColors.success, fontWeight: FontWeight.bold)),
+                  Text('Status Evaluasi: $statusFakText', style: AppTextStyles.bodySm.copyWith(color: statusFakColor, fontWeight: FontWeight.bold)),
                 ],
               ),
               Text(
@@ -393,21 +417,18 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
   }
 
   Widget _buildGabunganBreakdown(KencanaDashboardData? dashboard) {
-    final univFinal = (double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ??
-        (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') != null &&
-                (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
-            ? double.tryParse(dashboard!.scoreUniv!['final_score'].toString())
-            : null) ??
-        84.4);
+    final scoreObj = data?['score'] ?? {};
+    final univFinal = (double.tryParse(scoreObj['final_score_univ']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ?? 0.0);
 
-    final fakFinal = (double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ??
-        (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') != null &&
-                (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
-            ? double.tryParse(dashboard!.scoreFakultas!['final_score'].toString())
-            : null) ??
-        81.0);
+    final fakFinal = (double.tryParse(scoreObj['final_score_faculty']?.toString() ?? '') ??
+        double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ?? 0.0);
 
-    final gabunganFinal = ((univFinal * 0.5) + (fakFinal * 0.5));
+    final univWeightPercent = (dashboard?.period.universityWeight ?? 50).toInt();
+    final fakWeightPercent = (dashboard?.period.facultyWeight ?? 50).toInt();
+
+    final gabunganFinal = (double.tryParse(scoreObj['final_score']?.toString() ?? '') ??
+        ((univFinal * (univWeightPercent / 100)) + (fakFinal * (fakWeightPercent / 100))));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,7 +453,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Nilai akhir dihitung dengan menggabungkan Nilai Universitas (50%) dengan Nilai Kencana Fakultas (50%).',
+                'Nilai akhir dihitung dengan menggabungkan Nilai Universitas ($univWeightPercent%) dengan Nilai Kencana Fakultas ($fakWeightPercent%).',
                 style: AppTextStyles.bodySm.copyWith(
                   color: context.appColors.outline,
                   fontSize: 11,
@@ -440,9 +461,9 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              _buildConsolidatedRow('Nilai Akhir Kencana Universitas (50%)', univFinal.toStringAsFixed(1)),
+              _buildConsolidatedRow('Nilai Akhir Kencana Universitas ($univWeightPercent%)', univFinal.toStringAsFixed(1)),
               const SizedBox(height: AppSpacing.md),
-              _buildConsolidatedRow('Nilai Akhir Kencana Fakultas (50%)', fakFinal.toStringAsFixed(1)),
+              _buildConsolidatedRow('Nilai Akhir Kencana Fakultas ($fakWeightPercent%)', fakFinal.toStringAsFixed(1)),
               const SizedBox(height: AppSpacing.xl),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -478,26 +499,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: AppColors.success.withAlpha(15),
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.success.withAlpha(40)),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 24),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(
-                  'Semua prasyarat kehadiran, handbook, dan nilai minimum telah terpenuhi (LULUS).',
-                  style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral900, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _buildBlockersSection(dashboard),
       ],
     );
   }
@@ -685,6 +687,69 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  bool _hasCertificate(Map<String, dynamic>? certificates) {
+    if (certificates == null) return false;
+    final univCert = certificates['university']?['file_url']?.toString();
+    final facCert = certificates['fakultas']?['file_url']?.toString();
+    return (univCert != null && univCert.isNotEmpty) || (facCert != null && facCert.isNotEmpty);
+  }
+
+  Widget _buildBlockersSection(KencanaDashboardData? dashboard) {
+    final List<String> blockers = List<String>.from(data?['blockers'] ?? dashboard?.blockers ?? []);
+    if (blockers.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.success.withAlpha(15),
+          borderRadius: AppRadius.radiusLg,
+          border: Border.all(color: AppColors.success.withAlpha(40)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 24),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(
+                'Semua prasyarat kehadiran, handbook, dan nilai minimum telah terpenuhi.',
+                style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral900, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: blockers.map((b) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: context.appColors.error.withAlpha(15),
+            borderRadius: AppRadius.radiusMd,
+            border: Border.all(color: context.appColors.error.withAlpha(30)),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: context.appColors.error, size: 20),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  b,
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: context.appColors.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 

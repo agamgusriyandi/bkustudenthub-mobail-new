@@ -40,24 +40,27 @@ class ModuleDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (mission.fileUrl != null && mission.fileUrl!.isNotEmpty)
+                  if (mission.fileUrl != null && mission.fileUrl!.trim().isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: InkWell(
                         onTap: () async {
-                          final fullUrl = ApiGate.getImageUrl(mission.fileUrl);
+                          final rawPath = mission.fileUrl!.trim();
+                          final fullUrl = rawPath.startsWith('http')
+                              ? rawPath
+                              : ApiGate.getImageUrl(rawPath);
                           final url = Uri.tryParse(fullUrl);
-                          if (url != null && await canLaunchUrl(url)) {
-                            await launchUrl(
-                              url,
-                              mode: LaunchMode.inAppBrowserView,
-                            );
-                          } else {
-                            if (context.mounted) {
-                              AppSnackbar.showError(
-                                context,
-                                'Tidak dapat membuka tautan ini.',
-                              );
+                          if (url != null) {
+                            try {
+                              bool launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                              if (!launched) {
+                                launched = await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+                              }
+                              if (!launched && context.mounted) {
+                                AppSnackbar.showError(context, 'Tidak dapat membuka file.');
+                              }
+                            } catch (_) {
+                              if (context.mounted) AppSnackbar.showError(context, 'Error membuka file.');
                             }
                           }
                         },
@@ -65,56 +68,85 @@ class ModuleDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           padding: AppSpacing.paddingLg,
                           decoration: BoxDecoration(
-                            color: context.appColors.infoContainer,
+                            color: const Color(0xFFF8FAFC),
                             borderRadius: AppRadius.radiusLg,
-                            border: Border.all(
-                              color: context.appColors.info,
-                              width: 1.2,
-                            ),
+                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
                           ),
                           child: Row(
                             children: [
                               Container(
                                 padding: AppSpacing.padding10,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primary,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.attach_file_rounded,
-                                  color: context.appColors.surface,
-                                  size: 22,
-                                ),
+                                decoration: const BoxDecoration(color: Color(0xFF0F172A), shape: BoxShape.circle),
+                                child: const Icon(Icons.attach_file_rounded, color: Colors.white, size: 22),
                               ),
                               const SizedBox(width: AppSpacing.s14),
-    Expanded(
+                              const Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Lampiran Materi',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: context.appColors.primary,
-                                      ),
-                                    ),
+                                    Text('File Dokumen / Lampiran', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0F172A))),
                                     SizedBox(height: AppSpacing.s3),
-                                    Text(
-                                      'Ketuk untuk membuka file atau tautan',
-                                      style: TextStyle(
-                                        color: context.appColors.info,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                    Text('Ketuk untuk mengunduh / membuka file', style: TextStyle(color: Color(0xFF64748B), fontSize: 12)),
                                   ],
                                 ),
                               ),
-    Icon(
-                                Icons.chevron_right_rounded,
-                                color: context.appColors.info,
-                                size: 22,
+                              const Icon(Icons.chevron_right_rounded, color: Color(0xFF0F172A), size: 22),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (mission.linkUrl != null && mission.linkUrl!.trim().isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+                      child: InkWell(
+                        onTap: () async {
+                          String rawUrl = mission.linkUrl!.trim();
+                          if (!rawUrl.startsWith('http')) {
+                            rawUrl = 'https://$rawUrl';
+                          }
+                          final url = Uri.tryParse(rawUrl);
+                          if (url != null) {
+                            try {
+                              bool launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                              if (!launched) {
+                                launched = await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+                              }
+                              if (!launched && context.mounted) {
+                                AppSnackbar.showError(context, 'Tidak dapat membuka tautan link.');
+                              }
+                            } catch (_) {
+                              if (context.mounted) AppSnackbar.showError(context, 'Error membuka tautan link.');
+                            }
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: AppSpacing.paddingLg,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0F9FF),
+                            borderRadius: AppRadius.radiusLg,
+                            border: Border.all(color: const Color(0xFFBAE6FD), width: 1.2),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: AppSpacing.padding10,
+                                decoration: const BoxDecoration(color: Color(0xFF0284C7), shape: BoxShape.circle),
+                                child: const Icon(Icons.link_rounded, color: Colors.white, size: 22),
                               ),
+                              const SizedBox(width: AppSpacing.s14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Tautan Web Eksternal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0369A1))),
+                                    const SizedBox(height: AppSpacing.s3),
+                                    Text(mission.linkUrl!, style: const TextStyle(color: Color(0xFF0284C7), fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  ],
+                                ),
+                              ),
+                              const Icon(Icons.chevron_right_rounded, color: Color(0xFF0284C7), size: 22),
                             ],
                           ),
                         ),
