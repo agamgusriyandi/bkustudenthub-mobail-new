@@ -130,16 +130,18 @@ class BkuAppBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.titleLg.copyWith(
-                        color: onColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        letterSpacing: -0.2,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        title,
+                        style: AppTextStyles.titleLg.copyWith(
+                          color: onColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          letterSpacing: -0.2,
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
                     ),
                     if (info != null || subtitle != null)
                       Text(
@@ -418,16 +420,18 @@ class BkuAppBar extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      title,
-                                      style: AppTextStyles.titleLg.copyWith(
-                                        color: onColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        letterSpacing: -0.2,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        title,
+                                        style: AppTextStyles.titleLg.copyWith(
+                                          color: onColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          letterSpacing: -0.2,
+                                        ),
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
                                     ),
                                     if (info != null && showProfileOnCollapse)
                                       Text(
@@ -545,17 +549,19 @@ class BkuAppBar extends StatelessWidget {
                                             ),
                                             const SizedBox(height: AppSpacing.s2),
                                           ],
-                                          Text(
-                                            title,
-                                            style: AppTextStyles.titleLg
-                                                .copyWith(
-                                                  color: onColor,
-                                                  fontSize: 21,
-                                                  fontWeight: FontWeight.w900,
-                                                  letterSpacing: -0.5,
-                                                ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                          FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              title,
+                                              style: AppTextStyles.titleLg
+                                                  .copyWith(
+                                                    color: onColor,
+                                                    fontSize: 21,
+                                                    fontWeight: FontWeight.w900,
+                                                    letterSpacing: -0.5,
+                                                  ),
+                                            ),
                                           ),
                                           if (info != null) ...[
                                             const SizedBox(height: AppSpacing.s2),
