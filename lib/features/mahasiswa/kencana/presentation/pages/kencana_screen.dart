@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/kencana_models.
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
@@ -375,7 +376,11 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  _buildScoreBadge('NILAI UNIV', dashboard.temporaryFinalScore),
+                  _buildScoreBadge(
+                    'NILAI UNIV',
+                    (dashboard.scoreUniv?['final_score'] as num?)?.toDouble() ??
+                        dashboard.temporaryFinalScore,
+                  ),
                   if (dashboard.scoreFakultas != null)
                     _buildScoreBadge(
                       'NILAI FAKULTAS',
@@ -385,6 +390,18 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     ),
                 ],
               ),
+              if (dashboard.isGraduated || dashboard.graduationStatus == 'passed') ...[
+                const SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  width: double.infinity,
+                  child: BkuButton(
+                    text: 'Download Sertifikat PDF',
+                    icon: Icons.picture_as_pdf_rounded,
+                    variant: BkuButtonVariant.success,
+                    onPressed: () => context.push(AppRoutes.kencanaCertificate),
+                  ),
+                ),
+              ],
             ],
           ),
         ],

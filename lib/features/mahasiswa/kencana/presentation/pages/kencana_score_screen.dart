@@ -149,7 +149,11 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
         if (dashboard?.scoreFakultas != null) ...[
           _buildStatGridItem(
             'Nilai Univ',
-            dashboard!.temporaryFinalScore.toStringAsFixed(1),
+            (double.tryParse(
+                      dashboard!.scoreUniv?['final_score']?.toString() ?? '',
+                    ) ??
+                    dashboard.temporaryFinalScore)
+                .toStringAsFixed(1),
             Icons.account_balance_rounded,
             themeProvider.primary,
           ),
