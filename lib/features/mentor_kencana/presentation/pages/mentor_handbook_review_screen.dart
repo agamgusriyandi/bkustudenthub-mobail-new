@@ -271,13 +271,21 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   const SizedBox(height: AppSpacing.xs),
                   DropdownButtonFormField<String>(
                     initialValue: _reviewStatus,
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface, fontSize: 12),
                     decoration: InputDecoration(
+                      isDense: true,
                       border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'approved', child: Text('Setujui (Approved)')),
-                      DropdownMenuItem(value: 'rejected', child: Text('Perlu Perbaikan (Rejected)')),
+                    items: [
+                      DropdownMenuItem(
+                        value: 'approved',
+                        child: Text('Setujui (Approved)', style: AppTextStyles.labelSm.copyWith(fontSize: 12)),
+                      ),
+                      DropdownMenuItem(
+                        value: 'rejected',
+                        child: Text('Perlu Perbaikan (Rejected)', style: AppTextStyles.labelSm.copyWith(fontSize: 12)),
+                      ),
                     ],
                     onChanged: (val) {
                       if (val != null) setState(() => _reviewStatus = val);
@@ -293,8 +301,10 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   TextField(
                     controller: _feedbackController,
                     maxLines: 4,
+                    style: AppTextStyles.labelSm.copyWith(fontSize: 12),
                     decoration: InputDecoration(
                       hintText: 'Tuliskan catatan perbaikan...',
+                      hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
                       border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     ),
                   ),
