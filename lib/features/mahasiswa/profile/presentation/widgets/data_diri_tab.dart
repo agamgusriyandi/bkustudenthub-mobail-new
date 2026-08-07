@@ -411,10 +411,10 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: AppRadius.radiusLg,
-              color: AppColors.neutral900,
+              color: context.appColors.primary,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neutral900.withAlpha(50),
+                  color: context.appColors.primary.withAlpha(50),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),

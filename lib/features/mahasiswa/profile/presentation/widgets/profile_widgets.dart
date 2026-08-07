@@ -159,10 +159,11 @@ Widget buildRoleCard(BuildContext context, ProfileProvider student) {
                             style: TextStyle(
                               color: context.appColors.onSurface,
                               fontWeight: FontWeight.w800,
-                              fontSize: 16,
+                              fontSize: 15,
                               letterSpacing: -0.3,
+                              height: 1.2,
                             ),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: AppSpacing.xs),
@@ -249,7 +250,7 @@ Widget buildRoleCard(BuildContext context, ProfileProvider student) {
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w800,
-                                      color: context.appColors.primary,
+                                      color: context.appColors.onSurface,
                                       letterSpacing: 0.2,
                                     ),
                                     overflow: TextOverflow.ellipsis,
