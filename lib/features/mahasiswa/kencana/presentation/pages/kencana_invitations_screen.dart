@@ -70,7 +70,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'UNDANGAN DP & KELOMPOK',
+              title: 'UNDANGAN FASILITATOR & KELOMPOK',
               subtitle: 'KENCANA',
               variant: AppBarVariant.student,
               expandedHeight: 100,
@@ -103,7 +103,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                       ),
                       SizedBox(height: AppSpacing.lg),
                       Text(
-                        'Belum ada undangan DP atau Kelompok',
+                        'Belum ada undangan Fasilitator atau Kelompok',
                         style: TextStyle(
                           color: context.appColors.outline,
                           fontWeight: FontWeight.bold,
@@ -195,7 +195,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
               borderRadius: AppRadius.radiusSm,
             ),
             child: Text(
-              'DP AKTIF',
+              'FASILITATOR AKTIF',
               style: AppTextStyles.labelSm.copyWith(
                 color: AppColors.neutral800,
                 fontWeight: FontWeight.bold,
@@ -312,7 +312,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
               final mentorName = mentorObj?['name'] ?? mentorObj?['Name'] ?? '';
 
               title = groupName;
-              subtitle = 'Kode: ${code.isNotEmpty ? code : '-'} ${mentorName.isNotEmpty ? '• DP: $mentorName' : ''}';
+              subtitle = 'Kode: ${code.isNotEmpty ? code : '-'} ${mentorName.isNotEmpty ? '• Fasilitator: $mentorName' : ''}';
             }
 
             return Container(

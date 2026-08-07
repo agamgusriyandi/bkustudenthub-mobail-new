@@ -637,7 +637,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
         ),
         _buildActionMenu(
           context,
-          'Undangan DP',
+          'Undangan Fasilitator',
           Icons.group_add_rounded,
           context.appColors.info,
           () {
@@ -1328,7 +1328,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Ada Undangan Kelompok DP $scope!',
+                  'Ada Undangan Kelompok Fasilitator $scope!',
                   style: AppTextStyles.labelMd.copyWith(
                     color: context.appColors.primary,
                     fontWeight: FontWeight.bold,

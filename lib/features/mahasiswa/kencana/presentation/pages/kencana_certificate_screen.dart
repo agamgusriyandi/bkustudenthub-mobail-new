@@ -147,10 +147,10 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: AppColors.primary.withAlpha(10),
+        color: AppColors.success.withAlpha(15),
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: AppColors.primary.withAlpha(25),
+          color: AppColors.success.withAlpha(40),
         ),
       ),
       child: Column(
@@ -158,14 +158,14 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
           Icon(
             Icons.workspace_premium_rounded,
             size: 72,
-            color: AppColors.primary,
+            color: AppColors.success,
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'SERTIFIKAT KELULUSAN',
             style: AppTextStyles.titleLg.copyWith(
               fontWeight: FontWeight.w900,
-              color: AppColors.primary,
+              color: AppColors.success,
               letterSpacing: 1,
             ),
           ),
