@@ -127,13 +127,13 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: context.appColors.primary.withAlpha(20),
+                            color: AppColors.neutral200,
                             borderRadius: AppRadius.radiusXl,
                           ),
                           child: Text(
                             'Total Data ${filteredMentees.length}',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.primary,
+                              color: context.appColors.onSurface,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -233,7 +233,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                 width: 44,
                                 height: 44,
                                 decoration: BoxDecoration(
-                                  color: context.appColors.primary.withAlpha(20),
+                                  color: AppColors.neutral200,
                                   shape: BoxShape.circle,
                                 ),
                                 child: ClipOval(
@@ -247,7 +247,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                             child: Text(
                                               mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                               style: TextStyle(
-                                                color: context.appColors.primary,
+                                                color: context.appColors.onSurface,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16,
                                               ),
@@ -259,7 +259,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                           child: Text(
                                             mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                             style: TextStyle(
-                                              color: context.appColors.primary,
+                                              color: context.appColors.onSurface,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
                                             ),
@@ -284,7 +284,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                     Text(
                                       'NIM: ${mentee.nim}',
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: context.appColors.primary,
+                                        color: context.appColors.onSurface,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 11,
                                       ),
@@ -342,17 +342,17 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                   onPressed: () {
                                     context.push('/mentor-kencana/handbook/review/${mentee.id}?name=${Uri.encodeComponent(mentee.name)}');
                                   },
-                                  icon: const Icon(Icons.rate_review_outlined, size: 16),
+                                  icon: Icon(Icons.rate_review_outlined, size: 16, color: context.appColors.onSurface),
                                   label: Text(
                                     'Review Handbook',
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: context.appColors.onSurface),
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor: context.appColors.primary,
-                                    side: BorderSide(color: context.appColors.primary.withAlpha(50)),
+                                    foregroundColor: context.appColors.onSurface,
+                                    side: BorderSide(color: context.appColors.outlineVariant),
                                     padding: const EdgeInsets.symmetric(horizontal: 12),
                                     shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                    backgroundColor: context.appColors.primary.withAlpha(10),
+                                    backgroundColor: AppColors.neutral100,
                                   ),
                                 ),
                               ),
