@@ -410,9 +410,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
                   dense: true,
+                  activeColor: context.appColors.onSurface,
                   value: isMandatory,
                   onChanged: (val) => setModalState(() => isMandatory = val ?? true),
-                  title: const Text('Materi wajib dibaca', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  title: Text('Materi wajib dibaca', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: context.appColors.onSurface)),
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
                 const SizedBox(height: 8),
@@ -421,8 +422,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 TextField(
                   controller: descController,
                   maxLines: 3,
+                  style: const TextStyle(fontSize: 12),
                   decoration: InputDecoration(
                     hintText: 'Tambahkan teks penjelasan jika perlu...',
+                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
                     border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     contentPadding: const EdgeInsets.all(10),
                   ),
@@ -432,8 +435,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 const SizedBox(height: 4),
                 TextField(
                   controller: urlController,
+                  style: const TextStyle(fontSize: 12),
                   decoration: InputDecoration(
                     hintText: 'https://... (opsional)',
+                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
                     border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   ),
@@ -442,7 +447,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 Text('UPLOAD FILE DOKUMEN / VIDEO', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.neutral100,
                     borderRadius: AppRadius.radiusMd,
@@ -450,7 +455,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   ),
                   child: Row(
                     children: [
-                      ElevatedButton(
+                      OutlinedButton.icon(
                         onPressed: () async {
                           final result = await FilePicker.pickFiles();
                           if (result != null && result.files.isNotEmpty) {
@@ -460,12 +465,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             });
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        icon: const Icon(Icons.upload_file_rounded, size: 14),
+                        label: const Text('Pilih File', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: context.appColors.onSurface,
+                          side: const BorderSide(color: AppColors.neutral300),
+                          backgroundColor: context.appColors.surface,
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                         ),
-                        child: const Text('Choose File', style: TextStyle(fontSize: 11)),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -484,14 +492,17 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(foregroundColor: AppColors.neutral600),
                       child: const Text('Kembali'),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        backgroundColor: context.appColors.onSurface,
+                        foregroundColor: context.appColors.surface,
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                        elevation: 0,
                       ),
                       onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
