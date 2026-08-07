@@ -1860,39 +1860,79 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(currentView == 'list' ? 'Kelola Tugas: ${session.title}' : (editingTaskId != null ? 'Edit Tugas' : 'Tambah Tugas Baru'), style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
-                            Text(currentView == 'list' ? 'Daftar penugasan dan status pengumpulan.' : 'Tentukan detail dan batas waktu pengumpulan tugas.', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                            const SizedBox(height: 2),
+                            Text(currentView == 'list' ? 'Kelola daftar tugas untuk sesi ini.' : 'Tentukan detail dan batas waktu pengumpulan tugas.', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
                           ],
                         ),
                       ),
-                      IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFF1E293B), width: 1.5),
+                          ),
+                          child: const Icon(Icons.close, size: 14, color: Color(0xFF1E293B)),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
 
                   if (currentView == 'list') ...[
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          editingTaskId = null;
-                          titleController.clear();
-                          descController.clear();
-                          setModalState(() => currentView = 'form');
-                        },
-                        icon: const Icon(Icons.add, size: 14),
-                        label: const Text('Tambah Tugas', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.onSurface,
-                          foregroundColor: context.appColors.surface,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                          elevation: 0,
-                        ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFFBEB),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFFDE68A)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFF6FF),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.assignment_outlined, size: 20, color: Color(0xFF1E3A8A)),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Daftar Tugas Sesi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A))),
+                                const SizedBox(height: 2),
+                                Text('${taskList.length} tugas terdaftar', style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              editingTaskId = null;
+                              titleController.clear();
+                              descController.clear();
+                              setModalState(() => currentView = 'form');
+                            },
+                            icon: const Icon(Icons.add, size: 14),
+                            label: const Text('Tambah Tugas', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0F172A),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              elevation: 0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12),
                     if (taskList.isEmpty)
                       Padding(
                         padding: const EdgeInsets.all(24.0),
@@ -1907,9 +1947,17 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         itemCount: taskList.length,
                         itemBuilder: (context, idx) {
                           final t = taskList[idx];
-                          return BkuCard(
+                          final formattedDueDate = t.dueDate.isNotEmpty ? t.dueDate : '6 Agt 2026, 21:00 WIB';
+                          final formattedStartDate = t.startDate.isNotEmpty ? t.startDate : '6 Agt 2026, 15:00 WIB';
+
+                          return Container(
                             margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -1918,62 +1966,117 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF1F5F9),
+                                        color: const Color(0xFFEFF6FF),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: const Icon(Icons.assignment_outlined, size: 20, color: Color(0xFF1E293B)),
+                                      child: const Icon(Icons.assignment_outlined, size: 18, color: Color(0xFF1E40AF)),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
-                                      child: Text(
-                                        t.title,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              t.title,
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFFF7ED),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(color: const Color(0xFFFFEDD5)),
+                                            ),
+                                            child: const Text(
+                                              'WAJIB',
+                                              style: TextStyle(color: Color(0xFFEA580C), fontSize: 9, fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     const SizedBox(width: 6),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFDCFCE7),
+                                        color: const Color(0xFFF0FDF4),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Text(
-                                        t.status,
-                                        style: const TextStyle(color: Color(0xFF166534), fontSize: 9, fontWeight: FontWeight.bold),
+                                      child: const Text(
+                                        'DITERBITKAN',
+                                        style: TextStyle(color: Color(0xFF16A34A), fontSize: 9, fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    _buildStatBox('KOMPONEN', t.component),
-                                    const SizedBox(width: 6),
-                                    _buildStatBox('SIFAT', 'Wajib'),
-                                    const SizedBox(width: 6),
-                                    _buildStatBox('TIPE', 'Teks Online'),
                                   ],
                                 ),
                                 const SizedBox(height: 14),
                                 Row(
                                   children: [
-                                    ElevatedButton.icon(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        AppSnackbar.showSuccess(context, 'Menampilkan submisi tugas mahasiswa');
-                                      },
-                                      icon: const Icon(Icons.folder_shared_rounded, size: 14),
-                                      label: const Text('Lihat Submisi →', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF0F172A),
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFAF8F5),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('TIPE PENGUMPULAN', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const SizedBox(height: 2),
+                                            Text(t.submissionType.isNotEmpty ? t.submissionType : 'LINK URL', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                                          ],
+                                        ),
                                       ),
                                     ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFAF8F5),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('TENGGAT WAKTU', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const SizedBox(height: 2),
+                                            Text(formattedDueDate, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFDC2626))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFAF8F5),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('KOMPONEN NILAI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const SizedBox(height: 2),
+                                            Text(t.component.isNotEmpty ? t.component : 'Psikomotor', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 14),
+                                Row(
+                                  children: [
+                                    Text('Mulai: $formattedStartDate', style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
                                     const Spacer(),
                                     InkWell(
                                       onTap: () {
@@ -1987,16 +2090,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       },
                                       borderRadius: BorderRadius.circular(8),
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFF1F5F9),
+                                          color: const Color(0xFFEFF6FF),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: const Row(
                                           children: [
-                                            Icon(Icons.edit_rounded, size: 12, color: Color(0xFF334155)),
+                                            Icon(Icons.edit_rounded, size: 12, color: Color(0xFF1D4ED8)),
                                             SizedBox(width: 4),
-                                            Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                            Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8))),
                                           ],
                                         ),
                                       ),
@@ -2033,16 +2136,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       },
                                       borderRadius: BorderRadius.circular(8),
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFEF2F2),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: const Row(
                                           children: [
-                                            Icon(Icons.delete_outline_rounded, size: 12, color: Color(0xFFEF4444)),
+                                            Icon(Icons.delete_outline_rounded, size: 12, color: Color(0xFFDC2626)),
                                             SizedBox(width: 4),
-                                            Text('Hapus', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFEF4444))),
+                                            Text('Hapus', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFDC2626))),
                                           ],
                                         ),
                                       ),

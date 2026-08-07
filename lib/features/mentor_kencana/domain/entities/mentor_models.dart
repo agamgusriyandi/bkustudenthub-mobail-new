@@ -1187,6 +1187,10 @@ class SessionMaterialItem {
   final String fileUrl;
   final String component;
   final String status;
+  final String submissionType;
+  final String dueDate;
+  final String startDate;
+  final bool isRequired;
 
   SessionMaterialItem({
     required this.id,
@@ -1195,6 +1199,10 @@ class SessionMaterialItem {
     required this.fileUrl,
     required this.component,
     required this.status,
+    this.submissionType = 'LINK URL',
+    this.dueDate = '',
+    this.startDate = '',
+    this.isRequired = true,
   });
 
   factory SessionMaterialItem.fromJson(Map<String, dynamic> json) {
@@ -1203,8 +1211,12 @@ class SessionMaterialItem {
       title: json['title'] ?? json['judul'] ?? json['nama'] ?? '',
       description: json['description'] ?? json['instruction'] ?? json['instruksi'] ?? '',
       fileUrl: json['file_url'] ?? json['fileUrl'] ?? json['file_path'] ?? json['file'] ?? '',
-      component: json['component'] ?? json['komponen'] ?? 'Cognitive',
-      status: json['status'] ?? 'published',
+      component: json['component'] ?? json['komponen'] ?? 'Psikomotor',
+      status: json['status'] ?? json['status_label'] ?? 'DITERBITKAN',
+      submissionType: json['submission_type'] ?? json['tipe_pengumpulan'] ?? json['type'] ?? 'LINK URL',
+      dueDate: json['due_date'] ?? json['tenggat_waktu'] ?? json['deadline'] ?? '',
+      startDate: json['start_date'] ?? json['startDate'] ?? json['mulai'] ?? '',
+      isRequired: json['is_required'] == null ? true : (json['is_required'] == true || json['is_required'] == 1),
     );
   }
 }
