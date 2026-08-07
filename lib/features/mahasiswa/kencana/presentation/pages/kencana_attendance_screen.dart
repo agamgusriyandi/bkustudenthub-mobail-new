@@ -89,16 +89,16 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEFF6FF),
+                          color: const Color(0xFFDCFCE7),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFFDBEAFE)),
+                          border: Border.all(color: const Color(0xFF86EFAC)),
                         ),
                         child: Text(
                           'Sesi: $sessionTitle',
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 11.5,
-                            color: Color(0xFF2563EB),
+                            color: Color(0xFF0F172A),
                           ),
                         ),
                       ),
@@ -118,7 +118,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF2563EB)),
+                            borderSide: const BorderSide(color: Color(0xFF16A34A)),
                           ),
                           contentPadding: const EdgeInsets.all(12),
                         ),
@@ -157,7 +157,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: selectedFile.value != null ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                              color: selectedFile.value != null ? const Color(0xFF16A34A) : const Color(0xFFE2E8F0),
                             ),
                             borderRadius: BorderRadius.circular(12),
                             color: const Color(0xFFF8FAFC),
@@ -167,7 +167,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                               Icon(
                                 Icons.upload_file_rounded,
                                 size: 20,
-                                color: selectedFile.value != null ? const Color(0xFF2563EB) : const Color(0xFF64748B),
+                                color: selectedFile.value != null ? const Color(0xFF16A34A) : const Color(0xFF64748B),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -198,87 +198,99 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 20),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              side: const BorderSide(color: Color(0xFFCBD5E1)),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            ),
-                            onPressed: () => Navigator.pop(ctx, false),
-                            child: const Text(
-                              'Batal',
-                              style: TextStyle(
-                                color: Color(0xFF64748B),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12.5,
+                          Expanded(
+                            child: SizedBox(
+                              height: 44,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFFF1F5F9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text(
+                                  'Batal',
+                                  style: TextStyle(
+                                    color: Color(0xFF0F172A),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: isSubmitting,
-                            builder: (ctx, submitting, _) {
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2563EB),
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                ),
-                                onPressed:
-                                    submitting
-                                        ? null
-                                        : () async {
-                                          if (reasonController.text.trim().isEmpty) {
-                                            AppSnackbar.showWarning(
-                                              ctx,
-                                              'Alasan izin wajib diisi',
-                                            );
-                                            return;
-                                          }
-                                          if (selectedFile.value == null) {
-                                            AppSnackbar.showWarning(
-                                              ctx,
-                                              'Dokumen bukti wajib diunggah',
-                                            );
-                                            return;
-                                          }
-                                          isSubmitting.value = true;
-                                          final provider = context.read<KencanaProvider>();
-                                          final success = await provider.submitAbsence(
-                                            sessionId,
-                                            reasonController.text.trim(),
-                                            selectedFile.value,
-                                          );
-                                          if (ctx.mounted) {
-                                            isSubmitting.value = false;
-                                            Navigator.pop(ctx, success);
-                                          }
-                                        },
-                                child:
-                                    submitting
-                                        ? const SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                        : const Text(
-                                          'Ajukan Izin',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 12.5,
-                                          ),
-                                        ),
-                              );
-                            },
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ValueListenableBuilder<bool>(
+                              valueListenable: isSubmitting,
+                              builder: (ctx, submitting, _) {
+                                return SizedBox(
+                                  height: 44,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF16A34A),
+                                      elevation: 0,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed:
+                                        submitting
+                                            ? null
+                                            : () async {
+                                              if (reasonController.text.trim().isEmpty) {
+                                                AppSnackbar.showWarning(
+                                                  ctx,
+                                                  'Alasan izin wajib diisi',
+                                                );
+                                                return;
+                                              }
+                                              if (selectedFile.value == null) {
+                                                AppSnackbar.showWarning(
+                                                  ctx,
+                                                  'Dokumen bukti wajib diunggah',
+                                                );
+                                                return;
+                                              }
+                                              isSubmitting.value = true;
+                                              final provider = context.read<KencanaProvider>();
+                                              final success = await provider.submitAbsence(
+                                                sessionId,
+                                                reasonController.text.trim(),
+                                                selectedFile.value,
+                                              );
+                                              if (ctx.mounted) {
+                                                isSubmitting.value = false;
+                                                Navigator.pop(ctx, success);
+                                              }
+                                            },
+                                    child:
+                                        submitting
+                                            ? const SizedBox(
+                                              width: 18,
+                                              height: 18,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                            : const Text(
+                                              'Ajukan Izin',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -483,10 +495,8 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                     value: total == 0 ? 0 : percentage / 100,
                     minHeight: 8,
                     backgroundColor: AppColors.neutral200,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      percentage >= 75
-                          ? AppColors.success
-                          : (percentage >= 50 ? context.appColors.warning : AppColors.error),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.success,
                     ),
                   ),
                 ),
@@ -496,10 +506,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                 '${percentage.toStringAsFixed(0)}%',
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.w900,
-                  color:
-                      percentage >= 75
-                          ? AppColors.success
-                          : (percentage >= 50 ? context.appColors.warning : AppColors.error),
+                  color: AppColors.success,
                 ),
               ),
             ],
@@ -670,10 +677,10 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFEFF6FF),
+                                  color: const Color(0xFFDCFCE7),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: const Color(0xFFDBEAFE),
+                                    color: const Color(0xFF86EFAC),
                                   ),
                                 ),
                                 child: Row(
@@ -682,13 +689,13 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                     const Icon(
                                       Icons.edit_note_rounded,
                                       size: 15,
-                                      color: Color(0xFF2563EB),
+                                      color: Color(0xFF0F172A),
                                     ),
                                     const SizedBox(width: 4),
                                     const Text(
                                       'Ajukan Izin',
                                       style: TextStyle(
-                                        color: Color(0xFF2563EB),
+                                        color: Color(0xFF0F172A),
                                         fontWeight: FontWeight.w700,
                                         fontSize: 11,
                                       ),

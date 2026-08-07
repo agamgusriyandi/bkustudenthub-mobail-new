@@ -159,25 +159,9 @@ class _KencanaQrScanScreenState extends State<KencanaQrScanScreen>
 
           // Scan Area Frame
           Center(
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Container(
-                  width: 280 + _animation.value * 2,
-                  height: 280 + _animation.value * 2,
-                  decoration: BoxDecoration(
-                    borderRadius: AppRadius.radiusXl,
-                    border: Border.all(color: context.appColors.surface, width: 3),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.appColors.surface.withAlpha(80),
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
-                );
-              },
+            child: SizedBox(
+              width: 280,
+              height: 280,
             ),
           ),
 

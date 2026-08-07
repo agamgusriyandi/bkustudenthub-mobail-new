@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:async';
@@ -950,18 +951,22 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
         status,
       );
       if (mounted) {
-        AppSnackbar.showError(
+        AppSnackbar.showSuccess(
           context,
           status == 'hadir'
-              ? 'Kehadiran berhasil dicatat!'
-              : 'Ketidakhadiran dicatat!',
+              ? 'Anda sudah berhasil mencatat presensi!'
+              : 'Ketidakhadiran berhasil dicatat!',
         );
-        // Refresh
         context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
       }
     } catch (e) {
       if (mounted) {
-        AppSnackbar.showError(context, 'Gagal mencatat kehadiran: $e');
+        final msg = ErrorHandler.getMessage(e);
+        if (msg.toLowerCase().contains('sudah') || msg.toLowerCase().contains('already') || msg.toLowerCase().contains('tercatat')) {
+          AppSnackbar.showSuccess(context, 'Anda sudah berhasil mencatat presensi!');
+        } else {
+          AppSnackbar.showError(context, 'Gagal mencatat kehadiran: $msg');
+        }
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);

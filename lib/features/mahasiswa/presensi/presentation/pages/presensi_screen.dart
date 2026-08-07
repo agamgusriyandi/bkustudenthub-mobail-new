@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import '../providers/presensi_provider.dart';
 import '../../data/models/presensi_model.dart';
 
@@ -230,6 +231,31 @@ class _PresensiScreenState extends State<PresensiScreen> {
                 icon: Icons.location_on_rounded,
                 onPressed: () => _handleCheckIn(context, presensi, provider),
               ),
+            ] else if (presensi.status != PresensiStatus.belum) ...[
+              const SizedBox(height: AppSpacing.md),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: context.appColors.success.withAlpha(20),
+                  borderRadius: AppRadius.radiusMd,
+                  border: Border.all(color: context.appColors.success.withAlpha(60)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle_rounded, size: 16, color: context.appColors.success),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Sudah Presensi (${presensi.statusLabel})',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: context.appColors.success,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ],
         ),
@@ -398,9 +424,24 @@ class _PresensiScreenState extends State<PresensiScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              provider.checkIn(presensi);
+              try {
+                await provider.checkIn(presensi);
+                if (context.mounted) {
+                  AppSnackbar.showSuccess(
+                    context,
+                    'Anda sudah berhasil absen!',
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  AppSnackbar.showSuccess(
+                    context,
+                    'Anda sudah berhasil absen pada sesi ini!',
+                  );
+                }
+              }
             },
             child: Text(
               'Check-in',

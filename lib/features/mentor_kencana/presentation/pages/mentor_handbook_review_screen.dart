@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -80,6 +81,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
     final provider = context.watch<MentorKencanaProvider>();
     final mentee = provider.menteeDetail;
     final handbookData = provider.handbookData;
+    final isPascaKencanaActive = provider.progressData?['is_pasca_kencana_active'] == true;
     
     if (provider.isLoading && mentee == null) {
       return const Scaffold(body: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()));
@@ -127,7 +129,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
           children: [
             // Student Info Header
             Text(
-              'Review Handbook: ${mentee.name}',
+              'Review Handbook: ${mentee.name.isNotEmpty ? mentee.name : widget.studentName}',
               style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w900, color: context.appColors.onSurface),
             ),
             const SizedBox(height: 4),
@@ -200,16 +202,112 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                       ),
                     )
                   else
-                    // Here we'd render the actual JSON handbook content, 
-                    // for now placeholder since the web just maps over content_json.
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.xl),
-                        child: Text(
-                          'Data handbook tersedia untuk direview.',
-                          style: AppTextStyles.labelMd.copyWith(color: context.appColors.primary),
-                        ),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        Map<String, dynamic>? contentMap;
+                        if (handbookData['content_json'] != null) {
+                          var raw = handbookData['content_json'];
+                          if (raw is Map<String, dynamic>) {
+                            contentMap = raw;
+                          } else if (raw is String) {
+                            try {
+                              contentMap = Map<String, dynamic>.from(jsonDecode(raw));
+                            } catch (_) {}
+                          }
+                        }
+
+                        if (contentMap == null || contentMap.isEmpty) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              child: Text(
+                                'Data handbook tidak tersedia.',
+                                style: AppTextStyles.labelMd.copyWith(color: AppColors.error),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              decoration: BoxDecoration(
+                                color: AppColors.neutral100,
+                                borderRadius: AppRadius.radiusMd,
+                                border: Border.all(color: context.appColors.outlineVariant),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'STATUS PENGIRIMAN',
+                                        style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        handbookData['status'].toString().toUpperCase(),
+                                        style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.w900),
+                                      ),
+                                    ],
+                                  ),
+                                  if (handbookData['submitted_at'] != null)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'TANGGAL SUBMIT',
+                                          style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          handbookData['submitted_at'].toString().split('T')[0], // Simplified date
+                                          style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.w900),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            Text(
+                              'ISI RINGKASAN HANDBOOK:',
+                              style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            ...contentMap.entries.map((e) {
+                              return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                decoration: BoxDecoration(
+                                  color: context.appColors.surface,
+                                  borderRadius: AppRadius.radiusMd,
+                                  border: Border.all(color: context.appColors.outlineVariant),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      e.key.replaceAll('_', ' ').toUpperCase(),
+                                      style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      e.value.toString(),
+                                      style: AppTextStyles.bodySm.copyWith(color: context.appColors.onSurface, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ],
+                        );
+                      },
                     ),
                 ],
               ),
@@ -241,28 +339,30 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   const SizedBox(height: AppSpacing.lg),
 
                   // Example Warning Block if not active
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral100,
-                      borderRadius: AppRadius.radiusMd,
-                      border: Border.all(color: AppColors.neutral300),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.warning_rounded, size: 16, color: context.appColors.outline),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            'Penilaian handbook tidak dapat dilakukan. Tahap Pasca Kencana belum aktif.',
-                            style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontWeight: FontWeight.bold),
+                  if (!isPascaKencanaActive) ...[
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.errorContainer,
+                        borderRadius: AppRadius.radiusMd,
+                        border: Border.all(color: AppColors.error),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.warning_rounded, size: 16, color: AppColors.error),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              'Penilaian handbook tidak dapat dilakukan. Tahap Pasca Kencana belum aktif.',
+                              style: AppTextStyles.labelSm.copyWith(color: AppColors.onErrorContainer, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
 
                   Text(
                     'STATUS PERSETUJUAN',
@@ -276,6 +376,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                       isDense: true,
                       border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      enabled: isPascaKencanaActive,
                     ),
                     items: [
                       DropdownMenuItem(
@@ -287,9 +388,9 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                         child: Text('Perlu Perbaikan (Rejected)', style: AppTextStyles.labelSm.copyWith(fontSize: 12)),
                       ),
                     ],
-                    onChanged: (val) {
+                    onChanged: isPascaKencanaActive ? (val) {
                       if (val != null) setState(() => _reviewStatus = val);
-                    },
+                    } : null,
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
@@ -301,6 +402,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   TextField(
                     controller: _feedbackController,
                     maxLines: 4,
+                    enabled: isPascaKencanaActive,
                     style: AppTextStyles.labelSm.copyWith(fontSize: 12),
                     decoration: InputDecoration(
                       hintText: 'Tuliskan catatan perbaikan...',
@@ -310,14 +412,17 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
-                  BkuButton(
-                    onPressed: _submitReview,
-                    text: 'Simpan Evaluasi',
-                    icon: Icons.save_rounded,
-                    isLoading: _isSubmitting,
-                    width: double.infinity,
-                    customBgColor: context.appColors.onSurface,
-                    customFgColor: context.appColors.surface,
+                  Center(
+                    child: BkuButton(
+                      onPressed: isPascaKencanaActive ? _submitReview : null,
+                      text: 'Simpan Evaluasi',
+                      icon: Icons.save_rounded,
+                      isLoading: _isSubmitting,
+                      fullWidth: false,
+                      width: 200,
+                      customBgColor: isPascaKencanaActive ? AppColors.success : AppColors.neutral500,
+                      customFgColor: AppColors.onSuccess,
+                    ),
                   ),
                 ],
               ),

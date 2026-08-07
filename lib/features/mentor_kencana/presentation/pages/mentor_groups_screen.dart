@@ -18,6 +18,8 @@ class MentorGroupsScreen extends StatefulWidget {
 }
 
 class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -32,8 +34,16 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
 
+    final filteredGroups = provider.mentorGroups.where((group) {
+      if (_searchQuery.trim().isEmpty) return true;
+      final q = _searchQuery.toLowerCase();
+      return group.name.toLowerCase().contains(q) ||
+          group.code.toLowerCase().contains(q) ||
+          group.groupNumber.toLowerCase().contains(q);
+    }).toList();
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchMentorGroups(),
         color: context.appColors.primary,
@@ -50,8 +60,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
               const SliverFillRemaining(
                 child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
-            else if (provider.errorMessage != null &&
-                provider.mentorGroups.isEmpty)
+            else if (provider.errorMessage != null && provider.mentorGroups.isEmpty)
               SliverFillRemaining(
                 child: Center(
                   child: Text(
@@ -81,46 +90,61 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                 ),
                 sliver: SliverList.list(
                   children: [
-                      const SizedBox(height: AppSpacing.md),
-                      // Search Bar Placeholder
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: context.appColors.surface,
-                          borderRadius: AppRadius.radiusLg,
-                          border: Border.all(color: context.appColors.outlineVariant),
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
+                      style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral900),
+                      decoration: InputDecoration(
+                        hintText: 'Cari nama/kode kelompok...',
+                        hintStyle: AppTextStyles.bodySm.copyWith(color: context.appColors.outline.withValues(alpha: 0.7)),
+                        prefixIcon: const Icon(Icons.search_rounded, size: 18),
+                        filled: true,
+                        fillColor: AppColors.neutral100,
+                        border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMd,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.search_rounded, color: context.appColors.outline, size: 20),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Cari nama/kode kelompok...',
-                                  hintStyle: AppTextStyles.labelMd.copyWith(color: context.appColors.outline),
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                ),
-                                style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600),
-                                onChanged: (value) {
-                                  // Add search filtering logic if needed locally,
-                                  // or implement fetching with query
-                                },
-                              ),
-                            ),
-                          ],
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMd,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMd,
+                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       ),
-                      const SizedBox(height: AppSpacing.xl),
-                      ...provider.mentorGroups.map((group) {
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    if (filteredGroups.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xxl),
+                        child: Center(
+                          child: Text(
+                            'Kelompok tidak ditemukan.',
+                            style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline),
+                          ),
+                        ),
+                      )
+                    else
+                      ...filteredGroups.map((group) {
                         return Container(
                           margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-                          padding: const EdgeInsets.all(AppSpacing.xl),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
                           decoration: BoxDecoration(
                             color: context.appColors.surface,
                             borderRadius: AppRadius.radiusXl,
-                            border: Border.all(color: context.appColors.outlineVariant),
+                            border: Border.all(color: AppColors.neutral300),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(8),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +161,8 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                                           'KELOMPOK ${group.groupNumber.isEmpty ? '-' : group.groupNumber} • ${group.code.isEmpty ? 'Tanpa Kode' : group.code}',
                                           style: AppTextStyles.labelSm.copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: context.appColors.outline,
-                                            letterSpacing: 1.2,
+                                            color: AppColors.neutral700,
+                                            letterSpacing: 0.8,
                                             fontSize: 10,
                                           ),
                                         ),
@@ -147,54 +171,58 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                                           group.name,
                                           style: AppTextStyles.titleMd.copyWith(
                                             fontWeight: FontWeight.bold,
+                                            color: AppColors.neutral900,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: context.appColors.primary.withAlpha(25),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: context.appColors.primary.withAlpha(50)),
+                                      color: AppColors.neutral100,
+                                      borderRadius: AppRadius.radiusXl,
+                                      border: Border.all(color: AppColors.neutral300),
                                     ),
                                     child: Text(
                                       group.status.toUpperCase(),
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: context.appColors.primary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10,
+                                        color: AppColors.neutral900,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 9.5,
+                                        letterSpacing: 0.3,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: AppSpacing.lg),
+                              const SizedBox(height: AppSpacing.md),
                               Row(
                                 children: [
                                   Expanded(
                                     child: Container(
-                                      padding: const EdgeInsets.all(AppSpacing.md),
+                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: AppSpacing.md),
                                       decoration: BoxDecoration(
-                                        color: context.appColors.surface,
+                                        color: AppColors.neutral100,
                                         borderRadius: AppRadius.radiusLg,
-                                        border: Border.all(color: context.appColors.outlineVariant),
+                                        border: Border.all(color: AppColors.neutral300),
                                       ),
                                       child: Column(
                                         children: [
                                           Text(
                                             '${group.memberCount}',
                                             style: AppTextStyles.titleLg.copyWith(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w900,
                                               fontSize: 18,
+                                              color: AppColors.neutral900,
                                             ),
                                           ),
+                                          const SizedBox(height: 2),
                                           Text(
                                             'Anggota',
                                             style: AppTextStyles.labelSm.copyWith(
                                               fontWeight: FontWeight.bold,
-                                              color: context.appColors.outline,
+                                              color: AppColors.neutral700,
                                               fontSize: 10,
                                             ),
                                           ),
@@ -205,26 +233,28 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                                   const SizedBox(width: AppSpacing.md),
                                   Expanded(
                                     child: Container(
-                                      padding: const EdgeInsets.all(AppSpacing.md),
+                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: AppSpacing.md),
                                       decoration: BoxDecoration(
-                                        color: context.appColors.surface,
+                                        color: AppColors.neutral100,
                                         borderRadius: AppRadius.radiusLg,
-                                        border: Border.all(color: context.appColors.outlineVariant),
+                                        border: Border.all(color: AppColors.neutral300),
                                       ),
                                       child: Column(
                                         children: [
                                           Text(
                                             '${group.capacity}',
                                             style: AppTextStyles.titleLg.copyWith(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w900,
                                               fontSize: 18,
+                                              color: AppColors.neutral900,
                                             ),
                                           ),
+                                          const SizedBox(height: 2),
                                           Text(
                                             'Kapasitas',
                                             style: AppTextStyles.labelSm.copyWith(
                                               fontWeight: FontWeight.bold,
-                                              color: context.appColors.outline,
+                                              color: AppColors.neutral700,
                                               fontSize: 10,
                                             ),
                                           ),
@@ -234,69 +264,41 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: AppSpacing.lg),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        context.push('/mentor-kencana/groups/${group.id}');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: context.appColors.primary,
-                                        foregroundColor: Colors.white,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: AppRadius.radiusLg,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                      ),
-                                      child: Text(
-                                        'Kelola Anggota',
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                      ),
+                              const SizedBox(height: AppSpacing.md),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    context.push('/mentor-kencana/groups/${group.id}');
+                                  },
+                                  icon: const Icon(Icons.people_outline_rounded, size: 16, color: Colors.white),
+                                  label: Text(
+                                    'Kelola Anggota',
+                                    style: AppTextStyles.labelMd.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(width: AppSpacing.sm),
-                                  Expanded(
-                                    child: OutlinedButton.icon(
-                                      onPressed: () {
-                                        // TODO: Implement PDF download
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Fitur unduh PDF belum tersedia di mobile.')),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.download_rounded, size: 16),
-                                      label: Text(
-                                        'PDF Rekap',
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: context.appColors.primary,
-                                        side: BorderSide(color: context.appColors.outlineVariant),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: AppRadius.radiusLg,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                      ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: context.appColors.primary,
+                                    foregroundColor: Colors.white,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: AppRadius.radiusLg,
                                     ),
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
                         );
                       }),
-                      const SizedBox(height: AppSpacing.xxl),
-                    ],
-                  ),
+                    const SizedBox(height: AppSpacing.xxl),
+                  ],
                 ),
+              ),
           ],
         ),
       ),

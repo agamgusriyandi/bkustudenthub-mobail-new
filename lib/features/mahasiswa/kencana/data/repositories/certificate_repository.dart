@@ -16,20 +16,15 @@ class CertificateRepository {
       if (response.data != null && response.data['success'] == true) {
         final data = response.data['data'];
         if (data != null && data is Map<String, dynamic>) {
-          return KencanaCertificate.fromJson(data);
+          final cert = KencanaCertificate.fromJson(data);
+          if (cert.id > 0 && cert.fileUrl != null && cert.fileUrl!.isNotEmpty) {
+            return cert;
+          }
         }
       }
     } catch (_) {}
 
-    return KencanaCertificate(
-      id: 1,
-      fileUrl: '/storage/certificates/sertifikat_kencana.pdf',
-      certificateNumber: 'CERT/KENCANA/2026/001',
-      predicate: 'Sangat Memuaskan',
-      studentName: 'SABILLA SRI ANGGITA PUTRI SETIADI',
-      periodName: '2026',
-      finalScore: 82.7,
-    );
+    return null;
   }
 
   Future<List<int>> downloadCertificateBytes(KencanaCertificate cert) async {

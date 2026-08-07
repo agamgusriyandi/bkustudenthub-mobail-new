@@ -37,6 +37,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
   late Animation<double> _animation;
   bool _isProcessing = false;
   bool _hasScanned = false;
+  bool _isAlreadyScanned = false;
   String? _lastScannedCode;
   String? _scannedStudentName;
   List<Map<String, dynamic>> _studentsLookup = [];
@@ -121,30 +122,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
           // Scan Area frame
           Center(
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Container(
-                  width: 280 + _animation.value * 2,
-                  height: 280 + _animation.value * 2,
-                  decoration: BoxDecoration(
-                    borderRadius: AppRadius.radiusXl,
-                    border: Border.all(
-                      color: _hasScanned ? AppColors.success : context.appColors.onPrimary,
-                      width: 3,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _hasScanned
-                            ? AppColors.success.withAlpha(60)
-                            : context.appColors.onPrimary.withAlpha(40),
-                        blurRadius: 15,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                );
-              },
+            child: SizedBox(
+              width: 280,
+              height: 280,
             ),
           ),
 
@@ -252,9 +232,11 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
-                          _scannedStudentName != null
-                              ? 'Hadir: $_scannedStudentName'
-                              : 'Berhasil Terabsen!',
+                          _isAlreadyScanned
+                              ? 'Anda Sudah Absen!'
+                              : (_scannedStudentName != null
+                                  ? 'Hadir: $_scannedStudentName'
+                                  : 'Berhasil Terabsen!'),
                           style: AppTextStyles.bodyMd.copyWith(
                             color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
@@ -295,25 +277,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
               ],
             ),
           ),
-
-          // Manual Input Button
-          Positioned(
-            bottom: 32,
-            left: 24,
-            right: 24,
-            child: SafeArea(
-              child: OutlinedButton.icon(
-                onPressed: () => _showManualInputDialog(),
-                icon: const Icon(Icons.keyboard_rounded),
-                label: const Text('Input NIM Manual'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.appColors.onPrimary,
-                  side: BorderSide(color: context.appColors.surface.withValues(alpha: 0.7)),
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -336,6 +299,8 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
   Future<void> _processQrCode(String code) async {
     setState(() {
       _isProcessing = true;
+      _hasScanned = false;
+      _isAlreadyScanned = false;
       _scannedStudentName = null;
     });
 
@@ -381,14 +346,24 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
         if (!mounted) return;
 
+        final resData = response.data;
+        final resMessage = resData is Map ? (resData['message'] ?? resData['msg'] ?? '').toString() : '';
+        final bool isAlready = resMessage.toLowerCase().contains('sudah') ||
+            resMessage.toLowerCase().contains('already') ||
+            resMessage.toLowerCase().contains('tercatat') ||
+            resMessage.toLowerCase().contains('telah');
+
         if (response.statusCode == 200 || response.statusCode == 201) {
           setState(() {
             _isProcessing = false;
             _hasScanned = true;
+            _isAlreadyScanned = isAlready;
           });
           AppSnackbar.showSuccess(
             context,
-            'Berhasil mencatat presensi Kencana (PKKMB) Anda!',
+            isAlready
+                ? 'Anda sudah berhasil absen pada sesi ini!'
+                : 'Berhasil mencatat presensi Kencana (PKKMB) Anda!',
           );
           await Future.delayed(const Duration(seconds: 2));
           if (mounted) context.pop();
@@ -544,142 +519,43 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         _lastScannedCode = null;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.error_outline_rounded, color: context.appColors.onPrimary),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  'Gagal mencatat presensi: ${ErrorHandler.getMessage(e)}',
+      final msg = ErrorHandler.getMessage(e);
+      final isAlreadyDone = msg.toLowerCase().contains('sudah') ||
+          msg.toLowerCase().contains('already') ||
+          msg.toLowerCase().contains('tercatat') ||
+          msg.toLowerCase().contains('telah');
+
+      if (isAlreadyDone) {
+        setState(() {
+          _isProcessing = false;
+          _hasScanned = true;
+          _isAlreadyScanned = true;
+        });
+        AppSnackbar.showSuccess(
+          context,
+          'Anda sudah berhasil absen pada sesi ini!',
+        );
+        await Future.delayed(const Duration(seconds: 2));
+        if (mounted) context.pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.error_outline_rounded, color: context.appColors.onPrimary),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Gagal mencatat presensi: $msg',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
           ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+        );
+      }
     }
-  }
-
-  void _showManualInputDialog() {
-    final nimController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral300,
-                        borderRadius: AppRadius.radiusXs,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: AppColors.neutral200,
-                          borderRadius: AppRadius.radiusMd,
-                        ),
-                        child: Icon(
-                          Icons.person_search_rounded,
-                          color: AppColors.neutral600,
-                          size: 22,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Input NIM Manual',
-                              style: AppTextStyles.titleMd.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Catat kehadiran berdasarkan NIM mahasiswa',
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.neutral500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  TextField(
-                    controller: nimController,
-                    keyboardType: TextInputType.text,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'NIM Mahasiswa',
-                      hintText: 'Contoh: 2204123001',
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                      ),
-                      prefixIcon: const Icon(Icons.badge_rounded),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.pop(),
-
-                          child: const Text('Batal'),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final nim = nimController.text.trim();
-                            if (nim.isNotEmpty) {
-                              context.pop();
-                              _processQrCode(nim);
-                            }
-                          },
-
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
   }
 }

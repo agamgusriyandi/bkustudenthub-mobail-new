@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 
@@ -328,6 +328,16 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
       return;
     }
 
+    final maxScore = widget.item.maxScore > 0 ? widget.item.maxScore : 25.0;
+    if (score < 0 || score > maxScore) {
+      final maxDisplay = maxScore % 1 == 0 ? maxScore.toInt().toString() : maxScore.toString();
+      AppSnackbar.showWarning(
+        context,
+        'Nilai tidak boleh melebihi nilai maksimal (0–$maxDisplay)!',
+      );
+      return;
+    }
+
     setState(() => _isSubmitting = true);
     final provider = context.read<MentorKencanaProvider>();
     final success = await provider.submitEssayScore(
@@ -515,11 +525,10 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
 
           // Grading Inputs Row
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Score Field
               SizedBox(
-                width: 105,
+                width: 110,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -527,39 +536,55 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                       'NILAI (0-${item.maxScore.toInt()})',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
-                        fontWeight: FontWeight.w900,
-                        color: context.appColors.outline,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.neutral900,
+                        letterSpacing: 0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     TextField(
                       controller: _scoreController,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900),
+                      onChanged: (val) {
+                        final numVal = double.tryParse(val);
+                        final maxVal = item.maxScore > 0 ? item.maxScore : 25.0;
+                        if (numVal != null && numVal > maxVal) {
+                          final maxDisplay = maxVal % 1 == 0 ? maxVal.toInt().toString() : maxVal.toString();
+                          _scoreController.text = maxDisplay;
+                          _scoreController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _scoreController.text.length),
+                          );
+                          AppSnackbar.showWarning(
+                            context,
+                            'Nilai maksimal adalah $maxDisplay',
+                          );
+                        }
+                      },
                       decoration: InputDecoration(
                         hintText: '0-${item.maxScore.toInt()}',
                         isDense: true,
                         filled: true,
-                        fillColor: context.appColors.surface,
+                        fillColor: AppColors.neutral100,
                         border: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                          borderSide: const BorderSide(color: AppColors.neutral300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
                           borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(width: AppSpacing.sm),
-
-              // Notes Field
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,48 +593,64 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                       'CATATAN MENTOR',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
-                        fontWeight: FontWeight.w900,
-                        color: context.appColors.outline,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.neutral900,
+                        letterSpacing: 0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     TextField(
                       controller: _feedbackController,
-                      style: AppTextStyles.labelSm,
+                      style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
                       decoration: InputDecoration(
-                        hintText: 'Catatan...',
+                        hintText: 'Tulis catatan...',
+                        hintStyle: const TextStyle(color: AppColors.neutral600, fontSize: 11),
                         isDense: true,
                         filled: true,
-                        fillColor: context.appColors.surface,
+                        fillColor: AppColors.neutral100,
                         border: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                          borderSide: const BorderSide(color: AppColors.neutral300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
                           borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(width: AppSpacing.sm),
-
-              // Action Button
-              BkuButton(
-                onPressed: _isSubmitting ? () {} : _submitScore,
-                isLoading: _isSubmitting,
-                icon: isGraded ? Icons.check_circle_rounded : Icons.save_rounded,
-                text: isGraded ? 'Dinilai' : 'Simpan',
-                height: 38,
-                fullWidth: false,
-                variant: isGraded ? BkuButtonVariant.success : BkuButtonVariant.primary,
-              ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 34,
+              child: OutlinedButton.icon(
+                onPressed: _isSubmitting ? () {} : _submitScore,
+                icon: _isSubmitting
+                    ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2))
+                    : Icon(isGraded ? Icons.check_circle_rounded : Icons.save_rounded, size: 14),
+                label: Text(
+                  isGraded ? 'Dinilai' : 'Simpan Nilai',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: isGraded ? const Color(0xFF059669) : Colors.white,
+                  side: BorderSide(color: isGraded ? const Color(0xFF059669) : context.appColors.primary),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                  backgroundColor: isGraded ? const Color(0xFFECFDF5) : context.appColors.primary,
+                ),
+              ),
+            ),
           ),
         ],
       ),

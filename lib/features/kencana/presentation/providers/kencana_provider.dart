@@ -264,15 +264,13 @@ class KencanaProvider extends ChangeNotifier {
     try {
       final response = await _apiClient.client.post(
         '/kencana-student/banding',
-        data: FormData.fromMap({
-          'alasan': alasan,
-          'alasan_banding': alasan,
+        data: {
           'reason': alasan,
           'type': type,
           if (fileUrl != null && fileUrl.isNotEmpty) 'file_url': fileUrl,
           if (linkBukti != null && linkBukti.isNotEmpty)
             'link_bukti': linkBukti,
-        }),
+        },
       );
       if (response.data != null && response.data['success'] == true) {
         await fetchBandingList();
@@ -304,6 +302,7 @@ class KencanaProvider extends ChangeNotifier {
         if (data is Map<String, dynamic>) {
           return (data['url'] ?? data['file_url'])?.toString();
         }
+        return (response.data['url'] ?? response.data['file_url'])?.toString();
       }
       return null;
     } catch (e) {

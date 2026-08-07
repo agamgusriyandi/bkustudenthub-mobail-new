@@ -125,7 +125,7 @@ class _BkuTextFieldState extends State<BkuTextField> {
             resolvedLabel,
             style: AppTextStyles.labelMd.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.neutral700,
+              color: AppColors.neutral900,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

@@ -89,7 +89,8 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                   delegate: SliverChildListDelegate([
                     _buildSummaryCard(dashboard),
                     const SizedBox(height: AppSpacing.xl),
-                    if (_hasCertificate(certificates)) _buildCertificateSection(certificates!),
+                    if (dashboard?.isGraduated == true || dashboard?.graduationStatus == 'passed' || _hasCertificate(certificates))
+                      _buildCertificateSection(certificates ?? {}),
                     _buildSegmentedTab(),
                     const SizedBox(height: AppSpacing.lg),
                     _buildTabContent(dashboard),

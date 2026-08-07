@@ -2563,14 +2563,20 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: AppColors.neutral200.withAlpha(150),
+                            color: AppColors.neutral100,
                             borderRadius: AppRadius.radiusXl,
+                            border: Border.all(color: AppColors.neutral300),
                           ),
                           child: Text(
                             'TOTAL DATA ${filtered.length}',
-                            style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10),
+                            style: AppTextStyles.labelSm.copyWith(
+                              color: AppColors.neutral900,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 9.5,
+                              letterSpacing: 0.3,
+                            ),
                           ),
                         ),
                       ],

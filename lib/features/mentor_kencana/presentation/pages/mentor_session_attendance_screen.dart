@@ -61,6 +61,8 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
   void _savePresensi() async {
     setState(() => _isSaving = true);
     final provider = context.read<MentorKencanaProvider>();
+    final bool hasValidatedBefore = _attendances.any((e) => e.status == 'Hadir' || e.status == 'Izin' || e.status == 'Sakit' || e.status == 'Alpha');
+    
     final List<Map<String, dynamic>> payload = _attendances.map((e) {
       String mappedStatus = 'absent';
       if (e.status == 'Hadir') {
@@ -78,7 +80,11 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
     if (mounted) {
       setState(() => _isSaving = false);
       if (success) {
-        AppSnackbar.showSuccess(context, 'Berhasil menyimpan presensi');
+        if (hasValidatedBefore) {
+          AppSnackbar.showSuccess(context, 'Anda sudah berhasil memvalidasi & memperbarui presensi sesi ini!');
+        } else {
+          AppSnackbar.showSuccess(context, 'Anda sudah berhasil melakukan presensi!');
+        }
         context.pop();
       } else {
         AppSnackbar.showError(context, 'Gagal menyimpan presensi');
@@ -114,6 +120,8 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
 
   @override
   Widget build(BuildContext context) {
+    final bool hasValidated = _attendances.any((e) => e.status == 'Hadir' || e.status == 'Izin' || e.status == 'Sakit' || e.status == 'Alpha');
+
     final filtered = _attendances.where((e) {
       if (_searchQuery.isNotEmpty) {
         final q = _searchQuery.toLowerCase();
@@ -158,7 +166,6 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Info Card
                         BkuCard(
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(
@@ -174,7 +181,7 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                       children: [
                                         Text(
                                           'Daftar Hadir Mahasiswa',
-                                          style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold),
+                                          style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
@@ -195,9 +202,9 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                           style: OutlinedButton.styleFrom(
                                             padding: const EdgeInsets.symmetric(horizontal: 12),
                                             shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                            side: BorderSide(color: context.appColors.outlineVariant),
+                                            side: const BorderSide(color: AppColors.neutral300),
                                           ),
-                                          child: Text('QR Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: context.appColors.outline)),
+                                          child: const Text('QR Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral900)),
                                         ),
                                       ),
                                       const SizedBox(width: AppSpacing.sm),
@@ -214,13 +221,40 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                           ),
                                           child: _isSaving 
                                             ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                            : const Text('Simpan Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                            : Text(hasValidated ? 'Simpan Perubahan' : 'Simpan Presensi', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
+                              if (hasValidated) ...[
+                                const SizedBox(height: AppSpacing.md),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.success.withAlpha(20),
+                                    borderRadius: AppRadius.radiusMd,
+                                    border: Border.all(color: AppColors.success.withAlpha(50)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.check_circle_rounded, size: 16, color: AppColors.success),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Presensi Sesi Ini Sudah Divalidasi (Sudah Absen)',
+                                          style: AppTextStyles.labelSm.copyWith(
+                                            color: AppColors.success,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -239,14 +273,20 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: AppColors.neutral200.withAlpha(150),
+                                color: AppColors.neutral100,
                                 borderRadius: AppRadius.radiusXl,
+                                border: Border.all(color: AppColors.neutral300),
                               ),
                               child: Text(
                                 'TOTAL DATA ${filtered.length}',
-                                style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10),
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.neutral900,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 9.5,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
                             ),
                           ],

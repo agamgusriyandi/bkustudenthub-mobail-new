@@ -1,12 +1,10 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -361,36 +359,34 @@ class _QuizScreenState extends State<QuizScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
+                            horizontal: 12,
+                            vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.outlineVariant.withValues(alpha: 0.24),
-                            borderRadius: AppRadius.radiusMd,
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             'Soal ${_currentQuestionIndex + 1}/${_questions.length}',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color:
-                                  context.appColors.onSurfaceVariant,
-                              fontWeight: FontWeight.bold,
+                            style: const TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
                             ),
                           ),
                         ),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 400),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm,
+                            horizontal: 10,
+                            vertical: 5,
                           ),
                           decoration: BoxDecoration(
                             color:
                                 _isTimeAlmostUp
                                     ? AppColors.error.withValues(alpha: 0.06)
                                     : Colors.transparent,
-                            borderRadius: AppRadius.radiusMd,
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
@@ -399,18 +395,19 @@ class _QuizScreenState extends State<QuizScreen> {
                                 color:
                                     _isTimeAlmostUp
                                         ? AppColors.error
-                                        : context.appColors.outline,
-                                size: 20,
+                                        : const Color(0xFF64748B),
+                                size: 18,
                               ),
-                              const SizedBox(width: AppSpacing.s6),
+                              const SizedBox(width: 4),
                               Text(
                                 _getFormattedTime(),
-                                style: AppTextStyles.labelMd.copyWith(
+                                style: TextStyle(
                                   color:
                                       _isTimeAlmostUp
                                           ? AppColors.error
-                                          : AppColors.onSurface,
-                                  fontWeight: FontWeight.w900,
+                                          : const Color(0xFF0F172A),
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13,
                                 ),
                               ),
                             ],
@@ -418,60 +415,101 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: 14),
                     ClipRRect(
-                      borderRadius: AppRadius.radiusXs,
+                      borderRadius: BorderRadius.circular(6),
                       child: LinearProgressIndicator(
                         value: (_currentQuestionIndex + 1) / _questions.length,
-                        backgroundColor: AppColors.neutral200,
-                        color: AppColors.neutral600,
-                        minHeight: 8,
+                        backgroundColor: const Color(0xFFF1F5F9),
+                        color: const Color(0xFF16A34A),
+                        minHeight: 6,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxxl),
+                    const SizedBox(height: 24),
                     Text(
                       currentQ['question_text']?.toString() ?? '',
-                      style: AppTextStyles.titleLg.copyWith(
-                        color: AppColors.onSurface,
+                      style: const TextStyle(
+                        color: Color(0xFF0F172A),
                         fontWeight: FontWeight.w900,
-                        fontSize: 20,
+                        fontSize: 18,
+                        height: 1.4,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: 20),
                     if (currentQ['question_type']?.toString().toLowerCase() ==
                         'essay')
                       TextField(
                         controller: _essayController,
                         maxLines: 6,
+                        style: const TextStyle(fontSize: 13.5, color: Color(0xFF0F172A)),
                         onChanged: (val) {
                           _jawabanEssay[qId] = val;
                         },
                         decoration: InputDecoration(
                           hintText: 'Tulis jawaban Anda di sini...',
-                          border: OutlineInputBorder(borderRadius: AppRadius.radiusLg),
+                          hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12.5),
+                          filled: true,
+                          fillColor: const Color(0xFFF8FAFC),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFF16A34A)),
+                          ),
                         ),
                       )
                     else
-                      ...opts.map((opt) {
+                      ...opts.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final opt = entry.value;
                         final optId = (opt['id'] as num).toInt();
+                        final optionLetter = String.fromCharCode(65 + index);
                         return _buildOption(
                           qId: qId,
                           optId: optId,
                           text: opt['option_text']?.toString() ?? '',
+                          letter: optionLetter,
                           isSelected: _jawaban[qId] == optId,
                         );
                       }),
-                    const SizedBox(height: AppSpacing.xxxl),
-                    BkuButton(
-                      onPressed: _handleNext,
-                      text:
-                          _currentQuestionIndex == _questions.length - 1
-                              ? 'Selesai & Kumpulkan'
-                              : 'Pertanyaan Selanjutnya',
-                      isLoading: _isSubmitting,
-                      variant: BkuButtonVariant.primary,
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF16A34A),
+                          elevation: 0,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: _isSubmitting ? null : _handleNext,
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                _currentQuestionIndex == _questions.length - 1
+                                    ? 'Selesai & Kumpulkan'
+                                    : 'Pertanyaan Selanjutnya',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                ),
+                              ),
+                      ),
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: 16),
                     _buildDotNavigation(),
                   ],
                 ),
@@ -732,24 +770,71 @@ class _QuizScreenState extends State<QuizScreen> {
     required String qId,
     required int optId,
     required String text,
+    required String letter,
     required bool isSelected,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () => setState(() => _jawaban[qId] = optId),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: isSelected ? context.appColors.primary.withValues(alpha: 0.06) : context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: isSelected ? context.appColors.primary : AppColors.neutral200),
+            color: isSelected ? const Color(0xFFF0FDF4) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF16A34A) : const Color(0xFFE2E8F0),
+              width: isSelected ? 1.5 : 1,
+            ),
+            boxShadow: isSelected
+                ? []
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
           child: Row(
             children: [
-              Icon(isSelected ? Icons.check_circle : Icons.circle_outlined, color: context.appColors.primary),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(child: Text(text)),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? const Color(0xFF16A34A) : const Color(0xFFF1F5F9),
+                  border: isSelected
+                      ? null
+                      : Border.all(color: const Color(0xFFCBD5E1), width: 1),
+                ),
+                child: Center(
+                  child: isSelected
+                      ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
+                      : Text(
+                          letter,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF64748B),
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF334155),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -769,13 +854,16 @@ class _QuizScreenState extends State<QuizScreen> {
           final isCurrent = i == _currentQuestionIndex;
           return GestureDetector(
             onTap: () => _updateQuestionIndex(i),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-              width: isCurrent ? 28 : 10,
-              height: 10,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              width: isCurrent ? 24 : 8,
+              height: 8,
               decoration: BoxDecoration(
-                color: isCurrent ? context.appColors.primary : (answered ? context.appColors.primary.withValues(alpha: 0.24) : AppColors.neutral200),
-                borderRadius: AppRadius.radiusXs,
+                color: isCurrent
+                    ? const Color(0xFF16A34A)
+                    : (answered ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0)),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
           );
@@ -795,9 +883,13 @@ class _QuizScreenState extends State<QuizScreen> {
     final isPending = !_essayGraded;
     final lulus = _lulus;
     final skor = _nilaiAkhir.toStringAsFixed(0);
-    
-    final color = isPending ? Colors.orange : (lulus ? context.appColors.success : context.appColors.error);
-    final icon = isPending ? Icons.pending_actions_rounded : (lulus ? Icons.verified_rounded : Icons.cancel_rounded);
+
+    final mainColor = isPending
+        ? const Color(0xFF16A34A)
+        : (lulus ? const Color(0xFF16A34A) : const Color(0xFFEF4444));
+    final icon = isPending
+        ? Icons.hourglass_top_rounded
+        : (lulus ? Icons.verified_rounded : Icons.cancel_rounded);
     final title = isPending ? 'Menunggu Penilaian' : (lulus ? 'Selamat!' : 'Oops!');
     final subtitle = isPending
         ? 'Jawaban Anda sedang menunggu penilaian oleh fasilitator.'
@@ -806,7 +898,7 @@ class _QuizScreenState extends State<QuizScreen> {
             : 'Nilai Anda belum mencapai batas kelulusan.');
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -836,131 +928,156 @@ class _QuizScreenState extends State<QuizScreen> {
                   children: [
                     const SizedBox(height: AppSpacing.md),
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 72,
+                      height: 72,
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: color.withValues(alpha: 0.3),
-                            blurRadius: 30,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
                       ),
-                      child: Icon(icon, color: color, size: 54),
+                      child: Icon(icon, color: const Color(0xFF0F172A), size: 36),
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: 16),
                     Text(
                       title,
-                      style: AppTextStyles.display.copyWith(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
-                        color: context.appColors.onSurface,
-                        letterSpacing: -0.5,
+                        fontSize: 20,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: 6),
                     Text(
                       subtitle,
-                      style: AppTextStyles.bodyLg.copyWith(
-                        color: context.appColors.outline,
-                        height: 1.5,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF64748B),
+                        height: 1.4,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: AppSpacing.xxxl),
+                    const SizedBox(height: 24),
                     if (isPending) ...[
                       Container(
-                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: Colors.orange.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(AppRadius.xl),
-                          border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.03),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.orange.withValues(alpha: 0.2),
-                                    shape: BoxShape.circle,
+                                const Text(
+                                  'Status Evaluasi',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF0F172A),
                                   ),
-                                  child: Icon(Icons.history_rounded, color: Colors.orange.shade800, size: 20),
                                 ),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Text(
-                                    'Kuis ini mengandung soal essay yang memerlukan penilaian manual oleh fasilitator.',
-                                    style: AppTextStyles.bodyMd.copyWith(
-                                      color: Colors.orange.shade900,
-                                      fontWeight: FontWeight.w600,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF1F5F9),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  ),
+                                  child: const Text(
+                                    'Menunggu Konfirmasi',
+                                    style: TextStyle(
+                                      color: Color(0xFF475569),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 11,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: AppSpacing.xl),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(AppRadius.lg),
-                              ),
-                              child: Text(
-                                'STATUS: MENUNGGU KONFIRMASI',
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1.0,
+                            const SizedBox(height: 12),
+                            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                            const SizedBox(height: 12),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                Icon(
+                                  Icons.info_outline_rounded,
+                                  color: Color(0xFF64748B),
+                                  size: 18,
                                 ),
-                              ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Kuis ini mengandung soal essay yang memerlukan penilaian manual oleh fasilitator.',
+                                    style: TextStyle(
+                                      color: Color(0xFF334155),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12.5,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ] else ...[
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxl, horizontal: AppSpacing.xl),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 24,
+                          horizontal: 20,
+                        ),
                         decoration: BoxDecoration(
-                          color: context.appColors.surface,
-                          borderRadius: BorderRadius.circular(AppRadius.xl),
-                          border: Border.all(color: AppColors.neutral200),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.neutral900.withValues(alpha: 0.06),
-                              blurRadius: 30,
-                              offset: const Offset(0, 10),
+                              color: Colors.black.withValues(alpha: 0.03),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               'NILAI AKHIR',
-                              style: AppTextStyles.labelMd.copyWith(
-                                color: context.appColors.outlineVariant,
-                                fontWeight: FontWeight.w900,
+                              style: TextStyle(
+                                color: Color(0xFF64748B),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 12,
                                 letterSpacing: 1.5,
                               ),
                             ),
-                            const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: 8),
                             Text(
                               skor,
-                              style: AppTextStyles.display.copyWith(
-                                color: color,
-                                fontSize: 72,
+                              style: TextStyle(
+                                color: mainColor,
+                                fontSize: 64,
                                 fontWeight: FontWeight.w900,
                                 height: 1.0,
                               ),
                             ),
-                            const SizedBox(height: AppSpacing.xxxl),
-                            Container(height: 1, color: AppColors.neutral100),
-                            const SizedBox(height: AppSpacing.xl),
+                            const SizedBox(height: 20),
+                            Container(height: 1, color: const Color(0xFFF1F5F9)),
+                            const SizedBox(height: 16),
                             Row(
                               children: [
                                 Expanded(
@@ -968,16 +1085,20 @@ class _QuizScreenState extends State<QuizScreen> {
                                     '$_jumlahBenar',
                                     'Jawaban Benar',
                                     Icons.check_circle_rounded,
-                                    context.appColors.success,
+                                    const Color(0xFF16A34A),
                                   ),
                                 ),
-                                Container(width: 1, height: 50, color: AppColors.neutral100),
+                                Container(
+                                  width: 1,
+                                  height: 44,
+                                  color: const Color(0xFFF1F5F9),
+                                ),
                                 Expanded(
                                   child: _buildResultStat(
                                     '$_jumlahSalah',
                                     'Jawaban Salah',
                                     Icons.cancel_rounded,
-                                    context.appColors.error,
+                                    const Color(0xFFEF4444),
                                   ),
                                 ),
                               ],
@@ -986,22 +1107,42 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: AppSpacing.xxxl),
+                    const SizedBox(height: 28),
                     SizedBox(
                       width: double.infinity,
-                      height: 56,
-                      child: BkuButton(
-                        text: 'Kembali ke Beranda',
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF16A34A),
+                          elevation: 0,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
                         onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Kembali ke Beranda',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    if (!isPending && !lulus && _attemptsUsed < _maxAttempts)
+                    if (!isPending && !lulus && _attemptsUsed < _maxAttempts) ...[
+                      const SizedBox(height: 12),
                       SizedBox(
                         width: double.infinity,
-                        height: 56,
-                        child: BkuButton(
-                          text: 'Ulangi Kuis',
+                        height: 48,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: const Color(0xFFF1F5F9),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
                           onPressed: () {
                             setState(() {
                               _isFinished = false;
@@ -1009,10 +1150,18 @@ class _QuizScreenState extends State<QuizScreen> {
                             });
                             _loadSoal();
                           },
-                          variant: BkuButtonVariant.secondary,
+                          child: const Text(
+                            'Ulangi Kuis',
+                            style: TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ),
-                    const SizedBox(height: AppSpacing.xxl),
+                    ],
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

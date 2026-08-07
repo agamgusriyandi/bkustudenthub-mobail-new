@@ -249,14 +249,20 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: context.appColors.primary.withAlpha(20),
+                                color: AppColors.neutral100,
                                 borderRadius: AppRadius.radiusXl,
+                                border: Border.all(color: AppColors.neutral300),
                               ),
                               child: Text(
                                 'TOTAL DATA ${filteredSessions.length}',
-                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary, fontWeight: FontWeight.bold, fontSize: 10),
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.neutral900,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 9.5,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
                             ),
                           ],
@@ -265,11 +271,26 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                         TextField(
                           controller: _sessionSearchController,
                           onChanged: (val) => setState(() => _sessionSearch = val),
+                          style: AppTextStyles.bodySm,
                           decoration: InputDecoration(
                             hintText: 'Cari nama sesi...',
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            hintStyle: AppTextStyles.bodySm.copyWith(color: context.appColors.outline.withValues(alpha: 0.7)),
+                            prefixIcon: const Icon(Icons.search_rounded, size: 18),
+                            filled: true,
+                            fillColor: AppColors.neutral100,
+                            border: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: const BorderSide(color: AppColors.neutral300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: const BorderSide(color: AppColors.neutral300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           ),
                         ),
                       ],
@@ -288,6 +309,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final session = filteredSessions[index];
+                        final bool isValidated = session.attendanceCount > 0;
                         return BkuCard(
                           margin: const EdgeInsets.only(bottom: AppSpacing.md),
                           padding: const EdgeInsets.all(AppSpacing.md),
@@ -298,9 +320,35 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(session.title, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                                    Text(session.title, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900)),
                                     const SizedBox(height: 2),
                                     Text(session.stageName, style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                                    if (isValidated) ...[
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.success.withAlpha(20),
+                                          borderRadius: AppRadius.radiusSm,
+                                          border: Border.all(color: AppColors.success.withAlpha(50)),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(Icons.check_circle_rounded, size: 10, color: AppColors.success),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              'Sudah Divalidasi (${session.attendanceCount} Hadir)',
+                                              style: AppTextStyles.labelSm.copyWith(
+                                                color: AppColors.success,
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -314,14 +362,14 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                   onPressed: () {
                                     context.push('/mentor-kencana/attendance/session/${session.id}?title=${Uri.encodeComponent(session.title)}');
                                   },
-                                  icon: const Icon(Icons.fact_check_outlined, size: 16),
-                                  label: Text('Validasi Absensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                  icon: Icon(isValidated ? Icons.edit_note_rounded : Icons.fact_check_outlined, size: 14),
+                                  label: Text(isValidated ? 'Edit Absensi' : 'Validasi Absensi', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor: context.appColors.onSurface,
-                                    side: const BorderSide(color: AppColors.neutral300),
+                                    foregroundColor: AppColors.neutral900,
+                                    side: BorderSide(color: isValidated ? AppColors.success.withAlpha(80) : AppColors.neutral300),
                                     padding: const EdgeInsets.symmetric(horizontal: 10),
                                     shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                    backgroundColor: AppColors.neutral100,
+                                    backgroundColor: isValidated ? AppColors.success.withAlpha(15) : AppColors.neutral100,
                                   ),
                                 ),
                               ),
@@ -335,7 +383,6 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
             ),
           ),
           
-          // TAB 2: Permohonan Izin
           RefreshIndicator(
             onRefresh: () => provider.fetchAbsenceRequests(),
             color: context.appColors.primary,
@@ -362,14 +409,20 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: context.appColors.primary.withAlpha(20),
+                                color: AppColors.neutral100,
                                 borderRadius: AppRadius.radiusXl,
+                                border: Border.all(color: AppColors.neutral300),
                               ),
                               child: Text(
                                 'TOTAL DATA ${filteredAbsences.length}',
-                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary, fontWeight: FontWeight.bold, fontSize: 10),
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.neutral900,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 9.5,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
                             ),
                           ],
@@ -382,10 +435,25 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                               child: TextField(
                                 controller: _absenceSearchController,
                                 onChanged: (val) => setState(() => _absenceSearch = val),
+                                style: AppTextStyles.bodySm,
                                 decoration: InputDecoration(
                                   hintText: 'Cari Mahasiswa...',
+                                  hintStyle: AppTextStyles.bodySm.copyWith(color: context.appColors.outline.withValues(alpha: 0.7)),
                                   prefixIcon: const Icon(Icons.search_rounded, size: 18),
-                                  border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                                  filled: true,
+                                  fillColor: AppColors.neutral100,
+                                  border: OutlineInputBorder(
+                                    borderRadius: AppRadius.radiusMd,
+                                    borderSide: const BorderSide(color: AppColors.neutral300),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: AppRadius.radiusMd,
+                                    borderSide: const BorderSide(color: AppColors.neutral300),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: AppRadius.radiusMd,
+                                    borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                                  ),
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                                 ),
                               ),
@@ -398,8 +466,17 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                 initialValue: _absenceStatusFilter,
                                 decoration: InputDecoration(
                                   isDense: true,
+                                  filled: true,
+                                  fillColor: AppColors.neutral100,
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                  border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+                                  border: OutlineInputBorder(
+                                    borderRadius: AppRadius.radiusMd,
+                                    borderSide: const BorderSide(color: AppColors.neutral300),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: AppRadius.radiusMd,
+                                    borderSide: const BorderSide(color: AppColors.neutral300),
+                                  ),
                                 ),
                                 style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900, fontSize: 11),
                                 items: const [

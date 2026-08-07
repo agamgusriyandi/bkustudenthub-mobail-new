@@ -519,6 +519,43 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
       return true;
     }).toList();
 
+    double totalScore = 0;
+    int scoreCount = 0;
+
+    for (final def in defs) {
+      final key = def['key']?.toString() ?? def['id']?.toString() ?? def['item_name']?.toString() ?? '';
+      final label = def['label']?.toString() ?? def['name']?.toString() ?? def['title']?.toString() ?? key;
+      final isFakultasOnly = label.contains('[Fakultas]') || key.toLowerCase().contains('fakultas') || key.toLowerCase().contains('faculty');
+      final targetScope = mentorScope == 'faculty' ? 'faculty' : (isFakultasOnly ? 'faculty' : 'university');
+
+      final item = items.where((i) {
+        final iComp = i['component']?.toString() ?? '';
+        final iName = i['item_name']?.toString() ?? '';
+        final iScope = i['scope_type']?.toString() ?? 'university';
+        return iComp == component && iName == key && iScope == targetScope;
+      }).firstOrNull;
+
+      final scoreStr = item?['score']?.toString();
+      if (scoreStr != null && scoreStr != '-') {
+        final numVal = double.tryParse(scoreStr);
+        if (numVal != null) {
+          totalScore += numVal;
+          scoreCount++;
+        }
+      }
+    }
+
+    final double computedAvg = scoreCount > 0
+        ? (totalScore / scoreCount)
+        : (double.tryParse(average?.toString() ?? '0') ?? 0.0);
+
+    String displayScore;
+    if (computedAvg == 0 || component == 'requirements') {
+      displayScore = computedAvg == 0 ? '0' : (computedAvg % 1 == 0 ? computedAvg.toInt().toString() : computedAvg.toStringAsFixed(1));
+    } else {
+      displayScore = computedAvg % 1 == 0 ? computedAvg.toInt().toString() : computedAvg.toStringAsFixed(1);
+    }
+
     return BkuCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -546,7 +583,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     Text(
                       title,
                       style: AppTextStyles.labelMd.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
                         color: context.appColors.onSurface,
                       ),
@@ -560,7 +597,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     borderRadius: AppRadius.radiusLg,
                   ),
                   child: Text(
-                    num.tryParse(average?.toString() ?? '0')?.toStringAsFixed(1) ?? '0.0',
+                    displayScore,
                     style: AppTextStyles.titleSm.copyWith(
                       fontWeight: FontWeight.w900,
                       color: context.appColors.onPrimary,
@@ -1011,8 +1048,8 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
             child: Text(
               title,
               style: AppTextStyles.titleSm.copyWith(
-                fontWeight: FontWeight.w900, 
-                color: context.appColors.primary,
+                fontWeight: FontWeight.bold, 
+                color: AppColors.neutral900,
                 letterSpacing: 0.5,
               ),
               textAlign: TextAlign.center,
@@ -1246,8 +1283,8 @@ class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> 
               Text(
                 '5. PENILAIAN ESSAY QUIZ',
                 style: AppTextStyles.labelMd.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: context.appColors.primary,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.neutral900,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -1264,21 +1301,22 @@ class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> 
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
-              color: context.appColors.surface,
+              color: AppColors.neutral100,
               borderRadius: AppRadius.radiusMd,
-              border: Border.all(color: context.appColors.outline.withAlpha(60)),
+              border: Border.all(color: AppColors.neutral300),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<int?>(
                 value: _selectedQuizId,
                 isExpanded: true,
+                dropdownColor: context.appColors.surface,
                 icon: Icon(Icons.keyboard_arrow_down_rounded, color: context.appColors.primary),
-                hint: Text('-- Pilih Kuis Essay --', style: AppTextStyles.labelSm),
+                hint: Text('-- Pilih Kuis Essay --', style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral700)),
                 items: allQuizzes.map((q) => DropdownMenuItem<int?>(
                   value: q.id,
                   child: Text(
                     q.title.isNotEmpty ? q.title : 'Kuis #${q.id}',
-                    style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                    style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -1361,6 +1399,16 @@ class _MenteeEssayCardState extends State<_MenteeEssayCard> {
     final score = double.tryParse(scoreText);
     if (score == null) {
       AppSnackbar.showWarning(context, 'Nilai harus berupa angka valid');
+      return;
+    }
+
+    final maxScore = widget.item.maxScore > 0 ? widget.item.maxScore : 25.0;
+    if (score < 0 || score > maxScore) {
+      final maxDisplay = maxScore % 1 == 0 ? maxScore.toInt().toString() : maxScore.toString();
+      AppSnackbar.showWarning(
+        context,
+        'Nilai tidak boleh melebihi nilai maksimal (0–$maxDisplay)!',
+      );
       return;
     }
 
@@ -1452,10 +1500,10 @@ class _MenteeEssayCardState extends State<_MenteeEssayCard> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 105,
+                width: 110,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1463,36 +1511,55 @@ class _MenteeEssayCardState extends State<_MenteeEssayCard> {
                       'NILAI (0-${item.maxScore.toInt()})',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
-                        fontWeight: FontWeight.w900,
-                        color: context.appColors.outline,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.neutral900,
+                        letterSpacing: 0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     TextField(
                       controller: _scoreController,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900),
+                      onChanged: (val) {
+                        final numVal = double.tryParse(val);
+                        final maxVal = item.maxScore > 0 ? item.maxScore : 25.0;
+                        if (numVal != null && numVal > maxVal) {
+                          final maxDisplay = maxVal % 1 == 0 ? maxVal.toInt().toString() : maxVal.toString();
+                          _scoreController.text = maxDisplay;
+                          _scoreController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _scoreController.text.length),
+                          );
+                          AppSnackbar.showWarning(
+                            context,
+                            'Nilai maksimal adalah $maxDisplay',
+                          );
+                        }
+                      },
                       decoration: InputDecoration(
                         hintText: '0-${item.maxScore.toInt()}',
                         isDense: true,
                         filled: true,
-                        fillColor: context.appColors.surface,
+                        fillColor: AppColors.neutral100,
                         border: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                          borderSide: const BorderSide(color: AppColors.neutral300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
                           borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1501,45 +1568,64 @@ class _MenteeEssayCardState extends State<_MenteeEssayCard> {
                       'CATATAN MENTOR',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
-                        fontWeight: FontWeight.w900,
-                        color: context.appColors.outline,
-                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.neutral900,
+                        letterSpacing: 0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     TextField(
                       controller: _feedbackController,
-                      style: AppTextStyles.labelSm,
+                      style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
                       decoration: InputDecoration(
-                        hintText: 'Catatan...',
+                        hintText: 'Tulis catatan...',
+                        hintStyle: const TextStyle(color: AppColors.neutral600, fontSize: 11),
                         isDense: true,
                         filled: true,
-                        fillColor: context.appColors.surface,
+                        fillColor: AppColors.neutral100,
                         border: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.outline.withAlpha(60)),
+                          borderSide: const BorderSide(color: AppColors.neutral300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusSm,
+                          borderSide: const BorderSide(color: AppColors.neutral300),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: AppRadius.radiusSm,
                           borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              BkuButton(
-                onPressed: _isSubmitting ? () {} : _submitScore,
-                isLoading: _isSubmitting,
-                icon: isGraded ? Icons.check_circle_rounded : Icons.save_rounded,
-                text: isGraded ? 'Dinilai' : 'Simpan',
-                height: 38,
-                fullWidth: false,
-                variant: isGraded ? BkuButtonVariant.success : BkuButtonVariant.primary,
-              ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 34,
+              child: OutlinedButton.icon(
+                onPressed: _isSubmitting ? () {} : _submitScore,
+                icon: _isSubmitting
+                    ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2))
+                    : Icon(isGraded ? Icons.check_circle_rounded : Icons.save_rounded, size: 14),
+                label: Text(
+                  isGraded ? 'Dinilai' : 'Simpan Nilai',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: isGraded ? const Color(0xFF059669) : Colors.white,
+                  side: BorderSide(color: isGraded ? const Color(0xFF059669) : context.appColors.primary),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                  backgroundColor: isGraded ? const Color(0xFFECFDF5) : context.appColors.primary,
+                ),
+              ),
+            ),
           ),
         ],
       ),

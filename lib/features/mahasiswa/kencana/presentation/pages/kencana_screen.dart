@@ -397,18 +397,19 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   ],
                 ],
               ),
-              if (dashboard.isGraduated || dashboard.graduationStatus == 'passed') ...[
-                const SizedBox(height: AppSpacing.lg),
-                SizedBox(
-                  width: double.infinity,
-                  child: BkuButton(
-                    text: 'Download Sertifikat PDF',
-                    icon: Icons.picture_as_pdf_rounded,
-                    variant: BkuButtonVariant.danger,
-                    onPressed: () => context.push(AppRoutes.kencanaCertificate),
+              if (dashboard.isGraduated || dashboard.graduationStatus == 'passed')
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: BkuButton(
+                      text: 'Download Sertifikat PDF',
+                      icon: Icons.picture_as_pdf_rounded,
+                      variant: BkuButtonVariant.danger,
+                      onPressed: () => context.push(AppRoutes.kencanaCertificate),
+                    ),
                   ),
                 ),
-              ],
             ],
           ),
         ],
@@ -806,7 +807,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),

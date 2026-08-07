@@ -50,9 +50,52 @@ class MentorKencanaProvider extends ChangeNotifier {
   // Phase 3: Mentor Groups
   List<MentorGroup> _mentorGroups = [];
   List<MentorGroup> get mentorGroups => _mentorGroups;
+  
+  List<MenteeData> _allMentees = [];
+  List<MenteeData> get allMentees => _allMentees;
 
   MentorGroupDetail? _mentorGroupDetail;
   MentorGroupDetail? get mentorGroupDetail => _mentorGroupDetail;
+
+  Map<String, dynamic>? _scoreComponents;
+  Map<String, dynamic>? get scoreComponents => _scoreComponents;
+
+  Future<void> fetchScoreComponents() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get('/kencana-mentor/score-components');
+      _scoreComponents = response.data['data'] as Map<String, dynamic>?;
+      notifyListeners();
+    } on DioException catch (e) {
+      _setError(e.response?.data['message'] ?? 'Gagal memuat komponen penilaian');
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  bool get isHandbookDisabled {
+    if (_scoreComponents == null) return false;
+    final scopeType = _scoreComponents!['scope_type'] as String? ?? 'faculty';
+    final components = _scoreComponents!['components'] as List? ?? [];
+    
+    // Find the component named 'handbook' (case-insensitive)
+    dynamic handbookComp;
+    for (var c in components) {
+      if (c is Map && c['item_name']?.toString().toLowerCase() == 'handbook') {
+        handbookComp = c;
+        break;
+      }
+    }
+    if (handbookComp == null) return true;
+    if (scopeType == 'university') {
+      return handbookComp['show_in_univ'] == false;
+    } else {
+      return handbookComp['show_in_faculty'] == false;
+    }
+  }
 
   // Phase 3: Mentor Notes
   List<MentorNote> _mentorNotes = [];
@@ -209,6 +252,28 @@ class MentorKencanaProvider extends ChangeNotifier {
       }
     } on DioException catch (e) {
       _setError(e.response?.data['message'] ?? 'Gagal memuat daftar mentee');
+    } catch (e) {
+      _setError('Terjadi kesalahan tidak terduga');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchAllMentees() async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      final response = await _apiClient.client.get('/kencana-mentor/students');
+      final resData =
+          (response.data is Map)
+              ? (response.data['data'] ?? response.data)
+              : response.data;
+      final menteeList = resData is List ? resData : [];
+      _allMentees = menteeList.map((e) => MenteeData.fromJson(e)).toList();
+      _errorMessage = null;
+      notifyListeners();
+    } on DioException catch (e) {
+      debugPrint("ERROR fetchAllMentees: $e"); _setError(e.response?.data['message'] ?? 'Gagal memuat mentee');
     } catch (e) {
       _setError('Terjadi kesalahan tidak terduga');
     } finally {
@@ -1100,9 +1165,8 @@ class MentorKencanaProvider extends ChangeNotifier {
   }) async {
     try {
       final response = await _apiClient.client.post(
-        '/kencana-mentor/handbook/review',
+        '/kencana-mentor/students/$studentId/handbook/review',
         data: {
-          'student_id': studentId,
           'action': action,
           'feedback': feedback,
         },
@@ -1114,6 +1178,7 @@ class MentorKencanaProvider extends ChangeNotifier {
       }
       return false;
     } catch (e) {
+      debugPrint("Error reviewHandbook: $e");
       return false;
     }
   }

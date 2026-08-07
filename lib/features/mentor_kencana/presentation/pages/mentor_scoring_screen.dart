@@ -263,14 +263,20 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: AppColors.neutral200.withAlpha(150),
+                                color: AppColors.neutral100,
                                 borderRadius: AppRadius.radiusXl,
+                                border: Border.all(color: AppColors.neutral300),
                               ),
                               child: Text(
                                 'TOTAL DATA ${filtered.length}',
-                                style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10),
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.neutral900,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 9.5,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
                             ),
                           ],
@@ -280,11 +286,26 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                         TextField(
                           controller: _searchController,
                           onChanged: (val) => setState(() => _searchQuery = val),
+                          style: AppTextStyles.bodySm,
                           decoration: InputDecoration(
                             hintText: 'Cari nama atau NIM mahasiswa...',
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            hintStyle: AppTextStyles.bodySm.copyWith(color: context.appColors.outline.withValues(alpha: 0.7)),
+                            prefixIcon: const Icon(Icons.search_rounded, size: 18),
+                            filled: true,
+                            fillColor: AppColors.neutral100,
+                            border: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: const BorderSide(color: AppColors.neutral300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: const BorderSide(color: AppColors.neutral300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: AppRadius.radiusMd,
+                              borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           ),
                         ),
                       ],
@@ -325,22 +346,23 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(m.nim, style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.primary)),
-                                        Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
-                                        Text(m.faculty, style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                                        Text(m.nim, style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900)),
+                                        Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900)),
+                                        Text(m.faculty, style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral700, fontSize: 10)),
                                       ],
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: gradStatus == 'passed' ? AppColors.success.withAlpha(20) : AppColors.neutral200,
+                                      color: gradStatus == 'passed' ? AppColors.success.withAlpha(20) : AppColors.neutral100,
                                       borderRadius: AppRadius.radiusSm,
+                                      border: Border.all(color: gradStatus == 'passed' ? AppColors.success.withAlpha(50) : AppColors.neutral300),
                                     ),
                                     child: Text(
                                       gradStatus.replaceAll('_', ' '),
                                       style: AppTextStyles.labelSm.copyWith(
-                                        color: gradStatus == 'passed' ? AppColors.success : AppColors.neutral700,
+                                        color: gradStatus == 'passed' ? AppColors.success : AppColors.neutral900,
                                         fontSize: 9,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -350,7 +372,6 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                               ),
                               const SizedBox(height: AppSpacing.md),
 
-                              // Scores Breakdown Row
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -364,18 +385,21 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
 
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    context.push('/mentor-kencana/mentee/${m.id}');
-                                  },
-                                  icon: const Icon(Icons.edit_outlined, size: 14),
-                                  label: const Text('Edit Nilai', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: context.appColors.primary,
-                                    side: BorderSide(color: context.appColors.primary.withAlpha(50)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                    backgroundColor: context.appColors.primary.withAlpha(10),
+                                child: SizedBox(
+                                  height: 30,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      context.push('/mentor-kencana/mentee/${m.id}');
+                                    },
+                                    icon: const Icon(Icons.edit_outlined, size: 13),
+                                    label: const Text('Edit Nilai', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: AppColors.neutral900,
+                                      side: const BorderSide(color: AppColors.neutral300),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                                      backgroundColor: AppColors.neutral100,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -418,20 +442,27 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: Text('Lembar Pengisian Kolektif', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
+                                    child: Text('Lembar Pengisian Kolektif', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900)),
                                   ),
                                   const SizedBox(width: 8),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: AppRadius.radiusSm),
-                                    child: Text('$mentorScope SCOPE', style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.neutral100,
+                                      borderRadius: AppRadius.radiusXl,
+                                      border: Border.all(color: AppColors.neutral300),
+                                    ),
+                                    child: Text(
+                                      '$mentorScope SCOPE',
+                                      style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: AppColors.neutral900),
+                                    ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'Masukkan nilai (0-100) langsung ke form di bawah.',
-                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10),
+                                style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral700, fontSize: 10),
                               ),
                               const SizedBox(height: AppSpacing.md),
                               BkuButton(
@@ -480,8 +511,8 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
-                              Text('NIM: ${m.nim}', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 10)),
+                              Text(m.name, style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900)),
+                              Text('NIM: ${m.nim}', style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral700, fontSize: 10)),
                               const SizedBox(height: AppSpacing.md),
                               if (manualItems.isEmpty)
                                 Text('Tidak ada komponen nilai manual yang dapat diisi', style: TextStyle(fontSize: 11, color: context.appColors.outline))
@@ -525,14 +556,14 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
   Widget _buildScoreColumn(String label, String val, {bool isHighlighted = false}) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral700)),
         const SizedBox(height: 2),
         Text(
           val,
-          style: TextStyle(
-            fontSize: isHighlighted ? 15 : 13,
-            fontWeight: isHighlighted ? FontWeight.w900 : FontWeight.bold,
-            color: isHighlighted ? AppColors.primary : AppColors.neutral900,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: AppColors.neutral900,
           ),
         ),
       ],
@@ -543,18 +574,32 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600), overflow: TextOverflow.ellipsis),
-        const SizedBox(height: 2),
+        Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral900), overflow: TextOverflow.ellipsis),
+        const SizedBox(height: 3),
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.neutral900),
           decoration: InputDecoration(
             isDense: true,
             hintText: '-',
+            hintStyle: const TextStyle(color: AppColors.neutral500),
+            filled: true,
+            fillColor: AppColors.neutral100,
             contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            border: OutlineInputBorder(borderRadius: AppRadius.radiusSm),
+            border: OutlineInputBorder(
+              borderRadius: AppRadius.radiusSm,
+              borderSide: const BorderSide(color: AppColors.neutral300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: AppRadius.radiusSm,
+              borderSide: const BorderSide(color: AppColors.neutral300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: AppRadius.radiusSm,
+              borderSide: const BorderSide(color: AppColors.neutral500, width: 1.5),
+            ),
           ),
         ),
       ],

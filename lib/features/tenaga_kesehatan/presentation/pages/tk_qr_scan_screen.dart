@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/scanner_overlay.dart';
@@ -80,25 +79,9 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
 
           // Scan Area (transparent cutout)
           Center(
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Container(
-                  width: 280 + _animation.value * 2,
-                  height: 280 + _animation.value * 2,
-                  decoration: BoxDecoration(
-                    borderRadius: AppRadius.radiusXl,
-                    border: Border.all(color: context.appColors.surface, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.appColors.surface.withAlpha(40),
-                        blurRadius: 15,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                );
-              },
+            child: SizedBox(
+              width: 280,
+              height: 280,
             ),
           ),
 
@@ -238,25 +221,6 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
               ],
             ),
           ),
-
-          // Manual Input Button
-          Positioned(
-            bottom: 32,
-            left: 24,
-            right: 24,
-            child: SafeArea(
-              child: OutlinedButton.icon(
-                onPressed: () => _showManualInputDialog(),
-                icon: const Icon(Icons.keyboard_rounded),
-                label: const Text('Input NIM Manual'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.appColors.surface,
-                  side: BorderSide(color: context.appColors.surface.withAlpha(179)),
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -346,12 +310,6 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
               ),
               backgroundColor: context.appColors.error,
               behavior: SnackBarBehavior.floating,
-
-              action: SnackBarAction(
-                label: 'Input Manual',
-                textColor: context.appColors.surface,
-                onPressed: () => _showManualInputDialog(),
-              ),
             ),
           );
           _lastScannedCode = null;
@@ -368,121 +326,5 @@ class _TkQrScanScreenState extends State<TkQrScanScreen>
         _lastScannedCode = null;
       }
     }
-  }
-
-  void _showManualInputDialog() {
-    final nimController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral300,
-                        borderRadius: AppRadius.radiusXs,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: AppColors.neutral200,
-                          borderRadius: AppRadius.radiusMd,
-                        ),
-                        child: Icon(
-                          Icons.person_search_rounded,
-                          color: AppColors.neutral600,
-                          size: 22,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Input NIM Manual',
-                              style: AppTextStyles.titleMd.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Cari mahasiswa berdasarkan NIM',
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.neutral500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  TextField(
-                    controller: nimController,
-                    keyboardType: TextInputType.text,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: 'NIM',
-                      hintText: 'Contoh: 12345678',
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                      ),
-                      prefixIcon: const Icon(Icons.badge_rounded),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.pop(),
-
-                          child: const Text('Batal'),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final nim = nimController.text.trim();
-                            if (nim.isNotEmpty) {
-                              context.pop();
-                              _processQrCode(nim);
-                            }
-                          },
-
-                          child: const Text('Cari'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
   }
 }

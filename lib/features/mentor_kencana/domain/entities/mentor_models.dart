@@ -129,6 +129,7 @@ class MenteeData {
   final String programStudi;
   final String faculty;
   final String status;
+  final String handbookStatus;
   final double score;
   final String? avatarUrl;
 
@@ -139,6 +140,7 @@ class MenteeData {
     this.programStudi = '',
     required this.faculty,
     required this.status,
+    this.handbookStatus = '',
     required this.score,
     this.avatarUrl,
   });
@@ -239,6 +241,7 @@ class MenteeData {
       faculty: facultyValue.toString(),
       programStudi: prodiValue.toString(),
       status: json['status'] ?? json['Status'] ?? 'Belum Lulus',
+      handbookStatus: json['handbook_status'] ?? json['handbookStatus'] ?? 'BELUM DIKERJAKAN',
       score:
           double.tryParse(
             (json['score'] ?? json['nilai'] ?? json['Nilai'] ?? 0).toString(),

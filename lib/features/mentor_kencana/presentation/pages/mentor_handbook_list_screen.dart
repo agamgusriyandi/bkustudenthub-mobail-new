@@ -32,7 +32,9 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<MentorKencanaProvider>().fetchMentees();
+        final prov = context.read<MentorKencanaProvider>();
+        prov.fetchAllMentees();
+        prov.fetchScoreComponents();
       }
     });
   }
@@ -41,14 +43,6 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  List<MenteeData> _getAllMentees(List<MenteeGroup> groups) {
-    final List<MenteeData> list = [];
-    for (var g in groups) {
-      list.addAll(g.mentees);
-    }
-    return list;
   }
 
   List<MenteeData> _getFilteredMentees(List<MenteeData> mentees) {
@@ -71,7 +65,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MentorKencanaProvider>();
-    final allMentees = _getAllMentees(provider.groups);
+    final allMentees = provider.allMentees.where((m) => m.status.toLowerCase() == 'active').toList();
     final filteredMentees = _getFilteredMentees(allMentees);
 
     final uniqueFaculties = allMentees
@@ -81,10 +75,82 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
         .toList()
       ..sort();
 
+    final isHandbookDisabled = provider.isHandbookDisabled;
+
+    if (isHandbookDisabled) {
+      final scopeType = provider.scoreComponents?['scope_type'] as String? ?? 'faculty';
+      return Scaffold(
+        backgroundColor: context.appColors.surface,
+        body: CustomScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          slivers: [
+            BkuAppBar(
+              title: 'Persetujuan Handbook',
+              info: 'Evaluasi dan setujui lembar handbook mahasiswa bimbingan Anda.',
+              variant: AppBarVariant.student,
+              isExpandable: false,
+              showBackButton: true,
+              onBack: () => context.pop(),
+            ),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Center(
+                  child: BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          decoration: BoxDecoration(
+                            color: AppColors.warningContainer,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.warning.withAlpha(40)),
+                          ),
+                          child: const Icon(
+                            Icons.warning_amber_rounded,
+                            size: 48,
+                            color: AppColors.warning,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        Text(
+                          'PERSETUJUAN HANDBOOK DINONAKTIFKAN',
+                          style: AppTextStyles.titleSm.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.2,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Text(
+                          'Berdasarkan konfigurasi penilaian yang sedang berlaku, fitur persetujuan handbook dinonaktifkan untuk Fasilitator tingkat ${scopeType == 'faculty' ? 'Faculty' : 'University'}.',
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: AppColors.neutral500,
+                            height: 1.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
-        onRefresh: () => provider.fetchMentees(),
+        onRefresh: () async {
+          await provider.fetchAllMentees();
+          await provider.fetchScoreComponents();
+        },
         color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -125,16 +191,19 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: AppColors.neutral200,
+                            color: AppColors.neutral100,
                             borderRadius: AppRadius.radiusXl,
+                            border: Border.all(color: AppColors.neutral300),
                           ),
                           child: Text(
                             'Total Data ${filteredMentees.length}',
                             style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.onSurface,
-                              fontWeight: FontWeight.bold,
+                              color: AppColors.neutral900,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 9.5,
+                              letterSpacing: 0.3,
                             ),
                           ),
                         ),
@@ -311,29 +380,58 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Status Badge
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral200.withAlpha(120),
-                                  borderRadius: AppRadius.radiusXl,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 8, height: 8,
-                                      decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.neutral400),
+                              Builder(
+                                builder: (context) {
+                                  final s = mentee.handbookStatus.toUpperCase();
+                                  Color dotColor = AppColors.neutral400;
+                                  Color bgColor = AppColors.neutral200.withAlpha(120);
+                                  Color textColor = AppColors.neutral600;
+                                  String text = 'BELUM DIKERJAKAN';
+
+                                  if (s == 'APPROVED' || s == 'DISETUJUI') {
+                                    dotColor = AppColors.success;
+                                    bgColor = AppColors.successContainer;
+                                    textColor = AppColors.onSuccessContainer;
+                                    text = 'DISETUJUI';
+                                  } else if (s == 'SUBMITTED' || s == 'WAITING_REVIEW' || s == 'MENUNGGU REVIEW') {
+                                    dotColor = AppColors.warning;
+                                    bgColor = AppColors.warningContainer;
+                                    textColor = AppColors.onWarningContainer;
+                                    text = 'MENUNGGU REVIEW';
+                                  } else if (s == 'REJECTED' || s == 'REVISION' || s == 'DITOLAK') {
+                                    dotColor = AppColors.error;
+                                    bgColor = AppColors.errorContainer;
+                                    textColor = AppColors.onErrorContainer;
+                                    text = s == 'REVISION' ? 'REVISI' : 'DITOLAK';
+                                  } else {
+                                    text = 'BELUM DIKERJAKAN';
+                                  }
+
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: bgColor,
+                                      borderRadius: AppRadius.radiusXl,
                                     ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      'BELUM DIKERJAKAN',
-                                      style: TextStyle(
-                                        color: AppColors.neutral600,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 8, height: 8,
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          text,
+                                          style: TextStyle(
+                                            color: textColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  );
+                                }
                               ),
                               
                               SizedBox(
