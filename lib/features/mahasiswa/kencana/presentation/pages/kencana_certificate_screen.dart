@@ -134,8 +134,6 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     _buildCertificateInfo(provider.certificate!),
                     const SizedBox(height: AppSpacing.xl),
-                    _buildPredicateBadge(provider.certificate!),
-                    const SizedBox(height: AppSpacing.xl),
                     _buildDownloadButton(provider.certificate!),
                   ]),
                 ),
@@ -151,24 +149,17 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.primary.withAlpha(20),
-            AppColors.success.withAlpha(15),
-          ],
-        ),
+        color: AppColors.primary.withAlpha(10),
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: AppColors.primary.withAlpha(30),
+          color: AppColors.primary.withAlpha(25),
         ),
       ),
       child: Column(
         children: [
           Icon(
             Icons.workspace_premium_rounded,
-            size: 80,
+            size: 72,
             color: AppColors.primary,
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -180,7 +171,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Program Kencana ${cert.periodName ?? ''}',
             style: AppTextStyles.labelMd.copyWith(
@@ -214,18 +205,18 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
             'INFORMASI SERTIFIKAT',
             style: AppTextStyles.labelSm.copyWith(
               fontWeight: FontWeight.w900,
-              color: context.appColors.outline,
+              color: AppColors.primary,
               fontSize: 10,
               letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
           _buildInfoRow('Nomor', cert.certificateNumber ?? '-'),
-          const Divider(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
           _buildInfoRow('Periode', cert.periodName ?? '-'),
-          const Divider(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
           _buildInfoRow('Nilai Akhir', cert.finalScore?.toStringAsFixed(1) ?? '-'),
-          const Divider(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
           _buildInfoRow(
             'Tanggal Terbit',
             _formatDate(cert.issuedAt),
@@ -260,56 +251,6 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
     );
   }
 
-  Widget _buildPredicateBadge(KencanaCertificate cert) {
-    if (cert.predicate == null) return const SizedBox.shrink();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.xl,
-        vertical: AppSpacing.lg,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.success.withAlpha(15),
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.success.withAlpha(40)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.emoji_events_rounded,
-          color: AppColors.success,
-          size: 28,
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'PREDIKAT',
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.success.withAlpha(180),
-                fontWeight: FontWeight.w900,
-                fontSize: 9,
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              cert.predicateLabel,
-              style: AppTextStyles.titleLg.copyWith(
-                color: AppColors.success,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-    );
-  }
-
   Widget _buildDownloadButton(KencanaCertificate cert) {
     final provider = context.watch<KencanaCertificateProvider>();
     return SizedBox(
@@ -326,7 +267,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
         },
         text: 'UNDUH SERTIFIKAT (PDF)',
         icon: Icons.picture_as_pdf_rounded,
-        variant: BkuButtonVariant.success,
+        variant: BkuButtonVariant.primary,
       ),
     );
   }
