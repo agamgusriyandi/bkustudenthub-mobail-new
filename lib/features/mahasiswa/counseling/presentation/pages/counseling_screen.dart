@@ -89,7 +89,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
             BkuAppBar(
               title: 'Layanan Konseling',
               subtitle: 'CARE & SUPPORT',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.clean,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

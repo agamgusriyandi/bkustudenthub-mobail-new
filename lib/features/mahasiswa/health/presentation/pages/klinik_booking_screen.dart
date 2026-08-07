@@ -56,7 +56,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
             BkuAppBar(
               title: 'Booking Klinik',
               subtitle: 'JADWAL & ANTRIAN MEDIS',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.clean,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

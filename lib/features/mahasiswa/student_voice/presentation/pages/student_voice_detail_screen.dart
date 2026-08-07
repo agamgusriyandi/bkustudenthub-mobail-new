@@ -174,7 +174,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                 _aspiration != null
                     ? 'ASP-${_aspiration!.id.padLeft(5, '0')}'
                     : 'MEMUAT...',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.clean,
             expandedHeight: 120,
             showBackButton: true,
             isExpandable: false,

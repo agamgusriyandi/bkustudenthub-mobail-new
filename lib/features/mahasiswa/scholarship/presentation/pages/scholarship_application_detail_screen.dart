@@ -577,7 +577,7 @@ class ScholarshipApplicationDetailScreen extends StatelessWidget {
           BkuAppBar(
             title: 'Detail Pengajuan',
             subtitle: 'Beasiswa & Bantuan',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.clean,
             expandedHeight: 120,
             showBackButton: true,
             isExpandable: false,

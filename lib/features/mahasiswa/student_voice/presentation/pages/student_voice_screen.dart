@@ -67,7 +67,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
           BkuAppBar(
             title: 'Aspirasi Mahasiswa',
             subtitle: 'SUARA & SARAN',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.clean,
             expandedHeight: 130,
             showBackButton: true,
             isExpandable: false,

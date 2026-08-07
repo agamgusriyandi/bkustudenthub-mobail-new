@@ -57,7 +57,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Rekrutmen Ormawa',
-        variant: AppBarVariant.student,
+        variant: AppBarVariant.clean,
         showBackButton: true,
       ),
       body:

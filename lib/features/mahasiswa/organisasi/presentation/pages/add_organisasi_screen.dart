@@ -375,7 +375,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
         title: 'Laporkan Keaktifan Organisasi',
-        variant: AppBarVariant.student,
+        variant: AppBarVariant.clean,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

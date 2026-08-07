@@ -79,7 +79,7 @@ class _HealthScreenState extends State<HealthScreen> {
             BkuAppBar(
               title: 'Layanan Medis',
               subtitle: 'PUSAT LAYANAN KESEHATAN MAHASISWA',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.clean,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

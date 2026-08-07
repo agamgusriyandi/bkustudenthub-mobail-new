@@ -197,7 +197,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Input Data Kesehatan',
-        variant: AppBarVariant.student,
+        variant: AppBarVariant.clean,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

@@ -46,7 +46,7 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
           slivers: [
             BkuAppBar(
               title: 'Detail Berita',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.clean,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

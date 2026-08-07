@@ -40,7 +40,7 @@ class MedicalRecordDetailScreen extends StatelessWidget {
       appBar: BkuStaticAppBar(
         title: 'Rekam Medis Konseling',
         subtitle: 'CARE & SUPPORT',
-        variant: AppBarVariant.student,
+        variant: AppBarVariant.clean,
         showBackButton: true,
       ),
       body: SingleChildScrollView(

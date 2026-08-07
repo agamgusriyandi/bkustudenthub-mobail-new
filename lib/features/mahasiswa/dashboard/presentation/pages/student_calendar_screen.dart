@@ -244,7 +244,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
           backgroundColor: context.appColors.surface,
           appBar: const BkuStaticAppBar(
             title: 'Jadwal',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.clean,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

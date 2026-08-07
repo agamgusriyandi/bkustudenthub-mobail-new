@@ -46,7 +46,7 @@ class _ScholarshipProgramDetailScreenState extends State<ScholarshipProgramDetai
           slivers: [
             BkuAppBar(
               title: 'Detail Beasiswa',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.clean,
               expandedHeight: 130,
               showBackButton: true,
               isExpandable: false,

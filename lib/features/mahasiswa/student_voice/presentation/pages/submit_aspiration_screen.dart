@@ -82,7 +82,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
         title: 'Sampaikan Aspirasi',
-        variant: AppBarVariant.student,
+        variant: AppBarVariant.clean,
         showBackButton: true,
       ),
       body: SingleChildScrollView(
