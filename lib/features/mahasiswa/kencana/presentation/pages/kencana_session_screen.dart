@@ -233,7 +233,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           iconColor = AppColors.success;
         } else if (isActive) {
           iconData = Icons.play_circle_fill_rounded;
-          iconColor = AppColors.warning;
+          iconColor = AppColors.primary;
         }
 
         return _buildCardItem(
@@ -337,7 +337,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.neutral600),
+            Icon(icon, size: 20, color: AppColors.primary),
             const SizedBox(width: AppSpacing.sm),
             Text(
               title,

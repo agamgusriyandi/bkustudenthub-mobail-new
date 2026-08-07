@@ -332,28 +332,24 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
         session.status == 'active' || session.status == 'in_progress';
     final isCompleted = session.status == 'completed';
 
-    Color cardBg = context.appColors.background;
-    Color borderColor = AppColors.neutral300;
-    Color iconBg = AppColors.neutral300;
-    Color iconColor = AppColors.neutral600;
-    Color titleColor = context.appColors.secondaryContainer;
-    // ignore: unused_local_variable
-    Color numberBg = AppColors.neutral300;
-    // ignore: unused_local_variable
-    Color numberTextColor = AppColors.neutral600;
+    Color cardBg = context.appColors.surface;
+    Color borderColor = AppColors.neutral200.withAlpha(150);
+    Color iconBg = AppColors.primary.withAlpha(15);
+    Color iconColor = AppColors.primary;
+    Color titleColor = AppColors.onSurface;
 
     if (isActive) {
-      cardBg = context.appColors.infoContainer;
-      borderColor = context.appColors.info;
-      iconBg = AppColors.primary;
-      iconColor = context.appColors.onPrimary;
-      titleColor = context.appColors.onSurface;
+      cardBg = AppColors.primary.withAlpha(8);
+      borderColor = AppColors.primary.withAlpha(40);
+      iconBg = AppColors.primary.withAlpha(20);
+      iconColor = AppColors.primary;
+      titleColor = AppColors.onSurface;
     } else if (isCompleted) {
-      cardBg = context.appColors.successContainer;
-      borderColor = context.appColors.success;
-      numberBg = context.appColors.success;
-      numberTextColor = context.appColors.surface;
-      titleColor = context.appColors.success;
+      cardBg = AppColors.success.withAlpha(8);
+      borderColor = AppColors.success.withAlpha(40);
+      iconBg = AppColors.success.withAlpha(20);
+      iconColor = AppColors.success;
+      titleColor = AppColors.onSurface;
     }
 
     return Container(
@@ -440,7 +436,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                           _buildCountBadge(
                             Icons.assignment_rounded,
                             session.assignmentCount,
-                            context.appColors.warning,
+                            AppColors.primary,
                           ),
                         ],
                       ),
