@@ -29,7 +29,7 @@ void performSafeBack(BuildContext context, VoidCallback? onBack) {
   }
 }
 
-enum AppBarVariant { student, ormawa, secondary, psychologist, nakes }
+enum AppBarVariant { student, ormawa, secondary, psychologist, nakes, clean }
 
 class BkuAppBar extends StatelessWidget {
   final String title;
@@ -82,10 +82,11 @@ class BkuAppBar extends StatelessWidget {
     final topPadding = MediaQuery.of(context).padding.top;
     final themeProvider = context.watch<ThemeProvider>();
     final List<Color> gradientColors = _getGradientColors(context);
-    final Color onColor =
-        variant == AppBarVariant.secondary
+    final Color onColor = variant == AppBarVariant.clean
+        ? context.appColors.onSurface
+        : (variant == AppBarVariant.secondary
             ? themeProvider.onSecondary
-            : themeProvider.onPrimary;
+            : themeProvider.onPrimary);
     // SETAN DUMMY UNTUK TESTING VISUAL (Ganti ke 0 jika ingin menggunakan data asli dari database/server)
     final int mockCountForTesting = 0;
     final int dynamicNotificationCount =
@@ -229,20 +230,21 @@ class BkuAppBar extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.15,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/icons.png'),
-                            repeat: ImageRepeat.repeat,
-                            scale: 4.0,
+                  if (variant != AppBarVariant.clean)
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.15,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/icons.png'),
+                              repeat: ImageRepeat.repeat,
+                              scale: 4.0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -357,20 +359,21 @@ class BkuAppBar extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.15,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/icons.png'),
-                            repeat: ImageRepeat.repeat,
-                            scale: 4.0,
+                  if (variant != AppBarVariant.clean)
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.15,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/icons.png'),
+                              repeat: ImageRepeat.repeat,
+                              scale: 4.0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
                   FlexibleSpaceBar(
                     expandedTitleScale: 1.0,
                     centerTitle: false,
@@ -611,6 +614,8 @@ class BkuAppBar extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
 
     switch (variant) {
+      case AppBarVariant.clean:
+        return [context.appColors.surface, context.appColors.surface];
       case AppBarVariant.student:
         return themeProvider.primaryGradient;
       case AppBarVariant.ormawa:
@@ -651,10 +656,11 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final List<Color> gradientColors = _getGradientColors(context);
-    final Color onColor =
-        variant == AppBarVariant.secondary
+    final Color onColor = variant == AppBarVariant.clean
+        ? context.appColors.onSurface
+        : (variant == AppBarVariant.secondary
             ? themeProvider.onSecondary
-            : themeProvider.onPrimary;
+            : themeProvider.onPrimary);
     final resolvedSubtitle = subtitle ?? info;
 
     return Container(
@@ -673,20 +679,21 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.xxl)),
         child: Stack(
           children: [
-            Positioned.fill(
-              child: Opacity(
-                opacity: 0.15,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/icons.png'),
-                      repeat: ImageRepeat.repeat,
-                      scale: 4.0,
+            if (variant != AppBarVariant.clean)
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.15,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/icons.png'),
+                        repeat: ImageRepeat.repeat,
+                        scale: 4.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
             SafeArea(
               bottom: false,
               child: Padding(
@@ -801,6 +808,8 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
     final themeProvider = context.watch<ThemeProvider>();
 
     switch (variant) {
+      case AppBarVariant.clean:
+        return [context.appColors.surface, context.appColors.surface];
       case AppBarVariant.student:
         return themeProvider.primaryGradient;
       case AppBarVariant.ormawa:

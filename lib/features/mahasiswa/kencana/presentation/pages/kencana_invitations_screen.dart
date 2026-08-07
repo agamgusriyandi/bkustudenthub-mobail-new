@@ -72,7 +72,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
             const BkuAppBar(
               title: 'UNDANGAN FASILITATOR & KELOMPOK',
               subtitle: 'KENCANA',
-              variant: AppBarVariant.secondary,
+              variant: AppBarVariant.clean,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

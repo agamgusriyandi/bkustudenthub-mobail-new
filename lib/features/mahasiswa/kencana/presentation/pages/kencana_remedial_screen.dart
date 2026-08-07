@@ -45,7 +45,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
             const BkuAppBar(
               title: 'REMEDIAL',
               subtitle: 'KENCANA',
-              variant: AppBarVariant.secondary,
+              variant: AppBarVariant.clean,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

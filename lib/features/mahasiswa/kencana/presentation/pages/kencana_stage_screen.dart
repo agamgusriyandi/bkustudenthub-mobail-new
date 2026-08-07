@@ -44,7 +44,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
           BkuAppBar(
             title: 'Detail Tahapan',
             subtitle: detail?.name ?? 'Kencana',
-            variant: AppBarVariant.secondary,
+            variant: AppBarVariant.clean,
             expandedHeight: 100,
             showBackButton: true,
             isExpandable: false,

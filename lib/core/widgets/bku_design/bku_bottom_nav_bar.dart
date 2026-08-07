@@ -189,6 +189,9 @@ class _BkuBottomNavBarState extends State<BkuBottomNavBar> {
 
     Color solidColor;
     switch (widget.variant) {
+      case AppBarVariant.clean:
+        solidColor = context.appColors.surface;
+        break;
       case AppBarVariant.secondary:
         solidColor = themeProvider.secondary;
         break;

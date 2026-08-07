@@ -44,7 +44,7 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
             const BkuAppBar(
               title: 'TIMELINE KENCANA',
               subtitle: 'TAHAPAN PKKMB',
-              variant: AppBarVariant.secondary,
+              variant: AppBarVariant.clean,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

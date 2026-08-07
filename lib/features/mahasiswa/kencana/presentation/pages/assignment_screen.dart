@@ -237,7 +237,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
         slivers: [
           const BkuAppBar(
             title: 'Detail Tugas',
-            variant: AppBarVariant.secondary,
+            variant: AppBarVariant.clean,
             showBackButton: true,
             isExpandable: false,
             showNotification: false,
