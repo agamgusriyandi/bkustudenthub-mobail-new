@@ -59,8 +59,8 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
           ),
           slivers: [
             BkuAppBar(
-              title: 'CATAT KAS',
-              subtitle: 'TAMBAH TRANSAKSI KEUANGAN',
+              title: 'Catat Kas',
+              subtitle: 'Tambah Transaksi Keuangan',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

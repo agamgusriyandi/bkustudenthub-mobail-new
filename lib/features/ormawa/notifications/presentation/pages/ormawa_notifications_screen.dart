@@ -186,8 +186,8 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
           ),
           slivers: [
             BkuAppBar(
-              title: 'NOTIFIKASI',
-              subtitle: 'INFORMASI TERBARU',
+              title: 'Notifikasi',
+              subtitle: 'Informasi Terbaru',
               variant: AppBarVariant.ormawa,
               expandedHeight: 140.0,
               showBackButton: true,

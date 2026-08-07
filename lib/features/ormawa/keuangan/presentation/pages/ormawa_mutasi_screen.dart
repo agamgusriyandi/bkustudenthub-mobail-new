@@ -36,8 +36,8 @@ class _OrmawaMutasiScreenState extends State<OrmawaMutasiScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'RIWAYAT MUTASI',
-              subtitle: 'LOG TRANSAKSI KEUANGAN',
+              title: 'Riwayat Mutasi',
+              subtitle: 'Log Transaksi Keuangan',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

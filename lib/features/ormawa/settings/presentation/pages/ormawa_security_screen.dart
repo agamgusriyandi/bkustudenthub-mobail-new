@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
@@ -94,8 +94,8 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
         slivers: [
           const BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'KEAMANAN AKUN',
-            subtitle: 'KONTROL AKSES PRIBADI',
+            title: 'Keamanan Akun',
+            subtitle: 'Kontrol Akses Pribadi',
             expandedHeight: 120.0,
             showBackButton: true,
             isExpandable: false,

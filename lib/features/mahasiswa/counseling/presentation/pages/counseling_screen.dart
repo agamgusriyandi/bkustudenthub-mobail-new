@@ -88,7 +88,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
           slivers: [
             BkuAppBar(
               title: 'Layanan Konseling',
-              subtitle: 'CARE & SUPPORT',
+              subtitle: 'Care & Support',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

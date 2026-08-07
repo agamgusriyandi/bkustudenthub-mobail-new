@@ -119,8 +119,8 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
               slivers: [
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
-                  title: 'MANAJEMEN ORGANISASI',
-                  subtitle: 'DATABASE ORGANISASI',
+                  title: 'Manajemen Organisasi',
+                  subtitle: 'Database Organisasi',
                   expandedHeight: 115.0,
                   showBackButton: true,
                   isExpandable: false,

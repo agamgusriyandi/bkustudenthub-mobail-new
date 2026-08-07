@@ -82,7 +82,7 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT ANGGOTA',
+        title: 'Edit Anggota',
         variant: AppBarVariant.ormawa,
       ),
       body: Consumer<OrmawaProvider>(

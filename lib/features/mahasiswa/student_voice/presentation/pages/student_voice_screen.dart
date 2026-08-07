@@ -66,7 +66,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
         slivers: [
           BkuAppBar(
             title: 'Aspirasi Mahasiswa',
-            subtitle: 'SUARA & SARAN',
+            subtitle: 'Suara & Saran',
             variant: AppBarVariant.student,
             expandedHeight: 130,
             showBackButton: true,

@@ -60,8 +60,8 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'REKAP NILAI',
-              subtitle: 'KENCANA',
+              title: 'Rekap Nilai',
+              subtitle: 'Kencana',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

@@ -70,7 +70,7 @@ class _EditLpjScreenState extends State<EditLpjScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT LPJ',
+        title: 'Edit Lpj',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

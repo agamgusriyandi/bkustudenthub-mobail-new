@@ -96,8 +96,8 @@ class _OrmawaProposalPipelineScreenState
           ),
           slivers: [
             BkuAppBar(
-              title: 'PIPELINE PROPOSAL',
-              subtitle: 'ANTRIAN REVIEW PROPOSAL',
+              title: 'Pipeline Proposal',
+              subtitle: 'Antrian Review Proposal',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

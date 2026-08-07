@@ -137,8 +137,8 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'BUAT ABSENSI BARU',
-            subtitle: 'KEHADIRAN KEGIATAN',
+            title: 'Buat Absensi Baru',
+            subtitle: 'Kehadiran Kegiatan',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

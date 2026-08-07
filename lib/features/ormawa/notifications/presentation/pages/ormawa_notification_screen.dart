@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -43,8 +43,8 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
             slivers: [
               BkuAppBar(
                 variant: AppBarVariant.ormawa,
-                title: 'NOTIFIKASI PORTAL',
-                subtitle: 'SISTEM INBOX',
+                title: 'Notifikasi Portal',
+                subtitle: 'Sistem Inbox',
                 expandedHeight: 130.0,
                 showBackButton: true,
                 isExpandable: false,

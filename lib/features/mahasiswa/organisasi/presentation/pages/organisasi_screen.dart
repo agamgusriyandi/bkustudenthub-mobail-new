@@ -122,7 +122,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         slivers: [
           const BkuAppBar(
             title: 'Organisasi & Komunitas',
-            subtitle: 'KAMPUS BHAKTI KENCANA',
+            subtitle: 'Kampus Bhakti Kencana',
             variant: AppBarVariant.student,
             expandedHeight: 130,
             showBackButton: true,

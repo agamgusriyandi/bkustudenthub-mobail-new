@@ -196,7 +196,7 @@ class _StudentNotificationsScreenState
           slivers: [
             BkuAppBar(
               title: 'Notifikasi',
-              subtitle: 'UPDATE TERBARU',
+              subtitle: 'Update Terbaru',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

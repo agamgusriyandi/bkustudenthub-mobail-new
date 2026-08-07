@@ -44,8 +44,8 @@ class _OrmawaStafScreenState extends State<OrmawaStafScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'STAF & JABATAN',
-              subtitle: 'MANAJEMEN PERAN',
+              title: 'Staf & Jabatan',
+              subtitle: 'Manajemen Peran',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

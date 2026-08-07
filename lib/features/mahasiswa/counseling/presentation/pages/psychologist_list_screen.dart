@@ -60,7 +60,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
             slivers: [
               const BkuAppBar(
                 title: 'Daftar Psikolog',
-                subtitle: 'PROFESIONAL KAMPUS',
+                subtitle: 'Profesional Kampus',
                 variant: AppBarVariant.student,
                 expandedHeight: 140,
                 showBackButton: true,

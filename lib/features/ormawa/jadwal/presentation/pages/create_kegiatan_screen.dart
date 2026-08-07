@@ -98,7 +98,7 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'TAMBAH KEGIATAN',
+        title: 'Tambah Kegiatan',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

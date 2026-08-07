@@ -167,8 +167,8 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
-            title: 'HANDBOOK MAHASISWA',
-            subtitle: 'KENCANA',
+            title: 'Handbook Mahasiswa',
+            subtitle: 'Kencana',
             variant: AppBarVariant.student,
             expandedHeight: 100,
             showBackButton: true,

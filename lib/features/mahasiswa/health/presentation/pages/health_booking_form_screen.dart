@@ -140,7 +140,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
           slivers: [
             BkuAppBar(
               title: isReschedule ? 'Reschedule Klinik' : 'Booking Klinik',
-              subtitle: 'FORMULIR PENJADWALAN MEDIS',
+              subtitle: 'Formulir Penjadwalan Medis',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

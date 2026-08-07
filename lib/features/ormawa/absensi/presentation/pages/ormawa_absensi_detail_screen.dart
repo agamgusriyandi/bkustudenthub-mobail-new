@@ -64,8 +64,8 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL ABSENSI',
-            subtitle: 'KEHADIRAN KEGIATAN',
+            title: 'Detail Absensi',
+            subtitle: 'Kehadiran Kegiatan',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

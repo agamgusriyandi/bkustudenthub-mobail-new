@@ -86,8 +86,8 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               slivers: [
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
-                  title: 'JADWAL KALENDER',
-                  subtitle: 'AKSES DITOLAK',
+                  title: 'Jadwal Kalender',
+                  subtitle: 'Akses Ditolak',
                   expandedHeight: 115.0,
                   showBackButton: true,
                   isExpandable: false,
@@ -144,8 +144,8 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               slivers: [
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
-                  title: 'JADWAL KALENDER',
-                  subtitle: 'AGENDA & KEGIATAN',
+                  title: 'Jadwal Kalender',
+                  subtitle: 'Agenda & Kegiatan',
                   expandedHeight: 115.0,
                   showBackButton: true,
                   isExpandable: false,
@@ -869,7 +869,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
         slivers: [
           BkuAppBar(
             title: isEdit ? 'EDIT KEGIATAN' : 'JADWALKAN KEGIATAN',
-            subtitle: 'EVENT REGISTRY',
+            subtitle: 'Event Registry',
             variant: AppBarVariant.ormawa,
             expandedHeight: 115.0,
             showBackButton: true,

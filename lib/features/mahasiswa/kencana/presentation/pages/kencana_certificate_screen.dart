@@ -42,8 +42,8 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'SERTIFIKAT',
-              subtitle: 'KENCANA',
+              title: 'Sertifikat',
+              subtitle: 'Kencana',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

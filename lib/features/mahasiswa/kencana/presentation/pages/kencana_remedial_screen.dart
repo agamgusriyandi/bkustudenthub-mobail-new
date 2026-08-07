@@ -43,8 +43,8 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'REMEDIAL',
-              subtitle: 'KENCANA',
+              title: 'Remedial',
+              subtitle: 'Kencana',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

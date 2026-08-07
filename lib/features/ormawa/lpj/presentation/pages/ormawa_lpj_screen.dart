@@ -70,8 +70,8 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'LPJ',
-              subtitle: 'LAPORAN PERTANGGUNGJAWABAN',
+              title: 'Lpj',
+              subtitle: 'Laporan Pertanggungjawaban',
               expandedHeight: 130.0,
               showBackButton: true,
               isExpandable: false,
@@ -85,7 +85,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                     _buildSummaryCards(),
                     const SizedBox(height: AppSpacing.xl),
                     OrmawaListHeader(
-                      title: 'DAFTAR LPJ',
+                      title: 'Daftar Lpj',
                       searchHint: 'Cari judul LPJ...',
                       searchController: _searchController,
                       onRefresh: () =>

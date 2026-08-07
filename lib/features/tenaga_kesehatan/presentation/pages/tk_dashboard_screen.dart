@@ -440,7 +440,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       ),
       _ServiceItem(
         icon: Icons.article_rounded,
-        label: 'BAP',
+        label: 'Bap',
         bg: context.appColors.warning.withAlpha(15),
         iconColor: context.appColors.warning,
         onTap: () => context.push('/tk/bap'),

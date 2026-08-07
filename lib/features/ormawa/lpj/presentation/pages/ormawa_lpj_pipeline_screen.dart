@@ -102,8 +102,8 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
           ),
           slivers: [
             BkuAppBar(
-              title: 'PIPELINE LPJ',
-              subtitle: 'ANTRIAN REVIEW LPJ',
+              title: 'Pipeline Lpj',
+              subtitle: 'Antrian Review Lpj',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

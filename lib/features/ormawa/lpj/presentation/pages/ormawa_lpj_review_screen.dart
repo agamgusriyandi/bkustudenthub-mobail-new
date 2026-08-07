@@ -111,8 +111,8 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
           physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
           slivers: [
             BkuAppBar(
-              title: 'REVIEW LPJ',
-              subtitle: 'ANTRIAN REVIEW LPJ',
+              title: 'Review Lpj',
+              subtitle: 'Antrian Review Lpj',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

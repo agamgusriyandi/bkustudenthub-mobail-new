@@ -38,8 +38,8 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL KEGIATAN',
-            subtitle: 'INFORMASI JADWAL',
+            title: 'Detail Kegiatan',
+            subtitle: 'Informasi Jadwal',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,
@@ -265,7 +265,7 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT KEGIATAN',
+        title: 'Edit Kegiatan',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

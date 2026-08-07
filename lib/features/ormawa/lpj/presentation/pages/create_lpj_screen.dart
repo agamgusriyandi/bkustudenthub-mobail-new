@@ -99,8 +99,8 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
           return CustomScrollView(
             slivers: [
               BkuAppBar(
-                title: 'BUAT LPJ BARU',
-                subtitle: 'LAPORAN PERTANGGUNGJAWABAN',
+                title: 'Buat Lpj Baru',
+                subtitle: 'Laporan Pertanggungjawaban',
                 variant: AppBarVariant.ormawa,
                 expandedHeight: 130.0,
                 showBackButton: true,

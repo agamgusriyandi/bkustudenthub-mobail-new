@@ -33,8 +33,8 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'IURAN ANGGOTA',
-              subtitle: 'REKAP PEMBAYARAN IURAN',
+              title: 'Iuran Anggota',
+              subtitle: 'Rekap Pembayaran Iuran',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

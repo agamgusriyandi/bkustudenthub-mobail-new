@@ -78,7 +78,7 @@ class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'BUAT PENGUMUMAN',
+        title: 'Buat Pengumuman',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

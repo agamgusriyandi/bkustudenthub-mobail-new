@@ -50,7 +50,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL AGENDA',
+            title: 'Detail Agenda',
             subtitle: agenda.title,
             variant: AppBarVariant.ormawa,
             expandedHeight: 115.0,

@@ -94,8 +94,8 @@ class _OrmawaRbacScreenState extends State<OrmawaRbacScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'ROLE-BASED ACCESS CONTROL',
-              subtitle: 'HAK AKSES ROLE',
+              title: 'Role-based Access Control',
+              subtitle: 'Hak Akses Role',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

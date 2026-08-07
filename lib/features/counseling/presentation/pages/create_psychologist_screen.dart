@@ -142,7 +142,7 @@ class _CreatePsychologistScreenState extends State<CreatePsychologistScreen> {
                     const SizedBox(height: AppSpacing.md),
                     _buildTextField(
                       controller: _nidnCtrl,
-                      label: 'NIDN',
+                      label: 'Nidn',
                       icon: Icons.badge_rounded,
                     ),
                     const SizedBox(height: AppSpacing.xxl),

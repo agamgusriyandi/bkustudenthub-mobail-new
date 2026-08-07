@@ -78,7 +78,7 @@ class _HealthScreenState extends State<HealthScreen> {
           slivers: [
             BkuAppBar(
               title: 'Layanan Medis',
-              subtitle: 'PUSAT LAYANAN KESEHATAN MAHASISWA',
+              subtitle: 'Pusat Layanan Kesehatan Mahasiswa',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

@@ -100,7 +100,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
           slivers: [
             BkuAppBar(
               title: name,
-              subtitle: 'HALO FASILITATOR KENCANA',
+              subtitle: 'Halo Fasilitator Kencana',
               info: 'Status: Aktif Membimbing',
               variant: AppBarVariant.student,
               showBackButton: false,

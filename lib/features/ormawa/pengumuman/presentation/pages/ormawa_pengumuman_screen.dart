@@ -102,8 +102,8 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'PUSAT PENGUMUMAN',
-              subtitle: 'INFORMASI',
+              title: 'Pusat Pengumuman',
+              subtitle: 'Informasi',
               expandedHeight: 130.0,
               showBackButton: true,
               isExpandable: false,
@@ -117,7 +117,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     _buildSummaryGrid(),
                     const SizedBox(height: AppSpacing.xl),
                     OrmawaListHeader(
-                      title: 'REKAPITULASI SIARAN',
+                      title: 'Rekapitulasi Siaran',
                       searchHint: 'Cari judul pengumuman...',
                       searchController: _searchController,
                       onRefresh:
@@ -1058,7 +1058,7 @@ class _OrmawaCreatePengumumanScreenState
         slivers: [
           BkuAppBar(
             title: isEditing ? 'EDIT PENGUMUMAN' : 'BUAT PENGUMUMAN BARU',
-            subtitle: 'PUBLIKASI INFORMASI',
+            subtitle: 'Publikasi Informasi',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

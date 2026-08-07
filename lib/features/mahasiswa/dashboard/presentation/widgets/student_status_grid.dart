@@ -138,7 +138,7 @@ class StudentStatusGrid extends StatelessWidget {
               ),
             ] else ...[
               _StatusItem(
-                label: 'KENCANA',
+                label: 'Kencana',
                 value: '${kencanaPercentage.round()}%',
                 subValue: kencanaStatus == 'Selesai ✓' ? 'Selesai' : kencanaStatus,
                 icon: Icons.school_rounded,

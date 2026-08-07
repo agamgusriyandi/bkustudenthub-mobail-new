@@ -42,8 +42,8 @@ class _KencanaTimelineScreenState extends State<KencanaTimelineScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'TIMELINE KENCANA',
-              subtitle: 'TAHAPAN PKKMB',
+              title: 'Timeline Kencana',
+              subtitle: 'Tahapan Pkkmb',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

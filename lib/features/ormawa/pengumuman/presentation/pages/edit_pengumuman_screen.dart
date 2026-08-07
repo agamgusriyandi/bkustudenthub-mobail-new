@@ -74,7 +74,7 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT PENGUMUMAN',
+        title: 'Edit Pengumuman',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

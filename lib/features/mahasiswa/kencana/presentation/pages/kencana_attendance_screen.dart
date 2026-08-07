@@ -265,8 +265,8 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'LOG PRESENSI',
-              subtitle: 'KENCANA',
+              title: 'Log Presensi',
+              subtitle: 'Kencana',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

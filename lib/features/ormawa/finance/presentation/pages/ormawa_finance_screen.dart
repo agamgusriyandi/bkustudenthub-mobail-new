@@ -90,8 +90,8 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'BUKU KAS',
-              subtitle: 'FINANCIAL MANAGEMENT',
+              title: 'Buku Kas',
+              subtitle: 'Financial Management',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: widget.showBackButton,
@@ -161,7 +161,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 child: Row(
                   children: [
                     _buildBalanceCard(
-                      title: 'SALDO KAS GABUNGAN',
+                      title: 'Saldo Kas Gabungan',
                       balance: balance,
                       subtitle:
                           _obscureNominal
@@ -173,7 +173,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     ),
                     const SizedBox(width: AppSpacing.lg),
                     _buildBalanceCard(
-                      title: 'SISA PAGU KAMPUS',
+                      title: 'Sisa Pagu Kampus',
                       balance: campusBalance,
                       subtitle:
                           _obscureNominal
@@ -184,7 +184,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     ),
                     const SizedBox(width: AppSpacing.lg),
                     _buildBalanceCard(
-                      title: 'KAS MANDIRI ORGANISASI',
+                      title: 'Kas Mandiri Organisasi',
                       balance: orgBalance,
                       subtitle:
                           _obscureNominal
@@ -208,7 +208,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   OrmawaListHeader(
-                    title: 'RIWAYAT MUTASI',
+                    title: 'Riwayat Mutasi',
                     searchHint: 'Cari transaksi...',
                     searchController: _searchController,
                     onRefresh: () => provider.refreshData(),

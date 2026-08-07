@@ -33,7 +33,7 @@ class MentorStatsGrid extends StatelessWidget {
           children: [
             _buildStatCard(
               context,
-              title: 'TOTAL BIMBINGAN',
+              title: 'Total Bimbingan',
               value: '${dashboard.totalMentees} Mahasiswa',
               icon: Icons.school_rounded,
               color: context.appColors.primary,
@@ -42,7 +42,7 @@ class MentorStatsGrid extends StatelessWidget {
             ),
             _buildStatCard(
               context,
-              title: 'REVIEW HANDBOOK',
+              title: 'Review Handbook',
               value: '${dashboard.pendingHandbooks} Berkas',
               icon: Icons.menu_book_rounded,
               color: context.appColors.warning,
@@ -51,7 +51,7 @@ class MentorStatsGrid extends StatelessWidget {
             ),
             _buildStatCard(
               context,
-              title: 'MAHASISWA LULUS',
+              title: 'Mahasiswa Lulus',
               value: '${dashboard.passedStudents} Mahasiswa',
               icon: Icons.verified_rounded,
               color: context.appColors.success,
@@ -60,7 +60,7 @@ class MentorStatsGrid extends StatelessWidget {
             ),
             _buildStatCard(
               context,
-              title: 'PERLU PERBAIKAN',
+              title: 'Perlu Perbaikan',
               value: '${dashboard.remedialStudents} Mahasiswa',
               icon: Icons.error_outline_rounded,
               color: context.appColors.error,

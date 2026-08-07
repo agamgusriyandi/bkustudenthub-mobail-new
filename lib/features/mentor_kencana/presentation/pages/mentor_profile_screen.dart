@@ -155,7 +155,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             BkuAppBar(
-              title: 'PROFIL FASILITATOR',
+              title: 'Profil Fasilitator',
               variant: AppBarVariant.student,
               showNotification: false,
               isExpandable: false,

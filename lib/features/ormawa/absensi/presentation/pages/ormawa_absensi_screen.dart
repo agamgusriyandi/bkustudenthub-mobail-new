@@ -39,8 +39,8 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'ABSENSI KEGIATAN',
-              subtitle: 'AKSES DITOLAK',
+              title: 'Absensi Kegiatan',
+              subtitle: 'Akses Ditolak',
               expandedHeight: 130.0,
               showBackButton: widget.showBackButton,
               isExpandable: false,
@@ -89,8 +89,8 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
         slivers: [
           BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'ABSENSI KEGIATAN',
-            subtitle: 'PRESENSI & KEHADIRAN',
+            title: 'Absensi Kegiatan',
+            subtitle: 'Presensi & Kehadiran',
             expandedHeight: 130.0,
             showBackButton: widget.showBackButton,
             isExpandable: false,

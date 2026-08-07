@@ -968,7 +968,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               ),
             ),
             _buildGridInputCard(
-              title: 'RR',
+              title: 'Rr',
               icon: Icons.air_rounded,
               iconColor: AppColors.neutral600,
               unit: 'x/mnt',

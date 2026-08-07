@@ -27,8 +27,8 @@ class OrmawaKeuanganDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL TRANSAKSI',
-            subtitle: 'INFORMASI KEUANGAN',
+            title: 'Detail Transaksi',
+            subtitle: 'Informasi Keuangan',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,
@@ -255,7 +255,7 @@ class _EditKeuanganScreenState extends State<EditKeuanganScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT TRANSAKSI',
+        title: 'Edit Transaksi',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

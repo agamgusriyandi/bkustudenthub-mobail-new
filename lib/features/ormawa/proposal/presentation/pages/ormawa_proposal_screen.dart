@@ -122,8 +122,8 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
           ),
           slivers: [
             BkuAppBar(
-              title: 'MANAJEMEN PROPOSAL',
-              subtitle: 'PROPOSAL & SURAT',
+              title: 'Manajemen Proposal',
+              subtitle: 'Proposal & Surat',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: widget.showBackButton,

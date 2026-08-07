@@ -97,7 +97,7 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'TAMBAH ORGANISASI',
+        title: 'Tambah Organisasi',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

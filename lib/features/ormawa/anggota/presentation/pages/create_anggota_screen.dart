@@ -85,7 +85,7 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'TAMBAH ANGGOTA',
+        title: 'Tambah Anggota',
         variant: AppBarVariant.ormawa,
       ),
       body: Consumer<OrmawaProvider>(

@@ -44,7 +44,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
     return Scaffold(
       backgroundColor: context.appColors.surface,
       appBar: const BkuStaticAppBar(
-        title: 'CATAT TRANSAKSI',
+        title: 'Catat Transaksi',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

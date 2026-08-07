@@ -103,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           slivers: [
             BkuAppBar(
               title: name,
-              subtitle: 'SELAMAT DATANG KEMBALI',
+              subtitle: 'Selamat Datang Kembali',
               info: '${profile.nim} • SEMESTER ${profile.semester}',
               variant: AppBarVariant.student,
               showBackButton: false,

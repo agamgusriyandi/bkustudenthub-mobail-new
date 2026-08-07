@@ -94,7 +94,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         slivers: [
           BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'STRUKTUR ORGANISASI',
+            title: 'Struktur Organisasi',
             subtitle: ormawaProvider.orgName,
             expandedHeight: 130.0,
             showBackButton: true,

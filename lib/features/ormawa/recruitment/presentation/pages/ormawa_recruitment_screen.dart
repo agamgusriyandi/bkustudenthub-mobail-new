@@ -164,8 +164,8 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen>
               slivers: [
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
-                  title: 'OPEN RECRUITMENT',
-                  subtitle: 'KELOLA PENDAFTARAN ANGGOTA BARU',
+                  title: 'Open Recruitment',
+                  subtitle: 'Kelola Pendaftaran Anggota Baru',
                   expandedHeight: 130.0,
                   showBackButton: true,
                   isExpandable: false,

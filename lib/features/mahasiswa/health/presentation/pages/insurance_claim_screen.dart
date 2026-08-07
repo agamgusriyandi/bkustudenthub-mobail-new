@@ -55,7 +55,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
           slivers: [
             BkuAppBar(
               title: 'Klaim Asuransi',
-              subtitle: 'PENGAJUAN & RIWAYAT KLAIM',
+              subtitle: 'Pengajuan & Riwayat Klaim',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

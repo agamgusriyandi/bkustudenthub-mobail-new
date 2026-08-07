@@ -66,8 +66,8 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'LAPORAN & LPJ',
-              subtitle: 'DOKUMENTASI KEGIATAN',
+              title: 'Laporan & Lpj',
+              subtitle: 'Dokumentasi Kegiatan',
               expandedHeight: 130.0,
               showBackButton: true,
               isExpandable: false,
@@ -81,7 +81,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     _buildSummaryGrid(),
                     const SizedBox(height: AppSpacing.xxl),
                     OrmawaListHeader(
-                      title: 'DAFTAR LPJ KEGIATAN',
+                      title: 'Daftar Lpj Kegiatan',
                       searchHint: 'Cari judul laporan kegiatan...',
                       searchController: _searchController,
                       onRefresh:
@@ -1387,8 +1387,8 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
-            title: 'EDIT LAPORAN',
-            subtitle: 'DOCUMENTATION HUB',
+            title: 'Edit Laporan',
+            subtitle: 'Documentation Hub',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,
@@ -1729,8 +1729,8 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
-            title: 'BUAT LAPORAN BARU',
-            subtitle: 'DOCUMENTATION HUB',
+            title: 'Buat Laporan Baru',
+            subtitle: 'Documentation Hub',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

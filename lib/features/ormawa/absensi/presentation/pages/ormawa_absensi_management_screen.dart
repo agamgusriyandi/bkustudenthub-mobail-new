@@ -61,8 +61,8 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'MANAJEMEN ABSENSI',
-              subtitle: 'KEHADIRAN KEGIATAN',
+              title: 'Manajemen Absensi',
+              subtitle: 'Kehadiran Kegiatan',
               expandedHeight: 130.0,
               showBackButton: true,
               isExpandable: false,

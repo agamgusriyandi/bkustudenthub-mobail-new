@@ -42,8 +42,8 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
             slivers: [
               BkuAppBar(
                 variant: AppBarVariant.ormawa,
-                title: 'PENGATURAN PORTAL',
-                subtitle: 'KONFIGURASI SISTEM',
+                title: 'Pengaturan Portal',
+                subtitle: 'Konfigurasi Sistem',
                 expandedHeight: 130.0,
                 showBackButton: widget.showBackButton,
                 isExpandable: false,

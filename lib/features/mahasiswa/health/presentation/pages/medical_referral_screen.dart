@@ -45,7 +45,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
           slivers: [
             BkuAppBar(
               title: 'Rujukan Medis',
-              subtitle: 'RUJUKAN FASKES EKSTERNAL',
+              subtitle: 'Rujukan Faskes Eksternal',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

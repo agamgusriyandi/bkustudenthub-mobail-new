@@ -345,8 +345,8 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
               slivers: [
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
-                  title: 'MANAJEMEN ANGGOTA',
-                  subtitle: 'DATABASE KEANGGOTAAN',
+                  title: 'Manajemen Anggota',
+                  subtitle: 'Database Keanggotaan',
                   expandedHeight: 115.0,
                   showBackButton: true,
                   isExpandable: false,
@@ -1275,7 +1275,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
             slivers: [
               BkuAppBar(
                 title: isEdit ? 'EDIT DATA ANGGOTA' : 'TAMBAH ANGGOTA BARU',
-                subtitle: 'REGISTRASI ANGGOTA',
+                subtitle: 'Registrasi Anggota',
                 variant: AppBarVariant.ormawa,
                 expandedHeight: 130.0,
                 showBackButton: true,
@@ -1814,8 +1814,8 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'PROFIL ANGGOTA',
-            subtitle: 'INFORMASI MAHASISWA',
+            title: 'Profil Anggota',
+            subtitle: 'Informasi Mahasiswa',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

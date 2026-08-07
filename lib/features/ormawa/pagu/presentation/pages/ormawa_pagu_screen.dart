@@ -39,8 +39,8 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         child: CustomScrollView(
           slivers: [
             BkuAppBar(
-              title: 'PAGU ANGGARAN',
-              subtitle: 'ALOKASI DANA KAMPUS',
+              title: 'Pagu Anggaran',
+              subtitle: 'Alokasi Dana Kampus',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

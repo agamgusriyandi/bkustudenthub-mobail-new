@@ -146,8 +146,8 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           const BkuAppBar(
-            title: 'PENGAJUAN BANDING',
-            subtitle: 'KENCANA',
+            title: 'Pengajuan Banding',
+            subtitle: 'Kencana',
             variant: AppBarVariant.student,
             expandedHeight: 100,
             showBackButton: true,

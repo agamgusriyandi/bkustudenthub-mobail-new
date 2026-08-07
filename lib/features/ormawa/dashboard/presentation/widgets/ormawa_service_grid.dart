@@ -75,7 +75,7 @@ class OrmawaServiceGrid extends StatelessWidget {
         ),
       if (ormawaProvider.hasPermission('view_lpj'))
         const _ServiceIcon(
-          title: 'LPJ',
+          title: 'Lpj',
           icon: Icons.description_rounded,
           color: AppColors.error,
           delay: 0.75,

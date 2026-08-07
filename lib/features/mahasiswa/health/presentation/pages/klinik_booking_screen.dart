@@ -55,7 +55,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
           slivers: [
             BkuAppBar(
               title: 'Booking Klinik',
-              subtitle: 'JADWAL & ANTRIAN MEDIS',
+              subtitle: 'Jadwal & Antrian Medis',
               variant: AppBarVariant.student,
               expandedHeight: 130,
               showBackButton: true,

@@ -35,8 +35,8 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
           child: CustomScrollView(
             slivers: [
               BkuAppBar(
-                title: 'GAMIFIKASI',
-                subtitle: 'POIN & PERINGKAT',
+                title: 'Gamifikasi',
+                subtitle: 'Poin & Peringkat',
                 variant: AppBarVariant.ormawa,
                 expandedHeight: 130.0,
                 showBackButton: true,

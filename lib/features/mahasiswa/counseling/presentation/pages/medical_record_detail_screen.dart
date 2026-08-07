@@ -39,7 +39,7 @@ class MedicalRecordDetailScreen extends StatelessWidget {
       backgroundColor: context.appColors.surface,
       appBar: BkuStaticAppBar(
         title: 'Rekam Medis Konseling',
-        subtitle: 'CARE & SUPPORT',
+        subtitle: 'Care & Support',
         variant: AppBarVariant.student,
         showBackButton: true,
       ),

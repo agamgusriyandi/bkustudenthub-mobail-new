@@ -110,8 +110,8 @@ class _OrmawaProposalReviewScreenState
           physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
           slivers: [
             BkuAppBar(
-              title: 'REVIEW PROPOSAL',
-              subtitle: 'ANTRIAN REVIEW PROPOSAL',
+              title: 'Review Proposal',
+              subtitle: 'Antrian Review Proposal',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
               showBackButton: true,

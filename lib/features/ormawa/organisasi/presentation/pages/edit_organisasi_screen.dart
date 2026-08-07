@@ -104,7 +104,7 @@ class _EditOrganisasiScreenState extends State<EditOrganisasiScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT ORGANISASI',
+        title: 'Edit Organisasi',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

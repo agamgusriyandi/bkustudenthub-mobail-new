@@ -70,8 +70,8 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             const BkuAppBar(
-              title: 'UNDANGAN FASILITATOR & KELOMPOK',
-              subtitle: 'KENCANA',
+              title: 'Undangan Fasilitator & Kelompok',
+              subtitle: 'Kencana',
               variant: AppBarVariant.student,
               expandedHeight: 100,
               showBackButton: true,

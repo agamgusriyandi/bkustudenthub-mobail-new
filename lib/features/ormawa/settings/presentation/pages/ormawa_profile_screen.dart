@@ -98,8 +98,8 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             slivers: [
               const BkuAppBar(
                 variant: AppBarVariant.ormawa,
-                title: 'PROFIL PRIBADI',
-                subtitle: 'INFO & KONTAK SAYA',
+                title: 'Profil Pribadi',
+                subtitle: 'Info & Kontak Saya',
                 expandedHeight: 130.0,
                 showBackButton: true,
                 isExpandable: false,

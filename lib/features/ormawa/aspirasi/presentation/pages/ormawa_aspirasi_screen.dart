@@ -74,8 +74,8 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'ASPIRASI ORGANISASI',
-              subtitle: 'PUSAT ASPIRASI',
+              title: 'Aspirasi Organisasi',
+              subtitle: 'Pusat Aspirasi',
               expandedHeight: 130.0,
               showBackButton: true,
               isExpandable: false,
@@ -89,7 +89,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     _buildSummaryGrid(),
                     const SizedBox(height: AppSpacing.xxl),
                     OrmawaListHeader(
-                      title: 'REKAPITULASI ASPIRASI',
+                      title: 'Rekapitulasi Aspirasi',
                       searchHint: 'Cari topik aspirasi...',
                       searchController: _searchController,
                       onRefresh:

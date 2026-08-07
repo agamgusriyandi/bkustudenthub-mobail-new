@@ -74,7 +74,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL PROPOSAL',
+            title: 'Detail Proposal',
             subtitle: proposal.code,
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,

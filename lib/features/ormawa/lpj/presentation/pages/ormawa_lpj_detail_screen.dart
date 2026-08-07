@@ -76,8 +76,8 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
-            title: 'DETAIL LPJ',
-            subtitle: 'LAPORAN PERTANGGUNGJAWABAN',
+            title: 'Detail Lpj',
+            subtitle: 'Laporan Pertanggungjawaban',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,

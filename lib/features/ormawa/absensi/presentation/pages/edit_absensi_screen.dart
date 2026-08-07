@@ -155,7 +155,7 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       appBar: const BkuStaticAppBar(
-        title: 'EDIT ABSENSI',
+        title: 'Edit Absensi',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(
