@@ -366,9 +366,9 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.success.withAlpha(10),
+            color: AppColors.primary.withAlpha(10),
             borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.success.withAlpha(30)),
+            border: Border.all(color: AppColors.primary.withAlpha(30)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -376,14 +376,14 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('NILAI AKHIR FAKULTAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.success)),
+                  Text('NILAI AKHIR FAKULTAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
                   const SizedBox(height: 4),
                   Text('Status Evaluasi: LULUS', style: AppTextStyles.bodySm.copyWith(color: AppColors.success, fontWeight: FontWeight.bold)),
                 ],
               ),
               Text(
                 rawFak.toStringAsFixed(1),
-                style: AppTextStyles.headlineMd.copyWith(fontWeight: FontWeight.w900, color: AppColors.success),
+                style: AppTextStyles.headlineMd.copyWith(fontWeight: FontWeight.w900, color: AppColors.primary),
               ),
             ],
           ),
@@ -598,7 +598,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '🎉 Selamat! Anda Lulus Kencana',
+                      'Selamat! Anda Lulus Kencana',
                       style: AppTextStyles.labelMd.copyWith(
                         color: AppColors.neutral900,
                         fontWeight: FontWeight.bold,
