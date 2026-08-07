@@ -532,7 +532,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                                           child: ElevatedButton(
                                             onPressed: () => _respondAbsenceRequest(req.id, 'Rejected'),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: AppColors.error,
+                                              backgroundColor: context.appColors.error,
                                               padding: const EdgeInsets.symmetric(horizontal: 12),
                                             ),
                                             child: const Text('Tolak', style: TextStyle(color: Colors.white, fontSize: 10)),

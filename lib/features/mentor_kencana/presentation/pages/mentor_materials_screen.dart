@@ -817,7 +817,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
             onPressed: () async {
               final provider = context.read<MentorKencanaProvider>();
               final success = await provider.deleteMaterial(mat.id);
@@ -1036,7 +1036,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                             actions: [
                                               TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text('Batal')),
                                               ElevatedButton(
-                                                style: ElevatedButton.styleFrom(backgroundColor: AppColors.error, foregroundColor: Colors.white),
+                                                style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
                                                 onPressed: () async {
                                                   Navigator.pop(dCtx);
                                                   final success = await provider.deleteQuiz(q.id);
@@ -1943,7 +1943,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                             actions: [
                                               TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text('Batal')),
                                               ElevatedButton(
-                                                style: ElevatedButton.styleFrom(backgroundColor: AppColors.error, foregroundColor: Colors.white),
+                                                style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
                                                 onPressed: () async {
                                                   Navigator.pop(dCtx);
                                                   final success = await provider.deleteAssignment(t.id);
