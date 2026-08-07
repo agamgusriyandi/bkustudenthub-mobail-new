@@ -251,6 +251,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.lg),
                   if (proposal.fileUrl != null && proposal.fileUrl!.isNotEmpty)
                     _buildFileCard(
+                      context,
                       'Dokumen_Proposal.pdf',
                       'Klik untuk mengunduh',
                     )
@@ -658,7 +659,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFileCard(String fileName, String size) {
+  Widget _buildFileCard(BuildContext context, String fileName, String size) {
     return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -690,7 +691,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => AppSnackbar.showSuccess(context, 'Mengunduh berkas proposal $fileName...'),
             icon: Icon(Icons.download_rounded, color: AppColors.primary),
           ),
         ],

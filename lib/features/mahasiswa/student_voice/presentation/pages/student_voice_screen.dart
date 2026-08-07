@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -106,7 +107,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => AppSnackbar.showWarning(context, 'Menampilkan seluruh riwayat aspirasi...'),
                           child: Text(
                             'Lihat Semua',
                             style: AppTextStyles.labelSm.copyWith(
