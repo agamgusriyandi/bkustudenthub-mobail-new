@@ -217,7 +217,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appColors.primary,
+                      backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
                       minimumSize: const Size.fromHeight(44),
                       shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
@@ -429,7 +429,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                         icon: const Icon(Icons.checklist_rounded, size: 16),
                                         label: const Text('Kelola Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: context.appColors.primary,
+                                          backgroundColor: const Color(0xFF2563EB),
                                           foregroundColor: Colors.white,
                                           elevation: 0,
                                           padding: const EdgeInsets.symmetric(vertical: 8),
