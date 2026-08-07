@@ -117,11 +117,11 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: context.appColors.primary.withAlpha(15),
+                          decoration: const BoxDecoration(
+                            color: AppColors.neutral200,
                             borderRadius: AppRadius.radiusMd,
                           ),
-                          child: Icon(Icons.inventory_2_outlined, color: context.appColors.primary, size: 20),
+                          child: Icon(Icons.inventory_2_outlined, color: context.appColors.onSurface, size: 20),
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Column(
@@ -138,8 +138,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       icon: const Icon(Icons.add, size: 14),
                       label: const Text('Tambah Materi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.primary,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.appColors.onSurface,
+                        foregroundColor: context.appColors.surface,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1250,7 +1250,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         TextButton(onPressed: () => setModalState(() => currentView = 'list'), child: const Text('Kembali')),
                         const SizedBox(width: 8),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: context.appColors.primary, foregroundColor: Colors.white),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.appColors.onSurface,
+                            foregroundColor: context.appColors.surface,
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                            elevation: 0,
+                          ),
                           onPressed: () async {
                             if (titleController.text.trim().isEmpty) return;
                             final provider = context.read<MentorKencanaProvider>();
@@ -1695,7 +1703,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: context.appColors.primary, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.appColors.onSurface,
+                foregroundColor: context.appColors.surface,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                elevation: 0,
+              ),
               onPressed: () {
                 if (questionCtrl.text.trim().isEmpty) return;
                 final newQuestionData = {
@@ -2141,7 +2157,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         TextButton(onPressed: () => setModalState(() => currentView = 'list'), child: const Text('Kembali')),
                         const SizedBox(width: 8),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: context.appColors.primary, foregroundColor: Colors.white),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.appColors.onSurface,
+                            foregroundColor: context.appColors.surface,
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
+                            elevation: 0,
+                          ),
                           onPressed: () async {
                             if (titleController.text.trim().isEmpty) return;
                             final provider = context.read<MentorKencanaProvider>();
@@ -2198,7 +2222,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
             Text('Kelola Sesi: ${session.title}', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.menu_book_rounded, color: AppColors.info),
+              leading: Icon(Icons.menu_book_rounded, color: context.appColors.onSurface),
               title: const Text('Kelola Materi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               onTap: () {
                 Navigator.pop(context);
@@ -2206,7 +2230,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.help_outline_rounded, color: AppColors.warning),
+              leading: Icon(Icons.help_outline_rounded, color: context.appColors.onSurface),
               title: const Text('Kelola Kuis', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               onTap: () {
                 Navigator.pop(context);
@@ -2214,7 +2238,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.assignment_outlined, color: AppColors.secondary),
+              leading: Icon(Icons.assignment_outlined, color: context.appColors.onSurface),
               title: const Text('Kelola Tugas', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               onTap: () {
                 Navigator.pop(context);
