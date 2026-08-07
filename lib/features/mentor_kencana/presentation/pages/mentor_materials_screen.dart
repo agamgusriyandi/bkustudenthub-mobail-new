@@ -959,8 +959,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         icon: const Icon(Icons.add, size: 14),
                         label: const Text('Tambah Kuis', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.appColors.onSurface,
+                          foregroundColor: context.appColors.surface,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1866,8 +1866,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         icon: const Icon(Icons.add, size: 14),
                         label: const Text('Tambah Tugas', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.appColors.onSurface,
+                          foregroundColor: context.appColors.surface,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -2386,7 +2386,6 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     final isPra = item.stageType == 'pra_kencana';
                     final isFaculty = item.stageType.contains('fakultas') || item.stageType == 'faculty';
                     final stageLabel = isPra ? 'PRA-KENCANA' : (isFaculty ? 'KENCANA FAKULTAS' : 'KENCANA UNIVERSITAS');
-                    final stageColor = isPra ? AppColors.warning : (isFaculty ? AppColors.success : context.appColors.primary);
 
                     return BkuCard(
                       margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -2398,15 +2397,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: stageColor.withAlpha(20),
+                                  color: AppColors.neutral100,
                                   borderRadius: AppRadius.radiusSm,
-                                  border: Border.all(color: stageColor.withAlpha(50)),
+                                  border: Border.all(color: AppColors.neutral300),
                                 ),
                                 child: Text(
                                   stageLabel,
-                                  style: AppTextStyles.labelSm.copyWith(color: stageColor, fontSize: 9, fontWeight: FontWeight.bold),
+                                  style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface, fontSize: 9, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               Row(
@@ -2494,8 +2493,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 icon: const Icon(Icons.settings_outlined, size: 12),
                                 label: const Text('Kelola', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: context.appColors.primary,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: context.appColors.onSurface,
+                                  foregroundColor: context.appColors.surface,
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   minimumSize: Size.zero,
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -2517,20 +2516,20 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     );
   }
 
-  Widget _buildContentBadge(String label, Color color, IconData icon) {
+  Widget _buildContentBadge(String label, Color iconColor, IconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withAlpha(15),
+        color: AppColors.neutral100,
         borderRadius: AppRadius.radiusSm,
-        border: Border.all(color: color.withAlpha(40)),
+        border: Border.all(color: AppColors.neutral300),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color),
+          Icon(icon, size: 12, color: iconColor),
           const SizedBox(width: 4),
-          Text(label, style: AppTextStyles.labelSm.copyWith(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+          Text(label, style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface, fontSize: 10, fontWeight: FontWeight.bold)),
         ],
       ),
     );
