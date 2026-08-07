@@ -136,7 +136,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           style: AppTextStyles.titleLg.copyWith(
             color: AppColors.onSurface,
             fontWeight: FontWeight.w900,
-            fontSize: 24,
+            fontSize: 18,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -344,6 +344,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               style: AppTextStyles.titleMd.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.onSurface,
+                fontSize: 14,
               ),
             ),
           ],
@@ -418,6 +419,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                       style: AppTextStyles.labelMd.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.onSurface,
+                        fontSize: 13,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -425,6 +427,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                       subtitle,
                       style: AppTextStyles.labelSm.copyWith(
                         color: context.appColors.outline,
+                        fontSize: 11,
                       ),
                     ),
                   ],

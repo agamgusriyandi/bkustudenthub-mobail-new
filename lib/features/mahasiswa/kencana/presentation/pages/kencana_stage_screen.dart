@@ -114,7 +114,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                       style: AppTextStyles.titleLg.copyWith(
                         fontWeight: FontWeight.w900,
                         color: context.appColors.onSurface,
-                        fontSize: 18,
+                        fontSize: 15,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -232,7 +232,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
             style: AppTextStyles.titleLg.copyWith(
               color: context.appColors.onSurface,
               fontWeight: FontWeight.w900,
-              fontSize: 22,
+              fontSize: 18,
             ),
           ),
           if (detail.description != null && detail.description!.isNotEmpty) ...[
@@ -241,6 +241,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
               detail.description!,
               style: AppTextStyles.labelMd.copyWith(
                 color: context.appColors.outline,
+                fontSize: 12,
               ),
             ),
           ],
@@ -404,7 +405,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                         session.title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 13.5,
                           color: titleColor,
                         ),
                       ),
