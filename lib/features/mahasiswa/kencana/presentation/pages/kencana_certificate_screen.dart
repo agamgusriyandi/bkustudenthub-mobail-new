@@ -136,8 +136,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     _buildPredicateBadge(provider.certificate!),
                     const SizedBox(height: AppSpacing.xl),
-                    if (provider.certificate!.hasFile)
-                      _buildDownloadButton(provider.certificate!),
+                    _buildDownloadButton(provider.certificate!),
                   ]),
                 ),
               ),
@@ -312,14 +311,22 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
   }
 
   Widget _buildDownloadButton(KencanaCertificate cert) {
+    final provider = context.watch<KencanaCertificateProvider>();
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: BkuButton(
-        onPressed: () => _launchURL(cert.fileUrl!),
-        text: 'UNDUH SERTIFIKAT',
-        icon: Icons.file_download_rounded,
-        variant: BkuButtonVariant.danger,
+        isLoading: provider.isDownloading,
+        onPressed: () async {
+          if (cert.fileUrl != null && cert.fileUrl!.startsWith('http')) {
+            _launchURL(cert.fileUrl!);
+          } else {
+            await context.read<KencanaCertificateProvider>().downloadCertificate();
+          }
+        },
+        text: 'UNDUH SERTIFIKAT (PDF)',
+        icon: Icons.picture_as_pdf_rounded,
+        variant: BkuButtonVariant.success,
       ),
     );
   }
