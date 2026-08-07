@@ -47,7 +47,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           BkuAppBar(
             title: 'Detail Sesi',
             subtitle: session?.title ?? 'Kencana',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.secondary,
             expandedHeight: 100,
             showBackButton: true,
             isExpandable: false,

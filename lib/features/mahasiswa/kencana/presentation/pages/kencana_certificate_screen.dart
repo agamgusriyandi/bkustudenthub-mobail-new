@@ -44,7 +44,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
             const BkuAppBar(
               title: 'SERTIFIKAT',
               subtitle: 'KENCANA',
-              variant: AppBarVariant.student,
+              variant: AppBarVariant.secondary,
               expandedHeight: 100,
               showBackButton: true,
               isExpandable: false,

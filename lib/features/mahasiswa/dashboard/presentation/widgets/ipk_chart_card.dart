@@ -70,7 +70,7 @@ class IpkChartCard extends StatelessWidget {
                     'IPK Terkini: ${ipk.toStringAsFixed(2)}',
                     style: AppTextStyles.titleLg.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: context.appColors.primary,
+                      color: AppColors.onSurface,
                     ),
                   ),
                 ],

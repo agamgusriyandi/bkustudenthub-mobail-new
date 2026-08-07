@@ -29,7 +29,7 @@ class ModuleDetailScreen extends StatelessWidget {
           BkuAppBar(
             title: 'Materi Modul',
             info: mission.title ?? '',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.secondary,
             showBackButton: true,
             isExpandable: false,
             showNotification: false,

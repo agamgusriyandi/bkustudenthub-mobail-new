@@ -148,7 +148,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
           const BkuAppBar(
             title: 'PENGAJUAN BANDING',
             subtitle: 'KENCANA',
-            variant: AppBarVariant.student,
+            variant: AppBarVariant.secondary,
             expandedHeight: 100,
             showBackButton: true,
             isExpandable: false,
