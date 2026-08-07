@@ -372,25 +372,29 @@ class _KencanaScreenState extends State<KencanaScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.s20),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
+              Row(
                 children: [
-                  _buildScoreBadge(
-                    'NILAI UNIV',
-                    (dashboard.scoreUniv?['final_score_univ'] as num?)?.toDouble() ??
-                        (((dashboard.scoreUniv?['final_score'] as num?)?.toDouble() ?? 84.4) == dashboard.temporaryFinalScore
-                            ? 84.4
-                            : ((dashboard.scoreUniv?['final_score'] as num?)?.toDouble() ?? 84.4)),
-                  ),
-                  if (dashboard.scoreFakultas != null)
-                    _buildScoreBadge(
-                      'NILAI FAKULTAS',
-                      (dashboard.scoreFakultas?['final_score_faculty'] as num?)?.toDouble() ??
-                          (((dashboard.scoreFakultas?['final_score'] as num?)?.toDouble() ?? 81.0) == dashboard.temporaryFinalScore
-                              ? 81.0
-                              : ((dashboard.scoreFakultas?['final_score'] as num?)?.toDouble() ?? 81.0)),
+                  Expanded(
+                    child: _buildScoreBadge(
+                      'NILAI UNIV',
+                      (dashboard.scoreUniv?['final_score_univ'] as num?)?.toDouble() ??
+                          (((dashboard.scoreUniv?['final_score'] as num?)?.toDouble() ?? 84.4) == dashboard.temporaryFinalScore
+                              ? 84.4
+                              : ((dashboard.scoreUniv?['final_score'] as num?)?.toDouble() ?? 84.4)),
                     ),
+                  ),
+                  if (dashboard.scoreFakultas != null) ...[
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: _buildScoreBadge(
+                        'NILAI FAKULTAS',
+                        (dashboard.scoreFakultas?['final_score_faculty'] as num?)?.toDouble() ??
+                            (((dashboard.scoreFakultas?['final_score'] as num?)?.toDouble() ?? 81.0) == dashboard.temporaryFinalScore
+                                ? 81.0
+                                : ((dashboard.scoreFakultas?['final_score'] as num?)?.toDouble() ?? 81.0)),
+                      ),
+                    ),
+                  ],
                 ],
               ),
               if (dashboard.isGraduated || dashboard.graduationStatus == 'passed') ...[
@@ -988,7 +992,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
   Widget _buildScoreBadge(String label, double score) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
+        horizontal: AppSpacing.md,
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
@@ -996,31 +1000,34 @@ class _KencanaScreenState extends State<KencanaScreen> {
         borderRadius: AppRadius.radiusLg,
         boxShadow: [
           BoxShadow(
-            color: context.appColors.onSurface.withAlpha(10),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: context.appColors.onSurface.withAlpha(8),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
-        border: Border.all(color: AppColors.neutral300),
+        border: Border.all(color: AppColors.neutral200),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '$label:',
-            style: AppTextStyles.labelSm.copyWith(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: context.appColors.outline,
+          Flexible(
+            child: Text(
+              label,
+              style: AppTextStyles.labelSm.copyWith(
+                fontSize: 9.5,
+                fontWeight: FontWeight.bold,
+                color: context.appColors.outline,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             score.toStringAsFixed(1),
             style: AppTextStyles.titleLg.copyWith(
-              fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: context.appColors.onSurface,
+              color: AppColors.onSurface,
             ),
           ),
         ],
