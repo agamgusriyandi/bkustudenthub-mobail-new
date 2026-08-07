@@ -18,7 +18,7 @@ class IpkChartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ipk = currentIpk > 0 ? currentIpk : 3.0;
+    final ipk = currentIpk > 0 ? currentIpk : 0.0;
     final semester = currentSemester > 0 ? currentSemester : 1;
 
     // Generate simulated dynamic GPA points leading to exact current IPK
