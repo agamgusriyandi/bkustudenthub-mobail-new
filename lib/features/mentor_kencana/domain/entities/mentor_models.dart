@@ -690,12 +690,14 @@ class MentorGroup {
 class MentorGroupDetail {
   final int id;
   final String name;
+  final int maxCapacity;
   final List<MenteeData> members;
   final Map<String, dynamic>? scoreDefinitions;
 
   MentorGroupDetail({
     required this.id,
     required this.name,
+    this.maxCapacity = 40,
     required this.members,
     this.scoreDefinitions,
   });
@@ -711,6 +713,7 @@ class MentorGroupDetail {
           json['group_name'] ??
           json['Nama'] ??
           '',
+      maxCapacity: json['max_capacity'] ?? json['capacity'] ?? json['max_members'] ?? json['quota'] ?? 40,
       members:
           memberList is List
               ? memberList.map((m) => MenteeData.fromJson(m)).toList()

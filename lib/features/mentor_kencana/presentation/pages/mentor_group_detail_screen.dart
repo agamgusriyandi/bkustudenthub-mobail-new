@@ -78,7 +78,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                         Text('Scan oleh Mahasiswa Bimbingan ($groupName)', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
                       ],
                     ),
-                    IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close, size: 20)),
+                    IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close, size: 20, color: context.appColors.onSurface)),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -116,12 +116,13 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(20),
+                          color: AppColors.neutral100,
                           borderRadius: AppRadius.radiusMd,
+                          border: Border.all(color: AppColors.neutral300),
                         ),
                         child: Text(
                           isLoading ? 'Memuat token...' : qrCodeText,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.primary),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: context.appColors.onSurface),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -133,10 +134,11 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: context.appColors.primary,
-                    foregroundColor: Colors.white,
+                    backgroundColor: context.appColors.onSurface,
+                    foregroundColor: context.appColors.surface,
                     minimumSize: const Size.fromHeight(44),
                     shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                    elevation: 0,
                   ),
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -291,7 +293,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                         ),
                                         child: Column(
                                           children: [
-                                            const Text('40', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                            Text('${detail.maxCapacity}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                             const Text('KAPASITAS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                                           ],
                                         ),
