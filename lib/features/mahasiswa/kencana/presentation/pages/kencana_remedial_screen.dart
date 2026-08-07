@@ -42,14 +42,56 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            const BkuAppBar(
-              title: 'Remedial',
-              subtitle: 'Kencana',
-              variant: AppBarVariant.student,
-              expandedHeight: 100,
-              showBackButton: true,
-              isExpandable: false,
-            ),
+              const BkuAppBar(
+                title: 'Remedial',
+                subtitle: 'Kencana',
+                variant: AppBarVariant.student,
+                expandedHeight: 100,
+                showBackButton: true,
+                isExpandable: false,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.s20, AppSpacing.lg, AppSpacing.s20, 0),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.info.withAlpha(20),
+                      border: Border.all(color: AppColors.info.withAlpha(50)),
+                      borderRadius: AppRadius.radiusMd,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.info_outline_rounded, color: AppColors.info, size: 20),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Informasi Remedial',
+                                style: AppTextStyles.labelSm.copyWith(
+                                  color: AppColors.info,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Halaman ini berisi informasi komponen yang perlu Anda perbaiki. Pengerjaan remedial dan pengumpulan tugas dilakukan sesuai dengan instruksi yang tertera. Silakan hubungi Panitia atau Fasilitator jika ada kebingungan.',
+                                style: AppTextStyles.bodySm.copyWith(
+                                  color: context.appColors.onSurface.withAlpha(200),
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (provider.isLoading)
               const SliverFillRemaining(
                 child: Padding(
@@ -88,31 +130,42 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
               )
             else if (provider.remedials.isEmpty)
               SliverFillRemaining(
-                child: Center(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.check_circle_outline_rounded,
-                        size: 64,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: context.appColors.outline.withAlpha(15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.lock_outline_rounded,
+                          size: 32,
+                          color: context.appColors.outline,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       Text(
-                        'Tidak ada tugas remedial.',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: context.appColors.outline,
+                        'Evaluasi Remedial Belum Tersedia',
+                        style: AppTextStyles.titleMd.copyWith(
+                          color: context.appColors.onSurface,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: -0.3,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Kamu tidak memiliki tugas remedial saat ini.',
+                        'Informasi kelulusan dan daftar perbaikan / remedial baru akan muncul setelah periode orientasi Kencana sepenuhnya selesai dan nilai akhir diumumkan.',
                         style: AppTextStyles.bodySm.copyWith(
                           color: context.appColors.outline,
+                          height: 1.5,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
