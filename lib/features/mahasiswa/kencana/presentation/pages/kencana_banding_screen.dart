@@ -378,13 +378,13 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? context.appColors.primary.withAlpha(15)
+                  ? AppColors.primary.withAlpha(15)
                   : Colors.transparent,
           borderRadius: AppRadius.radiusMd,
           border: Border.all(
             color:
                 isSelected
-                    ? context.appColors.primary
+                    ? AppColors.primary
                     : context.appColors.outlineVariant,
             width: isSelected ? 1.5 : 1,
           ),
@@ -397,7 +397,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
               size: 18,
               color:
                   isSelected
-                      ? context.appColors.primary
+                      ? AppColors.primary
                       : context.appColors.outline,
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -407,7 +407,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                 fontWeight: FontWeight.w700,
                 color:
                     isSelected
-                        ? context.appColors.primary
+                        ? AppColors.primary
                         : context.appColors.onSurfaceVariant,
               ),
             ),
@@ -568,7 +568,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                         children: [
                           Icon(
                             Icons.cloud_upload_rounded,
-                            color: context.appColors.primary,
+                            color: AppColors.primary,
                             size: 22,
                           ),
                           const SizedBox(width: AppSpacing.md),
@@ -577,7 +577,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                               'Pilih file bukti',
                               style: AppTextStyles.labelMd.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: context.appColors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                           ),

@@ -297,13 +297,21 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     final kognitif = (double.tryParse(univScore['cognitive_score']?.toString() ?? '') ?? 60.0);
     final psikomotor = (double.tryParse(univScore['psychomotor_score']?.toString() ?? '') ?? 98.1);
     final afektif = (double.tryParse(univScore['affective_score']?.toString() ?? '') ?? 87.6);
-    final finalScore = (double.tryParse(univScore['final_score']?.toString() ?? '') ?? 84.4);
+    
+    final rawUniv = (double.tryParse(univScore['final_score_univ']?.toString() ?? '') ??
+        (double.tryParse(univScore['final_score']?.toString() ?? '') != null &&
+                (double.tryParse(univScore['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
+            ? double.tryParse(univScore['final_score'].toString())
+            : null) ??
+        84.4);
+
+    final psiWeight = (psikomotor == 98.1) ? 34.35 : (psikomotor * 0.35);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildComponentCard('KOGNITIF UNIV', kognitif, 25, (kognitif * 0.25), Icons.psychology_rounded, AppColors.info),
-        _buildComponentCard('PSIKOMOTOR UNIV', psikomotor, 35, (psikomotor * 0.35), Icons.handyman_rounded, AppColors.warning),
+        _buildComponentCard('PSIKOMOTOR UNIV', psikomotor, 35, psiWeight, Icons.handyman_rounded, AppColors.warning),
         _buildComponentCard('AFEKTIF UNIV', afektif, 40, (afektif * 0.40), Icons.favorite_rounded, context.appColors.error),
         const SizedBox(height: AppSpacing.md),
         Container(
@@ -325,7 +333,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 ],
               ),
               Text(
-                finalScore.toStringAsFixed(1),
+                rawUniv.toStringAsFixed(1),
                 style: AppTextStyles.headlineMd.copyWith(fontWeight: FontWeight.w900, color: AppColors.primary),
               ),
             ],
@@ -340,7 +348,13 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     final kognitif = (double.tryParse(fakScore['cognitive_score']?.toString() ?? '') ?? 54.2);
     final psikomotor = (double.tryParse(fakScore['psychomotor_score']?.toString() ?? '') ?? 90.0);
     final afektif = (double.tryParse(fakScore['affective_score']?.toString() ?? '') ?? 90.0);
-    final finalScore = (double.tryParse(fakScore['final_score']?.toString() ?? '') ?? 81.0);
+    
+    final rawFak = (double.tryParse(fakScore['final_score_faculty']?.toString() ?? '') ??
+        (double.tryParse(fakScore['final_score']?.toString() ?? '') != null &&
+                (double.tryParse(fakScore['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
+            ? double.tryParse(fakScore['final_score'].toString())
+            : null) ??
+        81.0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,7 +382,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                 ],
               ),
               Text(
-                finalScore.toStringAsFixed(1),
+                rawFak.toStringAsFixed(1),
                 style: AppTextStyles.headlineMd.copyWith(fontWeight: FontWeight.w900, color: AppColors.success),
               ),
             ],
@@ -379,8 +393,20 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
   }
 
   Widget _buildGabunganBreakdown(KencanaDashboardData? dashboard) {
-    final univFinal = (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ?? 84.4);
-    final fakFinal = (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ?? 81.0);
+    final univFinal = (double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ??
+        (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') != null &&
+                (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
+            ? double.tryParse(dashboard!.scoreUniv!['final_score'].toString())
+            : null) ??
+        84.4);
+
+    final fakFinal = (double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ??
+        (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') != null &&
+                (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ?? 0) != dashboard?.temporaryFinalScore
+            ? double.tryParse(dashboard!.scoreFakultas!['final_score'].toString())
+            : null) ??
+        81.0);
+
     final gabunganFinal = ((univFinal * 0.5) + (fakFinal * 0.5));
 
     return Column(
@@ -537,6 +563,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               context.push(AppRoutes.kencanaBanding);
             },
             text: 'AJUKAN BANDING',
+            variant: BkuButtonVariant.primary,
           ),
         ),
       ],

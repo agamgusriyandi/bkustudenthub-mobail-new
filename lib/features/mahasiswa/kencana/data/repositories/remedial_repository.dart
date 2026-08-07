@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
-import 'package:bkuhub_mobile/core/utils/error_helper.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/remedial_model.dart';
 
 class RemedialRepository {
@@ -12,14 +11,20 @@ class RemedialRepository {
         '/kencana-student/remedial',
       );
       if (response.data != null && response.data['success'] == true) {
-        final items = response.data['data'] as List? ?? [];
+        final data = response.data['data'];
+        List items = [];
+        if (data is Map<String, dynamic>) {
+          items = data['remedials'] as List? ?? [];
+        } else if (data is List) {
+          items = data;
+        }
         return items
-            .map((e) => KencanaRemedialItem.fromJson(e))
+            .map((e) => KencanaRemedialItem.fromJson(e as Map<String, dynamic>))
             .toList();
       }
       return [];
-    } catch (e) {
-      throw Exception(ErrorHelper.getMessage(e));
+    } catch (_) {
+      return [];
     }
   }
 
@@ -39,8 +44,8 @@ class RemedialRepository {
         data: formData,
       );
       return response.data != null && response.data['success'] == true;
-    } catch (e) {
-      throw Exception(ErrorHelper.getMessage(e));
+    } catch (_) {
+      return false;
     }
   }
 }

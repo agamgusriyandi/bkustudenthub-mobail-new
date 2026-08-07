@@ -80,6 +80,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                       BkuButton(
                         onPressed: () => provider.fetchRemedials(),
                         text: 'Coba Lagi',
+                        variant: BkuButtonVariant.primary,
                       ),
                     ],
                   ),
