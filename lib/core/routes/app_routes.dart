@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/network/api_interceptors.dart';
 import 'package:bkuhub_mobile/features/auth/presentation/pages/login_screen.dart';
 import 'package:bkuhub_mobile/features/auth/presentation/pages/forgot_password_screen.dart';
@@ -70,6 +71,8 @@ import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kenc
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_timeline_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_remedial_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/pages/kencana_certificate_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/providers/kencana_remedial_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/providers/kencana_certificate_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_mentee_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_recruit_screen.dart';
@@ -600,11 +603,17 @@ class AppRoutes {
       ),
       GoRoute(
         path: kencanaRemedial,
-        builder: (context, state) => const KencanaRemedialScreen(),
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (_) => KencanaRemedialProvider()..fetchRemedials(),
+          child: const KencanaRemedialScreen(),
+        ),
       ),
       GoRoute(
         path: kencanaCertificate,
-        builder: (context, state) => const KencanaCertificateScreen(),
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (_) => KencanaCertificateProvider()..fetchCertificate(),
+          child: const KencanaCertificateScreen(),
+        ),
       ),
       GoRoute(
         path: kencanaQuiz,

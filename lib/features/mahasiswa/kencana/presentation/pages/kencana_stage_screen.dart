@@ -267,7 +267,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: AppTextStyles.labelSm.copyWith(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: context.appColors.primary,
+                              color: AppColors.primary,
                               letterSpacing: 1.5,
                             ),
                           ),
@@ -283,7 +283,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             '(${detail.group!['code'] ?? '-'})',
                             style: AppTextStyles.labelSm.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: context.appColors.primary,
+                              color: context.appColors.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -299,7 +299,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: AppTextStyles.labelSm.copyWith(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: context.appColors.primary,
+                              color: AppColors.primary,
                               letterSpacing: 1.5,
                             ),
                           ),
@@ -347,7 +347,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
       borderColor = context.appColors.info;
       iconBg = AppColors.primary;
       iconColor = context.appColors.onPrimary;
-      titleColor = context.appColors.primary;
+      titleColor = context.appColors.onSurface;
     } else if (isCompleted) {
       cardBg = context.appColors.successContainer;
       borderColor = context.appColors.success;
