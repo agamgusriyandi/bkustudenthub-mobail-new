@@ -57,13 +57,13 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
           m.nim.toLowerCase().contains(_searchQuery);
       final matchesRole =
           _selectedFilterRole == 'SEMUA' ||
-          m.role.toUpperCase() == _selectedFilterRole.toUpperCase();
+          m.role.toUpperCase() == _selectedFilterRole;
       final matchesDivisi =
           _selectedFilterDivisi == 'SEMUA' ||
-          m.division.toUpperCase() == _selectedFilterDivisi.toUpperCase();
+          m.division.toUpperCase() == _selectedFilterDivisi;
       final matchesStatus =
           _selectedFilterStatus == 'SEMUA' ||
-          m.status.toUpperCase() == _selectedFilterStatus.toUpperCase();
+          m.status.toUpperCase() == _selectedFilterStatus;
       return matchesSearch && matchesRole && matchesDivisi && matchesStatus;
     }).toList();
   }
@@ -166,7 +166,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                               selected:
                                                   _selectedFilterRole
                                                       .toUpperCase() ==
-                                                  r.toUpperCase(),
+                                                  r,
                                               onSelected: (selected) {
                                                 setModalState(
                                                   () => _selectedFilterRole = r,
@@ -197,7 +197,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                               selected:
                                                   _selectedFilterDivisi
                                                       .toUpperCase() ==
-                                                  d.toUpperCase(),
+                                                  d,
                                               onSelected: (selected) {
                                                 setModalState(
                                                   () =>
@@ -661,7 +661,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 'WAKIL KETUA',
                 'SEKRETARIS',
                 'BENDAHARA',
-              ].contains(m.role.toUpperCase()),
+              ].contains(m.role),
             )
             .length
             .toString();
@@ -940,7 +940,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                             borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
-                            member.status.toUpperCase(),
+                            member.status,
                             style: const TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.w900,
@@ -968,7 +968,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                           border: Border.all(color: roleColor.withAlpha(30)),
                         ),
                         child: Text(
-                          member.role.toUpperCase(),
+                          member.role,
                           style: AppTextStyles.labelSm.copyWith(
                             color: roleColor,
                             fontWeight: FontWeight.w900,
@@ -995,7 +995,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                         ),
                         child: Text(
                           (member.division.isEmpty ? 'UMUM' : member.division)
-                              .toUpperCase(),
+                              ,
                           style: AppTextStyles.labelSm.copyWith(
                             fontWeight: FontWeight.w900,
                             fontSize: 9,
@@ -1892,7 +1892,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                member.role.toUpperCase(),
+                                member.role,
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: roleColor,
                                   fontWeight: FontWeight.w900,
@@ -1921,7 +1921,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                                 (member.division.isEmpty
                                         ? 'UMUM'
                                         : member.division)
-                                    .toUpperCase(),
+                                    ,
                                 style: AppTextStyles.labelSm.copyWith(
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 0.5,
@@ -1967,7 +1967,7 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
                         const SizedBox(height: AppSpacing.lg),
                         _buildActivityItem(
                           'Status Saat Ini',
-                          member.status.toUpperCase(),
+                          member.status,
                               member.status.toLowerCase() == 'aktif'
                                   ? AppColors.success
                                   : AppColors.neutral500,

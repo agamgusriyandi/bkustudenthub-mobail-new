@@ -268,7 +268,7 @@ class _PsychologistEditProfileScreenState
                                                   .map(
                                                     (w) =>
                                                         w.isNotEmpty
-                                                            ? w[0].toUpperCase()
+                                                            ? w[0]
                                                             : '',
                                                   )
                                                   .join(),

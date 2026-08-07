@@ -270,7 +270,7 @@ class _PsychologistDashboardScreenState
                 .trim()
                 .split(' ')
                 .take(2)
-                .map((w) => w[0].toUpperCase())
+                .map((w) => w[0])
                 .join();
     final unreadCount = context.watch<CounselingProvider>().unreadCount;
 

@@ -303,7 +303,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                                         borderRadius: AppRadius.radiusXs,
                                       ),
                                       child: Text(
-                                        type.toUpperCase(),
+                                        type,
                                         style: AppTextStyles.labelSm.copyWith(
                                           color: context.appColors.info,
                                           fontWeight: FontWeight.bold,

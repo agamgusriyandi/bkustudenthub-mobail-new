@@ -244,7 +244,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                           fit: BoxFit.cover,
                                           errorWidget: (context, error, stackTrace) => Center(
                                             child: Text(
-                                              mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                              mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                               style: TextStyle(
                                                 color: context.appColors.primary,
                                                 fontWeight: FontWeight.bold,
@@ -256,7 +256,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                         )
                                       : Center(
                                           child: Text(
-                                            mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                            mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                             style: TextStyle(
                                               color: context.appColors.primary,
                                               fontWeight: FontWeight.bold,

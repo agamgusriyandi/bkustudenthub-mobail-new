@@ -5,7 +5,7 @@ extension StringCasingExtension on String {
     return split(RegExp(r'[_\s]+'))
         .map((word) {
           if (word.isEmpty) return word;
-          return word[0].toUpperCase() + word.substring(1).toLowerCase();
+          return word[0] + word.substring(1).toLowerCase();
         })
         .join(' ');
   }
@@ -14,6 +14,6 @@ extension StringCasingExtension on String {
   /// Useful for status labels like "menunggu" -> "Menunggu".
   String capitalizeFirstLetter() {
     if (isEmpty) return this;
-    return this[0].toUpperCase() + substring(1);
+    return this[0] + substring(1);
   }
 }

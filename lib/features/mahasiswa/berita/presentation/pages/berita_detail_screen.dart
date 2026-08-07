@@ -202,7 +202,7 @@ class _BeritaContent extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    berita.category!.toUpperCase(),
+                    berita.category!,
                     style: AppTextStyles.labelSm.copyWith(
                       color: context.appColors.primary,
                       fontWeight: FontWeight.w800,

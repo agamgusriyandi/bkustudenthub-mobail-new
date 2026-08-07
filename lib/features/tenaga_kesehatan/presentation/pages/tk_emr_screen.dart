@@ -290,7 +290,7 @@ class _TkEmrScreenState extends State<TkEmrScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  record.statusCategory.toUpperCase(),
+                  record.statusCategory,
                   style: AppTextStyles.labelSm.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.w900,

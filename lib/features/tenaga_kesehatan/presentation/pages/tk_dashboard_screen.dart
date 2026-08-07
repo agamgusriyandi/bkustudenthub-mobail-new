@@ -229,7 +229,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         DateFormat(
           'EEEE, dd MMM yyyy',
           'id_ID',
-        ).format(DateTime.now()).toUpperCase();
+        ).format(DateTime.now());
 
     final primaryColor = context.read<ThemeProvider>().primary;
 
@@ -604,9 +604,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     final parts = name.trim().split(' ');
     final avatarText =
         parts.length >= 2
-            ? '${parts[0][0]}${parts[1][0]}'.toUpperCase()
+            ? '${parts[0][0]}${parts[1][0]}'
             : name.isNotEmpty
-            ? name[0].toUpperCase()
+            ? name[0]
             : '?';
 
     Color statusColor;
@@ -1042,7 +1042,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                         words
                             .map((w) => w.isNotEmpty ? w[0] : '')
                             .join()
-                            .toUpperCase();
+                            ;
                     return Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.sm),
                       child: Text(

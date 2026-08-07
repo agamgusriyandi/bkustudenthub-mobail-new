@@ -425,7 +425,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      member.role.toUpperCase(),
+                      member.role,
                       style: AppTextStyles.labelSm.copyWith(
                         color: AppColors.neutral500,
                         fontWeight: FontWeight.bold,

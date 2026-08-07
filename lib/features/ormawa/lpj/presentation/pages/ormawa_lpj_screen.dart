@@ -284,7 +284,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                                 borderRadius: AppRadius.radiusSm,
                               ),
                               child: Text(
-                                lpj.status.toUpperCase(),
+                                lpj.status,
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: statusColor,
                                   fontWeight: FontWeight.w900,

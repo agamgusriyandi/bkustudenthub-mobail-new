@@ -604,7 +604,7 @@ class _StudentNotificationsScreenState
       case 'rujukan':
         return 'RUJUKAN';
       default:
-        return type.toUpperCase();
+        return type;
     }
   }
 

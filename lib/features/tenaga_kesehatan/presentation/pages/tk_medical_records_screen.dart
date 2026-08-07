@@ -203,7 +203,7 @@ class _TkMedicalRecordsScreenState extends State<TkMedicalRecordsScreen> {
               borderRadius: AppRadius.radiusMd,
             ),
             child: Text(
-              record.statusCategory.toUpperCase(),
+              record.statusCategory,
               style: AppTextStyles.labelSm.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.w900,

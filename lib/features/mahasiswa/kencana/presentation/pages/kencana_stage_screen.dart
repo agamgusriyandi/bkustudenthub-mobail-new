@@ -199,7 +199,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Text(
-                  detail.status.toUpperCase(),
+                  detail.status,
                   style: AppTextStyles.labelSm.copyWith(
                     color: context.appColors.onPrimary,
                     fontWeight: FontWeight.bold,

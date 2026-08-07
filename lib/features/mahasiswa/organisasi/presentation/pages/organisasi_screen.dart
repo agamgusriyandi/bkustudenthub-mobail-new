@@ -327,7 +327,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       borderRadius: AppRadius.radiusMd,
                     ),
                     child: Text(
-                      statusVerifikasi.toUpperCase(),
+                      statusVerifikasi,
                       style: AppTextStyles.labelSm.copyWith(
                         color: statusTextColor,
                         fontSize: 8,

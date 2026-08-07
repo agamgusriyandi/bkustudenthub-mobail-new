@@ -64,7 +64,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       case 'informasi':
         return 'INFORMASI';
       default:
-        return target.toUpperCase();
+        return target;
     }
   }
 

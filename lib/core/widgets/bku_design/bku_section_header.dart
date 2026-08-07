@@ -24,7 +24,7 @@ class BkuSectionHeader extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            isSubtitle ? title.toUpperCase() : title,
+            isSubtitle ? title : title,
             style:
                 isSubtitle
                     ? AppTextStyles.labelSm.copyWith(

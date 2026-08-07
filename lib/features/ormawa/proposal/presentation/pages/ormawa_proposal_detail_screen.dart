@@ -51,7 +51,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
       case 'selesai':
         return 'Selesai';
       default:
-        return status.toUpperCase();
+        return status;
     }
   }
 
@@ -339,7 +339,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                title.toUpperCase(),
+                title,
                 style: AppTextStyles.labelSm.copyWith(
                   color: AppColors.neutral600,
                   fontSize: 10,
@@ -565,7 +565,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  statusText.toUpperCase(),
+                  statusText,
                   style: AppTextStyles.labelSm.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.w900,
@@ -590,7 +590,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title.toUpperCase(),
+          title,
           style: AppTextStyles.labelMd.copyWith(
             fontWeight: FontWeight.w900,
             color: AppColors.neutral800,

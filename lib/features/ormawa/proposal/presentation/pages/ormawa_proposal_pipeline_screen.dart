@@ -347,7 +347,7 @@ class _OrmawaProposalPipelineScreenState
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        '${proposal.code} \u2022 ${dateFormatter.format(proposal.date).toUpperCase()}',
+                        '${proposal.code} \u2022 ${dateFormatter.format(proposal.date)}',
                         style: AppTextStyles.labelSm.copyWith(
                           color: AppColors.neutral500,
                         ),
@@ -365,7 +365,7 @@ class _OrmawaProposalPipelineScreenState
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Text(
-                    normalizedStatus.toUpperCase(),
+                    normalizedStatus,
                     style: AppTextStyles.labelSm.copyWith(
                       color: statusColor,
                       fontSize: 9,

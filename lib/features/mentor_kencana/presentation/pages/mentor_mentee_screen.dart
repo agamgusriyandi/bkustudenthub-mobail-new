@@ -280,7 +280,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                       fit: BoxFit.cover,
                                       errorWidget: (context, error, stackTrace) => Center(
                                         child: Text(
-                                          mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                          mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                           style: TextStyle(
                                             color: AppColors.neutral800,
                                             fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                     )
                                   : Center(
                                       child: Text(
-                                        mentee.name.isNotEmpty ? mentee.name.substring(0, 1).toUpperCase() : '',
+                                        mentee.name.isNotEmpty ? mentee.name.substring(0, 1) : '',
                                         style: TextStyle(
                                           color: AppColors.neutral800,
                                           fontWeight: FontWeight.bold,

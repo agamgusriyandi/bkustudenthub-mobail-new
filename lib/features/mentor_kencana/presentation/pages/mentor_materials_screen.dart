@@ -961,7 +961,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
-                                        q.status.toUpperCase(),
+                                        q.status,
                                         style: const TextStyle(color: Color(0xFF166534), fontSize: 9, fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -1868,7 +1868,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
-                                        t.status.toUpperCase(),
+                                        t.status,
                                         style: const TextStyle(color: Color(0xFF166534), fontSize: 9, fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -2380,7 +2380,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       borderRadius: AppRadius.radiusSm,
                                     ),
                                     child: Text(
-                                      item.status.toUpperCase(),
+                                      item.status,
                                       style: AppTextStyles.labelSm.copyWith(
                                         color: item.status == 'active' ? AppColors.success : AppColors.neutral700,
                                         fontSize: 9,

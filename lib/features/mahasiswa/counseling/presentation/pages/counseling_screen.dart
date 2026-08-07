@@ -1726,7 +1726,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  status.toString().toUpperCase(),
+                  status.toString(),
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -2130,7 +2130,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                 .trim()
                 .split(' ')
                 .take(2)
-                .map((w) => w[0].toUpperCase())
+                .map((w) => w[0])
                 .join();
 
     final rawPhoto = () {
@@ -2376,7 +2376,7 @@ class _CounselingScreenState extends State<CounselingScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  status.toString().toUpperCase(),
+                  status.toString(),
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,

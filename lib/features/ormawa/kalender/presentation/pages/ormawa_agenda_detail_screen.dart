@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -51,7 +51,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
         slivers: [
           BkuAppBar(
             title: 'DETAIL AGENDA',
-            subtitle: agenda.title.toUpperCase(),
+            subtitle: agenda.title,
             variant: AppBarVariant.ormawa,
             expandedHeight: 115.0,
             showBackButton: true,
@@ -169,7 +169,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         border: Border.all(color: statusColor.withAlpha(30)),
                       ),
                       child: Text(
-                        agenda.status.toUpperCase(),
+                        agenda.status,
                         style: AppTextStyles.labelSm.copyWith(
                           color: statusColor,
                           fontWeight: FontWeight.w900,

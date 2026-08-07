@@ -235,7 +235,7 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                 .trim()
                 .split(' ')
                 .take(2)
-                .map((w) => w[0].toUpperCase())
+                .map((w) => w[0])
                 .join();
 
     final rawPhoto = () {

@@ -155,7 +155,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
     final graduationStatusVal = mentorScope == 'faculty' ? score['graduation_status_faculty'] : score['graduation_status_univ'];
     
     final finalScoreStr = num.tryParse(finalScoreVal?.toString() ?? '0')?.toStringAsFixed(1) ?? '0.0';
-    final graduationStatusStr = (graduationStatusVal?.toString() ?? 'BELUM EVALUASI').toUpperCase();
+    final graduationStatusStr = (graduationStatusVal?.toString() ?? 'BELUM EVALUASI');
 
     final attendancePercentage = num.tryParse(attendanceData['percentage']?.toString() ?? '0') ?? 0;
     final attendedSessions = attendanceData['attended_sessions'] ?? 0;
@@ -454,7 +454,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                title.toUpperCase(),
+                title,
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.2,
@@ -487,7 +487,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   borderRadius: AppRadius.radiusSm,
                 ),
                 child: Text(
-                  badgeText.toUpperCase(),
+                  badgeText,
                   style: AppTextStyles.labelSm.copyWith(
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -543,7 +543,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Text(
-                      title.toUpperCase(),
+                      title,
                       style: AppTextStyles.labelMd.copyWith(
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.5,
@@ -1008,7 +1008,7 @@ class _ScoreFormTabWidgetState extends State<_ScoreFormTabWidget> {
         children: [
           Center(
             child: Text(
-              title.toUpperCase(),
+              title,
               style: AppTextStyles.titleSm.copyWith(
                 fontWeight: FontWeight.w900, 
                 color: context.appColors.primary,

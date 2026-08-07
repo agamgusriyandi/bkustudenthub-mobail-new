@@ -54,7 +54,7 @@ class OrmawaOrganisasiDetailScreen extends StatelessWidget {
                               borderRadius: AppRadius.radiusSm,
                             ),
                             child: Text(
-                              organisasi.status.toUpperCase(),
+                              organisasi.status,
                               style: AppTextStyles.labelSm.copyWith(
                                 color: context.appColors.primary,
                                 fontWeight: FontWeight.w900,

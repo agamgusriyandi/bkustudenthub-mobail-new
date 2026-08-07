@@ -124,9 +124,9 @@ class Booking extends Equatable {
     if (nama.isEmpty) return 'M';
     final parts = nama.trim().split(' ');
     if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      return '${parts[0][0]}${parts[1][0]}';
     }
-    return parts[0][0].toUpperCase();
+    return parts[0][0];
   }
 
   bool get isPending => status == 'Menunggu Konfirmasi';

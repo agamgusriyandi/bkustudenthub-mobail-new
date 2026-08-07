@@ -240,7 +240,7 @@ class _TkScreeningsScreenState extends State<TkScreeningsScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  record.statusCategory.toUpperCase(),
+                  record.statusCategory,
                   style: AppTextStyles.labelSm.copyWith(color: statusColor, fontWeight: FontWeight.w900, fontSize: 10),
                 ),
               ),

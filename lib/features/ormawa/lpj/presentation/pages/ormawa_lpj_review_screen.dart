@@ -235,7 +235,7 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Text(
-                    normalizedStatus.toUpperCase(),
+                    normalizedStatus,
                     style: AppTextStyles.labelSm.copyWith(
                       color: statusColor,
                       fontSize: 9,

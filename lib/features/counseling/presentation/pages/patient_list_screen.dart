@@ -992,7 +992,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                               ? null
                               : Center(
                                 child: Text(
-                                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                                  name.isNotEmpty ? name[0] : '?',
                                   style: AppTextStyles.titleLg.copyWith(
                                     color: color,
                                     fontSize: 22,
@@ -1309,7 +1309,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                   ? null
                   : Center(
                     child: Text(
-                      name.isNotEmpty ? name[0].toUpperCase() : '?',
+                      name.isNotEmpty ? name[0] : '?',
                       style: AppTextStyles.titleLg.copyWith(
                         color: color,
                         fontSize: 36,

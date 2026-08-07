@@ -525,7 +525,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
         break;
       default:
         color = context.appColors.outline;
-        text = status.toUpperCase();
+        text = status;
     }
     return Container(
       padding: const EdgeInsets.symmetric(

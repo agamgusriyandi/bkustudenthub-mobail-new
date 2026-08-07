@@ -402,7 +402,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                               member.name.isNotEmpty
                                                   ? member.name
                                                       .substring(0, 1)
-                                                      .toUpperCase()
+                                                      
                                                   : '',
                                               style: const TextStyle(
                                                 color: AppColors.neutral700,
@@ -417,7 +417,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                         member.name.isNotEmpty
                                             ? member.name
                                                 .substring(0, 1)
-                                                .toUpperCase()
+                                                
                                             : '',
                                         style: const TextStyle(
                                           color: AppColors.neutral700,

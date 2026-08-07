@@ -12,7 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 Widget buildRoleCard(BuildContext context, ProfileProvider student) {
   final displayName = student.name.isNotEmpty ? student.name : 'Mahasiswa';
   final displayProdi =
-      student.prodi.isNotEmpty ? student.prodi.toUpperCase() : 'MAHASISWA';
+      student.prodi.isNotEmpty ? student.prodi : 'MAHASISWA';
   final displaySemester = student.semester > 0 ? 'Sem ${student.semester}' : 'Aktif';
   final displayNim = student.nim.isNotEmpty ? student.nim : '-';
 

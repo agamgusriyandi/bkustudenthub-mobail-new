@@ -69,7 +69,7 @@ class MentorGroupPeriodCard extends StatelessWidget {
               borderRadius: AppRadius.radiusXl,
             ),
             child: Text(
-              scope.toUpperCase(),
+              scope,
               style: AppTextStyles.labelSm.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

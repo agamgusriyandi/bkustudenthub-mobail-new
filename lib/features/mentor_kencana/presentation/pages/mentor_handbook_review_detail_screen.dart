@@ -284,7 +284,7 @@ class _MentorHandbookReviewDetailScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  statusText.toUpperCase(),
+                  statusText,
                   style: AppTextStyles.labelSm.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.w900,
@@ -335,7 +335,7 @@ class _MentorHandbookReviewDetailScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            key.replaceAll('_', ' ').toUpperCase(),
+            key.replaceAll('_', ' '),
             style: AppTextStyles.labelSm.copyWith(
               color: AppColors.neutral800,
               fontWeight: FontWeight.w900,

@@ -76,7 +76,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                               borderRadius: AppRadius.radiusSm,
                             ),
                             child: Text(
-                              a.target.toUpperCase(),
+                              a.target,
                               style: AppTextStyles.labelSm.copyWith(
                                 color: gradient.colors.first,
                                 fontWeight: FontWeight.w900,

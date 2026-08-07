@@ -163,7 +163,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
       decimalDigits: 0,
     ).format(claim.estimasiBiaya);
 
-    String currentStatus = claim.status.toUpperCase();
+    String currentStatus = claim.status;
     String statusLabel = 'Menunggu Verifikasi';
     Color statusColor = context.watch<ThemeProvider>().colors.warning;
 
@@ -226,7 +226,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  statusLabel.toUpperCase(),
+                  statusLabel,
                   style: AppTextStyles.labelSm.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.w900,

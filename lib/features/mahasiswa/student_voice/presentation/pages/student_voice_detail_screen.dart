@@ -271,7 +271,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                     borderRadius: AppRadius.radiusMd,
                   ),
                   child: Text(
-                    ticket.category.toUpperCase(),
+                    ticket.category,
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral900,
                       fontWeight: FontWeight.w900,
@@ -289,7 +289,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                     borderRadius: AppRadius.radiusMd,
                   ),
                   child: Text(
-                    ticket.status.toUpperCase(),
+                    ticket.status,
                     style: AppTextStyles.labelSm.copyWith(
                       color: statusColor,
                       fontWeight: FontWeight.w900,
@@ -621,7 +621,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                             borderRadius: AppRadius.radiusXs,
                           ),
                           child: Text(
-                            labelText.toUpperCase(),
+                            labelText,
                             style: AppTextStyles.labelSm.copyWith(
                               fontSize: 10,
                               fontWeight: FontWeight.w900,
@@ -664,7 +664,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
-                          'Oleh ${event.level == 'sistem' ? 'Sistem' : 'Admin ${event.level[0].toUpperCase()}${event.level.substring(1)}'}',
+                          'Oleh ${event.level == 'sistem' ? 'Sistem' : 'Admin ${event.level[0]}${event.level.substring(1)}'}',
                           style: AppTextStyles.labelSm.copyWith(
                             fontSize: 10,
                             color: AppColors.neutral400,

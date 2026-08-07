@@ -455,7 +455,7 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
                           ),
                         ),
                         child: Text(
-                          org.status.toUpperCase(),
+                          org.status,
                           style: AppTextStyles.labelSm.copyWith(
                             color: isAktif ? AppColors.success : AppColors.neutral500,
                             fontWeight: FontWeight.w900,

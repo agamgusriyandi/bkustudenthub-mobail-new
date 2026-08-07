@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
@@ -52,9 +52,9 @@ class QuickStatsCard extends StatelessWidget {
       ];
       final day = dayNames[now.weekday - 1];
       final month = monthNames[now.month - 1];
-      return '$day, ${now.day} $month ${now.year}'.toUpperCase();
+      return '$day, ${now.day} $month ${now.year}';
     } catch (_) {
-      return DateTime.now().toString().substring(0, 10).toUpperCase();
+      return DateTime.now().toString().substring(0, 10);
     }
   }
 

@@ -366,7 +366,7 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Text(
-                    normalizedStatus.toUpperCase(),
+                    normalizedStatus,
                     style: AppTextStyles.labelSm.copyWith(
                       color: statusColor,
                       fontSize: 9,

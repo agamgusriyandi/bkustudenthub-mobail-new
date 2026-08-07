@@ -1020,7 +1020,7 @@ class _ReferralCard extends StatelessWidget {
                           ? null
                           : Text(
                             referral.mahasiswaNama.isNotEmpty
-                                ? referral.mahasiswaNama[0].toUpperCase()
+                                ? referral.mahasiswaNama[0]
                                 : 'M',
                             style: AppTextStyles.titleMd.copyWith(
                               color: AppColors.primary,

@@ -220,7 +220,7 @@ class AnnouncementSection extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    kategori.toUpperCase(),
+                                    kategori,
                                     style: AppTextStyles.labelSm.copyWith(
                                       fontSize: 9,
                                       fontWeight: FontWeight.w900,

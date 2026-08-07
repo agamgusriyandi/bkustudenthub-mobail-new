@@ -192,7 +192,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                             const SizedBox(height: AppSpacing.xl),
                             OrmawaListHeader(
                               title:
-                                  '${DateFormat('d MMMM', 'id').format(_selectedDay ?? _focusedDay).toUpperCase()} - ${selectedEvents.length} AGENDA',
+                                  '${DateFormat('d MMMM', 'id').format(_selectedDay ?? _focusedDay)} - ${selectedEvents.length} AGENDA',
                               searchHint: 'Cari agenda...',
                               searchController: _searchController,
                               onRefresh: () async {
@@ -404,7 +404,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       borderRadius: AppRadius.radiusSm,
                     ),
                     child: Text(
-                      agenda.status.toUpperCase(),
+                      agenda.status,
                       style: AppTextStyles.labelSm.copyWith(
                         color: statusColor,
                         fontWeight: FontWeight.w900,

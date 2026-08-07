@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
@@ -306,7 +306,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                         borderRadius: AppRadius.radiusSm,
                       ),
                       child: Text(
-                        item.status.toUpperCase(),
+                        item.status,
                         style: AppTextStyles.labelSm.copyWith(
                           color: color,
                           fontWeight: FontWeight.w900,
@@ -626,7 +626,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                       ),
                                       const SizedBox(width: AppSpacing.s6),
                                       Text(
-                                        item.status.toUpperCase(),
+                                        item.status,
                                         style: AppTextStyles.labelSm.copyWith(
                                           color: color.withValues(alpha: 0.8),
                                           fontWeight: FontWeight.w900,

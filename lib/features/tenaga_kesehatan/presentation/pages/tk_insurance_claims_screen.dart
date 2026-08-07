@@ -299,7 +299,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
     final nim = student['nim']!;
     final prodi = student['prodi']!;
     final foto = student['foto']!;
-    final initial = nama.isNotEmpty ? nama[0].toUpperCase() : 'M';
+    final initial = nama.isNotEmpty ? nama[0] : 'M';
     final bool hasFoto =
         foto.trim().isNotEmpty && foto.trim().toLowerCase() != 'null';
 
@@ -513,7 +513,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
         borderRadius: AppRadius.radiusMd,
       ),
       child: Text(
-        label.toUpperCase(),
+        label,
         style: AppTextStyles.labelSm.copyWith(
           color: statusColor,
           fontWeight: FontWeight.w900,
@@ -537,7 +537,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
     final nim = student['nim']!;
     final prodi = student['prodi']!;
     final foto = student['foto']!;
-    final initial = nama.isNotEmpty ? nama[0].toUpperCase() : 'M';
+    final initial = nama.isNotEmpty ? nama[0] : 'M';
     final bool hasFoto =
         foto.trim().isNotEmpty && foto.trim().toLowerCase() != 'null';
 

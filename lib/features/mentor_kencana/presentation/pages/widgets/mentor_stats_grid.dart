@@ -94,7 +94,7 @@ class MentorStatsGrid extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  title.toUpperCase(),
+                  title,
                   style: AppTextStyles.labelSm.copyWith(
                     color: AppColors.neutral500,
                     fontSize: 9,

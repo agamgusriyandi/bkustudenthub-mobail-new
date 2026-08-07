@@ -305,7 +305,7 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                 ),
                 child: Center(
                   child: Text(
-                    item.studentName.isNotEmpty ? item.studentName[0].toUpperCase() : 'M',
+                    item.studentName.isNotEmpty ? item.studentName[0] : 'M',
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,

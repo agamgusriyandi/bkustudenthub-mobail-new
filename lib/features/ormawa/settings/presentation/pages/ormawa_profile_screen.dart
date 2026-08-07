@@ -379,7 +379,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              member.status.toUpperCase(),
+                              member.status,
                               style: TextStyle(
                                 color:
                                     member.status.toLowerCase() == 'aktif'
@@ -410,7 +410,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         Padding(
           padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
-            title.toUpperCase(),
+            title,
             style: AppTextStyles.titleSm.copyWith(
               color: AppColors.neutral600,
               fontWeight: FontWeight.w800,
@@ -521,7 +521,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   }
 
   String _capitalize(String s) =>
-      s.isEmpty ? '' : '${s[0].toUpperCase()}${s.substring(1).toLowerCase()}';
+      s.isEmpty ? '' : '${s[0]}${s.substring(1).toLowerCase()}';
 
   String _capitalizeEachWord(String s) {
     if (s.isEmpty) return '';
@@ -529,7 +529,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         .split(' ')
         .map((word) {
           if (word.isEmpty) return '';
-          return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+          return '${word[0]}${word.substring(1).toLowerCase()}';
         })
         .join(' ');
   }

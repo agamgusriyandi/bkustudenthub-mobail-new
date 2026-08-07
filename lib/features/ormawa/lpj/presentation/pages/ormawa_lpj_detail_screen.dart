@@ -127,7 +127,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                                 borderRadius: AppRadius.radiusSm,
                               ),
                               child: Text(
-                                widget.lpj.status.toUpperCase(),
+                                widget.lpj.status,
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: statusColor,
                                   fontWeight: FontWeight.w900,

@@ -141,7 +141,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                               borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
-                              event.kategori.toUpperCase(),
+                              event.kategori,
                               style: AppTextStyles.labelSm.copyWith(
                                 color: Theme.of(context).colorScheme.secondary,
                                 fontSize: 10,
@@ -441,7 +441,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                               ),
                                               const SizedBox(width: AppSpacing.xs),
                                               Text(
-                                                event.kategori.toUpperCase(),
+                                                event.kategori,
                                                 style: AppTextStyles.labelSm
                                                     .copyWith(
                                                       color:

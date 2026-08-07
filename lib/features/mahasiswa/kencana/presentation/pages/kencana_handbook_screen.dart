@@ -405,7 +405,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              label.toUpperCase(),
+              label,
               style: AppTextStyles.labelSm.copyWith(
                 fontWeight: FontWeight.w900,
                 color: AppColors.onSurface,

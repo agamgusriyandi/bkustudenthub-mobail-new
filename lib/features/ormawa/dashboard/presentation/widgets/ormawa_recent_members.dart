@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +83,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                   final member = recentMembers[index];
                   final name = member.name.isNotEmpty ? member.name : 'Unknown';
                   final firstName = name.split(' ').first;
-                  final initial = name.substring(0, 1).toUpperCase();
+                  final initial = name.substring(0, 1);
 
                   return Column(
                     children: [

@@ -168,7 +168,7 @@ class _ProgramContent extends StatelessWidget {
                       borderRadius: AppRadius.radiusSm,
                     ),
                     child: Text(
-                      program.kategori.toUpperCase(),
+                      program.kategori,
                       style: AppTextStyles.labelSm.copyWith(
                         color: context.appColors.primary,
                         fontWeight: FontWeight.w700,

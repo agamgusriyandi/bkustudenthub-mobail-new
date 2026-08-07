@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -132,7 +132,7 @@ class ProposalPdfService {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Text(
-        title.toUpperCase(),
+        title,
         style: pw.TextStyle(
           fontSize: 11,
           fontWeight: pw.FontWeight.bold,

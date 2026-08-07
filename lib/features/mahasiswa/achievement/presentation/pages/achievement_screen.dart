@@ -341,7 +341,7 @@ class _AchievementCard extends StatelessWidget {
                                   ),
                                   const SizedBox(width: AppSpacing.s6),
                                   Text(
-                                    achievement.status.toUpperCase(),
+                                    achievement.status,
                                     style: AppTextStyles.labelSm.copyWith(
                                       color: statusColor,
                                       fontWeight: FontWeight.w900,
@@ -513,7 +513,7 @@ class _AchievementCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  achievement.status.toUpperCase(),
+                                  achievement.status,
                                   style: AppTextStyles.labelSm.copyWith(
                                     color: statusColor,
                                     fontWeight: FontWeight.w900,

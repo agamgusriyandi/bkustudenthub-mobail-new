@@ -348,7 +348,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
       case 'selesai':
         return 'SELESAI';
       default:
-        return status.toUpperCase();
+        return status;
     }
   }
 

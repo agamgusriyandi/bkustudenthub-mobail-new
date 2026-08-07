@@ -34,6 +34,6 @@ class OrmawaMember {
         .map((e) => e.isNotEmpty ? e[0] : '')
         .take(2)
         .join()
-        .toUpperCase();
+        ;
   }
 }

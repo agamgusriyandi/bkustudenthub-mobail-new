@@ -179,7 +179,7 @@ class _MedicalReferralScreenState extends State<MedicalReferralScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  status.toString().toUpperCase(),
+                  status.toString(),
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,

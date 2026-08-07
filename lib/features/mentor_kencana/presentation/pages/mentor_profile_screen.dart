@@ -467,7 +467,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
         Padding(
           padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
-            title.toUpperCase(),
+            title,
             style: AppTextStyles.titleSm.copyWith(
               color: AppColors.neutral600,
               fontWeight: FontWeight.w800,

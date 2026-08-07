@@ -136,7 +136,7 @@ class _AdminTkListScreenState extends State<AdminTkListScreen> {
 
   Widget _buildTkCard(TenagaKesehatan tk) {
     final isActive = tk.isAktif ?? true;
-    final initials = (tk.nama ?? 'TK').split(' ').map((s) => s.isNotEmpty ? s[0] : '').join().toUpperCase();
+    final initials = (tk.nama ?? 'TK').split(' ').map((s) => s.isNotEmpty ? s[0] : '').join();
 
     return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),

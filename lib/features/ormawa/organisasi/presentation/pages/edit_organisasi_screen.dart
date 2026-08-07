@@ -301,7 +301,7 @@ class _EditOrganisasiScreenState extends State<EditOrganisasiScreen> {
               .map((item) => DropdownMenuItem<String>(
                     value: item,
                     child: Text(
-                      item.toUpperCase(),
+                      item,
                       style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.neutral800),
                     ),
                   ))

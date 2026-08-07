@@ -73,7 +73,7 @@ class TkBapModel {
       totalLayak: parseInt(json['total_layak'] ?? json['layak']),
       totalPantauan: parseInt(json['total_pantauan'] ?? json['pantauan']),
       totalTidakLayak: parseInt(json['total_tidak_layak'] ?? json['tidak_layak']),
-      status: (json['status'] ?? 'DRAFT').toString().toUpperCase(),
+      status: (json['status'] ?? 'DRAFT').toString(),
       eventId: json['event_id'] != null ? parseInt(json['event_id']) : null,
       tkId: json['tk_id'] != null ? parseInt(json['tk_id']) : null,
       ttdKepalaDivisiNama: json['ttd_kepala_divisi_nama']?.toString(),

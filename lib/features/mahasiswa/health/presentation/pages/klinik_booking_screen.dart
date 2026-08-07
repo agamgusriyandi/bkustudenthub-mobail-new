@@ -305,7 +305,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         borderRadius: AppRadius.radiusMd,
                       ),
                       child: Text(
-                        booking.status.toUpperCase(),
+                        booking.status,
                         style: AppTextStyles.labelSm.copyWith(
                           color: statusColor,
                           fontWeight: FontWeight.w900,
@@ -482,7 +482,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Text(
-                    worker.spesialisasi.toUpperCase(),
+                    worker.spesialisasi,
                     style: AppTextStyles.labelSm.copyWith(
                       color:
                           worker.spesialisasi.contains('Gizi')
@@ -629,7 +629,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                           borderRadius: AppRadius.radiusMd,
                         ),
                         child: Text(
-                          booking.status.toUpperCase(),
+                          booking.status,
                           style: AppTextStyles.labelSm.copyWith(
                             color: statusColor,
                             fontWeight: FontWeight.w900,

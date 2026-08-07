@@ -738,9 +738,9 @@ class _PsychologistBookingsScreenState
     final parts = name.trim().split(' ');
     final avatar =
         parts.length >= 2
-            ? '${parts[0][0]}${parts[1][0]}'.toUpperCase()
+            ? '${parts[0][0]}${parts[1][0]}'
             : name.isNotEmpty
-            ? name[0].toUpperCase()
+            ? name[0]
             : '?';
 
     final avatarUrl = () {

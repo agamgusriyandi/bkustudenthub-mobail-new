@@ -257,7 +257,7 @@ class _NewsCard extends StatelessWidget {
                             ),
                             child: Text(
                               news.kategori.isNotEmpty
-                                  ? news.kategori.toUpperCase()
+                                  ? news.kategori
                                   : 'INFO TERBARU',
                               style: TextStyle(
                                 color: context.appColors.onPrimary,

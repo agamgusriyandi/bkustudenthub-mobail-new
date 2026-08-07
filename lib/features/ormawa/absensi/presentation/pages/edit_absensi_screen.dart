@@ -319,7 +319,7 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
           items: ['aktif', 'selesai', 'dibatalkan'].map((s) {
             return DropdownMenuItem(
               value: s,
-              child: Text(s.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(s, style: const TextStyle(fontWeight: FontWeight.bold)),
             );
           }).toList(),
           onChanged: (val) {

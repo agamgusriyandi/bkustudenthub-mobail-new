@@ -192,7 +192,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    patient.prodi.toUpperCase(),
+                    patient.prodi,
                     style: TextStyle(
                       color: context.appColors.onSurfaceVariant,
                       fontSize: 11,
@@ -413,7 +413,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
         Padding(
           padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
           child: Text(
-            title.toUpperCase(),
+            title,
             style: AppTextStyles.titleSm.copyWith(
               color: AppColors.neutral600,
               fontWeight: FontWeight.w800,
@@ -1132,7 +1132,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                       borderRadius: AppRadius.radiusMd,
                     ),
                     child: Text(
-                      status.toString().toUpperCase(),
+                      status.toString(),
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,

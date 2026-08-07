@@ -625,7 +625,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                       borderRadius: AppRadius.radiusSm,
                     ),
                     child: Text(
-                      label.toUpperCase(),
+                      label,
                       style: AppTextStyles.labelSm.copyWith(
                         color: color,
                         fontWeight: FontWeight.bold,

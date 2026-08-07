@@ -88,7 +88,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                                 borderRadius: AppRadius.radiusSm,
                               ),
                               child: Text(
-                                (k.status ?? '-').toUpperCase(),
+                                (k.status ?? '-'),
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: statusColor,
                                   fontWeight: FontWeight.w900,

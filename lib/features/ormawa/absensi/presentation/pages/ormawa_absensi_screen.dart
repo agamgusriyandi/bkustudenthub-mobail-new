@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -1226,7 +1226,7 @@ class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
                                     item.mahasiswaName?.isNotEmpty == true
                                         ? item.mahasiswaName!
                                             .substring(0, 1)
-                                            .toUpperCase()
+                                            
                                         : '?',
                                     style: TextStyle(
                                       color:

@@ -126,7 +126,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
           children: [
             // Student Info Header
             Text(
-              'Review Handbook: ${mentee.name.toUpperCase()}',
+              'Review Handbook: ${mentee.name}',
               style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w900, color: context.appColors.primary),
             ),
             const SizedBox(height: 4),

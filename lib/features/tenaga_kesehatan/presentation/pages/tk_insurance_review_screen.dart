@@ -177,7 +177,7 @@ class _TkInsuranceReviewScreenState extends State<TkInsuranceReviewScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  statusLabel.toUpperCase(),
+                  statusLabel,
                   style: AppTextStyles.labelSm.copyWith(color: statusColor, fontWeight: FontWeight.w900, fontSize: 10),
                 ),
               ),

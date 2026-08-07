@@ -173,7 +173,7 @@ class OrmawaProvider extends ChangeNotifier {
           role:
               roleStr
                   .split('_')
-                  .map((word) => word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
+                  .map((word) => word.isEmpty ? '' : '${word[0]}${word.substring(1).toLowerCase()}')
                   .join(' '),
           division: '',
           status: 'Aktif',

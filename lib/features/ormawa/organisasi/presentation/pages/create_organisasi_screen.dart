@@ -279,7 +279,7 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
               .map((item) => DropdownMenuItem<String>(
                     value: item,
                     child: Text(
-                      item.toUpperCase(),
+                      item,
                       style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.neutral800),
                     ),
                   ))

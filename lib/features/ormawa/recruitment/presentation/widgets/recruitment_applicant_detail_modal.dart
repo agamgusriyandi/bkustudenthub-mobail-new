@@ -98,7 +98,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              applicant.name.substring(0, 1).toUpperCase(),
+                              applicant.name.substring(0, 1),
                               style: AppTextStyles.displaySmall.copyWith(
                                 color: context.appColors.onPrimary,
                                 fontWeight: FontWeight.bold,

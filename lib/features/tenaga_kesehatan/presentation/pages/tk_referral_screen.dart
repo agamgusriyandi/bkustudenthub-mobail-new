@@ -265,7 +265,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
     final prodi = student['prodi']!;
     final fakultas = student['fakultas']!;
     final foto = student['foto']!;
-    final initial = nama.isNotEmpty ? nama[0].toUpperCase() : 'M';
+    final initial = nama.isNotEmpty ? nama[0] : 'M';
     final faskes = ref['faskes_tujuan'] ?? ref['faskes'] ?? 'Faskes Tujuan';
     final diagnosis = ref['diagnosis_sementara'] ?? ref['diagnosis'] ?? '-';
     final tanggal = ref['created_at']?.toString().split('T').first ?? '-';
@@ -738,7 +738,7 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                             ref['created_at']?.toString().split('T').first ??
                             '-';
                         final initial =
-                            nama.isNotEmpty ? nama[0].toUpperCase() : 'M';
+                            nama.isNotEmpty ? nama[0] : 'M';
 
                         final bool hasFoto = foto.trim().isNotEmpty &&
                             foto.trim().toLowerCase() != 'null';

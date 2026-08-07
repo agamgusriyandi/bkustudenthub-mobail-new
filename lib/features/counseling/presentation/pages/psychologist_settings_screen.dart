@@ -151,7 +151,7 @@ class _PsychologistSettingsScreenState
                 .trim()
                 .split(' ')
                 .take(2)
-                .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+                .map((w) => w.isNotEmpty ? w[0] : '')
                 .join();
 
     final imageUrl = profile?.profileImageUrl ?? '';
@@ -1134,7 +1134,7 @@ class _ProfileBottomSheetState extends State<_ProfileBottomSheet> {
                 .trim()
                 .split(' ')
                 .take(2)
-                .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+                .map((w) => w.isNotEmpty ? w[0] : '')
                 .join();
 
     return Container(

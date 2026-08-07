@@ -1160,7 +1160,7 @@ class SessionAttendanceData {
     } else if (rawStatus == 'alpha' || rawStatus == 'absent' || rawStatus == '0' || rawStatus == 'false') {
       statusStr = 'Alpha';
     } else if (rawStatus.isNotEmpty) {
-      statusStr = rawStatus[0].toUpperCase() + rawStatus.substring(1);
+      statusStr = rawStatus[0] + rawStatus.substring(1);
     }
 
     return SessionAttendanceData(

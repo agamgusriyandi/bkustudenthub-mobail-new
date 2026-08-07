@@ -94,7 +94,7 @@ class AuthService extends ChangeNotifier {
                       roleKey.contains('-') ? roleKey.split('-')[0] : roleKey;
                   // Capitalize first letter
                   if (label.isNotEmpty) {
-                    label = label[0].toUpperCase() + label.substring(1);
+                    label = label[0] + label.substring(1);
                   }
                 }
                 if (nim != null && nim.isNotEmpty && !label.contains(nim)) {

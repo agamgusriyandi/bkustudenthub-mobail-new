@@ -337,7 +337,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                                       borderRadius: AppRadius.radiusSm,
                                     ),
                                     child: Text(
-                                      gradStatus.replaceAll('_', ' ').toUpperCase(),
+                                      gradStatus.replaceAll('_', ' '),
                                       style: AppTextStyles.labelSm.copyWith(
                                         color: gradStatus == 'passed' ? AppColors.success : AppColors.neutral700,
                                         fontSize: 9,
@@ -423,7 +423,7 @@ class _MentorScoringScreenState extends State<MentorScoringScreen> with SingleTi
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: AppRadius.radiusSm),
-                                    child: Text('${mentorScope.toUpperCase()} SCOPE', style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold)),
+                                    child: Text('$mentorScope SCOPE', style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold)),
                                   ),
                                 ],
                               ),

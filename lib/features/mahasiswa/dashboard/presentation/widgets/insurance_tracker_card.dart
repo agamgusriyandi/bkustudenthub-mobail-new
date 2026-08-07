@@ -181,7 +181,7 @@ class InsuranceTrackerCard extends StatelessWidget {
         borderRadius: AppRadius.radiusFull,
       ),
       child: Text(
-        label.toUpperCase(),
+        label,
         style: AppTextStyles.labelSm.copyWith(
           fontSize: 9,
           color: text,

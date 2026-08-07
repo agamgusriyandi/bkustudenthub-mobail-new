@@ -116,7 +116,7 @@ class _MentorScoringDetailScreenState extends State<MentorScoringDetailScreen> {
                                 child: Center(
                                   child: Text(
                                     score.studentName.isNotEmpty
-                                        ? score.studentName.substring(0, 1).toUpperCase()
+                                        ? score.studentName.substring(0, 1)
                                         : '',
                                     style: const TextStyle(
                                       color: AppColors.neutral700,

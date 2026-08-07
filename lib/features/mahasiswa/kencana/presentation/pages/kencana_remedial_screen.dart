@@ -272,7 +272,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.component.toUpperCase(),
+                        item.component,
                         style: AppTextStyles.labelSm.copyWith(
                           fontWeight: FontWeight.w900,
                           color: _componentColor(item.component),
@@ -430,7 +430,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.component.toUpperCase(),
+                item.component,
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.w900,
                   color: _componentColor(item.component),

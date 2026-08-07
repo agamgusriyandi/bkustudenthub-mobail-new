@@ -234,7 +234,7 @@ class _MentorAvailableStudentsScreenState
                                 child: Center(
                                   child: Text(
                                     student.name.isNotEmpty
-                                        ? student.name.substring(0, 1).toUpperCase()
+                                        ? student.name.substring(0, 1)
                                         : '',
                                     style: TextStyle(
                                       color: context.appColors.primary,

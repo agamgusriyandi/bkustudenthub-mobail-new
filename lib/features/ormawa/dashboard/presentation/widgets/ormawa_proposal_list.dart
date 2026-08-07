@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -132,7 +132,7 @@ class OrmawaProposalList extends StatelessWidget {
                           borderRadius: AppRadius.radiusSm,
                         ),
                         child: Text(
-                          proposal.status.toUpperCase(),
+                          proposal.status,
                           style: AppTextStyles.labelSm.copyWith(
                             color: statusColor.withValues(alpha: 0.9),
                             fontSize: 9,

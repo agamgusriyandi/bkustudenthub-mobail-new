@@ -363,8 +363,8 @@ class _KencanaScreenState extends State<KencanaScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 dashboard.scoreFakultas != null
-                    ? 'Status Univ: ${(dashboard.graduationStatus.replaceAll('_', ' ')).toUpperCase()} | Status Fak: ${(dashboard.scoreFakultas!['graduation_status']?.toString().replaceAll('_', ' ') ?? '').toUpperCase()}'
-                    : 'Status Kelulusan: ${(dashboard.graduationStatus.replaceAll('_', ' ')).toUpperCase()}',
+                    ? 'Status Univ: ${(dashboard.graduationStatus.replaceAll('_', ' '))} | Status Fak: ${(dashboard.scoreFakultas!['graduation_status']?.toString().replaceAll('_', ' ') ?? '')}'
+                    : 'Status Kelulusan: ${(dashboard.graduationStatus.replaceAll('_', ' '))}',
                 style: AppTextStyles.labelSm.copyWith(
                   color: context.appColors.onSurfaceVariant,
                   height: 1.4,

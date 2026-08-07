@@ -55,7 +55,7 @@ class KencanaCertificate {
       case 'baik':
         return 'BAIK';
       default:
-        return predicate?.toUpperCase() ?? '-';
+        return predicate ?? '-';
     }
   }
 }

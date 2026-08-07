@@ -137,7 +137,7 @@ class StudentAppBar extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                label!.toUpperCase(),
+                                label!,
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: context.appColors.onPrimary,
                                   fontSize: 9,

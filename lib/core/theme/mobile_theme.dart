@@ -257,7 +257,7 @@ class MobileThemeColors {
 
   // Helper: Convert Color to hex string
   static String _colorToHex(Color color) {
-    return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+    return '#${color.toARGB32().toRadixString(16).substring(2)}';
   }
 
   /// Copy with new values

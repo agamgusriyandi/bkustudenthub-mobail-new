@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -405,7 +405,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title.toUpperCase(),
+          title,
           style: AppTextStyles.labelMd.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,

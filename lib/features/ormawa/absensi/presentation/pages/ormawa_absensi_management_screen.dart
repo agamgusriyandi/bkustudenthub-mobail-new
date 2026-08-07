@@ -391,7 +391,7 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                                 borderRadius: AppRadius.radiusSm,
                               ),
                               child: Text(
-                                status.toUpperCase(),
+                                status,
                                 style: AppTextStyles.labelSm.copyWith(color: statusColor, fontWeight: FontWeight.w900, fontSize: 10),
                               ),
                             ),

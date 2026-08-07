@@ -464,9 +464,9 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
     } else {
       final parts = name.trim().split(' ');
       if (parts.length >= 2 && parts[0].isNotEmpty && parts[1].isNotEmpty) {
-        initials = '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+        initials = '${parts[0][0]}${parts[1][0]}';
       } else if (parts.isNotEmpty && parts[0].isNotEmpty) {
-        initials = parts[0][0].toUpperCase();
+        initials = parts[0][0];
       } else {
         initials = 'TK';
       }
@@ -588,7 +588,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
     return Padding(
       padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
       child: Text(
-        title.toUpperCase(),
+        title,
         style: AppTextStyles.titleSm.copyWith(
           color: AppColors.neutral600,
           fontWeight: FontWeight.w800,

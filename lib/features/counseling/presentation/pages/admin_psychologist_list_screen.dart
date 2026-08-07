@@ -210,7 +210,7 @@ class _AdminPsychologistListScreenState
 
     final initials = name.trim().isEmpty
         ? '?'
-        : name.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join();
+        : name.trim().split(' ').take(2).map((w) => w[0]).join();
 
     return BkuCard(
       child: InkWell(

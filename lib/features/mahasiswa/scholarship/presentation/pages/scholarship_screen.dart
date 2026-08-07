@@ -676,7 +676,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                 borderRadius: AppRadius.br6,
                               ),
                               child: Text(
-                                scholarship.category.toUpperCase(),
+                                scholarship.category,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color: iconColor,
@@ -932,7 +932,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                       borderRadius: AppRadius.radiusMd,
                                     ),
                                     child: Text(
-                                      scholarship.category.toUpperCase(),
+                                      scholarship.category,
                                       style: AppTextStyles.labelSm.copyWith(
                                         color: _getCategoryColor(
                                           scholarship.category,
@@ -1124,7 +1124,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                             child: Text(
                                               (field['type'] ?? 'TEXT')
                                                   .toString()
-                                                  .toUpperCase(),
+                                                  ,
                                               style: AppTextStyles.labelSm
                                                   .copyWith(
                                                     fontWeight: FontWeight.w900,
@@ -1483,7 +1483,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  title.toUpperCase(),
+                  title,
                   style: AppTextStyles.labelSm.copyWith(
                     color: AppColors.neutral600,
                     fontWeight: FontWeight.w700,

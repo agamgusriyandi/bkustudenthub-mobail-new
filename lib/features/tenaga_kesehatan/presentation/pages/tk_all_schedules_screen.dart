@@ -175,7 +175,7 @@ class _TkAllSchedulesScreenState extends State<TkAllSchedulesScreen> {
                   borderRadius: AppRadius.radiusMd,
                 ),
                 child: Text(
-                  schedule.tipeLayanan.toUpperCase(),
+                  schedule.tipeLayanan,
                   style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary, fontWeight: FontWeight.w900, fontSize: 10),
                 ),
               ),

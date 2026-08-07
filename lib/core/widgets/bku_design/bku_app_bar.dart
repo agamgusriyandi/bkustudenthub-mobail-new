@@ -532,7 +532,7 @@ class BkuAppBar extends StatelessWidget {
                                         children: [
                                           if (subtitle != null) ...[
                                             Text(
-                                              subtitle!.toUpperCase(),
+                                              subtitle!,
                                               style: AppTextStyles.labelSm
                                                   .copyWith(
                                                     color: onColor.withAlpha(

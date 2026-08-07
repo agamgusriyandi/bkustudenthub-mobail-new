@@ -122,7 +122,7 @@ class _PsychologistDetailScreenState extends State<PsychologistDetailScreen> {
 
     final initials = name.trim().isEmpty
         ? '?'
-        : name.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join();
+        : name.trim().split(' ').take(2).map((w) => w[0]).join();
 
     return BkuCard(
       child: Padding(

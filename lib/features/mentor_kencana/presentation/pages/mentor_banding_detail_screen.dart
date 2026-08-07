@@ -108,7 +108,7 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
           Expanded(
             flex: 2,
             child: Text(
-              label.toUpperCase(),
+              label,
               style: AppTextStyles.labelSm.copyWith(
                 color: AppColors.neutral500,
                 fontWeight: FontWeight.bold,
