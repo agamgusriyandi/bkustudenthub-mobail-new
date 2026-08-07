@@ -1610,17 +1610,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text('OPSI JAWABAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF64748B))),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFE2E8F0),
-                                foregroundColor: const Color(0xFF334155),
+                            InkWell(
+                              onTap: () => AppSnackbar.showWarning(context, 'Pilihan ganda menggunakan 4 opsi (A, B, C, D)'),
+                              child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                elevation: 0,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE2E8F0),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Text('4 Opsi (A - D)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
                               ),
-                              child: const Text('+ Tambah Opsi', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
@@ -1737,7 +1736,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
             icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
-            onPressed: () {},
+            onPressed: () => ctrl.clear(),
           ),
         ],
       ),
