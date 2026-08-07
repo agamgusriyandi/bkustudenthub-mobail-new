@@ -138,8 +138,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       icon: const Icon(Icons.add, size: 14),
                       label: const Text('Tambah Materi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.onSurface,
-                        foregroundColor: context.appColors.surface,
+                        backgroundColor: context.appColors.primary,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -2517,8 +2517,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 icon: const Icon(Icons.settings_outlined, size: 12),
                                 label: const Text('Kelola', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: context.appColors.onSurface,
-                                  foregroundColor: context.appColors.surface,
+                                  backgroundColor: context.appColors.primary,
+                                  foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   minimumSize: Size.zero,
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,

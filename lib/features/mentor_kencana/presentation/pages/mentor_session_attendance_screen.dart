@@ -206,8 +206,8 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                         child: ElevatedButton(
                                           onPressed: _savePresensi,
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: context.appColors.onSurface,
-                                            foregroundColor: context.appColors.surface,
+                                            backgroundColor: context.appColors.primary,
+                                            foregroundColor: Colors.white,
                                             padding: const EdgeInsets.symmetric(horizontal: 12),
                                             shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                                             elevation: 0,
