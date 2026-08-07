@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -125,35 +126,40 @@ class BkuButton extends StatelessWidget {
       case BkuButtonVariant.primary:
         bg = theme.primary;
         fg = theme.onPrimary;
-        // Soft & Clean elevation
-        elevation = 2;
+        elevation = 0;
         break;
       case BkuButtonVariant.secondary:
-        bg = theme.secondary;
-        fg = theme.onSecondary;
-        elevation = 2;
+        bg = AppColors.neutral200;
+        fg = AppColors.neutral800;
+        border = BorderSide(
+          color: context.appColors.outline.withValues(alpha: 0.2),
+          width: 1.0,
+        );
+        elevation = 0;
         break;
       case BkuButtonVariant.success:
-        bg = context.appColors.success;
-        fg = context.appColors.onPrimary;
-        elevation = 2;
+        bg = const Color(0xFF10B981);
+        fg = Colors.white;
+        elevation = 0;
         break;
       case BkuButtonVariant.danger:
-        bg = context.appColors.danger;
-        fg = context.appColors.onPrimary;
-        elevation = 2;
+        bg = const Color(0xFFEF4444);
+        fg = Colors.white;
+        elevation = 0;
         break;
       case BkuButtonVariant.outline:
         bg = Colors.transparent;
-        fg = theme.primary;
+        fg = context.appColors.onSurface;
         border = BorderSide(
-          color: theme.primary.withValues(alpha: 0.5),
-          width: 1.5,
+          color: context.appColors.outline.withValues(alpha: 0.4),
+          width: 1.0,
         );
+        elevation = 0;
         break;
       case BkuButtonVariant.text:
         bg = Colors.transparent;
         fg = theme.primary;
+        elevation = 0;
         break;
     }
 
