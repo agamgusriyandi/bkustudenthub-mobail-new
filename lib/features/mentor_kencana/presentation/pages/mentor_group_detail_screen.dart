@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -46,192 +47,14 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
   }
 
   void _showQRModal(BuildContext context, String groupName) {
-    final provider = context.read<MentorKencanaProvider>();
-    if (provider.sessionMaterials.isEmpty) {
-      provider.fetchSessionMaterialsList();
-    }
-
-    int selectedSessionId = 0;
-    if (provider.sessionMaterials.isNotEmpty) {
-      selectedSessionId = provider.sessionMaterials.first.id;
-    }
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            final sessions = provider.sessionMaterials;
-
-            return Container(
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('QR Code Presensi', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 2),
-                          Text('Scan oleh Mahasiswa Bimbingan', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
-                        ],
-                      ),
-                      IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close, size: 20, color: context.appColors.onSurface)),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  Text('Pilih Sesi Kencana', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  DropdownButtonFormField<int>(
-                    initialValue: selectedSessionId,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                      border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    ),
-                    style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900, fontWeight: FontWeight.w600),
-                    isExpanded: true,
-                    items: [
-                      const DropdownMenuItem<int>(
-                        value: 0,
-                        child: Text('-- Pilih Sesi --', style: TextStyle(color: AppColors.neutral500)),
-                      ),
-                      ...sessions.map(
-                        (s) => DropdownMenuItem<int>(
-                          value: s.id,
-                          child: Text(s.title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-                    ],
-                    onChanged: (val) {
-                      if (val != null) {
-                        setModalState(() {
-                          selectedSessionId = val;
-                        });
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  if (selectedSessionId == 0)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral100,
-                        borderRadius: AppRadius.radiusLg,
-                        border: Border.all(color: AppColors.neutral300),
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(Icons.qr_code_2_rounded, size: 48, color: context.appColors.outline),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Pilih sesi Kencana terlebih dahulu untuk menampilkan QR Code Presensi',
-                            style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    FutureBuilder<String?>(
-                      future: provider.fetchSessionQrToken(selectedSessionId),
-                      builder: (context, snapshot) {
-                        final isLoading = snapshot.connectionState == ConnectionState.waiting;
-                        final qrCodeText = snapshot.data ?? 'KENCANA-PRESENSI-SESSION-$selectedSessionId';
-
-                        return Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: AppRadius.radiusLg,
-                                border: Border.all(color: AppColors.neutral300),
-                                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
-                              ),
-                              child: Column(
-                                children: [
-                                  if (isLoading)
-                                    const SizedBox(
-                                      width: 180,
-                                      height: 180,
-                                      child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
-                                    )
-                                  else
-                                    QrImageView(
-                                      data: qrCodeText,
-                                      version: QrVersions.auto,
-                                      size: 180.0,
-                                      eyeStyle: const QrEyeStyle(
-                                        eyeShape: QrEyeShape.square,
-                                        color: AppColors.neutral900,
-                                      ),
-                                      dataModuleStyle: const QrDataModuleStyle(
-                                        dataModuleShape: QrDataModuleShape.square,
-                                        color: AppColors.neutral900,
-                                      ),
-                                    ),
-                                  const SizedBox(height: 12),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.neutral100,
-                                      borderRadius: AppRadius.radiusMd,
-                                      border: Border.all(color: AppColors.neutral300),
-                                    ),
-                                    child: Text(
-                                      isLoading ? 'Memuat token...' : qrCodeText,
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: context.appColors.onSurface),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: Text(
-                                'Berlaku selama 45 detik (Auto-refresh)',
-                                style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(44),
-                      shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                      elevation: 0,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+      builder: (context) => _GroupQrModalContent(
+        groupId: widget.groupId,
+        groupName: groupName,
+      ),
     );
   }
 
@@ -564,6 +387,263 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _GroupQrModalContent extends StatefulWidget {
+  final int groupId;
+  final String groupName;
+
+  const _GroupQrModalContent({
+    required this.groupId,
+    required this.groupName,
+  });
+
+  @override
+  State<_GroupQrModalContent> createState() => _GroupQrModalContentState();
+}
+
+class _GroupQrModalContentState extends State<_GroupQrModalContent> {
+  int _selectedSessionId = 0;
+  String? _qrToken;
+  bool _isLoadingQr = false;
+  int _secondsRemaining = 45;
+  Timer? _countdownTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = context.read<MentorKencanaProvider>();
+      if (provider.sessions.isEmpty) {
+        await provider.fetchSessions();
+      }
+      if (provider.sessionMaterials.isEmpty) {
+        await provider.fetchSessionMaterialsList();
+      }
+      if (mounted) {
+        final sessions = provider.sessions;
+        if (sessions.isNotEmpty) {
+          setState(() {
+            _selectedSessionId = sessions.first.id;
+          });
+          _fetchTokenAndStartTimer(_selectedSessionId);
+        } else if (provider.sessionMaterials.isNotEmpty) {
+          setState(() {
+            _selectedSessionId = provider.sessionMaterials.first.id;
+          });
+          _fetchTokenAndStartTimer(_selectedSessionId);
+        }
+      }
+    });
+  }
+
+  void _fetchTokenAndStartTimer(int sessionId) async {
+    if (sessionId == 0) return;
+    setState(() {
+      _isLoadingQr = true;
+      _secondsRemaining = 45;
+    });
+
+    _countdownTimer?.cancel();
+
+    final provider = context.read<MentorKencanaProvider>();
+    final token = await provider.fetchSessionQrToken(sessionId);
+
+    if (mounted) {
+      setState(() {
+        _qrToken = token ?? 'KENCANA-PRESENSI-SESSION-$sessionId';
+        _isLoadingQr = false;
+      });
+
+      _startTimer(sessionId);
+    }
+  }
+
+  void _startTimer(int sessionId) {
+    _countdownTimer?.cancel();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_secondsRemaining > 1) {
+        setState(() {
+          _secondsRemaining--;
+        });
+      } else {
+        _fetchTokenAndStartTimer(sessionId);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<MentorKencanaProvider>();
+
+    final List<Map<String, dynamic>> sessionOptions = [];
+    for (final s in provider.sessions) {
+      if (!sessionOptions.any((e) => e['id'] == s.id)) {
+        sessionOptions.add({'id': s.id, 'title': s.title});
+      }
+    }
+    for (final m in provider.sessionMaterials) {
+      if (!sessionOptions.any((e) => e['id'] == m.id)) {
+        sessionOptions.add({'id': m.id, 'title': m.title});
+      }
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('QR Code Presensi', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 2),
+                  Text('Scan oleh Mahasiswa Bimbingan', style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11)),
+                ],
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.close, size: 20, color: context.appColors.onSurface),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          Text('Pilih Sesi Kencana', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          DropdownButtonFormField<int>(
+            initialValue: _selectedSessionId,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+            ),
+            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900, fontWeight: FontWeight.w600),
+            isExpanded: true,
+            items: [
+              const DropdownMenuItem<int>(
+                value: 0,
+                child: Text('-- Pilih Sesi --', style: TextStyle(color: AppColors.neutral500)),
+              ),
+              ...sessionOptions.map(
+                (s) => DropdownMenuItem<int>(
+                  value: s['id'] as int,
+                  child: Text(s['title'] as String, style: const TextStyle(fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ],
+            onChanged: (val) {
+              if (val != null && val != _selectedSessionId) {
+                setState(() {
+                  _selectedSessionId = val;
+                });
+                _fetchTokenAndStartTimer(val);
+              }
+            },
+          ),
+          const SizedBox(height: 20),
+
+          if (_selectedSessionId == 0)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.neutral100,
+                borderRadius: AppRadius.radiusLg,
+                border: Border.all(color: AppColors.neutral300),
+              ),
+              child: Column(
+                children: [
+                  Icon(Icons.qr_code_2_rounded, size: 48, color: context.appColors.outline),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pilih sesi Kencana terlebih dahulu untuk menampilkan QR Code Presensi',
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          else
+            Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: AppRadius.radiusLg,
+                    border: Border.all(color: AppColors.neutral300),
+                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
+                  ),
+                  child: Center(
+                    child: _isLoadingQr
+                        ? const SizedBox(
+                            width: 180,
+                            height: 180,
+                            child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
+                          )
+                        : (_qrToken != null && _qrToken!.isNotEmpty
+                            ? QrImageView(
+                                data: _qrToken!,
+                                version: QrVersions.auto,
+                                size: 180.0,
+                                eyeStyle: const QrEyeStyle(
+                                  eyeShape: QrEyeShape.square,
+                                  color: AppColors.neutral900,
+                                ),
+                                dataModuleStyle: const QrDataModuleStyle(
+                                  dataModuleShape: QrDataModuleShape.square,
+                                  color: AppColors.neutral900,
+                                ),
+                              )
+                            : const Text('Gagal memuat QR Code')),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    'Berlaku selama $_secondsRemaining detik (Auto-refresh)',
+                    style: AppTextStyles.labelSm.copyWith(color: context.appColors.outline, fontSize: 11),
+                  ),
+                ),
+              ],
+            ),
+
+          const SizedBox(height: 20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF97316),
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(44),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+              elevation: 0,
+            ),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
     );
   }
