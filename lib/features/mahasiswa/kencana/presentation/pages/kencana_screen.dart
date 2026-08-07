@@ -758,13 +758,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
       badgeTextColor = context.appColors.success;
       badgeText = 'Selesai';
     } else if (isActive) {
-      cardBg = context.appColors.infoContainer;
-      borderColor = context.appColors.info;
+      cardBg = AppColors.primary.withAlpha(10);
+      borderColor = AppColors.primary.withAlpha(50);
       numberBg = AppColors.primary;
-      numberTextColor = context.appColors.surface;
-      titleColor = context.appColors.primary;
-      badgeBg = context.appColors.infoContainer;
-      badgeTextColor = context.appColors.primary;
+      numberTextColor = AppColors.surface;
+      titleColor = AppColors.onSurface;
+      badgeBg = AppColors.primary.withAlpha(15);
+      badgeTextColor = AppColors.primary;
       badgeText = 'Berlangsung';
     } else {
       cardBg = AppColors.neutral100;
@@ -959,8 +959,8 @@ class _KencanaScreenState extends State<KencanaScreen> {
               fontWeight: FontWeight.w900,
               color:
                   isCompleted
-                      ? context.appColors.outlineVariant
-                      : context.appColors.primary,
+                      ? AppColors.neutral600
+                      : AppColors.onSurface,
             ),
           ),
           const SizedBox(width: AppSpacing.xs),

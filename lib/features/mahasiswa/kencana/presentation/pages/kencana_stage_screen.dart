@@ -167,11 +167,11 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
 
   Widget _buildStageHeader(KencanaStageDetail detail) {
     final status = detail.status.toLowerCase();
-    Color statusColor = context.appColors.primary;
+    Color statusColor = AppColors.primary;
     if (status == 'completed' || status == 'selesai') {
       statusColor = AppColors.success;
     } else if (status == 'active' || status == 'aktif') {
-      statusColor = context.appColors.primary;
+      statusColor = AppColors.primary;
     } else {
       statusColor = AppColors.neutral500;
     }
@@ -249,10 +249,10 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: context.appColors.primary.withAlpha(15),
+                color: AppColors.primary.withAlpha(15),
                 borderRadius: AppRadius.radiusMd,
                 border: Border.all(
-                  color: context.appColors.primary.withAlpha(50),
+                  color: AppColors.primary.withAlpha(50),
                 ),
               ),
               child: Row(

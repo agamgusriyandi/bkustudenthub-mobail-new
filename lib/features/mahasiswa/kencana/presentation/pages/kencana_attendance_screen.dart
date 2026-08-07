@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
@@ -303,7 +302,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                       'Rincian Presensi',
                       style: AppTextStyles.titleMd.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: context.appColors.primary,
+                        color: AppColors.onSurface,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -327,7 +326,6 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
   }
 
   Widget _buildSummaryCard() {
-    final themeProvider = context.watch<ThemeProvider>();
     final summary = data?['summary'] ?? {};
     final total = summary['required_sessions'] ?? 0;
     final present = summary['attended_sessions'] ?? 0;
@@ -342,7 +340,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                 'Total Sesi',
                 total.toString(),
                 Icons.event_note_rounded,
-                themeProvider.primary,
+                AppColors.primary,
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -565,7 +563,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           title,
                           style: AppTextStyles.labelMd.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: context.appColors.primary,
+                            color: AppColors.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xs),
