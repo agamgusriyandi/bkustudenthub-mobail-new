@@ -8,9 +8,10 @@ import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import '../dialogs/profile_dialogs.dart';
 import '../utils/profile_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 
 Widget buildRoleCard(BuildContext context, ProfileProvider student) {
-  final displayName = student.name.isNotEmpty ? student.name : 'Mahasiswa';
+  final displayName = student.name.isNotEmpty ? student.name.toTitleCase() : 'Mahasiswa';
   final displayProdi =
       student.prodi.isNotEmpty ? student.prodi : 'MAHASISWA';
   final displaySemester = student.semester > 0 ? 'Sem ${student.semester}' : 'Aktif';
@@ -158,7 +159,7 @@ Widget buildRoleCard(BuildContext context, ProfileProvider student) {
                             style: TextStyle(
                               color: context.appColors.onSurface,
                               fontWeight: FontWeight.w800,
-                              fontSize: 18,
+                              fontSize: 16,
                               letterSpacing: -0.3,
                             ),
                             maxLines: 1,
