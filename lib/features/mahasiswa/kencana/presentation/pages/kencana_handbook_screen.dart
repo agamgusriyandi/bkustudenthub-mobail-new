@@ -399,7 +399,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
               width: 4,
               height: 12,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+                color: AppColors.primary,
                 borderRadius: AppRadius.br2,
               ),
             ),
@@ -408,7 +408,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
               label.toUpperCase(),
               style: AppTextStyles.labelSm.copyWith(
                 fontWeight: FontWeight.w900,
-                color: theme.colorScheme.onSurfaceVariant.withAlpha(200),
+                color: AppColors.onSurface,
                 fontSize: 10,
                 letterSpacing: 0.5,
               ),
