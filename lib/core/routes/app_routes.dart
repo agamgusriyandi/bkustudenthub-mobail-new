@@ -84,6 +84,7 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_note_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_essay_grading_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_session_attendance_screen.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_attendance_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_materials_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_handbook_review_screen.dart';
@@ -181,6 +182,7 @@ class AppRoutes {
   static const String mentorNotes = '/mentor-kencana/notes';
   static const String mentorNoteDetail = '/mentor-kencana/notes/:id';
   static const String mentorEssayGrading = '/mentor-kencana/essay-grading';
+  static const String mentorAttendance = '/mentor-kencana/attendance';
   static const String mentorSessionAttendance =
       '/mentor-kencana/session-attendance/:sessionId';
   static const String mentorSessionAttendanceAlt =
@@ -486,6 +488,10 @@ class AppRoutes {
           final qId = qIdStr != null ? int.tryParse(qIdStr) : null;
           return MentorEssayGradingScreen(quizId: qId);
         },
+      ),
+      GoRoute(
+        path: mentorAttendance,
+        builder: (context, state) => const MentorAttendanceScreen(),
       ),
       GoRoute(
         path: mentorSessionAttendance,

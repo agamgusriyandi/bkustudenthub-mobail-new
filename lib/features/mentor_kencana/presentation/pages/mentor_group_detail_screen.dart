@@ -343,8 +343,8 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                                         icon: const Icon(Icons.checklist_rounded, size: 16),
                                         label: const Text('Kelola Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: context.appColors.primary,
-                                          foregroundColor: Colors.white,
+                                          backgroundColor: context.appColors.onSurface,
+                                          foregroundColor: context.appColors.surface,
                                           elevation: 0,
                                           padding: const EdgeInsets.symmetric(vertical: 8),
                                         ),
@@ -448,16 +448,14 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                           ),
                           decoration: BoxDecoration(
                             color:
-                                member.status == 'Lulus'
+                                member.status == 'Lulus' || member.status == 'active'
                                     ? context.appColors.success.withAlpha(15)
-                                    : context.appColors.warning.withAlpha(15),
+                                    : AppColors.neutral200,
                             border: Border.all(
                               color:
-                                  member.status == 'Lulus'
-                                      ? context.appColors.success
-                                          .withAlpha(30)
-                                      : context.appColors.warning
-                                          .withAlpha(30),
+                                  member.status == 'Lulus' || member.status == 'active'
+                                      ? context.appColors.success.withAlpha(30)
+                                      : AppColors.neutral300,
                             ),
                             borderRadius: AppRadius.radiusSm,
                           ),
@@ -467,9 +465,9 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               color:
-                                  member.status == 'Lulus'
+                                  member.status == 'Lulus' || member.status == 'active'
                                       ? context.appColors.success
-                                      : context.appColors.warning,
+                                      : AppColors.neutral700,
                             ),
                           ),
                         ),
