@@ -29,6 +29,8 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_qr_scan_screen.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/utils/string_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -102,9 +104,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           slivers: [
             BkuAppBar(
-              title: name,
+              title: name.toTitleCase(),
               subtitle: 'Selamat Datang Kembali',
-              info: '${profile.nim} • SEMESTER ${profile.semester}',
+              info: '${profile.nim} • Semester ${profile.semester}',
               variant: AppBarVariant.student,
               showBackButton: false,
               expandedHeight: 130,
