@@ -413,29 +413,66 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             color: context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
+            borderRadius: AppRadius.radiusXl,
             border: Border.all(color: AppColors.neutral200),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('KONSOLIDASI NILAI AKHIR', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral800)),
-              const SizedBox(height: 4),
-              Text('Nilai akhir dihitung dengan mengabungkan Nilai Universitas (50%) dengan Nilai Kencana Fakultas (50%).', style: AppTextStyles.bodySm.copyWith(color: context.appColors.outline, fontSize: 11)),
-              const SizedBox(height: 12),
+              Text(
+                'KONSOLIDASI NILAI AKHIR',
+                style: AppTextStyles.labelSm.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Nilai akhir dihitung dengan menggabungkan Nilai Universitas (50%) dengan Nilai Kencana Fakultas (50%).',
+                style: AppTextStyles.bodySm.copyWith(
+                  color: context.appColors.outline,
+                  fontSize: 11,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
               _buildConsolidatedRow('Nilai Akhir Kencana Universitas (50%)', univFinal.toStringAsFixed(1)),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.md),
               _buildConsolidatedRow('Nilai Akhir Kencana Fakultas (50%)', fakFinal.toStringAsFixed(1)),
-              const Divider(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Nilai Gabungan Akhir', style: AppTextStyles.titleMd.copyWith(fontWeight: FontWeight.w900, color: AppColors.neutral900)),
-                  Text(gabunganFinal.toStringAsFixed(1), style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.w900, color: AppColors.primary, fontSize: 24)),
-                ],
+              const SizedBox(height: AppSpacing.xl),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withAlpha(12),
+                  borderRadius: AppRadius.radiusLg,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Nilai Gabungan Akhir',
+                      style: AppTextStyles.titleMd.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    Text(
+                      gabunganFinal.toStringAsFixed(1),
+                      style: AppTextStyles.headlineMd.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
