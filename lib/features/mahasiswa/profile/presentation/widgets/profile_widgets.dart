@@ -248,7 +248,7 @@ Widget buildRoleCard(BuildContext context, ProfileProvider student) {
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w800,
-                                      color: context.appColors.secondary,
+                                      color: context.appColors.onSurface,
                                       letterSpacing: 0.2,
                                     ),
                                     overflow: TextOverflow.ellipsis,
