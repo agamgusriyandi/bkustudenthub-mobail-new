@@ -11,8 +11,6 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/providers/kencana_certificate_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/certificate_model.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 
 class KencanaCertificateScreen extends StatefulWidget {
@@ -259,25 +257,13 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
       child: BkuButton(
         isLoading: provider.isDownloading,
         onPressed: () async {
-          if (cert.fileUrl != null && cert.fileUrl!.startsWith('http')) {
-            _launchURL(cert.fileUrl!);
-          } else {
-            await context.read<KencanaCertificateProvider>().downloadCertificate();
-          }
+          await context.read<KencanaCertificateProvider>().downloadCertificate();
         },
         text: 'UNDUH SERTIFIKAT (PDF)',
         icon: Icons.picture_as_pdf_rounded,
         variant: BkuButtonVariant.danger,
       ),
     );
-  }
-
-  Future<void> _launchURL(String urlStr) async {
-    final absoluteUrl = ApiGate.getImageUrl(urlStr);
-    final uri = Uri.tryParse(absoluteUrl);
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
   }
 
   String _formatDate(String? dateStr) {
