@@ -676,9 +676,10 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
                   dense: true,
+                  activeColor: context.appColors.onSurface,
                   value: isMandatory,
                   onChanged: (val) => setModalState(() => isMandatory = val ?? true),
-                  title: const Text('Materi wajib dibaca', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  title: Text('Materi wajib dibaca', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: context.appColors.onSurface)),
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
                 const SizedBox(height: 6),
@@ -688,6 +689,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   controller: descController,
                   maxLines: 2,
                   decoration: InputDecoration(
+                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
                     border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     contentPadding: const EdgeInsets.all(8),
                   ),
@@ -700,6 +702,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   controller: urlController,
                   decoration: InputDecoration(
                     hintText: 'https://... (opsional)',
+                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
                     border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   ),
@@ -720,7 +723,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     children: [
                       Row(
                         children: [
-                          ElevatedButton(
+                          OutlinedButton.icon(
                             onPressed: () async {
                               final result = await FilePicker.pickFiles();
                               if (result != null && result.files.isNotEmpty) {
@@ -730,25 +733,43 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 });
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appColors.primary,
-                              foregroundColor: Colors.white,
+                            icon: const Icon(Icons.upload_file_rounded, size: 14),
+                            label: const Text('Pilih File', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: context.appColors.onSurface,
+                              side: const BorderSide(color: AppColors.neutral300),
+                              backgroundColor: context.appColors.surface,
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                             ),
-                            child: const Text('Choose File', style: TextStyle(fontSize: 10)),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              fileName,
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              selectedFile != null ? selectedFile!.name : (fileName.isNotEmpty ? fileName : 'Tidak ada file'),
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: (selectedFile != null || fileName.isNotEmpty) ? AppColors.neutral900 : context.appColors.outline,
+                                fontWeight: FontWeight.w500,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text('File Tersimpan: $fileName', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                      if (fileName.isNotEmpty && selectedFile == null) ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            const Icon(Icons.insert_drive_file_outlined, size: 13, color: AppColors.neutral600),
+                            const SizedBox(width: 4),
+                            Text(
+                              'File Tersimpan saat ini',
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.neutral600),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -758,14 +779,17 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(foregroundColor: AppColors.neutral600),
                       child: const Text('Batal', style: TextStyle(fontSize: 11)),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.primary,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.appColors.onSurface,
+                        foregroundColor: context.appColors.surface,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+                        elevation: 0,
                       ),
                       onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
