@@ -267,7 +267,7 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
         },
         text: 'UNDUH SERTIFIKAT (PDF)',
         icon: Icons.picture_as_pdf_rounded,
-        variant: BkuButtonVariant.primary,
+        variant: BkuButtonVariant.danger,
       ),
     );
   }

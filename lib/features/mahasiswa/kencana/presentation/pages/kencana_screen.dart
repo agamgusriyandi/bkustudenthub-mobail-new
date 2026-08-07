@@ -400,7 +400,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                   child: BkuButton(
                     text: 'Download Sertifikat PDF',
                     icon: Icons.picture_as_pdf_rounded,
-                    variant: BkuButtonVariant.success,
+                    variant: BkuButtonVariant.danger,
                     onPressed: () => context.push(AppRoutes.kencanaCertificate),
                   ),
                 ),

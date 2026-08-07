@@ -667,7 +667,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
                   },
                   text: 'Download Sertifikat PDF',
                   icon: Icons.picture_as_pdf_rounded,
-                  variant: BkuButtonVariant.success,
+                  variant: BkuButtonVariant.danger,
                 ),
               ),
               if (facCert != null) ...[
