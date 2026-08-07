@@ -697,7 +697,7 @@ class MentorGroupDetail {
   MentorGroupDetail({
     required this.id,
     required this.name,
-    this.maxCapacity = 40,
+    required this.maxCapacity,
     required this.members,
     this.scoreDefinitions,
   });
@@ -705,6 +705,27 @@ class MentorGroupDetail {
   factory MentorGroupDetail.fromJson(Map<String, dynamic> json) {
     final memberList =
         json['members'] ?? json['mentees'] ?? json['mahasiswa'] ?? [];
+
+    final rawCapacity =
+        json['max_capacity'] ??
+        json['maxCapacity'] ??
+        json['capacity'] ??
+        json['max_members'] ??
+        json['maxMembers'] ??
+        json['quota'] ??
+        json['kuota'] ??
+        json['kapasitas'] ??
+        json['max'] ??
+        json['limit'];
+
+    int capacity = 0;
+    if (rawCapacity != null) {
+      capacity = int.tryParse(rawCapacity.toString()) ?? 0;
+    }
+    if (capacity == 0 && memberList is List) {
+      capacity = memberList.length;
+    }
+
     return MentorGroupDetail(
       id: json['id'] ?? json['ID'] ?? 0,
       name:
@@ -713,7 +734,7 @@ class MentorGroupDetail {
           json['group_name'] ??
           json['Nama'] ??
           '',
-      maxCapacity: json['max_capacity'] ?? json['capacity'] ?? json['max_members'] ?? json['quota'] ?? 40,
+      maxCapacity: capacity,
       members:
           memberList is List
               ? memberList.map((m) => MenteeData.fromJson(m)).toList()
