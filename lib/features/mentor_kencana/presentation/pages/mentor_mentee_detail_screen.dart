@@ -1191,10 +1191,22 @@ class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> 
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (mounted) {
-        final provider = context.read<MentorKencanaProvider>();
-        if (provider.sessionMaterials.isEmpty) {
-          await provider.fetchSessionMaterialsList();
+      if (!mounted) return;
+      final provider = context.read<MentorKencanaProvider>();
+      if (provider.sessionMaterials.isEmpty) {
+        await provider.fetchSessionMaterialsList();
+      }
+      if (mounted && provider.sessionMaterials.isNotEmpty) {
+        int? firstQuizId;
+        for (final mat in provider.sessionMaterials) {
+          if (mat.quizzes.isNotEmpty) {
+            firstQuizId = mat.quizzes.first.id;
+            break;
+          }
+        }
+        if (firstQuizId != null) {
+          setState(() => _selectedQuizId = firstQuizId);
+          provider.fetchEssayGrading(firstQuizId, widget.menteeId);
         }
       }
     });
@@ -1275,7 +1287,7 @@ class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> 
                     _selectedQuizId = val;
                   });
                   if (val != null) {
-                    provider.fetchEssayGrading(val);
+                    provider.fetchEssayGrading(val, widget.menteeId);
                   }
                 },
               ),

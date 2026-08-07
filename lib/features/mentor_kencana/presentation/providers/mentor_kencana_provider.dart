@@ -703,7 +703,7 @@ class MentorKencanaProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchEssayGrading([int? quizId]) async {
+  Future<void> fetchEssayGrading([int? quizId, int? studentId]) async {
     _setLoading(true);
     _setError(null);
     try {
@@ -721,17 +721,28 @@ class MentorKencanaProvider extends ChangeNotifier {
       }
 
       Response<dynamic>? response;
-      if (targetQuizId != null) {
+      final queryParams = <String, dynamic>{
+        if (targetQuizId != null) 'quiz_id': targetQuizId,
+        if (studentId != null) 'student_id': studentId,
+      };
+
+      if (targetQuizId != null || studentId != null) {
         try {
           response = await _apiClient.client.get(
             '/kencana-mentor/essay-grading',
-            queryParameters: {'quiz_id': targetQuizId},
+            queryParameters: queryParams,
           );
         } catch (_) {
           try {
-            response = await _apiClient.client.get('/kencana-mentor/quizzes/$targetQuizId/essays');
+            response = await _apiClient.client.get(
+              '/kencana-mentor/quizzes/$targetQuizId/essays',
+              queryParameters: queryParams,
+            );
           } catch (_) {
-            response = await _apiClient.client.get('/kencana-mentor/essay-grading');
+            response = await _apiClient.client.get(
+              '/kencana-mentor/essay-grading',
+              queryParameters: queryParams,
+            );
           }
         }
       } else {
@@ -809,45 +820,35 @@ class MentorKencanaProvider extends ChangeNotifier {
     _setError(null);
 
     final payload = {
-      'essay_id': essayId,
-      'id': essayId,
-      'score': score,
-      'nilai': score,
-      'feedback': feedback,
-      'catatan': feedback,
-      'notes': feedback,
+      'grades': [
+        {
+          'answer_id': essayId,
+          'score': score,
+          'notes': feedback,
+        }
+      ]
     };
 
-    final endpoints = [
-      '/kencana-mentor/essay-grading',
-      '/kencana-mentor/essay-grading/$essayId',
-      '/kencana-mentor/essay-grading/$essayId/grade',
-      '/kencana-mentor/essays/$essayId/score',
-      '/kencana-mentor/essays/$essayId/grade',
-    ];
-
-    for (final ep in endpoints) {
-      try {
-        final res = await _apiClient.client.post(ep, data: payload);
-        final isSuccess = res.statusCode == 200 || res.statusCode == 201 || (res.data is Map && res.data['success'] == true);
-        if (isSuccess) {
-          _updateLocalEssayItem(essayId, score, feedback);
-          return true;
-        }
-      } catch (_) {
-        try {
-          final resPut = await _apiClient.client.put(ep, data: payload);
-          final isSuccessPut = resPut.statusCode == 200 || resPut.statusCode == 201 || (resPut.data is Map && resPut.data['success'] == true);
-          if (isSuccessPut) {
-            _updateLocalEssayItem(essayId, score, feedback);
-            return true;
-          }
-        } catch (_) {}
+    try {
+      final res = await _apiClient.client.post(
+        '/kencana-mentor/essay-grading',
+        data: payload,
+      );
+      final isSuccess = res.statusCode == 200 ||
+          res.statusCode == 201 ||
+          (res.data is Map && res.data['success'] == true);
+      if (isSuccess) {
+        _updateLocalEssayItem(essayId, score, feedback);
+        _setLoading(false);
+        return true;
       }
+    } catch (e) {
+      debugPrint('Error submitEssayScore: $e');
     }
 
-    _updateLocalEssayItem(essayId, score, feedback);
-    return true;
+    _setError('Gagal menyimpan nilai essay');
+    _setLoading(false);
+    return false;
   }
 
   void _updateLocalEssayItem(int essayId, double score, String feedback) {
