@@ -471,7 +471,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           foregroundColor: context.appColors.onSurface,
                           side: const BorderSide(color: AppColors.neutral300),
                           backgroundColor: context.appColors.surface,
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                         ),
                       ),
@@ -492,15 +494,22 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(foregroundColor: AppColors.neutral600),
-                      child: const Text('Kembali'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.neutral600,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text('Kembali', style: TextStyle(fontSize: 11)),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.appColors.onSurface,
                         foregroundColor: context.appColors.surface,
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                         elevation: 0,
                       ),
@@ -739,7 +748,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               foregroundColor: context.appColors.onSurface,
                               side: const BorderSide(color: AppColors.neutral300),
                               backgroundColor: context.appColors.surface,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                             ),
                           ),
@@ -779,7 +790,12 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(foregroundColor: AppColors.neutral600),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.neutral600,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: const Text('Batal', style: TextStyle(fontSize: 11)),
                     ),
                     const SizedBox(width: 8),
@@ -787,7 +803,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.appColors.onSurface,
                         foregroundColor: context.appColors.surface,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
                         elevation: 0,
                       ),
