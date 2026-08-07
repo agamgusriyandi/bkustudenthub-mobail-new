@@ -128,7 +128,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
             // Student Info Header
             Text(
               'Review Handbook: ${mentee.name}',
-              style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w900, color: context.appColors.primary),
+              style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w900, color: context.appColors.onSurface),
             ),
             const SizedBox(height: 4),
             Text(
@@ -145,7 +145,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.menu_book_rounded, color: context.appColors.primary, size: 20),
+                      Icon(Icons.menu_book_rounded, color: context.appColors.onSurface, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         'ISIAN HANDBOOK',
@@ -163,18 +163,37 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   if (isNotStarted)
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl * 2),
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
                         child: Column(
                           children: [
-                            Icon(Icons.warning_amber_rounded, size: 48, color: context.appColors.warning),
+                            Container(
+                              padding: const EdgeInsets.all(AppSpacing.lg),
+                              decoration: const BoxDecoration(
+                                color: AppColors.neutral100,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.assignment_late_outlined,
+                                size: 36,
+                                color: AppColors.neutral500,
+                              ),
+                            ),
                             const SizedBox(height: AppSpacing.md),
                             Text(
-                              'MAHASISWA BELUM MENGIRIMKAN HANDBOOK',
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: context.appColors.warning,
+                              'Mahasiswa Belum Mengirimkan Handbook',
+                              style: AppTextStyles.labelMd.copyWith(
+                                color: context.appColors.onSurface,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
                               ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Isian handbook akan secara otomatis ditampilkan di sini setelah dikirimkan oleh mahasiswa.',
+                              style: AppTextStyles.bodySm.copyWith(
+                                color: AppColors.neutral500,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
@@ -206,7 +225,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.fact_check_outlined, color: context.appColors.primary, size: 20),
+                      Icon(Icons.fact_check_outlined, color: context.appColors.onSurface, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         'KEPUTUSAN EVALUASI',
@@ -283,10 +302,12 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
 
                   BkuButton(
                     onPressed: _submitReview,
-                    text: 'SIMPAN EVALUASI',
+                    text: 'Simpan Evaluasi',
                     icon: Icons.save_rounded,
                     isLoading: _isSubmitting,
                     width: double.infinity,
+                    customBgColor: context.appColors.onSurface,
+                    customFgColor: context.appColors.surface,
                   ),
                 ],
               ),
