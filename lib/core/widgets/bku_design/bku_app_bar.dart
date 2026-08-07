@@ -237,7 +237,7 @@ class BkuAppBar extends StatelessWidget {
                       child: Container(
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/icons.png'),
+                            image: AssetImage('assets/images/batik_pattern.png'),
                             repeat: ImageRepeat.repeat,
                             scale: 4.0,
                           ),
@@ -365,7 +365,7 @@ class BkuAppBar extends StatelessWidget {
                       child: Container(
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/icons.png'),
+                            image: AssetImage('assets/images/batik_pattern.png'),
                             repeat: ImageRepeat.repeat,
                             scale: 4.0,
                           ),
@@ -685,7 +685,7 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/icons.png'),
+                      image: AssetImage('assets/images/batik_pattern.png'),
                       repeat: ImageRepeat.repeat,
                       scale: 4.0,
                     ),

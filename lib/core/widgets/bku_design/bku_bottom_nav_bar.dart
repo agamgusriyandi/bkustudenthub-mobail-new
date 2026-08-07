@@ -231,7 +231,7 @@ class _BkuBottomNavBarState extends State<BkuBottomNavBar> {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/icons.png'),
+                        image: AssetImage('assets/images/batik_pattern.png'),
                         repeat: ImageRepeat.repeat,
                         scale: 4.0,
                       ),
