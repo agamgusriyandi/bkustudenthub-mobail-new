@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -158,7 +159,7 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
 
             if (provider.isLoading && provider.essayItems.isEmpty)
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
             else if (provider.errorMessage != null && provider.essayItems.isEmpty)
               SliverFillRemaining(

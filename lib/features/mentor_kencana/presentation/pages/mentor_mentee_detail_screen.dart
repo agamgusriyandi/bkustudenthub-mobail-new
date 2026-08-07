@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -60,7 +61,7 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
       backgroundColor: AppColors.neutral100,
       body:
           provider.isLoading && mentee == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
               : provider.errorMessage != null && mentee == null
               ? Center(
                 child: Text(
@@ -1296,12 +1297,7 @@ class _EssayGradingSectionWidgetState extends State<_EssayGradingSectionWidget> 
           const SizedBox(height: AppSpacing.lg),
           if (_selectedQuizId != null) ...[
             if (provider.isLoading)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.lg),
-                  child: CircularProgressIndicator(),
-                ),
-              )
+              const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
             else if (provider.essayItems.isEmpty)
               Container(
                 width: double.infinity,

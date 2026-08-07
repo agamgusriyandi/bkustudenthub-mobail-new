@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -74,7 +75,7 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
+      builder: (_) => const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
     );
 
     final success = await context.read<MentorKencanaProvider>().respondBanding(
@@ -144,7 +145,7 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
             child: _isLoading
                 ? const Padding(
                     padding: EdgeInsets.all(40),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(AppSpacing.lg),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -113,7 +114,7 @@ class _EditTkScreenState extends State<EditTkScreen> {
         showBackButton: true,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
           : Form(
               key: _formKey,
               child: ListView(

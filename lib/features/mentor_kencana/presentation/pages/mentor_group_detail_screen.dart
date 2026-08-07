@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -95,7 +96,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                         const SizedBox(
                           width: 180,
                           height: 180,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
                         )
                       else
                         QrImageView(
@@ -178,7 +179,7 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
             ),
             if (provider.isLoading && detail == null)
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
             else if (provider.errorMessage != null && detail == null)
               SliverFillRemaining(

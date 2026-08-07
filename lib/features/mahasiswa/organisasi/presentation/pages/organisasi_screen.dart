@@ -80,7 +80,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               context: context,
               barrierDismissible: false,
               builder:
-                  (context) => const Center(child: CircularProgressIndicator()),
+                  (context) => const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
             );
             await PortfolioPdfGenerator.generateAndPrintPortfolio(context.read<ProfileProvider>(), student);
             if (context.mounted) context.pop();

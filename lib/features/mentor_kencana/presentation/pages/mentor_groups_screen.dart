@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -48,7 +49,7 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
             ),
             if (provider.isLoading && provider.mentorGroups.isEmpty)
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
             else if (provider.errorMessage != null &&
                 provider.mentorGroups.isEmpty)

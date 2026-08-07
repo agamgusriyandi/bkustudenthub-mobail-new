@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -276,7 +277,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                   ),
                 ),
                 if (provider.isLoading && sessions.isEmpty)
-                  const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+                  const SliverFillRemaining(child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()))
                 else if (filteredSessions.isEmpty)
                   SliverFillRemaining(
                     child: Center(child: Text('Tidak ada sesi', style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline))),
@@ -419,7 +420,7 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen> with Si
                   ),
                 ),
                 if (provider.isLoading && absenceRequests.isEmpty)
-                  const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+                  const SliverFillRemaining(child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()))
                 else if (filteredAbsences.isEmpty)
                   SliverFillRemaining(
                     child: Center(child: Text('Tidak ada permohonan izin', style: AppTextStyles.labelMd.copyWith(color: context.appColors.outline))),

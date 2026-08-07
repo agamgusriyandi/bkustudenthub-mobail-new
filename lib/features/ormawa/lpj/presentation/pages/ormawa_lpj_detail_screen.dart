@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -259,12 +260,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           if (_isLoadingDocs)
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
-                child: CircularProgressIndicator(),
-              ),
-            )
+            const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
           else if (_documents.isEmpty)
             Text(
               'Tidak ada dokumen terlampir.',

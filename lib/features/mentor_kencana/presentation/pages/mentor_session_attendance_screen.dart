@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -134,7 +135,7 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
     return Scaffold(
       backgroundColor: context.appColors.surface,
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
           : CustomScrollView(
               slivers: [
                 BkuAppBar(
@@ -561,7 +562,7 @@ class _SessionQrModalState extends State<SessionQrModal> {
                   ? const SizedBox(
                       width: 200.0,
                       height: 200.0,
-                      child: Center(child: CircularProgressIndicator()),
+                      child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
                     )
                   : QrImageView(
                       data: _qrData,

@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -1480,7 +1481,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xxxl),
                   if (_isSubmitting)
-                    const Center(child: CircularProgressIndicator())
+                    const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
                   else if (widget.report.status == 'draft' ||
                       widget.report.status == 'revisi')
                     Row(
@@ -1896,7 +1897,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                   const SizedBox(height: AppSpacing.xxxl),
 
                   if (_isSubmitting)
-                    const Center(child: CircularProgressIndicator())
+                    const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
                   else
                     Row(
                       children: [

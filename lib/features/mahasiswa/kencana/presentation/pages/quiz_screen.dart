@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -324,7 +325,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_errorMsg != null) return _buildError();
     if (_isFinished) return _buildResultView();
     if (_questions.isEmpty) return _buildEmptySoal();
-    if (!_hasStarted) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (!_hasStarted) return const Scaffold(body: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()));
 
     final currentQ = _questions[_currentQuestionIndex];
     final qId = currentQ['id'].toString();
@@ -597,7 +598,7 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  Widget _buildLoading() => const Scaffold(body: Center(child: CircularProgressIndicator()));
+  Widget _buildLoading() => const Scaffold(body: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()));
 
   Widget _buildError() => Scaffold(body: Center(child: Text(_errorMsg!)));
 

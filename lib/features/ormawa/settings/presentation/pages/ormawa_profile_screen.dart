@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -280,7 +281,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                   ),
                 if (_isUploadingAvatar)
                   const Positioned.fill(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
                   ),
               ],
             ),

@@ -1,4 +1,5 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -175,12 +176,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
     return Consumer<CounselingProvider>(
       builder: (context, provider, child) {
         if (provider.patientsLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacing.lg),
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList());
         }
 
         final patients = provider.patients;

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -416,7 +417,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
           if (loading)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
             )
           else if (filtered.isEmpty)
             _buildEmpty('Belum ada jadwal tersedia')

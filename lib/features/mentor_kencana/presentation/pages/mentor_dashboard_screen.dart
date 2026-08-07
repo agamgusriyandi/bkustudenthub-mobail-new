@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -131,7 +132,7 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
             ),
             if (provider.isLoading && dashboard == null)
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
             else if (provider.errorMessage != null && dashboard == null)
               SliverFillRemaining(

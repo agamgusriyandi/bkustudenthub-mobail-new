@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -95,7 +96,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
 
   Widget _buildLeaderboardTab(OrmawaProvider provider) {
     if (provider.isLoading && provider.gamifikasiLeaderboard.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList());
     }
 
     if (provider.gamifikasiLeaderboard.isEmpty) {
@@ -182,7 +183,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen> {
 
   Widget _buildHistoryTab(OrmawaProvider provider) {
     if (provider.isLoading && provider.gamifikasiHistory.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList());
     }
 
     if (provider.gamifikasiHistory.isEmpty) {

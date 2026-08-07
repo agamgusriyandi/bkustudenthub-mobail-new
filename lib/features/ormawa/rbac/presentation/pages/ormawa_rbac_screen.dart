@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -103,12 +104,7 @@ class _OrmawaRbacScreenState extends State<OrmawaRbacScreen> {
             ),
             if (_isLoading)
               const SliverFillRemaining(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(AppSpacing.xl),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               )
             else if (_error != null)
               SliverFillRemaining(

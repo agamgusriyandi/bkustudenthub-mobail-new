@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -78,7 +79,7 @@ class _MentorBandingScreenState extends State<MentorBandingScreen> with SingleTi
             child: Consumer<MentorKencanaProvider>(
               builder: (context, provider, child) {
                 if (provider.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList());
                 }
                 
                 if (provider.errorMessage != null && provider.bandingList.isEmpty) {

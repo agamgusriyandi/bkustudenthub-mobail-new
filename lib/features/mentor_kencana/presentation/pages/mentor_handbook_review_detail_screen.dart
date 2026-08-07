@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -132,7 +133,7 @@ class _MentorHandbookReviewDetailScreenState
           ),
           if (provider.isLoading && handbook == null)
             const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
+              child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
             )
           else if (handbook == null)
             SliverFillRemaining(

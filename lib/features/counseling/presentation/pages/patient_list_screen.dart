@@ -261,7 +261,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
                 context: context,
                 barrierDismissible: false,
                 builder:
-                    (ctx) => const Center(child: CircularProgressIndicator()),
+                    (ctx) => const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
               );
               final response = await ApiClient().client.get<List<int>>(
                 url,

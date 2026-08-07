@@ -1012,7 +1012,7 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
               child: Builder(
                 builder: (context) {
                   if (_isSearching) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList());
                   }
 
                   final displayList =
