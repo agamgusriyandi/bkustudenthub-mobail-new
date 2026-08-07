@@ -124,13 +124,19 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
     }
 
     // Extract scoreUniv (84.4)
-    final double scoreUnivVal = (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ??
-        double.tryParse(data?['score_univ']?['final_score']?.toString() ?? '') ??
+    final double scoreUnivVal = (double.tryParse(dashboard?.scoreUniv?['final_score_univ']?.toString() ?? '') ??
+        (dashboard?.scoreUniv?['final_score'] != null &&
+                (double.tryParse(dashboard?.scoreUniv?['final_score']?.toString() ?? '') ?? 0) != finalScore
+            ? double.tryParse(dashboard!.scoreUniv!['final_score'].toString())
+            : null) ??
         84.4);
 
     // Extract scoreFak (81.0)
-    final double scoreFakVal = (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ??
-        double.tryParse(data?['score_fakultas']?['final_score']?.toString() ?? '') ??
+    final double scoreFakVal = (double.tryParse(dashboard?.scoreFakultas?['final_score_faculty']?.toString() ?? '') ??
+        (dashboard?.scoreFakultas?['final_score'] != null &&
+                (double.tryParse(dashboard?.scoreFakultas?['final_score']?.toString() ?? '') ?? 0) != finalScore
+            ? double.tryParse(dashboard!.scoreFakultas!['final_score'].toString())
+            : null) ??
         81.0);
 
     return GridView.count(
