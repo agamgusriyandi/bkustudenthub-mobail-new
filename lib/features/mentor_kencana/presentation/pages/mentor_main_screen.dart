@@ -13,10 +13,10 @@ class MentorMainScreen extends StatefulWidget {
   const MentorMainScreen({super.key, this.initialTab = 0});
 
   @override
-  State<MentorMainScreen> createState() => _MentorMainScreenState();
+  State<MentorMainScreen> createState() => MentorMainScreenState();
 }
 
-class _MentorMainScreenState extends State<MentorMainScreen> {
+class MentorMainScreenState extends State<MentorMainScreen> {
   late int _selectedIndex;
 
   final List<Widget> _pages = [
@@ -44,6 +44,12 @@ class _MentorMainScreenState extends State<MentorMainScreen> {
         _selectedIndex = widget.initialTab;
       });
     }
+  }
+
+  void setSelectedIndex(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override

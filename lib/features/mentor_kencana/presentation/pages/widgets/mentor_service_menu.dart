@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 
 class MentorServiceMenu extends StatelessWidget {
   const MentorServiceMenu({super.key});
@@ -28,7 +29,15 @@ class MentorServiceMenu extends StatelessWidget {
         'title': 'Skoring',
         'icon': Icons.star_rounded,
         'color': const Color(0xFF6366F1),
-        'onTap': () => context.go('/mentor-kencana?tab=3'),
+        'onTap': () {
+          final state =
+              context.findAncestorStateOfType<MentorMainScreenState>();
+          if (state != null) {
+            state.setSelectedIndex(3);
+          } else {
+            context.go('/mentor-kencana?tab=3');
+          }
+        },
       },
       {
         'title': 'Nilai\nEssay',
@@ -58,13 +67,29 @@ class MentorServiceMenu extends StatelessWidget {
         'title': 'Input\nKehadiran',
         'icon': Icons.how_to_reg_rounded,
         'color': const Color(0xFF10B981),
-        'onTap': () => context.go('/mentor-kencana?tab=2'),
+        'onTap': () {
+          final state =
+              context.findAncestorStateOfType<MentorMainScreenState>();
+          if (state != null) {
+            state.setSelectedIndex(2);
+          } else {
+            context.go('/mentor-kencana?tab=2');
+          }
+        },
       },
       {
         'title': 'Pengaturan',
         'icon': Icons.settings_rounded,
         'color': const Color(0xFF64748B),
-        'onTap': () => context.go('/mentor-kencana?tab=4'),
+        'onTap': () {
+          final state =
+              context.findAncestorStateOfType<MentorMainScreenState>();
+          if (state != null) {
+            state.setSelectedIndex(4);
+          } else {
+            context.go('/mentor-kencana?tab=4');
+          }
+        },
       },
     ];
 
@@ -72,10 +97,12 @@ class MentorServiceMenu extends StatelessWidget {
       builder: (context, constraints) {
         // Menghitung jumlah kolom optimal (min 4, max 8) berdasarkan lebar yang tersedia
         final crossAxisCount = (constraints.maxWidth / 80).floor().clamp(4, 8);
-        
+
         // Menghitung lebar tiap item
-        final itemWidth = (constraints.maxWidth - (6 * (crossAxisCount - 1))) / crossAxisCount;
-        
+        final itemWidth =
+            (constraints.maxWidth - (6 * (crossAxisCount - 1))) /
+            crossAxisCount;
+
         // Tinggi fix yang dibutuhkan: Container(56) + SizedBox(8) + Text(max ~32) = ~96
         final aspectRatio = itemWidth / 96;
 
@@ -87,14 +114,15 @@ class MentorServiceMenu extends StatelessWidget {
           mainAxisSpacing: 10,
           crossAxisSpacing: 6,
           childAspectRatio: aspectRatio,
-          children: actions.map((action) {
-            return _ServiceIcon(
-              label: action['title'] as String,
-              icon: action['icon'] as IconData,
-              color: action['color'] as Color,
-              onTap: action['onTap'] as VoidCallback,
-            );
-          }).toList(),
+          children:
+              actions.map((action) {
+                return _ServiceIcon(
+                  label: action['title'] as String,
+                  icon: action['icon'] as IconData,
+                  color: action['color'] as Color,
+                  onTap: action['onTap'] as VoidCallback,
+                );
+              }).toList(),
         );
       },
     );

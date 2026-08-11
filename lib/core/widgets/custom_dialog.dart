@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -88,7 +89,7 @@ class CustomDialog extends StatelessWidget {
         customBgColor: resolvedConfirmColor,
         onPressed: isLoading ? null : onConfirm,
         isLoading: isLoading,
-        height: 48,
+        height: 40,
       );
     } else {
       actionsWidget = Row(
@@ -97,9 +98,9 @@ class CustomDialog extends StatelessWidget {
             child: BkuButton(
               text: cancelText,
               variant: BkuButtonVariant.outline,
-              customFgColor: context.appColors.secondary,
+              customFgColor: context.appColors.onSurface,
               onPressed: isLoading ? null : onCancel,
-              height: 48,
+              height: 40,
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -115,7 +116,7 @@ class CustomDialog extends StatelessWidget {
               customBgColor: resolvedConfirmColor,
               onPressed: isLoading ? null : onConfirm,
               isLoading: isLoading,
-              height: 48,
+              height: 40,
             ),
           ),
         ],
@@ -139,6 +140,7 @@ class CustomDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppTextStyles.titleLarge.copyWith(
                   fontWeight: FontWeight.w900,
+                  color: context.appColors.onSurface,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -147,7 +149,8 @@ class CustomDialog extends StatelessWidget {
                   content,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
+                    color: AppColors.neutral700,
+                    height: 1.4,
                   ),
                 ),
               if (customChild != null) ...[

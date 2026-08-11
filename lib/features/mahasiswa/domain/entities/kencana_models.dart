@@ -47,6 +47,8 @@ class KencanaDashboardData {
   final List<Map<String, dynamic>> notifications;
   final Map<String, dynamic>? mentor;
   final Map<String, dynamic>? mentorFakultas;
+  final List<dynamic>? mentors;
+  final List<dynamic>? mentorsFakultas;
   final Map<String, dynamic>? scoreUniv;
   final Map<String, dynamic>? scoreFakultas;
   final Map<String, dynamic>? certificates;
@@ -70,6 +72,8 @@ class KencanaDashboardData {
     required this.notifications,
     this.mentor,
     this.mentorFakultas,
+    this.mentors,
+    this.mentorsFakultas,
     this.scoreUniv,
     this.scoreFakultas,
     this.certificates,
@@ -96,6 +100,8 @@ class KencanaDashboardData {
       ),
       mentor: json['mentor'],
       mentorFakultas: json['mentor_fakultas'],
+      mentors: json['mentors'],
+      mentorsFakultas: json['mentors_fakultas'],
       scoreUniv: json['score_univ'],
       scoreFakultas: json['score_fakultas'],
       certificates: json['certificates'],
@@ -205,6 +211,7 @@ class KencanaStageDetail extends KencanaStage {
   final List<KencanaSessionSummary> sessions;
   final Map<String, dynamic>? group;
   final Map<String, dynamic>? mentor;
+  final List<Map<String, dynamic>>? mentors;
 
   KencanaStageDetail({
     required super.id,
@@ -221,6 +228,7 @@ class KencanaStageDetail extends KencanaStage {
     required this.sessions,
     this.group,
     this.mentor,
+    this.mentors,
   });
 
   factory KencanaStageDetail.fromJson(Map<String, dynamic> json) {
@@ -244,6 +252,7 @@ class KencanaStageDetail extends KencanaStage {
           [],
       group: json['group'],
       mentor: json['mentor'],
+      mentors: json['mentors'] != null ? List<Map<String, dynamic>>.from(json['mentors']) : null,
     );
   }
 }

@@ -18,13 +18,22 @@ class KencanaRemedialProvider extends ChangeNotifier {
   List<KencanaRemedialItem> _remedials = [];
   List<KencanaRemedialItem> get remedials => _remedials;
 
+  String _periodStatus = '';
+  String get periodStatus => _periodStatus;
+
+  String _periodStage = '';
+  String get periodStage => _periodStage;
+
   Future<void> fetchRemedials() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _remedials = await _repository.getRemedials();
+      final data = await _repository.getRemedials();
+      _remedials = data['remedials'] as List<KencanaRemedialItem>;
+      _periodStatus = data['periodStatus'] as String;
+      _periodStage = data['periodStage'] as String;
     } catch (e) {
       _errorMessage = ErrorHelper.getMessage(e);
     }

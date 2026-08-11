@@ -155,7 +155,7 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                         ),
                         onDismissed: (direction) {
                           provider.removeNotification(notif.id);
-                          AppSnackbar.showError(context, 'Notifikasi dihapus');
+                          AppSnackbar.showSuccess(context, 'Notifikasi dihapus');
                         },
                         child: GestureDetector(
                           onTap: () {

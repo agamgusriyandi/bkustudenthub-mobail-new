@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 
 class MentorStatsGrid extends StatelessWidget {
   final MentorDashboardData dashboard;
@@ -38,7 +39,15 @@ class MentorStatsGrid extends StatelessWidget {
               icon: Icons.school_rounded,
               color: context.appColors.primary,
               badgeText: 'Aktif',
-              onTap: () => context.go('/mentor-kencana?tab=1'),
+              onTap: () {
+                final state =
+                    context.findAncestorStateOfType<MentorMainScreenState>();
+                if (state != null) {
+                  state.setSelectedIndex(1);
+                } else {
+                  context.go('/mentor-kencana?tab=1');
+                }
+              },
             ),
             _buildStatCard(
               context,
@@ -56,7 +65,15 @@ class MentorStatsGrid extends StatelessWidget {
               icon: Icons.verified_rounded,
               color: context.appColors.success,
               badgeText: 'Lengkap',
-              onTap: () => context.go('/mentor-kencana?tab=3'),
+              onTap: () {
+                final state =
+                    context.findAncestorStateOfType<MentorMainScreenState>();
+                if (state != null) {
+                  state.setSelectedIndex(3);
+                } else {
+                  context.go('/mentor-kencana?tab=3');
+                }
+              },
             ),
             _buildStatCard(
               context,
@@ -65,7 +82,15 @@ class MentorStatsGrid extends StatelessWidget {
               icon: Icons.error_outline_rounded,
               color: context.appColors.error,
               badgeText: 'Evaluasi',
-              onTap: () => context.go('/mentor-kencana?tab=3'),
+              onTap: () {
+                final state =
+                    context.findAncestorStateOfType<MentorMainScreenState>();
+                if (state != null) {
+                  state.setSelectedIndex(3);
+                } else {
+                  context.go('/mentor-kencana?tab=3');
+                }
+              },
             ),
           ],
         );

@@ -49,7 +49,7 @@ class BkuCard extends StatelessWidget {
     final hasShadow =
         (borderOnly == false) &&
         (enableShadow != false) &&
-        (elevation == null || elevation! > 0);
+        (elevation == null || (elevation ?? 0) > 0);
 
     final cardContent = Container(
       width: width,
@@ -62,7 +62,7 @@ class BkuCard extends StatelessWidget {
                 : (backgroundColor ?? color ?? theme.surface),
         borderRadius:
             borderRadius != null
-                ? BorderRadius.circular(borderRadius!)
+                ? BorderRadius.circular(borderRadius ?? 0)
                 : AppRadius.radiusLg,
         border: borderOnly ? Border.all(color: AppColors.neutral200) : Border.all(color: context.appColors.outlineVariant.withAlpha(40), width: 1),
         boxShadow:
@@ -89,7 +89,7 @@ class BkuCard extends StatelessWidget {
             onTap: onTap,
             borderRadius:
                 borderRadius != null
-                    ? BorderRadius.circular(borderRadius!)
+                    ? BorderRadius.circular(borderRadius ?? 0)
                     : AppRadius.radiusLg,
             child: cardContent,
           ),

@@ -148,7 +148,7 @@ class _StudentNotificationsScreenState
     final ok = await _service.deleteNotification(notif.id);
     if (ok && mounted) {
       setState(() => _notifications.removeWhere((n) => n.id == notif.id));
-      AppSnackbar.showError(context, 'Notifikasi dihapus');
+      AppSnackbar.showSuccess(context, 'Notifikasi dihapus');
     }
   }
 
@@ -174,7 +174,7 @@ class _StudentNotificationsScreenState
       setState(
         () => _notifications = _notifications.where((n) => !n.isRead).toList(),
       );
-      AppSnackbar.showError(context, 'Notifikasi yang sudah dibaca dihapus');
+      AppSnackbar.showSuccess(context, 'Notifikasi yang sudah dibaca dihapus');
     }
   }
 

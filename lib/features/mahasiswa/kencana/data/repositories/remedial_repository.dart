@@ -5,7 +5,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/remedial_mo
 class RemedialRepository {
   final ApiClient _apiClient = ApiClient();
 
-  Future<List<KencanaRemedialItem>> getRemedials() async {
+  Future<Map<String, dynamic>> getRemedials() async {
     try {
       final response = await _apiClient.client.get(
         '/kencana-student/remedial',
@@ -13,18 +13,26 @@ class RemedialRepository {
       if (response.data != null && response.data['success'] == true) {
         final data = response.data['data'];
         List items = [];
+        String periodStatus = '';
+        String periodStage = '';
         if (data is Map<String, dynamic>) {
           items = data['remedials'] as List? ?? [];
+          periodStatus = data['period_status']?.toString() ?? '';
+          periodStage = data['period_stage']?.toString() ?? '';
         } else if (data is List) {
           items = data;
         }
-        return items
-            .map((e) => KencanaRemedialItem.fromJson(e as Map<String, dynamic>))
-            .toList();
+        return {
+          'remedials': items
+              .map((e) => KencanaRemedialItem.fromJson(e as Map<String, dynamic>))
+              .toList(),
+          'periodStatus': periodStatus,
+          'periodStage': periodStage,
+        };
       }
-      return [];
+      return {'remedials': <KencanaRemedialItem>[], 'periodStatus': '', 'periodStage': ''};
     } catch (_) {
-      return [];
+      return {'remedials': <KencanaRemedialItem>[], 'periodStatus': '', 'periodStage': ''};
     }
   }
 

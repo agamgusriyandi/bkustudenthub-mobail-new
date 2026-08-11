@@ -128,7 +128,7 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                   ),
                 ),
               )
-            else if (provider.remedials.isEmpty)
+            else if (provider.periodStatus != 'published' && provider.periodStatus != 'completed' && provider.periodStage != 'pasca_kencana')
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Padding(
@@ -161,6 +161,49 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Informasi kelulusan dan daftar perbaikan / remedial baru akan muncul setelah periode orientasi Kencana sepenuhnya selesai dan nilai akhir diumumkan.',
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: context.appColors.outline,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (provider.remedials.isEmpty)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withAlpha(15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.hourglass_empty_rounded,
+                          size: 32,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Text(
+                        'Belum Ada Tugas Remedial',
+                        style: AppTextStyles.titleMd.copyWith(
+                          color: context.appColors.onSurface,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.3,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Masa remedial sedang berlangsung. Harap tunggu instruksi tugas dari Fasilitator atau Panitia Anda.',
                         style: AppTextStyles.bodySm.copyWith(
                           color: context.appColors.outline,
                           height: 1.5,

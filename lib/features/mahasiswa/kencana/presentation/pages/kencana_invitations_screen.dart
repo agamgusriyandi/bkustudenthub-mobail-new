@@ -87,7 +87,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
                   child: BkuShimmerList(itemCount: 5, itemHeight: 80),
                 ),
               )
-            else if (data == null || data!.isEmpty)
+            else if (data == null || (data?.isEmpty ?? true))
               SliverFillRemaining(
                 child: Center(
                   child: Column(
@@ -156,30 +156,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
     );
   }
 
-  Widget _buildActiveMentorCard() {
-    final mentor = data?['active_mentor'];
-    if (mentor == null) {
-      return Container(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: context.appColors.warning.withAlpha(20),
-          borderRadius: AppRadius.radiusLg,
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.info_outline_rounded, color: context.appColors.warning),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Text(
-                'Kamu belum memiliki Fasilitator yang aktif.',
-                style: AppTextStyles.labelMd.copyWith(color: AppColors.warning),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
+  Widget _buildSingleActiveMentorCard(Map mentor) {
     return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
@@ -270,6 +247,68 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
     );
   }
 
+  Widget _buildActiveMentorCard() {
+    final mentors = data?['active_mentors'];
+    final mentor = data?['active_mentor'];
+
+    if (mentors != null && mentors is List && mentors.isNotEmpty) {
+      return Column(
+        children: List.generate(mentors.length, (index) {
+          try {
+            final m = mentors[index];
+            if (m == null || m is! Map) return const SizedBox.shrink();
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: index == mentors.length - 1 ? 0 : AppSpacing.md,
+              ),
+              child: _buildSingleActiveMentorCard(m),
+            );
+          } catch (e, stackTrace) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              color: Colors.red.shade100,
+              child: Text('Error rendering active mentor: $e\n$stackTrace', style: const TextStyle(color: Colors.red)),
+            );
+          }
+        }),
+      );
+    }
+
+    if (mentor != null && mentor is Map) {
+      try {
+        return _buildSingleActiveMentorCard(mentor);
+      } catch (e, stackTrace) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          color: Colors.red.shade100,
+          child: Text('Error rendering active mentor: $e\n$stackTrace', style: const TextStyle(color: Colors.red)),
+        );
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      decoration: BoxDecoration(
+        color: context.appColors.warning.withAlpha(20),
+        borderRadius: AppRadius.radiusLg,
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline_rounded, color: context.appColors.warning),
+          const SizedBox(width: AppSpacing.lg),
+          Expanded(
+            child: Text(
+              'Kamu belum memiliki Fasilitator yang aktif.',
+              style: AppTextStyles.labelMd.copyWith(color: AppColors.warning),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildInvitationsList(List<dynamic> items, String type) {
     if (items.isEmpty) {
       return Container(
@@ -291,6 +330,7 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
     return Column(
       children:
           items.map((item) {
+            if (item == null || item is! Map) return const SizedBox.shrink();
             final rawStatus = item['status'] ?? item['Status'] ?? 'pending';
             final status = rawStatus.toString().toLowerCase();
             final isPending = status == 'pending';
@@ -308,135 +348,142 @@ class _KencanaInvitationsScreenState extends State<KencanaInvitationsScreen> {
               final group = item['group'] ?? item['Group'] ?? {};
               final groupName = group['name'] ?? group['Name'] ?? item['group_name'] ?? 'Kelompok Kencana';
               final code = group['code'] ?? group['Code'] ?? item['group_code'] ?? '';
-              final mentorObj = group['mentor'] ?? group['Mentor'];
-              final mentorName = mentorObj?['name'] ?? mentorObj?['Name'] ?? '';
+              var mentorName = '';
+              final mentorsList = group['mentors'] ?? group['Mentors'];
+              if (mentorsList != null && mentorsList is List && mentorsList.isNotEmpty) {
+                mentorName = mentorsList.map((m) => m != null ? (m['name'] ?? m['Name'] ?? '') : '').where((s) => s.toString().isNotEmpty).join(', ');
+              } else {
+                final mentorObj = group['mentor'] ?? group['Mentor'];
+                mentorName = mentorObj?['name'] ?? mentorObj?['Name'] ?? '';
+              }
 
               title = groupName;
               subtitle = 'Kode: ${code.isNotEmpty ? code : '-'} ${mentorName.isNotEmpty ? '• Fasilitator: $mentorName' : ''}';
             }
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.outlineVariant.withAlpha(50),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.appColors.onSurface.withAlpha(12),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            try {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                child: BkuCard(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: const BoxDecoration(
-                          color: AppColors.neutral100,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          type == 'mentor'
-                              ? Icons.person_add_rounded
-                              : Icons.group_add_rounded,
-                          color: AppColors.neutral600,
-                          size: 24,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            decoration: const BoxDecoration(
+                              color: AppColors.neutral100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              type == 'mentor'
+                                  ? Icons.person_add_rounded
+                                  : Icons.group_add_rounded,
+                              color: AppColors.neutral800,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.lg),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: AppTextStyles.titleMd.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: context.appColors.onSurface,
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  subtitle,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyles.labelMd.copyWith(
+                                    color: context.appColors.outline,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: AppSpacing.lg),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      if (isPending) ...[
+                        const SizedBox(height: AppSpacing.lg),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              title,
-                              style: AppTextStyles.titleMd.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.onSurface,
+                            TextButton(
+                              onPressed:
+                                  isProcessing
+                                      ? null
+                                      : () => _respond(type, item['id'], 'reject'),
+                              child: Text(
+                                'Tolak',
+                                style: AppTextStyles.labelMd.copyWith(
+                                  color: AppColors.neutral600,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              subtitle,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: context.appColors.outline,
-                              ),
+                            const SizedBox(width: AppSpacing.md),
+                            BkuButton(
+                              onPressed:
+                                  isProcessing
+                                      ? null
+                                      : () => _respond(type, item['id'], 'accept'),
+                              text: 'Terima',
+                              variant: BkuButtonVariant.success,
+                              fullWidth: false,
+                              height: 38,
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  if (isPending) ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    const Divider(),
-                    const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed:
-                              isProcessing
-                                  ? null
-                                  : () => _respond(type, item['id'], 'reject'),
+                      ] else ...[
+                        const SizedBox(height: AppSpacing.lg),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                (status == 'active' || status == 'accepted')
+                                    ? AppColors.success.withAlpha(20)
+                                    : AppColors.error.withAlpha(20),
+                            borderRadius: AppRadius.radiusSm,
+                          ),
                           child: Text(
-                            'Tolak',
-                            style: AppTextStyles.labelMd.copyWith(
-                              color: AppColors.error,
+                            (status == 'active' || status == 'accepted') ? 'DITERIMA' : 'DITOLAK',
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.labelSm.copyWith(
                               fontWeight: FontWeight.bold,
+                              color:
+                                  (status == 'active' || status == 'accepted')
+                                      ? AppColors.success
+                                      : AppColors.error,
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.md),
-                        BkuButton(
-                          onPressed:
-                              isProcessing
-                                  ? null
-                                  : () => _respond(type, item['id'], 'accept'),
-                          text: 'Terima',
-                        ),
                       ],
-                    ),
-                  ] else ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.sm,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            (status == 'active' || status == 'accepted')
-                                ? AppColors.success.withAlpha(20)
-                                : AppColors.error.withAlpha(20),
-                        borderRadius: AppRadius.radiusSm,
-                      ),
-                      child: Text(
-                        (status == 'active' || status == 'accepted') ? 'DITERIMA' : 'DITOLAK',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.labelSm.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color:
-                              (status == 'active' || status == 'accepted')
-                                  ? AppColors.success
-                                  : AppColors.error,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            );
+                    ],
+                  ),
+                ),
+              );
+            } catch (e, stackTrace) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                color: Colors.red.shade100,
+                child: Text('Error rendering invitation: $e\n$stackTrace', style: const TextStyle(color: Colors.red)),
+              );
+            }
           }).toList(),
     );
   }

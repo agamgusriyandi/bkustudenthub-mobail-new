@@ -310,7 +310,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                         ],
                       ),
                     ),
-                  if (detail.mentor != null)
+                  if (detail.mentor != null || (detail.mentors != null && detail.mentors!.isNotEmpty))
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -326,7 +326,9 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            detail.mentor!['name'] ?? '-',
+                            detail.mentors != null && detail.mentors!.isNotEmpty
+                                ? detail.mentors!.map((m) => m['name'] ?? m['Name'] ?? '').join(', ')
+                                : detail.mentor != null ? detail.mentor!['name'] ?? '-' : '-',
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 12.5,

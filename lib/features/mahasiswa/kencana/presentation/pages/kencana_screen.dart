@@ -1237,6 +1237,22 @@ class _KencanaScreenState extends State<KencanaScreen> {
   ) {
     final mentorUniv = dashboard.mentor;
     final mentorFak = dashboard.mentorFakultas;
+    final mentorsUniv = dashboard.mentors;
+    final mentorsFak = dashboard.mentorsFakultas;
+
+    String mentorUnivName = '-';
+    if (mentorsUniv != null && mentorsUniv.isNotEmpty) {
+      mentorUnivName = mentorsUniv.map((m) => m != null ? (m['name'] ?? m['Name'] ?? '') : '').where((s) => s.toString().isNotEmpty).join(', ');
+    } else if (mentorUniv != null) {
+      mentorUnivName = mentorUniv['name'] ?? '-';
+    }
+
+    String mentorFakName = '-';
+    if (mentorsFak != null && mentorsFak.isNotEmpty) {
+      mentorFakName = mentorsFak.map((m) => m != null ? (m['name'] ?? m['Name'] ?? '') : '').where((s) => s.toString().isNotEmpty).join(', ');
+    } else if (mentorFak != null) {
+      mentorFakName = mentorFak['name'] ?? '-';
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,16 +1267,16 @@ class _KencanaScreenState extends State<KencanaScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        if (mentorUniv != null)
-          _buildMentorCard('Fasilitator Universitas', mentorUniv['name'] ?? '-')
+        if (mentorsUniv != null && mentorsUniv.isNotEmpty || mentorUniv != null)
+          _buildMentorCard('Fasilitator Universitas', mentorUnivName)
         else if (dashboard.hasPendingInvitation)
           _buildPendingInvitationCard(context, 'Universitas')
         else
           _buildNoMentorCard('Belum ada fasilitator Universitas'),
         const SizedBox(height: AppSpacing.md),
         if (dashboard.scoreFakultas != null) ...[
-          if (mentorFak != null)
-            _buildMentorCard('Fasilitator Fakultas', mentorFak['name'] ?? '-')
+          if (mentorsFak != null && mentorsFak.isNotEmpty || mentorFak != null)
+            _buildMentorCard('Fasilitator Fakultas', mentorFakName)
           else if (dashboard.hasPendingFacultyInvitation)
             _buildPendingInvitationCard(context, 'Fakultas')
           else
