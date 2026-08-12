@@ -9,6 +9,7 @@ import '../dialogs/profile_dialogs.dart';
 import '../utils/profile_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 Widget buildRoleCard(BuildContext context, ProfileProvider student) {
   final displayName = student.name.isNotEmpty ? student.name.toTitleCase() : 'Mahasiswa';
@@ -20,18 +21,9 @@ Widget buildRoleCard(BuildContext context, ProfileProvider student) {
   const accentColor = AppColors.neutral700;
   const accentLight = AppColors.neutral200;
 
-  return Container(
-    decoration: BoxDecoration(
-      color: context.appColors.surface,
-      borderRadius: AppRadius.radiusXl,
-      boxShadow: [
-        BoxShadow(
-          color: context.appColors.onSurface.withAlpha(12),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-      ],
-    ),
+  return BkuCard(
+    padding: EdgeInsets.zero,
+    borderRadius: 24,
     child: ClipRRect(
       borderRadius: AppRadius.radiusXl,
       child: Stack(
@@ -351,18 +343,9 @@ Widget buildMenuSection(
           ],
         ),
       ),
-      Container(
-        decoration: BoxDecoration(
-      color: context.appColors.surface,
-      borderRadius: AppRadius.br22,
-      boxShadow: [
-        BoxShadow(
-          color: context.appColors.onSurface.withAlpha(10),
-          blurRadius: 18,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
+      BkuCard(
+        padding: EdgeInsets.zero,
+        borderRadius: 22,
     child: Column(
       children: items.asMap().entries.map((entry) {
         final isLast = entry.key == items.length - 1;
@@ -458,18 +441,10 @@ Widget buildMenuItem(
 }
 
 Widget buildLogoutButton(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: context.appColors.errorContainer,
-      borderRadius: AppRadius.br22,
-      boxShadow: [
-        BoxShadow(
-          color: context.appColors.error.withAlpha(12),
-          blurRadius: 16,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
+  return BkuCard(
+    padding: EdgeInsets.zero,
+    backgroundColor: context.appColors.errorContainer,
+    borderRadius: 22,
     child: Material(
       color: Colors.transparent,
       borderRadius: AppRadius.br22,

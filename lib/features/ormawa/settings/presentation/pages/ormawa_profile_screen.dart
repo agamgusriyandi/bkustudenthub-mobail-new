@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -184,20 +185,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   }
 
   Widget _buildHeaderCard(OrmawaMember member) {
-    final theme = context.appColors;
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: theme.outline.withAlpha(26)),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(8),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+    return BkuCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Row(
@@ -325,7 +313,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                           color: AppThemeColors.surfaceContainerHighest.withAlpha(128),
                           borderRadius: AppRadius.radiusMd,
                           border: Border.all(
-                            color: theme.outline.withAlpha(13),
+                            color: context.appColors.outline.withAlpha(13),
                           ),
                         ),
                         child: Row(

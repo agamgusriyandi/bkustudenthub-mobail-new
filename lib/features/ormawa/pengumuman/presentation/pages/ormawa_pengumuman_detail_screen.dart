@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
@@ -131,14 +132,9 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      Container(
+                      BkuCard(
                         width: double.infinity,
                         padding: const EdgeInsets.all(AppSpacing.xl),
-                        decoration: BoxDecoration(
-                          color: AppColors.neutral100,
-                          borderRadius: AppRadius.radiusXl,
-                          border: Border.all(color: AppColors.neutral300),
-                        ),
                         child: Text(
                           a.isi,
                           style: AppTextStyles.bodyMd.copyWith(

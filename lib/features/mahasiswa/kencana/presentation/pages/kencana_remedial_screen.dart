@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -541,33 +542,15 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              TextField(
+              BkuTextField(
                 controller: textController,
                 maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: 'Tulis jawaban atau penjelasan...',
-                  hintStyle: AppTextStyles.bodySm.copyWith(
-                    color: context.appColors.outlineVariant,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  contentPadding: const EdgeInsets.all(AppSpacing.md),
-                ),
+                hint: 'Tulis jawaban atau penjelasan...',
               ),
               const SizedBox(height: AppSpacing.md),
-              TextField(
+              BkuTextField(
                 controller: linkController,
-                decoration: InputDecoration(
-                  hintText: 'Link Google Drive (opsional)',
-                  hintStyle: AppTextStyles.bodySm.copyWith(
-                    color: context.appColors.outlineVariant,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  contentPadding: const EdgeInsets.all(AppSpacing.md),
-                ),
+                hint: 'Link Google Drive (opsional)',
               ),
             ],
           ),

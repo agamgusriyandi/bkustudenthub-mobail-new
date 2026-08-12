@@ -7,6 +7,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -429,46 +431,27 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
                     ),
                     if (pdfUrl != null && pdfUrl.toString().isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.xxl),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final url = Uri.parse(
-                              ApiGate.getImageUrl(pdfUrl.toString()),
+                      BkuButton(
+                        text: 'Download Surat Rujukan PDF',
+                        icon: Icons.picture_as_pdf_rounded,
+                        onPressed: () async {
+                          final url = Uri.parse(
+                            ApiGate.getImageUrl(pdfUrl.toString()),
+                          );
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
                             );
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(
-                                url,
-                                mode: LaunchMode.externalApplication,
+                            if (context.mounted) {
+                              AppSnackbar.showSuccess(
+                                context,
+                                'Berhasil mengunduh Surat Rujukan PDF',
                               );
-                              if (context.mounted) {
-                                AppSnackbar.showSuccess(
-                                  context,
-                                  'Berhasil mengunduh Surat Rujukan PDF',
-                                );
-                              }
                             }
-                          },
-                          icon: Icon(
-                            Icons.picture_as_pdf_rounded,
-                            color: context.appColors.onPrimary,
-                          ),
-                          label: Text(
-                            'Download Surat Rujukan PDF',
-                            style: TextStyle(
-                              color: context.appColors.onPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.error,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppRadius.radiusMd,
-                            ),
-                          ),
-                        ),
+                          }
+                        },
+                        variant: BkuButtonVariant.primary,
                       ),
                     ],
                   ],
@@ -649,45 +632,26 @@ class _TkReferralScreenState extends State<TkReferralScreen> {
             Container(
               color: context.appColors.surface,
               padding: const EdgeInsets.all(AppSpacing.lg),
-              child: TextField(
+              child: BkuTextField(
                 controller: _searchController,
+                hint: 'Cari nama mahasiswa, NIM, Faskes, atau Diagnosis...',
+                prefixIcon: const Icon(Icons.search, color: AppColors.neutral500),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18, color: AppColors.neutral500),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = '';
+                            _currentPage = 1;
+                          });
+                        },
+                      )
+                    : null,
                 onChanged: (v) => setState(() {
                   _searchQuery = v;
                   _currentPage = 1;
                 }),
-                decoration: InputDecoration(
-                  hintText: 'Cari nama mahasiswa, NIM, Faskes, atau Diagnosis...',
-                  prefixIcon: Icon(Icons.search, color: AppColors.neutral500,
-                  ),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18, color: AppColors.neutral500),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              _searchQuery = '';
-                              _currentPage = 1;
-                            });
-                          },
-                        )
-                      : null,
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusMd,
-                    borderSide: BorderSide(color: AppColors.neutral300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusMd,
-                    borderSide: BorderSide(color: AppColors.neutral300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusMd,
-                    borderSide: BorderSide(color: context.appColors.success, width: 1.5),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
               ),
             ),
             if (!_isLoading && filtered.isNotEmpty) _buildTopPagination(safeTotalPages),

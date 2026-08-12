@@ -1,5 +1,6 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -77,7 +78,7 @@ class _Icd10SearchBottomSheetState extends State<Icd10SearchBottomSheet> {
             style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral600),
           ),
           const SizedBox(height: AppSpacing.lg),
-          TextField(
+          BkuTextField(
             controller: _searchController,
             onChanged: _filter,
             decoration: InputDecoration(

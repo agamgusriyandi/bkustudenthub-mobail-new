@@ -352,6 +352,21 @@ class AppRoutes {
       final role = AuthService().currentRole;
       final path = state.uri.path;
 
+      // Handle deep links from notifications that might include /app prefix
+      if (path.startsWith('/app/')) {
+        var newPath = path.replaceFirst('/app', '');
+        // Map backend's /kencana/mentor to app's /mentor-kencana
+        if (newPath.startsWith('/kencana/mentor')) {
+          newPath = newPath.replaceFirst('/kencana/mentor', '/mentor-kencana');
+        }
+        
+        // Preserve query parameters if any
+        if (state.uri.hasQuery) {
+          newPath += '?${state.uri.query}';
+        }
+        return newPath;
+      }
+
       // Allow public routes
       if (path == splash ||
           path == login ||

@@ -1,4 +1,4 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class WebRedirectScreen extends StatelessWidget {
   const WebRedirectScreen({super.key});
@@ -93,37 +94,20 @@ class WebRedirectScreen extends StatelessWidget {
               const Spacer(flex: 3),
               FadeInAnimation(
                 delay: 0.8,
-                child: ElevatedButton(
+                child: BkuButton.primary(
+                  text: 'Buka Website Sekarang',
+                  icon: Icons.language_rounded,
                   onPressed: () => _launchWebsite(context),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.language_rounded, size: 20),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Buka Website Sekarang',
-                        style: AppTextStyles.titleMd.copyWith(
-                      color: context.appColors.onPrimary,
-                      fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                  fullWidth: true,
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
               FadeInAnimation(
                 delay: 0.9,
-                child: TextButton(
+                child: BkuButton.text(
+                  text: 'Kembali ke Halaman Login',
                   onPressed: () => context.go(AppRoutes.login),
-
-                  child: Text(
-                    'Kembali ke Halaman Login',
-                    style: AppTextStyles.titleMd.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  fullWidth: true,
                 ),
               ),
               const SizedBox(height: AppSpacing.xxl),

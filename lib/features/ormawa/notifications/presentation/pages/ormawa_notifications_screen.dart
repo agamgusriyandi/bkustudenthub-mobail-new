@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -194,15 +195,11 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               showNotification: false,
               isExpandable: false,
               actions: [
-                TextButton(
+                BkuButton(
+                  variant: BkuButtonVariant.text,
                   onPressed: _markAllAsRead,
-                  child: Text(
-                    'Baca Semua',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  text: 'Baca Semua',
+                  customFgColor: context.appColors.onPrimary,
                 ),
               ],
             ),
@@ -553,8 +550,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
+                  child: BkuButton.primary(
                     onPressed: () {
                       context.pop();
                       final t = notification.type.toLowerCase();
@@ -570,11 +566,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                         context.push(AppRoutes.ormawaPengumuman);
                       }
                     },
-
-                    child: const Text(
-                      'Tutup & Lihat Detail',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    text: 'Tutup & Lihat Detail',
                   ),
                 ),
               ],

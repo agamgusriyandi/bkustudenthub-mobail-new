@@ -13,7 +13,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/profile/presentation/dialogs/pr
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -70,34 +70,25 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
           await AuthService().uploadAvatar(croppedFile.path);
           if (context.mounted) {
             Navigator.pop(context);
-            showDialog(
+            BkuDialog.show(
               context: context,
-              builder:
-                  (ctx) => CustomDialog(
-                    title: 'Berhasil',
-                    content: 'Foto profil berhasil diperbarui',
-                    cancelText: '',
-                    confirmText: 'Tutup',
-                    onCancel: () {},
-                    onConfirm: () => Navigator.pop(ctx),
-                  ),
+              title: 'Berhasil',
+              message: 'Foto profil berhasil diperbarui',
+              type: BkuDialogType.success,
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => Navigator.pop(context),
             );
           }
         } catch (e) {
           if (context.mounted) {
             Navigator.pop(context);
-            showDialog(
+            BkuDialog.show(
               context: context,
-              builder:
-                  (ctx) => CustomDialog(
-                    title: 'Gagal',
-                    content: ErrorHandler.getMessage(e),
-                    cancelText: '',
-                    confirmText: 'Tutup',
-                    isDestructive: true,
-                    onCancel: () {},
-                    onConfirm: () => Navigator.pop(ctx),
-                  ),
+              title: 'Gagal',
+              message: ErrorHandler.getMessage(e),
+              type: BkuDialogType.error,
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => Navigator.pop(context),
             );
           }
         }

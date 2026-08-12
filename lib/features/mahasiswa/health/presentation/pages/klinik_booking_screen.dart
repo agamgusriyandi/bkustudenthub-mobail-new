@@ -17,7 +17,7 @@ import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'health_booking_form_screen.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:go_router/go_router.dart';
@@ -824,76 +824,44 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
     ProfileProvider student,
     HealthBooking booking,
   ) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogContext) => AlertDialog(
-            title: const Text(
-              'Batalkan Janji Temu',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            content: const Text(
-              'Apakah Anda yakin ingin membatalkan janji temu klinik ini?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(
-                  'Tutup',
-                  style: TextStyle(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(dialogContext); // Close confirm dialog
-                  BkuLoadingDialog.show(context);
-                  try {
-                    await context.read<HealthViewModel>().cancelHealthBooking(booking.id.toString());
-                    if (context.mounted) {
-                      BkuLoadingDialog.hide(context);
-                      showDialog(
-                        context: context,
-                        builder:
-                            (context) => CustomDialog(
-                              title: 'Berhasil',
-                              content: 'Janji temu berhasil dibatalkan',
-                              cancelText: '',
-                              confirmText: 'Tutup',
-                              onCancel: () {},
-                              onConfirm: () => context.pop(),
-                            ),
-                      );
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      BkuLoadingDialog.hide(context);
-                      showDialog(
-                        context: context,
-                        builder:
-                            (context) => CustomDialog(
-                              title: 'Gagal',
-                              content: ErrorHandler.getMessage(e),
-                              cancelText: '',
-                              confirmText: 'Tutup',
-                              isDestructive: true,
-                              onCancel: () {},
-                              onConfirm: () => context.pop(),
-                            ),
-                      );
-                    }
-                  }
-                },
-
-                child: const Text(
-                  'Ya, Batalkan',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
+      type: BkuDialogType.warning,
+      title: 'Batalkan Janji Temu',
+      message: 'Apakah Anda yakin ingin membatalkan janji temu klinik ini?',
+      secondaryButtonText: 'Tutup',
+      onSecondaryPressed: () => Navigator.pop(context),
+      primaryButtonText: 'Ya, Batalkan',
+      onPrimaryPressed: () async {
+        Navigator.pop(context); // Close confirm dialog
+        BkuLoadingDialog.show(context);
+        try {
+          await context.read<HealthViewModel>().cancelHealthBooking(booking.id.toString());
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            BkuDialog.show(
+              context: context,
+              type: BkuDialogType.success,
+              title: 'Berhasil',
+              message: 'Janji temu berhasil dibatalkan',
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => context.pop(),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            BkuDialog.show(
+              context: context,
+              type: BkuDialogType.error,
+              title: 'Gagal',
+              message: ErrorHandler.getMessage(e),
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => context.pop(),
+            );
+          }
+        }
+      },
     );
   }
 }

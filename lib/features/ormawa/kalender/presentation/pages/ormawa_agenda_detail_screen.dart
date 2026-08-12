@@ -1,4 +1,3 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -10,6 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 String formatRp(double? val) {
   if (val == null || val == 0.0) return 'Rp 0';
@@ -26,24 +28,24 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
 
   const OrmawaAgendaDetailScreen({super.key, required this.agenda});
 
-  Color _getStatusColor(String status) {
+  BkuStatus _getBkuStatus(String status) {
     switch (status.toLowerCase()) {
       case 'terlaksana':
       case 'selesai':
-        return AppColors.success;
+        return BkuStatus.success;
       case 'berlangsung':
-        return AppColors.warning;
+        return BkuStatus.warning;
       case 'batal':
       case 'dibatalkan':
-        return AppColors.error;
+        return BkuStatus.error;
       default:
-        return AppColors.info;
+        return BkuStatus.info;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor(agenda.status);
+    final status = _getBkuStatus(agenda.status);
 
     return Scaffold(
       backgroundColor: AppColors.neutral100,
@@ -68,12 +70,12 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(statusColor),
-                  const SizedBox(height: AppSpacing.xl),
+                  _buildHeader(context, status),
+                  const SizedBox(height: AppSpacing.lg),
 
                   _buildSectionTitle('Informasi Utama'),
                   const SizedBox(height: AppSpacing.md),
-                  _buildMainInfoGrid(statusColor),
+                  _buildMainInfoGrid(),
 
                   const SizedBox(height: AppSpacing.xl),
                   _buildSectionTitle('Detail Kegiatan'),
@@ -113,32 +115,20 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(Color statusColor) {
-    return Container(
+  Widget _buildHeader(BuildContext context, BkuStatus status) {
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral300),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: statusColor.withAlpha(15),
+              color: status == BkuStatus.success ? AppColors.success.withAlpha(15) : context.appColors.primary.withAlpha(15),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.calendar_month_rounded,
-              color: statusColor,
+              color: status == BkuStatus.success ? AppColors.success : context.appColors.primary,
               size: 28,
             ),
           ),
@@ -158,24 +148,13 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         letterSpacing: 1.0,
                       ),
                     ),
-                    Container(
+                    BkuStatusBadge(
+                      status: status,
+                      customText: agenda.status,
+                      showIcon: false,
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusColor.withAlpha(15),
-                        borderRadius: AppRadius.radiusSm,
-                        border: Border.all(color: statusColor.withAlpha(30)),
-                      ),
-                      child: Text(
-                        agenda.status,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: statusColor,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 9,
-                          letterSpacing: 0.5,
-                        ),
                       ),
                     ),
                   ],
@@ -210,25 +189,13 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMainInfoGrid(Color statusColor) {
+  Widget _buildMainInfoGrid() {
     final startTimeStr = DateFormat('HH:mm').format(agenda.date);
     final endTimeStr = DateFormat('HH:mm').format(agenda.endDate);
     final dateStr = DateFormat('EEEE, dd MMMM yyyy', 'id').format(agenda.date);
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(3),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           _buildGridItem(
@@ -312,20 +279,8 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTechnicalDetailsCard() {
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(3),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           _buildTechnicalItem(
@@ -404,14 +359,8 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
   }
 
   Widget _buildNarrativeCard(String content) {
-    return Container(
-      width: double.infinity,
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral300),
-      ),
       child: Text(
         content,
         style: const TextStyle(
@@ -432,8 +381,9 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 56,
-      child: ElevatedButton.icon(
+      child: BkuButton.primary(
+        text: 'BUKA ABSENSI KEGIATAN',
+        icon: Icons.qr_code_scanner_rounded,
         onPressed: () {
           Navigator.push(
             context,
@@ -442,15 +392,6 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
             ),
           );
         },
-        icon: Icon(Icons.qr_code_scanner_rounded, color: context.appColors.onPrimary),
-        label: Text(
-          'BUKA ABSENSI KEGIATAN',
-          style: TextStyle(
-            color: context.appColors.onPrimary,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
       ),
     );
   }

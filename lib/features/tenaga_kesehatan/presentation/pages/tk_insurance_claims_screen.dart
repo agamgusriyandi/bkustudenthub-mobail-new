@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -936,7 +937,7 @@ class _TkInsuranceClaimsScreenState extends State<TkInsuranceClaimsScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
-                      TextField(
+                      BkuTextField(
                         controller: noteController,
                         maxLines: 3,
                         style: TextStyle(

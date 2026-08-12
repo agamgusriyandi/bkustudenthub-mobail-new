@@ -5,6 +5,10 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
@@ -38,16 +42,16 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
     super.dispose();
   }
 
-  Color _getStatusColor(String status) {
+  BkuStatus _getBkuStatus(String status) {
     switch (status.toLowerCase()) {
       case 'aktif':
-        return AppColors.success;
+        return BkuStatus.success;
       case 'selesai':
-        return AppColors.info;
+        return BkuStatus.info;
       case 'dibatalkan':
-        return AppColors.error;
+        return BkuStatus.error;
       default:
-        return AppColors.neutral500;
+        return BkuStatus.warning;
     }
   }
 
@@ -132,20 +136,8 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
 
   Widget _buildStatCard(String label, String value, Color color, IconData icon) {
     return Expanded(
-      child: Container(
+      child: BkuCard(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: AppColors.neutral200),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -183,26 +175,11 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
     return Row(
       children: [
         Expanded(
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusLg,
-              border: Border.all(color: AppColors.neutral300),
-            ),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => _searchQuery = value),
-              decoration: InputDecoration(
-                hintText: 'Cari nama kegiatan...',
-                hintStyle: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
-                prefixIcon: Icon(Icons.search_rounded, color: context.appColors.primary, size: 24),
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
+          child: BkuTextField(
+            controller: _searchController,
+            hint: 'Cari nama kegiatan...',
+            prefixIcon: Icon(Icons.search_rounded, color: context.appColors.primary, size: 24),
+            onChanged: (value) => setState(() => _searchQuery = value),
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -225,35 +202,16 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
   }
 
   void _showFilterBottomSheet() {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
-      backgroundColor: context.appColors.surface,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(color: AppColors.neutral300, borderRadius: AppRadius.radiusXs),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'Filter Status',
-                    style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.bold, color: context.appColors.primary),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Wrap(
+      title: 'Filter Status',
+      child: StatefulBuilder(
+        builder: (context, setModalState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: ['Semua', 'Aktif', 'Selesai', 'Dibatalkan'].map((filter) {
@@ -281,13 +239,11 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                ],
-              ),
-            );
-          },
-        );
-      },
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -347,13 +303,12 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
               (context, index) {
                 final item = filteredList[index];
                 final nama = (item['Nama'] ?? item['nama'] ?? '').toString();
-                final status = (item['Status'] ?? item['status'] ?? '').toString();
                 final tanggal = (item['Tanggal'] ?? item['tanggal'] ?? '').toString();
                 final lokasi = (item['Lokasi'] ?? item['lokasi'] ?? '-').toString();
                 final jumlahHadir = item['JumlahHadir'] ?? item['jumlah_hadir'] ?? 0;
                 final jumlahTotal = item['JumlahTotal'] ?? item['jumlah_total'] ?? 0;
                 final id = (item['ID'] ?? item['id'] ?? '').toString();
-                final statusColor = _getStatusColor(status);
+                final statusBadge = _getBkuStatus((item['Status'] ?? item['status'] ?? '').toString());
 
                 DateTime? date;
                 try {
@@ -367,14 +322,9 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                       builder: (context) => OrmawaAbsensiManagementDetailScreen(absensiId: id, absensiData: item),
                     ),
                   ).then((_) => provider.fetchAbsensiManagement()),
-                  child: Container(
+                  child: BkuCard(
                     margin: const EdgeInsets.only(bottom: AppSpacing.md),
                     padding: const EdgeInsets.all(AppSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      borderRadius: AppRadius.radiusXl,
-                      border: Border.all(color: AppColors.neutral200),
-                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -384,16 +334,11 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                             Expanded(
                               child: Text(nama, style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w900)),
                             ),
-                            Container(
+                            BkuStatusBadge(
+                              status: statusBadge,
+                              customText: (item['Status'] ?? item['status'] ?? '-').toString(),
+                              showIcon: false,
                               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                              decoration: BoxDecoration(
-                                color: statusColor.withAlpha(15),
-                                borderRadius: AppRadius.radiusSm,
-                              ),
-                              child: Text(
-                                status,
-                                style: AppTextStyles.labelSm.copyWith(color: statusColor, fontWeight: FontWeight.w900, fontSize: 10),
-                              ),
                             ),
                           ],
                         ),

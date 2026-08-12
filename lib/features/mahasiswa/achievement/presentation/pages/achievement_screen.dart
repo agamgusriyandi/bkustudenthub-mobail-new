@@ -10,9 +10,10 @@ import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/report_achievement_screen.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
@@ -460,38 +461,20 @@ class _AchievementCard extends StatelessWidget {
     final formattedDate =
         "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.7,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral200,
-                      borderRadius: AppRadius.radiusXs,
-                    ),
-                  ),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    child: Column(
+                child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
@@ -828,54 +811,42 @@ class _AchievementCard extends StatelessWidget {
               ],
             ),
           ),
-    );
+        );
   }
 
   void _confirmDelete(BuildContext context, String id) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogContext) => CustomDialog(
-            title: 'Hapus Laporan Prestasi?',
-            content:
-                'Apakah Anda yakin ingin menghapus laporan prestasi ini? Tindakan ini tidak dapat dibatalkan.',
-            isDestructive: true,
-            cancelText: 'Batal',
-            confirmText: 'Ya, Hapus',
-            onCancel: () => Navigator.pop(dialogContext),
-            onConfirm: () async {
-              Navigator.pop(dialogContext);
-
-              try {
-                BkuLoadingDialog.show(context);
-                await context.read<AcademicProvider>().deleteAchievement(id);
-                if (context.mounted) {
-                  BkuLoadingDialog.hide(context);
-                  context.pop();
-                  AppSnackbar.showSuccess(
-                    context,
-                    'Laporan prestasi berhasil dihapus',
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  BkuLoadingDialog.hide(context);
-                  showDialog(
-                    context: context,
-                    builder:
-                        (ctx) => CustomDialog(
-                          title: 'Gagal Menghapus Data',
-                          content: ErrorHandler.getMessage(e),
-                          cancelText: '',
-                          confirmText: 'Tutup',
-                          onConfirm: () => Navigator.pop(ctx),
-                          onCancel: () {},
-                        ),
-                  );
-                }
-              }
-            },
-          ),
+      title: 'Hapus Prestasi?',
+      message: 'Apakah Anda yakin ingin menghapus laporan prestasi ini? Tindakan ini tidak dapat dibatalkan.',
+      type: BkuDialogType.error,
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+      onPrimaryPressed: () async {
+        Navigator.pop(context); // close dialog
+        BkuLoadingDialog.show(context);
+        try {
+          await context.read<AcademicProvider>().deleteAchievement(id);
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            Navigator.pop(context); // close bottom sheet
+            AppSnackbar.showSuccess(context, 'Prestasi berhasil dihapus');
+          }
+        } catch (e) {
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            BkuDialog.show(
+              context: context,
+              title: 'Gagal Menghapus',
+              message: ErrorHandler.getMessage(e),
+              type: BkuDialogType.error,
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => Navigator.pop(context),
+            );
+          }
+        }
+      },
     );
   }
 

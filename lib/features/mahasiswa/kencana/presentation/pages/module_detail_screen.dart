@@ -10,7 +10,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -68,15 +68,15 @@ class ModuleDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           padding: AppSpacing.paddingLg,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF8FAFC),
+                            color: AppColors.neutral100,
                             borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
+                            border: Border.all(color: AppColors.neutral300, width: 1.2),
                           ),
                           child: Row(
                             children: [
                               Container(
                                 padding: AppSpacing.padding10,
-                                decoration: const BoxDecoration(color: Color(0xFF0F172A), shape: BoxShape.circle),
+                                decoration: const BoxDecoration(color: AppColors.neutral900, shape: BoxShape.circle),
                                 child: const Icon(Icons.attach_file_rounded, color: Colors.white, size: 22),
                               ),
                               const SizedBox(width: AppSpacing.s14),
@@ -84,13 +84,13 @@ class ModuleDetailScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('File Dokumen / Lampiran', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0F172A))),
+                                    Text('File Dokumen / Lampiran', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.neutral900)),
                                     SizedBox(height: AppSpacing.s3),
-                                    Text('Ketuk untuk mengunduh / membuka file', style: TextStyle(color: Color(0xFF64748B), fontSize: 12)),
+                                    Text('Ketuk untuk mengunduh / membuka file', style: TextStyle(color: AppColors.neutral600, fontSize: 12)),
                                   ],
                                 ),
                               ),
-                              const Icon(Icons.chevron_right_rounded, color: Color(0xFF0F172A), size: 22),
+                              const Icon(Icons.chevron_right_rounded, color: AppColors.neutral900, size: 22),
                             ],
                           ),
                         ),
@@ -196,22 +196,16 @@ class ModuleDetailScreen extends StatelessWidget {
                                 }
                                 if (success) {
                                   if (context.mounted) {
-                                    showDialog(
+                                    BkuDialog.show(
                                       context: context,
-                                      builder:
-                                          (dialogContext) => CustomDialog(
-                                            title: 'Sukses!',
-                                            content:
-                                                'Materi telah selesai dipelajari!',
-                                            cancelText: '',
-                                            confirmText: 'Selesai',
-                                            isSuccess: true,
-                                            onConfirm: () {
-                                              Navigator.pop(dialogContext);
-                                              Navigator.pop(context, true);
-                                            },
-                                            onCancel: () {},
-                                          ),
+                                      type: BkuDialogType.success,
+                                      title: 'Sukses!',
+                                      message: 'Materi telah selesai dipelajari!',
+                                      primaryButtonText: 'Selesai',
+                                      onPrimaryPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context, true);
+                                      },
                                     );
                                   }
                                 } else {

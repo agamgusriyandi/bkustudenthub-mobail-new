@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
@@ -451,14 +452,9 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            DropdownButtonFormField<String>(
+            BkuDropdown<String>(
               initialValue: currentValue,
-              hint: Text(
-                hint,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.neutral500,
-                ),
-              ),
+              hint: hint,
               isExpanded: true,
               style: AppTextStyles.bodyMd.copyWith(
                 fontWeight: FontWeight.bold,

@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -12,6 +13,9 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/men
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorHandbookListScreen extends StatefulWidget {
@@ -212,30 +216,26 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                     const SizedBox(height: AppSpacing.md),
                     
                     // Search Bar
-                    TextField(
+                    BkuTextField(
                       controller: _searchController,
                       onChanged: (val) => setState(() => _searchQuery = val),
-                      decoration: InputDecoration(
-                        hintText: 'Cari NIM, Nama...',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
+                      hint: 'Cari NIM, Nama...',
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
                     // Filter Dropdown
                     if (uniqueFaculties.isNotEmpty)
-                      DropdownButtonFormField<String>(
+                      BkuDropdown<String>(
                         initialValue: _selectedFacultyFilter,
                         decoration: InputDecoration(
                           isDense: true,
@@ -383,75 +383,29 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                               Builder(
                                 builder: (context) {
                                   final s = mentee.handbookStatus.toUpperCase();
-                                  Color dotColor = AppColors.neutral400;
-                                  Color bgColor = AppColors.neutral200.withAlpha(120);
-                                  Color textColor = AppColors.neutral600;
-                                  String text = 'BELUM DIKERJAKAN';
-
                                   if (s == 'APPROVED' || s == 'DISETUJUI') {
-                                    dotColor = AppColors.success;
-                                    bgColor = AppColors.successContainer;
-                                    textColor = AppColors.onSuccessContainer;
-                                    text = 'DISETUJUI';
+                                    return const BkuStatusBadge(status: BkuStatus.success, customText: 'DISETUJUI');
                                   } else if (s == 'SUBMITTED' || s == 'WAITING_REVIEW' || s == 'MENUNGGU REVIEW') {
-                                    dotColor = AppColors.warning;
-                                    bgColor = AppColors.warningContainer;
-                                    textColor = AppColors.onWarningContainer;
-                                    text = 'MENUNGGU REVIEW';
+                                    return const BkuStatusBadge(status: BkuStatus.pending, customText: 'MENUNGGU REVIEW');
                                   } else if (s == 'REJECTED' || s == 'REVISION' || s == 'DITOLAK') {
-                                    dotColor = AppColors.error;
-                                    bgColor = AppColors.errorContainer;
-                                    textColor = AppColors.onErrorContainer;
-                                    text = s == 'REVISION' ? 'REVISI' : 'DITOLAK';
+                                    return BkuStatusBadge(status: BkuStatus.error, customText: s == 'REVISION' ? 'REVISI' : 'DITOLAK');
                                   } else {
-                                    text = 'BELUM DIKERJAKAN';
+                                    return const BkuStatusBadge(status: BkuStatus.inactive, customText: 'BELUM DIKERJAKAN');
                                   }
-
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: bgColor,
-                                      borderRadius: AppRadius.radiusXl,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 8, height: 8,
-                                          decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          text,
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
                                 }
                               ),
                               
                               SizedBox(
                                 height: 32,
-                                child: OutlinedButton.icon(
+                                child: BkuButton(
+                                  variant: BkuButtonVariant.outline,
                                   onPressed: () {
                                     context.push('/mentor-kencana/handbook/review/${mentee.id}?name=${Uri.encodeComponent(mentee.name)}');
                                   },
-                                  icon: Icon(Icons.rate_review_outlined, size: 16, color: context.appColors.onSurface),
-                                  label: Text(
-                                    'Review Handbook',
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: context.appColors.onSurface),
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: context.appColors.onSurface,
-                                    side: BorderSide(color: context.appColors.outlineVariant),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                    backgroundColor: AppColors.neutral100,
-                                  ),
+                                  icon: Icons.rate_review_outlined,
+                                  text: 'Review Handbook',
+                                  fontSize: 11,
+                                  fullWidth: false,
                                 ),
                               ),
                             ],

@@ -13,7 +13,9 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.da
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 
@@ -330,15 +332,15 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
     );
     final dateFormatter = DateFormat('dd MMM yyyy', 'id');
 
-    Color statusColor;
     String displayStatus = proposal.status.toTitleCase();
+    BkuStatus mappedStatus;
 
     switch (proposal.status.toLowerCase()) {
       case 'disetujui':
       case 'disetujui_fakultas':
       case 'disetujui_univ':
       case 'selesai':
-        statusColor = AppColors.success;
+        mappedStatus = BkuStatus.success;
         if (proposal.status.toLowerCase() == 'disetujui_fakultas') {
           displayStatus = 'Acc Fakultas';
         }
@@ -350,38 +352,27 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
         }
         break;
       case 'ditolak':
-        statusColor = AppColors.error;
+        mappedStatus = BkuStatus.error;
         displayStatus = 'Ditolak';
         break;
       case 'revisi':
-        statusColor = AppColors.warning;
+        mappedStatus = BkuStatus.warning;
         displayStatus = 'Revisi';
         break;
       case 'proses':
       case 'diajukan':
-        statusColor = AppColors.info;
+        mappedStatus = BkuStatus.info;
         displayStatus = 'Menunggu';
         break;
       default:
-        statusColor = AppColors.info;
+        mappedStatus = BkuStatus.info;
     }
 
     return FadeInAnimation(
       delay: 0.1 * (index % 5),
-      child: Container(
+      child: BkuCard(
         margin: const EdgeInsets.only(bottom: AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -423,22 +414,13 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                     ],
                   ),
                 ),
-                Container(
+                BkuStatusBadge(
+                  status: mappedStatus,
+                  customText: displayStatus,
+                  showIcon: false,
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    displayStatus,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: statusColor,
-                      fontSize: 8,
-                      fontWeight: FontWeight.w900,
-                    ),
                   ),
                 ),
               ],
@@ -516,29 +498,22 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
   }
 
   void _showDeleteConfirmation(BuildContext context, OrmawaProposal proposal) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogCtx) => CustomDialog(
-            title: 'Hapus Proposal?',
-            content:
-                'Apakah Anda yakin ingin menghapus proposal "${proposal.title}"? Tindakan ini tidak dapat dibatalkan.',
-            cancelText: 'Batal',
-            confirmText: 'Hapus',
-            isDestructive: true,
-            onCancel: () => Navigator.pop(dialogCtx),
-            onConfirm: () async {
-              final provider = Provider.of<OrmawaProvider>(
-                context,
-                listen: false,
-              );
-              await provider.deleteProposal(proposal.id);
-              if (context.mounted) {
-                Navigator.pop(dialogCtx);
-                AppSnackbar.showError(context, 'Proposal berhasil dihapus');
-              }
-            },
-          ),
+      title: 'Hapus Proposal?',
+      message: 'Apakah Anda yakin ingin menghapus proposal "${proposal.title}"? Tindakan ini tidak dapat dibatalkan.',
+      type: BkuDialogType.error,
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () async {
+        final provider = Provider.of<OrmawaProvider>(context, listen: false);
+        await provider.deleteProposal(proposal.id);
+        if (context.mounted) {
+          Navigator.pop(context);
+          AppSnackbar.showError(context, 'Proposal berhasil dihapus');
+        }
+      },
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 

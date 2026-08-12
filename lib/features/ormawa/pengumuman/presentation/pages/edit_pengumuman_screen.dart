@@ -7,7 +7,9 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:go_router/go_router.dart';
 
 class EditPengumumanScreen extends StatefulWidget {
@@ -101,23 +103,10 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                 icon: Icons.description_rounded,
                 maxLines: 8),
             const SizedBox(height: AppSpacing.s48),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _handleSubmit,
-                child: _isSubmitting
-                    ? SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                            color: context.appColors.onPrimary, strokeWidth: 2))
-                    : Text('SIMPAN PERUBAHAN',
-                        style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-              ),
+            BkuButton.primary(
+              text: 'SIMPAN PERUBAHAN',
+              onPressed: _isSubmitting ? null : _handleSubmit,
+              isLoading: _isSubmitting,
             ),
           ],
         ),
@@ -198,7 +187,7 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: controller,
         maxLines: maxLines,
         style: const TextStyle(fontWeight: FontWeight.bold),

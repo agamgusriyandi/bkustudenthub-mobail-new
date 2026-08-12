@@ -1,12 +1,13 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -49,19 +50,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
     }
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'selesai':
-        return AppColors.success;
-      case 'ditolak':
-        return AppColors.error;
-      case 'menunggu':
-        return AppColors.warning;
-      default:
-        return AppColors.neutral500;
-    }
-  }
+
 
   String _formatCurrency(double value) {
     return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
@@ -70,8 +59,6 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor(widget.lpj.status);
-
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       body: CustomScrollView(
@@ -90,21 +77,9 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  BkuCard(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.xl),
-                    decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      borderRadius: AppRadius.radiusXl,
-                      border: Border.all(color: AppColors.neutral200),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.appColors.onSurface.withAlpha(12),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -119,22 +94,13 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                                 ),
                               ),
                             ),
-                            Container(
+                            BkuStatusBadge(
+                              status: _mapStatusToBkuStatus(widget.lpj.status),
+                              customText: widget.lpj.status,
+                              showIcon: false,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.md,
                                   vertical: AppSpacing.xs),
-                              decoration: BoxDecoration(
-                                color: statusColor.withAlpha(15),
-                                borderRadius: AppRadius.radiusSm,
-                              ),
-                              child: Text(
-                                widget.lpj.status,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 10,
-                                ),
-                              ),
                             ),
                           ],
                         ),
@@ -231,21 +197,9 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
   }
 
   Widget _buildDocumentsCard(BuildContext context) {
-    return Container(
+    return BkuCard(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -306,21 +260,9 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
 
   Widget _buildInfoCard(
       BuildContext context, String title, List<Widget> children) {
-    return Container(
+    return BkuCard(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -355,5 +297,17 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
         ],
       ),
     );
+  }
+
+  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+    final s = rawStatus.toLowerCase();
+    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
+      return BkuStatus.success;
+    } else if (s.contains('tolak') || s.contains('batal')) {
+      return BkuStatus.error;
+    } else if (s.contains('revisi')) {
+      return BkuStatus.warning;
+    }
+    return BkuStatus.info;
   }
 }

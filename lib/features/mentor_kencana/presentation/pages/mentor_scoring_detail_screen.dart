@@ -1,6 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class MentorScoringDetailScreen extends StatefulWidget {
   final int sessionId;
@@ -148,22 +148,10 @@ class _MentorScoringDetailScreenState extends State<MentorScoringDetailScreen> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.xs,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: context.appColors.primary.withAlpha(15),
-                                  borderRadius: AppRadius.radiusSm,
-                                ),
-                                child: Text(
-                                  score.totalScore.toStringAsFixed(1),
-                                  style: AppTextStyles.labelMd.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: context.appColors.primary,
-                                  ),
-                                ),
+                              BkuStatusBadge(
+                                status: BkuStatus.info,
+                                customText: score.totalScore.toStringAsFixed(1),
+                                showIcon: false,
                               ),
                             ],
                           ),

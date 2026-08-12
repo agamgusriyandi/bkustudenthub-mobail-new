@@ -3,7 +3,10 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class ScholarshipItem {
@@ -67,14 +70,9 @@ class AvailableScholarships extends StatelessWidget {
 
     final openScholarships = scholarships.take(3).toList();
 
-    return Container(
-      width: double.infinity,
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-      ),
+      borderOnly: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -85,13 +83,14 @@ class AvailableScholarships extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.workspace_premium_rounded,
-                    color: context.appColors.primary,
+                    color: AppColors.primary,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'Beasiswa yang Tersedia',
                     style: AppTextStyles.titleSm.copyWith(
+                      color: AppColors.neutral900,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -99,20 +98,25 @@ class AvailableScholarships extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: onViewAll ?? () {
-                  AppSnackbar.showSuccess(context, 'Menampilkan semua beasiswa...');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ScholarshipScreen(),
+                    ),
+                  );
                 },
                 child: Row(
                   children: [
                     Text(
                       'Lihat Semua',
                       style: AppTextStyles.caption.copyWith(
-                        color: context.appColors.primary,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Icon(
                       Icons.arrow_forward_rounded,
-                      color: context.appColors.primary,
+                      color: AppColors.primary,
                       size: 14,
                     ),
                   ],
@@ -132,36 +136,28 @@ class AvailableScholarships extends StatelessWidget {
     final isUrgent = daysDiff >= 0 && daysDiff < 14;
     final isClosed = daysDiff < 0;
 
-    Color statusColor;
+    BkuStatus statusEnum;
     String statusText;
     IconData statusIcon;
 
     if (isClosed) {
-      statusColor = context.appColors.onSurfaceVariant;
+      statusEnum = BkuStatus.inactive;
       statusText = 'Ditutup';
       statusIcon = Icons.event_busy_rounded;
     } else if (isUrgent) {
-      statusColor = AppColors.warning;
+      statusEnum = BkuStatus.warning;
       statusText = 'Sisa $daysDiff Hari';
       statusIcon = Icons.schedule_rounded;
     } else {
-      statusColor = AppColors.success;
+      statusEnum = BkuStatus.success;
       statusText = 'Terbuka';
       statusIcon = Icons.verified_rounded;
     }
 
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isClosed
-              ? context.appColors.outline.withValues(alpha: 0.1)
-              : context.appColors.primary.withValues(alpha: 0.2),
-        ),
-      ),
+      borderOnly: isClosed,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,41 +167,24 @@ class AvailableScholarships extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: context.appColors.primary.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: context.appColors.primary.withValues(alpha: 0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
                   item.category,
                   style: AppTextStyles.caption.copyWith(
-                    color: context.appColors.primary,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: statusColor.withValues(alpha: 0.2)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(statusIcon, color: statusColor, size: 12),
-                    const SizedBox(width: 4),
-                    Text(
-                      statusText,
-                      style: AppTextStyles.caption.copyWith(
-                        color: statusColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+              BkuStatusBadge(
+                status: statusEnum,
+                customText: statusText,
+                customIcon: statusIcon,
               ),
             ],
           ),
@@ -301,40 +280,16 @@ class AvailableScholarships extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                context.push('/scholarship/program/${item.id}');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.appColors.primary,
-                foregroundColor: context.appColors.surface,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Daftar Sekarang',
-                    style: AppTextStyles.bodySm.copyWith(
-                      color: context.appColors.surface,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: context.appColors.surface,
-                    size: 14,
-                  ),
-                ],
-              ),
-            ),
+          BkuButton.primary(
+            text: 'Lihat Detail Program',
+            trailingIcon: Icons.arrow_forward_rounded,
+            customBgColor: AppColors.success,
+            customFgColor: Colors.white,
+            height: 38,
+            fontSize: 13,
+            onPressed: () {
+              context.push('/scholarship/program/${item.id}');
+            },
           ),
         ],
       ),

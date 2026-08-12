@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -6,6 +7,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_date_field.dart';
@@ -354,7 +356,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  TextField(
+                  BkuTextField(
                     controller: _requirementsController,
                     maxLines: 4,
                     style: AppTextStyles.bodyMd,
@@ -377,38 +379,10 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
             ),
             const SizedBox(height: AppSpacing.xxl),
 
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _saveSettings,
-
-                child:
-                    _isLoading
-                        ? SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: context.appColors.onPrimary,
-                          ),
-                        )
-                        : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.save_rounded, size: 20),
-                            SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'Simpan Pengaturan',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-              ),
+            BkuButton.primary(
+              text: 'Simpan Pengaturan',
+              onPressed: _isLoading ? null : _saveSettings,
+              isLoading: _isLoading,
             ),
             const SizedBox(height: AppSpacing.s100),
           ],

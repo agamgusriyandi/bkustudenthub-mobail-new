@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -132,7 +134,7 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
             Text('Fakultas',
                 style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
             const SizedBox(height: AppSpacing.sm),
-            DropdownButtonFormField<String>(
+            BkuDropdown<String>(
               initialValue: _fakultas,
               decoration: InputDecoration(
                 filled: true,
@@ -157,7 +159,7 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
             Text('Semester',
                 style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
             const SizedBox(height: AppSpacing.sm),
-            DropdownButtonFormField<int>(
+            BkuDropdown<int>(
               initialValue: _semester,
               decoration: InputDecoration(
                 filled: true,
@@ -258,7 +260,7 @@ class _CreatePatientScreenState extends State<CreatePatientScreen> {
         Text(label,
             style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
         const SizedBox(height: AppSpacing.sm),
-        TextFormField(
+        BkuTextField(
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,

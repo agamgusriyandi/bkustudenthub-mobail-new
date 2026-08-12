@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -12,6 +13,10 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/men
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorMenteeScreen extends StatefulWidget {
@@ -128,40 +133,34 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                             ],
                           ),
                         ),
-                        ElevatedButton.icon(
+                        BkuButton(
                           onPressed: () => context.push('/mentor-kencana/available-students'),
-                          icon: const Icon(Icons.person_add_rounded, size: 14),
-                          label: const Text('+ Tambah Bimbingan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.success,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            elevation: 0,
-                          ),
+                          text: 'Tambah Bimbingan',
+                          icon: Icons.person_add_rounded,
+                          variant: BkuButtonVariant.success,
+                          height: 36,
+                          fullWidth: false,
+                          fontSize: 11,
                         ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.md),
                     
                     // Search Bar
-                    TextField(
+                    BkuTextField(
                       controller: _searchController,
                       onChanged: (val) => setState(() => _searchQuery = val),
-                      decoration: InputDecoration(
-                        hintText: 'Cari NIM, Nama...',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
+                      hint: 'Cari NIM, Nama...',
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
@@ -169,7 +168,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             isExpanded: true,
                             initialValue: _selectedStatusFilter,
                             decoration: InputDecoration(
@@ -192,7 +191,7 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                         if (uniqueFaculties.isNotEmpty) const SizedBox(width: AppSpacing.sm),
                         if (uniqueFaculties.isNotEmpty)
                           Expanded(
-                            child: DropdownButtonFormField<String>(
+                            child: BkuDropdown<String>(
                               isExpanded: true,
                               initialValue: _selectedFacultyFilter,
                               decoration: InputDecoration(
@@ -346,24 +345,12 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: mentee.status == 'active' ? AppColors.success.withAlpha(20) :
-                                         mentee.status == 'pending' ? AppColors.warning.withAlpha(20) :
-                                         AppColors.error.withAlpha(20),
-                                  borderRadius: AppRadius.radiusSm,
-                                ),
-                                child: Text(
-                                  mentee.status == 'active' ? 'DISETUJUI' :
-                                  mentee.status == 'pending' ? 'PENDING' : 'DITOLAK',
-                                  style: TextStyle(
-                                    color: mentee.status == 'active' ? AppColors.success :
-                                           mentee.status == 'pending' ? AppColors.warning : AppColors.error,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              BkuStatusBadge(
+                                status: mentee.status == 'active' ? BkuStatus.success :
+                                        mentee.status == 'pending' ? BkuStatus.warning : BkuStatus.error,
+                                customText: mentee.status == 'active' ? 'DISETUJUI' :
+                                            mentee.status == 'pending' ? 'PENDING' : 'DITOLAK',
+                                showIcon: false,
                               ),
                               const SizedBox(width: AppSpacing.sm),
                               IconButton(
@@ -371,32 +358,25 @@ class _MentorMenteeScreenState extends State<MentorMenteeScreen> {
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppColors.error),
                                 onPressed: () {
-                                  showDialog(
+                                  BkuDialog.show(
                                     context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      title: const Text('Hapus Mahasiswa?'),
-                                      content: const Text('Mahasiswa ini akan dihapus dari daftar bimbingan Anda. Anda bisa mengundangnya kembali dari daftar mahasiswa yang tersedia jika terjadi kesalahan.'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(ctx),
-                                          child: const Text('Batal'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            Navigator.pop(ctx);
-                                            if (groupId != null) {
-                                              final success = await provider.removeGroupMember(groupId, mentee.id);
-                                              if (context.mounted && success) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Berhasil menghapus mahasiswa dari bimbingan.')),
-                                                );
-                                              }
-                                            }
-                                          },
-                                          child: const Text('Hapus', style: TextStyle(color: AppColors.error)),
-                                        ),
-                                      ],
-                                    ),
+                                    title: 'Hapus Mahasiswa?',
+                                    message: 'Mahasiswa ini akan dihapus dari daftar bimbingan Anda. Anda bisa mengundangnya kembali dari daftar mahasiswa yang tersedia jika terjadi kesalahan.',
+                                    type: BkuDialogType.error,
+                                    primaryButtonText: 'Hapus',
+                                    onPrimaryPressed: () async {
+                                      Navigator.pop(context);
+                                      if (groupId != null) {
+                                        final success = await provider.removeGroupMember(groupId, mentee.id);
+                                        if (context.mounted && success) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Berhasil menghapus mahasiswa dari bimbingan.')),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    secondaryButtonText: 'Batal',
+                                    onSecondaryPressed: () => Navigator.pop(context),
                                   );
                                 },
                               ),

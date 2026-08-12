@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
@@ -16,19 +17,19 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Handbook',
         'icon': Icons.menu_book_rounded,
-        'color': const Color(0xFF8B5CF6),
+        'color': AppColors.serviceViolet,
         'onTap': () => context.push(AppRoutes.mentorHandbookList),
       },
       {
         'title': 'Materi\n& Tugas',
         'icon': Icons.auto_stories_rounded,
-        'color': const Color(0xFF14B8A6),
+        'color': AppColors.serviceTeal,
         'onTap': () => context.push(AppRoutes.mentorMaterials),
       },
       {
         'title': 'Skoring',
         'icon': Icons.star_rounded,
-        'color': const Color(0xFF6366F1),
+        'color': AppColors.serviceIndigo,
         'onTap': () {
           final state =
               context.findAncestorStateOfType<MentorMainScreenState>();
@@ -42,13 +43,13 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Nilai\nEssay',
         'icon': Icons.rate_review_rounded,
-        'color': const Color(0xFF06B6D4),
+        'color': AppColors.serviceCyan,
         'onTap': () => context.push(AppRoutes.mentorEssayGrading),
       },
       {
         'title': 'Izin\nPresensi',
         'icon': Icons.edit_note_rounded,
-        'color': const Color(0xFFF43F5E),
+        'color': AppColors.serviceRose,
         'onTap': () => context.push(AppRoutes.mentorAbsenceRequests),
       },
       {
@@ -60,13 +61,13 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Catatan\nBimbingan',
         'icon': Icons.speaker_notes_rounded,
-        'color': const Color(0xFFF59E0B),
+        'color': AppColors.serviceAmber,
         'onTap': () => context.push(AppRoutes.mentorNotes),
       },
       {
         'title': 'Input\nKehadiran',
         'icon': Icons.how_to_reg_rounded,
-        'color': const Color(0xFF10B981),
+        'color': AppColors.serviceEmerald,
         'onTap': () {
           final state =
               context.findAncestorStateOfType<MentorMainScreenState>();
@@ -80,7 +81,7 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Pengaturan',
         'icon': Icons.settings_rounded,
-        'color': const Color(0xFF64748B),
+        'color': AppColors.serviceSlate,
         'onTap': () {
           final state =
               context.findAncestorStateOfType<MentorMainScreenState>();
@@ -155,7 +156,7 @@ class _ServiceIcon extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               color: color.withAlpha(30),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.radiusXl,
             ),
             child: Center(child: Icon(icon, color: color, size: 28)),
           ),

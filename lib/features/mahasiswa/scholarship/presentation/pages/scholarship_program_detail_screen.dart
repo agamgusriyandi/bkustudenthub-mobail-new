@@ -7,8 +7,8 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_program_provider.dart';
 
 class ScholarshipProgramDetailScreen extends StatefulWidget {
@@ -125,19 +125,18 @@ class _ScholarshipProgramDetailScreenState extends State<ScholarshipProgramDetai
   }
 
   void _applyScholarship() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (dialogContext) => CustomDialog(
-        title: 'Daftar Beasiswa?',
-        content: 'Apakah Anda yakin ingin mengajukan beasiswa ini? Pastikan data Anda lengkap.',
-        cancelText: 'Batal',
-        confirmText: 'Ya, Daftar',
-        onConfirm: () {
-          Navigator.pop(dialogContext);
-          context.read<ScholarshipProgramProvider>().applyProgram(widget.programId);
-        },
-        onCancel: () => Navigator.pop(dialogContext),
-      ),
+      type: BkuDialogType.warning,
+      title: 'Daftar Beasiswa?',
+      message: 'Apakah Anda yakin ingin mengajukan beasiswa ini? Pastikan data Anda lengkap.',
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+      primaryButtonText: 'Ya, Daftar',
+      onPrimaryPressed: () {
+        Navigator.pop(context);
+        context.read<ScholarshipProgramProvider>().applyProgram(widget.programId);
+      },
     );
   }
 }

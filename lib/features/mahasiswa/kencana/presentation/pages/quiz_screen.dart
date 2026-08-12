@@ -4,12 +4,14 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:dio/dio.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class QuizScreen extends StatefulWidget {
   final Mission mission;
@@ -363,13 +365,13 @@ class _QuizScreenState extends State<QuizScreen> {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF1F5F9),
+                            color: AppColors.neutral200,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             'Soal ${_currentQuestionIndex + 1}/${_questions.length}',
                             style: const TextStyle(
-                              color: Color(0xFF0F172A),
+                              color: AppColors.neutral900,
                               fontWeight: FontWeight.w800,
                               fontSize: 12,
                             ),
@@ -395,7 +397,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                 color:
                                     _isTimeAlmostUp
                                         ? AppColors.error
-                                        : const Color(0xFF64748B),
+                                        : AppColors.neutral600,
                                 size: 18,
                               ),
                               const SizedBox(width: 4),
@@ -405,7 +407,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   color:
                                       _isTimeAlmostUp
                                           ? AppColors.error
-                                          : const Color(0xFF0F172A),
+                                          : AppColors.neutral900,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 13,
                                 ),
@@ -420,8 +422,8 @@ class _QuizScreenState extends State<QuizScreen> {
                       borderRadius: BorderRadius.circular(6),
                       child: LinearProgressIndicator(
                         value: (_currentQuestionIndex + 1) / _questions.length,
-                        backgroundColor: const Color(0xFFF1F5F9),
-                        color: const Color(0xFF16A34A),
+                        backgroundColor: AppColors.neutral200,
+                        color: AppColors.success,
                         minHeight: 6,
                       ),
                     ),
@@ -429,7 +431,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     Text(
                       currentQ['question_text']?.toString() ?? '',
                       style: const TextStyle(
-                        color: Color(0xFF0F172A),
+                        color: AppColors.neutral900,
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
                         height: 1.4,
@@ -438,27 +440,13 @@ class _QuizScreenState extends State<QuizScreen> {
                     const SizedBox(height: 20),
                     if (currentQ['question_type']?.toString().toLowerCase() ==
                         'essay')
-                      TextField(
+                      BkuTextField(
                         controller: _essayController,
                         maxLines: 6,
-                        style: const TextStyle(fontSize: 13.5, color: Color(0xFF0F172A)),
                         onChanged: (val) {
                           _jawabanEssay[qId] = val;
                         },
-                        decoration: InputDecoration(
-                          hintText: 'Tulis jawaban Anda di sini...',
-                          hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12.5),
-                          filled: true,
-                          fillColor: const Color(0xFFF8FAFC),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF16A34A)),
-                          ),
-                        ),
+                        hint: 'Tulis jawaban Anda di sini...',
                       )
                     else
                       ...opts.asMap().entries.map((entry) {
@@ -478,35 +466,12 @@ class _QuizScreenState extends State<QuizScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF16A34A),
-                          elevation: 0,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        onPressed: _isSubmitting ? null : _handleNext,
-                        child: _isSubmitting
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                _currentQuestionIndex == _questions.length - 1
-                                    ? 'Selesai & Kumpulkan'
-                                    : 'Pertanyaan Selanjutnya',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14,
-                                ),
-                              ),
+                      child: BkuButton.success(
+                        isLoading: _isSubmitting,
+                        onPressed: _handleNext,
+                        text: _currentQuestionIndex == _questions.length - 1
+                            ? 'Selesai & Kumpulkan'
+                            : 'Pertanyaan Selanjutnya',
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -554,7 +519,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.neutral900,
                 ),
               ),
               const SizedBox(height: 8),
@@ -563,7 +528,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12.5,
-                  color: Color(0xFF64748B),
+                  color: AppColors.neutral600,
                   height: 1.4,
                 ),
               ),
@@ -574,14 +539,14 @@ class _QuizScreenState extends State<QuizScreen> {
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        side: const BorderSide(color: AppColors.neutral400),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () => Navigator.pop(ctx),
                       child: const Text(
                         'Lanjutkan',
                         style: TextStyle(
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
                         ),
@@ -590,25 +555,12 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFEF4444),
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
+                    child: BkuButton.danger(
                       onPressed: () {
                         Navigator.pop(ctx);
                         Navigator.pop(context);
                       },
-                      child: const Text(
-                        'Ya, Keluar',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13,
-                        ),
-                      ),
+                      text: 'Ya, Keluar',
                     ),
                   ),
                 ],
@@ -643,7 +595,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
                 child: const Icon(
                   Icons.assignment_turned_in_rounded,
-                  color: Color(0xFF2563EB),
+                  color: AppColors.info,
                   size: 32,
                 ),
               ),
@@ -654,7 +606,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 style: const TextStyle(
                   fontSize: 17.5,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.neutral900,
                 ),
               ),
               const SizedBox(height: 8),
@@ -663,7 +615,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12.5,
-                  color: Color(0xFF64748B),
+                  color: AppColors.neutral600,
                   height: 1.4,
                 ),
               ),
@@ -671,28 +623,28 @@ class _QuizScreenState extends State<QuizScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
+                  color: AppColors.neutral100,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: AppColors.neutral300),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.timer_outlined, size: 16, color: Color(0xFF2563EB)),
+                        const Icon(Icons.timer_outlined, size: 16, color: AppColors.info),
                         const SizedBox(width: 6),
                         Text(
                           '$_durasiMenit Menit',
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 12,
-                            color: Color(0xFF0F172A),
+                            color: AppColors.neutral900,
                           ),
                         ),
                       ],
                     ),
-                    Container(width: 1, height: 16, color: const Color(0xFFCBD5E1)),
+                    Container(width: 1, height: 16, color: AppColors.neutral400),
                     Row(
                       children: [
                         const Icon(Icons.help_outline_rounded, size: 16, color: Color(0xFF7C3AED)),
@@ -702,7 +654,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 12,
-                            color: Color(0xFF0F172A),
+                            color: AppColors.neutral900,
                           ),
                         ),
                       ],
@@ -717,7 +669,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        side: const BorderSide(color: AppColors.neutral400),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
@@ -727,7 +679,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       child: const Text(
                         'Batal',
                         style: TextStyle(
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
                         ),
@@ -736,25 +688,12 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
+                    child: BkuButton.primary(
                       onPressed: () {
                         Navigator.pop(ctx);
                         _startKuis();
                       },
-                      child: const Text(
-                        'Mulai Ujian',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13,
-                        ),
-                      ),
+                      text: 'Ya, Mulai',
                     ),
                   ),
                 ],
@@ -785,7 +724,7 @@ class _QuizScreenState extends State<QuizScreen> {
             color: isSelected ? const Color(0xFFF0FDF4) : Colors.white,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isSelected ? const Color(0xFF16A34A) : const Color(0xFFE2E8F0),
+              color: isSelected ? AppColors.success : AppColors.neutral300,
               width: isSelected ? 1.5 : 1,
             ),
             boxShadow: isSelected
@@ -806,10 +745,10 @@ class _QuizScreenState extends State<QuizScreen> {
                 height: 28,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? const Color(0xFF16A34A) : const Color(0xFFF1F5F9),
+                  color: isSelected ? AppColors.success : AppColors.neutral200,
                   border: isSelected
                       ? null
-                      : Border.all(color: const Color(0xFFCBD5E1), width: 1),
+                      : Border.all(color: AppColors.neutral400, width: 1),
                 ),
                 child: Center(
                   child: isSelected
@@ -819,7 +758,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF64748B),
+                            color: AppColors.neutral600,
                           ),
                         ),
                 ),
@@ -831,7 +770,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF334155),
+                    color: isSelected ? AppColors.neutral900 : const Color(0xFF334155),
                   ),
                 ),
               ),
@@ -861,8 +800,8 @@ class _QuizScreenState extends State<QuizScreen> {
               height: 8,
               decoration: BoxDecoration(
                 color: isCurrent
-                    ? const Color(0xFF16A34A)
-                    : (answered ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0)),
+                    ? AppColors.success
+                    : (answered ? const Color(0xFF86EFAC) : AppColors.neutral300),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -885,8 +824,8 @@ class _QuizScreenState extends State<QuizScreen> {
     final skor = _nilaiAkhir.toStringAsFixed(0);
 
     final mainColor = isPending
-        ? const Color(0xFF16A34A)
-        : (lulus ? const Color(0xFF16A34A) : const Color(0xFFEF4444));
+        ? AppColors.success
+        : (lulus ? AppColors.success : const Color(0xFFEF4444));
     final icon = isPending
         ? Icons.hourglass_top_rounded
         : (lulus ? Icons.verified_rounded : Icons.cancel_rounded);
@@ -931,11 +870,11 @@ class _QuizScreenState extends State<QuizScreen> {
                       width: 72,
                       height: 72,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
+                        color: AppColors.neutral100,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
+                        border: Border.all(color: AppColors.neutral300, width: 1.5),
                       ),
-                      child: Icon(icon, color: const Color(0xFF0F172A), size: 36),
+                      child: Icon(icon, color: AppColors.neutral900, size: 36),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -943,7 +882,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 20,
-                        color: Color(0xFF0F172A),
+                        color: AppColors.neutral900,
                         letterSpacing: -0.3,
                       ),
                     ),
@@ -952,7 +891,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       subtitle,
                       style: const TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF64748B),
+                        color: AppColors.neutral600,
                         height: 1.4,
                       ),
                       textAlign: TextAlign.center,
@@ -964,7 +903,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          border: Border.all(color: AppColors.neutral300),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.03),
@@ -984,7 +923,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xFF0F172A),
+                                    color: AppColors.neutral900,
                                   ),
                                 ),
                                 Container(
@@ -993,9 +932,9 @@ class _QuizScreenState extends State<QuizScreen> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: AppColors.neutral200,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    border: Border.all(color: AppColors.neutral300),
                                   ),
                                   child: const Text(
                                     'Menunggu Konfirmasi',
@@ -1009,14 +948,14 @@ class _QuizScreenState extends State<QuizScreen> {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                            const Divider(height: 1, color: AppColors.neutral200),
                             const SizedBox(height: 12),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
                                 Icon(
                                   Icons.info_outline_rounded,
-                                  color: Color(0xFF64748B),
+                                  color: AppColors.neutral600,
                                   size: 18,
                                 ),
                                 SizedBox(width: 10),
@@ -1045,7 +984,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          border: Border.all(color: AppColors.neutral300),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.03),
@@ -1059,7 +998,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             const Text(
                               'NILAI AKHIR',
                               style: TextStyle(
-                                color: Color(0xFF64748B),
+                                color: AppColors.neutral600,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 12,
                                 letterSpacing: 1.5,
@@ -1076,7 +1015,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            Container(height: 1, color: const Color(0xFFF1F5F9)),
+                            Container(height: 1, color: AppColors.neutral200),
                             const SizedBox(height: 16),
                             Row(
                               children: [
@@ -1085,13 +1024,13 @@ class _QuizScreenState extends State<QuizScreen> {
                                     '$_jumlahBenar',
                                     'Jawaban Benar',
                                     Icons.check_circle_rounded,
-                                    const Color(0xFF16A34A),
+                                    AppColors.success,
                                   ),
                                 ),
                                 Container(
                                   width: 1,
                                   height: 44,
-                                  color: const Color(0xFFF1F5F9),
+                                  color: AppColors.neutral200,
                                 ),
                                 Expanded(
                                   child: _buildResultStat(
@@ -1111,24 +1050,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF16A34A),
-                          elevation: 0,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
+                      child: BkuButton.success(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'Kembali ke Beranda',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                          ),
-                        ),
+                        text: 'Kembali ke Beranda',
                       ),
                     ),
                     if (!isPending && !lulus && _attemptsUsed < _maxAttempts) ...[
@@ -1138,7 +1062,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         height: 48,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            backgroundColor: const Color(0xFFF1F5F9),
+                            backgroundColor: AppColors.neutral200,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
@@ -1153,7 +1077,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           child: const Text(
                             'Ulangi Kuis',
                             style: TextStyle(
-                              color: Color(0xFF0F172A),
+                              color: AppColors.neutral900,
                               fontWeight: FontWeight.w800,
                               fontSize: 14,
                             ),

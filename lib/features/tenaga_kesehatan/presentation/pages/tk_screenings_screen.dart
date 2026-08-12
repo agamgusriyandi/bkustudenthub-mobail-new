@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -80,7 +81,7 @@ class _TkScreeningsScreenState extends State<TkScreeningsScreen> {
                 padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
                 child: Column(
                   children: [
-                    TextField(
+                    BkuTextField(
                       onChanged: (v) => setState(() => _searchQuery = v),
                       decoration: InputDecoration(
                         hintText: 'Cari screening...',

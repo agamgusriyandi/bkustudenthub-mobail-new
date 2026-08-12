@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
 
@@ -196,30 +197,14 @@ class _StatusItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.br20,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
+    return BkuCard(
+      borderRadius: AppRadius.radius20,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => target),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => target),
-              ),
-          borderRadius: AppRadius.br20,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
-            child: Row(
+      child: Row(
               children: [
                 Container(
                   width: 4,
@@ -293,10 +278,7 @@ class _StatusItem extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
         ),
-      ),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +15,7 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 // Unified Core Widgets
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 
 // Modular Widgets
@@ -238,25 +238,13 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               ],
             ),
           ),
-          Container(
+          BkuStatusBadge(
+            status: _getAgendaStatus(agenda.status),
+            customText: agenda.status.toUpperCase(),
+            showIcon: false,
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: context.appColors.primary.withAlpha(15),
-              borderRadius: AppRadius.radiusXl,
-            ),
-            child: Text(
-              agenda.status,
-              style: AppTextStyles.labelSm.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.9),
-                fontSize: 10,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
-              ),
             ),
           ),
         ],
@@ -284,5 +272,26 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
         ],
       ),
     );
+  }
+
+  BkuStatus _getAgendaStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'aktif':
+      case 'berlangsung':
+      case 'ongoing':
+        return BkuStatus.active;
+      case 'selesai':
+      case 'completed':
+        return BkuStatus.success;
+      case 'batal':
+      case 'dibatalkan':
+      case 'cancelled':
+        return BkuStatus.error;
+      case 'menunggu':
+      case 'pending':
+        return BkuStatus.pending;
+      default:
+        return BkuStatus.info;
+    }
   }
 }

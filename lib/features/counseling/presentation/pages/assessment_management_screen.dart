@@ -3,6 +3,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -718,7 +720,7 @@ class _AssessmentManagementScreenState
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextField(
+                          BkuTextField(
                             controller: nameCtrl,
                             decoration: InputDecoration(
                               labelText: 'Nama Asesmen',
@@ -744,7 +746,7 @@ class _AssessmentManagementScreenState
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: selectedCategory,
                             icon: const Icon(
                               Icons.arrow_drop_down,
@@ -791,7 +793,7 @@ class _AssessmentManagementScreenState
                                     setSheetState(() => selectedCategory = v!),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          TextField(
+                          BkuTextField(
                             controller: descCtrl,
                             maxLines: 3,
                             decoration: InputDecoration(

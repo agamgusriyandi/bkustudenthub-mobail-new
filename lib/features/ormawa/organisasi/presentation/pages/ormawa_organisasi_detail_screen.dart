@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -160,28 +161,17 @@ class OrmawaOrganisasiDetailScreen extends StatelessWidget {
                 // Edit Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EditOrganisasiScreen(organisasi: organisasi),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
-                      label: Text(
-                        'EDIT ORGANISASI',
-                        style: TextStyle(
-                          color: context.appColors.onPrimary,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
+                  child: BkuButton.primary(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditOrganisasiScreen(organisasi: organisasi),
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                    icon: Icons.edit_rounded,
+                    text: 'EDIT ORGANISASI',
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxl),

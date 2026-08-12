@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -13,6 +14,7 @@ import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_pr
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class KencanaAttendanceScreen extends StatefulWidget {
   const KencanaAttendanceScreen({super.key});
@@ -74,11 +76,11 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                             style: TextStyle(
                               fontSize: 17.5,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
+                              color: AppColors.neutral900,
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.close_rounded, size: 20, color: Color(0xFF64748B)),
+                            icon: const Icon(Icons.close_rounded, size: 20, color: AppColors.neutral600),
                             onPressed: () => Navigator.pop(ctx, false),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
@@ -98,30 +100,15 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 11.5,
-                            color: Color(0xFF0F172A),
+                            color: AppColors.neutral900,
                           ),
                         ),
                       ),
                       const SizedBox(height: 14),
-                      TextField(
+                      BkuTextField(
                         controller: reasonController,
                         maxLines: 3,
-                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
-                        decoration: InputDecoration(
-                          hintText: 'Jelaskan alasan ketidakhadiran...',
-                          hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                          filled: true,
-                          fillColor: const Color(0xFFF8FAFC),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF16A34A)),
-                          ),
-                          contentPadding: const EdgeInsets.all(12),
-                        ),
+                        hint: 'Jelaskan alasan ketidakhadiran...',
                       ),
                       const SizedBox(height: 14),
                       const Text(
@@ -129,7 +116,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
-                          color: Color(0xFF0F172A),
+                          color: AppColors.neutral900,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -157,17 +144,17 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: selectedFile.value != null ? const Color(0xFF16A34A) : const Color(0xFFE2E8F0),
+                              color: selectedFile.value != null ? AppColors.success : AppColors.neutral300,
                             ),
                             borderRadius: BorderRadius.circular(12),
-                            color: const Color(0xFFF8FAFC),
+                            color: AppColors.neutral100,
                           ),
                           child: Row(
                             children: [
                               Icon(
                                 Icons.upload_file_rounded,
                                 size: 20,
-                                color: selectedFile.value != null ? const Color(0xFF16A34A) : const Color(0xFF64748B),
+                                color: selectedFile.value != null ? AppColors.success : AppColors.neutral600,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -179,8 +166,8 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                     fontSize: 12,
                                     fontWeight: selectedFile.value != null ? FontWeight.w700 : FontWeight.w400,
                                     color: selectedFile.value != null
-                                        ? const Color(0xFF0F172A)
-                                        : const Color(0xFF64748B),
+                                        ? AppColors.neutral900
+                                        : AppColors.neutral600,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -192,7 +179,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                     selectedFile.value = null;
                                     setStateDialog(() {});
                                   },
-                                  child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFF64748B)),
+                                  child: const Icon(Icons.close_rounded, size: 18, color: AppColors.neutral600),
                                 ),
                             ],
                           ),
@@ -206,7 +193,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                               height: 44,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFFF1F5F9),
+                                  backgroundColor: AppColors.neutral200,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -215,7 +202,7 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                 child: const Text(
                                   'Batal',
                                   style: TextStyle(
-                                    color: Color(0xFF0F172A),
+                                    color: AppColors.neutral900,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 13,
                                   ),
@@ -228,67 +215,37 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                             child: ValueListenableBuilder<bool>(
                               valueListenable: isSubmitting,
                               builder: (ctx, submitting, _) {
-                                return SizedBox(
-                                  height: 44,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF16A34A),
-                                      elevation: 0,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed:
-                                        submitting
-                                            ? null
-                                            : () async {
-                                              if (reasonController.text.trim().isEmpty) {
-                                                AppSnackbar.showWarning(
-                                                  ctx,
-                                                  'Alasan izin wajib diisi',
-                                                );
-                                                return;
-                                              }
-                                              if (selectedFile.value == null) {
-                                                AppSnackbar.showWarning(
-                                                  ctx,
-                                                  'Dokumen bukti wajib diunggah',
-                                                );
-                                                return;
-                                              }
-                                              isSubmitting.value = true;
-                                              final provider = context.read<KencanaProvider>();
-                                              final success = await provider.submitAbsence(
-                                                sessionId,
-                                                reasonController.text.trim(),
-                                                selectedFile.value,
-                                              );
-                                              if (ctx.mounted) {
-                                                isSubmitting.value = false;
-                                                Navigator.pop(ctx, success);
-                                              }
-                                            },
-                                    child:
-                                        submitting
-                                            ? const SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                            : const Text(
-                                              'Ajukan Izin',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w800,
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                  ),
-                                );
+                                  return BkuButton.success(
+                                    text: 'Ajukan Izin',
+                                    isLoading: submitting,
+                                    onPressed: () async {
+                                      if (reasonController.text.trim().isEmpty) {
+                                        AppSnackbar.showWarning(
+                                          ctx,
+                                          'Alasan izin wajib diisi',
+                                        );
+                                        return;
+                                      }
+                                      if (selectedFile.value == null) {
+                                        AppSnackbar.showWarning(
+                                          ctx,
+                                          'Dokumen bukti wajib diunggah',
+                                        );
+                                        return;
+                                      }
+                                      isSubmitting.value = true;
+                                      final provider = context.read<KencanaProvider>();
+                                      final success = await provider.submitAbsence(
+                                        sessionId,
+                                        reasonController.text.trim(),
+                                        selectedFile.value,
+                                      );
+                                      if (ctx.mounted) {
+                                        isSubmitting.value = false;
+                                        Navigator.pop(ctx, success);
+                                      }
+                                    },
+                                  );
                               },
                             ),
                           ),
@@ -689,13 +646,13 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                     const Icon(
                                       Icons.edit_note_rounded,
                                       size: 15,
-                                      color: Color(0xFF0F172A),
+                                      color: AppColors.neutral900,
                                     ),
                                     const SizedBox(width: 4),
                                     const Text(
                                       'Ajukan Izin',
                                       style: TextStyle(
-                                        color: Color(0xFF0F172A),
+                                        color: AppColors.neutral900,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 11,
                                       ),

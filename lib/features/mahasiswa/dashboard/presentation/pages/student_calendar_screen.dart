@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:go_router/go_router.dart';
 
 class StudentCalendarScreen extends StatefulWidget {
@@ -74,41 +75,20 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
   }
 
   void _showEventDetail(BuildContext context, CampusEventSchedule event) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl))
-          ),
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral300,
-                      borderRadius: AppRadius.radiusXs,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Row(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withAlpha(20),
+                        color: context.appColors.primary.withAlpha(20),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -135,15 +115,13 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.secondary.withAlpha(30),
+                              color: context.appColors.secondary.withAlpha(30),
                               borderRadius: AppRadius.radiusXs,
                             ),
                             child: Text(
                               event.kategori,
                               style: AppTextStyles.labelSm.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: context.appColors.secondary,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -226,9 +204,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
               ],
             ),
           ),
-        );
-      },
-    );
+      );
   }
 
   @override
@@ -387,9 +363,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
                                   color: context.appColors.surface,
                                   borderRadius: AppRadius.radiusXl,
                                   border: Border.all(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.outline.withAlpha(20),
+                                    color: context.appColors.outline.withAlpha(20),
                                     width: 1,
                                   ),
                                   boxShadow: [

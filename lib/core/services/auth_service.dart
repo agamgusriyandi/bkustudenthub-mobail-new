@@ -469,39 +469,48 @@ class AuthService extends ChangeNotifier {
         '/auth/forgot-password',
         data: {'identifier': emailOrNim},
       );
-      return response.data['success'] == true;
+      if (response.data is Map && response.data['success'] == false) {
+        return false;
+      }
+      return true;
     } catch (e) {
       return false;
     }
   }
 
-  Future<bool> verifyOtp(String emailOrNim, String otp) async {
+  Future<String?> verifyOtp(String emailOrNim, String otp) async {
     try {
       final response = await ApiClient().client.post(
         '/auth/verify-otp',
         data: {'identifier': emailOrNim, 'otp': otp},
       );
-      return response.data['success'] == true;
+      if (response.data is Map && response.data['status'] == 'success') {
+        return response.data['data']['reset_token'] as String?;
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
   Future<bool> resetPassword(
-    String emailOrNim,
-    String otp,
+    String resetToken,
     String newPassword,
+    String confirmPassword,
   ) async {
     try {
       final response = await ApiClient().client.post(
         '/auth/reset-password',
         data: {
-          'identifier': emailOrNim,
-          'otp': otp,
+          'reset_token': resetToken,
           'new_password': newPassword,
+          'confirm_password': confirmPassword,
         },
       );
-      return response.data['success'] == true;
+      if (response.data is Map && response.data['status'] == 'success') {
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }

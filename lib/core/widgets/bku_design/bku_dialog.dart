@@ -18,6 +18,7 @@ class BkuDialog extends StatelessWidget {
   final VoidCallback onPrimaryPressed;
   final String? secondaryButtonText;
   final VoidCallback? onSecondaryPressed;
+  final String? customImageAsset;
 
   const BkuDialog({
     super.key,
@@ -28,6 +29,7 @@ class BkuDialog extends StatelessWidget {
     required this.onPrimaryPressed,
     this.secondaryButtonText,
     this.onSecondaryPressed,
+    this.customImageAsset,
   });
 
   static Future<T?> show<T>({
@@ -39,6 +41,7 @@ class BkuDialog extends StatelessWidget {
     required VoidCallback onPrimaryPressed,
     String? secondaryButtonText,
     VoidCallback? onSecondaryPressed,
+    String? customImageAsset,
   }) {
     return showDialog<T>(
       context: context,
@@ -52,6 +55,7 @@ class BkuDialog extends StatelessWidget {
             onPrimaryPressed: onPrimaryPressed,
             secondaryButtonText: secondaryButtonText,
             onSecondaryPressed: onSecondaryPressed,
+            customImageAsset: customImageAsset,
           ),
     );
   }
@@ -109,19 +113,37 @@ class BkuDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                shape: BoxShape.circle,
+            if (customImageAsset != null)
+              TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.elasticOut,
+                tween: Tween(begin: 0.0, end: 1.0),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: child,
+                  );
+                },
+                child: Image.asset(
+                  customImageAsset!,
+                  height: 180,
+                  fit: BoxFit.contain,
+                ),
+              )
+            else
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: iconBgColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(iconData, size: 48, color: iconColor),
               ),
-              child: Icon(iconData, size: 48, color: iconColor),
-            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: AppTextStyles.titleLg.copyWith(
+              style: AppTextStyles.titleSm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.neutral900,
               ),
@@ -130,7 +152,7 @@ class BkuDialog extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(
+              style: AppTextStyles.caption.copyWith(
                 color: AppColors.neutral600,
                 height: 1.5,
               ),
@@ -140,8 +162,11 @@ class BkuDialog extends StatelessWidget {
               children: [
                 if (secondaryButtonText != null) ...[
                   Expanded(
-                    child: BkuButton.outline(
+                    child: BkuButton(
+                      variant: BkuButtonVariant.outline,
                       text: secondaryButtonText!,
+                      height: 40,
+                      fontSize: 11,
                       onPressed:
                           onSecondaryPressed ??
                           () => context.pop(),
@@ -150,8 +175,13 @@ class BkuDialog extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                 ],
                 Expanded(
-                  child: BkuButton.primary(
+                  child: BkuButton(
+                    variant: type == BkuDialogType.error 
+                        ? BkuButtonVariant.danger 
+                        : BkuButtonVariant.primary,
                     text: primaryButtonText,
+                    height: 40,
+                    fontSize: 11,
                     onPressed: onPrimaryPressed,
                   ),
                 ),

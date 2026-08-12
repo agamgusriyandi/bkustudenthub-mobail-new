@@ -6,6 +6,8 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 
 class OrmawaSecurityScreen extends StatefulWidget {
@@ -122,16 +124,9 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
   }
 
   Widget _buildSecurityAlertCard() {
-    return Container(
+    return BkuCard(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.primary.withAlpha(15),
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: context.appColors.primary.withAlpha(50),
-        ),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -187,13 +182,8 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
   }
 
   Widget _buildPasswordForm() {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Form(
         key: _formKey,
         child: Column(
@@ -226,31 +216,10 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
               },
             ),
             const SizedBox(height: AppSpacing.xl),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleSave,
-
-                child:
-                    _isLoading
-                        ? SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            color: context.appColors.onPrimary,
-                            strokeWidth: 2,
-                          ),
-                        )
-                        : Text(
-                          'PERBARUI SANDI',
-                          style: AppTextStyles.labelLg.copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                            color: context.appColors.onPrimary,
-                          ),
-                        ),
-              ),
+            BkuButton.primary(
+              text: 'PERBARUI SANDI',
+              isLoading: _isLoading,
+              onPressed: _handleSave,
             ),
           ],
         ),

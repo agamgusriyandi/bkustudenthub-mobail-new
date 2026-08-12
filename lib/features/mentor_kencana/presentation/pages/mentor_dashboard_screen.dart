@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_error_state.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_service_menu.dart';
@@ -13,6 +15,7 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_announcements.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -136,11 +139,9 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               )
             else if (provider.errorMessage != null && dashboard == null)
               SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    provider.errorMessage!,
-                    style: TextStyle(color: context.appColors.error),
-                  ),
+                child: BkuErrorState(
+                  message: provider.errorMessage!,
+                  onRetry: () => provider.fetchDashboard(),
                 ),
               )
             else if (dashboard != null)
@@ -174,27 +175,17 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                               .isEmpty)
                         FadeInAnimation(
                           delay: 0.1,
-                          child: Container(
+                          child: BkuCard(
                             margin: const EdgeInsets.only(bottom: AppSpacing.s20),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            decoration: BoxDecoration(
-                              color: context.appColors.warning,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: context.appColors.warning.withValues(alpha: 0.3),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
+                            backgroundColor: context.appColors.warning,
                             child: Row(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: context.appColors.surface.withValues(alpha: 0.2),
-                                    borderRadius: BorderRadius.circular(10),
+                                    color: context.appColors.surface.withAlpha(51),
+                                    borderRadius: AppRadius.radiusMd,
                                   ),
                                   child: Icon(
                                     Icons.warning_amber_rounded,

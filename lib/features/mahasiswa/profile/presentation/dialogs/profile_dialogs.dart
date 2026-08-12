@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -16,102 +17,48 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 void showLogoutDialog(BuildContext context) {
-  showDialog(
+  BkuDialog.show(
     context: context,
-    builder:
-        (ctx) => CustomDialog(
-          title: 'Keluar Akun?',
-          content:
-              'Anda harus masuk kembali menggunakan email dan password kampus untuk mengakses aplikasi ini.',
-          isDestructive: true,
-          confirmText: 'Keluar',
-          cancelText: 'Batal',
-          onCancel: () => Navigator.pop(ctx),
-          onConfirm: () async {
-            await AuthService().logout();
-            if (context.mounted) {
-              context.go(AppRoutes.login);
-            }
-          },
-        ),
+    title: 'Keluar Akun?',
+    message: 'Anda harus masuk kembali menggunakan email dan password kampus untuk mengakses aplikasi ini.',
+    type: BkuDialogType.error,
+    primaryButtonText: 'Keluar',
+    onPrimaryPressed: () async {
+      Navigator.pop(context); // close dialog first
+      await AuthService().logout();
+      if (context.mounted) {
+        context.go(AppRoutes.login);
+      }
+    },
+    secondaryButtonText: 'Batal',
+    onSecondaryPressed: () => Navigator.pop(context),
   );
 }
 
 void showUneditableInfoDialog(BuildContext context) {
-  showDialog(
+  BkuDialog.show(
     context: context,
-    builder:
-        (ctx) => AlertDialog(
-          contentPadding: AppSpacing.padding28,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.warning.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.info_outline_rounded,
-                  color: AppColors.warning,
-                  size: 36,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s20),
-              Text(
-                'Data Terkunci',
-                style: AppTextStyles.titleLg.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.neutral800,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s10),
-              Text(
-                'Data ini ditarik langsung dari SEVIMA dan tidak dapat diubah secara manual.\n\nJika terdapat kesalahan, silakan ajukan perubahan melalui menu Aspirasi.',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.labelMd.copyWith(
-                  color: AppColors.neutral600,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s28),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx),
-
-                      child: const Text('Tutup'),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const StudentVoiceScreen(),
-                          ),
-                        );
-                      },
-
-                      child: const Text('Aspirasi'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    title: 'Data Terkunci',
+    message: 'Data ini ditarik langsung dari SEVIMA dan tidak dapat diubah secara manual.\n\nJika terdapat kesalahan, silakan ajukan perubahan melalui menu Aspirasi.',
+    type: BkuDialogType.warning,
+    primaryButtonText: 'Aspirasi',
+    onPrimaryPressed: () {
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const StudentVoiceScreen(),
         ),
+      );
+    },
+    secondaryButtonText: 'Tutup',
+    onSecondaryPressed: () => Navigator.pop(context),
   );
 }
 
@@ -233,14 +180,9 @@ void showDigitalID(BuildContext context, ProfileProvider student) {
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: ElevatedButton(
-                  onPressed: () => context.pop(),
-
-                  child: const Text('Tutup'),
-                ),
+              BkuButton.primary(
+                text: 'Tutup',
+                onPressed: () => context.pop(),
               ),
             ],
           ),
@@ -333,22 +275,13 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  TextField(
+                  BkuTextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      hintText: 'Contoh: 081234567890',
-                      prefixIcon: const Icon(
-                        Icons.phone_android_rounded,
-                        color: AppColors.success,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusLg,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
-                      ),
+                    hint: 'Contoh: 081234567890',
+                    prefixIcon: const Icon(
+                      Icons.phone_android_rounded,
+                      color: AppColors.success,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -362,21 +295,12 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  TextField(
+                  BkuTextField(
                     controller: tempatLahirController,
-                    decoration: InputDecoration(
-                      hintText: 'Contoh: Bandung',
-                      prefixIcon: Icon(
-                        Icons.location_city_rounded,
-                        color: context.appColors.error,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusLg,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
-                      ),
+                    hint: 'Contoh: Bandung',
+                    prefixIcon: Icon(
+                      Icons.location_city_rounded,
+                      color: context.appColors.error,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -421,21 +345,12 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
                       }
                     },
                     child: IgnorePointer(
-                      child: TextField(
+                      child: BkuTextField(
                         controller: tglLahirController,
-                        decoration: InputDecoration(
-                          hintText: 'Pilih Tanggal Lahir',
-                          prefixIcon: const Icon(
-                            Icons.calendar_month_rounded,
-                            color: AppColors.error,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: AppRadius.radiusLg,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.md,
-                          ),
+                        hint: 'Pilih Tanggal Lahir',
+                        prefixIcon: const Icon(
+                          Icons.calendar_month_rounded,
+                          color: AppColors.error,
                         ),
                       ),
                     ),
@@ -451,22 +366,13 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  TextField(
+                  BkuTextField(
                     controller: alamatController,
                     maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: 'Tulis alamat lengkap domisili saat ini',
-                      prefixIcon: const Icon(
-                        Icons.location_on_rounded,
-                        color: AppColors.warning,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusLg,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
-                      ),
+                    hint: 'Tulis alamat lengkap domisili saat ini',
+                    prefixIcon: const Icon(
+                      Icons.location_on_rounded,
+                      color: AppColors.warning,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -475,50 +381,44 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
                   Row(
                     children: [
                       Expanded(
-                        child: OutlinedButton(
+                        child: BkuButton.outline(
+                          text: 'Batal',
                           onPressed: () => Navigator.pop(sheetContext),
-
-                          child: const Text('Batal'),
                         ),
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
-                        child:
-                            student.isLoading
-                                ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                                : ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      final Map<String, dynamic> updateData = {
-                                        'no_hp': phoneController.text,
-                                        'tempat_lahir':
-                                            tempatLahirController.text,
-                                        'tanggal_lahir':
-                                            tglLahirController.text,
-                                        'alamat': alamatController.text,
-                                      };
-                                      await student.updateProfile(updateData);
-                                      if (stateContext.mounted) {
-                                        Navigator.pop(sheetContext);
-                                        AppSnackbar.showSuccess(
-                                          context,
-                                          'Profil berhasil diperbarui',
-                                        );
-                                      }
-                                    } catch (e) {
-                                      if (stateContext.mounted) {
-                                        AppSnackbar.showError(
-                                          context,
-                                          'Gagal memperbarui profil: ${ErrorHandler.getMessage(e)}',
-                                        );
-                                      }
-                                    }
-                                  },
-
-                                  child: const Text('Simpan'),
-                                ),
+                        child: BkuButton.primary(
+                          text: 'Simpan',
+                          isLoading: student.isLoading,
+                          onPressed: () async {
+                            try {
+                              final Map<String, dynamic> updateData = {
+                                'no_hp': phoneController.text,
+                                'tempat_lahir':
+                                    tempatLahirController.text,
+                                'tanggal_lahir':
+                                    tglLahirController.text,
+                                'alamat': alamatController.text,
+                              };
+                              await student.updateProfile(updateData);
+                              if (stateContext.mounted) {
+                                Navigator.pop(sheetContext);
+                                AppSnackbar.showSuccess(
+                                  context,
+                                  'Profil berhasil diperbarui',
+                                );
+                              }
+                            } catch (e) {
+                              if (stateContext.mounted) {
+                                AppSnackbar.showError(
+                                  context,
+                                  'Gagal memperbarui profil: ${ErrorHandler.getMessage(e)}',
+                                );
+                              }
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -533,40 +433,24 @@ void showEditPersonalData(BuildContext context, ProfileProvider student) {
 }
 
 void showEmailInfoDialog(BuildContext context) {
-  showDialog(
+  BkuDialog.show(
     context: context,
-    builder:
-        (ctx) => AlertDialog(
-          title: const Text('Informasi Akun'),
-          content: const Text(
-            'Email institusi digunakan untuk keperluan perkuliahan, akses e-learning, dan komunikasi resmi dari kampus BKU.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Tutup'),
-            ),
-          ],
-        ),
+    title: 'Informasi Akun',
+    message: 'Email institusi digunakan untuk keperluan perkuliahan, akses e-learning, dan komunikasi resmi dari kampus BKU.',
+    type: BkuDialogType.info,
+    primaryButtonText: 'Tutup',
+    onPrimaryPressed: () => Navigator.pop(context),
   );
 }
 
 void showAcademicInfoDialog(BuildContext context, ProfileProvider student) {
-  showDialog(
+  BkuDialog.show(
     context: context,
-    builder:
-        (ctx) => AlertDialog(
-          title: const Text('Informasi Akademik Resmi'),
-          content: Text(
-            'Data akademik seperti NIM, Program Studi (${student.prodi}), Fakultas (${student.fakultas}), dan Angkatan (${student.intakeYear}) ditarik langsung secara resmi dari sistem SEVIMA BKU.\n\nJika terdapat ketidaksesuaian data, silakan hubungi bagian Administrasi Akademik (BAA).',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Tutup'),
-            ),
-          ],
-        ),
+    title: 'Informasi Akademik Resmi',
+    message: 'Data akademik seperti NIM, Program Studi (${student.prodi}), Fakultas (${student.fakultas}), dan Angkatan (${student.intakeYear}) ditarik langsung secara resmi dari sistem SEVIMA BKU.\n\nJika terdapat ketidaksesuaian data, silakan hubungi bagian Administrasi Akademik (BAA).',
+    type: BkuDialogType.info,
+    primaryButtonText: 'Tutup',
+    onPrimaryPressed: () => Navigator.pop(context),
   );
 }
 
@@ -817,13 +701,13 @@ void showCertificatesBottomSheet(
             SizedBox(
               width: double.infinity,
               height: 54,
-              child: ElevatedButton.icon(
+              child: BkuButton(
                 onPressed: () {
                   Navigator.pop(sheetContext);
                   context.read<NavigationProvider>().setIndex(2);
                 },
-                icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
-                label: const Text('Lapor Prestasi Baru'),
+                icon: Icons.add_rounded,
+                text: 'Lapor Prestasi Baru',
               ),
             ),
           ],
@@ -989,18 +873,13 @@ void showNotificationPreferences(
                       });
                       if (stateContext.mounted) {
                         Navigator.pop(sheetContext);
-                        showDialog(
+                        BkuDialog.show(
                           context: context,
-                          builder:
-                              (ctx) => CustomDialog(
-                                title: 'Berhasil',
-                                content:
-                                    'Preferensi notifikasi berhasil disimpan',
-                                cancelText: '',
-                                confirmText: 'Tutup',
-                                onCancel: () {},
-                                onConfirm: () => Navigator.pop(ctx),
-                              ),
+                          title: 'Berhasil',
+                          message: 'Preferensi notifikasi berhasil disimpan',
+                          type: BkuDialogType.success,
+                          primaryButtonText: 'Tutup',
+                          onPrimaryPressed: () => Navigator.pop(context),
                         );
                       }
                     } catch (e) {
@@ -1008,19 +887,13 @@ void showNotificationPreferences(
                         setState(() {
                           isSaving = false;
                         });
-                        showDialog(
+                        BkuDialog.show(
                           context: context,
-                          builder:
-                              (ctx) => CustomDialog(
-                                title: 'Gagal',
-                                content:
-                                    'Gagal menyimpan preferensi: ${ErrorHandler.getMessage(e)}',
-                                cancelText: '',
-                                confirmText: 'Tutup',
-                                isDestructive: true,
-                                onCancel: () {},
-                                onConfirm: () => Navigator.pop(ctx),
-                              ),
+                          title: 'Gagal',
+                          message: 'Gagal menyimpan preferensi: ${ErrorHandler.getMessage(e)}',
+                          type: BkuDialogType.error,
+                          primaryButtonText: 'Tutup',
+                          onPrimaryPressed: () => Navigator.pop(context),
                         );
                       }
                     }
@@ -1113,7 +986,7 @@ void showChangePasswordDialog(BuildContext context) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  TextField(
+                  BkuTextField(
                     controller: oldPasswordController,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -1144,7 +1017,7 @@ void showChangePasswordDialog(BuildContext context) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  TextField(
+                  BkuTextField(
                     controller: newPasswordController,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -1172,7 +1045,7 @@ void showChangePasswordDialog(BuildContext context) {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  TextField(
+                  BkuTextField(
                     controller: confirmPasswordController,
                     obscureText: true,
                     decoration: InputDecoration(

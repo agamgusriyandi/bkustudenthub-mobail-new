@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -12,8 +13,10 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 
 class MentorAttendanceScreen extends StatefulWidget {
@@ -88,81 +91,59 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('Alasan: ${req.reason}', style: AppTextStyles.labelSm),
-                const SizedBox(height: 12),
                 Text(
-                  'URL / Link File Lampiran:',
+                  'Sesi: ${req.sessionTitle}',
                   style: AppTextStyles.labelSm.copyWith(
-                    fontWeight: FontWeight.bold,
+                    color: context.appColors.outline,
                   ),
                 ),
-                const SizedBox(height: 4),
-                req.attachmentUrl.isNotEmpty
-                    ? InkWell(
-                      onTap: () async {
-                        final urlStr = req.attachmentUrl;
-                        final baseUrl = ApiGate.baseUrl.replaceAll('/api', '');
-                        final finalUrl =
-                            urlStr.startsWith('http')
-                                ? urlStr
-                                : '$baseUrl$urlStr';
-                        final uri = Uri.parse(finalUrl);
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(
-                            uri,
-                            mode: LaunchMode.inAppBrowserView,
-                          );
-                        }
-                      },
-                      borderRadius: AppRadius.radiusMd,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: context.appColors.primary.withAlpha(15),
-                          borderRadius: AppRadius.radiusMd,
-                          border: Border.all(
-                            color: context.appColors.primary.withAlpha(40),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.open_in_new_rounded,
-                              size: 16,
-                              color: context.appColors.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Buka File Lampiran',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color: context.appColors.primary,
-                                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: AppRadius.radiusMd,
+                  child: req.attachmentUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: req.attachmentUrl,
+                          width: double.infinity,
+                          height: 300,
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) => Container(
+                            height: 200,
+                            color: AppColors.neutral200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.broken_image_rounded,
+                                  size: 48,
+                                  color: AppColors.neutral400,
                                 ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gambar tidak dapat dimuat',
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    color: AppColors.neutral500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 200,
+                          width: double.infinity,
+                          color: AppColors.neutral200,
+                          child: Center(
+                            child: Text(
+                              'Tidak ada lampiran',
+                              style: AppTextStyles.labelSm.copyWith(
+                                color: AppColors.neutral500,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    )
-                    : Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(AppSpacing.sm),
-                      decoration: BoxDecoration(
-                        color: context.appColors.primary.withAlpha(15),
-                        borderRadius: AppRadius.radiusMd,
-                        border: Border.all(
-                          color: context.appColors.primary.withAlpha(40),
-                        ),
-                      ),
-                      child: Text(
-                        'Tidak ada lampiran',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.primary,
-                        ),
-                      ),
-                    ),
+                ),
               ],
             ),
             actions: [
@@ -217,8 +198,9 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
             }
           }
           if (_absenceStatusFilter != 'all') {
-            if (a.status.toLowerCase() != _absenceStatusFilter.toLowerCase())
+            if (a.status.toLowerCase() != _absenceStatusFilter.toLowerCase()) {
               return false;
+            }
           }
           return true;
         }).toList();
@@ -349,47 +331,14 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                             ],
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          TextField(
+                          BkuTextField(
                             controller: _sessionSearchController,
                             onChanged:
                                 (val) => setState(() => _sessionSearch = val),
-                            style: AppTextStyles.bodySm,
-                            decoration: InputDecoration(
-                              hintText: 'Cari nama sesi...',
-                              hintStyle: AppTextStyles.bodySm.copyWith(
-                                color: context.appColors.outline.withValues(
-                                  alpha: 0.7,
-                                ),
-                              ),
-                              prefixIcon: const Icon(
-                                Icons.search_rounded,
-                                size: 18,
-                              ),
-                              filled: true,
-                              fillColor: AppColors.neutral100,
-                              border: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: const BorderSide(
-                                  color: AppColors.neutral300,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: const BorderSide(
-                                  color: AppColors.neutral300,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: BorderSide(
-                                  color: context.appColors.primary,
-                                  width: 1.5,
-                                ),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 10,
-                              ),
+                            hint: 'Cari nama sesi...',
+                            prefixIcon: const Icon(
+                              Icons.search_rounded,
+                              size: 18,
                             ),
                           ),
                         ],
@@ -455,42 +404,9 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                                       ),
                                       if (isValidated) ...[
                                         const SizedBox(height: 4),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.success.withAlpha(
-                                              20,
-                                            ),
-                                            borderRadius: AppRadius.radiusSm,
-                                            border: Border.all(
-                                              color: AppColors.success
-                                                  .withAlpha(50),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.check_circle_rounded,
-                                                size: 10,
-                                                color: AppColors.success,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                'Sudah Divalidasi (${session.attendanceCount} Hadir)',
-                                                style: AppTextStyles.labelSm
-                                                    .copyWith(
-                                                      color: AppColors.success,
-                                                      fontSize: 9,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
+                                        BkuStatusBadge(
+                                          customText: 'Sudah Divalidasi (${session.attendanceCount} Hadir)',
+                                          status: BkuStatus.success,
                                         ),
                                       ],
                                     ],
@@ -507,48 +423,21 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                                 ),
                                 SizedBox(
                                   height: 32,
-                                  child: OutlinedButton.icon(
+                                  child: BkuButton(
+                                    variant: BkuButtonVariant.outline,
                                     onPressed: () {
                                       context.push(
                                         '/mentor-kencana/attendance/session/${session.id}?title=${Uri.encodeComponent(session.title)}',
                                       );
                                     },
-                                    icon: Icon(
-                                      isValidated
-                                          ? Icons.edit_note_rounded
-                                          : Icons.fact_check_outlined,
-                                      size: 14,
-                                    ),
-                                    label: Text(
-                                      isValidated
-                                          ? 'Edit Absensi'
-                                          : 'Validasi Absensi',
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: AppColors.neutral900,
-                                      side: BorderSide(
-                                        color:
-                                            isValidated
-                                                ? AppColors.success.withAlpha(
-                                                  80,
-                                                )
-                                                : AppColors.neutral300,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: AppRadius.radiusMd,
-                                      ),
-                                      backgroundColor:
-                                          isValidated
-                                              ? AppColors.success.withAlpha(15)
-                                              : AppColors.neutral100,
-                                    ),
+                                    icon: isValidated
+                                        ? Icons.edit_note_rounded
+                                        : Icons.fact_check_outlined,
+                                    text: isValidated
+                                        ? 'Edit Absensi'
+                                        : 'Validasi Absensi',
+                                    fontSize: 10,
+                                    fullWidth: false,
                                   ),
                                 ),
                               ],
@@ -626,54 +515,22 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                             children: [
                               Expanded(
                                 flex: 3,
-                                child: TextField(
+                                child: BkuTextField(
                                   controller: _absenceSearchController,
                                   onChanged:
                                       (val) =>
                                           setState(() => _absenceSearch = val),
-                                  style: AppTextStyles.bodySm,
-                                  decoration: InputDecoration(
-                                    hintText: 'Cari Mahasiswa...',
-                                    hintStyle: AppTextStyles.bodySm.copyWith(
-                                      color: context.appColors.outline
-                                          .withValues(alpha: 0.7),
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.search_rounded,
-                                      size: 18,
-                                    ),
-                                    filled: true,
-                                    fillColor: AppColors.neutral100,
-                                    border: OutlineInputBorder(
-                                      borderRadius: AppRadius.radiusMd,
-                                      borderSide: const BorderSide(
-                                        color: AppColors.neutral300,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: AppRadius.radiusMd,
-                                      borderSide: const BorderSide(
-                                        color: AppColors.neutral300,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: AppRadius.radiusMd,
-                                      borderSide: BorderSide(
-                                        color: context.appColors.primary,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
-                                    ),
+                                  hint: 'Cari Mahasiswa...',
+                                  prefixIcon: const Icon(
+                                    Icons.search_rounded,
+                                    size: 18,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 flex: 2,
-                                child: DropdownButtonFormField<String>(
+                                child: BkuDropdown<String>(
                                   isExpanded: true,
                                   initialValue: _absenceStatusFilter,
                                   decoration: InputDecoration(
@@ -732,10 +589,11 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                                     ),
                                   ],
                                   onChanged: (val) {
-                                    if (val != null)
+                                    if (val != null) {
                                       setState(
                                         () => _absenceStatusFilter = val,
                                       );
+                                    }
                                   },
                                 ),
                               ),
@@ -783,13 +641,6 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
                               statusLower == 'approved' ||
                               statusLower == 'disetujui' ||
                               statusLower == 'present';
-
-                          final statusColor =
-                              isPending
-                                  ? AppColors.warning
-                                  : (isApproved
-                                      ? AppColors.success
-                                      : AppColors.error);
 
                           return BkuCard(
                             margin: const EdgeInsets.only(
@@ -909,83 +760,49 @@ class _MentorAttendanceScreenState extends State<MentorAttendanceScreen>
 
                                     Row(
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: statusColor.withAlpha(20),
-                                            borderRadius: AppRadius.radiusSm,
-                                            border: Border.all(
-                                              color: statusColor.withAlpha(50),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            isPending
-                                                ? 'MENUNGGU'
-                                                : (isApproved
-                                                    ? 'DISETUJUI'
-                                                    : 'DITOLAK'),
-                                            style: AppTextStyles.labelSm
-                                                .copyWith(
-                                                  color: statusColor,
-                                                  fontSize: 9,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
+                                        Builder(
+                                          builder: (context) {
+                                            BkuStatus s = BkuStatus.pending;
+                                            if (isApproved) {
+                                              s = BkuStatus.success;
+                                            } else if (!isPending) {
+                                              s = BkuStatus.error;
+                                            }
+                                            return BkuStatusBadge(
+                                              status: s,
+                                              customText: isPending ? 'MENUNGGU' : (isApproved ? 'DISETUJUI' : 'DITOLAK'),
+                                            );
+                                          }
                                         ),
                                         const SizedBox(width: AppSpacing.sm),
                                         if (isPending) ...[
                                           SizedBox(
                                             height: 28,
-                                            child: ElevatedButton(
+                                            child: BkuButton(
+                                              variant: BkuButtonVariant.success,
                                               onPressed:
                                                   () => _respondAbsenceRequest(
                                                     req.id,
                                                     'Approved',
                                                   ),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.success,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                    ),
-                                              ),
-                                              child: const Text(
-                                                'Setujui',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
+                                              text: 'Setujui',
+                                              fontSize: 10,
+                                              fullWidth: false,
                                             ),
                                           ),
                                           const SizedBox(width: 4),
                                           SizedBox(
                                             height: 28,
-                                            child: ElevatedButton(
+                                            child: BkuButton(
+                                              variant: BkuButtonVariant.danger,
                                               onPressed:
                                                   () => _respondAbsenceRequest(
                                                     req.id,
                                                     'Rejected',
                                                   ),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    context.appColors.error,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                    ),
-                                              ),
-                                              child: const Text(
-                                                'Tolak',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
+                                              text: 'Tolak',
+                                              fontSize: 10,
+                                              fullWidth: false,
                                             ),
                                           ),
                                         ] else

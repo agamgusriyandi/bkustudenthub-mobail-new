@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -7,7 +8,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/admin_psychologist_provider.dart';
 
 class CreatePsychologistScreen extends StatefulWidget {
@@ -67,22 +69,18 @@ class _CreatePsychologistScreenState extends State<CreatePsychologistScreen> {
 
     setState(() => _isSaving = false);
 
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (_) => CustomDialog(
-        title: success ? 'Berhasil' : 'Gagal',
-        content: success
-            ? 'Psikolog berhasil ditambahkan.'
-            : 'Gagal menambahkan psikolog.',
-        cancelText: '',
-        confirmText: 'Tutup',
-        isSuccess: success,
-        onCancel: () {},
-        onConfirm: () {
-          Navigator.pop(context);
-          if (success) context.pop();
-        },
-      ),
+      title: success ? 'Berhasil' : 'Gagal',
+      message: success
+          ? 'Psikolog berhasil ditambahkan.'
+          : 'Gagal menambahkan psikolog.',
+      type: success ? BkuDialogType.success : BkuDialogType.error,
+      primaryButtonText: 'Tutup',
+      onPrimaryPressed: () {
+        context.pop();
+        if (success) context.pop();
+      },
     );
   }
 
@@ -91,9 +89,7 @@ class _CreatePsychologistScreenState extends State<CreatePsychologistScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       body: CustomScrollView(
-        physics: const ClampingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
+        physics: const ClampingScrollPhysics(),
         slivers: [
           const BkuAppBar(
             title: 'Tambah Psikolog',
@@ -184,36 +180,10 @@ class _CreatePsychologistScreenState extends State<CreatePsychologistScreen> {
                       maxLines: 4,
                     ),
                     const SizedBox(height: AppSpacing.xxl),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _save,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
-                          foregroundColor: context.appColors.onPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.br14,
-                          ),
-                          elevation: 0,
-                        ),
-                        child: _isSaving
-                            ? SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  color: context.appColors.onPrimary,
-                                  strokeWidth: 2.5,
-                                ),
-                              )
-                            : Text(
-                                'Simpan Psikolog',
-                                style: AppTextStyles.bodyMd.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: context.appColors.onPrimary,
-                                ),
-                              ),
-                      ),
+                    BkuButton(
+                      onPressed: _isSaving ? null : _save,
+                      isLoading: _isSaving,
+                      text: 'Simpan Psikolog',
                     ),
                   ],
                 ),
@@ -243,7 +213,7 @@ class _CreatePsychologistScreenState extends State<CreatePsychologistScreen> {
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
   }) {
-    return TextFormField(
+    return BkuTextField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,

@@ -2,9 +2,10 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -133,7 +134,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     return BkuCard(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
+        child: BkuDropdown<String>(
           value: _selectedTujuan,
           isExpanded: true,
           icon: Icon(
@@ -493,22 +494,16 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
   }
 
   void _showSuccessDialog() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      barrierDismissible: false,
-      builder:
-          (dialogContext) => CustomDialog(
-            title: 'Berhasil',
-            content: 'Aspirasi Anda berhasil dikirimkan.',
-            isSuccess: true,
-            cancelText: '',
-            confirmText: 'Kembali',
-            onCancel: () {},
-            onConfirm: () {
-              Navigator.pop(dialogContext); // Close success dialog
-              context.pop(); // Go back
-            },
-          ),
+      type: BkuDialogType.success,
+      title: 'Berhasil',
+      message: 'Aspirasi Anda berhasil dikirimkan.',
+      primaryButtonText: 'Kembali',
+      onPrimaryPressed: () {
+        Navigator.pop(context); // Close dialog
+        context.pop(); // Go back
+      },
     );
   }
 }

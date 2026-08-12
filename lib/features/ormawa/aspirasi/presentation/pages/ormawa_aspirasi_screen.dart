@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -11,6 +12,8 @@ import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
@@ -274,20 +277,8 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
 
     return GestureDetector(
       onTap: () => _showAspirasiDetail(item, color),
-      child: Container(
+      child: BkuCard(
         padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200),
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withValues(alpha: 0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -954,7 +945,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                       ),
                                     ],
                                   ),
-                                  child: TextField(
+                                  child: BkuTextField(
                                     controller: responseController,
                                     maxLines: 4,
                                     style: AppTextStyles.bodyMd.copyWith(
@@ -998,7 +989,9 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                       Expanded(
                                         child: SizedBox(
                                           height: 52,
-                                          child: OutlinedButton(
+                                          child: BkuButton.outline(
+                                            text: 'ABAIKAN',
+                                            isLoading: isSubmitting,
                                             onPressed: () async {
                                               setModalState(
                                                 () => isSubmitting = true,
@@ -1031,16 +1024,6 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                 );
                                               }
                                             },
-
-                                            child: Text(
-                                              'ABAIKAN',
-                                              style: AppTextStyles.labelSm
-                                                  .copyWith(
-                                                    color: AppColors.neutral600,
-                                                    fontWeight: FontWeight.w900,
-                                                    letterSpacing: 1.5,
-                                                  ),
-                                            ),
                                           ),
                                         ),
                                       ),
@@ -1049,7 +1032,9 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                         flex: 2,
                                         child: SizedBox(
                                           height: 52,
-                                          child: ElevatedButton(
+                                          child: BkuButton.primary(
+                                            text: 'KIRIM TANGGAPAN',
+                                            isLoading: isSubmitting,
                                             onPressed: () async {
                                               setModalState(
                                                 () => isSubmitting = true,
@@ -1082,29 +1067,6 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                                 );
                                               }
                                             },
-
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.send_rounded,
-                                                  color: context.appColors.onPrimary,
-                                                  size: 18,
-                                                ),
-                                                const SizedBox(width: AppSpacing.sm),
-                                                Text(
-                                                  'KIRIM TANGGAPAN',
-                                                  style: AppTextStyles.labelSm
-                                                      .copyWith(
-                                        color: context.appColors.onPrimary,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        letterSpacing: 1.5,
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
                                           ),
                                         ),
                                       ),

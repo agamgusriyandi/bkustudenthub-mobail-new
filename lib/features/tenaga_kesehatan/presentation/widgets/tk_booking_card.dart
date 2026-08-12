@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -255,22 +256,10 @@ class TkBookingCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.s10),
                   SizedBox(
                     height: 44,
-                    child: ElevatedButton.icon(
+                    child: BkuButton.success(
                       onPressed: onAccept,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.success,
-                        foregroundColor: context.appColors.onPrimary,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.br10,
-                        ),
-                      ),
-                      icon: const Icon(Icons.check_rounded, size: 16),
-                      label: const Text(
-                        'Terima',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-                      ),
+                      icon: Icons.check_rounded,
+                      text: 'Terima',
                     ),
                   ),
                 ],

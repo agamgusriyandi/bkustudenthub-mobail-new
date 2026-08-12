@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
@@ -609,19 +611,6 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             ? name[0]
             : '?';
 
-    Color statusColor;
-    Color statusBg;
-    if (status == 'Dikonfirmasi') {
-      statusColor = context.appColors.success;
-      statusBg = context.appColors.success.withAlpha(20);
-    } else if (status == 'Menunggu Konfirmasi') {
-      statusColor = context.appColors.warning;
-      statusBg = context.appColors.warning.withAlpha(15);
-    } else {
-      statusColor = AppColors.neutral500;
-      statusBg = AppColors.neutral200;
-    }
-
     final bool isConfirmed = status == 'Dikonfirmasi';
 
     return BkuCard(
@@ -660,20 +649,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                           ),
                         ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(
-                  color: statusBg,
-                  borderRadius: AppRadius.radiusXs,
-                ),
-                child: Text(
-                  status == 'Menunggu Konfirmasi' ? 'Menunggu' : status,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    color: statusColor,
-                  ),
-                ),
+              BkuStatusBadge(
+                status: isConfirmed ? BkuStatus.success : (status == 'Menunggu Konfirmasi' ? BkuStatus.pending : BkuStatus.info),
+                customText: status == 'Menunggu Konfirmasi' ? 'Menunggu' : status,
+                showIcon: false,
               ),
             ],
           ),
@@ -731,43 +710,18 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           ),
           const Spacer(),
           // Action button
-          SizedBox(
-            width: double.infinity,
-            child: Material(
-              color: isConfirmed ? context.appColors.success : AppColors.neutral200,
-              borderRadius: AppRadius.radiusMd,
-              child: InkWell(
-                borderRadius: AppRadius.radiusMd,
-                onTap: () {
-                  if (mahasiswaId != null) {
-                    context.read<TkPatientProvider>().clearSelection();
-                    context.push('/tk/patient/$mahasiswaId');
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        isConfirmed ? 'Periksa' : 'Detail',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: isConfirmed ? context.appColors.onPrimary : AppColors.neutral800,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 12,
-                        color: isConfirmed ? context.appColors.surface : AppColors.neutral800,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          BkuButton(
+            onPressed: () {
+              if (mahasiswaId != null) {
+                context.read<TkPatientProvider>().clearSelection();
+                context.push('/tk/patient/$mahasiswaId');
+              }
+            },
+            variant: isConfirmed ? BkuButtonVariant.success : BkuButtonVariant.secondary,
+            text: isConfirmed ? 'Periksa' : 'Detail',
+            trailingIcon: Icons.arrow_forward_rounded,
+            height: 32,
+            fontSize: 11,
           ),
         ],
       ),

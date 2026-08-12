@@ -2,8 +2,11 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -48,60 +51,27 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
   }
 
   void _confirmDelete(OrmawaOrganisasi org) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.delete_forever_rounded, color: AppColors.error),
-            SizedBox(width: AppSpacing.s10),
-            Text('Hapus Organisasi'),
-          ],
-        ),
-        content: Text(
-          'Apakah Anda yakin ingin menghapus\n${org.nama}?',
-          style: const TextStyle(height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text(
-              'Batal',
-              style: TextStyle(
-                color: AppColors.neutral500,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              try {
-                await context.read<OrmawaProvider>().deleteOrganisasi(org.id.toString());
-                if (mounted) {
-                  AppSnackbar.showSuccess(context, 'Organisasi berhasil dihapus');
-                }
-              } catch (e) {
-                if (mounted) {
-                  AppSnackbar.showError(context, 'Gagal menghapus: $e');
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: context.appColors.onPrimary,
-              elevation: 0,
-            ),
-            child: Text(
-              'Hapus',
-              style: TextStyle(
-                color: context.appColors.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+      type: BkuDialogType.error,
+      title: 'Hapus Organisasi',
+      message: 'Apakah Anda yakin ingin menghapus\n${org.nama}?',
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        try {
+          await context.read<OrmawaProvider>().deleteOrganisasi(org.id.toString());
+          if (mounted) {
+            AppSnackbar.showSuccess(context, 'Organisasi berhasil dihapus');
+          }
+        } catch (e) {
+          if (mounted) {
+            AppSnackbar.showError(context, 'Gagal menghapus: $e');
+          }
+        }
+      },
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 
@@ -198,21 +168,9 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
     final total = provider.organisasiList.length;
     final aktif = provider.organisasiList.where((o) => o.status.toLowerCase() == 'aktif').length;
 
-    return Container(
+    return BkuCard(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 22),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral300),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,7 +237,7 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: _searchController,
         style: const TextStyle(fontWeight: FontWeight.bold),
         decoration: InputDecoration(
@@ -343,20 +301,8 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
           MaterialPageRoute(builder: (_) => OrmawaOrganisasiDetailScreen(organisasi: org)),
         );
       },
-      child: Container(
+      child: BkuCard(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: isAktif ? AppColors.neutral200 : AppColors.neutral300),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Row(
           children: [
             Container(

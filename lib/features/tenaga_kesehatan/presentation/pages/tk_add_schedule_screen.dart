@@ -1,9 +1,11 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -109,7 +111,7 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
             // Tipe Layanan
             _buildSectionLabel('Tipe Layanan'),
             const SizedBox(height: AppSpacing.sm),
-            DropdownButtonFormField<String>(
+            BkuDropdown<String>(
               initialValue: _tipeLayanan,
               decoration: InputDecoration(
                 filled: true,
@@ -169,34 +171,11 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton.icon(
+              child: BkuButton.success(
+                isLoading: _isSaving,
                 onPressed: _isSaving ? null : _handleSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.appColors.success,
-                  foregroundColor: context.appColors.onPrimary,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radiusLg,
-                  ),
-                ),
-                icon: _isSaving
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: context.appColors.onPrimary,
-                        ),
-                      )
-                    : Icon(Icons.check_circle_rounded, color: context.appColors.onPrimary),
-                label: Text(
-                  _isSaving ? 'Menyimpan...' : 'Simpan Jadwal',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: context.appColors.onPrimary,
-                  ),
-                ),
+                icon: Icons.check_circle_rounded,
+                text: 'Simpan Jadwal',
               ),
             ),
           ],
@@ -487,34 +466,24 @@ class _TkAddScheduleScreenState extends State<TkAddScheduleScreen> {
     setState(() => _isSaving = false);
 
     if (success && mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Berhasil',
-              content: 'Jadwal berhasil dibuat',
-              cancelText: '',
-              confirmText: 'Tutup',
-              isSuccess: true,
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Berhasil',
+        message: 'Jadwal berhasil dibuat',
+        type: BkuDialogType.success,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       ).then((_) {
         if (mounted) context.pop();
       });
     } else if (mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Gagal',
-              content: provider.error ?? 'Gagal membuat jadwal',
-              cancelText: '',
-              confirmText: 'Tutup',
-              isDestructive: true,
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Gagal',
+        message: provider.error ?? 'Gagal membuat jadwal',
+        type: BkuDialogType.error,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       );
     }
   }

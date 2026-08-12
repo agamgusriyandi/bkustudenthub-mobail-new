@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -368,20 +369,8 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
           context.push(AppRoutes.ormawaAnggotaDetail, extra: member);
         },
         borderRadius: AppRadius.radiusLg,
-        child: Container(
+        child: BkuCard(
           padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.neutral200, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.neutral600.withAlpha(12),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
           child: Row(
             children: [
               Container(
@@ -476,22 +465,10 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
           context.push(AppRoutes.ormawaAnggotaDetail, extra: member);
         },
         borderRadius: AppRadius.radiusLg,
-        child: Container(
+        child: BkuCard(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.xl,
-          ),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.neutral200, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.neutral600.withAlpha(12),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Row(
             children: [
@@ -556,20 +533,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
   }
 
   Widget _buildDepartmentCard(String title, List<Widget> members) {
-    return Container(
+    return BkuCard(
       width: double.infinity,
-      decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.neutral200, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.neutral600.withAlpha(12),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-      ),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

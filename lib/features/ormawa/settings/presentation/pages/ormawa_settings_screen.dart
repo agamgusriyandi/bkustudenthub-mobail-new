@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -261,89 +262,21 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
   }
 
   void _showLogoutDialog() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            contentPadding: AppSpacing.padding28,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: context.appColors.errorContainer,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.logout_rounded,
-                    color: context.appColors.error,
-                    size: 36,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Keluar Portal?',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                Text(
-                  'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s28),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(ctx),
-
-                        child: Text(
-                          'Batal',
-                          style: AppTextStyles.labelLg.copyWith(
-                            color: context.appColors.onSurface,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(ctx);
-                          await AuthService().logout();
-                          if (mounted) {
-                            context.go(AppRoutes.login);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.error,
-                          foregroundColor: context.appColors.onPrimary,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.radiusMd,
-                          ),
-                        ),
-                        child: Text(
-                          'Keluar',
-                          style: AppTextStyles.labelLg.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: context.appColors.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      type: BkuDialogType.error,
+      title: 'Keluar Portal?',
+      message: 'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
+      primaryButtonText: 'Keluar',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        await AuthService().logout();
+        if (mounted) {
+          context.go(AppRoutes.login);
+        }
+      },
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 }

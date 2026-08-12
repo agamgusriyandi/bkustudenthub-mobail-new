@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 
 class MentorAnnouncements extends StatelessWidget {
@@ -52,26 +53,10 @@ class MentorAnnouncements extends StatelessWidget {
                     ),
                   ),
                   if (!ann.isRead)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.appColors.error.withAlpha(15),
-                        border: Border.all(
-                          color: context.appColors.error.withAlpha(30),
-                        ),
-                        borderRadius: AppRadius.radiusXs,
-                      ),
-                      child: Text(
-                        'BARU',
-                        style: AppTextStyles.labelSm.copyWith(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: context.appColors.error,
-                        ),
-                      ),
+                    BkuStatusBadge(
+                      status: BkuStatus.error,
+                      customText: 'BARU',
+                      showIcon: false,
                     ),
                 ],
               ),

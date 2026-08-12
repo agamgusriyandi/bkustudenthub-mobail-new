@@ -2,7 +2,6 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +11,7 @@ import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/men
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 
 class MentorRecruitScreen extends StatefulWidget {
   const MentorRecruitScreen({super.key});
@@ -75,37 +75,10 @@ class _MentorRecruitScreenState extends State<MentorRecruitScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.xl),
-                child: TextField(
+                child: BkuTextField(
                   controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Cari nama atau NIM...',
-                    prefixIcon: const Icon(Icons.search_rounded),
-                    filled: true,
-                    fillColor: AppColors.neutral50,
-                    border: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusLg,
-                      borderSide: BorderSide(
-                        color:
-                            AppThemeColors.surfaceContainerHighest,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusLg,
-                      borderSide: BorderSide(
-                        color:
-                            AppThemeColors.surfaceContainerHighest,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusLg,
-                      borderSide: BorderSide(
-                        color: context.appColors.primary,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                  ),
+                  hint: 'Cari nama atau NIM...',
+                  prefixIcon: const Icon(Icons.search_rounded),
                   onChanged: (val) {
                     setState(() {});
                   },

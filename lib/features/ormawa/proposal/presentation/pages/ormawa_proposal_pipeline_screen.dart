@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.da
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -510,17 +511,12 @@ class _OrmawaProposalPipelineScreenState
             if (_selectedStatus != 'Semua')
               Padding(
                 padding: const EdgeInsets.only(top: AppSpacing.lg),
-                child: TextButton(
+                child: BkuButton.text(
+                  text: 'Reset Filter',
                   onPressed: () {
                     setState(() => _selectedStatus = 'Semua');
                     context.pop();
                   },
-                  child: Text(
-                    'Reset Filter',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.error,
-                    ),
-                  ),
                 ),
               ),
             const SizedBox(height: AppSpacing.lg),

@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/tenaga_kesehatan.dart';
@@ -75,27 +76,10 @@ class _AdminTkListScreenState extends State<AdminTkListScreen> {
                 // Search
                 Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
-                  child: TextField(
+                  child: BkuTextField(
                     onChanged: (v) => setState(() => _searchQuery = v),
-                    decoration: InputDecoration(
-                      hintText: 'Cari tenaga kesehatan...',
-                      hintStyle: TextStyle(color: AppColors.neutral400),
-                      prefixIcon: Icon(Icons.search_rounded, color: AppColors.neutral500),
-                      filled: true,
-                      fillColor: AppColors.neutral50,
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: AppColors.neutral200),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: AppColors.neutral200),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-                      ),
-                    ),
+                    hint: 'Cari tenaga kesehatan...',
+                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.neutral500),
                   ),
                 ),
 

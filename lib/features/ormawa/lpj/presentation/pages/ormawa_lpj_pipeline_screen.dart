@@ -6,12 +6,14 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class OrmawaLpjPipelineScreen extends StatefulWidget {
   const OrmawaLpjPipelineScreen({super.key});
@@ -300,21 +302,9 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
       onTap: () {
         context.push(AppRoutes.ormawaLpjDetail, extra: lpj);
       },
-      child: Container(
+      child: BkuCard(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200),
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(8),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -356,22 +346,13 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
                     ],
                   ),
                 ),
-                Container(
+                BkuStatusBadge(
+                  status: _mapStatusToBkuStatus(lpj.status),
+                  customText: normalizedStatus,
+                  showIcon: false,
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    normalizedStatus,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: statusColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
                   ),
                 ),
               ],
@@ -451,8 +432,20 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
       case 'Ditolak':
         return Icons.cancel_rounded;
       default:
-        return Icons.schedule_rounded;
+        return Icons.folder_open_rounded;
     }
+  }
+
+  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+    final s = rawStatus.toLowerCase();
+    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
+      return BkuStatus.success;
+    } else if (s.contains('tolak') || s.contains('batal')) {
+      return BkuStatus.error;
+    } else if (s.contains('revisi')) {
+      return BkuStatus.warning;
+    }
+    return BkuStatus.info;
   }
 
   void _showFilterSheet() {
@@ -526,17 +519,12 @@ class _OrmawaLpjPipelineScreenState extends State<OrmawaLpjPipelineScreen> {
             if (_selectedStatus != 'Semua')
               Padding(
                 padding: const EdgeInsets.only(top: AppSpacing.lg),
-                child: TextButton(
+                child: BkuButton.text(
+                  text: 'Reset Filter',
                   onPressed: () {
                     setState(() => _selectedStatus = 'Semua');
                     context.pop();
                   },
-                  child: Text(
-                    'Reset Filter',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.error,
-                    ),
-                  ),
                 ),
               ),
             const SizedBox(height: AppSpacing.lg),

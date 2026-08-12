@@ -3,9 +3,10 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -225,22 +226,16 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
 
       if (!mounted) return;
 
-      showDialog(
+      BkuDialog.show(
         context: context,
-        barrierDismissible: false,
-        builder:
-            (context) => CustomDialog(
-              title: 'Berhasil',
-              content: 'Pendaftaran ke Ormawa berhasil diajukan.',
-              isSuccess: true,
-              cancelText: '',
-              confirmText: 'Tutup',
-              onCancel: () {},
-              onConfirm: () {
-                context.pop(); // Close dialog
-                context.pop(); // Go back
-              },
-            ),
+        title: 'Berhasil',
+        message: 'Pendaftaran ke Ormawa berhasil diajukan.',
+        type: BkuDialogType.success,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () {
+          context.pop();
+          context.pop();
+        },
       );
     } catch (e) {
       if (!mounted) return;
@@ -326,7 +321,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
-                        DropdownButtonFormField<String>(
+                        BkuDropdown<String>(
                           initialValue: _selectedDivisi,
                           decoration: InputDecoration(
                             fillColor: AppColors.neutral50,
@@ -357,12 +352,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                               ),
                             ),
                           ),
-                          hint: Text(
-                            'Pilih divisi utama...',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              color: AppColors.neutral400,
-                            ),
-                          ),
+                          hint: 'Pilih divisi utama...',
                           items:
                               _divisions.map((div) {
                                 final name =
@@ -394,7 +384,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
-                        DropdownButtonFormField<String>(
+                        BkuDropdown<String>(
                           initialValue: _selectedDivisi2,
                           decoration: InputDecoration(
                             fillColor: AppColors.neutral50,
@@ -425,12 +415,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                               ),
                             ),
                           ),
-                          hint: Text(
-                            'Pilih divisi kedua...',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              color: AppColors.neutral400,
-                            ),
-                          ),
+                          hint: 'Pilih divisi kedua...',
                           items:
                               _divisions
                                   .where(
@@ -701,7 +686,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                     ),
                                   )
                                 else if (type == 'select')
-                                  DropdownButtonFormField<String>(
+                                  BkuDropdown<String>(
                                     initialValue: _selectValues[idStr],
                                     decoration: InputDecoration(
                                       fillColor: AppColors.neutral50,
@@ -732,12 +717,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                         ),
                                       ),
                                     ),
-                                    hint: Text(
-                                      'Pilih opsi...',
-                                      style: AppTextStyles.bodyMd.copyWith(
-                                        color: AppColors.neutral400,
-                                      ),
-                                    ),
+                                    hint: 'Pilih opsi...',
                                     items:
                                         options
                                             .split(',')

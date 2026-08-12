@@ -34,6 +34,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _isConfirmPasswordVisible = false;
 
   ForgotPasswordStep _currentStep = ForgotPasswordStep.email;
+  String? _resetToken;
   final AuthService _authService = AuthService();
 
   // Timer for OTP resend
@@ -83,6 +84,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
       if (success) {
+        AppSnackbar.showSuccess(context, 'OTP berhasil dikirim ke email Anda');
         setState(() {
           _currentStep = ForgotPasswordStep.otp;
         });
@@ -104,11 +106,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     setState(() => _isLoading = true);
 
-    final success = await _authService.verifyOtp(email, otp);
+    final token = await _authService.verifyOtp(email, otp);
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
+      if (token != null) {
+        _resetToken = token;
+        AppSnackbar.showSuccess(context, 'OTP berhasil diverifikasi');
         setState(() {
           _currentStep = ForgotPasswordStep.newPassword;
         });
@@ -119,8 +123,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
-    final email = _emailController.text.trim();
-    final otp = _otpController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
@@ -134,20 +136,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       return;
     }
 
+    if (_resetToken == null) {
+      _showErrorSnackBar('Sesi tidak valid, silakan ulangi dari awal');
+      return;
+    }
+
     setState(() => _isLoading = true);
 
-    final success = await _authService.resetPassword(email, otp, password);
+    final success = await _authService.resetPassword(_resetToken!, password, confirmPassword);
 
     if (mounted) {
       setState(() => _isLoading = false);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-              'Kata sandi berhasil diatur ulang. Silakan masuk.',
-            ),
-            backgroundColor: context.appColors.success,
-          ),
+        AppSnackbar.showSuccess(
+          context,
+          'Kata sandi berhasil diatur ulang. Silakan masuk.',
         );
         context.go(AppRoutes.login);
       } else {
@@ -157,7 +160,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    AppSnackbar.showSuccess(context, message);
+    AppSnackbar.showError(context, message);
   }
 
   @override

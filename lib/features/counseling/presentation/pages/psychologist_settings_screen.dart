@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -526,87 +527,22 @@ class _PsychologistSettingsScreenState
   }
 
   void _showLogoutDialog() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            contentPadding: AppSpacing.padding28,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: AppColors.error.withAlpha(15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.logout_rounded,
-                    color: AppColors.error,
-                    size: 36,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Keluar Aplikasi?',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.neutral800,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                Text(
-                  'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.appColors.onSurface.withAlpha(150),                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s28),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(ctx),
-
-                        child: Text(
-                          'Batal',
-                          style: AppTextStyles.bodyMd.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(ctx);
-                          context.read<CounselingProvider>().clearState();
-                          await AuthService().logout();
-                          if (mounted) {
-                            context.go(AppRoutes.login);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
-                          foregroundColor: context.appColors.onPrimary,
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          'Keluar',
-                          style: AppTextStyles.bodyMd.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.appColors.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      title: 'Keluar Aplikasi?',
+      message: 'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => context.pop(),
+      primaryButtonText: 'Keluar',
+      onPrimaryPressed: () async {
+        context.pop();
+        context.read<CounselingProvider>().clearState();
+        await AuthService().logout();
+        if (mounted) {
+          context.go(AppRoutes.login);
+        }
+      },
     );
   }
 

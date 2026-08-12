@@ -5,9 +5,11 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -112,24 +114,20 @@ class _MentorAvailableStudentsScreenState
                 child: Column(
                   children: [
                     // Search Bar
-                    TextField(
+                    BkuTextField(
                       controller: _searchController,
                       onChanged: (val) => setState(() => _searchQuery = val),
-                      decoration: InputDecoration(
-                        hintText: 'Cari NIM, Nama...',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
+                      hint: 'Cari NIM, Nama...',
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     
@@ -138,7 +136,7 @@ class _MentorAvailableStudentsScreenState
                       children: [
                         // Status Filter Dropdown
                         Expanded(
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             isExpanded: true,
                             initialValue: _selectedStatusFilter,
                             decoration: InputDecoration(
@@ -161,7 +159,7 @@ class _MentorAvailableStudentsScreenState
 
                         // Faculty Filter Dropdown
                         Expanded(
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             isExpanded: true,
                             initialValue: _selectedFacultyFilter,
                             decoration: InputDecoration(

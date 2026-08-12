@@ -14,6 +14,7 @@ import '../widgets/data_diri_tab.dart';
 import '../widgets/akademik_tab.dart';
 import '../widgets/notifikasi_tab.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -244,18 +245,7 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
         horizontal: AppSpacing.md,
         vertical: AppSpacing.xs,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusLg,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(10),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+      child: BkuCard(
         padding: AppSpacing.padding3,
         child: child,
       ),

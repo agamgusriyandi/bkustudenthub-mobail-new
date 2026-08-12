@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -515,7 +516,6 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
   }
 
   Widget _buildRecordCard(MedicalRecord record) {
-    final primaryColor = context.watch<ThemeProvider>().primary;
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -644,20 +644,14 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
           const SizedBox(height: AppSpacing.lg),
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton.icon(
+            child: BkuButton(
               onPressed: () => _showRecordDetails(context, record),
-              icon: Icon(
-                Icons.info_outline_rounded,
-                size: 16,
-                color: primaryColor,
-              ),
-              label: Text(
-                'Lihat Detail Selengkapnya',
-                style: AppTextStyles.labelSm.copyWith(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              text: 'Lihat Detail Selengkapnya',
+              icon: Icons.info_outline_rounded,
+              variant: BkuButtonVariant.text,
+              fullWidth: false,
+              height: 36,
+              fontSize: 12,
             ),
           ),
         ],
@@ -1162,7 +1156,7 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                 const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   height: 36,
-                  child: ElevatedButton.icon(
+                  child: BkuButton(
                     onPressed: () async {
                       final rujukanId = ref['id'] ?? ref['ID'];
                       final token = AuthService().token;
@@ -1180,24 +1174,12 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                         }
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appColors.error.withAlpha(15),
-                      foregroundColor: context.appColors.error,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.br10,
-                        side: BorderSide(color: context.appColors.error.withAlpha(50)),
-                      ),
-                    ),
-                    icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),
-                    label: const Text(
-                      'Download Surat Rujukan PDF',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                    text: 'Download Surat Rujukan PDF',
+                    icon: Icons.picture_as_pdf_rounded,
+                    variant: BkuButtonVariant.danger,
+                    fullWidth: false,
+                    fontSize: 12,
+                    height: 36,
                   ),
                 ),
               ],

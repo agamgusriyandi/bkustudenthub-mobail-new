@@ -16,6 +16,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/counseling_sess
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/psychologist_list_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -1135,34 +1136,14 @@ class _CounselingScreenState extends State<CounselingScreen> {
       }
     }
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.85,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: AppSpacing.md),
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color:
-                        AppThemeColors.surfaceContainerHighest,
-                    borderRadius: AppRadius.radiusXs,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    children: [
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: ListView(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          children: [
                       Center(
                         child: Container(
                           padding: const EdgeInsets.all(AppSpacing.xl),
@@ -1227,7 +1208,9 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         SizedBox(
                           width: double.infinity,
                           height: 50,
-                          child: ElevatedButton.icon(
+                          child: BkuButton(
+                            text: 'Gabung Sesi Online',
+                            icon: Icons.videocam_rounded,
                             onPressed: () async {
                               final uri = Uri.parse(linkMeeting);
                               if (await canLaunchUrl(uri)) {
@@ -1244,11 +1227,6 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                 }
                               }
                             },
-                            icon: const Icon(Icons.videocam_rounded),
-                            label: const Text(
-                              'Gabung Sesi Online',
-                              style: TextStyle(fontWeight: FontWeight.w800),
-                            ),
                           ),
                         ),
                       ],
@@ -1520,16 +1498,12 @@ class _CounselingScreenState extends State<CounselingScreen> {
                             onPressed: () => context.pop(),
                             text: 'Tutup Detail',
                             variant: BkuButtonVariant.outline,
-                            height: 44,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1824,34 +1798,14 @@ class _CounselingScreenState extends State<CounselingScreen> {
   void _showSessionDetail(BuildContext context, CounselingSession session) {
     bool isCompleted = session.status == 'Completed';
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.85,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: AppSpacing.md),
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color:
-                        AppThemeColors.surfaceContainerHighest,
-                    borderRadius: AppRadius.radiusXs,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    children: [
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: ListView(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          children: [
                       Center(
                           child: Container(
                             padding: const EdgeInsets.all(AppSpacing.xl),
@@ -1971,7 +1925,9 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         SizedBox(
                           width: double.infinity,
                           height: 54,
-                          child: ElevatedButton.icon(
+                          child: BkuButton(
+                            text: 'Download PDF Sesi',
+                            icon: Icons.download_rounded,
                             onPressed: () async {
                               final token = AuthService().token;
                               final urlStr =
@@ -1991,11 +1947,6 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                 }
                               }
                             },
-                            icon: const Icon(Icons.download_rounded),
-                            label: const Text(
-                              'Download PDF Sesi',
-                              style: TextStyle(fontWeight: FontWeight.w800),
-                            ),
                           ),
                         ),
                       ],
@@ -2004,7 +1955,14 @@ class _CounselingScreenState extends State<CounselingScreen> {
                         SizedBox(
                           width: double.infinity,
                           height: 54,
-                          child: ElevatedButton.icon(
+                          child: BkuButton(
+                            text: isCompleted
+                                ? 'Konseling Lanjutan'
+                                : 'Reschedule Jadwal',
+                            icon: isCompleted
+                                ? Icons.event_repeat_rounded
+                                : Icons.edit_calendar_rounded,
+                            variant: BkuButtonVariant.success,
                             onPressed: () {
                               context.pop(); // Close modal
                               if (isCompleted) {
@@ -2019,24 +1977,6 @@ class _CounselingScreenState extends State<CounselingScreen> {
                                 );
                               }
                             },
-                            icon: Icon(
-                              isCompleted
-                                  ? Icons.event_repeat_rounded
-                                  : Icons.edit_calendar_rounded,
-                            ),
-                            label: Text(
-                              isCompleted
-                                  ? 'Konseling Lanjutan'
-                                  : 'Reschedule Jadwal',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appColors.success,
-                              foregroundColor: context.appColors.onPrimary,
-                              elevation: 0,
-                            ),
                           ),
                         ),
                       ],
@@ -2044,31 +1984,14 @@ class _CounselingScreenState extends State<CounselingScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 58,
-                          child: ElevatedButton(
-                            onPressed: () => context.pop(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.neutral100,
-                              foregroundColor: AppColors.neutral800,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppRadius.radiusMd,
-                            ),
-                          ),
-                            child: Text(
-                              'Tutup Detail',
-                              style: AppTextStyles.labelMd.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.neutral800,
-                            ),
-                          ),
+                        child: BkuButton.secondary(
+                          text: 'Tutup Detail',
+                          onPressed: () => context.pop(),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -2512,7 +2435,10 @@ class _CounselingBanner extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.s20),
-              ElevatedButton.icon(
+              BkuButton.secondary(
+                text: 'Cari Psikolog',
+                icon: Icons.search_rounded,
+                fullWidth: false,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -2521,23 +2447,6 @@ class _CounselingBanner extends StatelessWidget {
                     ),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.appColors.secondary,
-                  foregroundColor: context.appColors.onPrimary,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                ),
-                icon: const Icon(Icons.search_rounded, size: 16),
-                label: const Text(
-                  'Cari Psikolog',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-                ),
               ),
             ],
           ),

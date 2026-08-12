@@ -3,6 +3,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -236,7 +238,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                               border: Border.all(color: AppColors.neutral200),
                             ),
                             child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
+                              child: BkuDropdown<String>(
                                 value: _selectedDayFilter,
                                 isExpanded: true,
                                 icon: const Icon(
@@ -290,7 +292,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                               border: Border.all(color: AppColors.neutral200),
                             ),
                             child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
+                              child: BkuDropdown<String>(
                                 value: _selectedServiceFilter,
                                 isExpanded: true,
                                 icon: const Icon(
@@ -619,7 +621,7 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
   }
 
   Widget _buildComplaintField() {
-    return TextField(
+    return BkuTextField(
       controller: _complaintCtrl,
       maxLines: 4,
       style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold),

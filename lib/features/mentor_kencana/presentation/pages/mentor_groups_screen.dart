@@ -8,7 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class MentorGroupsScreen extends StatefulWidget {
   const MentorGroupsScreen({super.key});
@@ -90,33 +93,14 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                 ),
                 sliver: SliverList.list(
                   children: [
-                    TextField(
+                    BkuTextField(
                       onChanged: (value) {
                         setState(() {
                           _searchQuery = value;
                         });
                       },
-                      style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral900),
-                      decoration: InputDecoration(
-                        hintText: 'Cari nama/kode kelompok...',
-                        hintStyle: AppTextStyles.bodySm.copyWith(color: context.appColors.outline.withValues(alpha: 0.7)),
-                        prefixIcon: const Icon(Icons.search_rounded, size: 18),
-                        filled: true,
-                        fillColor: AppColors.neutral100,
-                        border: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusMd,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusMd,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusMd,
-                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      ),
+                      hint: 'Cari nama/kode kelompok...',
+                      prefixIcon: const Icon(Icons.search_rounded, size: 18),
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     if (filteredGroups.isEmpty)
@@ -131,21 +115,9 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                       )
                     else
                       ...filteredGroups.map((group) {
-                        return Container(
+                        return BkuCard(
                           margin: const EdgeInsets.only(bottom: AppSpacing.lg),
                           padding: const EdgeInsets.all(AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            color: context.appColors.surface,
-                            borderRadius: AppRadius.radiusXl,
-                            border: Border.all(color: AppColors.neutral300),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(8),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -267,28 +239,12 @@ class _MentorGroupsScreenState extends State<MentorGroupsScreen> {
                               const SizedBox(height: AppSpacing.md),
                               SizedBox(
                                 width: double.infinity,
-                                child: ElevatedButton.icon(
+                                child: BkuButton.primary(
                                   onPressed: () {
                                     context.push('/mentor-kencana/groups/${group.id}');
                                   },
-                                  icon: const Icon(Icons.people_outline_rounded, size: 16, color: Colors.white),
-                                  label: Text(
-                                    'Kelola Anggota',
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: context.appColors.primary,
-                                    foregroundColor: Colors.white,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: AppRadius.radiusLg,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                  ),
+                                  icon: Icons.people_outline_rounded,
+                                  text: 'Kelola Anggota',
                                 ),
                               ),
                             ],

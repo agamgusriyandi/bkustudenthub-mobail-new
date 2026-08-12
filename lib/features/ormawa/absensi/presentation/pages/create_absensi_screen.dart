@@ -6,7 +6,9 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,20 +64,16 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       await context.read<OrmawaProvider>().createAbsensiManagement(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        showDialog(
+        BkuDialog.show(
           context: context,
-          barrierDismissible: false,
-          builder: (context) => CustomDialog(
-            title: 'Absensi Dibuat!',
-            content: 'Sesi absensi kegiatan berhasil dibuat.',
-            cancelText: '',
-            confirmText: 'Kembali',
-            onCancel: () {},
-            onConfirm: () {
-              context.pop();
-              context.pop();
-            },
-          ),
+          title: 'Absensi Dibuat!',
+          message: 'Sesi absensi kegiatan berhasil dibuat.',
+          type: BkuDialogType.success,
+          primaryButtonText: 'Kembali',
+          onPrimaryPressed: () {
+            context.pop();
+            context.pop();
+          },
         );
       }
     } catch (e) {
@@ -150,23 +148,39 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLabel('NAMA KEGIATAN'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTextField(controller: _namaController, hint: 'Contoh: Rapat Koordinasi', icon: Icons.event_rounded),
+                  BkuTextField(
+                    label: 'NAMA KEGIATAN',
+                    controller: _namaController,
+                    hint: 'Contoh: Rapat Koordinasi',
+                    prefixIcon: Icon(Icons.event_rounded, color: context.appColors.primary, size: 20),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
-                  _buildLabel('DESKRIPSI'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTextField(controller: _deskripsiController, hint: 'Deskripsi kegiatan...', icon: Icons.description_rounded, maxLines: 3),
+                  BkuTextField(
+                    label: 'DESKRIPSI',
+                    controller: _deskripsiController,
+                    hint: 'Deskripsi kegiatan...',
+                    maxLines: 3,
+                    prefixIcon: Icon(Icons.description_rounded, color: context.appColors.primary, size: 20),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
-                  _buildLabel('LOKASI'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTextField(controller: _lokasiController, hint: 'Contoh: Ruang Aula', icon: Icons.location_on_rounded),
+                  BkuTextField(
+                    label: 'LOKASI',
+                    controller: _lokasiController,
+                    hint: 'Contoh: Ruang Aula',
+                    prefixIcon: Icon(Icons.location_on_rounded, color: context.appColors.primary, size: 20),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
-                  _buildLabel('TANGGAL'),
+                  Text(
+                    'TANGGAL',
+                    style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600, fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 10),
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   _buildDatePicker(),
                   const SizedBox(height: AppSpacing.xl),
-                  _buildLabel('WAKTU'),
+                  Text(
+                    'WAKTU',
+                    style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600, fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 10),
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   Row(
                     children: [
@@ -176,75 +190,25 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  _buildLabel('JUMLAH PESERTA'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTextField(
+                  BkuTextField(
+                    label: 'JUMLAH PESERTA',
                     controller: TextEditingController(text: _jumlahTotal > 0 ? _jumlahTotal.toString() : ''),
                     hint: '0',
-                    icon: Icons.people_rounded,
-                    isNumber: true,
+                    prefixIcon: Icon(Icons.people_rounded, color: context.appColors.primary, size: 20),
+                    keyboardType: TextInputType.number,
                     onChanged: (v) => _jumlahTotal = int.tryParse(v) ?? 0,
                   ),
                   const SizedBox(height: AppSpacing.s48),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isSubmitting ? null : _handleSubmit,
-                      child: _isSubmitting
-                          ? SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(color: context.appColors.onPrimary, strokeWidth: 2),
-                            )
-                          : Text(
-                              'SIMPAN ABSENSI',
-                              style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold, letterSpacing: 1),
-                            ),
-                    ),
+                  BkuButton.primary(
+                    text: 'SIMPAN ABSENSI',
+                    isLoading: _isSubmitting,
+                    onPressed: _handleSubmit,
                   ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600, fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 10),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    bool isNumber = false,
-    int maxLines = 1,
-    Function(String)? onChanged,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        onChanged: onChanged,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        ),
       ),
     );
   }

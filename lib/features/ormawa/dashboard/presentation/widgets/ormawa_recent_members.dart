@@ -91,14 +91,10 @@ class OrmawaRecentMembers extends StatelessWidget {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(15),
+                          color: context.appColors.primary.withAlpha(15),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withAlpha(30),
+                            color: context.appColors.primary.withAlpha(30),
                             width: 1.5,
                           ),
                         ),
@@ -116,10 +112,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                                         (context, url, error) => Text(
                                           initial,
                                           style: AppTextStyles.titleLg.copyWith(
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
+                                            color: context.appColors.primary,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
                                           ),

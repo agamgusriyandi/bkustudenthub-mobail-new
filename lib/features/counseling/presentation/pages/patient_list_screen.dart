@@ -6,7 +6,10 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:printing/printing.dart';
 import 'dart:convert';
@@ -351,7 +354,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
 
     return Column(
       children: [
-        TextField(
+        BkuTextField(
           controller: _searchController,
           onChanged: (val) => setState(() => _searchQuery = val),
           decoration: InputDecoration(
@@ -410,7 +413,7 @@ class _PatientListScreenState extends State<PatientListScreen> {
             border: Border.all(color: AppColors.neutral300.withAlpha(40)),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                  child: BkuDropdown<String>(
                     isExpanded: true,
                     value: _sortOrder,
                     icon: Icon(
@@ -444,16 +447,10 @@ class _PatientListScreenState extends State<PatientListScreen> {
                   border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String?>(
+                  child: BkuDropdown<String?>(
                     isExpanded: true,
                     value: _selectedProdi,
-                    hint: Text(
-                      'Seluruh Fakultas',
-                      style: AppTextStyles.labelMd.copyWith(
-                        color: AppColors.neutral800,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
+                    hint: 'Seluruh Fakultas',
                     icon: Icon(
                       Icons.filter_list_rounded,
                       color: AppColors.primary,
@@ -1576,14 +1573,7 @@ class _PatientDetailsSheet extends StatelessWidget {
                               );
                               if (url != null && context.mounted) {
                                 try {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder:
-                                        (ctx) => const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                  );
+                                  BkuLoadingDialog.show(context, message: 'Mengunduh catatan...');
                                   final response = await ApiClient().client
                                       .get<List<int>>(
                                         url,
@@ -1591,12 +1581,8 @@ class _PatientDetailsSheet extends StatelessWidget {
                                           responseType: ResponseType.bytes,
                                         ),
                                       );
-                                  if (context.mounted) {
-                                    Navigator.of(
-                                      context,
-                                      rootNavigator: true,
-                                    ).pop();
-                                  }
+                                    if (!context.mounted) return;
+                                    BkuLoadingDialog.hide(context);
                                   final bytes = Uint8List.fromList(
                                     response.data!,
                                   );

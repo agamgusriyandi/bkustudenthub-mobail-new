@@ -1,6 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_prov
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class OrmawaProposalList extends StatelessWidget {
   const OrmawaProposalList({super.key});
@@ -54,23 +54,28 @@ class OrmawaProposalList extends StatelessWidget {
         Color statusColor;
         IconData statusIcon;
         List<Color> gradientColors;
+        BkuStatus mappedStatus;
 
         if (statusLower.contains('disetujui') || statusLower == 'selesai') {
           statusColor = AppColors.success; // Emerald green
           statusIcon = Icons.check_circle_rounded;
           gradientColors = [AppColors.successContainer, AppColors.successContainer];
+          mappedStatus = BkuStatus.success;
         } else if (statusLower.contains('tolak') || statusLower == 'batal') {
           statusColor = AppColors.error; // Red
           statusIcon = Icons.cancel_rounded;
           gradientColors = [AppColors.dangerContainer, AppColors.dangerContainer];
+          mappedStatus = BkuStatus.error;
         } else if (statusLower.contains('revisi')) {
           statusColor = AppColors.warning; // Amber
           statusIcon = Icons.edit_document;
           gradientColors = [AppColors.warningContainer, AppColors.warningContainer];
+          mappedStatus = BkuStatus.warning;
         } else {
           statusColor = AppColors.info; // Blue
           statusIcon = Icons.file_present_rounded;
           gradientColors = [AppColors.infoContainer, AppColors.infoContainer];
+          mappedStatus = BkuStatus.info;
         }
 
         return FadeInAnimation(
@@ -122,23 +127,13 @@ class OrmawaProposalList extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Container(
+                      BkuStatusBadge(
+                        status: mappedStatus,
+                        customText: proposal.status,
+                        showIcon: false,
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                           vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withAlpha(20),
-                          borderRadius: AppRadius.radiusSm,
-                        ),
-                        child: Text(
-                          proposal.status,
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: statusColor.withValues(alpha: 0.9),
-                            fontSize: 9,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.5,
-                          ),
                         ),
                       ),
                     ],

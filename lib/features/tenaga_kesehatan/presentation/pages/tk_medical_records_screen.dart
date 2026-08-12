@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -72,7 +73,7 @@ class _TkMedicalRecordsScreenState extends State<TkMedicalRecordsScreen> {
               // Search
               Padding(
                 padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
-                child: TextField(
+                child: BkuTextField(
                   onChanged: (v) => setState(() => _searchQuery = v),
                   decoration: InputDecoration(
                     hintText: 'Cari rekam medis...',

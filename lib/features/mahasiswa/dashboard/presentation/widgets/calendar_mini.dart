@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class CalendarEvent {
   final String title;
@@ -61,14 +62,9 @@ class _CalendarMiniState extends State<CalendarMini> {
         ? viewedEvents.where((e) => e.date.day == _selectedDay).toList()
         : [];
 
-    return Container(
-      width: double.infinity,
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-      ),
+      borderOnly: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -9,7 +10,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
@@ -113,21 +114,18 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
       return;
     }
 
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => CustomDialog(
-            title: 'Konfirmasi Kirim',
-            content:
-                'Apakah Anda yakin ingin mengirim handbook ini? Anda tidak dapat mengubahnya lagi setelah dikirim.',
-            cancelText: 'Batal',
-            confirmText: 'Kirim',
-            onCancel: () => Navigator.pop(ctx),
-            onConfirm: () {
-              Navigator.pop(ctx);
-              _submit();
-            },
-          ),
+      type: BkuDialogType.warning,
+      title: 'Konfirmasi Kirim',
+      message: 'Apakah Anda yakin ingin mengirim handbook ini? Anda tidak dapat mengubahnya lagi setelah dikirim.',
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+      primaryButtonText: 'Kirim',
+      onPrimaryPressed: () {
+        Navigator.pop(context);
+        _submit();
+      },
     );
   }
 
@@ -389,7 +387,6 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
     TextEditingController controller,
     bool isReadOnly,
   ) {
-    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -426,38 +423,11 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
               ),
             ],
           ),
-          child: TextField(
+          child: BkuTextField(
             controller: controller,
             maxLines: 5,
             enabled: !isReadOnly,
-            style: AppTextStyles.bodyMd.copyWith(
-              color:
-                  isReadOnly ? AppColors.neutral600 : theme.colorScheme.onSurface,
-            ),
-            decoration: InputDecoration(
-              hintText: 'Tulis ${label.toLowerCase()} di sini...',
-              hintStyle: AppTextStyles.bodySm.copyWith(
-                color: theme.colorScheme.outlineVariant,
-              ),
-              filled: true,
-              fillColor: isReadOnly ? AppColors.neutral50 : context.appColors.surface,
-              contentPadding: const EdgeInsets.all(AppSpacing.lg),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: AppColors.neutral300, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(
-                  color: theme.colorScheme.primary,
-                  width: 1.5,
-                ),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(color: AppColors.neutral200, width: 1),
-              ),
-            ),
+            hint: 'Tulis ${label.toLowerCase()} di sini...',
           ),
         ),
       ],

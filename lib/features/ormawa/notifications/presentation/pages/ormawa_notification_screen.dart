@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -163,37 +164,13 @@ class _OrmawaNotificationScreenState extends State<OrmawaNotificationScreen> {
                               provider.markAsRead(notif.id);
                             }
                           },
-                          child: Container(
+                          child: BkuCard(
                             margin: const EdgeInsets.only(bottom: AppSpacing.md),
                             padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color:
-                                  isUnread
-                                      ? context.appColors.surface
-                                      : AppColors.neutral100,
-                              borderRadius: AppRadius.radiusXl,
-                              border: Border.all(
-                                color:
-                                    isUnread
-                                        ? Theme.of(
-                                          context,
-                                        ).colorScheme.primary.withAlpha(20)
-                                        : AppColors.neutral300,
-                                width: isUnread ? 1.5 : 1,
-                              ),
-                              boxShadow:
-                                  isUnread
-                                      ? [
-                                        BoxShadow(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary.withAlpha(5),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ]
-                                      : null,
-                            ),
+                            color:
+                                isUnread
+                                    ? context.appColors.surface
+                                    : AppColors.neutral100,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

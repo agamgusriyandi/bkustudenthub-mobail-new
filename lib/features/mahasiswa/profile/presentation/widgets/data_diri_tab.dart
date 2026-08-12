@@ -6,6 +6,9 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class DataDiriTabWidget extends StatefulWidget {
   const DataDiriTabWidget({super.key});
@@ -218,7 +221,7 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             ],
           ),
           const SizedBox(height: AppSpacing.s6),
-          TextFormField(
+          BkuTextField(
             controller: controller,
             readOnly: isDate,
             onTap: isDate
@@ -239,49 +242,13 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
                     }
                   }
                 : null,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.neutral900,
-            ),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.neutral100,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
-              prefixIcon: prefixIcon != null
+            prefixIcon: prefixIcon != null
                   ? Icon(
                       prefixIcon,
                       size: 19,
                       color: AppColors.neutral600,
                     )
                   : null,
-              border: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide(
-                  color: context.appColors.secondaryContainer,
-                  width: 1.8,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide(color: context.appColors.error),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide(color: context.appColors.error, width: 1.8),
-              ),
-            ),
             onSaved: (val) => _formData[key] = val,
             validator: (val) {
               if (required && (val == null || val.trim().isEmpty)) {
@@ -301,20 +268,10 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
     Color accentColor,
     List<Widget> fields,
   ) {
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.s18),
       padding: AppSpacing.padding18,
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.br22,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(10),
-            blurRadius: 18,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      borderRadius: 22,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -406,55 +363,11 @@ class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
             ],
           ),
     SizedBox(height: AppSpacing.sm),
-          Container(
-            height: 52,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: AppRadius.radiusLg,
-              color: context.appColors.primary,
-              boxShadow: [
-                BoxShadow(
-                  color: context.appColors.primary.withAlpha(50),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _save,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                foregroundColor: context.appColors.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.radiusLg,
-                ),
-              ),
-              child: _isLoading
-                  ? SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        color: context.appColors.onPrimary,
-                        strokeWidth: 2.5,
-                      ),
-                    )
-                  : const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.save_rounded, size: 20),
-                        SizedBox(width: AppSpacing.sm),
-                        Text(
-                          'Simpan Perubahan',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
+          BkuButton.primary(
+            text: 'Simpan Perubahan',
+            icon: Icons.save_rounded,
+            isLoading: _isLoading,
+            onPressed: _isLoading ? null : _save,
           ),
           const SizedBox(height: AppSpacing.s120),
         ],

@@ -13,12 +13,14 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/features/counseling/domain/entities/psychologist.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -1075,17 +1077,12 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
             ),
           ),
           Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: options.contains(value) ? value : options.first,
-                isExpanded: true,
-                items: options
-                    .map((o) => DropdownMenuItem(value: o, child: Text(o, style: AppTextStyles.labelSm)))
-                    .toList(),
-                onChanged: (v) {
-                  if (v != null) onChanged(v);
-                },
-              ),
+            child: BkuDropdown<String>(
+              value: options.contains(value) ? value : options.first,
+              items: options.map((o) => DropdownMenuItem(value: o, child: Text(o, style: AppTextStyles.labelSm))).toList(),
+              onChanged: (v) {
+                if (v != null) onChanged(v);
+              },
             ),
           ),
         ],
@@ -1099,42 +1096,12 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     String? hint,
     TextInputType? keyboardType,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.appColors.outline,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.4,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(
-            hintText: hint,
-            filled: true,
-            fillColor: AppColors.neutral50,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.outlineVariant),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.outlineVariant),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      controller: controller,
+      label: label,
+      hint: hint,
+      keyboardType: keyboardType,
+      onChanged: (_) => setState(() {}),
     );
   }
 
@@ -1143,41 +1110,11 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     required String label,
     required void Function(String) onChanged,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.appColors.outline,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.4,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: AppColors.neutral50,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.outlineVariant),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.outlineVariant),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      controller: controller,
+      label: label,
+      keyboardType: TextInputType.number,
+      onChanged: onChanged,
     );
   }
 
@@ -1187,39 +1124,13 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     required List<String> options,
     required void Function(String) onChanged,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.appColors.outline,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.4,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            color: AppColors.neutral50,
-            borderRadius: AppRadius.radiusMd,
-            border: Border.all(color: context.appColors.outlineVariant),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              items: options
-                  .map((o) => DropdownMenuItem(value: o, child: Text(o, style: AppTextStyles.labelMd)))
-                  .toList(),
-              onChanged: (v) {
-                if (v != null) onChanged(v);
-              },
-            ),
-          ),
-        ),
-      ],
+    return BkuDropdown<String>(
+      label: label,
+      value: options.contains(value) ? value : options.first,
+      items: options.map((o) => DropdownMenuItem(value: o, child: Text(o, style: AppTextStyles.labelMd))).toList(),
+      onChanged: (v) {
+        if (v != null) onChanged(v);
+      },
     );
   }
 
@@ -1298,7 +1209,7 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
-        TextField(
+        BkuTextField(
           controller: controller,
           minLines: minLines,
           maxLines: minLines + 3,
@@ -1420,22 +1331,16 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
   }
 
   void _showSuccessDialog() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      barrierDismissible: false,
-      builder: (_) => CustomDialog(
-        title: 'Pendaftaran Berhasil!',
-        content:
-            'Form SPMI kamu telah dikirim. Mohon tunggu konfirmasi psikolog melalui notifikasi aplikasi.',
-        isSuccess: true,
-        cancelText: '',
-        confirmText: 'Tutup',
-        onConfirm: () {
-          context.pop();
-          context.pop();
-        },
-        onCancel: () {},
-      ),
+      title: 'Pendaftaran Berhasil!',
+      message: 'Form SPMI kamu telah dikirim. Mohon tunggu konfirmasi psikolog melalui notifikasi aplikasi.',
+      type: BkuDialogType.success,
+      primaryButtonText: 'Tutup',
+      onPrimaryPressed: () {
+        context.pop();
+        context.pop();
+      },
     );
   }
 }

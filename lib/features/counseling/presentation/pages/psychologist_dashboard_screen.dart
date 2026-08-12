@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/widgets/dashboard/availability_toggle.dart';
@@ -151,17 +151,13 @@ class _PsychologistDashboardScreenState
             body: message,
           );
 
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (context) => CustomDialog(
-                  title: 'Pengingat Sesi Konseling',
-                  content: message,
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  onCancel: () {},
-                  onConfirm: () => context.pop(),
-                ),
+            title: 'Pengingat Sesi Konseling',
+            message: message,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => context.pop(),
+            type: BkuDialogType.info,
           );
         }
       }

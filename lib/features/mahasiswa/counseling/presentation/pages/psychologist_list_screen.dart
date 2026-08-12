@@ -1,6 +1,7 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -167,42 +168,27 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
           ),
         ],
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: _searchCtrl,
-        focusNode: _focusNode,
-        onChanged: (v) => provider.loadPsychologists(search: v),
-        decoration: InputDecoration(
-          hintText: 'Cari psikolog...',
-          hintStyle: AppTextStyles.labelMd.copyWith(
-            color: AppColors.neutral500,
-          ),
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: AppColors.neutral600,
-            size: 20,
-          ),
-          suffixIcon:
-              _searchCtrl.text.isNotEmpty
-                  ? IconButton(
-                    icon: const Icon(
-                      Icons.cancel_rounded,
-                      size: 18,
-                      color: AppColors.neutral500,
-                    ),
-                    onPressed: () {
-                      _searchCtrl.clear();
-                      provider.loadPsychologists();
-                    },
-                  )
-                  : null,
-          border: OutlineInputBorder(
-            borderRadius: AppRadius.radiusLg,
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: AppColors.neutral50,
-          contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        hint: 'Cari psikolog...',
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: context.appColors.primary,
         ),
+        suffixIcon: _searchCtrl.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(
+                  Icons.cancel_rounded,
+                  size: 18,
+                  color: AppColors.neutral500,
+                ),
+                onPressed: () {
+                  _searchCtrl.clear();
+                  provider.loadPsychologists();
+                },
+              )
+            : null,
+        onChanged: (v) => provider.loadPsychologists(search: v),
       ),
     );
   }

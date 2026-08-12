@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import '../providers/presensi_provider.dart';
@@ -407,25 +408,16 @@ class _PresensiScreenState extends State<PresensiScreen> {
     PresensiModel presensi,
     PresensiProvider provider,
   ) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Check-in Presensi'),
-        content: Text('Check-in untuk ${presensi.matkulName}?'),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.radiusLg,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Batal',
-              style: TextStyle(color: context.appColors.onSurfaceVariant),
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
+      type: BkuDialogType.info,
+      title: 'Check-in Presensi',
+      message: 'Check-in untuk ${presensi.matkulName}?',
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+      primaryButtonText: 'Check-in',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
               try {
                 await provider.checkIn(presensi);
                 if (context.mounted) {
@@ -442,17 +434,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
                   );
                 }
               }
-            },
-            child: Text(
-              'Check-in',
-              style: TextStyle(
-                color: context.appColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
+      },
     );
   }
 }

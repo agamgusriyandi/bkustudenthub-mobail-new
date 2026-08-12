@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class NotifikasiTabWidget extends StatefulWidget {
   const NotifikasiTabWidget({super.key});
@@ -66,20 +67,10 @@ class _NotifikasiTabWidgetState extends State<NotifikasiTabWidget> {
     bool value,
     ValueChanged<bool> onChanged,
   ) {
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.s14),
       padding: AppSpacing.paddingLg,
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.br22,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(10),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      borderRadius: 22,
       child: Row(
         children: [
           Container(

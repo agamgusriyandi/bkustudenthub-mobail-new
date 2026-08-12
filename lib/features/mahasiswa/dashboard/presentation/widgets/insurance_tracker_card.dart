@@ -5,6 +5,8 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class InsuranceTrackerCard extends StatelessWidget {
   final List<InsuranceClaim> claims;
@@ -45,13 +47,9 @@ class InsuranceTrackerCard extends StatelessWidget {
       statusText = 'Klaim ditolak. Catatan: ${claim.catatanReview ?? "-"}';
     }
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200),
-      ),
+      borderOnly: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -149,45 +147,27 @@ class InsuranceTrackerCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context, String status) {
-    Color bg = AppColors.neutral100;
-    Color text = AppColors.neutral600;
+    BkuStatus bkuStatus = BkuStatus.info;
     String label = 'Diajukan';
 
     if (status == 'PENDING_VERIFICATION') {
-      bg = context.appColors.warningContainer;
-      text = context.appColors.warning;
+      bkuStatus = BkuStatus.warning;
       label = 'Proses Awal';
     } else if (status == 'APPROVED_TK') {
-      bg = context.appColors.infoContainer;
-      text = context.appColors.info;
+      bkuStatus = BkuStatus.info;
       label = 'Verifikasi TK';
     } else if (status == 'APPROVED_FINAL' || status == 'FINAL') {
-      bg = context.appColors.successContainer;
-      text = context.appColors.success;
+      bkuStatus = BkuStatus.success;
       label = 'Disetujui';
     } else if (status == 'REJECTED') {
-      bg = context.appColors.errorContainer;
-      text = context.appColors.error;
+      bkuStatus = BkuStatus.error;
       label = 'Ditolak';
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs - 2,
-      ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: AppRadius.radiusFull,
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelSm.copyWith(
-          fontSize: 9,
-          color: text,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+    return BkuStatusBadge(
+      status: bkuStatus,
+      customText: label,
+      showIcon: false,
     );
   }
 

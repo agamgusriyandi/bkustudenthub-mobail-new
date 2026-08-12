@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -483,16 +484,16 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
       children: [
         if (_currentIndex > 0)
           Expanded(
-            child: OutlinedButton(
+            child: BkuButton(
               onPressed: () => setState(() => _currentIndex--),
-
-              child: const Text('Kembali'),
+              variant: BkuButtonVariant.outline,
+              text: 'Kembali',
             ),
           ),
         if (_currentIndex > 0) const SizedBox(width: AppSpacing.lg),
         Expanded(
           flex: 2,
-          child: ElevatedButton(
+          child: BkuButton(
             onPressed:
                 answered
                     ? () {
@@ -503,8 +504,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                       }
                     }
                     : null,
-
-            child: Text(isLast ? 'Lihat Hasil' : 'Lanjut'),
+            text: isLast ? 'Lihat Hasil' : 'Lanjut',
           ),
         ),
       ],
@@ -591,7 +591,7 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                   builder:
                       (context, provider, _) => SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
+                        child: BkuButton(
                           onPressed:
                               provider.assessmentSubmitting
                                   ? null
@@ -631,39 +631,20 @@ class _AssessmentQuizScreenState extends State<_AssessmentQuizScreen> {
                                     );
                                     context.pop();
                                   },
-
-                          child:
-                              provider.assessmentSubmitting
-                                  ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: context.appColors.onPrimary,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                  : Text(
-                                    'Simpan & Selesai',
-                                    style: AppTextStyles.bodyMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                          isLoading: provider.assessmentSubmitting,
+                          text: 'Simpan & Selesai',
                         ),
                       ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                TextButton(
+                BkuButton(
                   onPressed: () {
                     Navigator.pop(ctx);
                     context.pop();
                   },
-                  child: Text(
-                    'Tutup tanpa menyimpan',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: context.appColors.onSurface.withAlpha(150),
-                      fontSize: 12,
-                    ),
-                  ),
+                  variant: BkuButtonVariant.text,
+                  customFgColor: context.appColors.onSurface.withAlpha(150),
+                  text: 'Tutup tanpa menyimpan',
                 ),
               ],
             ),

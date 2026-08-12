@@ -1,10 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class OrmawaAbsensiSuccessScreen extends StatefulWidget {
   final String eventId;
@@ -130,21 +131,8 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
 
                     const SizedBox(height: AppSpacing.s48),
 
-                    Container(
-                      width: double.infinity,
+                    BkuCard(
                       padding: const EdgeInsets.all(AppSpacing.xl),
-                      decoration: BoxDecoration(
-                        color: context.appColors.surface,
-                        borderRadius: AppRadius.radiusXl,
-                        border: Border.all(color: AppColors.neutral200),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.neutral900.withAlpha(10),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -202,21 +190,15 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                     SizedBox(
                       width: double.infinity,
                       height: 56,
-                      child: ElevatedButton.icon(
+                      child: BkuButton.primary(
                         onPressed: () {
                           int count = 0;
                           Navigator.popUntil(context, (route) {
                             return count++ == 2;
                           });
                         },
-                        icon: const Icon(Icons.check_circle_outline_rounded),
-                        label: const Text(
-                          'Selesai & Kembali',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
+                        icon: Icons.check_circle_outline_rounded,
+                        text: 'Selesai & Kembali',
                       ),
                     ),
                   ],

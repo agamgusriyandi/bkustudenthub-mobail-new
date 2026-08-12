@@ -5,9 +5,12 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -60,20 +63,16 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
 
       await context.read<OrmawaProvider>().addAgenda(data);
       if (mounted) {
-        showDialog(
+        BkuDialog.show(
           context: context,
-          barrierDismissible: false,
-          builder: (context) => CustomDialog(
-            title: 'Kegiatan Dibuat!',
-            content: 'Kegiatan baru berhasil disimpan.',
-            cancelText: '',
-            confirmText: 'Kembali',
-            onCancel: () {},
-            onConfirm: () {
-              context.pop();
-              context.pop();
-            },
-          ),
+          title: 'Kegiatan Dibuat!',
+          message: 'Kegiatan baru berhasil disimpan.',
+          type: BkuDialogType.success,
+          primaryButtonText: 'Kembali',
+          onPrimaryPressed: () {
+            context.pop();
+            context.pop();
+          },
         );
       }
     } catch (e) {
@@ -106,29 +105,37 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('JUDUL KEGIATAN'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-                controller: _judulController,
-                hint: 'Contoh: Rapat Koordinasi',
-                icon: Icons.event_rounded),
+            BkuTextField(
+              label: 'JUDUL KEGIATAN',
+              controller: _judulController,
+              hint: 'Contoh: Rapat Koordinasi',
+              prefixIcon: Icon(Icons.event_rounded, color: context.appColors.primary, size: 20),
+            ),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('DESKRIPSI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-                controller: _deskripsiController,
-                hint: 'Deskripsi kegiatan...',
-                icon: Icons.description_rounded,
-                maxLines: 3),
+            BkuTextField(
+              label: 'DESKRIPSI',
+              controller: _deskripsiController,
+              hint: 'Deskripsi kegiatan...',
+              maxLines: 3,
+              prefixIcon: Icon(Icons.description_rounded, color: context.appColors.primary, size: 20),
+            ),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('LOKASI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-                controller: _lokasiController,
-                hint: 'Contoh: Aula Utama',
-                icon: Icons.location_on_rounded),
+            BkuTextField(
+              label: 'LOKASI',
+              controller: _lokasiController,
+              hint: 'Contoh: Aula Utama',
+              prefixIcon: Icon(Icons.location_on_rounded, color: context.appColors.primary, size: 20),
+            ),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('TANGGAL PELAKSANAAN'),
+            Text(
+              'TANGGAL PELAKSANAAN',
+              style: AppTextStyles.labelSm.copyWith(
+                color: AppColors.neutral600,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+                fontSize: 10,
+              ),
+            ),
             const SizedBox(height: AppSpacing.md),
             GestureDetector(
               onTap: _pickDate,
@@ -161,7 +168,15 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('STATUS'),
+            Text(
+              'STATUS',
+              style: AppTextStyles.labelSm.copyWith(
+                color: AppColors.neutral600,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+                fontSize: 10,
+              ),
+            ),
             const SizedBox(height: AppSpacing.md),
             Container(
               padding:
@@ -172,7 +187,7 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: BkuDropdown<String>(
                   value: _selectedStatus,
                   isExpanded: true,
                   items: _statuses
@@ -184,62 +199,12 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.s48),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _handleSubmit,
-                child: _isSubmitting
-                    ? SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                            color: context.appColors.onPrimary, strokeWidth: 2))
-                    : Text('SIMPAN KEGIATAN',
-                        style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-              ),
+            BkuButton.primary(
+              text: 'SIMPAN KEGIATAN',
+              isLoading: _isSubmitting,
+              onPressed: _handleSubmit,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(text,
-        style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            fontSize: 10));
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    int maxLines = 1,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon:
-              Icon(icon, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
         ),
       ),
     );

@@ -1,10 +1,12 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 /// Shows a modern rejection UI when a student tries to apply for a second scholarship.
 /// Displays an image, a message, and a button to view the existing application details.
@@ -181,7 +183,7 @@ Future<void> showRejectionBottomSheet(
                 height: 4,
                 margin: const EdgeInsets.only(bottom: AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.neutral300,
                   borderRadius: AppRadius.radiusXs,
                 ),
               ),
@@ -269,19 +271,11 @@ Future<void> showRejectionBottomSheet(
               ),
 
               const SizedBox(height: AppSpacing.xl),
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(sheetContext);
-                  },
-
-                  child: const Text(
-                    'Tutup',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
-                ),
+              BkuButton(
+                onPressed: () {
+                  Navigator.pop(sheetContext);
+                },
+                text: 'Tutup',
               ),
             ],
           ),

@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:intl/intl.dart';
 
 class MentorBandingScreen extends StatefulWidget {
@@ -150,23 +151,9 @@ class _MentorBandingScreenState extends State<MentorBandingScreen> with SingleTi
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: item.type == 'fakultas' ? AppColors.infoContainer : AppColors.warningContainer,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: item.type == 'fakultas' ? AppColors.info : AppColors.warning,
-                    ),
-                  ),
-                  child: Text(
-                    item.type == 'fakultas' ? 'Fakultas' : 'Universitas',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: item.type == 'fakultas' ? AppColors.info : AppColors.warning,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10,
-                    ),
-                  ),
+                BkuStatusBadge(
+                  status: item.type == 'fakultas' ? BkuStatus.info : BkuStatus.warning,
+                  customText: item.type == 'fakultas' ? 'Fakultas' : 'Universitas',
                 ),
               ],
             ),

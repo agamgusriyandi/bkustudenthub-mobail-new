@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:provider/provider.dart';
@@ -248,7 +249,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           (p) => (int.tryParse(p['id'].toString()) ?? 0) == _selectedStudentId,
         );
 
-        return DropdownButtonFormField<int>(
+        return BkuDropdown<int>(
           initialValue: isIdValid ? _selectedStudentId : null,
           isExpanded: true,
           icon: Icon(
@@ -280,10 +281,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
               borderSide: BorderSide(color: AppColors.primary, width: 1.5),
             ),
           ),
-          hint: Text(
-            'Pilih Pasien',
-            style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
-          ),
+          hint: 'Pilih Pasien',
           validator: (value) {
             if (value == null) {
               return 'Harap pilih mahasiswa';
@@ -388,7 +386,7 @@ class _CreateReferralScreenState extends State<CreateReferralScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        DropdownButtonFormField<String>(
+        BkuDropdown<String>(
           initialValue: _selectedType,
           isExpanded: true,
           icon: Icon(

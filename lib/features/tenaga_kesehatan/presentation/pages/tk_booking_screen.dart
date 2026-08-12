@@ -18,6 +18,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -515,22 +516,10 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                         const SizedBox(width: AppSpacing.s10),
                         SizedBox(
                           height: 34,
-                          child: ElevatedButton.icon(
+                          child: BkuButton.success(
                             onPressed: () => _handleAccept(bookingId),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appColors.success,
-                              foregroundColor: context.appColors.onPrimary,
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: AppRadius.br10,
-                              ),
-                            ),
-                            icon: const Icon(Icons.check_rounded, size: 16),
-                            label: const Text(
-                              'Terima',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-                            ),
+                            icon: Icons.check_rounded,
+                            text: 'Terima',
                           ),
                         ),
                       ],
@@ -572,22 +561,10 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                         const SizedBox(width: AppSpacing.s10),
                         SizedBox(
                           height: 34,
-                          child: ElevatedButton.icon(
+                          child: BkuButton.success(
                             onPressed: () => _handleComplete(bookingId),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appColors.success,
-                              foregroundColor: context.appColors.onPrimary,
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: AppRadius.br10,
-                              ),
-                            ),
-                            icon: const Icon(Icons.check_circle_rounded, size: 16),
-                            label: const Text(
-                              'Tandai Selesai',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-                            ),
+                            icon: Icons.check_circle_rounded,
+                            text: 'Tandai Selesai',
                           ),
                         ),
                       ],
@@ -838,20 +815,10 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  TextField(
+                  BkuTextField(
                     controller: alasanController,
                     maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: 'Contoh: Jadwal penuh, perlu reschedule...',
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: AppColors.neutral300),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide(color: AppColors.neutral300),
-                      ),
-                    ),
+                    hint: 'Contoh: Jadwal penuh, perlu reschedule...',
                   ),
                   const SizedBox(height: AppSpacing.s20),
                   Row(
@@ -930,6 +897,29 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
     super.dispose();
   }
 
+  void _searchPatients(String val) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      if (val.isNotEmpty) {
+        setState(() => _isSearching = true);
+        final results = await context
+            .read<TkPatientProvider>()
+            .searchPatients(val);
+        if (mounted) {
+          setState(() {
+            _searchResults = results;
+            _isSearching = false;
+          });
+        }
+      } else {
+        setState(() {
+          _searchResults = null;
+          _isSearching = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -958,53 +948,11 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
           ),
           const SizedBox(height: AppSpacing.s20),
           if (_selectedPatient == null) ...[
-            TextField(
+            BkuTextField(
               controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Cari Nama atau NIM...',
-                prefixIcon: Icon(Icons.search_rounded, color: AppColors.neutral500,
-                ),
-                filled: true,
-                fillColor: AppColors.neutral50,
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusXl,
-                  borderSide: BorderSide(
-                    color: AppColors.neutral200.withAlpha(150),
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusXl,
-                  borderSide: BorderSide(
-                    color: AppColors.neutral200.withAlpha(150),
-                  ),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: AppRadius.radiusXl,
-                  borderSide: BorderSide(color: AppColors.neutral400),
-                ),
-              ),
-              onChanged: (val) {
-                if (_debounce?.isActive ?? false) _debounce!.cancel();
-                _debounce = Timer(const Duration(milliseconds: 500), () async {
-                  if (val.isNotEmpty) {
-                    setState(() => _isSearching = true);
-                    final results = await context
-                        .read<TkPatientProvider>()
-                        .searchPatients(val);
-                    if (mounted) {
-                      setState(() {
-                        _searchResults = results;
-                        _isSearching = false;
-                      });
-                    }
-                  } else {
-                    setState(() {
-                      _searchResults = null;
-                      _isSearching = false;
-                    });
-                  }
-                });
-              },
+              hint: 'Cari Nama atau NIM...',
+              prefixIcon: const Icon(Icons.search_rounded, color: AppColors.neutral500),
+              onChanged: _searchPatients,
             ),
             const SizedBox(height: AppSpacing.md),
             ConstrainedBox(
@@ -1252,50 +1200,19 @@ class _ManualBookingSheetState extends State<ManualBookingSheet> {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            TextField(
+            BkuTextField(
               controller: _keluhanController,
               maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Keluhan Utama Pasien...',
-                filled: true,
-                fillColor: AppColors.neutral50,
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusMd,
-                  borderSide: BorderSide(color: AppColors.neutral200),
-                ),
-              ),
+              hint: 'Keluhan Utama Pasien...',
             ),
             SizedBox(
               width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                onPressed: _isSubmitting ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.appColors.success,
-                  foregroundColor: context.appColors.onPrimary,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radiusLg,
-                  ),
-                ),
-                icon: _isSubmitting
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: context.appColors.onPrimary,
-                        ),
-                      )
-                    : Icon(Icons.check_circle_rounded, color: context.appColors.onPrimary),
-                label: Text(
-                  _isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Pasien',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: context.appColors.onPrimary,
-                  ),
-                ),
+              child: BkuButton(
+                onPressed: _submit,
+                text: 'Daftarkan Pasien',
+                icon: Icons.check_circle_rounded,
+                variant: BkuButtonVariant.success,
+                isLoading: _isSubmitting,
               ),
             ),
           ],

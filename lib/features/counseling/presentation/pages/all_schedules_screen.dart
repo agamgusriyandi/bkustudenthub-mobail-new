@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -71,9 +73,9 @@ class _AllSchedulesScreenState extends State<AllSchedulesScreen> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          ElevatedButton(
+                          BkuButton(
                             onPressed: provider.loadAllSchedules,
-                            child: const Text('Coba Lagi'),
+                            text: 'Coba Lagi',
                           ),
                         ],
                       ),
@@ -185,25 +187,9 @@ class _AllSchedulesScreenState extends State<AllSchedulesScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? AppColors.success.withAlpha(20)
-                        : AppColors.neutral200,
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    isActive ? 'Aktif' : 'Nonaktif',
-                    style: AppTextStyles.labelSm.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: isActive ? AppColors.success : AppColors.neutral500,
-                    ),
-                  ),
+                BkuStatusBadge(
+                  customText: isActive ? 'Aktif' : 'Nonaktif',
+                  status: isActive ? BkuStatus.active : BkuStatus.inactive,
                 ),
               ],
             ),

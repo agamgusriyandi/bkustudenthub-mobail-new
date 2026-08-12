@@ -13,6 +13,7 @@ import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_mod
 import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 
 class MentorHandbookReviewDetailScreen extends StatefulWidget {
   final int handbookId;
@@ -90,21 +91,10 @@ class _MentorHandbookReviewDetailScreenState
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 6),
-                  TextField(
+                  BkuTextField(
                     controller: feedbackController,
                     maxLines: 3,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.neutral100,
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
+                    hint: 'Tuliskan catatan...',
                   ),
                 ],
               ),

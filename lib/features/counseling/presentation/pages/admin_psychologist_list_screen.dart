@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -7,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/admin_psychologist_provider.dart';
@@ -76,7 +78,7 @@ class _AdminPsychologistListScreenState
                     AppSpacing.xl,
                     0,
                   ),
-                  child: TextField(
+                  child: BkuTextField(
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
                       hintText: 'Cari nama atau spesialisasi...',
@@ -143,9 +145,9 @@ class _AdminPsychologistListScreenState
                             ),
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          ElevatedButton(
+                          BkuButton(
                             onPressed: provider.loadPsychologists,
-                            child: const Text('Coba Lagi'),
+                            text: 'Coba Lagi',
                           ),
                         ],
                       ),

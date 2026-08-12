@@ -5,7 +5,7 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -143,18 +143,13 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
       if (newUrls.isEmpty && provider.error != null) {
         if (mounted) {
           setState(() => _isSubmitting = false);
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (context) => CustomDialog(
-                  title: 'Gagal Upload Foto',
-                  content: provider.error ?? 'Gagal mengunggah foto kegiatan',
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  isDestructive: true,
-                  onCancel: () {},
-                  onConfirm: () => context.pop(),
-                ),
+            title: 'Gagal Upload Foto',
+            message: provider.error ?? 'Gagal mengunggah foto kegiatan',
+            type: BkuDialogType.error,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => context.pop(),
           );
         }
         return;
@@ -195,18 +190,13 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
     }
 
     if (success && mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Berhasil',
-              content: 'BAP berhasil disimpan',
-              cancelText: '',
-              confirmText: 'Tutup',
-              isSuccess: true,
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Berhasil',
+        message: 'BAP berhasil disimpan',
+        type: BkuDialogType.success,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       ).then((_) {
         if (mounted) {
           provider.fetchBAPs();
@@ -214,18 +204,13 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
         }
       });
     } else if (mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Gagal',
-              content: provider.error ?? 'Gagal menyimpan BAP',
-              cancelText: '',
-              confirmText: 'Tutup',
-              isDestructive: true,
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Gagal',
+        message: provider.error ?? 'Gagal menyimpan BAP',
+        type: BkuDialogType.error,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       );
     }
   }
@@ -959,72 +944,36 @@ class _TkBapFormScreenState extends State<TkBapFormScreen> {
   }
 
   void _confirmDelete() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: const Text(
-              'Hapus BAP?',
-              style: TextStyle(fontWeight: FontWeight.w900),
-            ),
-            content: const Text(
-              'Data yang dihapus tidak bisa dikembalikan.',
-              style: TextStyle(height: 1.5),
-            ),
-
-            actionsPadding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              0,
-              AppSpacing.lg,
-              AppSpacing.lg,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(
-                  'Batal',
-                  style: TextStyle(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(ctx);
-                  setState(() => _isSubmitting = true);
-                  final provider = context.read<TkHealthProvider>();
-                  final success = await provider.deleteBAP(widget.existingBap!.id);
-                  if (mounted) {
-                    setState(() => _isSubmitting = false);
-                    if (success) {
-                      provider.fetchBAPs();
-                      context.pop();
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder:
-                            (context) => CustomDialog(
-                              title: 'Gagal',
-                              content: provider.error ?? 'Gagal menghapus BAP',
-                              cancelText: '',
-                              confirmText: 'Tutup',
-                              isDestructive: true,
-                              onCancel: () {},
-                              onConfirm: () => context.pop(),
-                            ),
-                      );
-                    }
-                  }
-                },
-
-                child: const Text(
-                  'Hapus',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
+      title: 'Hapus BAP?',
+      message: 'Data yang dihapus tidak bisa dikembalikan.',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => context.pop(),
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () async {
+        context.pop();
+        setState(() => _isSubmitting = true);
+        final provider = context.read<TkHealthProvider>();
+        final success = await provider.deleteBAP(widget.existingBap!.id);
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+          if (success) {
+            provider.fetchBAPs();
+            context.pop();
+          } else {
+            BkuDialog.show(
+              context: context,
+              title: 'Gagal',
+              message: provider.error ?? 'Gagal menghapus BAP',
+              type: BkuDialogType.error,
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => context.pop(),
+            );
+          }
+        }
+      },
     );
   }
 }

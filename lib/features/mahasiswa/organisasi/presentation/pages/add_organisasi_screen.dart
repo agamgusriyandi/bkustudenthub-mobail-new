@@ -2,8 +2,10 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
@@ -11,6 +13,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_hi
 import '../../../../../core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:go_router/go_router.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class AddOrganisasiScreen extends StatefulWidget {
   final OrganizationHistory? organization;
@@ -114,23 +117,16 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
 
       if (!mounted) return;
 
-      showDialog(
+      BkuDialog.show(
         context: context,
-        barrierDismissible: false,
-        builder:
-            (context) => CustomDialog(
-              title: 'Berhasil',
-              content: 'Pengajuan riwayat organisasi berhasil ditambahkan.',
-              isSuccess: true,
-              cancelText: '',
-              confirmText: 'Kembali',
-              confirmColor: context.appColors.success,
-              onCancel: () {},
-              onConfirm: () {
-                context.pop();
-                context.pop();
-              },
-            ),
+        type: BkuDialogType.success,
+        title: 'Berhasil',
+        message: 'Pengajuan riwayat organisasi berhasil ditambahkan.',
+        primaryButtonText: 'Kembali',
+        onPrimaryPressed: () {
+          context.pop();
+          context.pop();
+        },
       );
     } catch (e) {
       if (!mounted) return;
@@ -179,54 +175,13 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.s6),
-          TextFormField(
+          BkuTextField(
             controller: controller,
             maxLines: maxLines,
             validator: validator,
             keyboardType: keyboardType,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.neutral900,
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(
-                color: AppColors.neutral500,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
-              filled: true,
-              fillColor: AppColors.neutral100,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
-              prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
-              border: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(
-                  color: AppColors.neutral700,
-                  width: 1.8,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide(color: context.appColors.error),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide(color: context.appColors.error, width: 1.8),
-              ),
-            ),
+            hint: hint,
+            prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
           ),
         ],
       ),
@@ -268,7 +223,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.s6),
-          DropdownButtonFormField<String>(
+          BkuDropdown<String>(
             initialValue: value,
             items:
                 items
@@ -503,59 +458,11 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                 ],
               ),
     SizedBox(height: AppSpacing.sm),
-              Container(
-                height: 52,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: AppRadius.radiusLg,
-                  gradient: LinearGradient(
-                    colors: [context.appColors.success, context.appColors.success],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.appColors.success.withAlpha(40),
-                      blurRadius: 14,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    foregroundColor: context.appColors.onPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.radiusLg,
-                    ),
-                  ),
-                  child: _isSubmitting
-                      ? SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            color: context.appColors.surface,
-                            strokeWidth: 2.5,
-                          ),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.save_rounded, size: 20),
-                            SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'Simpan',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
+              BkuButton.success(
+                isLoading: _isSubmitting,
+                onPressed: _isSubmitting ? null : _submitForm,
+                text: 'Simpan',
+                icon: Icons.save_rounded,
               ),
               const SizedBox(height: AppSpacing.xxxl),
             ],

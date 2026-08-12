@@ -11,7 +11,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_health_provider.dart';
@@ -291,19 +291,10 @@ class _TkBapScreenState extends State<TkBapScreen> {
             const SizedBox(height: AppSpacing.xl),
             SizedBox(
               height: 40,
-              child: ElevatedButton.icon(
+              child: BkuButton.success(
                 onPressed: () => context.read<TkHealthProvider>().fetchBAPs(),
-                icon: Icon(Icons.refresh_rounded, color: context.appColors.onPrimary, size: 18),
-                label: Text(
-                  'Coba Lagi',
-                  style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.appColors.success,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.br10,
-                  ),
-                ),
+                icon: Icons.refresh_rounded,
+                text: 'Coba Lagi',
               ),
             ),
           ],
@@ -551,35 +542,26 @@ class _TkBapScreenState extends State<TkBapScreen> {
   }
 
   void _showDeleteConfirmation(BuildContext context, TkBapModel bap) async {
-    final result = await showDialog<bool>(
+    final result = await BkuDialog.show<bool>(
       context: context,
-      builder:
-          (dialogContext) => CustomDialog(
-            title: 'Hapus BAP?',
-            content:
-                'Apakah Anda yakin ingin menghapus BAP "${bap.namaKegiatan}"? Tindakan ini tidak dapat dibatalkan.',
-            cancelText: '',
-            confirmText: 'Tutup',
-            isDestructive: true,
-            onCancel: () {},
-            onConfirm: () => Navigator.pop(context, true),
-          ),
+      title: 'Hapus BAP?',
+      message: 'Apakah Anda yakin ingin menghapus BAP "${bap.namaKegiatan}"? Tindakan ini tidak dapat dibatalkan.',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context, false),
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () => Navigator.pop(context, true),
     );
     if (result == true && context.mounted) {
       await context.read<TkHealthProvider>().deleteBAP(bap.id);
       if (context.mounted) {
-        showDialog(
+        BkuDialog.show(
           context: context,
-          builder:
-              (context) => CustomDialog(
-                title: 'Berhasil',
-                content: 'BAP berhasil dihapus',
-                cancelText: '',
-                confirmText: 'Tutup',
-                isSuccess: true,
-                onCancel: () {},
-                onConfirm: () => context.pop(),
-              ),
+          title: 'Berhasil',
+          message: 'BAP berhasil dihapus',
+          type: BkuDialogType.success,
+          primaryButtonText: 'Tutup',
+          onPrimaryPressed: () => context.pop(),
         );
       }
     }

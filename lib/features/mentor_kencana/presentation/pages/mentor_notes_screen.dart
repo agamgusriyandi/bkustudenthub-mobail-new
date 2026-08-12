@@ -4,10 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
@@ -147,21 +150,17 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: TextField(
+                          child: BkuTextField(
                             controller: _searchController,
                             onChanged: (val) => setState(() => _searchQuery = val),
-                            decoration: InputDecoration(
-                              hintText: 'Cari NIM atau nama mahasiswa...',
-                              prefixIcon: const Icon(Icons.search_rounded),
-                              border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            ),
+                            hint: 'Cari NIM atau nama mahasiswa...',
+                            prefixIcon: const Icon(Icons.search_rounded),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           flex: 1,
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             initialValue: _selectedFaculty,
                             decoration: InputDecoration(
                               isDense: true,
@@ -229,19 +228,15 @@ class _MentorNotesScreenState extends State<MentorNotesScreen> {
                               ],
                             ),
                           ),
-                          OutlinedButton.icon(
+                          BkuButton(
+                            variant: BkuButtonVariant.outline,
                             onPressed: () {
                               context.push('/mentor-kencana/notes/${mentee.id}');
                             },
-                            icon: const Icon(Icons.remove_red_eye_outlined, size: 16),
-                            label: const Text('Buka Catatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: context.appColors.primary,
-                              side: BorderSide(color: context.appColors.primary.withAlpha(50)),
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                              backgroundColor: context.appColors.primary.withAlpha(10),
-                            ),
+                            icon: Icons.remove_red_eye_outlined,
+                            text: 'Buka Catatan',
+                            fontSize: 11,
+                            fullWidth: false,
                           ),
                         ],
                       ),

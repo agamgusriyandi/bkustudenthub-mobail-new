@@ -1,4 +1,7 @@
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -7,7 +10,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/admin_psychologist_provider.dart';
 
 class CreateMedicalRecordScreen extends StatefulWidget {
@@ -58,22 +61,18 @@ class _CreateMedicalRecordScreenState extends State<CreateMedicalRecordScreen> {
 
     setState(() => _isSaving = false);
 
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (_) => CustomDialog(
-        title: success ? 'Berhasil' : 'Gagal',
-        content: success
-            ? 'Rekam medis berhasil dibuat.'
-            : 'Gagal membuat rekam medis.',
-        cancelText: '',
-        confirmText: 'Tutup',
-        isSuccess: success,
-        onCancel: () {},
-        onConfirm: () {
-          context.pop();
-          if (success) context.pop();
-        },
-      ),
+      title: success ? 'Berhasil' : 'Gagal',
+      message: success
+          ? 'Rekam medis berhasil dibuat.'
+          : 'Gagal membuat rekam medis.',
+      primaryButtonText: 'Tutup',
+      type: success ? BkuDialogType.success : BkuDialogType.error,
+      onPrimaryPressed: () {
+        context.pop();
+        if (success) context.pop();
+      },
     );
   }
 
@@ -149,36 +148,10 @@ class _CreateMedicalRecordScreenState extends State<CreateMedicalRecordScreen> {
                       maxLines: 4,
                     ),
                     const SizedBox(height: AppSpacing.xxl),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _save,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
-                          foregroundColor: context.appColors.onPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.br14,
-                          ),
-                          elevation: 0,
-                        ),
-                        child: _isSaving
-                            ? SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  color: context.appColors.onPrimary,
-                                  strokeWidth: 2.5,
-                                ),
-                              )
-                            : Text(
-                                'Simpan Rekam Medis',
-                                style: AppTextStyles.bodyMd.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: context.appColors.onPrimary,
-                                ),
-                              ),
-                      ),
+                    BkuButton(
+                      onPressed: _isSaving ? null : _save,
+                      isLoading: _isSaving,
+                      text: 'Simpan Rekam Medis',
                     ),
                   ],
                 ),
@@ -208,7 +181,7 @@ class _CreateMedicalRecordScreenState extends State<CreateMedicalRecordScreen> {
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
   }) {
-    return TextFormField(
+    return BkuTextField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,

@@ -5,8 +5,9 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
@@ -19,7 +20,6 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
@@ -125,18 +125,13 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
       title: 'Test Notifikasi Nakes',
       body: 'Ini adalah pesan uji coba sistem notifikasi Tenaga Kesehatan.',
     );
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => CustomDialog(
-            title: 'Test Notifikasi',
-            content: 'Notifikasi uji coba berhasil dikirim ke perangkat Anda.',
-            cancelText: '',
-            confirmText: 'Tutup',
-            isSuccess: true,
-            onCancel: () {},
-            onConfirm: () => Navigator.pop(ctx),
-          ),
+      title: 'Test Notifikasi',
+      message: 'Notifikasi uji coba berhasil dikirim ke perangkat Anda.',
+      type: BkuDialogType.success,
+      primaryButtonText: 'Tutup',
+      onPrimaryPressed: () => Navigator.pop(context),
     );
   }
 
@@ -233,45 +228,18 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                     },
                   ),
                   const SizedBox(height: AppSpacing.s28),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 44,
-                    child: OutlinedButton.icon(
-                      onPressed: _testNotification,
-                      icon: const Icon(Icons.notifications_active_rounded, size: 18),
-                      label: const Text(
-                        'Cek Notifikasi (Test)',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: context.appColors.info,
-                        backgroundColor: context.appColors.info.withAlpha(15),
-                        side: BorderSide(color: context.appColors.info.withAlpha(30)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.br10,
-                        ),
-                      ),
-                    ),
+                  BkuButton(
+                    variant: BkuButtonVariant.outline,
+                    icon: Icons.notifications_active_rounded,
+                    text: 'Cek Notifikasi (Test)',
+                    onPressed: _testNotification,
+                    fullWidth: true,
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 44,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(sheetContext),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.success,
-                        foregroundColor: context.appColors.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.br10,
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'Tutup',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                  BkuButton.success(
+                    text: 'Tutup',
+                    onPressed: () => Navigator.pop(sheetContext),
+                    fullWidth: true,
                   ),
                   SizedBox(
                     height: MediaQuery.of(sheetContext).padding.bottom + 24,
@@ -701,72 +669,21 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
   }
 
   void _showLogoutDialog() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            contentPadding: AppSpacing.padding28,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: context.appColors.error.withAlpha(15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.logout_rounded,
-                    color: context.appColors.error,
-                    size: 36,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Keluar Aplikasi?',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.neutral800,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                Text(
-                  'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s28),
-                Row(
-                  children: [
-                    Expanded(
-                      child: BkuButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        text: 'Batal',
-                        variant: BkuButtonVariant.outline,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: BkuButton(
-                        onPressed: () async {
-                          Navigator.pop(ctx);
-                          await AuthService().logout();
-                          if (mounted) {
-                            context.go(AppRoutes.login);
-                          }
-                        },
-                        text: 'Keluar',
-                        variant: BkuButtonVariant.danger,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      title: 'Keluar Aplikasi?',
+      message: 'Sesi Anda akan diakhiri. Pastikan semua catatan sudah tersimpan sebelum keluar.',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => context.pop(),
+      primaryButtonText: 'Keluar',
+      onPrimaryPressed: () async {
+        context.pop();
+        await AuthService().logout();
+        if (mounted) {
+          context.go(AppRoutes.login);
+        }
+      },
     );
   }
 
@@ -892,8 +809,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
+                        child: BkuButton(
                           onPressed: () async {
                             bool success = await provider.updateProfileData({
                               'nama': namaController.text,
@@ -915,21 +831,8 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                                   );
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.success,
-                            foregroundColor: context.appColors.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppRadius.br10,
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Simpan Perubahan',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          text: 'Simpan Perubahan',
+                          variant: BkuButtonVariant.success,
                         ),
                       ),
                     ],
@@ -1023,8 +926,7 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                       const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
+                        child: BkuButton(
                           onPressed: () async {
                             if (oldPasswordController.text.isEmpty) {
                               AppSnackbar.showError(
@@ -1070,21 +972,8 @@ class _TkSettingsScreenState extends State<TkSettingsScreen> {
                               );
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.success,
-                            foregroundColor: context.appColors.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppRadius.br10,
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Simpan Perubahan',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          text: 'Simpan Perubahan',
+                          variant: BkuButtonVariant.success,
                         ),
                       ),
                     ],

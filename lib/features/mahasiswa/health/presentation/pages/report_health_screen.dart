@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -859,7 +860,7 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        DropdownButtonFormField<String>(
+        BkuDropdown<String>(
           isExpanded: true,
           initialValue: value,
           onChanged: onChanged,
@@ -982,17 +983,9 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           ),
         ],
       ),
-      child: ElevatedButton(
+      child: BkuButton(
         onPressed: () => _submitForm(),
-
-        child: Text(
-          'Simpan Data Kesehatan',
-          style: AppTextStyles.labelMd.copyWith(
-            fontWeight: FontWeight.w900,
-            color: context.appColors.onPrimary,
-            fontSize: 16,
-          ),
-        ),
+        text: 'Simpan Data Kesehatan',
       ),
     );
   }

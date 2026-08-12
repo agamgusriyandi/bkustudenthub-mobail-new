@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
 import 'package:bkuhub_mobile/features/ormawa/recruitment/domain/entities/recruitment_applicant.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_info_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class RecruitmentApplicantDetailModal extends StatelessWidget {
   final RecruitmentApplicant applicant;
@@ -606,37 +607,19 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton(
+                          child: BkuButton(
+                            variant: BkuButtonVariant.danger,
+                            text: 'Tolak',
                             onPressed: onReject,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.error,
-                              side: const BorderSide(color: AppColors.error),
-                            ),
-                            child: const Text(
-                              'Tolak',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                            fullWidth: true,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.lg),
                         Expanded(
-                          child: ElevatedButton(
+                          child: BkuButton.success(
+                            text: 'Terima',
                             onPressed: onAccept,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.success,
-                              foregroundColor: context.appColors.onPrimary,
-                              elevation: 0,
-                            ),
-                            child: const Text(
-                              'Terima',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                            fullWidth: true,
                           ),
                         ),
                       ],

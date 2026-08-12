@@ -10,13 +10,16 @@ import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/achievement.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import '../../../../../core/error/error_handler.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 
 class ReportAchievementScreen extends StatefulWidget {
   final Achievement? achievement;
@@ -538,43 +541,12 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     return BkuTextField(
       controller: controller,
       keyboardType: keyboardType,
+      hint: hint,
       validator: (val) {
         // If it's a required field conceptually, we can add validation here.
         // For simplicity, we just rely on the user filling out basic required ones.
         return null;
       },
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: AppTextStyles.labelMd.copyWith(
-          color: AppColors.neutral500,
-          fontSize: 12,
-        ),
-        filled: true,
-        fillColor: context.appColors.surface,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: 14,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: BorderSide(
-            color: context.appColors.outline.withAlpha(30),
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: BorderSide(
-            color: context.appColors.outline.withAlpha(30),
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: BorderSide(
-            color: context.appColors.primary,
-            width: 1.5,
-          ),
-        ),
-      ),
     );
   }
 
@@ -584,39 +556,20 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
     Function(String?) onChanged,
     String currentValue,
   ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(
-          color: context.appColors.outline.withAlpha(30),
-        ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value:
-              items.contains(currentValue)
-                  ? currentValue
-                  : (items.isNotEmpty ? items.first : null),
-          isExpanded: true,
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: context.appColors.outline,
+    return BkuDropdown<String>(
+      value: items.contains(currentValue)
+          ? currentValue
+          : (items.isNotEmpty ? items.first : null),
+      items: items.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value.isEmpty ? 'Pilih' : value,
+            style: AppTextStyles.labelMd.copyWith(fontSize: 12),
           ),
-          items:
-              items.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value.isEmpty ? 'Pilih' : value,
-                    style: AppTextStyles.labelMd.copyWith(fontSize: 12),
-                  ),
-                );
-              }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 
@@ -741,75 +694,48 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
   Future<void> _pickFile() async {
     FocusScope.of(context).unfocus();
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusXs,
-                ),
+      padding: EdgeInsets.zero,
+      title: 'Pilih Sumber Dokumen',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(
+              Icons.camera_alt_rounded,
+              color: AppColors.neutral600,
+            ),
+            title: Text(
+              'Kamera',
+              style: AppTextStyles.labelMd.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacing.lg,
-                  horizontal: AppSpacing.xl,
-                ),
-                child: Text(
-                  'Pilih Sumber Dokumen',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.camera_alt_rounded,
-                  color: AppColors.neutral600,
-                ),
-                title: Text(
-                  'Kamera',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onTap: () {
-                  context.pop();
-                  _pickFromCamera();
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.folder_rounded,
-                  color: AppColors.neutral600,
-                ),
-                title: Text(
-                  'Galeri / File (PDF)',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onTap: () {
-                  context.pop();
-                  _pickFromGalleryOrFiles();
-                },
-              ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+            ),
+            onTap: () {
+              context.pop();
+              _pickFromCamera();
+            },
           ),
-        );
-      },
+          ListTile(
+            leading: Icon(
+              Icons.folder_rounded,
+              color: AppColors.neutral600,
+            ),
+            title: Text(
+              'Galeri / File (PDF)',
+              style: AppTextStyles.labelMd.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onTap: () {
+              context.pop();
+              _pickFromGalleryOrFiles();
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      ),
     );
   }
 
@@ -916,17 +842,13 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             } catch (e) {
               if (mounted) BkuLoadingDialog.hide(context);
               if (!mounted) return;
-              showDialog(
+              await BkuDialog.show(
                 context: context,
-                builder:
-                    (context) => CustomDialog(
-                      title: 'Gagal Mengirim Data',
-                      content: ErrorHandler.getMessage(e),
-                      cancelText: '',
-                      confirmText: 'Tutup',
-                      onConfirm: () => context.pop(),
-                      onCancel: () {},
-                    ),
+                type: BkuDialogType.error,
+                title: 'Gagal Mengirim Data',
+                message: ErrorHandler.getMessage(e),
+                primaryButtonText: 'Tutup',
+                onPrimaryPressed: () => context.pop(),
               );
             }
           }
@@ -938,24 +860,19 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
   }
 
   void _showSuccessDialog(bool isEditing) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (context) => CustomDialog(
-            title: isEditing ? 'Perubahan Disimpan!' : 'Laporan Terkirim!',
-            content:
-                isEditing
-                    ? 'Perubahan data laporan prestasi kamu berhasil disimpan dan diperbarui di sistem.'
-                    : 'Laporan prestasi kamu telah masuk antrean validasi Admin. Kamu akan menerima notifikasi jika status berubah.',
-            isSuccess: true,
-            cancelText: '',
-            confirmText: 'Kembali ke Portofolio',
-            onConfirm: () {
-              context.pop();
-              context.pop();
-            },
-            onCancel: () {},
-          ),
+      type: BkuDialogType.success,
+      title: isEditing ? 'Perubahan Disimpan!' : 'Laporan Terkirim!',
+      message:
+          isEditing
+              ? 'Perubahan data laporan prestasi kamu berhasil disimpan dan diperbarui di sistem.'
+              : 'Laporan prestasi kamu telah masuk antrean validasi Admin. Kamu akan menerima notifikasi jika status berubah.',
+      primaryButtonText: 'Kembali ke Portofolio',
+      onPrimaryPressed: () {
+        context.pop();
+        context.pop();
+      },
     );
   }
 }

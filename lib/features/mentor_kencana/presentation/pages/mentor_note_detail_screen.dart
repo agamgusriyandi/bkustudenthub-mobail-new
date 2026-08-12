@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -171,26 +172,10 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                               ],
                             ),
                             const SizedBox(height: AppSpacing.md),
-                            TextField(
+                            BkuTextField(
                               controller: _noteController,
                               maxLines: 4,
-                              decoration: InputDecoration(
-                                hintText: 'Tulis progres, evaluasi, atau kendala mahasiswa disini...',
-                                hintStyle: TextStyle(color: context.appColors.outline.withAlpha(150), fontSize: 13),
-                                border: OutlineInputBorder(
-                                  borderRadius: AppRadius.radiusLg,
-                                  borderSide: BorderSide(color: AppThemeColors.surfaceContainerHighest),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: AppRadius.radiusLg,
-                                  borderSide: BorderSide(color: AppThemeColors.surfaceContainerHighest),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: AppRadius.radiusLg,
-                                  borderSide: BorderSide(color: context.appColors.primary),
-                                ),
-                                contentPadding: const EdgeInsets.all(16),
-                              ),
+                              hint: 'Tulis progres, evaluasi, atau kendala mahasiswa disini...',
                             ),
                             const SizedBox(height: AppSpacing.lg),
                             SizedBox(

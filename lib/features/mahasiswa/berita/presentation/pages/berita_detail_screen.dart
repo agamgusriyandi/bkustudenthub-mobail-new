@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_error_state.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/providers/berita_detail_provider.dart';
 
@@ -68,32 +69,10 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
             else if (provider.errorMessage != null)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: AppSpacing.xxxl),
-                        Icon(
-                          Icons.error_outline_rounded,
-                          size: 64,
-                          color: context.appColors.danger.withAlpha(80),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Text(
-                          provider.errorMessage!,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: AppColors.neutral600,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        TextButton.icon(
-                          onPressed: () => provider.fetchBerita(widget.beritaId),
-                          icon: const Icon(Icons.refresh_rounded),
-                          label: const Text('Coba Lagi'),
-                        ),
-                      ],
-                    ),
+                  padding: const EdgeInsets.only(top: AppSpacing.xxxl),
+                  child: BkuErrorState(
+                    message: provider.errorMessage!,
+                    onRetry: () => provider.fetchBerita(widget.beritaId),
                   ),
                 ),
               )

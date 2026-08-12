@@ -12,6 +12,8 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
 
 class MentorScoringScreen extends StatefulWidget {
@@ -330,47 +332,14 @@ class _MentorScoringScreenState extends State<MentorScoringScreen>
                           ),
                           const SizedBox(height: AppSpacing.lg),
 
-                          TextField(
+                          BkuTextField(
                             controller: _searchController,
                             onChanged:
                                 (val) => setState(() => _searchQuery = val),
-                            style: AppTextStyles.bodySm,
-                            decoration: InputDecoration(
-                              hintText: 'Cari nama atau NIM mahasiswa...',
-                              hintStyle: AppTextStyles.bodySm.copyWith(
-                                color: context.appColors.outline.withValues(
-                                  alpha: 0.7,
-                                ),
-                              ),
-                              prefixIcon: const Icon(
-                                Icons.search_rounded,
-                                size: 18,
-                              ),
-                              filled: true,
-                              fillColor: AppColors.neutral100,
-                              border: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: const BorderSide(
-                                  color: AppColors.neutral300,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: const BorderSide(
-                                  color: AppColors.neutral300,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.radiusMd,
-                                borderSide: BorderSide(
-                                  color: context.appColors.primary,
-                                  width: 1.5,
-                                ),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 10,
-                              ),
+                            hint: 'Cari nama atau NIM mahasiswa...',
+                            prefixIcon: const Icon(
+                              Icons.search_rounded,
+                              size: 18,
                             ),
                           ),
                         ],
@@ -495,39 +464,10 @@ class _MentorScoringScreenState extends State<MentorScoringScreen>
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 3,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            gradStatus == 'passed'
-                                                ? AppColors.success.withAlpha(
-                                                  20,
-                                                )
-                                                : AppColors.neutral100,
-                                        borderRadius: AppRadius.radiusSm,
-                                        border: Border.all(
-                                          color:
-                                              gradStatus == 'passed'
-                                                  ? AppColors.success.withAlpha(
-                                                    50,
-                                                  )
-                                                  : AppColors.neutral300,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        gradStatus.replaceAll('_', ' '),
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color:
-                                              gradStatus == 'passed'
-                                                  ? AppColors.success
-                                                  : AppColors.neutral900,
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                    BkuStatusBadge(
+                                      status: gradStatus == 'passed' ? BkuStatus.success : BkuStatus.info,
+                                      customText: gradStatus.replaceAll('_', ' '),
+                                      showIcon: false,
                                     ),
                                   ],
                                 ),
@@ -851,41 +791,10 @@ class _MentorScoringScreenState extends State<MentorScoringScreen>
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 3),
-        TextField(
+        BkuTextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: AppColors.neutral900,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: '-',
-            hintStyle: const TextStyle(color: AppColors.neutral500),
-            filled: true,
-            fillColor: AppColors.neutral100,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 4,
-              vertical: 8,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSm,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSm,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSm,
-              borderSide: const BorderSide(
-                color: AppColors.neutral500,
-                width: 1.5,
-              ),
-            ),
-          ),
+          hint: '-',
         ),
       ],
     );

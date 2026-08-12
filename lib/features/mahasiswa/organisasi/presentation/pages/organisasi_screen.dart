@@ -18,7 +18,7 @@ import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/add_organisasi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/daftar_ormawa_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -76,29 +76,19 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           try {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder:
-                  (context) => const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
-            );
+            BkuLoadingDialog.show(context);
             await PortfolioPdfGenerator.generateAndPrintPortfolio(context.read<ProfileProvider>(), student);
             if (context.mounted) context.pop();
           } catch (e) {
             if (context.mounted) context.pop();
             if (context.mounted) {
-              showDialog(
+              BkuDialog.show(
                 context: context,
-                builder:
-                    (ctx) => CustomDialog(
-                      title: 'Gagal',
-                      content: 'Gagal export portofolio: $e',
-                      cancelText: '',
-                      confirmText: 'Tutup',
-                      onCancel: () {},
-                      onConfirm: () => Navigator.pop(ctx),
-                      isDestructive: true,
-                    ),
+                type: BkuDialogType.error,
+                title: 'Gagal',
+                message: 'Gagal export portofolio: $e',
+                primaryButtonText: 'Tutup',
+                onPrimaryPressed: () => Navigator.pop(context),
               );
             }
           }
@@ -697,7 +687,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                       ],
                     ),
                   ),
-                  ElevatedButton(
+                  BkuButton.primary(
+                    fullWidth: false,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -710,18 +701,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appColors.primary,
-                      foregroundColor: context.appColors.surface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.radiusMd,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                    ),
-                    child: const Text('Daftar'),
+                    text: 'Daftar',
                   ),
                 ],
               ),
@@ -892,20 +872,9 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                   ],
                   if (status == 'belum_bayar' || status == 'ditolak') ...[
                     const SizedBox(height: AppSpacing.md),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => _showPaymentSheet(context, id, iuran),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              context.appColors.primary,
-                          foregroundColor: context.appColors.surface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.radiusMd,
-                          ),
-                        ),
-                        child: const Text('Bayar Sekarang'),
-                      ),
+                    BkuButton.primary(
+                      onPressed: () => _showPaymentSheet(context, id, iuran),
+                      text: 'Bayar Sekarang',
                     ),
                   ],
                 ],
@@ -988,63 +957,45 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final provider = context.read<OrganizationProvider>();
-                        final navigator = Navigator.of(context);
-                        final picker = ImagePicker();
-                        final image = await picker.pickImage(
-                          source: ImageSource.gallery,
+                  BkuButton.primary(
+                    onPressed: () async {
+                      final provider = context.read<OrganizationProvider>();
+                      final navigator = Navigator.of(context);
+                      final picker = ImagePicker();
+                      final image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+                      if (image != null) {
+                        if (!ctx.mounted) return;
+                        Navigator.pop(ctx);
+                        if (!context.mounted) return;
+                        BkuLoadingDialog.show(context);
+                        final success = await provider.payIuran(
+                          invoiceId,
+                          image.path,
                         );
-                        if (image != null) {
-                          if (!ctx.mounted) return;
-                          Navigator.pop(ctx);
-                          if (!context.mounted) return;
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder:
-                                (context) => const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                          );
-                          final success = await provider.payIuran(
-                            invoiceId,
-                            image.path,
-                          );
-                          navigator.pop();
+                        navigator.pop();
 
-                          if (!context.mounted) return;
-                          showDialog(
-                            context: context,
-                            builder:
-                                (dialogCtx) => CustomDialog(
-                                  title: success ? 'Sukses' : 'Gagal',
-                                  content:
-                                      success
-                                          ? 'Bukti pembayaran berhasil diunggah! Menunggu konfirmasi bendahara.'
-                                          : 'Gagal mengunggah bukti pembayaran.',
-                                  cancelText: '',
-                                  confirmText: 'OK',
-                                  onCancel: () {},
-                                  onConfirm: () => Navigator.pop(dialogCtx),
-                                ),
-                          );
-                        }
-                      },
-                      icon: const Icon(Icons.upload_file_rounded),
-                      label: const Text('Pilih Bukti Pembayaran & Kirim'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.primary,
-                        foregroundColor: context.appColors.surface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.radiusLg,
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                    ),
+                        if (!context.mounted) return;
+                        BkuDialog.show(
+                          context: context,
+                          type: success ? BkuDialogType.success : BkuDialogType.error,
+                          title: success ? 'Sukses' : 'Gagal',
+                          message: success
+                              ? 'Bukti pembayaran berhasil diunggah! Menunggu konfirmasi bendahara.'
+                              : 'Gagal mengunggah bukti pembayaran.',
+                          primaryButtonText: 'OK',
+                          onPrimaryPressed: () {
+                            Navigator.pop(context);
+                            if (success) {
+                              provider.loadOrganizationData();
+                            }
+                          },
+                        );
+                      }
+                    },
+                    icon: Icons.upload_file_rounded,
+                    text: 'Pilih Bukti Pembayaran & Kirim',
                   ),
                 ],
               ),
@@ -1527,19 +1478,16 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   }
 
   void _confirmDeleteOrg(BuildContext context, String id) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogContext) => CustomDialog(
-            title: 'Hapus Riwayat Organisasi?',
-            content:
-                'Apakah Anda yakin ingin menghapus riwayat organisasi ini? Tindakan ini tidak dapat dibatalkan.',
-            isDestructive: true,
-            cancelText: 'Batal',
-            confirmText: 'Ya, Hapus',
-            onCancel: () => Navigator.pop(dialogContext),
-            onConfirm: () async {
-              Navigator.pop(dialogContext);
+      type: BkuDialogType.warning,
+      title: 'Hapus Riwayat Organisasi?',
+      message: 'Apakah Anda yakin ingin menghapus riwayat organisasi ini? Tindakan ini tidak dapat dibatalkan.',
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+      primaryButtonText: 'Ya, Hapus',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
 
               try {
                 BkuLoadingDialog.show(context);
@@ -1557,22 +1505,17 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
               } catch (e) {
                 if (context.mounted) {
                   BkuLoadingDialog.hide(context);
-                  showDialog(
+                  BkuDialog.show(
                     context: context,
-                    builder:
-                        (ctx) => CustomDialog(
-                          title: 'Gagal Menghapus Data',
-                          content: ErrorHandler.getMessage(e),
-                          cancelText: '',
-                          confirmText: 'Tutup',
-                          onConfirm: () => Navigator.pop(ctx),
-                          onCancel: () {},
-                        ),
+                    type: BkuDialogType.error,
+                    title: 'Gagal Menghapus Data',
+                    message: ErrorHandler.getMessage(e),
+                    primaryButtonText: 'Tutup',
+                    onPrimaryPressed: () => Navigator.pop(context),
                   );
                 }
               }
-            },
-          ),
+      },
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -522,14 +523,9 @@ class _CounselingHistoryScreenState extends State<CounselingHistoryScreen> {
           children: [
             Text('Batalkan konseling dengan ${booking.psychologistName}?'),
             const SizedBox(height: AppSpacing.md),
-            TextField(
+            BkuTextField(
               controller: reasonController,
-              decoration: InputDecoration(
-                hintText: 'Alasan pembatalan (opsional)',
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusMd,
-                ),
-              ),
+              hint: 'Alasan pembatalan (opsional)',
               maxLines: 3,
             ),
           ],

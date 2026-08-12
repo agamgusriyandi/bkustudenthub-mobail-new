@@ -7,6 +7,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -301,7 +303,7 @@ class _EditKeuanganScreenState extends State<EditKeuanganScreen> {
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: BkuDropdown<String>(
                   value: _selectedCategory,
                   isExpanded: true,
                   items: _categories
@@ -373,7 +375,7 @@ class _EditKeuanganScreenState extends State<EditKeuanganScreen> {
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         style: const TextStyle(fontWeight: FontWeight.bold),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 
@@ -172,26 +175,21 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
                               const Divider(height: 16),
                               _buildInfoRow(
                                 'Status Saat Ini',
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: widget.banding.status == 'approved' ? AppColors.success.withAlpha(25)
-                                        : widget.banding.status == 'rejected' ? AppColors.error.withAlpha(25) 
-                                        : AppColors.warning.withAlpha(25),
-                                    borderRadius: AppRadius.radiusSm,
-                                  ),
-                                  child: Text(
-                                    widget.banding.status == 'approved' ? 'DISETUJUI'
+                                Builder(
+                                  builder: (context) {
+                                    BkuStatus s = BkuStatus.pending;
+                                    if (widget.banding.status == 'approved') {
+                                      s = BkuStatus.success;
+                                    } else if (widget.banding.status == 'rejected') {
+                                      s = BkuStatus.error;
+                                    }
+                                    return BkuStatusBadge(
+                                      status: s,
+                                      customText: widget.banding.status == 'approved' ? 'DISETUJUI'
                                         : widget.banding.status == 'rejected' ? 'DITOLAK'
                                         : 'MENUNGGU',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: widget.banding.status == 'approved' ? AppColors.success
-                                        : widget.banding.status == 'rejected' ? AppColors.error 
-                                        : AppColors.warning,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                    ),
-                                  ),
+                                    );
+                                  }
                                 ),
                               ),
                             ],
@@ -203,7 +201,7 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
                         // KEPUTUSAN FASILITATOR
                         Text('Keputusan Fasilitator', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: AppSpacing.sm),
-                        DropdownButtonFormField<String>(
+                        BkuDropdown<String>(
                           initialValue: _responseStatus,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
@@ -276,16 +274,11 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
                                         const SizedBox(width: 12),
                                         SizedBox(
                                           width: 80,
-                                          child: TextField(
+                                          child: BkuTextField(
                                             controller: _scoreControllers[item.id],
                                             keyboardType: TextInputType.number,
                                             enabled: isPending,
                                             textAlign: TextAlign.center,
-                                            decoration: InputDecoration(
-                                              isDense: true,
-                                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                                              border: OutlineInputBorder(borderRadius: AppRadius.radiusSm),
-                                            ),
                                           ),
                                         ),
                                       ],
@@ -299,14 +292,11 @@ class _MentorBandingDetailScreenState extends State<MentorBandingDetailScreen> {
                         const SizedBox(height: AppSpacing.xl),
                         Text('Catatan Tanggapan (Opsional)', style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: AppSpacing.sm),
-                        TextField(
+                        BkuTextField(
                           controller: _responseController,
                           maxLines: 4,
                           enabled: isPending,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                            hintText: 'Berikan penjelasan terkait keputusan ini...',
-                          ),
+                          hint: 'Berikan penjelasan terkait keputusan ini...',
                         ),
 
                         if (isPending) ...[

@@ -6,11 +6,14 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 
 class CreateAnggotaScreen extends StatefulWidget {
   const CreateAnggotaScreen({super.key});
@@ -54,20 +57,16 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
       await context.read<OrmawaProvider>().addMember(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        showDialog(
+        BkuDialog.show(
           context: context,
-          barrierDismissible: false,
-          builder: (context) => CustomDialog(
-            title: 'Anggota Ditambahkan!',
-            content: 'Data anggota baru berhasil disimpan.',
-            cancelText: '',
-            confirmText: 'Kembali',
-            onCancel: () {},
-            onConfirm: () {
-              context.pop();
-              context.pop();
-            },
-          ),
+          type: BkuDialogType.success,
+          title: 'Anggota Ditambahkan!',
+          message: 'Data anggota baru berhasil disimpan.',
+          primaryButtonText: 'Kembali',
+          onPrimaryPressed: () {
+            context.pop();
+            context.pop();
+          },
         );
       }
     } catch (e) {
@@ -133,23 +132,10 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
                       setState(() => _selectedDivision = val!),
                 ),
                 const SizedBox(height: AppSpacing.s48),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _handleSubmit,
-                    child: _isSubmitting
-                        ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                                color: context.appColors.onPrimary, strokeWidth: 2))
-                        : Text('SIMPAN ANGGOTA',
-                            style: TextStyle(
-                                color: context.appColors.onPrimary,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                  ),
+                BkuButton.primary(
+                  text: 'SIMPAN ANGGOTA',
+                  onPressed: _isSubmitting ? null : _handleSubmit,
+                  isLoading: _isSubmitting,
                 ),
               ],
             ),
@@ -179,7 +165,7 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: controller,
         style: const TextStyle(fontWeight: FontWeight.bold),
         decoration: InputDecoration(
@@ -208,7 +194,7 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
         border: Border.all(color: AppColors.neutral300),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
+        child: BkuDropdown<T>(
           isExpanded: true,
           value: value,
           items: items

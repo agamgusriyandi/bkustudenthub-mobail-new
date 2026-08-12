@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class OrmawaLpjScreen extends StatefulWidget {
   const OrmawaLpjScreen({super.key});
@@ -40,20 +42,19 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
     super.dispose();
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'selesai':
-        return AppColors.success;
-      case 'ditolak':
-        return AppColors.error;
-      case 'menunggu':
-      case 'pending':
-        return AppColors.warning;
-      default:
-        return AppColors.neutral500;
+  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+    final s = rawStatus.toLowerCase();
+    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
+      return BkuStatus.success;
+    } else if (s.contains('tolak') || s.contains('batal')) {
+      return BkuStatus.error;
+    } else if (s.contains('revisi')) {
+      return BkuStatus.warning;
     }
+    return BkuStatus.info;
   }
+
+
 
   String _formatCurrency(double value) {
     return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
@@ -250,17 +251,11 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final lpj = filteredLpjs[index];
-                final statusColor = _getStatusColor(lpj.status);
                 return GestureDetector(
                   onTap: () => _showLpjDetail(lpj),
-                  child: Container(
+                  child: BkuCard(
                     margin: const EdgeInsets.only(bottom: AppSpacing.md),
                     padding: const EdgeInsets.all(AppSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      borderRadius: AppRadius.radiusXl,
-                      border: Border.all(color: AppColors.neutral200),
-                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -275,22 +270,13 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                                 ),
                               ),
                             ),
-                            Container(
+                            BkuStatusBadge(
+                              status: _mapStatusToBkuStatus(lpj.status),
+                              customText: lpj.status,
+                              showIcon: false,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.md,
                                   vertical: AppSpacing.xs),
-                              decoration: BoxDecoration(
-                                color: statusColor.withAlpha(15),
-                                borderRadius: AppRadius.radiusSm,
-                              ),
-                              child: Text(
-                                lpj.status,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 10,
-                                ),
-                              ),
                             ),
                           ],
                         ),

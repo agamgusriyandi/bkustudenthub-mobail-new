@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
 import 'package:go_router/go_router.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class OrganisasiScreen extends StatelessWidget {
   const OrganisasiScreen({super.key});
@@ -171,86 +172,76 @@ class OrganisasiScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
-                      SizedBox(
-                        width: double.infinity,
+                      BkuButton(
                         height: 54,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              final organizationProvider =
-                                  Provider.of<OrganizationProvider>(
-                                    context,
-                                    listen: false,
-                                  );
-                              final achievementsList =
-                                  achievementsController.text.isNotEmpty
-                                      ? achievementsController.text
-                                          .split(',')
-                                          .map((s) => s.trim())
-                                          .toList()
-                                      : <String>[];
-                              final startYear =
-                                  int.tryParse(startYearController.text) ??
-                                  2023;
-                              final endYear = int.tryParse(
-                                endYearController.text,
-                              );
-
-                              final org = OrganizationHistory(
-                                id: '',
-                                namaOrganisasi: nameController.text,
-                                tipe: typeController.text,
-                                jabatan: roleController.text,
-                                periodeMulai: startYear,
-                                periodeSelesai: endYear,
-                                deskripsiKegiatan: descController.text,
-                                apresiasi:
-                                    achievementsList.isNotEmpty
-                                        ? achievementsList.first
-                                        : 'Partisipasi aktif',
-                                statusVerifikasi: 'Menunggu',
-                                achievements:
-                                    achievementsList.isNotEmpty
-                                        ? achievementsList
-                                        : ['Anggota aktif kepengurusan'],
-                              );
-
-                              try {
-                                await organizationProvider.addOrganizationHistory(
-                                  org,
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            final organizationProvider =
+                                Provider.of<OrganizationProvider>(
+                                  context,
+                                  listen: false,
                                 );
-                                if (context.mounted) {
-                                  context.pop();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text(
-                                        'Riwayat organisasi berhasil ditambahkan!',
-                                      ),
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      behavior: SnackBarBehavior.floating,
+                            final achievementsList =
+                                achievementsController.text.isNotEmpty
+                                    ? achievementsController.text
+                                        .split(',')
+                                        .map((s) => s.trim())
+                                        .toList()
+                                    : <String>[];
+                            final startYear =
+                                int.tryParse(startYearController.text) ??
+                                2023;
+                            final endYear = int.tryParse(
+                              endYearController.text,
+                            );
+
+                            final org = OrganizationHistory(
+                              id: '',
+                              namaOrganisasi: nameController.text,
+                              tipe: typeController.text,
+                              jabatan: roleController.text,
+                              periodeMulai: startYear,
+                              periodeSelesai: endYear,
+                              deskripsiKegiatan: descController.text,
+                              apresiasi:
+                                  achievementsList.isNotEmpty
+                                      ? achievementsList.first
+                                      : 'Partisipasi aktif',
+                              statusVerifikasi: 'Menunggu',
+                              achievements:
+                                  achievementsList.isNotEmpty
+                                      ? achievementsList
+                                      : ['Anggota aktif kepengurusan'],
+                            );
+
+                            try {
+                              await organizationProvider.addOrganizationHistory(
+                                org,
+                              );
+                              if (context.mounted) {
+                                context.pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                      'Riwayat organisasi berhasil ditambahkan!',
                                     ),
-                                  );
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  AppSnackbar.showError(
-                                    context,
-                                    'Gagal menambah riwayat organisasi: $e',
-                                  );
-                                }
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                AppSnackbar.showError(
+                                  context,
+                                  'Gagal menambah riwayat organisasi: $e',
+                                );
                               }
                             }
-                          },
-
-                          child: const Text(
-                            'Simpan Riwayat',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
+                          }
+                        },
+                        text: 'Simpan Riwayat',
                       ),
                     ],
                   ),
@@ -635,17 +626,10 @@ class OrganisasiScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: ElevatedButton.icon(
+      child: BkuButton(
         onPressed: () => _showAddOrgBottomSheet(context),
-        icon: const Icon(Icons.add_circle_outline_rounded, size: 20),
-        label: Text(
-          'Tambah Riwayat Organisasi',
-          style: AppTextStyles.titleLg.copyWith(
-            color: context.appColors.onPrimary,
-            fontSize: 15,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+        icon: Icons.add_circle_outline_rounded,
+        text: 'Tambah Riwayat Organisasi',
       ),
     );
   }

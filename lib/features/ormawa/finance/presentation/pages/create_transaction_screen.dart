@@ -4,13 +4,16 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/bku_design/bku_app_bar.dart';
 import '../../../../../core/widgets/bku_design/bku_loading_dialog.dart';
-import '../../../../../core/widgets/custom_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
@@ -123,7 +126,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: BkuDropdown<String>(
                   value: _selectedCategory,
                   isExpanded: true,
                   items:
@@ -138,31 +141,10 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
             ),
             const SizedBox(height: AppSpacing.s48),
 
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _handleSubmit,
-
-                child:
-                    _isSubmitting
-                        ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: context.appColors.onPrimary,
-                            strokeWidth: 2,
-                          ),
-                        )
-                        : Text(
-                          'SIMPAN TRANSAKSI',
-                          style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                        ),
-              ),
+            BkuButton.primary(
+              text: 'SIMPAN TRANSAKSI',
+              onPressed: _isSubmitting ? null : _handleSubmit,
+              isLoading: _isSubmitting,
             ),
           ],
         ),
@@ -270,7 +252,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         inputFormatters: isNumber ? [ThousandsSeparatorInputFormatter()] : null,
@@ -318,21 +300,16 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
       await context.read<OrmawaProvider>().addFinance(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        showDialog(
+        BkuDialog.show(
           context: context,
-          barrierDismissible: false,
-          builder:
-              (context) => CustomDialog(
-                title: 'Transaksi Disimpan!',
-                content: 'Data transaksi keuangan berhasil ditambahkan.',
-                cancelText: '',
-                confirmText: 'Kembali',
-                onCancel: () {},
-                onConfirm: () {
-                  context.pop();
-                  context.pop();
-                },
-              ),
+          type: BkuDialogType.success,
+          title: 'Transaksi Disimpan!',
+          message: 'Data transaksi keuangan berhasil ditambahkan.',
+          primaryButtonText: 'Kembali',
+          onPrimaryPressed: () {
+            context.pop();
+            context.pop();
+          },
         );
       }
     } catch (e) {

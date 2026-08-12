@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -128,7 +129,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
             // Patient Search
             _buildSectionTitle('Identifikasi Pasien'),
             const SizedBox(height: AppSpacing.sm),
-            TextField(
+            BkuTextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cari Nama atau NIM...',
@@ -357,7 +358,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: BkuTextField(
                   controller: controller,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -438,7 +439,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
       children: [
         Text(label, style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
         const SizedBox(height: AppSpacing.sm),
-        TextField(
+        BkuTextField(
           controller: controller,
           maxLines: maxLines,
           decoration: InputDecoration(

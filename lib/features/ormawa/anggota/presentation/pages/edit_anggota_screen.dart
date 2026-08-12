@@ -8,8 +8,11 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class EditAnggotaScreen extends StatefulWidget {
   final dynamic member;
@@ -177,23 +180,10 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
                     hint: '08123456789',
                     icon: Icons.phone_android_rounded),
                 const SizedBox(height: AppSpacing.s48),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _handleSubmit,
-                    child: _isSubmitting
-                        ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                                color: context.appColors.onPrimary, strokeWidth: 2))
-                        : Text('SIMPAN PERUBAHAN',
-                            style: TextStyle(
-                                color: context.appColors.onPrimary,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                  ),
+                BkuButton.primary(
+                  text: 'SIMPAN PERUBAHAN',
+                  onPressed: _isSubmitting ? null : _handleSubmit,
+                  isLoading: _isSubmitting,
                 ),
               ],
             ),
@@ -226,7 +216,7 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
         border: Border.all(color: AppColors.neutral300),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
+        child: BkuDropdown<T>(
           isExpanded: true,
           value: value,
           items: items
@@ -255,7 +245,7 @@ class _EditAnggotaScreenState extends State<EditAnggotaScreen> {
         borderRadius: AppRadius.radiusLg,
         border: Border.all(color: AppColors.neutral300),
       ),
-      child: TextField(
+      child: BkuTextField(
         controller: controller,
         style: const TextStyle(fontWeight: FontWeight.bold),
         decoration: InputDecoration(

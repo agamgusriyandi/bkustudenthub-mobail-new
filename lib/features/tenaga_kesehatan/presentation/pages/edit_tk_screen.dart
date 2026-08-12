@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -9,6 +10,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 
 class EditTkScreen extends StatefulWidget {
@@ -151,7 +153,7 @@ class _EditTkScreenState extends State<EditTkScreen> {
                   Text('Scope',
                       style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
                   const SizedBox(height: AppSpacing.sm),
-                  DropdownButtonFormField<String>(
+                  BkuDropdown<String>(
                     initialValue: _scopeType,
                     decoration: InputDecoration(
                       filled: true,
@@ -191,40 +193,12 @@ class _EditTkScreenState extends State<EditTkScreen> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600)),
-        const SizedBox(height: AppSpacing.sm),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          validator: validator,
-          decoration: InputDecoration(
-            hintText: hint ?? 'Masukkan $label...',
-            hintStyle: TextStyle(color: AppColors.neutral400),
-            filled: true,
-            fillColor: AppColors.neutral50,
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral200),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral200),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.error),
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      controller: controller,
+      label: label,
+      hint: hint ?? 'Masukkan $label...',
+      keyboardType: keyboardType,
+      validator: validator,
     );
   }
 }

@@ -15,7 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 
 class KencanaScreen extends StatefulWidget {
@@ -755,17 +755,17 @@ class _KencanaScreenState extends State<KencanaScreen> {
       badgeIcon = Icons.check_circle_rounded;
       badgeText = 'Selesai';
     } else if (isActive) {
-      numberBg = const Color(0xFF0F172A);
+      numberBg = AppColors.neutral900;
       numberTextColor = Colors.white;
       badgeBg = const Color(0xFFEFF6FF);
       badgeTextColor = const Color(0xFF1D4ED8);
       badgeIcon = Icons.play_circle_fill_rounded;
       badgeText = 'Berlangsung';
     } else {
-      numberBg = const Color(0xFFE2E8F0);
-      numberTextColor = const Color(0xFF64748B);
-      badgeBg = const Color(0xFFF1F5F9);
-      badgeTextColor = const Color(0xFF64748B);
+      numberBg = AppColors.neutral300;
+      numberTextColor = AppColors.neutral600;
+      badgeBg = AppColors.neutral200;
+      badgeTextColor = AppColors.neutral600;
       badgeIcon = Icons.lock_rounded;
       badgeText = 'Belum Mulai';
     }
@@ -802,7 +802,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
           color: context.appColors.surface,
           borderRadius: AppRadius.radiusLg,
           border: Border.all(
-            color: isActive ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0),
+            color: isActive ? const Color(0xFF3B82F6) : AppColors.neutral300,
             width: isActive ? 1.5 : 1,
           ),
           boxShadow: [
@@ -854,7 +854,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 15.5,
-                            color: Color(0xFF0F172A),
+                            color: AppColors.neutral900,
                           ),
                         ),
                       ),
@@ -891,7 +891,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
                     Text(
                       stage.description!,
                       style: const TextStyle(
-                        color: Color(0xFF64748B),
+                        color: AppColors.neutral600,
                         fontSize: 12,
                         height: 1.3,
                       ),
@@ -906,14 +906,14 @@ class _KencanaScreenState extends State<KencanaScreen> {
                         const Icon(
                           Icons.calendar_today_rounded,
                           size: 13,
-                          color: Color(0xFF64748B),
+                          color: AppColors.neutral600,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '${_formatDate(stage.startDate)} - ${_formatDate(stage.endDate)}',
                           style: const TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF64748B),
+                            color: AppColors.neutral600,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -947,9 +947,9 @@ class _KencanaScreenState extends State<KencanaScreen> {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: AppColors.neutral100,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.neutral300),
       ),
       child: RichText(
         text: TextSpan(
@@ -959,7 +959,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 11,
-                color: Color(0xFF0F172A),
+                color: AppColors.neutral900,
               ),
             ),
             TextSpan(
@@ -967,7 +967,7 @@ class _KencanaScreenState extends State<KencanaScreen> {
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 10.5,
-                color: Color(0xFF64748B),
+                color: AppColors.neutral600,
               ),
             ),
           ],
@@ -1171,17 +1171,13 @@ class _KencanaScreenState extends State<KencanaScreen> {
             margin: const EdgeInsets.only(bottom: AppSpacing.md),
             child: BkuCard(
               onTap: () {
-                showDialog(
+                BkuDialog.show(
                   context: context,
-                  builder:
-                      (ctx) => CustomDialog(
-                        title: judul,
-                        content: '$tanggalStr\n\n$isi',
-                        cancelText: '',
-                        confirmText: 'Tutup',
-                        onCancel: () {},
-                        onConfirm: () => Navigator.pop(ctx),
-                      ),
+                  type: BkuDialogType.info,
+                  title: judul,
+                  message: '$tanggalStr\n\n$isi',
+                  primaryButtonText: 'Tutup',
+                  onPrimaryPressed: () => Navigator.pop(context),
                 );
               },
               child: Padding(

@@ -7,7 +7,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
-enum BkuButtonVariant { primary, secondary, outline, text, danger, success }
+enum BkuButtonVariant { primary, secondary, outline, text, danger, success, dangerOutline }
 
 class BkuButton extends StatelessWidget {
   final String text;
@@ -15,12 +15,14 @@ class BkuButton extends StatelessWidget {
   final BkuButtonVariant variant;
   final bool isLoading;
   final IconData? icon;
+  final IconData? trailingIcon;
   final double? width;
   final double height;
   final bool fullWidth;
   final double? fontSize;
   final Color? customBgColor;
   final Color? customFgColor;
+  final BorderRadiusGeometry? customRadius;
 
   const BkuButton({
     super.key,
@@ -29,12 +31,14 @@ class BkuButton extends StatelessWidget {
     this.variant = BkuButtonVariant.primary,
     this.isLoading = false,
     this.icon,
+    this.trailingIcon,
     this.width,
     this.height = 48,
     this.fullWidth = true,
     this.fontSize,
     this.customBgColor,
     this.customFgColor,
+    this.customRadius,
   });
 
   factory BkuButton.primary({
@@ -43,8 +47,14 @@ class BkuButton extends StatelessWidget {
     required VoidCallback? onPressed,
     bool isLoading = false,
     IconData? icon,
+    IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
+    Color? customBgColor,
+    Color? customFgColor,
+    BorderRadiusGeometry? customRadius,
   }) => BkuButton(
     key: key,
     text: text,
@@ -52,8 +62,14 @@ class BkuButton extends StatelessWidget {
     variant: BkuButtonVariant.primary,
     isLoading: isLoading,
     icon: icon,
+    trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
+    customBgColor: customBgColor,
+    customFgColor: customFgColor,
+    customRadius: customRadius,
   );
 
   factory BkuButton.secondary({
@@ -62,8 +78,12 @@ class BkuButton extends StatelessWidget {
     required VoidCallback? onPressed,
     bool isLoading = false,
     IconData? icon,
+    IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
   }) => BkuButton(
     key: key,
     text: text,
@@ -71,8 +91,12 @@ class BkuButton extends StatelessWidget {
     variant: BkuButtonVariant.secondary,
     isLoading: isLoading,
     icon: icon,
+    trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
+    customRadius: customRadius,
   );
 
   factory BkuButton.outline({
@@ -81,8 +105,10 @@ class BkuButton extends StatelessWidget {
     required VoidCallback? onPressed,
     bool isLoading = false,
     IconData? icon,
+    IconData? trailingIcon,
     double? width,
     bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
   }) => BkuButton(
     key: key,
     text: text,
@@ -90,8 +116,10 @@ class BkuButton extends StatelessWidget {
     variant: BkuButtonVariant.outline,
     isLoading: isLoading,
     icon: icon,
+    trailingIcon: trailingIcon,
     width: width,
     fullWidth: fullWidth,
+    customRadius: customRadius,
   );
 
   factory BkuButton.text({
@@ -100,8 +128,11 @@ class BkuButton extends StatelessWidget {
     required VoidCallback? onPressed,
     bool isLoading = false,
     IconData? icon,
+    IconData? trailingIcon,
     double? width,
     bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
+    Color? customFgColor,
   }) => BkuButton(
     key: key,
     text: text,
@@ -109,8 +140,57 @@ class BkuButton extends StatelessWidget {
     variant: BkuButtonVariant.text,
     isLoading: isLoading,
     icon: icon,
+    trailingIcon: trailingIcon,
     width: width,
     fullWidth: fullWidth,
+    customRadius: customRadius,
+    customFgColor: customFgColor,
+  );
+
+  factory BkuButton.success({
+    Key? key,
+    required String text,
+    required VoidCallback? onPressed,
+    bool isLoading = false,
+    IconData? icon,
+    IconData? trailingIcon,
+    double? width,
+    bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
+  }) => BkuButton(
+    key: key,
+    text: text,
+    onPressed: onPressed,
+    variant: BkuButtonVariant.success,
+    isLoading: isLoading,
+    icon: icon,
+    trailingIcon: trailingIcon,
+    width: width,
+    fullWidth: fullWidth,
+    customRadius: customRadius,
+  );
+
+  factory BkuButton.danger({
+    Key? key,
+    required String text,
+    required VoidCallback? onPressed,
+    bool isLoading = false,
+    IconData? icon,
+    IconData? trailingIcon,
+    double? width,
+    bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
+  }) => BkuButton(
+    key: key,
+    text: text,
+    onPressed: onPressed,
+    variant: BkuButtonVariant.danger,
+    isLoading: isLoading,
+    icon: icon,
+    trailingIcon: trailingIcon,
+    width: width,
+    fullWidth: fullWidth,
+    customRadius: customRadius,
   );
 
   @override
@@ -137,14 +217,20 @@ class BkuButton extends StatelessWidget {
         );
         elevation = 0;
         break;
+      case BkuButtonVariant.dangerOutline:
+        bg = Colors.transparent;
+        fg = AppColors.error;
+        border = const BorderSide(color: AppColors.error, width: 1.0);
+        elevation = 0;
+        break;
       case BkuButtonVariant.success:
-        bg = const Color(0xFF10B981);
-        fg = Colors.white;
+        bg = context.appColors.success;
+        fg = context.appColors.onSuccess;
         elevation = 0;
         break;
       case BkuButtonVariant.danger:
-        bg = const Color(0xFFEF4444);
-        fg = Colors.white;
+        bg = context.appColors.danger;
+        fg = context.appColors.onDanger;
         elevation = 0;
         break;
       case BkuButtonVariant.outline:
@@ -178,7 +264,7 @@ class BkuButton extends StatelessWidget {
         vertical: variant == BkuButtonVariant.text ? 8 : (height < 44 ? 6 : 12),
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.radiusMd, // 12px radius as agreed
+        borderRadius: customRadius ?? AppRadius.radiusMd, // 12px radius as agreed
         side: border ?? BorderSide.none,
       ),
     );
@@ -194,7 +280,7 @@ class BkuButton extends StatelessWidget {
     );
 
     Widget content;
-    if (isLoading || icon != null) {
+    if (isLoading || icon != null || trailingIcon != null) {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -214,6 +300,10 @@ class BkuButton extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
           ],
           textWidget,
+          if (!isLoading && trailingIcon != null) ...[
+            const SizedBox(width: AppSpacing.sm),
+            Icon(trailingIcon, size: 18, color: fg),
+          ],
         ],
       );
     } else {
@@ -232,6 +322,25 @@ class BkuButton extends StatelessWidget {
         style: buttonStyle,
         child: content,
       ),
+    );
+  }
+
+  factory BkuButton.dangerOutline({
+    Key? key,
+    required String text,
+    VoidCallback? onPressed,
+    bool isLoading = false,
+    IconData? icon,
+    bool fullWidth = true,
+  }) {
+    return BkuButton(
+      key: key,
+      text: text,
+      onPressed: onPressed,
+      variant: BkuButtonVariant.dangerOutline,
+      isLoading: isLoading,
+      icon: icon,
+      fullWidth: fullWidth,
     );
   }
 }

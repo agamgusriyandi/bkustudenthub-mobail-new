@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -7,6 +9,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
@@ -306,37 +309,10 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                       ),
                     ],
                   ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _saveForm,
-
-                      child:
-                          _isLoading
-                              ? SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  color: context.appColors.onPrimary,
-                                ),
-                              )
-                              : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.save_rounded, size: 20),
-                                  SizedBox(width: AppSpacing.sm),
-                                  Text(
-                                    'Simpan Form',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                    ),
+                  child: BkuButton.primary(
+                    text: 'Simpan Form',
+                    onPressed: _isLoading ? null : _saveForm,
+                    isLoading: _isLoading,
                   ),
                 ),
             ],
@@ -439,7 +415,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
+                BkuTextField(
                   controller: TextEditingController(text: field.label)
                     ..selection = TextSelection.collapsed(
                       offset: field.label.length,
@@ -454,7 +430,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                   onChanged: (value) => field.label = value,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                DropdownButtonFormField<String>(
+                BkuDropdown<String>(
                   initialValue: field.type,
                   decoration: InputDecoration(
                     labelText: 'Tipe Field',
@@ -474,7 +450,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                 if (field.type == 'Dropdown' ||
                     field.type == 'Pilihan Ganda') ...[
                   const SizedBox(height: AppSpacing.md),
-                  TextField(
+                  BkuTextField(
                     controller: TextEditingController(text: field.options)
                       ..selection = TextSelection.collapsed(
                         offset: field.options.length,

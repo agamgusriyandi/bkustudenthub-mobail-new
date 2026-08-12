@@ -2,8 +2,10 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
@@ -189,7 +191,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
         borderRadius: AppRadius.radiusMd,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
+        child: BkuDropdown<String>(
           value: selectedDay,
           isExpanded: true,
           icon: Icon(
@@ -212,7 +214,7 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
   }
 
   Widget _buildRoomTextField() {
-    return TextField(
+    return BkuTextField(
       controller: roomController,
       style: AppTextStyles.bodyLg,
       decoration: InputDecoration(
@@ -398,18 +400,13 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
     final startMinutes = startTime.hour * 60 + startTime.minute;
     final endMinutes = endTime.hour * 60 + endTime.minute;
     if (endMinutes <= startMinutes) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Waktu Tidak Valid',
-              content: 'Jam selesai harus lebih dari jam mulai',
-              cancelText: '',
-              confirmText: 'Tutup',
-              confirmColor: AppColors.success,
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Waktu Tidak Valid',
+        message: 'Jam selesai harus lebih dari jam mulai',
+        primaryButtonText: 'Tutup',
+        type: BkuDialogType.error,
+        onPrimaryPressed: () => context.pop(),
       );
       return;
     }
@@ -441,18 +438,13 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
       );
       if (isDuplicate) {
         if (context.mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (context) => CustomDialog(
-                  title: 'Perhatian',
-                  content: 'Slot dengan jam yang sama sudah ada di hari ini',
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  confirmColor: AppColors.success,
-                  onCancel: () {},
-                  onConfirm: () => context.pop(),
-                ),
+            title: 'Perhatian',
+            message: 'Slot dengan jam yang sama sudah ada di hari ini',
+            primaryButtonText: 'Tutup',
+            type: BkuDialogType.warning,
+            onPrimaryPressed: () => context.pop(),
           );
         }
         return;
@@ -477,25 +469,19 @@ class _AddScheduleSlotScreenState extends State<AddScheduleSlotScreen> {
 
     final success = await provider.saveSchedules(currentSchedules);
     if (context.mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: success ? 'Berhasil' : 'Gagal',
-              content:
-                  success
-                      ? 'Slot jadwal berhasil ditambahkan!'
-                      : 'Gagal menyimpan slot. Coba lagi.',
-              cancelText: '',
-              confirmText: 'Tutup',
-              isSuccess: success,
-              confirmColor: AppColors.success,
-              onCancel: () {},
-              onConfirm: () {
-                context.pop();
-                if (success) context.pop();
-              },
-            ),
+        title: success ? 'Berhasil' : 'Gagal',
+        message:
+            success
+                ? 'Slot jadwal berhasil ditambahkan!'
+                : 'Gagal menyimpan slot. Coba lagi.',
+        primaryButtonText: 'Tutup',
+        type: success ? BkuDialogType.success : BkuDialogType.error,
+        onPrimaryPressed: () {
+          context.pop();
+          if (success) context.pop();
+        },
       );
     }
   }

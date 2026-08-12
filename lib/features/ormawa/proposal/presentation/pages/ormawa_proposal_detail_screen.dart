@@ -13,6 +13,7 @@ import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/create
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:intl/intl.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class OrmawaProposalDetailScreen extends StatelessWidget {
   final OrmawaProposal proposal;
@@ -518,7 +519,7 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton.icon(
+      child: BkuButton.primary(
         onPressed: () {
           Navigator.push(
             context,
@@ -528,11 +529,8 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
             ),
           );
         },
-        icon: Icon(Icons.edit_document, color: context.appColors.onPrimary),
-        label: Text(
-          'PERBAIKI PROPOSAL',
-          style: TextStyle(color: context.appColors.onPrimary, fontWeight: FontWeight.bold),
-        ),
+        icon: Icons.edit_document,
+        text: 'PERBAIKI PROPOSAL',
       ),
     );
   }

@@ -5,11 +5,13 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -195,33 +197,25 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                                     children: [
                                       SizedBox(
                                         height: 32,
-                                        child: OutlinedButton(
+                                        child: BkuButton(
+                                          variant: BkuButtonVariant.outline,
                                           onPressed: () {
                                             showDialog(context: context, builder: (_) => SessionQrModal(sessionId: widget.sessionId));
                                           },
-                                          style: OutlinedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                            side: const BorderSide(color: AppColors.neutral300),
-                                          ),
-                                          child: const Text('QR Presensi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral900)),
+                                          text: 'QR Presensi',
+                                          fontSize: 10,
+                                          fullWidth: false,
                                         ),
                                       ),
                                       const SizedBox(width: AppSpacing.sm),
                                       SizedBox(
                                         height: 32,
-                                        child: ElevatedButton(
-                                          onPressed: _savePresensi,
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(0xFF2563EB),
-                                            foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                                            elevation: 0,
-                                          ),
-                                          child: _isSaving 
-                                            ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                            : Text(hasValidated ? 'Simpan Perubahan' : 'Simpan Presensi', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                        child: BkuButton(
+                                          onPressed: _isSaving ? null : _savePresensi,
+                                          isLoading: _isSaving,
+                                          text: hasValidated ? 'Simpan Perubahan' : 'Simpan Presensi',
+                                          fontSize: 10,
+                                          fullWidth: false,
                                         ),
                                       ),
                                     ],
@@ -294,21 +288,17 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                         const SizedBox(height: AppSpacing.lg),
 
                         // Filters
-                        TextField(
+                        BkuTextField(
                           controller: _searchController,
                           onChanged: (val) => setState(() => _searchQuery = val),
-                          decoration: InputDecoration(
-                            hintText: 'Cari NIM atau nama mahasiswa...',
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          ),
+                          hint: 'Cari NIM atau nama mahasiswa...',
+                          prefixIcon: const Icon(Icons.search_rounded),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
                             Expanded(
-                              child: DropdownButtonFormField<String>(
+                              child: BkuDropdown<String>(
                                 initialValue: _selectedStatus,
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -331,7 +321,7 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Expanded(
-                              child: DropdownButtonFormField<String>(
+                              child: BkuDropdown<String>(
                                 initialValue: _selectedFaculty,
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -469,16 +459,15 @@ class _MentorSessionAttendanceScreenState extends State<MentorSessionAttendanceS
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.link_rounded, size: 16, color: context.appColors.primary),
+                    Icon(Icons.attachment_rounded, color: context.appColors.primary, size: 20),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        mentee.attachmentUrl,
-                        style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        'Lihat Lampiran',
+                        style: AppTextStyles.labelSm.copyWith(color: context.appColors.primary, decoration: TextDecoration.underline),
                       ),
                     ),
+                    Icon(Icons.arrow_forward_ios_rounded, color: context.appColors.primary, size: 12),
                   ],
                 ),
               ),

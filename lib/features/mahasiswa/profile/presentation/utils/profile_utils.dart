@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 
 Future<void> pickAvatar(BuildContext context) async {
   final provider = context.read<ProfileProvider>();
@@ -45,36 +45,25 @@ Future<void> pickAvatar(BuildContext context) async {
       if (croppedFile != null) {
         await provider.uploadAvatar(croppedFile.path);
         if (context.mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (ctx) => CustomDialog(
-                  title: 'Berhasil',
-                  content: 'Foto profil berhasil diperbarui',
-                  isSuccess: true,
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  confirmColor: context.appColors.success,
-                  onCancel: () {},
-                  onConfirm: () => Navigator.pop(ctx),
-                ),
+            title: 'Berhasil',
+            message: 'Foto profil berhasil diperbarui',
+            type: BkuDialogType.success,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => Navigator.pop(context),
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        showDialog(
+        BkuDialog.show(
           context: context,
-          builder:
-              (ctx) => CustomDialog(
-                title: 'Gagal',
-                content: ErrorHandler.getMessage(e),
-                cancelText: '',
-                confirmText: 'Tutup',
-                isDestructive: true,
-                onCancel: () {},
-                onConfirm: () => Navigator.pop(ctx),
-              ),
+          title: 'Gagal',
+          message: ErrorHandler.getMessage(e),
+          type: BkuDialogType.error,
+          primaryButtonText: 'Tutup',
+          onPrimaryPressed: () => Navigator.pop(context),
         );
       }
     }

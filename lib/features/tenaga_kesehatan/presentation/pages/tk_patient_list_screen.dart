@@ -1,7 +1,9 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
@@ -331,7 +333,7 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xs),
-                          TextField(
+                          BkuTextField(
                             controller: _searchController,
                             decoration: InputDecoration(
                               hintText: 'Ketik NIM atau Nama...',
@@ -729,29 +731,11 @@ class _TkPatientListScreenState extends State<TkPatientListScreen> {
   }) {
     return SizedBox(
       height: 38,
-      child: ElevatedButton.icon(
+      child: BkuButton(
         onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: bgColor,
-          foregroundColor: fgColor,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.radiusMd,
-            side: border ?? BorderSide.none,
-          ),
-        ),
-        icon: Icon(icon, size: 16),
-        label: Text(
-          text,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: fgColor,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        variant: BkuButtonVariant.primary,
+        icon: icon,
+        text: text,
       ),
     );
   }

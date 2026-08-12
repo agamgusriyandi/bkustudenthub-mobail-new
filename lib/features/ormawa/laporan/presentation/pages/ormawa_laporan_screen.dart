@@ -5,6 +5,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -1607,7 +1609,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
-                child: TextField(
+                child: BkuTextField(
                   controller: controller,
                   maxLines: maxLines,
                   keyboardType: keyboardType,
@@ -1988,9 +1990,9 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<OrmawaProposal>(
+                child: BkuDropdown<OrmawaProposal>(
                   isExpanded: true,
-                  hint: const Text('Pilih proposal...'),
+                  hint: 'Pilih proposal...',
                   disabledHint: Text(
                     'Belum ada proposal disetujui...',
                     style: AppTextStyles.labelSm.copyWith(
@@ -2078,7 +2080,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
-                child: TextField(
+                child: BkuTextField(
                   controller: controller,
                   maxLines: maxLines,
                   keyboardType: keyboardType,

@@ -6,12 +6,14 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class MentorHandbookReviewScreen extends StatefulWidget {
@@ -231,13 +233,8 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            BkuCard(
                               padding: const EdgeInsets.all(AppSpacing.md),
-                              decoration: BoxDecoration(
-                                color: AppColors.neutral100,
-                                borderRadius: AppRadius.radiusMd,
-                                border: Border.all(color: context.appColors.outlineVariant),
-                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -280,15 +277,9 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             ...contentMap.entries.map((e) {
-                              return Container(
-                                width: double.infinity,
+                              return BkuCard(
                                 margin: const EdgeInsets.only(bottom: AppSpacing.md),
                                 padding: const EdgeInsets.all(AppSpacing.md),
-                                decoration: BoxDecoration(
-                                  color: context.appColors.surface,
-                                  borderRadius: AppRadius.radiusMd,
-                                  border: Border.all(color: context.appColors.outlineVariant),
-                                ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -369,7 +360,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                     style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  DropdownButtonFormField<String>(
+                  BkuDropdown<String>(
                     initialValue: _reviewStatus,
                     style: AppTextStyles.labelSm.copyWith(color: context.appColors.onSurface, fontSize: 12),
                     decoration: InputDecoration(
@@ -399,16 +390,12 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                     style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  TextField(
+                  BkuTextField(
                     controller: _feedbackController,
                     maxLines: 4,
                     enabled: isPascaKencanaActive,
                     style: AppTextStyles.labelSm.copyWith(fontSize: 12),
-                    decoration: InputDecoration(
-                      hintText: 'Tuliskan catatan perbaikan...',
-                      hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
-                      border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    ),
+                    hint: 'Tuliskan catatan perbaikan...',
                   ),
                   const SizedBox(height: AppSpacing.xl),
 

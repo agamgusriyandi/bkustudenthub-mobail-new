@@ -8,6 +8,8 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -74,7 +76,19 @@ class _OrmawaProposalReviewScreenState
     if (s.contains('disetujui') || s.contains('setuju')) return 'Disetujui';
     if (s.contains('ditolak') || s.contains('tolak')) return 'Ditolak';
     if (s.contains('diajukan') || s.contains('proses')) return 'Diproses';
-    return 'Diajukan';
+    return status;
+  }
+
+  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+    final s = rawStatus.toLowerCase();
+    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
+      return BkuStatus.success;
+    } else if (s.contains('tolak') || s.contains('batal')) {
+      return BkuStatus.error;
+    } else if (s.contains('revisi')) {
+      return BkuStatus.warning;
+    }
+    return BkuStatus.info;
   }
 
   Color _getStatusColor(String status) {
@@ -183,21 +197,9 @@ class _OrmawaProposalReviewScreenState
 
     return GestureDetector(
       onTap: () => context.push(AppRoutes.ormawaProposalDetail, extra: proposal),
-      child: Container(
+      child: BkuCard(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.onSurface.withAlpha(8),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -225,20 +227,11 @@ class _OrmawaProposalReviewScreenState
                     ],
                   ),
                 ),
-                Container(
+                BkuStatusBadge(
+                  status: _mapStatusToBkuStatus(proposal['status'] ?? ''),
+                  customText: normalizedStatus,
+                  showIcon: false,
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    normalizedStatus,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: statusColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
                 ),
               ],
             ),

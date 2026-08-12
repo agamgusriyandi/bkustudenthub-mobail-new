@@ -4,6 +4,8 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
@@ -13,7 +15,6 @@ import 'package:bkuhub_mobile/features/counseling/presentation/providers/student
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 
@@ -708,7 +709,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   }
 
   Widget _buildComplaintField() {
-    return TextField(
+    return BkuTextField(
       controller: _complaintCtrl,
       maxLines: 4,
       style: AppTextStyles.bodyMd,
@@ -1079,22 +1080,9 @@ class _InformedConsentSheet extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: BkuButton.outline(
                     onPressed: onCancel,
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: AppColors.neutral500.withAlpha(50)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppRadius.radiusLg,
-                      ),
-                    ),
-                    child: Text(
-                      'Batal',
-                      style: AppTextStyles.labelMd.copyWith(
-                        color: AppColors.neutral700,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    text: 'Batal',
                   ),
                 ),
                 const SizedBox(width: AppSpacing.lg),

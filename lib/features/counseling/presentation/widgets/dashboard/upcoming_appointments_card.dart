@@ -1,8 +1,9 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:go_router/go_router.dart';
@@ -50,16 +51,10 @@ class UpcomingAppointmentsCard extends StatelessWidget {
                 ],
               ),
               if (bookings.isNotEmpty)
-                TextButton(
+                BkuButton.text(
                   onPressed: () => context.push(AppRoutes.psychologistBookings),
-
-                  child: Text(
-                    'Lihat Semua',
-                    style: AppTextStyles.labelMd.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  text: 'Lihat Semua',
+                  customFgColor: context.appColors.primary,
                 ),
             ],
           ),
@@ -175,28 +170,10 @@ class _HorizontalAppointmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return BkuCard(
       width: 240,
+      margin: const EdgeInsets.only(right: AppSpacing.md, bottom: 4),
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color:
-              isActive ? AppColors.primary.withAlpha(50) : Colors.transparent,
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color:
-                isActive
-                    ? AppColors.primary.withAlpha(20)
-                    : context.appColors.onSurface.withAlpha(12),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -291,60 +268,28 @@ class _HorizontalAppointmentCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 44,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                   backgroundColor: context.appColors.success,
-                  foregroundColor: context.appColors.onPrimary,
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                ),
+              child: BkuButton.success(
                 onPressed: () {
                   context.read<NavigationProvider>().setBookingTabIndex(
                     2,
                   ); // Dikonfirmasi tab
                   context.push(AppRoutes.psychologistBookings);
                 },
-
-                child: Text(
-                  'Tangani',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: context.appColors.onPrimary,
-                  ),
-                ),
+                text: 'Tangani',
               ),
             )
           else if (isPending)
             SizedBox(
               width: double.infinity,
               height: 44,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  side: BorderSide(color: AppColors.primary, width: 1.5),
-                ),
+              child: BkuButton.outline(
                 onPressed: () {
                   context.read<NavigationProvider>().setBookingTabIndex(
                     1,
                   ); // Menunggu tab
                   context.push(AppRoutes.psychologistBookings);
                 },
-                child: Text(
-                  'Konfirmasi',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
+                text: 'Konfirmasi',
               ),
             )
           else

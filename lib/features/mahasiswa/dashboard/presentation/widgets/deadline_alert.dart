@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class DeadlineItem {
   final String name;
@@ -58,15 +61,15 @@ class DeadlineAlert extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            context.appColors.primary.withValues(alpha: 0.05),
-            context.appColors.primary.withValues(alpha: 0.1),
+            AppColors.primary.withValues(alpha: 0.03),
+            AppColors.primary.withValues(alpha: 0.08),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.appColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primary.withValues(alpha: 0.15),
         ),
       ),
       child: Column(
@@ -79,14 +82,14 @@ class DeadlineAlert extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.warning_amber_rounded,
-                    color: context.appColors.primary,
+                    color: AppColors.primary,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'Pengingat Jatuh Tempo',
                     style: AppTextStyles.titleSm.copyWith(
-                      color: context.appColors.primary,
+                      color: AppColors.neutral900,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -94,12 +97,17 @@ class DeadlineAlert extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  AppSnackbar.showSuccess(context, 'Menampilkan seluruh pengingat tenggat waktu...');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ScholarshipScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   'Lihat Semua',
                   style: AppTextStyles.caption.copyWith(
-                    color: context.appColors.primary,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -113,7 +121,7 @@ class DeadlineAlert extends StatelessWidget {
             Text(
               '+${deadlines.length - 3} pengingat lainnya',
               style: AppTextStyles.caption.copyWith(
-                color: context.appColors.primary,
+                color: AppColors.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -126,70 +134,80 @@ class DeadlineAlert extends StatelessWidget {
   Widget _buildDeadlineItem(BuildContext context, DeadlineItem item) {
     final urgencyColor = _getUrgencyColor(context, item.daysLeft);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.appColors.outline.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: context.appColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: context.appColors.primary.withValues(alpha: 0.2),
+    return GestureDetector(
+      onTap: () {
+        if (item.link != null && item.link!.isNotEmpty) {
+          context.push(item.link!);
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ScholarshipScreen(),
+            ),
+          );
+        }
+      },
+      child: BkuCard(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        borderOnly: true,
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Icon(
+                _getIcon(item.type),
+                color: AppColors.primary,
+                size: 18,
               ),
             ),
-            child: Icon(
-              _getIcon(item.type),
-              color: context.appColors.primary,
-              size: 18,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: AppTextStyles.bodySm.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: urgencyColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: urgencyColor.withValues(alpha: 0.2)),
-                  ),
-                  child: Text(
-                    '${item.daysLeft} Hari Lagi',
-                    style: AppTextStyles.caption.copyWith(
-                      color: urgencyColor,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name,
+                    style: AppTextStyles.bodySm.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: urgencyColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: urgencyColor.withValues(alpha: 0.2)),
+                    ),
+                    child: Text(
+                      '${item.daysLeft} Hari Lagi',
+                      style: AppTextStyles.caption.copyWith(
+                        color: urgencyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
-            size: 18,
-          ),
-        ],
+            Icon(
+              Icons.chevron_right_rounded,
+              color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
+              size: 18,
+            ),
+          ],
+        ),
       ),
     );
   }

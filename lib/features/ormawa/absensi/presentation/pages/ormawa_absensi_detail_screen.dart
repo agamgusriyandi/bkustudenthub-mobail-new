@@ -9,6 +9,8 @@ import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_ab
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class OrmawaAbsensiManagementDetailScreen extends StatefulWidget {
   final String absensiId;
@@ -25,16 +27,16 @@ class OrmawaAbsensiManagementDetailScreen extends StatefulWidget {
 }
 
 class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManagementDetailScreen> {
-  Color _getStatusColor(String status) {
+  BkuStatus _getBkuStatus(String status) {
     switch (status.toLowerCase()) {
       case 'aktif':
-        return AppColors.success;
+        return BkuStatus.success;
       case 'selesai':
-        return AppColors.info;
+        return BkuStatus.info;
       case 'dibatalkan':
-        return AppColors.error;
+        return BkuStatus.error;
       default:
-        return AppColors.neutral500;
+        return BkuStatus.warning;
     }
   }
 
@@ -51,7 +53,6 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
     final jumlahHadir = data['JumlahHadir'] ?? data['jumlah_hadir'] ?? 0;
     final jumlahTotal = data['JumlahTotal'] ?? data['jumlah_total'] ?? 0;
 
-    final statusColor = _getStatusColor(status);
     DateTime? date;
     try {
       date = DateTime.parse(tanggal);
@@ -60,7 +61,7 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
     final attendanceRate = jumlahTotal > 0 ? ((jumlahHadir / jumlahTotal) * 100).round() : 0;
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -77,7 +78,7 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeaderCard(nama, status, statusColor, date),
+                  _buildHeaderCard(nama, status, _getBkuStatus(status), date),
                   const SizedBox(height: AppSpacing.lg),
                   _buildInfoCard(context, 'INFORMASI KEGIATAN', [
                     _buildInfoRow('Lokasi', lokasi),
@@ -141,22 +142,9 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
     );
   }
 
-  Widget _buildHeaderCard(String nama, String status, Color statusColor, DateTime? date) {
-    return Container(
-      width: double.infinity,
+  Widget _buildHeaderCard(String nama, String status, BkuStatus bkuStatus, DateTime? date) {
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -169,16 +157,11 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
                   style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
-              Container(
+              BkuStatusBadge(
+                status: bkuStatus,
+                customText: status,
+                showIcon: false,
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                decoration: BoxDecoration(
-                  color: statusColor.withAlpha(15),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Text(
-                  status,
-                  style: AppTextStyles.labelSm.copyWith(color: statusColor, fontWeight: FontWeight.w900, fontSize: 10),
-                ),
               ),
             ],
           ),
@@ -201,21 +184,8 @@ class _OrmawaAbsensiManagementDetailScreenState extends State<OrmawaAbsensiManag
   }
 
   Widget _buildInfoCard(BuildContext context, String title, List<Widget> children) {
-    return Container(
-      width: double.infinity,
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

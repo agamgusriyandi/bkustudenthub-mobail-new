@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -11,7 +12,6 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/counseling_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 
 class ScheduleManagementScreen extends StatefulWidget {
   const ScheduleManagementScreen({super.key});
@@ -123,22 +123,16 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
       if (success) _isDirty = false;
     });
 
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (context) => CustomDialog(
-            title: success ? 'Berhasil' : 'Gagal',
-            content:
-                success
-                    ? 'Jadwal berhasil disimpan!'
-                    : 'Gagal menyimpan jadwal.',
-            cancelText: '',
-            confirmText: 'Tutup',
-            isSuccess: success,
-            confirmColor: context.appColors.success,
-            onCancel: () {},
-            onConfirm: () => context.pop(),
-          ),
+      title: success ? 'Berhasil' : 'Gagal',
+      message:
+          success
+              ? 'Jadwal berhasil disimpan!'
+              : 'Gagal menyimpan jadwal.',
+      primaryButtonText: 'Tutup',
+      type: success ? BkuDialogType.success : BkuDialogType.error,
+      onPrimaryPressed: () => context.pop(),
     );
   }
 
@@ -152,28 +146,25 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
   }
 
   void _deleteSlot(int index) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (context) => CustomDialog(
-            title: 'Hapus Slot',
-            content: 'Yakin ingin menghapus slot waktu ini?',
-            cancelText: 'Batal',
-            confirmText: 'Hapus',
-            isDestructive: true,
-            onCancel: () {},
-            onConfirm: () {
-              context.pop();
-              setState(() {
-                final slots = List<Map<String, dynamic>>.from(
-                  _slotsForSelectedDate,
-                );
-                slots.removeAt(index);
-                _slotsByDay = {..._slotsByDay, _selectedDayName: slots};
-                _isDirty = true;
-              });
-            },
-          ),
+      title: 'Hapus Slot',
+      message: 'Yakin ingin menghapus slot waktu ini?',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      type: BkuDialogType.error,
+      onSecondaryPressed: () => context.pop(),
+      onPrimaryPressed: () {
+        context.pop();
+        setState(() {
+          final slots = List<Map<String, dynamic>>.from(
+            _slotsForSelectedDate,
+          );
+          slots.removeAt(index);
+          _slotsByDay = {..._slotsByDay, _selectedDayName: slots};
+          _isDirty = true;
+        });
+      },
     );
   }
 

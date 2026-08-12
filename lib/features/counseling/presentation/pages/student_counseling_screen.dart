@@ -15,7 +15,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -107,15 +107,9 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
   }
 
   Widget _buildUrgentCard() {
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().errorContainer,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: context.watch<ThemeProvider>().colorError.withAlpha(30),
-        ),
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      color: context.appColors.error.withAlpha(20),
       child: Row(
         children: [
           Container(
@@ -418,19 +412,10 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
     final id = p['id']?.toString() ?? '';
     final isActive = p['is_active'] == true;
 
-    return Container(
-      margin: EdgeInsets.only(bottom: AppSpacing.md),
-      padding: EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color:
-              isActive
-                  ? context.watch<ThemeProvider>().success.withAlpha(30)
-                   : AppColors.neutral500.withAlpha(30),
-        ),
-      ),
+    return BkuCard(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
           Stack(
@@ -538,43 +523,34 @@ class _MyBookingsSheet extends StatelessWidget {
   const _MyBookingsSheet({required this.provider});
 
   void _handleCancelBooking(BuildContext context, String bookingId) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogCtx) => CustomDialog(
-            title: 'Batalkan Booking?',
-            content:
-                'Apakah Anda yakin ingin membatalkan jadwal konseling ini?',
-            confirmText: 'Ya, Batalkan',
-            isDestructive: true,
-            onCancel: () => Navigator.pop(dialogCtx),
-            onConfirm: () async {
-              Navigator.pop(dialogCtx);
-              BkuLoadingDialog.show(context);
+      title: 'Batalkan Booking?',
+      message: 'Apakah Anda yakin ingin membatalkan jadwal konseling ini?',
+      primaryButtonText: 'Ya, Batalkan',
+      type: BkuDialogType.error,
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        BkuLoadingDialog.show(context);
               final success = await context
                   .read<StudentCounselingProvider>()
                   .cancelBooking(bookingId);
               if (context.mounted) {
                 BkuLoadingDialog.hide(context);
-                showDialog(
+                BkuDialog.show(
                   context: context,
-                  builder:
-                      (context) => CustomDialog(
-                        title: success ? 'Berhasil' : 'Gagal',
-                        content:
-                            success
-                                ? 'Booking berhasil dibatalkan'
-                                : 'Gagal membatalkan booking',
-                        cancelText: '',
-                        confirmText: 'Tutup',
-                        onCancel: () {},
-                        onConfirm: () => context.pop(),
-                      ),
+                  title: success ? 'Berhasil' : 'Gagal',
+                  message:
+                      success
+                          ? 'Booking berhasil dibatalkan'
+                          : 'Gagal membatalkan booking',
+                  primaryButtonText: 'Tutup',
+                  type: success ? BkuDialogType.success : BkuDialogType.error,
+                  onPrimaryPressed: () => context.pop(),
                 );
               }
             },
-          ),
-    );
+          );
   }
 
   void _handleReschedule(BuildContext context, Map<String, dynamic> booking) {

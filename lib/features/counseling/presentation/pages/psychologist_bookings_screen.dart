@@ -4,6 +4,8 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -339,7 +341,7 @@ class _PsychologistBookingsScreenState
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
       child: Column(
         children: [
-          TextField(
+          BkuTextField(
             onChanged: (val) => setState(() {
               _searchQuery = val;
               _currentPage = 1;
@@ -387,7 +389,7 @@ class _PsychologistBookingsScreenState
                   border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                   ),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
+                    child: BkuDropdown<String>(
                       isExpanded: true,
                       value: _sortOrder,
                       icon: Icon(
@@ -428,16 +430,10 @@ class _PsychologistBookingsScreenState
                   border: Border.all(color: AppColors.neutral500.withAlpha(40)),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String?>(
+                  child: BkuDropdown<String?>(
                     isExpanded: true,
                     value: _selectedProdi,
-                      hint: Text(
-                        'Seluruh Fakultas',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: AppColors.neutral800,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      hint: 'Seluruh Fakultas',
                       icon: Icon(
                         Icons.tune_rounded,
                         color: context.appColors.success,
@@ -1229,7 +1225,7 @@ class _PsychologistBookingsScreenState
                       if (!isDone && !isRejected) ...[
                         _buildSectionTitle('Link Meeting'),
                         const SizedBox(height: AppSpacing.sm),
-                        TextField(
+                        BkuTextField(
                           controller: linkCtrl,
                           style: AppTextStyles.bodySm.copyWith(fontSize: 13),
                           decoration: InputDecoration(
@@ -1277,7 +1273,7 @@ class _PsychologistBookingsScreenState
 
                         _buildSectionTitle('Catatan Tambahan'),
                         const SizedBox(height: AppSpacing.sm),
-                        TextField(
+                        BkuTextField(
                           controller: notesCtrl,
                           maxLines: 3,
                           minLines: 3,
@@ -1574,7 +1570,7 @@ class _PsychologistBookingsScreenState
                     ],
                   ),
                   const SizedBox(height: AppSpacing.s10),
-                  TextField(
+                  BkuTextField(
                     controller: reasonCtrl,
                     maxLines: 2,
                     style: AppTextStyles.bodySm.copyWith(fontSize: 13),

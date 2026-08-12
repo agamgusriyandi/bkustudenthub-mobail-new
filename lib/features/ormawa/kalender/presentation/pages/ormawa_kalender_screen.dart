@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -17,6 +18,11 @@ import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 class OrmawaKalenderScreen extends StatefulWidget {
   const OrmawaKalenderScreen({super.key});
@@ -359,20 +365,20 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     final canEdit = provider.hasPermission('edit_calendar');
     final canDelete = provider.hasPermission('delete_calendar');
 
-    Color statusColor;
+    BkuStatus mappedStatus;
     switch (agenda.status.toLowerCase()) {
       case 'terlaksana':
       case 'selesai':
-        statusColor = AppColors.success;
+        mappedStatus = BkuStatus.success;
         break;
       case 'berlangsung':
-        statusColor = AppColors.warning;
+        mappedStatus = BkuStatus.warning;
         break;
       case 'batal':
-        statusColor = AppColors.error;
+        mappedStatus = BkuStatus.error;
         break;
       default:
-        statusColor = AppColors.info;
+        mappedStatus = BkuStatus.info;
     }
 
     return Material(
@@ -395,22 +401,13 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  BkuStatusBadge(
+                    status: mappedStatus,
+                    customText: agenda.status,
+                    showIcon: false,
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withAlpha(20),
-                      borderRadius: AppRadius.radiusSm,
-                    ),
-                    child: Text(
-                      agenda.status,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: statusColor,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 10,
-                      ),
                     ),
                   ),
                   if (canEdit || canDelete)
@@ -521,31 +518,18 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
   }
 
   void _confirmDelete(BuildContext context, OrmawaAgenda agenda) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Hapus Agenda?'),
-            content: Text(
-              'Apakah Anda yakin ingin menghapus "${agenda.title}"?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: const Text('BATAL'),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<OrmawaProvider>().deleteAgenda(agenda.id);
-                  context.pop();
-                },
-                child: const Text(
-                  'HAPUS',
-                  style: TextStyle(color: AppColors.error),
-                ),
-              ),
-            ],
-          ),
+      title: 'Hapus Agenda?',
+      message: 'Apakah Anda yakin ingin menghapus "${agenda.title}"?',
+      type: BkuDialogType.error,
+      primaryButtonText: 'HAPUS',
+      onPrimaryPressed: () {
+        context.read<OrmawaProvider>().deleteAgenda(agenda.id);
+        context.pop();
+      },
+      secondaryButtonText: 'BATAL',
+      onSecondaryPressed: () => context.pop(),
     );
   }
 
@@ -575,16 +559,11 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
   }
 
   void _showFilterSheet() {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: EdgeInsets.zero,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1085,55 +1064,12 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
     IconData icon, {
     int maxLines = 1,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.w900,
-            fontSize: 10,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: AppColors.neutral800,
-          ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-            ),
-            prefixIcon: Icon(icon, size: 20, color: AppColors.neutral500),
-            filled: true,
-            fillColor: AppColors.neutral100,
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(
-                color: context.appColors.primary,
-                width: 1.5,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.lg,
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      label: label,
+      hint: hint,
+      controller: controller,
+      prefixIcon: Icon(icon, size: 20, color: AppColors.neutral500),
+      maxLines: maxLines,
     );
   }
 
@@ -1143,56 +1079,13 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
     TextEditingController controller,
     IconData icon,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.w900,
-            fontSize: 10,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          onChanged: _onEstimasiDanaChanged,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: AppColors.neutral800,
-          ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-            ),
-            prefixIcon: Icon(icon, size: 20, color: AppColors.neutral500),
-            filled: true,
-            fillColor: AppColors.neutral100,
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: const BorderSide(color: AppColors.neutral300),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusLg,
-              borderSide: BorderSide(
-                color: context.appColors.primary,
-                width: 1.5,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.lg,
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      label: label,
+      hint: hint,
+      controller: controller,
+      keyboardType: TextInputType.number,
+      onChanged: _onEstimasiDanaChanged,
+      prefixIcon: Icon(icon, size: 20, color: AppColors.neutral500),
     );
   }
 
@@ -1324,7 +1217,7 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
             border: Border.all(color: AppColors.neutral300),
           ),
           child: DropdownButtonHideUnderline(
-            child: DropdownButtonFormField<String>(
+            child: BkuDropdown<String>(
               initialValue: _selectedStatus,
               decoration: const InputDecoration(
                 prefixIcon: Icon(
@@ -1356,31 +1249,17 @@ class _OrmawaFormJadwalScreenState extends State<OrmawaFormJadwalScreen> {
     return Row(
       children: [
         Expanded(
-          child: OutlinedButton(
+          child: BkuButton.outline(
+            text: 'BATAL',
             onPressed: () => context.pop(),
-
-            child: const Text(
-              'BATAL',
-              style: TextStyle(
-                color: AppColors.neutral600,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
         ),
         const SizedBox(width: AppSpacing.lg),
         Expanded(
           flex: 2,
-          child: ElevatedButton(
+          child: BkuButton.primary(
+            text: widget.agenda != null ? 'PERBARUI AGENDA' : 'SIMPAN JADWAL',
             onPressed: _submit,
-
-            child: Text(
-              widget.agenda != null ? 'PERBARUI AGENDA' : 'SIMPAN JADWAL',
-              style: TextStyle(
-                color: context.appColors.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
         ),
       ],

@@ -2,7 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 import 'package:provider/provider.dart';
@@ -456,34 +456,26 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
 
   Future<void> _confirmDeleteSchedule(Schedule schedule) async {
     if (schedule.availableSlots < schedule.kuota) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Tidak Bisa Dihapus',
-              content:
-                  'Jadwal ini tidak dapat dihapus karena sudah ada pasien yang mendaftar (kuota sudah terpakai).',
-              cancelText: '',
-              confirmText: 'Mengerti',
-              onCancel: () => context.pop(),
-              onConfirm: () => context.pop(),
-            ),
+        title: 'Tidak Bisa Dihapus',
+        message: 'Jadwal ini tidak dapat dihapus karena sudah ada pasien yang mendaftar (kuota sudah terpakai).',
+        type: BkuDialogType.info,
+        primaryButtonText: 'Mengerti',
+        onPrimaryPressed: () => context.pop(),
       );
       return;
     }
 
-    final result = await showDialog<bool>(
+    final result = await BkuDialog.show<bool>(
       context: context,
-      builder:
-          (context) => CustomDialog(
-            title: 'Hapus Jadwal',
-            content: 'Yakin ingin menghapus jadwal ini?',
-            cancelText: 'Batal',
-            confirmText: 'Hapus',
-            isDestructive: true,
-            onCancel: () => Navigator.pop(context, false),
-            onConfirm: () => Navigator.pop(context, true),
-          ),
+      title: 'Hapus Jadwal',
+      message: 'Yakin ingin menghapus jadwal ini?',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context, false),
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () => Navigator.pop(context, true),
     );
     if (result == true && mounted) {
       try {
@@ -491,34 +483,24 @@ class _TkScheduleScreenState extends State<TkScheduleScreen> {
           schedule.id,
         );
         if (mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (context) => CustomDialog(
-                  title: 'Berhasil',
-                  content: 'Jadwal berhasil dihapus',
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  isSuccess: true,
-                  onCancel: () => context.pop(),
-                  onConfirm: () => context.pop(),
-                ),
+            title: 'Berhasil',
+            message: 'Jadwal berhasil dihapus',
+            type: BkuDialogType.success,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => context.pop(),
           );
         }
       } catch (e) {
         if (mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (context) => CustomDialog(
-                  title: 'Gagal Menghapus',
-                  content:
-                      'Jadwal ini tidak dapat dihapus karena sudah ada pasien yang mendaftar atau terjadi kesalahan sistem.\n\nDetail: ${e.toString().replaceAll('Exception: ', '')}',
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  onCancel: () => context.pop(),
-                  onConfirm: () => context.pop(),
-                ),
+            title: 'Gagal Menghapus',
+            message: 'Jadwal ini tidak dapat dihapus karena sudah ada pasien yang mendaftar atau terjadi kesalahan sistem.\n\nDetail: ${e.toString().replaceAll('Exception: ', '')}',
+            type: BkuDialogType.error,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => context.pop(),
           );
         }
       }

@@ -2,8 +2,12 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -216,7 +220,8 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                           Row(
                             children: [
                               Expanded(
-                                child: OutlinedButton(
+                                child: BkuButton.outline(
+                                  text: 'RESET',
                                   onPressed: () {
                                     setModalState(() {
                                       _selectedFilterRole = 'SEMUA';
@@ -225,28 +230,14 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                     });
                                     setState(() {});
                                   },
-
-                                  child: const Text(
-                                    'RESET',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.lg),
-                    Expanded(
-                      flex: 2,
-                      child: ElevatedButton(
-                        onPressed: () => context.pop(),
-
-                        child: Text(
-                          'TERAPKAN FILTER',
-                          style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                              Expanded(
+                                flex: 2,
+                                child: BkuButton.primary(
+                                  text: 'TERAPKAN FILTER',
+                                  onPressed: () => context.pop(),
                                 ),
                               ),
                             ],
@@ -261,73 +252,30 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
   }
 
   void _confirmRegenerate() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (dialogContext) => AlertDialog(
-            title: const Row(
-              children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  color: AppColors.warning,
-                  size: 28,
-                ),
-                SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    'Regenerasi Pengurus',
-                    style: TextStyle(fontWeight: FontWeight.w900),
-                  ),
-                ),
-              ],
-            ),
-            content: const Text(
-              'Apakah Anda yakin ingin mengarsipkan seluruh pengurus aktif saat ini menjadi Demisioner/Alumni?\n\nTindakan ini tidak dapat dibatalkan.',
-              style: TextStyle(height: 1.5),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(
-                  'Batal',
-                  style: TextStyle(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(dialogContext);
-                  try {
-                    await context.read<OrmawaProvider>().regenerateMembers();
-                    if (mounted) {
-                      AppSnackbar.showSuccess(
-                        context,
-                        'Regenerasi kepengurusan berhasil!',
-                      );
-                    }
-                  } catch (e) {
-                    if (mounted) {
-                      AppSnackbar.showError(context, 'Gagal regenerasi: $e');
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: context.appColors.onPrimary,
-                  elevation: 0,
-                ),
-                child: Text(
-                  'Ya, Arsipkan',
-                  style: TextStyle(
-                    color: context.appColors.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+      type: BkuDialogType.warning,
+      title: 'Regenerasi Kepengurusan?',
+      message: 'Apakah Anda yakin ingin memulai periode baru? Semua anggota aktif saat ini akan menjadi demisioner.',
+      primaryButtonText: 'Regenerasi',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () async {
+        context.pop();
+        try {
+          await context.read<OrmawaProvider>().regenerateMembers();
+          if (mounted) {
+            AppSnackbar.showSuccess(
+              context,
+              'Regenerasi kepengurusan berhasil!',
+            );
+          }
+        } catch (e) {
+          if (mounted) {
+            AppSnackbar.showError(context, 'Gagal regenerasi: $e');
+          }
+        }
+      },
+      onSecondaryPressed: () => context.pop(),
     );
   }
 
@@ -419,7 +367,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                           ),
                                         ),
                                         child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
+                                          child: BkuDropdown<String>(
                                             isExpanded: true,
                                             value: provider.selectedPeriod,
                                             icon: Icon(
@@ -618,7 +566,8 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 _selectedFilterDivisi != 'SEMUA' ||
                 _selectedFilterStatus != 'SEMUA') ...[
               const SizedBox(height: AppSpacing.xl),
-              ElevatedButton.icon(
+              BkuButton.outline(
+                text: 'Reset Filter',
                 onPressed:
                     () => setState(() {
                       _searchQuery = '';
@@ -626,18 +575,6 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                       _selectedFilterDivisi = 'SEMUA';
                       _selectedFilterStatus = 'SEMUA';
                     }),
-                icon: Icon(
-                  Icons.refresh_rounded,
-                  size: 18,
-                  color: context.appColors.primary,
-                ),
-                label: Text(
-                  'Reset Filter',
-                  style: TextStyle(
-                    color: context.appColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
             ],
           ],
@@ -1015,52 +952,18 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
   }
 
   void _confirmDelete(BuildContext context, OrmawaMember member) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Row(
-              children: [
-                Icon(Icons.delete_forever_rounded, color: AppColors.error),
-                SizedBox(width: AppSpacing.s10),
-                Text('Hapus Anggota'),
-              ],
-            ),
-            content: Text(
-              'Apakah Anda yakin ingin menghapus\n${member.name} dari keanggotaan?',
-              style: const TextStyle(height: 1.5),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: const Text(
-                  'Batal',
-                  style: TextStyle(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<OrmawaProvider>().deleteMember(member.id);
-                  context.pop();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: context.appColors.onPrimary,
-                  elevation: 0,
-                ),
-              child: Text(
-                'Hapus',
-                style: TextStyle(
-                  color: context.appColors.onPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              ),
-            ],
-          ),
+      type: BkuDialogType.error,
+      title: 'Hapus Anggota',
+      message: 'Apakah Anda yakin ingin menghapus ${member.name} dari keanggotaan?',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () {
+        context.read<OrmawaProvider>().deleteMember(member.id);
+        context.pop();
+      },
+      onSecondaryPressed: () => context.pop(),
     );
   }
 
@@ -1194,59 +1097,52 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
     final ctrl = TextEditingController();
     showDialog(
       context: context,
-      builder:
-          (dialogCtx) => AlertDialog(
-            title: const Text(
-              'Buat Divisi Baru',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            content: TextField(
-              controller: ctrl,
-              decoration: InputDecoration(
-                hintText: 'Nama Divisi...',
-                border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                filled: true,
-                fillColor: AppColors.neutral100,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogCtx),
-                child: const Text(
-                  'Batal',
-                  style: TextStyle(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (ctrl.text.trim().isNotEmpty) {
-                    try {
-                      await context.read<OrmawaProvider>().createDivisionInline(
-                        ctrl.text.trim(),
-                      );
-                      setState(() => _selectedDivision = ctrl.text.trim());
-                      if (dialogCtx.mounted) Navigator.pop(dialogCtx);
-                    } catch (e) {
-                      if (mounted) {
-                        AppSnackbar.showError(context, 'Gagal membuat divisi');
-                      }
-                    }
-                  }
-                },
-
-                child: Text(
-                  'Simpan',
-                  style: TextStyle(
-                    color: context.appColors.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text(
+          'Buat Divisi Baru',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: BkuTextField(
+          controller: ctrl,
+          decoration: InputDecoration(
+            hintText: 'Nama Divisi...',
+            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
+            filled: true,
+            fillColor: AppColors.neutral100,
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: AppColors.neutral500,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          BkuButton.primary(
+            text: 'Simpan',
+            fullWidth: false,
+            onPressed: () async {
+              if (ctrl.text.trim().isNotEmpty) {
+                try {
+                  await context.read<OrmawaProvider>().createDivisionInline(
+                    ctrl.text.trim(),
+                  );
+                  setState(() => _selectedDivision = ctrl.text.trim());
+                  if (dialogCtx.mounted) Navigator.pop(dialogCtx);
+                } catch (e) {
+                  if (mounted) {
+                    AppSnackbar.showError(context, 'Gagal membuat divisi');
+                  }
+                }
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -1465,34 +1361,10 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
                       ),
 
                       const SizedBox(height: AppSpacing.xxxl),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: provider.isLoading ? null : _submit,
-
-                          child:
-                              provider.isLoading
-                                  ? SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: context.appColors.onPrimary,
-                                      strokeWidth: 3,
-                                    ),
-                                  )
-                                  : Text(
-                                    isEdit
-                                        ? 'Perbarui Data Anggota'
-                                        : 'Simpan Anggota Baru',
-                                    style: TextStyle(
-                                      color: context.appColors.onPrimary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                        ),
+                      BkuButton.primary(
+                        text: isEdit ? 'Perbarui Data Anggota' : 'Simpan Anggota Baru',
+                        onPressed: provider.isLoading ? null : _submit,
+                        isLoading: provider.isLoading,
                       ),
                       const SizedBox(height: AppSpacing.xxl),
                     ],
@@ -1522,7 +1394,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
         border: Border.all(color: AppColors.neutral300),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
+        child: BkuDropdown<T>(
           isExpanded: true,
           value: value,
           icon: const Icon(
@@ -1584,7 +1456,7 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
               Icon(icon, color: AppColors.neutral500, size: 20),
               const SizedBox(width: AppSpacing.md),
               Expanded(
-                child: TextField(
+                child: BkuTextField(
                   controller: controller,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -1692,7 +1564,7 @@ class _StudentSearchSheetState extends State<_StudentSearchSheet> {
                   borderRadius: AppRadius.radiusLg,
                   border: Border.all(color: AppColors.neutral300),
                 ),
-                child: TextField(
+                child: BkuTextField(
                   onChanged: _filter,
                   decoration: InputDecoration(
                     icon: Icon(

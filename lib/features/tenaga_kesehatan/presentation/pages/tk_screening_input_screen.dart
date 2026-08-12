@@ -6,9 +6,10 @@ import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 import 'package:go_router/go_router.dart';
@@ -453,7 +454,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
         const SizedBox(height: AppSpacing.xl),
 
         // Search Field
-        TextField(
+        BkuTextField(
           controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Ketik Nama atau NIM...',
@@ -653,7 +654,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600),
         ),
         const SizedBox(height: AppSpacing.sm),
-        DropdownButtonFormField<String>(
+        BkuDropdown<String>(
           initialValue: value,
           decoration: InputDecoration(
             filled: true,
@@ -831,7 +832,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.height_rounded,
               iconColor: AppColors.neutral600,
               unit: 'cm',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _tinggiController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -854,7 +855,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.monitor_weight_outlined,
               iconColor: AppColors.neutral600,
               unit: 'kg',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _beratController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -877,7 +878,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.favorite_rounded,
               iconColor: AppColors.neutral600,
               unit: 'mmHg',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _sistoleController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -900,7 +901,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.favorite_border_rounded,
               iconColor: AppColors.neutral600,
               unit: 'mmHg',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _diastoleController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -923,7 +924,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.thermostat_rounded,
               iconColor: AppColors.neutral600,
               unit: '°C',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _suhuController,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -949,7 +950,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.monitor_heart_rounded,
               iconColor: AppColors.neutral600,
               unit: 'bpm',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _nadiController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -972,7 +973,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.air_rounded,
               iconColor: AppColors.neutral600,
               unit: 'x/mnt',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _rrController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -995,7 +996,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.opacity_rounded,
               iconColor: context.appColors.info,
               unit: '%',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _spo2Controller,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -1019,7 +1020,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               icon: Icons.water_drop_rounded,
               iconColor: context.appColors.warning,
               unit: 'mg/dL',
-              inputWidget: TextField(
+              inputWidget: BkuTextField(
                 controller: _gulaController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -1041,7 +1042,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
               title: 'Goldar',
               icon: Icons.bloodtype_rounded,
               iconColor: context.appColors.error,
-              inputWidget: DropdownButton<String>(
+              inputWidget: BkuDropdown<String>(
                 value: _golonganDarah,
                 underline: const SizedBox(),
                 isExpanded: true,
@@ -1097,7 +1098,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    DropdownButton<String>(
+                    BkuDropdown<String>(
                       value: _tesButaWarna,
                       underline: const SizedBox(),
                       isExpanded: true,
@@ -1399,7 +1400,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DropdownButtonFormField<int>(
+                    BkuDropdown<int>(
                       decoration: const InputDecoration(
                         labelText: 'Pilih Psikolog',
                       ),
@@ -1434,7 +1435,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                           ),
                         )
                       else
-                        DropdownButtonFormField<int>(
+                        BkuDropdown<int>(
                           decoration: const InputDecoration(
                             labelText: 'Pilih Jadwal Sesi',
                           ),
@@ -2031,56 +2032,40 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
     setState(() => _isSaving = false);
 
     if (screeningId != null && mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (ctx) => CustomDialog(
-              title: 'Berhasil',
-              content: 'Data screening berhasil disimpan',
-              cancelText: '',
-              confirmText: 'Selesai',
-              isSuccess: true,
-              onCancel: () {},
-              onConfirm: () {
-                Navigator.pop(ctx);
-                context.pop();
-              },
-            ),
+        title: 'Berhasil',
+        message: 'Data screening berhasil disimpan',
+        type: BkuDialogType.success,
+        primaryButtonText: 'Selesai',
+        onPrimaryPressed: () {
+          context.pop();
+        },
       );
     } else if (mounted) {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (ctx) => CustomDialog(
-              title: 'Gagal',
-              content: provider.error ?? 'Gagal menyimpan data',
-              cancelText: '',
-              confirmText: 'Tutup',
-              onCancel: () {},
-              onConfirm: () => Navigator.pop(ctx),
-              isDestructive: true,
-            ),
+        title: 'Gagal',
+        message: provider.error ?? 'Gagal menyimpan data',
+        type: BkuDialogType.error,
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       );
     }
   }
 
   void _showExitConfirmation() {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => CustomDialog(
-            title: 'Batal Screening?',
-            content:
-                'Data yang sudah Anda masukkan tidak akan disimpan. Lanjutkan batal?',
-            cancelText: 'Tidak',
-            confirmText: 'Ya, Batal',
-            isDestructive: true,
-            onCancel: () => Navigator.pop(ctx),
-            onConfirm: () {
-              Navigator.pop(ctx);
-              context.pop();
-            },
-          ),
+      title: 'Batal Screening?',
+      message: 'Data yang sudah Anda masukkan tidak akan disimpan. Lanjutkan batal?',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Tidak',
+      onSecondaryPressed: () => context.pop(),
+      primaryButtonText: 'Ya, Batal',
+      onPrimaryPressed: () {
+        context.pop();
+      },
     );
   }
 }

@@ -4,12 +4,13 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
@@ -122,18 +123,13 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
       if (!mounted) return;
       AppSnackbar.showSuccess(context, 'Pengajuan banding berhasil dikirim');
     } else {
-      showDialog(
+      BkuDialog.show(
         context: context,
-        builder:
-            (context) => CustomDialog(
-              title: 'Gagal Mengirim Data',
-              content: provider.errorMessage ?? 'Gagal mengajukan banding',
-              cancelText: '',
-              confirmText: 'Tutup',
-              onCancel: () {},
-              onConfirm: () => context.pop(),
-              isDestructive: true,
-            ),
+        type: BkuDialogType.error,
+        title: 'Gagal Mengirim Data',
+        message: provider.errorMessage ?? 'Gagal mengajukan banding',
+        primaryButtonText: 'Tutup',
+        onPrimaryPressed: () => context.pop(),
       );
     }
   }
@@ -429,20 +425,10 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        BkuCard(
-          child: TextField(
-            controller: _reasonController,
-            maxLines: 5,
-            decoration: InputDecoration(
-              hintText:
-                  'Contoh: Saya sudah mengumpulkan tugas di e-learning namun nilainya masih 0...',
-              hintStyle: AppTextStyles.bodySm.copyWith(
-                color: context.appColors.outlineVariant,
-              ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(AppSpacing.lg),
-            ),
-          ),
+        BkuTextField(
+          controller: _reasonController,
+          maxLines: 5,
+          hint: 'Contoh: Saya sudah mengumpulkan tugas di e-learning namun nilainya masih 0...',
         ),
       ],
     );
@@ -618,27 +604,14 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
-        BkuCard(
-          padding: EdgeInsets.zero,
-          child: TextField(
-            controller: _linkBuktiController,
-            keyboardType: TextInputType.url,
-            decoration: InputDecoration(
-              hintText: 'https://drive.google.com/...',
-              hintStyle: AppTextStyles.bodySm.copyWith(
-                color: context.appColors.outlineVariant,
-              ),
-              prefixIcon: Icon(
-                Icons.link_rounded,
-                color: context.appColors.outline,
-                size: 18,
-              ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-            ),
+        BkuTextField(
+          controller: _linkBuktiController,
+          keyboardType: TextInputType.url,
+          hint: 'https://drive.google.com/...',
+          prefixIcon: Icon(
+            Icons.link_rounded,
+            color: context.appColors.outline,
+            size: 18,
           ),
         ),
       ],

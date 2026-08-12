@@ -1,17 +1,19 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 
 class CreateLpjScreen extends StatefulWidget {
   const CreateLpjScreen({super.key});
@@ -58,20 +60,16 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
       await context.read<OrmawaProvider>().addLPJ(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        showDialog(
+        BkuDialog.show(
           context: context,
-          barrierDismissible: false,
-          builder: (context) => CustomDialog(
-            title: 'LPJ Dibuat!',
-            content: 'Laporan pertanggungjawaban berhasil disimpan.',
-            cancelText: '',
-            confirmText: 'Kembali',
-            onCancel: () {},
-            onConfirm: () {
-              context.pop();
-              context.pop();
-            },
-          ),
+          type: BkuDialogType.success,
+          title: 'LPJ Dibuat!',
+          message: 'Laporan pertanggungjawaban berhasil disimpan.',
+          primaryButtonText: 'Kembali',
+          onPrimaryPressed: () {
+            context.pop();
+            context.pop();
+          },
         );
       }
     } catch (e) {
@@ -131,12 +129,10 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                           border: Border.all(color: AppColors.neutral300),
                         ),
                         child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
+                          child: BkuDropdown<String>(
                             value: _selectedProposalId,
                             isExpanded: true,
-                            hint: Text('Pilih Proposal',
-                                style: AppTextStyles.labelMd
-                                    .copyWith(color: AppColors.neutral500)),
+                            hint: 'Pilih Proposal',
                             items: proposals
                                 .map((p) => DropdownMenuItem(
                                       value: p.id.toString(),
@@ -169,26 +165,10 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                         isNumber: true,
                       ),
                       const SizedBox(height: AppSpacing.s48),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: _isSubmitting ? null : _handleSubmit,
-                          child: _isSubmitting
-                              ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                      color: context.appColors.onPrimary, strokeWidth: 2),
-                                )
-                              : Text(
-                                  'SIMPAN LPJ',
-                                  style: TextStyle(
-                                      color: context.appColors.onPrimary,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1),
-                                ),
-                        ),
+                      BkuButton.primary(
+                        text: 'SIMPAN LPJ',
+                        onPressed: _isSubmitting ? null : _handleSubmit,
+                        isLoading: _isSubmitting,
                       ),
                     ],
                   ),
@@ -220,28 +200,13 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
     bool isNumber = false,
     int maxLines = 1,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        inputFormatters:
-            isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon:
-              Icon(icon, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        ),
-      ),
+    return BkuTextField(
+      controller: controller,
+      hint: hint,
+      prefixIcon: Icon(icon),
+      maxLines: maxLines,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
     );
   }
 }

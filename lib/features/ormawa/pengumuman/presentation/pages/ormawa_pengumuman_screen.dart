@@ -8,11 +8,12 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:go_router/go_router.dart';
 
@@ -210,20 +211,8 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     IconData icon,
     Color color,
   ) {
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -344,13 +333,8 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       }
     }
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -384,19 +368,15 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                   if (value == 'edit') {
                     _showEditPengumuman(context, announcement);
                   } else if (value == 'delete') {
-                    final confirm = await showDialog<bool>(
+                    final confirm = await BkuDialog.show<bool>(
                       context: context,
-                      builder:
-                          (dialogCtx) => CustomDialog(
-                            title: 'Hapus Pengumuman?',
-                            content:
-                                'Data yang dihapus tidak dapat dikembalikan.',
-                            cancelText: 'Batal',
-                            confirmText: 'Hapus',
-                            isDestructive: true,
-                            onCancel: () => Navigator.pop(dialogCtx, false),
-                            onConfirm: () => Navigator.pop(dialogCtx, true),
-                          ),
+                      type: BkuDialogType.error,
+                      title: 'Hapus Pengumuman?',
+                      message: 'Data yang dihapus tidak dapat dikembalikan.',
+                      primaryButtonText: 'Hapus',
+                      onPrimaryPressed: () => Navigator.pop(context, true),
+                      secondaryButtonText: 'Batal',
+                      onSecondaryPressed: () => Navigator.pop(context, false),
                     );
                     if (confirm == true) {
                       if (mounted) {
@@ -689,9 +669,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                               'OLEH ORMAWA',
                                               style: AppTextStyles.labelSm
                                                   .copyWith(
-                                                    color: const Color(
-                                                      0xFF94A3B8,
-                                                    ),
+                                                    color: AppColors.neutral500,
                                                     fontSize: 8,
                                                     fontWeight: FontWeight.w900,
                                                   ),
@@ -701,9 +679,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                               'Badan Pengurus Harian',
                                               style: AppTextStyles.bodyMd
                                                   .copyWith(
-                                                    color: const Color(
-                                                      0xFF334155,
-                                                    ),
+                                                    color: AppColors.neutral700,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 11,
                                                   ),
@@ -756,9 +732,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                               'TARGET PEMBACA',
                                               style: AppTextStyles.labelSm
                                                   .copyWith(
-                                                    color: const Color(
-                                                      0xFF94A3B8,
-                                                    ),
+                                                    color: AppColors.neutral500,
                                                     fontSize: 8,
                                                     fontWeight: FontWeight.w900,
                                                   ),
@@ -768,9 +742,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                               'Seluruh Anggota',
                                               style: AppTextStyles.bodyMd
                                                   .copyWith(
-                                                    color: const Color(
-                                                      0xFF334155,
-                                                    ),
+                                                    color: AppColors.neutral700,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 11,
                                                   ),

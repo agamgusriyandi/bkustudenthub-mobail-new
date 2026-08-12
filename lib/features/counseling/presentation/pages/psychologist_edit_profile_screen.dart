@@ -3,6 +3,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
@@ -12,8 +14,8 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/psychologist_dashboard_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+
+
 import 'package:go_router/go_router.dart';
 
 class PsychologistEditProfileScreen extends StatefulWidget {
@@ -96,34 +98,24 @@ class _PsychologistEditProfileScreenState
       try {
         await provider.uploadProfileAvatar(pickedFile.path);
         if (mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (ctx) => CustomDialog(
-                  title: 'Berhasil',
-                  content: 'Foto profil berhasil diperbarui',
-                  isSuccess: true,
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  onCancel: () {},
-                  onConfirm: () => Navigator.pop(ctx),
-                ),
+            title: 'Berhasil',
+            message: 'Foto profil berhasil diperbarui',
+            type: BkuDialogType.success,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => Navigator.pop(context),
           );
         }
       } catch (e) {
         if (mounted) {
-          showDialog(
+          BkuDialog.show(
             context: context,
-            builder:
-                (ctx) => CustomDialog(
-                  title: 'Gagal',
-                  content: 'Gagal mengunggah foto profil: $e',
-                  isDestructive: true,
-                  cancelText: '',
-                  confirmText: 'Tutup',
-                  onCancel: () {},
-                  onConfirm: () => Navigator.pop(ctx),
-                ),
+            title: 'Gagal',
+            message: 'Gagal mengunggah foto profil: $e',
+            type: BkuDialogType.error,
+            primaryButtonText: 'Tutup',
+            onPrimaryPressed: () => Navigator.pop(context),
           );
         }
       } finally {
@@ -404,38 +396,11 @@ class _PsychologistEditProfileScreenState
                     ]),
 
                     const SizedBox(height: AppSpacing.xxl),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _save,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.success,
-                          foregroundColor: context.appColors.onPrimary,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.br10,
-                          ),
-                        ),
-                        child:
-                            _isSaving
-                                ? SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: CircularProgressIndicator(
-                                    color: context.appColors.onPrimary,
-                                    strokeWidth: 2.5,
-                                  ),
-                                )
-                                : Text(
-                                  'Simpan Perubahan',
-                                  style: AppTextStyles.titleMd.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16,
-                                    color: context.appColors.onPrimary,
-                                  ),
-                                ),
-                      ),
+                    BkuButton(
+                      onPressed: _isSaving ? null : _save,
+                      variant: BkuButtonVariant.success,
+                      isLoading: _isSaving,
+                      text: 'Simpan Perubahan',
                     ),
                     const SizedBox(height: AppSpacing.xxxl),
                   ],

@@ -7,31 +7,36 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class OrmawaJadwalDetailScreen extends StatelessWidget {
   final dynamic kegiatan;
 
   const OrmawaJadwalDetailScreen({super.key, required this.kegiatan});
 
-  Color _getStatusColor(String status) {
+  BkuStatus _getBkuStatus(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
-        return AppColors.success;
+        return BkuStatus.success;
       case 'selesai':
-        return AppColors.neutral500;
+        return BkuStatus.info;
       case 'dibatalkan':
-        return AppColors.error;
+        return BkuStatus.error;
       default:
-        return AppColors.info;
+        return BkuStatus.warning;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final k = kegiatan;
-    final statusColor = _getStatusColor(k.status);
+    final status = _getBkuStatus(k.status ?? '');
 
     return Scaffold(
       backgroundColor: AppColors.neutral100,
@@ -51,21 +56,8 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: double.infinity,
+                  BkuCard(
                     padding: const EdgeInsets.all(AppSpacing.xl),
-                    decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      borderRadius: AppRadius.radiusXl,
-                      border: Border.all(color: AppColors.neutral200),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.onSurface.withAlpha(12),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -79,22 +71,13 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                                     .copyWith(fontWeight: FontWeight.w900),
                               ),
                             ),
-                            Container(
+                            BkuStatusBadge(
+                              status: status,
+                              customText: k.status ?? '-',
+                              showIcon: false,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.md,
                                   vertical: AppSpacing.xs),
-                              decoration: BoxDecoration(
-                                color: statusColor.withAlpha(15),
-                                borderRadius: AppRadius.radiusSm,
-                              ),
-                              child: Text(
-                                (k.status ?? '-'),
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 10,
-                                ),
-                              ),
                             ),
                           ],
                         ),
@@ -150,14 +133,8 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
 
   Widget _buildInfoCard(
       BuildContext context, String title, List<Widget> children) {
-    return Container(
-      width: double.infinity,
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -273,22 +250,22 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('JUDUL KEGIATAN'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _judulController, hint: 'Judul'),
+            BkuTextField(label: 'JUDUL KEGIATAN', controller: _judulController, hint: 'Judul'),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('DESKRIPSI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
+            BkuTextField(
+                label: 'DESKRIPSI',
                 controller: _deskripsiController,
                 hint: 'Deskripsi...',
                 maxLines: 3),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('LOKASI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _lokasiController, hint: 'Lokasi'),
+            BkuTextField(label: 'LOKASI', controller: _lokasiController, hint: 'Lokasi'),
             const SizedBox(height: AppSpacing.xl),
-            _buildLabel('STATUS'),
+            Text('STATUS',
+                style: AppTextStyles.labelSm.copyWith(
+                    color: AppColors.neutral600,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                    fontSize: 10)),
             const SizedBox(height: AppSpacing.md),
             Container(
               padding:
@@ -299,7 +276,7 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
                 border: Border.all(color: AppColors.neutral300),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: BkuDropdown<String>(
                   value: _selectedStatus,
                   isExpanded: true,
                   items: _statuses
@@ -311,23 +288,10 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.s48),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _handleSubmit,
-                child: _isSubmitting
-                    ? SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                            color: context.appColors.onPrimary, strokeWidth: 2))
-                    : Text('SIMPAN PERUBAHAN',
-                        style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-              ),
+            BkuButton.primary(
+              text: 'SIMPAN PERUBAHAN',
+              isLoading: _isSubmitting,
+              onPressed: _handleSubmit,
             ),
           ],
         ),
@@ -335,37 +299,4 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Text(text,
-        style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            fontSize: 10));
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    int maxLines = 1,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        ),
-      ),
-    );
-  }
 }

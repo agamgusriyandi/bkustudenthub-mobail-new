@@ -11,6 +11,8 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 
 // Screens
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
@@ -209,90 +211,21 @@ class OrmawaServiceGridModal extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            contentPadding: AppSpacing.padding28,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: context.appColors.errorContainer,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.logout_rounded,
-                    color: context.appColors.error,
-                    size: 36,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Keluar Portal?',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                Text(
-                  'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s28),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(ctx),
-
-                        child: Text(
-                          'Batal',
-                          style: AppTextStyles.labelLg.copyWith(
-                            color: context.appColors.onSurface,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(ctx);
-                          context.pop();
-                          await AuthService().logout();
-                          if (context.mounted) {
-                            context.go(AppRoutes.login);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.error,
-                          foregroundColor: context.appColors.onPrimary,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.radiusMd,
-                          ),
-                        ),
-                        child: Text(
-                          'Keluar',
-                          style: AppTextStyles.labelLg.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: context.appColors.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      title: 'Keluar Portal?',
+      message: 'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
+      type: BkuDialogType.error,
+      primaryButtonText: 'Keluar',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        await AuthService().logout();
+        if (context.mounted) {
+          context.go(AppRoutes.login);
+        }
+      },
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 }
@@ -413,20 +346,14 @@ class _ServiceIcon extends StatelessWidget {
   }
 
   void _showMoreServices(BuildContext context) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.65,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: const OrmawaServiceGridModal(),
-          ),
+      padding: EdgeInsets.zero,
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.65,
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: const OrmawaServiceGridModal(),
+      ),
     );
   }
 }

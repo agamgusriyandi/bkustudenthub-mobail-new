@@ -5,11 +5,15 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class MentorEssayGradingScreen extends StatefulWidget {
   final int? quizId;
@@ -81,20 +85,8 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Container(
+                child: BkuCard(
                   padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: context.appColors.surface,
-                    borderRadius: AppRadius.radiusLg,
-                    border: Border.all(color: context.appColors.outline.withAlpha(40)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(10),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -132,11 +124,10 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                           border: Border.all(color: context.appColors.outline.withAlpha(60)),
                         ),
                         child: DropdownButtonHideUnderline(
-                          child: DropdownButton<int?>(
+                          child: BkuDropdown<int?>(
                             value: _selectedQuizId ?? (allQuizzes.isNotEmpty ? allQuizzes.first.id : null),
                             isExpanded: true,
-                            icon: Icon(Icons.keyboard_arrow_down_rounded, color: context.appColors.primary),
-                            hint: Text('Semua Kuis Evaluasi', style: AppTextStyles.labelSm),
+                            hint: 'Semua Kuis Evaluasi',
                             items: [
                               if (allQuizzes.isEmpty)
                                 DropdownMenuItem<int?>(
@@ -361,24 +352,9 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
     final item = widget.item;
     final isGraded = item.status == 'graded' || item.score != null;
 
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(
-          color: isGraded ? const Color(0xFF10B981).withAlpha(60) : context.appColors.outline.withAlpha(40),
-          width: isGraded ? 1.5 : 1.0,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(8),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -440,31 +416,30 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isGraded 
-                      ? const Color(0xFF10B981).withAlpha(20) 
-                      : const Color(0xFFF59E0B).withAlpha(20),
+                  color: isGraded
+                      ? context.appColors.success.withAlpha(20) 
+                      : context.appColors.warning.withAlpha(20),
                   borderRadius: AppRadius.radiusSm,
                   border: Border.all(
-                    color: isGraded 
-                        ? const Color(0xFF10B981).withAlpha(60) 
-                        : const Color(0xFFF59E0B).withAlpha(60),
+                    color: isGraded
+                        ? context.appColors.success.withAlpha(60) 
+                        : context.appColors.warning.withAlpha(60),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isGraded ? Icons.check_circle_rounded : Icons.schedule_rounded,
-                      size: 13,
-                      color: isGraded ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
+                      isGraded ? Icons.check_circle_rounded : Icons.pending_actions_rounded,
+                      size: 14,
+                      color: isGraded ? context.appColors.success : context.appColors.warning,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
-                      isGraded ? 'Dinilai' : 'Belum Dinilai',
-                      style: TextStyle(
-                        fontSize: 10,
+                      isGraded ? 'Sudah Dinilai' : 'Belum Dinilai',
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: isGraded ? context.appColors.success : context.appColors.warning,
                         fontWeight: FontWeight.bold,
-                        color: isGraded ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
                       ),
                     ),
                   ],
@@ -493,9 +468,9 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF8F1),
-              borderRadius: AppRadius.radiusMd,
-              border: Border.all(color: const Color(0xFFFFEDD5)),
+              color: context.appColors.warning.withAlpha(20),
+              borderRadius: AppRadius.radiusLg,
+              border: Border.all(color: context.appColors.warning.withAlpha(40)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,9 +484,8 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                 Expanded(
                   child: Text(
                     item.answer.isNotEmpty ? item.answer : '(Mahasiswa belum memasukkan jawaban)',
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: item.answer.isNotEmpty ? const Color(0xFF334155) : const Color(0xFF94A3B8),
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: item.answer.isNotEmpty ? context.appColors.onSurfaceVariant : AppColors.neutral500,
                       fontStyle: item.answer.isNotEmpty ? FontStyle.normal : FontStyle.italic,
                       height: 1.45,
                     ),
@@ -542,7 +516,7 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    TextField(
+                    BkuTextField(
                       controller: _scoreController,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.neutral900),
@@ -561,25 +535,7 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                           );
                         }
                       },
-                      decoration: InputDecoration(
-                        hintText: '0-${item.maxScore.toInt()}',
-                        isDense: true,
-                        filled: true,
-                        fillColor: AppColors.neutral100,
-                        border: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      ),
+                      hint: '0-${item.maxScore.toInt()}',
                     ),
                   ],
                 ),
@@ -599,29 +555,10 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    TextField(
+                    BkuTextField(
                       controller: _feedbackController,
                       style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral900),
-                      decoration: InputDecoration(
-                        hintText: 'Tulis catatan...',
-                        hintStyle: const TextStyle(color: AppColors.neutral600, fontSize: 11),
-                        isDense: true,
-                        filled: true,
-                        fillColor: AppColors.neutral100,
-                        border: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: const BorderSide(color: AppColors.neutral300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: AppRadius.radiusSm,
-                          borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      ),
+                      hint: 'Tulis catatan...',
                     ),
                   ],
                 ),
@@ -633,22 +570,11 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
             alignment: Alignment.centerRight,
             child: SizedBox(
               height: 34,
-              child: OutlinedButton.icon(
+              child: BkuButton(
                 onPressed: _isSubmitting ? () {} : _submitScore,
-                icon: _isSubmitting
-                    ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2))
-                    : Icon(isGraded ? Icons.check_circle_rounded : Icons.save_rounded, size: 14),
-                label: Text(
-                  isGraded ? 'Dinilai' : 'Simpan Nilai',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: isGraded ? const Color(0xFF059669) : Colors.white,
-                  side: BorderSide(color: isGraded ? const Color(0xFF059669) : context.appColors.primary),
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                  backgroundColor: isGraded ? const Color(0xFFECFDF5) : context.appColors.primary,
-                ),
+                icon: isGraded ? Icons.check_circle_rounded : Icons.save_rounded,
+                text: isGraded ? 'Perbarui' : 'Simpan Nilai',
+                isLoading: _isSubmitting,
               ),
             ),
           ),

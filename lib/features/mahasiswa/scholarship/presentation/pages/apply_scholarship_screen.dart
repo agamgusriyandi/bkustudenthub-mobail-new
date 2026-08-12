@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -912,14 +913,9 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       inputWidget = BkuCard(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
+          child: BkuDropdown<String>(
             value: _customAnswers[label],
-            hint: Text(
-              'Pilih $label',
-              style: AppTextStyles.labelMd.copyWith(
-                color: context.appColors.outline,
-              ),
-            ),
+            hint: 'Pilih $label',
             isExpanded: true,
             icon: Icon(
               Icons.arrow_drop_down_rounded,

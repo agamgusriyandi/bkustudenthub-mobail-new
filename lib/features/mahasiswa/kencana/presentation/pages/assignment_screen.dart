@@ -1,9 +1,10 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
@@ -453,60 +454,17 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
 
   Widget _buildInputArea(String type) {
     if (type == 'text') {
-      return TextField(
+      return BkuTextField(
         controller: _answerController,
+        minLines: 6,
         maxLines: 6,
-        decoration: InputDecoration(
-          hintText: 'Ketik jawaban Anda di sini...',
-          filled: true,
-          fillColor: AppColors.neutral50,
-          border: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.outlineVariant,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.outlineVariant,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.primary,
-            ),
-          ),
-        ),
+        hint: 'Ketik jawaban Anda di sini...',
       );
     } else if (type == 'link') {
-      return TextField(
+      return BkuTextField(
         controller: _linkController,
-        decoration: InputDecoration(
-          hintText: 'https://...',
-          prefixIcon: const Icon(Icons.link_rounded),
-          filled: true,
-          fillColor: AppColors.neutral50,
-          border: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.outlineVariant,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.outlineVariant,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: AppRadius.radiusMd,
-            borderSide: BorderSide(
-              color: context.appColors.primary,
-            ),
-          ),
-        ),
+        hint: 'https://...',
+        prefixIcon: const Icon(Icons.link_rounded),
       );
     } else if (type == 'file' || type == 'media') {
       return InkWell(

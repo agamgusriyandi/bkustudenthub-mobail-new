@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -412,17 +413,11 @@ class _OrmawaRbacScreenState extends State<OrmawaRbacScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            ElevatedButton.icon(
+            BkuButton.primary(
+              fullWidth: false,
               onPressed: _fetchRoles,
-              icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text(
-                'Muat Ulang',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.appColors.primary,
-                foregroundColor: context.appColors.onPrimary,
-              ),
+              icon: Icons.refresh_rounded,
+              text: 'Muat Ulang',
             ),
           ],
         ),

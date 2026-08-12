@@ -1,6 +1,11 @@
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -218,7 +223,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
             borderRadius: AppRadius.radiusLg,
             border: Border.all(color: AppColors.neutral300),
           ),
-          child: TextField(
+          child: BkuTextField(
             enabled: enabled,
             controller: TextEditingController(text: !enabled ? hint : null),
             style: AppTextStyles.bodyMd.copyWith(
@@ -256,20 +261,8 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     String action,
     VoidCallback onPressed,
   ) {
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neutral600.withAlpha(10),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
       child: Row(
         children: [
           Container(
@@ -314,15 +307,9 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
             ),
           ),
           if (context.read<OrmawaProvider>().hasPermission('manage_structure'))
-            ElevatedButton(
+            BkuButton.primary(
+              text: action,
               onPressed: onPressed,
-
-              child: Text(
-                action,
-                style: AppTextStyles.labelSm.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
             ),
         ],
       ),
@@ -334,26 +321,15 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     int memberCount,
     OrmawaProvider provider,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neutral600.withAlpha(8),
-            blurRadius: 25,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.s20,
-              AppSpacing.s20,
+              0,
+              0,
+              0,
               AppSpacing.lg,
             ),
             child: Row(
@@ -394,40 +370,18 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            showDialog(
+                            BkuDialog.show(
                               context: context,
-                              builder:
-                                  (ctx) => AlertDialog(
-                                    title: Text(
-                                      'Hapus Divisi',
-                                      style: AppTextStyles.titleMd,
-                                    ),
-                                    content: const Text(
-                                      'Apakah Anda yakin ingin menghapus divisi ini? Anggota di dalamnya tidak akan terhapus.',
-                                    ),
-
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(ctx),
-                                        child: const Text('Batal'),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(ctx);
-                                          provider.deleteDivision(dept.id);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.error,
-                                          foregroundColor: context.appColors.onPrimary,
-                                          elevation: 0,
-                                        ),
-                                        child: Text(
-                                          'Hapus',
-                                          style: TextStyle(color: context.appColors.onPrimary),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              type: BkuDialogType.error,
+                              title: 'Hapus Divisi',
+                              message: 'Apakah Anda yakin ingin menghapus divisi ini? Anggota di dalamnya tidak akan terhapus.',
+                              primaryButtonText: 'Hapus',
+                              onPrimaryPressed: () {
+                                Navigator.pop(context);
+                                provider.deleteDivision(dept.id);
+                              },
+                              secondaryButtonText: 'Batal',
+                              onSecondaryPressed: () => Navigator.pop(context),
                             );
                           },
                           icon: const Icon(
@@ -444,7 +398,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
           ),
           const Divider(color: AppColors.neutral200, height: 1, thickness: 1),
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.only(top: AppSpacing.xl),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -491,7 +445,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
       builder:
           (ctx) => AlertDialog(
             title: Text('Tambah Divisi', style: AppTextStyles.titleMd),
-            content: TextField(
+            content: BkuTextField(
               controller: _divisionNameController,
               decoration: InputDecoration(
                 hintText: 'Nama Divisi',
@@ -500,11 +454,12 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
             ),
 
             actions: [
-              TextButton(
+              BkuButton.text(
+                text: 'Batal',
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Batal'),
               ),
-              ElevatedButton(
+              BkuButton.primary(
+                text: 'Simpan',
                 onPressed: () {
                   if (_divisionNameController.text.trim().isNotEmpty) {
                     provider.createDivisionInline(
@@ -513,11 +468,6 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     Navigator.pop(ctx);
                   }
                 },
-
-                child: Text(
-                  'Simpan',
-                  style: TextStyle(color: context.appColors.onPrimary),
-                ),
               ),
             ],
           ),
@@ -609,7 +559,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.sm),
-                              TextField(
+                              BkuTextField(
                                 controller: _bphSearchController,
                                 decoration: InputDecoration(
                                   hintText: 'Cari nama atau NIM...',
@@ -688,7 +638,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                               ),
                             ),
                             const SizedBox(height: AppSpacing.sm),
-                            DropdownButtonFormField<String>(
+                            BkuDropdown<String>(
                               initialValue: selectedRole,
                               items:
                                   [
@@ -722,7 +672,8 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: ElevatedButton(
+                      child: BkuButton.primary(
+                        text: existingMember != null ? 'Simpan' : 'Tambah',
                         onPressed: () {
                           if (existingMember != null) {
                             provider.updateMember(existingMember.id, {
@@ -741,14 +692,6 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                             }
                           }
                         },
-
-                        child: Text(
-                          'SIMPAN',
-                          style: TextStyle(
-                            color: context.appColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ),
                     ),
                   ],

@@ -7,6 +7,8 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -90,6 +92,18 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
     if (s.contains('selesai')) return 'Selesai';
     if (s.contains('menunggu') || s.contains('pending')) return 'Menunggu';
     return status;
+  }
+
+  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+    final s = rawStatus.toLowerCase();
+    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
+      return BkuStatus.success;
+    } else if (s.contains('tolak') || s.contains('batal')) {
+      return BkuStatus.error;
+    } else if (s.contains('revisi')) {
+      return BkuStatus.warning;
+    }
+    return BkuStatus.info;
   }
 
   @override
@@ -187,21 +201,9 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
       onTap: () {
         context.push(AppRoutes.ormawaLpjDetail, extra: lpj);
       },
-      child: Container(
+      child: BkuCard(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.onSurface.withAlpha(8),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -229,20 +231,11 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
                     ],
                   ),
                 ),
-                Container(
+                BkuStatusBadge(
+                  status: _mapStatusToBkuStatus(lpj['status'] ?? ''),
+                  customText: normalizedStatus,
+                  showIcon: false,
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    normalizedStatus,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: statusColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
                 ),
               ],
             ),

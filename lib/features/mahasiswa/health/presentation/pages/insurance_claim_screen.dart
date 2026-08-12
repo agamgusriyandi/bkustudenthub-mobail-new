@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:flutter/services.dart';
@@ -653,7 +654,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.sm),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: selectedProvider,
                             items: const [
                               DropdownMenuItem(
@@ -844,7 +845,8 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           const SizedBox(height: AppSpacing.sm),
                           Row(
                             children: [
-                              ElevatedButton.icon(
+                              BkuButton.outline(
+                                fullWidth: false,
                                 onPressed: () async {
                                   showModalBottomSheet(
                                     context: context,
@@ -944,12 +946,8 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                     },
                                   );
                                 },
-
-                                icon: const Icon(
-                                  Icons.attach_file_rounded,
-                                  size: 18,
-                                ),
-                                label: const Text('Pilih Berkas'),
+                                icon: Icons.attach_file_rounded,
+                                text: 'Pilih Berkas',
                               ),
                               const SizedBox(width: AppSpacing.md),
                               Expanded(
@@ -977,7 +975,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                           const SizedBox(height: AppSpacing.xxl),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
+                            child: BkuButton(
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
                                   context.pop();
@@ -1021,14 +1019,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
                                   }
                                 }
                               },
-
-                              child: const Text(
-                                'Kirim Pengajuan Klaim',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
+                              text: 'Kirim Pengajuan Klaim',
                             ),
                           ),
                         ],

@@ -5,12 +5,15 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -218,45 +221,28 @@ class _MentorGroupDetailScreenState extends State<MentorGroupDetailScreen> {
                             padding: const EdgeInsets.all(AppSpacing.md),
                             child: Column(
                               children: [
-                                TextField(
+                                BkuTextField(
                                   controller: _searchController,
                                   onChanged: (val) => setState(() => _searchQuery = val),
-                                  decoration: InputDecoration(
-                                    hintText: 'Cari nama atau NIM...',
-                                    prefixIcon: const Icon(Icons.search_rounded, size: 20),
-                                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  ),
-                                  style: const TextStyle(fontSize: 12),
+                                  hint: 'Cari nama atau NIM...',
+                                  prefixIcon: const Icon(Icons.search_rounded, size: 20),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.md),
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: BkuButton.outline(
                                         onPressed: () => _showQRModal(context, detail.name),
-                                        icon: const Icon(Icons.qr_code_scanner_rounded, size: 16),
-                                        label: const Text('Tampilkan QR Absen', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.neutral200,
-                                          foregroundColor: AppColors.neutral900,
-                                          elevation: 0,
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                        ),
+                                        icon: Icons.qr_code_scanner_rounded,
+                                        text: 'Tampilkan QR Absen',
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: AppSpacing.sm),
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: BkuButton.primary(
                                         onPressed: () => context.push('/mentor-kencana/attendance'),
-                                        icon: const Icon(Icons.checklist_rounded, size: 16),
-                                        label: const Text('Kelola Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xFF2563EB),
-                                          foregroundColor: Colors.white,
-                                          elevation: 0,
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                        ),
+                                        icon: Icons.checklist_rounded,
+                                        text: 'Kelola Presensi',
                                       ),
                                     ),
                                   ],
@@ -532,7 +518,7 @@ class _GroupQrModalContentState extends State<_GroupQrModalContent> {
 
           Text('Pilih Sesi Kencana', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 6),
-          DropdownButtonFormField<int>(
+          BkuDropdown<int>(
             initialValue: _selectedSessionId,
             decoration: InputDecoration(
               isDense: true,
@@ -632,16 +618,9 @@ class _GroupQrModalContentState extends State<_GroupQrModalContent> {
             ),
 
           const SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFF97316),
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-              elevation: 0,
-            ),
+          BkuButton.primary(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
+            text: 'Tutup',
           ),
         ],
       ),

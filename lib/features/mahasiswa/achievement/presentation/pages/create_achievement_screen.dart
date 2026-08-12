@@ -7,10 +7,12 @@ import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/data/models/achievement_form_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/providers/achievement_form_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
@@ -64,44 +66,13 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
               _buildLabel('Nama Prestasi', required: true),
               BkuTextField(
                 controller: _namaController,
+                hint: 'Contoh: Juara 1 Lomba Karya Tulis Ilmiah',
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
                     return 'Nama prestasi wajib diisi';
                   }
                   return null;
                 },
-                decoration: InputDecoration(
-                  hintText: 'Contoh: Juara 1 Lomba Karya Tulis Ilmiah',
-                  hintStyle: AppTextStyles.labelMd.copyWith(
-                    color: AppColors.neutral500,
-                    fontSize: 12,
-                  ),
-                  filled: true,
-                  fillColor: context.appColors.surface,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.outline.withAlpha(30),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.outline.withAlpha(30),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -120,45 +91,14 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
               _buildLabel('Deskripsi', required: true),
               BkuTextField(
                 controller: _deskripsiController,
+                hint: 'Deskripsikan prestasi Anda...',
+                maxLines: 4,
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
                     return 'Deskripsi wajib diisi';
                   }
                   return null;
                 },
-                decoration: InputDecoration(
-                  hintText: 'Deskripsikan prestasi Anda...',
-                  hintStyle: AppTextStyles.labelMd.copyWith(
-                    color: AppColors.neutral500,
-                    fontSize: 12,
-                  ),
-                  filled: true,
-                  fillColor: context.appColors.surface,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.outline.withAlpha(30),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.outline.withAlpha(30),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-                maxLines: 4,
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -243,35 +183,18 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
     Function(String?) onChanged,
     String currentValue,
   ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(
-          color: context.appColors.outline.withAlpha(30),
-        ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: items.contains(currentValue) ? currentValue : items.first,
-          isExpanded: true,
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: context.appColors.outline,
+    return BkuDropdown<String>(
+      value: items.contains(currentValue) ? currentValue : items.first,
+      items: items.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value,
+            style: AppTextStyles.labelMd.copyWith(fontSize: 12),
           ),
-          items: items.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(
-                value,
-                style: AppTextStyles.labelMd.copyWith(fontSize: 12),
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 
@@ -372,72 +295,48 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
 
   Future<void> _pickFile() async {
     FocusScope.of(context).unfocus();
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusXs,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacing.lg,
-                  horizontal: AppSpacing.xl,
-                ),
-                child: Text(
-                  'Pilih Sumber Dokumen',
-                  style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt_rounded, color: AppColors.neutral600),
-                title: Text('Kamera', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
-                onTap: () async {
-                  context.pop();
-                  final picker = ImagePicker();
-                  final image = await picker.pickImage(source: ImageSource.camera);
-                  if (image != null) {
-                    setState(() {
-                      _selectedFilePath = image.path;
-                      _selectedFileName = image.name;
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.folder_rounded, color: AppColors.neutral600),
-                title: Text('Galeri / File (PDF)', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
-                onTap: () async {
-                  context.pop();
-                  final result = await FilePicker.pickFiles(
-                    type: FileType.custom,
-                    allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-                  );
-                  if (result != null && result.files.single.path != null) {
-                    setState(() {
-                      _selectedFilePath = result.files.single.path;
-                      _selectedFileName = result.files.single.name;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+      padding: EdgeInsets.zero,
+      title: 'Pilih Sumber Dokumen',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.camera_alt_rounded, color: AppColors.neutral600),
+            title: Text('Kamera', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
+            onTap: () async {
+              context.pop();
+              final picker = ImagePicker();
+              final image = await picker.pickImage(source: ImageSource.camera);
+              if (image != null) {
+                setState(() {
+                  _selectedFilePath = image.path;
+                  _selectedFileName = image.name;
+                });
+              }
+            },
           ),
-        );
-      },
+          ListTile(
+            leading: const Icon(Icons.folder_rounded, color: AppColors.neutral600),
+            title: Text('Galeri / File (PDF)', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
+            onTap: () async {
+              context.pop();
+              final result = await FilePicker.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+              );
+              if (result != null && result.files.single.path != null) {
+                setState(() {
+                  _selectedFilePath = result.files.single.path;
+                  _selectedFileName = result.files.single.name;
+                });
+              }
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      ),
     );
   }
 

@@ -13,6 +13,8 @@ import '../../../../../core/widgets/fade_in_animation.dart';
 import '../../../../../core/widgets/ormawa_list_header.dart';
 import 'create_transaction_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class OrmawaFinanceScreen extends StatefulWidget {
   final bool showBackButton;
@@ -241,21 +243,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     required IconData icon,
     bool showVisibilityToggle = false,
   }) {
-    return Container(
+    return BkuCard(
       width: 290,
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral300),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -396,14 +386,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               final isIncome = t.type == 'pemasukan';
               final isCampus = t.sumber == 'kampus';
 
-              return Container(
+              return BkuCard(
                 margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: context.appColors.surface,
-                  borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: AppColors.neutral200),
-                ),
                 child: Row(
                   children: [
                     Container(
@@ -741,7 +726,8 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextButton(
+                      BkuButton.text(
+                        text: 'Reset',
                         onPressed: () {
                           setModalState(() {
                             _selectedTypeFilter = 'Semua';
@@ -749,12 +735,6 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           });
                           setState(() {});
                         },
-                        child: Text(
-                          'Reset',
-                          style: AppTextStyles.labelMd.copyWith(
-                            color: AppColors.error,
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -848,20 +828,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () => context.pop(),
-
-                      child: Text(
-                        'Terapkan Filter',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: context.appColors.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  BkuButton.primary(
+                    text: 'Terapkan Filter',
+                    onPressed: () => context.pop(),
                   ),
                 ],
               ),

@@ -262,7 +262,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         Text(
           title,
           style: TextStyle(
-            color: context.appColors.secondary,
+            color: AppColors.neutral900,
             fontSize: 17,
             fontWeight: FontWeight.w900,
           ),
@@ -760,65 +760,30 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                   mainStatus.contains('ditolak');
 
                               if (isRejected) {
-                                return SizedBox(
+                                return BkuButton.secondary(
                                   height: 36,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      AppSnackbar.showError(
-                                        context,
-                                        'Anda sudah pernah ditolak dari program ini.',
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.neutral300,
-                                      foregroundColor: AppColors.neutral700,
-                                      elevation: 0,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: AppRadius.br10,
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'Ditolak',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return SizedBox(
-                                height: 36,
-                                child: ElevatedButton(
+                                  fontSize: 12,
+                                  fullWidth: false,
                                   onPressed: () {
-                                    _checkAndNavigateToApply(
+                                    AppSnackbar.showError(
                                       context,
-                                      scholarship,
+                                      'Anda sudah pernah ditolak dari program ini.',
                                     );
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: context.appColors.onPrimary,
-                                    elevation: 0,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: AppRadius.br10,
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Daftar',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                                  text: 'Ditolak',
+                                );
+                              }
+                              return BkuButton.primary(
+                                height: 36,
+                                fontSize: 12,
+                                fullWidth: false,
+                                onPressed: () {
+                                  _checkAndNavigateToApply(
+                                    context,
+                                    scholarship,
+                                  );
+                                },
+                                text: 'Daftar Beasiswa',
                               );
                             },
                           ),
@@ -1287,42 +1252,23 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                       mainStatus.contains('ditolak');
 
                                   if (isRejected) {
-                                    return SizedBox(
+                                    return BkuButton.secondary(
                                       height: 44,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(sheetContext);
-                                          AppSnackbar.showError(
-                                            context,
-                                            'Anda sudah pernah ditolak dari program ini.',
-                                          );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.neutral300,
-                                          foregroundColor: AppColors.neutral700,
-                                          elevation: 0,
-                                          padding: EdgeInsets.zero,
-                                          shape: RoundedRectangleBorder(
-                                             borderRadius: AppRadius.radiusMd,
-                                          ),
-                                        ),
-                                        child: const Center(
-                                          child: Text(
-                                            'Ditolak',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                      fontSize: 14,
+                                      onPressed: () {
+                                        Navigator.pop(sheetContext);
+                                        AppSnackbar.showError(
+                                          context,
+                                          'Anda sudah pernah ditolak dari program ini.',
+                                        );
+                                      },
+                                      text: 'Ditolak',
                                     );
                                   }
 
-                                  return SizedBox(
-                                    height: 44,
-                                    child: ElevatedButton(
+                                  return BkuButton.primary(
+                                      height: 44,
+                                      fontSize: 14,
                                       onPressed: () {
                                         Navigator.pop(sheetContext);
                                         _checkAndNavigateToApply(
@@ -1330,35 +1276,8 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                                           scholarship,
                                         );
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: context.appColors.primary,
-                                        foregroundColor: context.appColors.onPrimary,
-                                        elevation: 0,
-                                        padding: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(
-                                           borderRadius: AppRadius.radiusMd,
-                                        ),
-                                      ),
-                                      child: const Center(
-                                        child: FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                            ),
-                                            child: Text(
-                                              'Daftar Sekarang',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                      text: 'Daftar Beasiswa',
+                                    );
                                 },
                               ),
                             ),

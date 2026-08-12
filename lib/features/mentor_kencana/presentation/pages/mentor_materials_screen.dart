@@ -4,10 +4,14 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -133,19 +137,11 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         ),
                       ],
                     ),
-                    ElevatedButton.icon(
+                    BkuButton.primary(
                       onPressed: () => _showAddMaterialModal(context, currentSession),
-                      icon: const Icon(Icons.add, size: 14),
-                      label: const Text('Tambah Materi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                        elevation: 0,
-                      ),
+                      icon: Icons.add,
+                      text: 'Tambah Materi',
+                      fullWidth: false,
                     ),
                   ],
                 ),
@@ -360,13 +356,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 const SizedBox(height: 16),
                 Text('JUDUL MATERI *', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: titleController,
-                  decoration: InputDecoration(
-                    hintText: 'Contoh: Panduan Orientasi Mahasiswa',
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  ),
+                  hint: 'Contoh: Panduan Orientasi Mahasiswa',
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -377,7 +369,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         children: [
                           Text('JENIS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                           const SizedBox(height: 4),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: jenisMateri,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -405,7 +397,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         children: [
                           Text('KOMPONEN NILAI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                           const SizedBox(height: 4),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: component,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -440,29 +432,17 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 const SizedBox(height: 8),
                 Text('DESKRIPSI / TEKS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: descController,
                   maxLines: 3,
-                  style: const TextStyle(fontSize: 12),
-                  decoration: InputDecoration(
-                    hintText: 'Tambahkan teks penjelasan jika perlu...',
-                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.all(10),
-                  ),
+                  hint: 'Tambahkan teks penjelasan jika perlu...',
                 ),
                 const SizedBox(height: 12),
                 Text('TAUTAN (URL EKSTERNAL) (opsional)', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: urlController,
-                  style: const TextStyle(fontSize: 12),
-                  decoration: InputDecoration(
-                    hintText: 'https://... (opsional)',
-                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  ),
+                  hint: 'https://... (opsional)',
                 ),
                 const SizedBox(height: 12),
                 Text('UPLOAD FILE DOKUMEN / VIDEO', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
@@ -524,16 +504,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       child: const Text('Kembali', style: TextStyle(fontSize: 11)),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                        elevation: 0,
-                      ),
+                    BkuButton.primary(
+                      text: 'Simpan Materi',
                       onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
@@ -573,9 +545,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           AppSnackbar.showError(context, 'Gagal menyimpan materi');
                         }
                       },
-                      child: isUploading 
-                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Text('Simpan Materi', style: TextStyle(fontWeight: FontWeight.bold)),
+                      isLoading: isUploading,
                     ),
                   ],
                 ),
@@ -638,13 +608,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 const SizedBox(height: 12),
                 Text('JUDUL MATERI *', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: titleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  ),
-                  style: const TextStyle(fontSize: 12),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -655,7 +620,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         children: [
                           Text('JENIS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                           const SizedBox(height: 4),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: jenisMateri,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -684,7 +649,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         children: [
                           Text('KOMPONEN NILAI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                           const SizedBox(height: 4),
-                          DropdownButtonFormField<String>(
+                          BkuDropdown<String>(
                             initialValue: component,
                             isExpanded: true,
                             decoration: InputDecoration(
@@ -720,28 +685,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                 const SizedBox(height: 6),
                 Text('DESKRIPSI / TEKS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: descController,
                   maxLines: 2,
-                  decoration: InputDecoration(
-                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.all(8),
-                  ),
-                  style: const TextStyle(fontSize: 12),
                 ),
                 const SizedBox(height: 10),
                 Text('TAUTAN (URL EKSTERNAL) (opsional)', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                 const SizedBox(height: 4),
-                TextField(
+                BkuTextField(
                   controller: urlController,
-                  decoration: InputDecoration(
-                    hintText: 'https://... (opsional)',
-                    hintStyle: AppTextStyles.labelSm.copyWith(fontSize: 12, color: context.appColors.outline),
-                    border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  ),
-                  style: const TextStyle(fontSize: 12),
+                  hint: 'https://... (opsional)',
                 ),
                 const SizedBox(height: 10),
                 Text('UPLOAD FILE DOKUMEN / VIDEO', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
@@ -825,16 +778,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       child: const Text('Batal', style: TextStyle(fontSize: 11)),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
-                        elevation: 0,
-                      ),
+                    BkuButton.primary(
+                      text: 'Update Materi',
                       onPressed: isUploading ? null : () async {
                         if (titleController.text.trim().isEmpty) return;
                         final provider = context.read<MentorKencanaProvider>();
@@ -873,9 +818,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           AppSnackbar.showError(context, 'Gagal mengupdate materi');
                         }
                       },
-                      child: isUploading 
-                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Text('Update Materi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                      isLoading: isUploading,
                     ),
                   ],
                 ),
@@ -888,35 +831,27 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
   }
 
   void _showDeleteMaterialModal(BuildContext context, SessionMaterialData session, SessionMaterialItem mat) {
-    showDialog(
+    BkuDialog.show<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusLg),
-        title: const Text('Hapus Materi'),
-        content: Text('Apakah Anda yakin ingin menghapus materi "${mat.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
-            onPressed: () async {
-              final provider = context.read<MentorKencanaProvider>();
-              final success = await provider.deleteMaterial(mat.id);
-              if (!context.mounted) return;
-              Navigator.pop(ctx);
-              if (success) {
-                AppSnackbar.showSuccess(context, 'Materi berhasil dihapus');
-                provider.fetchSessionMaterialsList();
-              } else {
-                AppSnackbar.showError(context, 'Gagal menghapus materi');
-              }
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      title: 'Hapus Materi',
+      message: 'Apakah Anda yakin ingin menghapus materi "${mat.title}"?',
+      type: BkuDialogType.warning,
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context, false),
+      primaryButtonText: 'Hapus',
+      onPrimaryPressed: () async {
+        final provider = context.read<MentorKencanaProvider>();
+        final success = await provider.deleteMaterial(mat.id);
+        if (!context.mounted) return;
+        Navigator.pop(context, true);
+        if (success) {
+          await provider.fetchSessionMaterialsList();
+          if (!context.mounted) return;
+          AppSnackbar.showSuccess(context, 'Materi berhasil dihapus');
+        } else {
+          AppSnackbar.showError(context, 'Gagal menghapus materi');
+        }
+      },
     );
   }
 
@@ -979,23 +914,15 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   if (currentView == 'list') ...[
                     Align(
                       alignment: Alignment.centerRight,
-                      child: ElevatedButton.icon(
+                      child: BkuButton.primary(
                         onPressed: () {
                           editingQuizId = null;
                           titleController.clear();
                           setModalState(() => currentView = 'form');
                         },
-                        icon: const Icon(Icons.add, size: 14),
-                        label: const Text('Tambah Kuis', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.onSurface,
-                          foregroundColor: context.appColors.surface,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                          elevation: 0,
-                        ),
+                        icon: Icons.add,
+                        text: 'Tambah Kuis',
+                        fullWidth: false,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -1024,16 +951,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF1F5F9),
+                                        color: AppColors.neutral200,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: const Icon(Icons.help_outline_rounded, size: 20, color: Color(0xFF1E293B)),
+                                      child: const Icon(Icons.help_outline_rounded, size: 20, color: AppColors.neutral800),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Text(
                                         q.title,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.neutral900),
                                       ),
                                     ),
                                     const SizedBox(width: 6),
@@ -1065,21 +992,13 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 const SizedBox(height: 14),
                                 Row(
                                   children: [
-                                    ElevatedButton.icon(
+                                    BkuButton.primary(
                                       onPressed: () {
                                         _showQuizQuestionsModal(context, q);
                                       },
-                                      icon: const Icon(Icons.edit_note_rounded, size: 14),
-                                      label: const Text('Kelola Soal →', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF0F172A),
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                      ),
+                                      icon: Icons.edit_note_rounded,
+                                      text: 'Kelola Soal →',
+                                      fullWidth: false,
                                     ),
                                     const Spacer(),
                                     InkWell(
@@ -1096,14 +1015,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFF1F5F9),
+                                          color: AppColors.neutral200,
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: const Row(
                                           children: [
-                                            Icon(Icons.edit_rounded, size: 12, color: Color(0xFF334155)),
+                                            Icon(Icons.edit_rounded, size: 12, color: AppColors.neutral700),
                                             SizedBox(width: 4),
-                                            Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                            Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral700)),
                                           ],
                                         ),
                                       ),
@@ -1111,31 +1030,26 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     const SizedBox(width: 6),
                                     InkWell(
                                       onTap: () {
-                                        showDialog(
+                                        BkuDialog.show<bool>(
                                           context: context,
-                                          builder: (dCtx) => AlertDialog(
-                                            title: const Text('Hapus Kuis', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                                            content: Text('Apakah Anda yakin ingin menghapus kuis "${q.title}"?'),
-                                            actions: [
-                                              TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text('Batal')),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
-                                                onPressed: () async {
-                                                  Navigator.pop(dCtx);
-                                                  final success = await provider.deleteQuiz(q.id);
-                                                  if (!context.mounted) return;
-                                                  if (success) {
-                                                    await provider.fetchSessionMaterialsList();
-                                                    if (!context.mounted) return;
-                                                    AppSnackbar.showSuccess(context, 'Kuis berhasil dihapus');
-                                                  } else {
-                                                    AppSnackbar.showError(context, 'Gagal menghapus kuis');
-                                                  }
-                                                },
-                                                child: const Text('Hapus'),
-                                              ),
-                                            ],
-                                          ),
+                                          title: 'Hapus Kuis',
+                                          message: 'Apakah Anda yakin ingin menghapus kuis "${q.title}"?',
+                                          type: BkuDialogType.warning,
+                                          secondaryButtonText: 'Batal',
+                                          onSecondaryPressed: () => Navigator.pop(context, false),
+                                          primaryButtonText: 'Hapus',
+                                          onPrimaryPressed: () async {
+                                            Navigator.pop(context, true);
+                                            final success = await provider.deleteQuiz(q.id);
+                                            if (!context.mounted) return;
+                                            if (success) {
+                                              await provider.fetchSessionMaterialsList();
+                                              if (!context.mounted) return;
+                                              AppSnackbar.showSuccess(context, 'Kuis berhasil dihapus');
+                                            } else {
+                                              AppSnackbar.showError(context, 'Gagal menghapus kuis');
+                                            }
+                                          },
                                         );
                                       },
                                       borderRadius: BorderRadius.circular(8),
@@ -1165,7 +1079,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     // Form View
                     Text('Judul Kuis *', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                     const SizedBox(height: 4),
-                    TextField(
+                    BkuTextField(
                       controller: titleController,
                       decoration: InputDecoration(hintText: 'Misal: Kuis Evaluasi Sesi 1', border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
                     ),
@@ -1178,7 +1092,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('Durasi (Menit)', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              TextField(
+                              BkuTextField(
                                 controller: durationController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
@@ -1193,7 +1107,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('Maksimal Percobaan', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              TextField(
+                              BkuTextField(
                                 controller: maxAttemptsController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
@@ -1212,7 +1126,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('Status Kuis', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              DropdownButtonFormField<String>(
+                              BkuDropdown<String>(
                                 initialValue: statusKuis,
                                 isExpanded: true,
                                 decoration: InputDecoration(isDense: true, border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
@@ -1232,7 +1146,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('Komponen Nilai', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              DropdownButtonFormField<String>(
+                              BkuDropdown<String>(
                                 initialValue: komponenNilai,
                                 isExpanded: true,
                                 decoration: InputDecoration(isDense: true, border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
@@ -1278,16 +1192,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       children: [
                         TextButton(onPressed: () => setModalState(() => currentView = 'list'), child: const Text('Kembali')),
                         const SizedBox(width: 8),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.onSurface,
-                            foregroundColor: context.appColors.surface,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                            elevation: 0,
-                          ),
+                        BkuButton.primary(
+                          fullWidth: false,
                           onPressed: () async {
                             if (titleController.text.trim().isEmpty) return;
                             final provider = context.read<MentorKencanaProvider>();
@@ -1320,7 +1226,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               AppSnackbar.showError(context, editingQuizId != null ? 'Gagal memperbarui kuis' : 'Gagal membuat kuis');
                             }
                           },
-                          child: Text(editingQuizId != null ? 'Update Kuis' : 'Simpan Kuis', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          text: editingQuizId != null ? 'Update Kuis' : 'Simpan Kuis',
                         ),
                       ],
                     ),
@@ -1339,16 +1245,16 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
+          color: AppColors.neutral100,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: AppColors.neutral300),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+            Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
             const SizedBox(height: 2),
-            Text(value, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)), maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(value, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral900), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),
@@ -1421,7 +1327,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Daftar Pertanyaan (${questionsList.length})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                      ElevatedButton.icon(
+                      BkuButton.primary(
                         onPressed: () {
                           _showAddQuestionDialog(
                             context,
@@ -1457,17 +1363,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             },
                           );
                         },
-                        icon: const Icon(Icons.add, size: 14),
-                        label: const Text('Tambah Soal', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0F172A),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          elevation: 0,
-                        ),
+                        icon: Icons.add,
+                        text: 'Tambah Soal',
+                        fullWidth: false,
                       ),
                     ],
                   ),
@@ -1501,18 +1399,18 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     width: 24,
                                     height: 24,
                                     decoration: const BoxDecoration(
-                                      color: Color(0xFFE2E8F0),
+                                      color: AppColors.neutral300,
                                       shape: BoxShape.circle,
                                     ),
                                     child: Center(
-                                      child: Text('${idx + 1}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                      child: Text('${idx + 1}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.neutral700)),
                                     ),
                                   ),
                                   const Spacer(),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(4)),
-                                    child: Text('Bobot: $weightText', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                    decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: BorderRadius.circular(4)),
+                                    child: Text('Bobot: $weightText', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                                   ),
                                   const SizedBox(width: 4),
                                   InkWell(
@@ -1551,8 +1449,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     ),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                      decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(4)),
-                                      child: const Text('Edit', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                      decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: BorderRadius.circular(4)),
+                                      child: const Text('Edit', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral700)),
                                     ),
                                   ),
                                   const SizedBox(width: 4),
@@ -1593,22 +1491,22 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 item['question_text'] ?? item['question'] ?? item['pertanyaan'] ?? '',
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.neutral900),
                               ),
                               const SizedBox(height: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: AppColors.neutral200,
                                   borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  border: Border.all(color: AppColors.neutral300),
                                 ),
                                 child: Text(
                                   (item['question_type'] ?? item['type'] ?? 'multiple_choice').toString().toLowerCase() == 'essay' ||
                                           (item['question_type'] ?? item['type'] ?? '').toString().toLowerCase().contains('esai')
                                       ? 'ESAI / TEKS'
                                       : 'PILIHAN GANDA',
-                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 0.5),
+                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.neutral600, letterSpacing: 0.5),
                                 ),
                               ),
                               if (opts.isNotEmpty) ...[
@@ -1663,9 +1561,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: isCorrect ? const Color(0xFFDCFCE7) : const Color(0xFFF8FAFC),
+        color: isCorrect ? const Color(0xFFDCFCE7) : AppColors.neutral100,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isCorrect ? const Color(0xFF86EFAC) : const Color(0xFFE2E8F0)),
+        border: Border.all(color: isCorrect ? const Color(0xFF86EFAC) : AppColors.neutral300),
       ),
       child: Row(
         children: [
@@ -1673,7 +1571,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
             width: 18,
             height: 18,
             decoration: BoxDecoration(
-              color: isCorrect ? const Color(0xFF166534) : const Color(0xFFCBD5E1),
+              color: isCorrect ? const Color(0xFF166534) : AppColors.neutral400,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
@@ -1687,7 +1585,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: isCorrect ? FontWeight.bold : FontWeight.normal,
-                color: isCorrect ? const Color(0xFF166534) : const Color(0xFF334155),
+                color: isCorrect ? const Color(0xFF166534) : AppColors.neutral700,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -1743,34 +1641,34 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   children: [
                     Text(
                       initialQuestion != null ? 'Edit Soal' : 'Buat Soal Baru',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF0F172A)),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.neutral900),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(ctx),
-                      icon: const Icon(Icons.close, size: 20, color: Color(0xFF64748B)),
+                      icon: const Icon(Icons.close, size: 20, color: AppColors.neutral600),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                const Text('Teks Pertanyaan *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))),
+                const Text('Teks Pertanyaan *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.neutral600)),
                 const SizedBox(height: 6),
-                TextField(
+                BkuTextField(
                   controller: questionCtrl,
                   maxLines: 3,
                   style: const TextStyle(fontSize: 12),
                   decoration: InputDecoration(
                     hintText: 'Masukkan pertanyaan di sini...',
-                    hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                    hintStyle: const TextStyle(fontSize: 12, color: AppColors.neutral500),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                     contentPadding: const EdgeInsets.all(12),
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text('Tipe Soal *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF64748B))),
+                const Text('Tipe Soal *', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.neutral600)),
                 const SizedBox(height: 6),
-                DropdownButtonFormField<String>(
+                BkuDropdown<String>(
                   initialValue: tipeSoal,
                   isExpanded: true,
                   decoration: InputDecoration(
@@ -1791,9 +1689,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
+                      color: AppColors.neutral100,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: AppColors.neutral300),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1801,14 +1699,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('OPSI JAWABAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF64748B))),
+                            const Text('OPSI JAWABAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: AppColors.neutral600)),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE2E8F0),
+                                color: AppColors.neutral300,
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: const Text('4 Opsi (A - D)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                              child: const Text('4 Opsi (A - D)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.neutral700)),
                             ),
                           ],
                         ),
@@ -1833,19 +1731,12 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         onPressed: () => Navigator.pop(ctx),
-                        child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                        child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0F172A),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 0,
-                        ),
+                      child: BkuButton.primary(
                         onPressed: () {
                           if (questionCtrl.text.trim().isEmpty) return;
                           final newQuestionData = {
@@ -1895,7 +1786,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           Navigator.pop(ctx);
                           onSave(newQuestionData);
                         },
-                        child: const Text('Simpan Soal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                        text: 'Simpan Soal',
                       ),
                     ),
                   ],
@@ -1915,7 +1806,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isSelected ? const Color(0xFF22C55E) : const Color(0xFFE2E8F0), width: isSelected ? 1.5 : 1.0),
+        border: Border.all(color: isSelected ? const Color(0xFF22C55E) : AppColors.neutral300, width: isSelected ? 1.5 : 1.0),
       ),
       child: Row(
         children: [
@@ -1928,21 +1819,21 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected ? const Color(0xFF22C55E) : Colors.transparent,
-                border: Border.all(color: isSelected ? const Color(0xFF22C55E) : const Color(0xFF94A3B8), width: 2),
+                border: Border.all(color: isSelected ? const Color(0xFF22C55E) : AppColors.neutral500, width: 2),
               ),
               child: isSelected ? const Icon(Icons.check, size: 13, color: Colors.white) : null,
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: TextField(
+            child: BkuTextField(
               controller: ctrl,
               style: const TextStyle(fontSize: 12),
               decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 4)),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
+            icon: const Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.neutral500),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () => ctrl.clear(),
@@ -2011,9 +1902,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: const Color(0xFF1E293B), width: 1.5),
+                            border: Border.all(color: AppColors.neutral800, width: 1.5),
                           ),
-                          child: const Icon(Icons.close, size: 14, color: Color(0xFF1E293B)),
+                          child: const Icon(Icons.close, size: 14, color: AppColors.neutral800),
                         ),
                       ),
                     ],
@@ -2044,30 +1935,22 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Daftar Tugas Sesi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A))),
+                                const Text('Daftar Tugas Sesi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.neutral900)),
                                 const SizedBox(height: 2),
-                                Text('${taskList.length} tugas terdaftar', style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                                Text('${taskList.length} tugas terdaftar', style: const TextStyle(fontSize: 11, color: AppColors.neutral600)),
                               ],
                             ),
                           ),
-                          ElevatedButton.icon(
+                          BkuButton.primary(
                             onPressed: () {
                               editingTaskId = null;
                               titleController.clear();
                               descController.clear();
                               setModalState(() => currentView = 'form');
                             },
-                            icon: const Icon(Icons.add, size: 14),
-                            label: const Text('Tambah Tugas', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF0F172A),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              elevation: 0,
-                            ),
+                            icon: Icons.add,
+                            text: 'Tambah Tugas',
+                            fullWidth: false,
                           ),
                         ],
                       ),
@@ -2095,7 +1978,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              border: Border.all(color: AppColors.neutral300),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -2117,7 +2000,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                           Flexible(
                                             child: Text(
                                               t.title,
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF0F172A)),
+                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.neutral900),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
@@ -2146,7 +2029,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                       ),
                                       child: const Text(
                                         'DITERBITKAN',
-                                        style: TextStyle(color: Color(0xFF16A34A), fontSize: 9, fontWeight: FontWeight.bold),
+                                        style: TextStyle(color: AppColors.success, fontSize: 9, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ],
@@ -2160,14 +2043,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFAF8F5),
                                           borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                          border: Border.all(color: AppColors.neutral200),
                                         ),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            const Text('TIPE PENGUMPULAN', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const Text('TIPE PENGUMPULAN', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                                             const SizedBox(height: 2),
-                                            Text(t.submissionType.isNotEmpty ? t.submissionType : 'LINK URL', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                                            Text(t.submissionType.isNotEmpty ? t.submissionType : 'LINK URL', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral900)),
                                           ],
                                         ),
                                       ),
@@ -2179,14 +2062,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFAF8F5),
                                           borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                          border: Border.all(color: AppColors.neutral200),
                                         ),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            const Text('TENGGAT WAKTU', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const Text('TENGGAT WAKTU', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                                             const SizedBox(height: 2),
-                                            Text(formattedDueDate, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFDC2626))),
+                                            Text(formattedDueDate, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.danger)),
                                           ],
                                         ),
                                       ),
@@ -2198,14 +2081,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFAF8F5),
                                           borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: const Color(0xFFF1F5F9)),
+                                          border: Border.all(color: AppColors.neutral200),
                                         ),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            const Text('KOMPONEN NILAI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                            const Text('KOMPONEN NILAI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.neutral600)),
                                             const SizedBox(height: 2),
-                                            Text(t.component.isNotEmpty ? t.component : 'Psikomotor', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                                            Text(t.component.isNotEmpty ? t.component : 'Psikomotor', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.neutral900)),
                                           ],
                                         ),
                                       ),
@@ -2215,7 +2098,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 const SizedBox(height: 14),
                                 Row(
                                   children: [
-                                    Text('Mulai: $formattedStartDate', style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                                    Text('Mulai: $formattedStartDate', style: const TextStyle(fontSize: 10, color: AppColors.neutral500)),
                                     const Spacer(),
                                     InkWell(
                                       onTap: () {
@@ -2246,31 +2129,26 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                     const SizedBox(width: 6),
                                     InkWell(
                                       onTap: () {
-                                        showDialog(
+                                        BkuDialog.show<bool>(
                                           context: context,
-                                          builder: (dCtx) => AlertDialog(
-                                            title: const Text('Hapus Tugas', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                                            content: Text('Apakah Anda yakin ingin menghapus tugas "${t.title}"?'),
-                                            actions: [
-                                              TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text('Batal')),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(backgroundColor: context.appColors.error, foregroundColor: Colors.white),
-                                                onPressed: () async {
-                                                  Navigator.pop(dCtx);
-                                                  final success = await provider.deleteAssignment(t.id);
-                                                  if (!context.mounted) return;
-                                                  if (success) {
-                                                    await provider.fetchSessionMaterialsList();
-                                                    if (!context.mounted) return;
-                                                    AppSnackbar.showSuccess(context, 'Tugas berhasil dihapus');
-                                                  } else {
-                                                    AppSnackbar.showError(context, 'Gagal menghapus tugas');
-                                                  }
-                                                },
-                                                child: const Text('Hapus'),
-                                              ),
-                                            ],
-                                          ),
+                                          title: 'Hapus Tugas',
+                                          message: 'Apakah Anda yakin ingin menghapus tugas "${t.title}"?',
+                                          type: BkuDialogType.warning,
+                                          secondaryButtonText: 'Batal',
+                                          onSecondaryPressed: () => Navigator.pop(context, false),
+                                          primaryButtonText: 'Hapus',
+                                          onPrimaryPressed: () async {
+                                            Navigator.pop(context, true);
+                                            final success = await provider.deleteAssignment(t.id);
+                                            if (!context.mounted) return;
+                                            if (success) {
+                                              await provider.fetchSessionMaterialsList();
+                                              if (!context.mounted) return;
+                                              AppSnackbar.showSuccess(context, 'Tugas berhasil dihapus');
+                                            } else {
+                                              AppSnackbar.showError(context, 'Gagal menghapus tugas');
+                                            }
+                                          },
                                         );
                                       },
                                       borderRadius: BorderRadius.circular(8),
@@ -2282,9 +2160,9 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                         ),
                                         child: const Row(
                                           children: [
-                                            Icon(Icons.delete_outline_rounded, size: 12, color: Color(0xFFDC2626)),
+                                            Icon(Icons.delete_outline_rounded, size: 12, color: AppColors.danger),
                                             SizedBox(width: 4),
-                                            Text('Hapus', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFDC2626))),
+                                            Text('Hapus', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.danger)),
                                           ],
                                         ),
                                       ),
@@ -2300,14 +2178,14 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     // Form View
                     Text('JUDUL TUGAS *', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                     const SizedBox(height: 4),
-                    TextField(
+                    BkuTextField(
                       controller: titleController,
                       decoration: InputDecoration(hintText: 'Contoh: Tugas Essay Kepemimpinan', border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
                     ),
                     const SizedBox(height: 12),
                     Text('INSTRUKSI / DESKRIPSI TUGAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                     const SizedBox(height: 4),
-                    TextField(
+                    BkuTextField(
                       controller: descController,
                       maxLines: 3,
                       decoration: InputDecoration(hintText: 'Jelaskan apa yang harus dilakukan peserta...', border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.all(10)),
@@ -2321,7 +2199,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('TIPE PENGUMPULAN', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              DropdownButtonFormField<String>(
+                              BkuDropdown<String>(
                                 initialValue: tipePengumpulan,
                                 isExpanded: true,
                                 decoration: InputDecoration(isDense: true, border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
@@ -2356,7 +2234,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('STATUS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              DropdownButtonFormField<String>(
+                              BkuDropdown<String>(
                                 initialValue: status,
                                 isExpanded: true,
                                 decoration: InputDecoration(isDense: true, border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
@@ -2376,7 +2254,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                             children: [
                               Text('KOMPONEN NILAI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                               const SizedBox(height: 4),
-                              DropdownButtonFormField<String>(
+                              BkuDropdown<String>(
                                 initialValue: komponenNilai,
                                 isExpanded: true,
                                 decoration: InputDecoration(isDense: true, border: OutlineInputBorder(borderRadius: AppRadius.radiusMd), contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
@@ -2398,16 +2276,8 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       children: [
                         TextButton(onPressed: () => setModalState(() => currentView = 'list'), child: const Text('Kembali')),
                         const SizedBox(width: 8),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.appColors.onSurface,
-                            foregroundColor: context.appColors.surface,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                            elevation: 0,
-                          ),
+                        BkuButton.primary(
+                          text: editingTaskId != null ? 'Update Tugas' : 'Simpan Tugas',
                           onPressed: () async {
                             if (titleController.text.trim().isEmpty) return;
                             final provider = context.read<MentorKencanaProvider>();
@@ -2438,7 +2308,6 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                               AppSnackbar.showError(context, editingTaskId != null ? 'Gagal memperbarui tugas' : 'Gagal membuat tugas');
                             }
                           },
-                          child: Text(editingTaskId != null ? 'Update Tugas' : 'Simpan Tugas', style: const TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -2584,7 +2453,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     const SizedBox(height: AppSpacing.lg),
 
                     // Search & Filters
-                    TextField(
+                    BkuTextField(
                       controller: _searchController,
                       onChanged: (val) => setState(() => _searchQuery = val),
                       decoration: InputDecoration(
@@ -2598,7 +2467,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             initialValue: _selectedStatus,
                             decoration: InputDecoration(
                               isDense: true,
@@ -2618,7 +2487,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
-                          child: DropdownButtonFormField<String>(
+                          child: BkuDropdown<String>(
                             initialValue: _selectedSifat,
                             decoration: InputDecoration(
                               isDense: true,
@@ -2810,19 +2679,11 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                                 )
                               else
                                 const Spacer(),
-                              ElevatedButton.icon(
+                              BkuButton.primary(
                                 onPressed: () => _showActionMenu(context, item),
-                                icon: const Icon(Icons.settings_outlined, size: 12),
-                                label: const Text('Kelola', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2563EB),
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusSm),
-                                  elevation: 0,
-                                ),
+                                icon: Icons.settings_outlined,
+                                text: 'Kelola',
+                                fullWidth: false,
                               ),
                             ],
                           ),

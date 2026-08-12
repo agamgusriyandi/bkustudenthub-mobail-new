@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart' show AppTheme;
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
@@ -12,7 +13,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/custom_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/referral_provider.dart';
 import 'package:bkuhub_mobile/features/counseling/data/models/counseling_models.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -391,7 +392,7 @@ class _ReferralManagementScreenState extends State<ReferralManagementScreen> {
           ),
         ],
       ),
-      child: TextField(
+      child: BkuTextField(
         onChanged: (value) {
           setState(() {
             _searchQuery = value;
@@ -1180,29 +1181,15 @@ class _ReferralCard extends StatelessWidget {
                                     provider.isSending
                                         ? null
                                         : () async {
-                                          final confirm = await showDialog<
-                                            bool
-                                          >(
+                                          final confirm = await BkuDialog.show<bool>(
                                             context: context,
-                                            builder:
-                                                (context) => CustomDialog(
-                                                  title:
-                                                      'Konfirmasi Rujukan Diterima',
-                                                  content:
-                                                      'Konfirmasi bahwa surat rujukan telah diterima oleh pihak tujuan?',
-                                                  cancelText: 'Batal',
-                                                  confirmText: 'Konfirmasi',
-                                                  onCancel:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                        false,
-                                                      ),
-                                                  onConfirm:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                        true,
-                                                      ),
-                                                ),
+                                            title: 'Konfirmasi Rujukan Diterima',
+                                            message: 'Konfirmasi bahwa surat rujukan telah diterima oleh pihak tujuan?',
+                                            type: BkuDialogType.info,
+                                            secondaryButtonText: 'Batal',
+                                            primaryButtonText: 'Konfirmasi',
+                                            onSecondaryPressed: () => Navigator.pop(context, false),
+                                            onPrimaryPressed: () => Navigator.pop(context, true),
                                           );
 
                                           if (confirm == true &&

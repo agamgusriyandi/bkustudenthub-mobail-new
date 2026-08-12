@@ -9,7 +9,9 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:upgrader/upgrader.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -50,6 +52,43 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _checkSessionAndNavigate() async {
     await Future.delayed(const Duration(seconds: 2));
+
+    try {
+      final upgrader = Upgrader(
+        durationUntilAlertAgain: const Duration(seconds: 0),
+      );
+      await upgrader.initialize();
+
+      if (upgrader.isUpdateAvailable()) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => PopScope(
+            canPop: false,
+            child: BkuDialog(
+              title: 'Update Diperlukan',
+              message:
+                  'Versi terbaru BKU Student HUB telah tersedia. Silakan lakukan pembaruan aplikasi untuk menikmati fitur terbaru dan pengalaman yang lebih stabil.',
+              type: BkuDialogType.warning,
+              customImageAsset: 'assets/images/update.png',
+              primaryButtonText: 'Update Sekarang',
+              onPrimaryPressed: () async {
+                final url = Uri.parse('https://play.google.com/store/apps/details?id=com.bkustudenthub.app');
+                try {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } catch (e) {
+                  upgrader.sendUserToAppStore();
+                }
+              },
+            ),
+          ),
+        );
+        return; 
+      }
+    } catch (e) {
+      debugPrint('Update check error: $e');
+    }
 
     final authService = AuthService();
     await authService.loadSession();
@@ -219,7 +258,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(
-                    'Version 1.0.1',
+                    'Version 1.0.4',
                     style: AppTextStyles.labelSm.copyWith(
                           color: context.appColors.onPrimary.withValues(alpha: 0.8),
                     ),
