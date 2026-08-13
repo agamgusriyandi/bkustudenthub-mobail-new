@@ -138,6 +138,7 @@ class _SplashScreenState extends State<SplashScreen>
                 'assets/images/gedung.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
+                cacheWidth: 800,
               ),
             ),
           ),
@@ -208,11 +209,10 @@ class _SplashScreenState extends State<SplashScreen>
                     children: [
                       Text(
                         'BKU Student HUB',
-                        style: AppTextStyles.titleLg.copyWith(
-                        color: context.appColors.onPrimary,
-                        fontSize: 36,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2,
+                        style: AppTextStyles.displayMedium.copyWith(
+                          color: context.appColors.onPrimary,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
                           shadows: [
                             Shadow(
                               color: context.appColors.onSurface.withValues(alpha: 0.3),
@@ -225,9 +225,9 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Smart Campus Ecosystem',
-                        style: AppTextStyles.labelMd.copyWith(
+                        style: AppTextStyles.labelLarge.copyWith(
                           color: context.appColors.onPrimary.withValues(alpha: 0.9),
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           letterSpacing: 1,
                           shadows: [
                             Shadow(

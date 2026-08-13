@@ -177,6 +177,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 'assets/images/gedung.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
+                cacheWidth: 800,
               ),
             ),
           ),
@@ -343,11 +344,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: AppSpacing.s18),
           Text(
             'BKU Student HUB',
-            style: AppTextStyles.titleLg.copyWith(
+            style: AppTextStyles.headlineMedium.copyWith(
               color: context.appColors.onPrimary,
-              fontSize: 26,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 2.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.0,
               shadows: [
                 Shadow(
                   color: context.appColors.onSurface.withValues(alpha: 0.3),
@@ -470,9 +470,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Lupa Sandi?',
-            style: AppTextStyles.titleLg.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.headlineLarge.copyWith(
               color: AppColors.neutral800,
               letterSpacing: -0.5,
             ),
@@ -530,9 +528,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Verifikasi OTP',
-            style: AppTextStyles.titleLg.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.headlineLarge.copyWith(
               color: AppColors.neutral800,
             ),
           ),
@@ -593,9 +589,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Buat Sandi Baru',
-            style: AppTextStyles.titleLg.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.headlineLarge.copyWith(
               color: AppColors.neutral800,
               letterSpacing: -0.5,
             ),
@@ -660,26 +654,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelMd.copyWith(
+          style: AppTextStyles.labelMedium.copyWith(
             color: AppColors.neutral800,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !isPasswordVisible,
-          style: AppTextStyles.bodyMd.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.neutral800,
-            fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: placeholder,
-            hintStyle: AppTextStyles.bodyMd.copyWith(
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.neutral400,
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
             ),
             prefixIcon: Icon(icon, color: AppColors.neutral400, size: 22),
             suffixIcon:

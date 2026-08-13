@@ -97,10 +97,9 @@ class StudentDashboardAppBar extends StatelessWidget {
                                 const SizedBox(width: AppSpacing.md),
                                 Text(
                                   name,
-                                  style: AppTextStyles.labelMd.copyWith(
+                                  style: AppTextStyles.titleSmall.copyWith(
                                     color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.w900,
-                                    fontSize: 15,
                                     letterSpacing: 0.2,
                                   ),
                                 ),
@@ -183,7 +182,6 @@ class StudentDashboardAppBar extends StatelessWidget {
                                   'Selamat Datang Kembali,',
                                   style: AppTextStyles.labelSm.copyWith(
                                     color: AppColors.neutral700,
-                                    fontSize: 11,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -191,7 +189,6 @@ class StudentDashboardAppBar extends StatelessWidget {
                                   name,
                                   style: AppTextStyles.titleLg.copyWith(
                                     color: context.appColors.onPrimary,
-                                    fontSize: 20,
                                     fontWeight: FontWeight.w900,
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -243,9 +240,8 @@ class StudentDashboardAppBar extends StatelessWidget {
                             const SizedBox(width: AppSpacing.s14),
                             Text(
                               'Cari info akademik atau layanan...',
-                              style: AppTextStyles.labelSm.copyWith(
+                              style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.neutral600,
-                                fontSize: 14,
                               ),
                             ),
                           ],

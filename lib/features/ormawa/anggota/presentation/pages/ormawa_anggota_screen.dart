@@ -476,30 +476,38 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                                 ),
                           ),
                           const SizedBox(height: AppSpacing.s20),
-                          if (filteredMembers.isEmpty)
-                            _buildEmptyState()
-                          else
-                            ListView.separated(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: filteredMembers.length,
-                              separatorBuilder:
-                                  (_, __) => const SizedBox(height: AppSpacing.md),
-                              itemBuilder: (context, index) {
-                                final member = filteredMembers[index];
-                                return _buildMemberCard(
-                                  context,
-                                  member,
-                                  provider,
-                                );
-                              },
-                            ),
                         ],
                       ),
                     ),
                   ),
-              ],
+                  if (filteredMembers.isEmpty)
+                    SliverToBoxAdapter(child: _buildEmptyState())
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.only(
+                        left: AppSpacing.s20,
+                        right: AppSpacing.s20,
+                        bottom: AppSpacing.s20,
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index.isOdd) {
+                              return const SizedBox(height: AppSpacing.md);
+                            }
+                            final memberIndex = index ~/ 2;
+                            final member = filteredMembers[memberIndex];
+                            return _buildMemberCard(
+                              context,
+                              member,
+                              provider,
+                            );
+                          },
+                          childCount: filteredMembers.isEmpty ? 0 : (filteredMembers.length * 2) - 1,
+                        ),
+                      ),
+                    ),
+                ],
             ),
           ),
           floatingActionButton:

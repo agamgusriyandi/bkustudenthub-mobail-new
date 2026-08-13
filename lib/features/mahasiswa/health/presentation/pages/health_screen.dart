@@ -34,9 +34,6 @@ class _HealthScreenState extends State<HealthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = context.watch<ProfileProvider>();
-    final health = context.watch<HealthViewModel>();
-    final latest = health.latestHealthRecord;
 
     return Scaffold(
       backgroundColor: context.appColors.surface,
@@ -64,12 +61,15 @@ class _HealthScreenState extends State<HealthScreen> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await health.refreshHealthData();
-        },
-        color: context.appColors.primary,
-        child: CustomScrollView(
+      body: Consumer2<ProfileProvider, HealthViewModel>(
+        builder: (context, student, health, child) {
+          final latest = health.latestHealthRecord;
+          return RefreshIndicator(
+            onRefresh: () async {
+              await health.refreshHealthData();
+            },
+            color: context.appColors.primary,
+            child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
@@ -428,8 +428,10 @@ class _HealthScreenState extends State<HealthScreen> {
                 ),
               ),
             ),
-          ],
-        ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

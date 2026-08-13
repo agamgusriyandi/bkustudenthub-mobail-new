@@ -97,18 +97,16 @@ class TodayScheduleCard extends StatelessWidget {
                   children: [
                     Text(
                       'Kalender Kegiatan',
-                      style: AppTextStyles.labelSm.copyWith(
+                      style: AppTextStyles.labelMedium.copyWith(
                         color: context.appColors.outline,
-                        fontSize: 12,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       _formatDate(now),
-                      style: AppTextStyles.labelMd.copyWith(
+                      style: AppTextStyles.titleMedium.copyWith(
                         color: AppColors.neutral800,
                         fontWeight: FontWeight.w800,
-                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -408,10 +406,9 @@ class TodayScheduleCard extends StatelessWidget {
                           ),
                           Text(
                             event.judul,
-                            style: AppTextStyles.titleLg.copyWith(
+                            style: AppTextStyles.titleLarge.copyWith(
                               fontWeight: FontWeight.w900,
                               color: AppColors.neutral800,
-                              fontSize: 18,
                             ),
                           ),
                         ],
@@ -471,9 +468,8 @@ class TodayScheduleCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: AppTextStyles.labelSm.copyWith(
+                  style: AppTextStyles.caption.copyWith(
                     color: AppColors.outline,
-                    fontSize: 10,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s2),

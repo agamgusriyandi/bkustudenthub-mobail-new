@@ -201,8 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset(
                 'assets/images/gedung.png',
                 fit: BoxFit.cover,
-                // Karena gambar gedung barunya sudah di tengah, kita gunakan Alignment.center!
                 alignment: Alignment.center,
+                cacheWidth: 800,
               ),
             ),
           ),
@@ -295,9 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           delay: 0.5,
                                           child: Text(
                                             'Selamat Datang',
-                                            style: AppTextStyles.titleLg.copyWith(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w700,
+                                            style: AppTextStyles.headlineLarge.copyWith(
                                               color: AppColors.neutral800,
                                               letterSpacing: -0.5,
                                             ),
@@ -308,9 +306,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           delay: 0.6,
                                           child: Text(
                                             'Silakan masuk ke akun Anda',
-                                            style: AppTextStyles.bodyMd.copyWith(
-                                              color: AppColors.neutral400,
-                                              fontSize: 15,
+                                            style: AppTextStyles.bodyMedium.copyWith(
+                                              color: AppColors.neutral500,
                                             ),
                                           ),
                                         ),
@@ -421,11 +418,10 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: AppSpacing.s18),
           Text(
             'BKU Student HUB',
-            style: AppTextStyles.titleLg.copyWith(
+            style: AppTextStyles.headlineMedium.copyWith(
               color: context.appColors.onPrimary,
-              fontSize: 26,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 2.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.0,
               shadows: [
                 Shadow(
                   color: context.appColors.onSurface.withValues(alpha: 0.3),
@@ -495,27 +491,23 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelMd.copyWith(
+          style: AppTextStyles.labelMedium.copyWith(
             color: AppColors.neutral800,
-            fontWeight: FontWeight.w800,
-            fontSize: 12, // Smaller label
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: AppSpacing.s10),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !_isPasswordVisible,
-          style: AppTextStyles.bodyMd.copyWith(
+          style: AppTextStyles.bodyLarge.copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.neutral900,
-            fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: placeholder,
-            hintStyle: AppTextStyles.bodyMd.copyWith(
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.neutral400,
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
             ),
             prefixIcon: Icon(icon, color: AppColors.neutral400, size: 22),
             suffixIcon:

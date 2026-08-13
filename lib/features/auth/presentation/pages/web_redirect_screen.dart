@@ -73,9 +73,8 @@ class WebRedirectScreen extends StatelessWidget {
                 child: Text(
                   'Akses Aplikasi Terbatas',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.titleLg.copyWith(
+                  style: AppTextStyles.headlineLarge.copyWith(
                     color: AppColors.neutral900,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

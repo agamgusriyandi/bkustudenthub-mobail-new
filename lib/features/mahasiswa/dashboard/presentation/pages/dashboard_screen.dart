@@ -253,8 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppTextStyles.titleLg.copyWith(
-        fontSize: 18,
+      style: AppTextStyles.titleMedium.copyWith(
         fontWeight: FontWeight.w900,
       ),
     );

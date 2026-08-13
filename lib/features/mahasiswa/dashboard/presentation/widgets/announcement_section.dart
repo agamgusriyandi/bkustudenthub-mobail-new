@@ -77,8 +77,7 @@ class AnnouncementSection extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Pengumuman',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontSize: 18,
+                  style: AppTextStyles.titleMedium.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -221,8 +220,7 @@ class AnnouncementSection extends StatelessWidget {
                                   ),
                                   child: Text(
                                     kategori,
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      fontSize: 9,
+                                    style: AppTextStyles.caption.copyWith(
                                       fontWeight: FontWeight.w900,
                                       color: katColor,
                                       letterSpacing: 0.5,
@@ -240,8 +238,7 @@ class AnnouncementSection extends StatelessWidget {
                                       const SizedBox(width: AppSpacing.xs),
                                       Text(
                                         _formatDate(tanggal),
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          fontSize: 9,
+                                        style: AppTextStyles.caption.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: AppColors.neutral500,
                                         ),
@@ -253,8 +250,7 @@ class AnnouncementSection extends StatelessWidget {
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               judul,
-                              style: AppTextStyles.bodyLg.copyWith(
-                                fontSize: 13,
+                              style: AppTextStyles.bodyMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 height: 1.2,
                               ),
@@ -267,7 +263,6 @@ class AnnouncementSection extends StatelessWidget {
                                 cleanIsi,
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: AppColors.neutral500,
-                                  fontSize: 11,
                                   height: 1.3,
                                 ),
                                 maxLines: 1,
