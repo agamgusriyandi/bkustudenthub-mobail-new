@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/medical_
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_insurance_claim_model.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_bap_model.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_clinical_report_model.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/tenaga_kesehatan.dart';
 
 abstract class TkRepository {
   // Profile
@@ -43,7 +44,8 @@ abstract class TkRepository {
   Future<List<Patient>> searchPatients(String query);
   Future<Map<String, dynamic>> getPatientMedicalRecord(int patientId);
 
-  // Screening
+  // Screening & Medical Records
+  Future<List<MedicalRecord>> getAllMedicalRecords();
   Future<MedicalRecord> createScreening(
     int patientId,
     Map<String, dynamic> data,
@@ -80,4 +82,10 @@ abstract class TkRepository {
   Future<String> exportReportExcel();
   Future<String> exportOfflineRegistrationFormPdf();
   Future<String> exportReportPdf();
+
+  // Admin Tenaga Kesehatan CRUD
+  Future<List<TenagaKesehatan>> getTenagaKesehatanList();
+  Future<bool> createTenagaKesehatan(Map<String, dynamic> data);
+  Future<bool> updateTenagaKesehatan(int id, Map<String, dynamic> data);
+  Future<bool> deleteTenagaKesehatan(int id);
 }

@@ -541,7 +541,9 @@ class _TkBookingScreenState extends State<TkBookingScreen> {
                           SizedBox(
                             height: 34,
                             child: OutlinedButton.icon(
-                              onPressed: () => context.push('/tk/patient/$mahasiswaId'),
+                              onPressed: () => context.push(
+                                '/tk/screening?patient_id=$mahasiswaId&booking_id=$bookingId',
+                              ),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: context.appColors.info,
                                 side: BorderSide(color: context.appColors.info.withAlpha(50)),

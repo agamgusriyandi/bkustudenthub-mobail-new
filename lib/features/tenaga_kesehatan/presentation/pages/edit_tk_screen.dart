@@ -12,6 +12,8 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tenaga_kesehatan_provider.dart';
 
 class EditTkScreen extends StatefulWidget {
   final String tkId;
@@ -96,6 +98,9 @@ class _EditTkScreenState extends State<EditTkScreen> {
 
       if (!mounted) return;
       AppSnackbar.showSuccess(context, 'Data berhasil diperbarui');
+      try {
+        context.read<TenagaKesehatanProvider>().loadTenagaKesehatanList();
+      } catch (_) {}
       context.pop();
     } catch (e) {
       if (mounted) {

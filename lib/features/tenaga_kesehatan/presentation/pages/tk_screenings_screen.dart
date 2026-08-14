@@ -31,7 +31,7 @@ class _TkScreeningsScreenState extends State<TkScreeningsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TkPatientProvider>().loadPatients();
+      context.read<TkPatientProvider>().loadAllScreenings();
     });
   }
 

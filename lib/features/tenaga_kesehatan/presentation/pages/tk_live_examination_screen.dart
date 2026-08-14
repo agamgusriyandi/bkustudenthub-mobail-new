@@ -39,6 +39,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
   int _sistole = 120;
   int _diastole = 80;
   int _denyutNadi = 80;
+  int _respirationRate = 20;
   int _spO2 = 98;
   double _tinggiBadan = 170;
   double _beratBadan = 60;
@@ -93,7 +94,7 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
       diastole: _diastole,
       suhuTubuh: _suhuTubuh,
       denyutNadi: _denyutNadi,
-      respirationRate: 20,
+      respirationRate: _respirationRate,
       spO2: _spO2,
       hasil: _hasil,
       keluhan: _keluhanController.text.isNotEmpty ? _keluhanController.text : null,
@@ -312,6 +313,9 @@ class _TkLiveExaminationScreenState extends State<TkLiveExaminationScreen> {
         }),
         _buildVitalInput('Nadi', '$_denyutNadi', 'bpm', (v) {
           setState(() => _denyutNadi = int.tryParse(v) ?? 0);
+        }),
+        _buildVitalInput('Napas', '$_respirationRate', 'x/mnt', (v) {
+          setState(() => _respirationRate = int.tryParse(v) ?? 20);
         }),
         Container(
           padding: const EdgeInsets.all(AppSpacing.sm),

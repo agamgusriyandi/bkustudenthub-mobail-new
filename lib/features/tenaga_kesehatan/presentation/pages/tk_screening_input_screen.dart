@@ -18,12 +18,14 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/widgets/icd10_search_delegate.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_booking_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class TkScreeningInputScreen extends StatefulWidget {
   final int? patientId;
+  final int? bookingId;
 
-  const TkScreeningInputScreen({super.key, this.patientId});
+  const TkScreeningInputScreen({super.key, this.patientId, this.bookingId});
 
   @override
   State<TkScreeningInputScreen> createState() => _TkScreeningInputScreenState();
@@ -1969,7 +1971,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       diastole: _diastole,
       suhuTubuh: _suhuTubuh,
       denyutNadi: _denyutNadi,
-      respirationRate: 20,
+      respirationRate: _respirationRate,
       spO2: _spO2,
       hasil: _hasil,
       keluhan: _keluhan.isNotEmpty ? _keluhan : null,
@@ -1994,7 +1996,16 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
       psikologId: _eskalasiPsikolog ? _selectedPsikologId : null,
       psikologSlotId: _eskalasiPsikolog ? _selectedPsikologSlotId : null,
       eskalasiFakultas: _eskalasiFaskes,
+      bookingId: widget.bookingId,
     );
+
+    if (screeningId != null && widget.bookingId != null && mounted) {
+      try {
+        await context.read<TkBookingProvider>().completeBooking(
+          widget.bookingId!,
+        );
+      } catch (_) {}
+    }
 
     if (screeningId != null && _eskalasiFaskes) {
       final faskes =

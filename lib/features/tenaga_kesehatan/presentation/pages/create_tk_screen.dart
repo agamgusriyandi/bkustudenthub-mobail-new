@@ -10,6 +10,8 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tenaga_kesehatan_provider.dart';
 
 class CreateTkScreen extends StatefulWidget {
   const CreateTkScreen({super.key});
@@ -51,14 +53,35 @@ class _CreateTkScreenState extends State<CreateTkScreen> {
 
     setState(() => _isSaving = true);
 
-    // Simulated save - in production would call repository
-    await Future.delayed(const Duration(milliseconds: 800));
+    try {
+      final success = await context
+          .read<TenagaKesehatanProvider>()
+          .createTenagaKesehatan({
+            'nama': _namaController.text.trim(),
+            'email': _emailController.text.trim(),
+            'no_hp': _noHpController.text.trim(),
+            'spesialisasi': _spesialisasiController.text.trim(),
+            'lokasi': _lokasiController.text.trim(),
+            'scope_type': _scopeType,
+          });
 
-    setState(() => _isSaving = false);
+      setState(() => _isSaving = false);
 
-    if (!mounted) return;
-    AppSnackbar.showSuccess(context, 'Tenaga kesehatan berhasil ditambahkan');
-    context.pop();
+      if (!mounted) return;
+      if (success) {
+        AppSnackbar.showSuccess(
+          context,
+          'Tenaga kesehatan berhasil ditambahkan',
+        );
+        context.pop();
+      } else {
+        AppSnackbar.showError(context, 'Gagal menambahkan tenaga kesehatan');
+      }
+    } catch (e) {
+      setState(() => _isSaving = false);
+      if (!mounted) return;
+      AppSnackbar.showError(context, 'Terjadi kesalahan: $e');
+    }
   }
 
   @override

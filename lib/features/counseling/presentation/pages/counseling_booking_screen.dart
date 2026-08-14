@@ -19,15 +19,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
-  /// Jika diberikan, langsung load jadwal psikolog ini
   final String? psikologId;
-
   final String? rescheduleBookingId;
+  final String? initialCategory;
+  final String? initialComplaint;
 
   const CounselingBookingScreen({
     super.key,
     this.psikologId,
     this.rescheduleBookingId,
+    this.initialCategory,
+    this.initialComplaint,
   });
 
   @override
@@ -51,11 +53,19 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     'Hubungan Sosial',
     'Kesehatan Mental',
     'Lainnya',
-  ]; // "Tatap Muka" atau "Online"
+  ];
 
   @override
   void initState() {
     super.initState();
+    if (widget.initialCategory != null &&
+        _kategoriList.contains(widget.initialCategory)) {
+      _selectedKategori = widget.initialCategory!;
+    }
+    if (widget.initialComplaint != null &&
+        widget.initialComplaint!.isNotEmpty) {
+      _complaintCtrl.text = widget.initialComplaint!;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final p = context.read<StudentCounselingProvider>();
       if (widget.psikologId != null && widget.psikologId!.isNotEmpty) {

@@ -849,6 +849,31 @@ class _TkPatientDetailScreenState extends State<TkPatientDetailScreen>
                     _buildDetailItem('Obat Diberikan', record.obatDiberikan),
                     _buildDetailItem('Rekomendasi', record.rekomendasi),
                     _buildDetailItem('Catatan Tambahan', record.catatan),
+                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(
+                      width: double.infinity,
+                      child: BkuButton(
+                        onPressed: () async {
+                          final token = AuthService().token;
+                          final urlStr =
+                              '${ApiGate.baseUrl}/tenagakes/medical-records/${record.id}/export-pdf?token=$token';
+                          final uri = Uri.parse(urlStr);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+                          } else {
+                            if (context.mounted) {
+                              AppSnackbar.showError(
+                                context,
+                                'Tidak dapat membuka PDF Rekam Medis',
+                              );
+                            }
+                          }
+                        },
+                        text: 'Cetak / Ekspor PDF Rekam Medis',
+                        icon: Icons.picture_as_pdf_rounded,
+                        variant: BkuButtonVariant.danger,
+                      ),
+                    ),
                   ],
                 ),
               ),

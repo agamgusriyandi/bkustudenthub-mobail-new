@@ -57,6 +57,22 @@ class TkPatientProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> loadAllScreenings() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _medicalRecords = await repository.getAllMedicalRecords();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = ErrorHandler.getMessage(e);
+      notifyListeners();
+    }
+  }
+
   Future<List<Patient>> searchPatients(String query) async {
     if (query.isEmpty) {
       return List.from(_allPatients);

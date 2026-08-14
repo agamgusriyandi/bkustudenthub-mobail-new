@@ -366,44 +366,69 @@ class StudentCounselingProvider extends ChangeNotifier {
     return 'Terjadi kesalahan. Coba lagi.';
   }
 
-  // ─── Submit Assessment Result (mahasiswa) ────────────────────────────────────
   bool _assessmentSubmitting = false;
   bool get assessmentSubmitting => _assessmentSubmitting;
 
-  /// Mahasiswa submit hasil asesmen ke backend.
-  /// Backend menyimpan ke tabel psikolog.assessments dengan:
-  /// - nama = nama asesmen (e.g. "DASS-21")
-  /// - kategori = kategori
-  /// - skor = hasil kalkulasi (Normal/Sedang/Tinggi/Berat)
-  /// - status = "Selesai"
-  /// - metadata = jawaban detail dalam JSON
+  List<Map<String, dynamic>> _myAssessments = [];
+  List<Map<String, dynamic>> get myAssessments => _myAssessments;
+
+  bool _myAssessmentsLoading = false;
+  bool get myAssessmentsLoading => _myAssessmentsLoading;
+
+  Future<void> loadMyAssessments() async {
+    _myAssessmentsLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiClient.client.get('/psychologist/assessments');
+      if (response.data is Map && response.data['data'] != null) {
+        final rawData = response.data['data'];
+        if (rawData is Map && rawData['submissions'] is List) {
+          _myAssessments = List<Map<String, dynamic>>.from(rawData['submissions']);
+        } else if (rawData is List) {
+          _myAssessments = List<Map<String, dynamic>>.from(rawData);
+        }
+      }
+    } catch (e) {
+      log('StudentCounselingProvider.loadMyAssessments error: $e');
+    } finally {
+      _myAssessmentsLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<bool> submitAssessmentResult({
     required String assessmentName,
     required String kategori,
     required String skor,
     required Map<int, int> answers,
+    Map<String, dynamic>? subSkor,
     String deskripsi = '',
   }) async {
     _assessmentSubmitting = true;
     notifyListeners();
     try {
-      // Convert answers map ke JSON-serializable format
       final answersJson = <String, dynamic>{};
       answers.forEach((k, v) => answersJson['q$k'] = v);
 
+      final payload = <String, dynamic>{
+        'nama': assessmentName,
+        'kategori': kategori,
+        'deskripsi':
+            deskripsi.isNotEmpty
+                ? deskripsi
+                : 'Asesmen mandiri oleh mahasiswa',
+        'skor': skor,
+        'status': 'Selesai',
+        'metadata': answersJson,
+      };
+
+      if (subSkor != null && subSkor.isNotEmpty) {
+        payload['sub_skor'] = subSkor;
+      }
+
       await _apiClient.client.post(
         '/psychologist/assessments',
-        data: {
-          'nama': assessmentName,
-          'kategori': kategori,
-          'deskripsi':
-              deskripsi.isNotEmpty
-                  ? deskripsi
-                  : 'Asesmen mandiri oleh mahasiswa',
-          'skor': skor,
-          'status': 'Selesai',
-          'metadata': answersJson,
-        },
+        data: payload,
       );
       _assessmentSubmitting = false;
       notifyListeners();

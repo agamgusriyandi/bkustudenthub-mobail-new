@@ -12,6 +12,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/repositories/tk_r
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_insurance_claim_model.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_bap_model.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/data/models/tk_clinical_report_model.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/domain/entities/tenaga_kesehatan.dart';
 
 class TkRepositoryImpl implements TkRepository {
   final ApiClient apiClient;
@@ -319,7 +320,24 @@ class TkRepositoryImpl implements TkRepository {
     }
   }
 
-  // ==================== SCREENING ====================
+  // ==================== SCREENING & MEDICAL RECORDS ====================
+
+  @override
+  Future<List<MedicalRecord>> getAllMedicalRecords() async {
+    try {
+      final response = await apiClient.client.get('/tenagakes/medical-records');
+      final data = response.data['data'] ?? response.data;
+      if (data is List) {
+        return data
+            .map((json) => MedicalRecord.fromJson(json as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error getting all medical records: $e');
+      return [];
+    }
+  }
 
   @override
   Future<MedicalRecord> createScreening(
@@ -783,6 +801,67 @@ class TkRepositoryImpl implements TkRepository {
       return '$baseUrl/tenagakes/reports/export-pdf?token=$token';
     } catch (e) {
       log('Error exporting report PDF: $e');
+      rethrow;
+    }
+  }
+
+  // ==================== ADMIN TENAGA KESEHATAN CRUD ====================
+
+  @override
+  Future<List<TenagaKesehatan>> getTenagaKesehatanList() async {
+    try {
+      final response = await apiClient.client.get('/admin/tenagakes');
+      final data = response.data['data'] ?? response.data;
+      if (data is List) {
+        return data
+            .map((json) => TenagaKesehatan.fromJson(json as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error getting admin tenaga kesehatan list: $e');
+      try {
+        final fallback = await apiClient.client.get('/kesehatan/health-workers');
+        final data = fallback.data['data'] ?? fallback.data;
+        if (data is List) {
+          return data
+              .map((json) => TenagaKesehatan.fromJson(json as Map<String, dynamic>))
+              .toList();
+        }
+      } catch (_) {}
+      return [];
+    }
+  }
+
+  @override
+  Future<bool> createTenagaKesehatan(Map<String, dynamic> data) async {
+    try {
+      await apiClient.client.post('/admin/tenagakes', data: data);
+      return true;
+    } catch (e) {
+      log('Error creating tenaga kesehatan: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> updateTenagaKesehatan(int id, Map<String, dynamic> data) async {
+    try {
+      await apiClient.client.put('/admin/tenagakes/$id', data: data);
+      return true;
+    } catch (e) {
+      log('Error updating tenaga kesehatan: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> deleteTenagaKesehatan(int id) async {
+    try {
+      await apiClient.client.delete('/admin/tenagakes/$id');
+      return true;
+    } catch (e) {
+      log('Error deleting tenaga kesehatan: $e');
       rethrow;
     }
   }

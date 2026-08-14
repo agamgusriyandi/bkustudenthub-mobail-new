@@ -179,6 +179,13 @@ class _StudentCounselingScreenState extends State<StudentCounselingScreen> {
         ),
         _buildServiceCard(
           context,
+          'Tes Asesmen',
+          Icons.psychology_rounded,
+          context.watch<ThemeProvider>().primary,
+          AppRoutes.assessment,
+        ),
+        _buildServiceCard(
+          context,
           'Riwayat Saya',
           Icons.history_rounded,
           context.watch<ThemeProvider>().warning,

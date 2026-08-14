@@ -759,9 +759,13 @@ class AppRoutes {
           final psikologId = state.uri.queryParameters['psikolog_id'];
           final rescheduleBookingId =
               state.uri.queryParameters['reschedule_booking_id'];
+          final initialCategory = state.uri.queryParameters['category'];
+          final initialComplaint = state.uri.queryParameters['complaint'];
           return CounselingBookingScreen(
             psikologId: psikologId,
             rescheduleBookingId: rescheduleBookingId,
+            initialCategory: initialCategory,
+            initialComplaint: initialComplaint,
           );
         },
       ),
@@ -904,7 +908,13 @@ class AppRoutes {
           final patientIdStr = state.uri.queryParameters['patient_id'];
           final patientId =
               patientIdStr != null ? int.tryParse(patientIdStr) : null;
-          return TkScreeningInputScreen(patientId: patientId);
+          final bookingIdStr = state.uri.queryParameters['booking_id'];
+          final bookingId =
+              bookingIdStr != null ? int.tryParse(bookingIdStr) : null;
+          return TkScreeningInputScreen(
+            patientId: patientId,
+            bookingId: bookingId,
+          );
         },
       ),
       GoRoute(

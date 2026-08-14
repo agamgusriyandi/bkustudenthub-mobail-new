@@ -42,6 +42,7 @@ import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/t
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_booking_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_medical_records_provider.dart';
+import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tenaga_kesehatan_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/providers/self_screening_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/providers/berita_detail_provider.dart';
@@ -135,6 +136,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => TkMedicalRecordsProvider(repository: tkRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TenagaKesehatanProvider(repository: tkRepository),
         ),
         ChangeNotifierProvider(create: (_) => MentorKencanaProvider()),
         ChangeNotifierProvider(create: (_) => SelfScreeningProvider()),
