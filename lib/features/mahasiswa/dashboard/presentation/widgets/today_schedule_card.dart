@@ -2,6 +2,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
@@ -71,20 +72,9 @@ class TodayScheduleCard extends StatelessWidget {
           return evDate.isAfter(today) || evDate.isAtSameMomentAs(today);
         }).toList();
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return BkuCard.doubleBezel(
+      padding: EdgeInsets.zero,
+      borderRadius: 24,
       child: Column(
         children: [
           Padding(

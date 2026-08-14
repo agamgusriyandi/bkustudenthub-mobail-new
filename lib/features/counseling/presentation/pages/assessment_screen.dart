@@ -719,9 +719,10 @@ class _AssessmentScreenState extends State<AssessmentScreen>
     BuildContext context,
     _AssessmentType assessment,
   ) {
-    return BkuCard(
+    return BkuCard.doubleBezel(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
+      borderRadius: 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -730,12 +731,12 @@ class _AssessmentScreenState extends State<AssessmentScreen>
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(15),
-                  borderRadius: AppRadius.radiusMd,
+                  color: context.appColors.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.psychology_alt_rounded,
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   size: 26,
                 ),
               ),
@@ -746,14 +747,16 @@ class _AssessmentScreenState extends State<AssessmentScreen>
                   children: [
                     Text(
                       assessment.name,
-                      style: AppTextStyles.bodyLg.copyWith(
-                        fontWeight: FontWeight.w900,
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: context.appColors.onSurface,
                       ),
                     ),
                     Text(
                       assessment.kategori,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: AppColors.neutral600,
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: context.appColors.outline,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -764,7 +767,7 @@ class _AssessmentScreenState extends State<AssessmentScreen>
           const SizedBox(height: AppSpacing.md),
           Text(
             assessment.deskripsi,
-            style: AppTextStyles.bodySm.copyWith(
+            style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.neutral700,
               height: 1.4,
             ),
@@ -781,21 +784,18 @@ class _AssessmentScreenState extends State<AssessmentScreen>
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            width: double.infinity,
-            child: BkuButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        _AssessmentQuizScreen(assessment: assessment),
-                  ),
-                );
-              },
-              text: 'Mulai Asesmen',
-              icon: Icons.play_arrow_rounded,
-            ),
+          BkuButton.pill(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      _AssessmentQuizScreen(assessment: assessment),
+                ),
+              );
+            },
+            text: 'Mulai Asesmen',
+            trailingIcon: Icons.arrow_forward_rounded,
           ),
         ],
       ),

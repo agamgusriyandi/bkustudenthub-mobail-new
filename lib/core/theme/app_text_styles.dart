@@ -181,6 +181,22 @@ class AppTextStyles {
     color: AppColors.neutral500,
   );
 
+  static TextStyle get eyebrow => GoogleFonts.plusJakartaSans(
+    fontSize: 10,
+    fontWeight: FontWeight.w800,
+    height: 14 / 10,
+    letterSpacing: 1.6,
+    color: AppColors.neutral500,
+  );
+
+  static TextStyle get eyebrowSmall => GoogleFonts.plusJakartaSans(
+    fontSize: 9,
+    fontWeight: FontWeight.w800,
+    height: 12 / 9,
+    letterSpacing: 1.8,
+    color: AppColors.neutral500,
+  );
+
   // ==================== BACKWARD COMPATIBILITY ALIASES ====================
   @Deprecated('Use displaySmall instead.')
   static TextStyle get display => displaySmall;

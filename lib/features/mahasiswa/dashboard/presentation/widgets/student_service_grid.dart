@@ -110,6 +110,7 @@ class _ServiceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BkuBounceButton(
+      scaleFactor: 0.90,
       onTap: () {
         if (target != null) {
           Navigator.push(
@@ -123,13 +124,56 @@ class _ServiceIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 58,
+            height: 58,
+            padding: const EdgeInsets.all(2.5),
             decoration: BoxDecoration(
-              color: color.withAlpha(30),
-              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  color.withAlpha(50),
+                  color.withAlpha(20),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: color.withAlpha(60),
+                width: 0.8,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withAlpha(30),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: Center(child: Icon(icon, color: color, size: 28)),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    color.withAlpha(35),
+                    color.withAlpha(15),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(17),
+                border: Border.all(
+                  color: Colors.white.withAlpha(50),
+                  width: 0.5,
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 26,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
           Expanded(
@@ -138,8 +182,9 @@ class _ServiceIcon extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppTextStyles.labelSm.copyWith(
                 fontSize: 11,
-                fontWeight: FontWeight.w600,
-                height: 1.1,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                height: 1.15,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

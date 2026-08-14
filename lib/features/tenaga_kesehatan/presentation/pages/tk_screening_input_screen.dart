@@ -580,13 +580,17 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusLg,
+      decoration: BoxDecoration(
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: context.appColors.outlineVariant.withAlpha(40),
+          width: 0.8,
+        ),
         boxShadow: [
           BoxShadow(
-            color: context.appColors.onSurface.withAlpha(3),
-            blurRadius: 10,
+            color: Colors.black.withAlpha(5),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -597,20 +601,19 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
           Row(
             children: [
               Container(
-                padding: AppSpacing.padding6,
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: iconColor.withAlpha(26),
+                  color: iconColor.withAlpha(25),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: iconColor, size: 16),
+                child: Icon(icon, color: iconColor, size: 15),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   title,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral600,
-                    fontWeight: FontWeight.bold,
+                  style: AppTextStyles.eyebrowSmall.copyWith(
+                    color: context.appColors.outline,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -630,7 +633,7 @@ class _TkScreeningInputScreenState extends State<TkScreeningInputScreen> {
                     unit,
                     style: AppTextStyles.bodySm.copyWith(
                       color: AppColors.neutral500,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

@@ -397,20 +397,38 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusXl,
+              color: Colors.white.withAlpha(25),
+              borderRadius: BorderRadius.circular(26),
+              border: Border.all(
+                color: Colors.white.withAlpha(50),
+                width: 0.8,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(20),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: context.appColors.surface,
+                borderRadius: BorderRadius.circular(22),
+              ),
               child: ClipRRect(
-              borderRadius: AppRadius.radiusMd,
-              child: Semantics(
-                excludeSemantics: true,
-                child: Image.asset(
-                  'assets/images/icons.png',
-                  width: 65,
-                  height: 65,
-                  fit: BoxFit.contain,
+                borderRadius: AppRadius.radiusMd,
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: Image.asset(
+                    'assets/images/icons.png',
+                    width: 62,
+                    height: 62,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
@@ -421,30 +439,32 @@ class _LoginScreenState extends State<LoginScreen> {
             style: AppTextStyles.headlineMedium.copyWith(
               color: context.appColors.onPrimary,
               fontWeight: FontWeight.w800,
-              letterSpacing: 2.0,
+              letterSpacing: 1.5,
               shadows: [
                 Shadow(
-                  color: context.appColors.onSurface.withValues(alpha: 0.3),
-                  blurRadius: 8,
+                  color: Colors.black.withAlpha(60),
+                  blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Smart Campus Ecosystem',
-            style: AppTextStyles.bodySm.copyWith(
-              color: context.appColors.onPrimary.withValues(alpha: 0.9),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
-              shadows: [
-                Shadow(
-                  color: context.appColors.onSurface.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(30),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: Colors.white.withAlpha(50),
+                width: 0.5,
+              ),
+            ),
+            child: Text(
+              'SMART CAMPUS ECOSYSTEM',
+              style: AppTextStyles.eyebrowSmall.copyWith(
+                color: context.appColors.onPrimary,
+              ),
             ),
           ),
         ],
@@ -456,22 +476,46 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       children: [
         Expanded(
-          child: BkuButton(
-            text: 'Masuk',
+          child: BkuButton.pill(
+            text: 'Masuk ke Portal',
             onPressed: _isLoading ? null : _handleLogin,
             isLoading: _isLoading,
-            variant: BkuButtonVariant.primary,
+            trailingIcon: Icons.arrow_forward_rounded,
           ),
         ),
         if (_isBiometricEnabled) ...[
-          const SizedBox(width: AppSpacing.lg),
-          SizedBox(
-            height: 48,
-            width: 48,
-            child: OutlinedButton(
-              onPressed: _isLoading ? null : _handleBiometricLogin,
-              style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
-              child: const Icon(Icons.fingerprint_rounded, size: 28),
+          const SizedBox(width: AppSpacing.md),
+          Container(
+            height: 52,
+            width: 52,
+            decoration: BoxDecoration(
+              color: context.appColors.surface,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: context.appColors.outlineVariant.withAlpha(60),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(8),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _isLoading ? null : _handleBiometricLogin,
+                customBorder: const CircleBorder(),
+                child: Center(
+                  child: Icon(
+                    Icons.fingerprint_rounded,
+                    size: 26,
+                    color: context.appColors.primary,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

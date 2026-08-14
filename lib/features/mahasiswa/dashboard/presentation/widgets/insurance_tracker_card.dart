@@ -47,43 +47,55 @@ class InsuranceTrackerCard extends StatelessWidget {
       statusText = 'Klaim ditolak. Catatan: ${claim.catatanReview ?? "-"}';
     }
 
-    return BkuCard(
+    return BkuCard.doubleBezel(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      borderOnly: true,
+      borderRadius: 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.monitor_heart_rounded,
-                color: context.appColors.primary,
-                size: 20,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Status Klaim Asuransi',
-                style: AppTextStyles.titleLg.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: context.appColors.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Icon(
+                  Icons.monitor_heart_rounded,
+                  color: context.appColors.primary,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'STATUS KLAIM ASURANSI',
+                    style: AppTextStyles.eyebrowSmall.copyWith(
+                      color: context.appColors.outline,
+                    ),
+                  ),
+                  Text(
+                    claim.jenisProvider.replaceAll('_', ' '),
+                    style: AppTextStyles.titleMedium.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: context.appColors.onSurface,
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
               _buildStatusBadge(context, status),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            claim.jenisProvider.replaceAll('_', ' '),
-            style: AppTextStyles.labelSm.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.neutral700,
-            ),
-          ),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Faskes: ${claim.lokasiFaskes}',
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral50,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.neutral600,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),

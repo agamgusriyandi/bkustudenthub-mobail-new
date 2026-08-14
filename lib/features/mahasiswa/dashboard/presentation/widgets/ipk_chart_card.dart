@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class IpkChartCard extends StatelessWidget {
   final double currentIpk;
@@ -21,7 +21,6 @@ class IpkChartCard extends StatelessWidget {
     final ipk = currentIpk > 0 ? currentIpk : 0.0;
     final semester = currentSemester > 0 ? currentSemester : 1;
 
-    // Generate simulated dynamic GPA points leading to exact current IPK
     final List<FlSpot> spots = [];
     if (semester == 1) {
       spots.add(FlSpot(1, ipk));
@@ -42,13 +41,9 @@ class IpkChartCard extends StatelessWidget {
       spots.add(FlSpot(semester.toDouble(), ipk));
     }
 
-    return Container(
+    return BkuCard.doubleBezel(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200),
-      ),
+      borderRadius: 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,36 +54,39 @@ class IpkChartCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Perkembangan Akademik',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.neutral600,
-                      fontWeight: FontWeight.bold,
+                    'PERKEMBANGAN AKADEMIK',
+                    style: AppTextStyles.eyebrowSmall.copyWith(
+                      color: context.appColors.outline,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'IPK Terkini: ${ipk.toStringAsFixed(2)}',
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.onSurface,
+                    style: AppTextStyles.titleLarge.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: context.appColors.onSurface,
                     ),
                   ),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
+                  horizontal: 10,
+                  vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: context.appColors.primary.withValues(alpha: 0.1),
-                  borderRadius: AppRadius.radiusMd,
+                  color: context.appColors.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: context.appColors.primary.withAlpha(40),
+                    width: 0.8,
+                  ),
                 ),
                 child: Text(
                   'Semester $semester',
                   style: AppTextStyles.labelSm.copyWith(
                     color: context.appColors.primary,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

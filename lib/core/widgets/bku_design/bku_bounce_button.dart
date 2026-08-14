@@ -31,12 +31,16 @@ class _BkuBounceButtonState extends State<BkuBounceButton>
     _controller = AnimationController(
       vsync: this,
       duration: widget.duration,
-      reverseDuration: widget.duration,
+      reverseDuration: Duration(milliseconds: (widget.duration.inMilliseconds * 1.4).round()),
     );
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleFactor,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic));
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Cubic(0.32, 0.72, 0.0, 1.0),
+      reverseCurve: Curves.easeOutBack,
+    ));
   }
 
   @override

@@ -7,7 +7,16 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 
-enum BkuButtonVariant { primary, secondary, outline, text, danger, success, dangerOutline }
+enum BkuButtonVariant {
+  primary,
+  secondary,
+  outline,
+  text,
+  danger,
+  success,
+  dangerOutline,
+  pill,
+}
 
 class BkuButton extends StatelessWidget {
   final String text;
@@ -23,6 +32,8 @@ class BkuButton extends StatelessWidget {
   final Color? customBgColor;
   final Color? customFgColor;
   final BorderRadiusGeometry? customRadius;
+  final bool isButtonInButton;
+  final Gradient? gradient;
 
   const BkuButton({
     super.key,
@@ -39,6 +50,8 @@ class BkuButton extends StatelessWidget {
     this.customBgColor,
     this.customFgColor,
     this.customRadius,
+    this.isButtonInButton = false,
+    this.gradient,
   });
 
   factory BkuButton.primary({
@@ -55,6 +68,7 @@ class BkuButton extends StatelessWidget {
     Color? customBgColor,
     Color? customFgColor,
     BorderRadiusGeometry? customRadius,
+    bool isButtonInButton = false,
   }) => BkuButton(
     key: key,
     text: text,
@@ -70,6 +84,40 @@ class BkuButton extends StatelessWidget {
     customBgColor: customBgColor,
     customFgColor: customFgColor,
     customRadius: customRadius,
+    isButtonInButton: isButtonInButton,
+  );
+
+  factory BkuButton.pill({
+    Key? key,
+    required String text,
+    required VoidCallback? onPressed,
+    bool isLoading = false,
+    IconData? icon,
+    IconData? trailingIcon,
+    double? width,
+    double height = 52,
+    double? fontSize,
+    bool fullWidth = true,
+    Color? customBgColor,
+    Color? customFgColor,
+    Gradient? gradient,
+  }) => BkuButton(
+    key: key,
+    text: text,
+    onPressed: onPressed,
+    variant: BkuButtonVariant.pill,
+    isLoading: isLoading,
+    icon: icon,
+    trailingIcon: trailingIcon,
+    width: width,
+    height: height,
+    fontSize: fontSize,
+    fullWidth: fullWidth,
+    customBgColor: customBgColor,
+    customFgColor: customFgColor,
+    customRadius: BorderRadius.circular(999),
+    isButtonInButton: trailingIcon != null,
+    gradient: gradient,
   );
 
   factory BkuButton.secondary({
@@ -193,6 +241,23 @@ class BkuButton extends StatelessWidget {
     customRadius: customRadius,
   );
 
+  factory BkuButton.dangerOutline({
+    Key? key,
+    required String text,
+    VoidCallback? onPressed,
+    bool isLoading = false,
+    IconData? icon,
+    bool fullWidth = true,
+  }) => BkuButton(
+    key: key,
+    text: text,
+    onPressed: onPressed,
+    variant: BkuButtonVariant.dangerOutline,
+    isLoading: isLoading,
+    icon: icon,
+    fullWidth: fullWidth,
+  );
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
@@ -204,6 +269,7 @@ class BkuButton extends StatelessWidget {
 
     switch (variant) {
       case BkuButtonVariant.primary:
+      case BkuButtonVariant.pill:
         bg = theme.primary;
         fg = theme.onPrimary;
         elevation = 0;
@@ -252,29 +318,14 @@ class BkuButton extends StatelessWidget {
     if (customBgColor != null) bg = customBgColor!;
     if (customFgColor != null) fg = customFgColor!;
 
-    final buttonStyle = ElevatedButton.styleFrom(
-      backgroundColor: bg,
-      foregroundColor: fg,
-      disabledBackgroundColor: bg.withValues(alpha: 0.3),
-      disabledForegroundColor: fg.withValues(alpha: 0.5),
-      elevation: elevation,
-      shadowColor: bg.withValues(alpha: 0.4), // Soft shadow inheriting color
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: variant == BkuButtonVariant.text ? 8 : (height < 44 ? 6 : 12),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: customRadius ?? AppRadius.radiusMd, // 12px radius as agreed
-        side: border ?? BorderSide.none,
-      ),
-    );
+    final resolvedRadius = customRadius ?? (variant == BkuButtonVariant.pill ? BorderRadius.circular(999) : AppRadius.radiusMd);
 
     final textWidget = Text(
       text,
       style: AppTextStyles.labelLg.copyWith(
         fontWeight: FontWeight.w700,
         color: fg,
-        letterSpacing: 0.5,
+        letterSpacing: 0.4,
         fontSize: fontSize,
       ),
     );
@@ -302,7 +353,20 @@ class BkuButton extends StatelessWidget {
           textWidget,
           if (!isLoading && trailingIcon != null) ...[
             const SizedBox(width: AppSpacing.sm),
-            Icon(trailingIcon, size: 18, color: fg),
+            if (isButtonInButton)
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: fg.withAlpha(40),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(trailingIcon, size: 16, color: fg),
+                ),
+              )
+            else
+              Icon(trailingIcon, size: 18, color: fg),
           ],
         ],
       );
@@ -310,9 +374,48 @@ class BkuButton extends StatelessWidget {
       content = textWidget;
     }
 
-    if (width != null) {
-      content = SizedBox(width: width, child: content);
+    if (gradient != null && variant != BkuButtonVariant.text) {
+      return Container(
+        height: height,
+        width: width ?? (fullWidth ? double.infinity : null),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: resolvedRadius,
+          boxShadow: [
+            BoxShadow(
+              color: bg.withAlpha(60),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: isLoading ? null : onPressed,
+            borderRadius: resolvedRadius as BorderRadius?,
+            child: Center(child: content),
+          ),
+        ),
+      );
     }
+
+    final buttonStyle = ElevatedButton.styleFrom(
+      backgroundColor: bg,
+      foregroundColor: fg,
+      disabledBackgroundColor: bg.withValues(alpha: 0.3),
+      disabledForegroundColor: fg.withValues(alpha: 0.5),
+      elevation: elevation,
+      shadowColor: bg.withValues(alpha: 0.3),
+      padding: EdgeInsets.symmetric(
+        horizontal: isButtonInButton ? AppSpacing.md : AppSpacing.lg,
+        vertical: variant == BkuButtonVariant.text ? 8 : (height < 44 ? 6 : 12),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: resolvedRadius,
+        side: border ?? BorderSide.none,
+      ),
+    );
 
     return SizedBox(
       height: height,
@@ -322,25 +425,6 @@ class BkuButton extends StatelessWidget {
         style: buttonStyle,
         child: content,
       ),
-    );
-  }
-
-  factory BkuButton.dangerOutline({
-    Key? key,
-    required String text,
-    VoidCallback? onPressed,
-    bool isLoading = false,
-    IconData? icon,
-    bool fullWidth = true,
-  }) {
-    return BkuButton(
-      key: key,
-      text: text,
-      onPressed: onPressed,
-      variant: BkuButtonVariant.dangerOutline,
-      isLoading: isLoading,
-      icon: icon,
-      fullWidth: fullWidth,
     );
   }
 }
