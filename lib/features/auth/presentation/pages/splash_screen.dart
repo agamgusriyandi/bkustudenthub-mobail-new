@@ -258,7 +258,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(
-                    'Version 1.0.4',
+                    'Version 1.0.5',
                     style: AppTextStyles.labelSm.copyWith(
                           color: context.appColors.onPrimary.withValues(alpha: 0.8),
                     ),
