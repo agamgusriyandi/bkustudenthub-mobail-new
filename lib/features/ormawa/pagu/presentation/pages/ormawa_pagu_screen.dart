@@ -685,7 +685,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF1F2),
                     borderRadius: BorderRadius.circular(10),
@@ -694,29 +694,27 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.circle, size: 6, color: Color(0xFFEF4444)),
-                          SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              'TERPAKAI',
-                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF9F1239)),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        'DANA TERPAKAI',
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFBE123C),
+                          letterSpacing: 0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(used),
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                         ),
                       ),
+                      const SizedBox(height: 1),
                       const Text(
                         'Disetujui',
                         style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
@@ -730,7 +728,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFFBEB),
                     borderRadius: BorderRadius.circular(10),
@@ -739,29 +737,27 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.circle, size: 6, color: Color(0xFFF59E0B)),
-                          SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              'PENGAJUAN',
-                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF92400E)),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        'PENGAJUAN',
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFB45309),
+                          letterSpacing: 0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(pending),
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                         ),
                       ),
+                      const SizedBox(height: 1),
                       const Text(
                         'Review',
                         style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
@@ -775,7 +771,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
                     color: const Color(0xFFECFDF5),
                     borderRadius: BorderRadius.circular(10),
@@ -784,29 +780,27 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.circle, size: 6, color: Color(0xFF10B981)),
-                          SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              'SISA KUOTA',
-                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46)),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        'SISA KUOTA',
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF047857),
+                          letterSpacing: 0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(remaining),
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                         ),
                       ),
+                      const SizedBox(height: 1),
                       const Text(
                         'Tersedia',
                         style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
