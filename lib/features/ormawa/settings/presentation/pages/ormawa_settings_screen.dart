@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaSettingsScreen extends StatefulWidget {
@@ -194,25 +190,6 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    BkuDialog.show(
-      context: context,
-      title: 'Keluar Portal?',
-      message: 'Sesi administrasi Anda akan diakhiri.',
-      type: BkuDialogType.error,
-      primaryButtonText: 'Keluar',
-      onPrimaryPressed: () async {
-        Navigator.pop(context);
-        await AuthService().logout();
-        if (context.mounted) {
-          context.go(AppRoutes.login);
-        }
-      },
-      secondaryButtonText: 'Batal',
-      onSecondaryPressed: () => Navigator.pop(context),
-    );
   }
 
   int _computeLocalCompleteness() {
@@ -706,44 +683,6 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
-
-                      FadeInAnimation(
-                        delay: 0.55,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                              child: Text('AKSES PENGATURAN AKUN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
-                            ),
-                            _buildQuickTile(
-                              Icons.person_outline_rounded,
-                              'Profil Pribadi Saya',
-                              'Data jabatan, email, dan no HP akun saya',
-                              const Color(0xFF2563EB),
-                              () => context.push(AppRoutes.ormawaProfile),
-                            ),
-                            const SizedBox(height: 8),
-                            _buildQuickTile(
-                              Icons.security_rounded,
-                              'Keamanan & Kata Sandi',
-                              'Ubah password dan autentikasi akun',
-                              const Color(0xFF059669),
-                              () => context.push(AppRoutes.ormawaSecurity),
-                            ),
-                            const SizedBox(height: 8),
-                            _buildQuickTile(
-                              Icons.logout_rounded,
-                              'Keluar Portal Administrasi',
-                              'Akhiri sesi login sebagai pengurus',
-                              const Color(0xFFE11D48),
-                              () => _showLogoutDialog(context),
-                              isDanger: true,
-                            ),
-                          ],
-                        ),
-                      ),
 
                       const SizedBox(height: AppSpacing.s140),
                     ],
@@ -890,59 +829,5 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
     );
   }
 
-  Widget _buildQuickTile(IconData icon, String title, String subtitle, Color color, VoidCallback onTap, {bool isDanger = false}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        decoration: BoxDecoration(
-          color: isDanger ? const Color(0xFFFFF1F2) : Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDanger ? const Color(0xFFFECDD3) : const Color(0xFFE2E8F0)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                color: color.withAlpha(isDanger ? 25 : 15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: color, size: 18),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                      color: isDanger ? const Color(0xFFBE123C) : const Color(0xFF0F172A),
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 9.5,
-                      color: isDanger ? const Color(0xFFE11D48).withAlpha(180) : const Color(0xFF64748B),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 18,
-              color: isDanger ? const Color(0xFFE11D48) : const Color(0xFF94A3B8),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 }
