@@ -120,8 +120,6 @@ class OrmawaServiceGridModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ormawaProvider = context.watch<OrmawaProvider>();
-    final isOpenRecruitment =
-        ormawaProvider.ormawaSettings['open_recruitment'] == true;
     final canViewRecruitment =
         ormawaProvider.hasPermission('view_recruitment') ||
         ormawaProvider.hasPermission('manage_recruitment');
@@ -137,9 +135,9 @@ class OrmawaServiceGridModal extends StatelessWidget {
           color: AppColors.serviceIndigo,
           target: OrmawaStrukturScreen(),
         ),
-      if (isOpenRecruitment && canViewRecruitment)
+      if (canViewRecruitment)
         const _ModalServiceIcon(
-          title: 'Recruitment',
+          title: 'Rekrutmen',
           icon: Icons.person_add_rounded,
           color: AppColors.serviceSky,
           target: OrmawaRecruitmentScreen(),
