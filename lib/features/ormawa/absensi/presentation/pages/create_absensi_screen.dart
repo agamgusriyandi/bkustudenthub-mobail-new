@@ -1,19 +1,12 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
 
 class CreateAbsensiScreen extends StatefulWidget {
   const CreateAbsensiScreen({super.key});
@@ -27,10 +20,10 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
   final _deskripsiController = TextEditingController();
   final _lokasiController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedStartTime = TimeOfDay.now();
-  TimeOfDay _selectedEndTime = TimeOfDay(hour: TimeOfDay.now().hour + 2, minute: 0);
-  int _jumlahTotal = 0;
+  TimeOfDay _selectedStartTime = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay _selectedEndTime = const TimeOfDay(hour: 12, minute: 0);
   bool _isSubmitting = false;
+  OrmawaAgenda? _selectedExistingEvent;
 
   @override
   void dispose() {
@@ -40,9 +33,23 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
     super.dispose();
   }
 
+  void _onSelectEvent(OrmawaAgenda? agenda) {
+    setState(() {
+      _selectedExistingEvent = agenda;
+      if (agenda != null) {
+        _namaController.text = 'Presensi - ${agenda.title}';
+        _selectedDate = agenda.date;
+        _selectedStartTime = TimeOfDay(hour: agenda.date.hour, minute: agenda.date.minute);
+        _selectedEndTime = TimeOfDay(hour: agenda.endDate.hour, minute: agenda.endDate.minute);
+        _lokasiController.text = agenda.location;
+        _deskripsiController.text = agenda.description;
+      }
+    });
+  }
+
   void _handleSubmit() async {
-    if (_namaController.text.isEmpty) {
-      AppSnackbar.showWarning(context, 'Nama kegiatan wajib diisi');
+    if (_namaController.text.trim().isEmpty) {
+      AppSnackbar.showWarning(context, 'Nama kegiatan / sesi wajib diisi');
       return;
     }
 
@@ -50,36 +57,42 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
     BkuLoadingDialog.show(context);
 
     try {
-      final data = {
-        'Nama': _namaController.text,
-        'Deskripsi': _deskripsiController.text,
-        'Lokasi': _lokasiController.text,
-        'Tanggal': DateFormat('yyyy-MM-dd').format(_selectedDate),
-        'WaktuMulai': '${_selectedStartTime.hour.toString().padLeft(2, '0')}:${_selectedStartTime.minute.toString().padLeft(2, '0')}',
-        'WaktuSelesai': '${_selectedEndTime.hour.toString().padLeft(2, '0')}:${_selectedEndTime.minute.toString().padLeft(2, '0')}',
-        'JumlahTotal': _jumlahTotal,
-        'Status': 'aktif',
+      final startDt = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedStartTime.hour,
+        _selectedStartTime.minute,
+      );
+      final endDt = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedEndTime.hour,
+        _selectedEndTime.minute,
+      );
+
+      final payload = {
+        'Judul': _namaController.text.trim(),
+        'TanggalMulai': startDt.toIso8601String(),
+        'TanggalSelesai': endDt.toIso8601String(),
+        'Lokasi': _lokasiController.text.trim().isNotEmpty ? _lokasiController.text.trim() : 'Kampus Utama',
+        'Status': 'terjadwal',
+        'Deskripsi': _deskripsiController.text.trim(),
+        'PJKegiatan': _selectedExistingEvent?.pjKegiatan,
       };
 
-      await context.read<OrmawaProvider>().createAbsensiManagement(data);
+      await context.read<OrmawaProvider>().addAgenda(payload);
+
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        BkuDialog.show(
-          context: context,
-          title: 'Absensi Dibuat!',
-          message: 'Sesi absensi kegiatan berhasil dibuat.',
-          type: BkuDialogType.success,
-          primaryButtonText: 'Kembali',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Sesi absensi kegiatan berhasil dibuat!');
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+        AppSnackbar.showError(context, 'Gagal membuat sesi absensi: $e');
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -95,7 +108,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: context.appColors.primary),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF2563EB)),
           ),
           child: child!,
         );
@@ -111,7 +124,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: context.appColors.primary),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF2563EB)),
           ),
           child: child!,
         );
@@ -130,13 +143,15 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final agendas = context.watch<OrmawaProvider>().agendas;
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
-          BkuAppBar(
-            title: 'Buat Absensi Baru',
-            subtitle: 'Kehadiran Kegiatan',
+          const BkuAppBar(
+            title: 'Tambah Sesi Presensi',
+            subtitle: 'Event Management',
             variant: AppBarVariant.ormawa,
             expandedHeight: 130.0,
             showBackButton: true,
@@ -144,66 +159,210 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BkuTextField(
-                    label: 'NAMA KEGIATAN',
-                    controller: _namaController,
-                    hint: 'Contoh: Rapat Koordinasi',
-                    prefixIcon: Icon(Icons.event_rounded, color: context.appColors.primary, size: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF94A3B8).withAlpha(15),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('PILIH DARI KEGIATAN TERJADWAL (OPSIONAL)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<OrmawaAgenda?>(
+                              value: _selectedExistingEvent,
+                              isExpanded: true,
+                              hint: const Text('Pilih kegiatan untuk auto-fill data...', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                              items: [
+                                const DropdownMenuItem<OrmawaAgenda?>(
+                                  value: null,
+                                  child: Text('— Buat Sesi Baru (Manual) —', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                                ),
+                                ...agendas.map(
+                                  (a) => DropdownMenuItem<OrmawaAgenda?>(
+                                    value: a,
+                                    child: Text(
+                                      '${a.title} (${DateFormat('dd/MM/yyyy').format(a.date)})',
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              onChanged: _onSelectEvent,
+                            ),
+                          ),
+                        ),
+                        const Divider(height: 24, color: Color(0xFFF1F5F9)),
+
+                        const Text('NAMA SESI KEGIATAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        const SizedBox(height: 6),
+                        _buildInputField(_namaController, 'Contoh: Rapat Pleno Bulanan...'),
+                        const SizedBox(height: 14),
+
+                        const Text('TANGGAL PELAKSANAAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        const SizedBox(height: 6),
+                        InkWell(
+                          onTap: _pickDate,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.calendar_today_rounded, size: 15, color: Color(0xFF2563EB)),
+                                const SizedBox(width: 8),
+                                Text(
+                                  DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDate),
+                                  style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('MULAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
+                                  const SizedBox(height: 6),
+                                  InkWell(
+                                    onTap: () => _pickTime(isStart: true),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF8FAFC),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.schedule_rounded, size: 15, color: Color(0xFF2563EB)),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            '${_selectedStartTime.hour.toString().padLeft(2, '0')}:${_selectedStartTime.minute.toString().padLeft(2, '0')} WIB',
+                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('SELESAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
+                                  const SizedBox(height: 6),
+                                  InkWell(
+                                    onTap: () => _pickTime(isStart: false),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF8FAFC),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.event_available_rounded, size: 15, color: Color(0xFF2563EB)),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            '${_selectedEndTime.hour.toString().padLeft(2, '0')}:${_selectedEndTime.minute.toString().padLeft(2, '0')} WIB',
+                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        const Text('LOKASI / RUANGAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        const SizedBox(height: 6),
+                        _buildInputField(_lokasiController, 'Contoh: Ruang Auditorium BKU...'),
+                        const SizedBox(height: 14),
+
+                        const Text('KETERANGAN & DESKRIPSI', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        const SizedBox(height: 6),
+                        _buildInputField(_deskripsiController, 'Keterangan agenda kegiatan...', maxLines: 3),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  BkuTextField(
-                    label: 'DESKRIPSI',
-                    controller: _deskripsiController,
-                    hint: 'Deskripsi kegiatan...',
-                    maxLines: 3,
-                    prefixIcon: Icon(Icons.description_rounded, color: context.appColors.primary, size: 20),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  BkuTextField(
-                    label: 'LOKASI',
-                    controller: _lokasiController,
-                    hint: 'Contoh: Ruang Aula',
-                    prefixIcon: Icon(Icons.location_on_rounded, color: context.appColors.primary, size: 20),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'TANGGAL',
-                    style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600, fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 10),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildDatePicker(),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'WAKTU',
-                    style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600, fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 10),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: 16),
+
                   Row(
                     children: [
-                      Expanded(child: _buildTimePicker(label: 'Mulai', time: _selectedStartTime, isStart: true)),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(child: _buildTimePicker(label: 'Selesai', time: _selectedEndTime, isStart: false)),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF334155),
+                            side: const BorderSide(color: Color(0xFFCBD5E1)),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text('Batalkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _isSubmitting ? null : _handleSubmit,
+                          icon: const Icon(Icons.check_rounded, size: 16),
+                          label: const Text('Simpan Sesi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2563EB),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  BkuTextField(
-                    label: 'JUMLAH PESERTA',
-                    controller: TextEditingController(text: _jumlahTotal > 0 ? _jumlahTotal.toString() : ''),
-                    hint: '0',
-                    prefixIcon: Icon(Icons.people_rounded, color: context.appColors.primary, size: 20),
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) => _jumlahTotal = int.tryParse(v) ?? 0,
-                  ),
-                  const SizedBox(height: AppSpacing.s48),
-                  BkuButton.primary(
-                    text: 'SIMPAN ABSENSI',
-                    isLoading: _isSubmitting,
-                    onPressed: _handleSubmit,
-                  ),
+
+                  const SizedBox(height: AppSpacing.s140),
                 ],
               ),
             ),
@@ -213,52 +372,22 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
     );
   }
 
-  Widget _buildDatePicker() {
-    return InkWell(
-      onTap: _pickDate,
-      borderRadius: AppRadius.radiusLg,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.neutral100,
-          borderRadius: AppRadius.radiusLg,
-          border: Border.all(color: AppColors.neutral300),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.calendar_today_rounded, color: context.appColors.primary, size: 20),
-            const SizedBox(width: AppSpacing.md),
-            Text(
-              DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDate),
-              style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+  Widget _buildInputField(TextEditingController controller, String hint, {int maxLines = 1}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-    );
-  }
-
-  Widget _buildTimePicker({required String label, required TimeOfDay time, required bool isStart}) {
-    return InkWell(
-      onTap: () => _pickTime(isStart: isStart),
-      borderRadius: AppRadius.radiusLg,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.neutral100,
-          borderRadius: AppRadius.radiusLg,
-          border: Border.all(color: AppColors.neutral300),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontSize: 10, fontWeight: FontWeight.bold)),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-              style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ],
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
       ),
     );

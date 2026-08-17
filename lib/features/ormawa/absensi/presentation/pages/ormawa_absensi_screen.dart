@@ -1,25 +1,17 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_qr_scan_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
-import 'package:go_router/go_router.dart';
 
 class OrmawaAbsensiScreen extends StatefulWidget {
   final bool showBackButton;
@@ -30,16 +22,157 @@ class OrmawaAbsensiScreen extends StatefulWidget {
   State<OrmawaAbsensiScreen> createState() => _OrmawaAbsensiScreenState();
 }
 
-class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
+class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTickerProviderStateMixin {
+  String _activeTab = 'all';
+  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchAttController = TextEditingController();
   String _searchQuery = '';
-  String _statusFilter = 'Semua';
+  String _searchAttQuery = '';
+  bool _isRefreshing = false;
+  OrmawaAgenda? _selectedAgenda;
+  Timer? _attendancePollTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() => _searchQuery = _searchController.text.trim().toLowerCase());
+    });
+    _searchAttController.addListener(() {
+      setState(() => _searchAttQuery = _searchAttController.text.trim().toLowerCase());
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchAttController.dispose();
+    _attendancePollTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadData() async {
+    setState(() => _isRefreshing = true);
+    final prov = context.read<OrmawaProvider>();
+    await prov.refreshData();
+    if (_selectedAgenda != null) {
+      await prov.fetchAttendance(_selectedAgenda!.id);
+    }
+    if (mounted) setState(() => _isRefreshing = false);
+  }
+
+  void _selectAgenda(OrmawaAgenda agenda) {
+    setState(() {
+      if (_selectedAgenda?.id == agenda.id) {
+        _selectedAgenda = null;
+        _attendancePollTimer?.cancel();
+      } else {
+        _selectedAgenda = agenda;
+        context.read<OrmawaProvider>().fetchAttendance(agenda.id);
+        _attendancePollTimer?.cancel();
+        _attendancePollTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+          if (mounted && _selectedAgenda != null) {
+            context.read<OrmawaProvider>().fetchAttendance(_selectedAgenda!.id);
+          }
+        });
+      }
+    });
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('dd MMM yyyy', 'id').format(date);
+  }
+
+  Color _getStatusBgColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'berlangsung':
+      case 'ongoing':
+        return const Color(0xFFFEF3C7);
+      case 'selesai':
+      case 'terlaksana':
+      case 'completed':
+        return const Color(0xFFD1FAE5);
+      case 'dibatalkan':
+      case 'batal':
+      case 'cancelled':
+        return const Color(0xFFFFE4E6);
+      default:
+        return const Color(0xFFEFF6FF);
+    }
+  }
+
+  Color _getStatusTextColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'berlangsung':
+      case 'ongoing':
+        return const Color(0xFFB45309);
+      case 'selesai':
+      case 'terlaksana':
+      case 'completed':
+        return const Color(0xFF047857);
+      case 'dibatalkan':
+      case 'batal':
+      case 'cancelled':
+        return const Color(0xFFBE123C);
+      default:
+        return const Color(0xFF1D4ED8);
+    }
+  }
+
+  Color _getStatusDotColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'berlangsung':
+      case 'ongoing':
+        return const Color(0xFFF59E0B);
+      case 'selesai':
+      case 'terlaksana':
+      case 'completed':
+        return const Color(0xFF10B981);
+      case 'dibatalkan':
+      case 'batal':
+      case 'cancelled':
+        return const Color(0xFFF43F5E);
+      default:
+        return const Color(0xFF3B82F6);
+    }
+  }
+
+  String _getStatusLabel(String status) {
+    switch (status.toLowerCase()) {
+      case 'berlangsung':
+      case 'ongoing':
+        return 'Berlangsung';
+      case 'selesai':
+      case 'terlaksana':
+      case 'completed':
+        return 'Selesai';
+      case 'dibatalkan':
+      case 'batal':
+      case 'cancelled':
+        return 'Dibatalkan';
+      default:
+        return 'Terjadwal';
+    }
+  }
+
+  void _showDynamicQrModal(BuildContext context, OrmawaAgenda agenda) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => _DynamicQrDialog(agenda: agenda),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<OrmawaProvider>(context);
+    final provider = context.watch<OrmawaProvider>();
+
     if (!provider.hasPermission('view_attendance')) {
       return Scaffold(
-        backgroundColor: AppColors.neutral100,
+        backgroundColor: const Color(0xFFF8FAFC),
         body: CustomScrollView(
           slivers: [
             BkuAppBar(
@@ -50,34 +183,18 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
               showBackButton: widget.showBackButton,
               isExpandable: false,
             ),
-            SliverFillRemaining(
+            const SliverFillRemaining(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  padding: EdgeInsets.all(AppSpacing.xl),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.lock_outline_rounded,
-                        size: 64,
-                        color: context.appColors.error,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Text(
-                        'Akses Ditolak',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.neutral800,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Anda tidak memiliki izin untuk mengelola atau melihat sistem absensi.',
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.bodyMd.copyWith(
-                          color: AppColors.neutral600,
-                        ),
-                      ),
+                      Icon(Icons.lock_outline_rounded, size: 54, color: Color(0xFFE11D48)),
+                      SizedBox(height: 12),
+                      Text('Akses Ditolak', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                      SizedBox(height: 6),
+                      Text('Anda tidak memiliki izin untuk melihat sistem absensi ormawa.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
                     ],
                   ),
                 ),
@@ -88,1208 +205,1066 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       );
     }
 
+    final allAgendas = provider.agendas;
+    final totalSessions = allAgendas.length;
+    final ongoingCount = allAgendas.where((e) => e.status.toLowerCase() == 'berlangsung' || e.status.toLowerCase() == 'ongoing').length;
+    final plannedCount = allAgendas.where((e) => e.status.toLowerCase() == 'terjadwal' || e.status.toLowerCase() == 'planned').length;
+    final completedCount = allAgendas.where((e) => e.status.toLowerCase() == 'selesai' || e.status.toLowerCase() == 'terlaksana' || e.status.toLowerCase() == 'completed').length;
+
+    final attendanceList = provider.attendanceList;
+    final attendedCount = attendanceList.where((a) => a.status.toLowerCase() == 'hadir').length;
+    final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa').length;
+    final totalAttendance = attendanceList.length;
+    final attendanceRate = totalAttendance > 0 ? ((attendedCount / totalAttendance) * 100).round() : 0;
+
+    final filteredAgendas = allAgendas.where((agenda) {
+      final statusKey = agenda.status.toLowerCase();
+      bool matchTab = true;
+      if (_activeTab == 'berlangsung') matchTab = (statusKey == 'berlangsung' || statusKey == 'ongoing');
+      if (_activeTab == 'terjadwal') matchTab = (statusKey == 'terjadwal' || statusKey == 'planned');
+      if (_activeTab == 'selesai') matchTab = (statusKey == 'selesai' || statusKey == 'terlaksana' || statusKey == 'completed');
+
+      final matchQuery = _searchQuery.isEmpty ||
+          agenda.title.toLowerCase().contains(_searchQuery) ||
+          agenda.location.toLowerCase().contains(_searchQuery) ||
+          (agenda.pjKegiatan != null && agenda.pjKegiatan!.toLowerCase().contains(_searchQuery));
+
+      return matchTab && matchQuery;
+    }).toList();
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
+            title: 'Sistem Presensi',
+            subtitle: 'Absensi Kegiatan',
             variant: AppBarVariant.ormawa,
-            title: 'Absensi Kegiatan',
-            subtitle: 'Presensi & Kehadiran',
             expandedHeight: 130.0,
             showBackButton: widget.showBackButton,
             isExpandable: false,
           ),
-          Consumer<OrmawaProvider>(
-            builder: (context, provider, child) {
-              final allAgendas = provider.agendas;
-
-              final agendas =
-                  allAgendas.where((agenda) {
-                      final now = DateTime.now();
-                      final isPast = agenda.date.isBefore(
-                        now.subtract(const Duration(days: 1)),
-                      );
-                      final status = isPast ? 'SELESAI' : 'AKTIF';
-
-                      final matchesSearch = agenda.title.toLowerCase().contains(
-                        _searchQuery.toLowerCase(),
-                      );
-                      final matchesFilter =
-                          _statusFilter == 'Semua' ||
-                          _statusFilter.toUpperCase() == status;
-
-                      return matchesSearch && matchesFilter;
-                    }).toList()
-                    ..sort((a, b) => b.date.compareTo(a.date));
-
-              if (provider.isLoading && allAgendas.isEmpty) {
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.xl,
-                    ),
-                    child: Column(
-                      children: const [
-                        BkuShimmer(
-                          width: double.infinity,
-                          height: 120,
-                          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF94A3B8).withAlpha(15),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
-                        SizedBox(height: AppSpacing.s20),
-                        BkuShimmerList(itemCount: 3, itemHeight: 120),
                       ],
                     ),
-                  ),
-                );
-              }
-
-              return SliverMainAxisGroup(
-                slivers: [
-                  _buildQuickStats(provider),
-                  _buildSearchAndFilter(),
-                  if (agendas.isEmpty)
-                    SliverFillRemaining(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.event_busy_rounded,
-                              size: 64,
-                              color: AppColors.neutral300,
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-                            Text(
-                              'Belum ada agenda kegiatan',
-                              style: AppTextStyles.labelMd.copyWith(
-                                color: AppColors.neutral500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.s20,
-                        AppSpacing.s20,
-                        AppSpacing.s20,
-                        100,
-                      ),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final agenda = agendas[index];
-                          final now = DateTime.now();
-                          final isPast = agenda.date.isBefore(
-                            now.subtract(const Duration(days: 1)),
-                          );
-                          final status = isPast ? 'SELESAI' : 'AKTIF';
-                          final statusColor =
-                              isPast ? AppColors.info : AppColors.success;
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                            child: _buildAbsensiCard(
-                              agenda.id,
-                              agenda.title,
-                              '${agenda.date.day}/${agenda.date.month}/${agenda.date.year} • ${agenda.date.hour}:${agenda.date.minute.toString().padLeft(2, '0')}',
-                              status,
-                              statusColor,
-                            ),
-                          );
-                        }, childCount: agendas.length),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchAndFilter() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        child: Row(
-          children: [
-            Expanded(
-              child: BkuTextField(
-                hint: 'Cari nama kegiatan...',
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: context.appColors.primary,
-                  size: 24,
-                ),
-                onChanged: (value) => setState(() => _searchQuery = value),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            InkWell(
-              onTap: _showFilterBottomSheet,
-              borderRadius: AppRadius.radiusLg,
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: context.appColors.surface,
-                  borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: AppColors.neutral300),
-                ),
-                child: Icon(
-                  Icons.filter_list_rounded,
-                  color: context.appColors.primary,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showFilterBottomSheet() {
-    BkuBottomSheet.show(
-      context: context,
-      title: 'Filter Status',
-      child: StatefulBuilder(
-        builder: (context, setModalState) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        ['Semua', 'Aktif', 'Selesai'].map((filter) {
-                          final isSelected = _statusFilter == filter;
-                          return ChoiceChip(
-                            label: Text(
-                              filter,
-                              style: TextStyle(
-                                color:
-                                    isSelected
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.primary,
-                                fontWeight:
-                                    isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.w600,
-                              ),
-                            ),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              if (selected) {
-                                setState(() => _statusFilter = filter);
-                                setModalState(() => _statusFilter = filter);
-                              }
-                            },
-                            selectedColor:
-                                context.appColors.primary,
-                            backgroundColor: AppColors.neutral200,
-                            side: BorderSide.none,
-
-                            showCheckmark: false,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.md,
-                              vertical: AppSpacing.sm,
-                            ),
-                          );
-                        }).toList(),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildQuickStats(OrmawaProvider provider) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xl,
-          vertical: AppSpacing.md,
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatCard(
-                    icon: Icons.layers_rounded,
-                    title: 'Sesi Kegiatan',
-                    value: provider.agendas.length.toString(),
-                    iconColor: AppColors.warning,
-                    iconBgColor: AppColors.warning.withAlpha(15),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: _buildStatCard(
-                    icon: Icons.people_rounded,
-                    title: 'Total Anggota',
-                    value: provider.members.length.toString(),
-                    iconColor: AppColors.neutral700,
-                    iconBgColor: AppColors.neutral700.withAlpha(15),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatCard(
-                    icon: Icons.check_circle_outline_rounded,
-                    title: 'Hadir / Alpa',
-                    value: '0 / 0',
-                    iconColor: AppColors.success,
-                    iconBgColor: AppColors.success.withAlpha(15),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: _buildStatCard(
-                    icon: Icons.percent_rounded,
-                    title: 'Rasio Kehadiran',
-                    value: '0%',
-                    iconColor: AppColors.info,
-                    iconBgColor: AppColors.info.withAlpha(15),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color iconColor,
-    required Color iconBgColor,
-  }) {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 24),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value,
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: context.appColors.onSurface,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s2),
-                Text(
-                  title,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.outline,
-                    fontSize: 11,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAbsensiCard(
-    String id,
-    String title,
-    String time,
-    String status,
-    Color statusColor,
-  ) {
-    final provider = Provider.of<OrmawaProvider>(context, listen: false);
-    final canEditAttendance = provider.hasPermission('edit_attendance');
-    final canSubmitAttendance = provider.hasPermission('submit_attendance');
-
-    return BkuCard(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    OrmawaAbsensiDetailScreen(title: title, eventId: id),
-          ),
-        );
-      },
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  BkuStatusBadge(
-                    status: status.toUpperCase() == 'SELESAI' ? BkuStatus.info : BkuStatus.success,
-                    customText: status,
-                    showIcon: false,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.xs,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                title,
-                style: AppTextStyles.bodyMd.copyWith(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.access_time_rounded,
-                    size: 14,
-                    color: AppColors.neutral500,
-                  ),
-                  const SizedBox(width: AppSpacing.s6),
-                  Text(
-                    time,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.neutral500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Kehadiran',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral500,
-                            fontSize: 10,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => OrmawaAbsensiDetailScreen(
-                                      title: title,
-                                      eventId: id,
-                                    ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEFF6FF),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFBFDBFE)),
                               ),
-                            );
-                          },
-                          child: Text(
-                            'Lihat Peserta',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: context.appColors.primary,
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircleAvatar(radius: 3, backgroundColor: Color(0xFF2563EB)),
+                                  SizedBox(width: 5),
+                                  Text('Presensi Realtime', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8))),
+                                ],
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: _isRefreshing ? null : _loadData,
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF8FAFC),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _isRefreshing
+                                            ? const SizedBox(width: 11, height: 11, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB)))
+                                            : const Icon(Icons.refresh_rounded, size: 13, color: Color(0xFF2563EB)),
+                                        const SizedBox(width: 4),
+                                        const Text('Refresh', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (provider.hasPermission('submit_attendance')) ...[
+                                  const SizedBox(width: 6),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_) => const CreateAbsensiScreen()),
+                                      ).then((_) => _loadData());
+                                    },
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF2563EB),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.add_rounded, size: 13, color: Colors.white),
+                                          SizedBox(width: 4),
+                                          Text('Tambah Sesi', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Sistem Presensi & Absensi Kegiatan',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.2),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Kelola kehadiran anggota ormawa, pantau rasio partisipasi, dan generate QR Code instan.',
+                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.3),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  if (status.toUpperCase() != 'SELESAI' &&
-                      (canEditAttendance || canSubmitAttendance))
-                    Row(
-                      children: [
-                        if (AuthService().currentRole == UserRole.ormawa &&
-                            canEditAttendance) ...[
-                          OutlinedButton(
-                            onPressed: () {
-                              _showQrScannerDialog(context, id, title);
-                            },
+                  const SizedBox(height: 12),
 
-                            child: Text(
-                              'Tampilkan QR',
-                              style: TextStyle(
-                                color: context.appColors.primary,
-                                fontWeight: FontWeight.bold,
+                  Row(
+                    children: [
+                      _buildKpiCard(
+                        '$totalSessions',
+                        'Total Sesi Kegiatan',
+                        'Semua Sesi',
+                        Icons.calendar_month_rounded,
+                        const Color(0xFF2563EB),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildKpiCard(
+                        _selectedAgenda != null ? '$totalAttendance' : '${provider.members.length}',
+                        _selectedAgenda != null ? 'Peserta Terdaftar' : 'Total Anggota',
+                        _selectedAgenda != null ? 'Sesi Terpilih' : 'Anggota Aktif',
+                        Icons.people_alt_rounded,
+                        const Color(0xFF0284C7),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildKpiCard(
+                        _selectedAgenda != null ? '$attendedCount / $absentCount' : '— / —',
+                        'Hadir / Tidak Hadir',
+                        'Presensi',
+                        Icons.check_circle_rounded,
+                        const Color(0xFF059669),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildKpiCard(
+                        _selectedAgenda != null ? '$attendanceRate%' : '0%',
+                        'Rasio Kehadiran',
+                        'Persentase',
+                        Icons.percent_rounded,
+                        const Color(0xFFD97706),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  if (_selectedAgenda != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1E40AF), Color(0xFF2563EB)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF2563EB).withAlpha(40),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withAlpha(40),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text('SESI AKTIF TERPILIH', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 0.5)),
+                              ),
+                              InkWell(
+                                onTap: () => setState(() => _selectedAgenda = null),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withAlpha(40),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.close_rounded, size: 12, color: Colors.white),
+                                      SizedBox(width: 3),
+                                      Text('Tutup Sesi', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Colors.white)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            _selectedAgenda!.title,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on_outlined, size: 12, color: Colors.white70),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  _selectedAgenda!.location.isNotEmpty ? _selectedAgenda!.location : 'Kampus Utama',
+                                  style: const TextStyle(fontSize: 11, color: Colors.white70),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () => _showDynamicQrModal(context, _selectedAgenda!),
+                                  icon: const Icon(Icons.qr_code_rounded, size: 15),
+                                  label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: const Color(0xFF1E40AF),
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    final selectedId = _selectedAgenda!.id;
+                                    final selectedTitle = _selectedAgenda!.title;
+                                    final ormawaProv = context.read<OrmawaProvider>();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => OrmawaQrScanScreen(
+                                          eventId: selectedId,
+                                          eventTitle: selectedTitle,
+                                        ),
+                                      ),
+                                    ).then((_) {
+                                      ormawaProv.fetchAttendance(selectedId);
+                                    });
+                                  },
+                                  icon: const Icon(Icons.qr_code_scanner_rounded, size: 15),
+                                  label: const Text('Scan QR Peserta', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    side: const BorderSide(color: Colors.white54),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF94A3B8).withAlpha(15),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Rekapitulasi Kehadiran', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                                  Text('$totalAttendance peserta terdaftar pada sesi ini', style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFEFF6FF),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text('$attendedCount Hadir', style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            height: 38,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: TextField(
+                              controller: _searchAttController,
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                              decoration: InputDecoration(
+                                hintText: 'Cari nama atau NIM peserta...',
+                                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                prefixIcon: const Icon(Icons.search_rounded, size: 16, color: Color(0xFF94A3B8)),
+                                suffixIcon: _searchAttQuery.isNotEmpty
+                                    ? IconButton(
+                                        icon: const Icon(Icons.close_rounded, size: 14, color: Color(0xFF94A3B8)),
+                                        onPressed: () => _searchAttController.clear(),
+                                      )
+                                    : null,
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(vertical: 9),
                               ),
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.sm),
+                          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+
+                          _buildAttendanceParticipantList(provider, _selectedAgenda!.id),
                         ],
-                        if (canSubmitAttendance)
-                          BkuButton.primary(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => OrmawaQrScanScreen(
-                                        eventId: id,
-                                        eventTitle: title,
-                                      ),
-                                ),
-                              );
-                            },
-                            text: 'Scan QR',
-                          ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildTabPill('all', 'Semua Sesi', totalSessions),
+                        const SizedBox(width: 6),
+                        _buildTabPill('berlangsung', 'Berlangsung', ongoingCount),
+                        const SizedBox(width: 6),
+                        _buildTabPill('terjadwal', 'Terjadwal', plannedCount),
+                        const SizedBox(width: 6),
+                        _buildTabPill('selesai', 'Selesai', completedCount),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Container(
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF94A3B8).withAlpha(10),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: 'Cari judul kegiatan atau lokasi...',
+                        hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
+                        prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF2563EB)),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF94A3B8)),
+                                onPressed: () => _searchController.clear(),
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 11),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  if (filteredAgendas.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(32),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: const Column(
+                        children: [
+                          Icon(Icons.event_busy_rounded, size: 42, color: Color(0xFFCBD5E1)),
+                          SizedBox(height: 8),
+                          Text('Belum ada sesi kegiatan', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                          SizedBox(height: 4),
+                          Text('Tidak ada agenda yang cocok dengan filter.', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                        ],
+                      ),
+                    )
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: filteredAgendas.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final agenda = filteredAgendas[index];
+                        final isSelected = _selectedAgenda?.id == agenda.id;
+
+                        final statusBg = _getStatusBgColor(agenda.status);
+                        final statusText = _getStatusTextColor(agenda.status);
+                        final statusDot = _getStatusDotColor(agenda.status);
+                        final statusLabel = _getStatusLabel(agenda.status);
+
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                              width: isSelected ? 1.5 : 1.0,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isSelected ? const Color(0xFF2563EB).withAlpha(15) : const Color(0xFF94A3B8).withAlpha(15),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: statusBg,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CircleAvatar(radius: 3, backgroundColor: statusDot),
+                                          const SizedBox(width: 5),
+                                          Text(statusLabel, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusText)),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      '${_formatDate(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} WIB',
+                                      style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  agenda.title,
+                                  style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.3),
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFF64748B)),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        agenda.location.isNotEmpty ? agenda.location : 'Kampus Utama',
+                                        style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(height: 18, color: Color(0xFFF1F5F9)),
+
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        onPressed: () => _selectAgenda(agenda),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: isSelected ? Colors.white : const Color(0xFF2563EB),
+                                          backgroundColor: isSelected ? const Color(0xFF2563EB) : const Color(0xFFEFF6FF),
+                                          side: BorderSide(color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFBFDBFE)),
+                                          padding: const EdgeInsets.symmetric(vertical: 8),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                          minimumSize: Size.zero,
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                        child: Text(
+                                          isSelected ? 'Sesi Aktif' : 'Pilih Sesi',
+                                          style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    InkWell(
+                                      onTap: () => _showDynamicQrModal(context, agenda),
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF8FAFC),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        ),
+                                        child: const Row(
+                                          children: [
+                                            Icon(Icons.qr_code_rounded, size: 14, color: Color(0xFF2563EB)),
+                                            SizedBox(width: 4),
+                                            Text('QR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => OrmawaAbsensiManagementDetailScreen(
+                                              absensiId: agenda.id,
+                                              absensiData: {
+                                                'id': agenda.id,
+                                                'Nama': agenda.title,
+                                                'Lokasi': agenda.location,
+                                                'Tanggal': agenda.date.toIso8601String(),
+                                                'WaktuMulai': DateFormat('HH:mm').format(agenda.date),
+                                                'WaktuSelesai': DateFormat('HH:mm').format(agenda.endDate),
+                                                'Status': agenda.status,
+                                                'Deskripsi': agenda.description,
+                                              },
+                                            ),
+                                          ),
+                                        ).then((_) => _loadData());
+                                      },
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF8FAFC),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        ),
+                                        child: const Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF64748B)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                  const SizedBox(height: AppSpacing.s140),
                 ],
               ),
-            ],
+            ),
           ),
+        ],
+      ),
     );
   }
 
-  void _showQrScannerDialog(
-    BuildContext context,
-    String eventId,
-    String title,
-  ) {
-    final qrData = 'https://siakad.ubk.ac.id/student/presensi?eventId=$eventId';
+  Widget _buildAttendanceParticipantList(OrmawaProvider provider, String eventId) {
+    if (provider.isLoading && provider.attendanceList.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB))),
+      );
+    }
 
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return _QrScannerDialogContent(
-          eventId: eventId,
-          title: title,
-          qrData: qrData,
+    final list = provider.attendanceList;
+    final filtered = list.where((item) {
+      if (_searchAttQuery.isEmpty) return true;
+      final name = (item.mahasiswaName ?? '').toLowerCase();
+      final nim = (item.nim ?? '').toLowerCase();
+      return name.contains(_searchAttQuery) || nim.contains(_searchAttQuery);
+    }).toList();
+
+    if (filtered.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: Text('Belum ada data presensi peserta pada sesi ini.', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: filtered.length,
+      separatorBuilder: (_, __) => const Divider(height: 12, color: Color(0xFFF1F5F9)),
+      itemBuilder: (context, idx) {
+        final item = filtered[idx];
+        final isHadir = item.status.toLowerCase() == 'hadir';
+        final initial = (item.mahasiswaName != null && item.mahasiswaName!.isNotEmpty)
+            ? item.mahasiswaName!.substring(0, 1).toUpperCase()
+            : 'M';
+
+        return Row(
+          children: [
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: isHadir ? const Color(0xFFD1FAE5) : const Color(0xFFEFF6FF),
+              child: Text(
+                initial,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: isHadir ? const Color(0xFF047857) : const Color(0xFF1D4ED8),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.mahasiswaName ?? 'Mahasiswa #${item.mahasiswaId}',
+                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    'NIM: ${item.nim ?? item.mahasiswaId}',
+                    style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontFamily: 'monospace'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: isHadir ? const Color(0xFFD1FAE5) : const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: isHadir ? const Color(0xFFA7F3D0) : const Color(0xFFE2E8F0)),
+              ),
+              child: Text(
+                isHadir ? 'Hadir' : 'Belum Hadir',
+                style: TextStyle(
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.bold,
+                  color: isHadir ? const Color(0xFF047857) : const Color(0xFF64748B),
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+
+            InkWell(
+              onTap: () async {
+                final targetStatus = isHadir ? 'tidak_hadir' : 'hadir';
+                try {
+                  await provider.submitAttendance(eventId, item.mahasiswaId, targetStatus);
+                } catch (e) {
+                  if (context.mounted) {
+                    final msg = ErrorHandler.getMessage(e);
+                    AppSnackbar.showError(context, 'Gagal mencatat presensi: $msg');
+                  }
+                }
+              },
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: isHadir ? const Color(0xFFFFE4E6) : const Color(0xFFD1FAE5),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: isHadir ? const Color(0xFFFECDD3) : const Color(0xFFA7F3D0)),
+                ),
+                child: Icon(
+                  isHadir ? Icons.close_rounded : Icons.check_rounded,
+                  size: 15,
+                  color: isHadir ? const Color(0xFFBE123C) : const Color(0xFF047857),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
+
+  Widget _buildKpiCard(String value, String title, String subtitle, IconData icon, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF94A3B8).withAlpha(15),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(20),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, size: 16, color: color),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(subtitle, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabPill(String tabId, String label, int count) {
+    final isActive = _activeTab == tabId;
+    return InkWell(
+      onTap: () => setState(() => _activeTab = tabId),
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF2563EB) : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: isActive ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.bold,
+                color: isActive ? Colors.white : const Color(0xFF334155),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              decoration: BoxDecoration(
+                color: isActive ? Colors.white.withAlpha(50) : const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                '$count',
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  color: isActive ? Colors.white : const Color(0xFF64748B),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _QrScannerDialogContent extends StatefulWidget {
-  final String eventId;
-  final String title;
-  final String qrData;
+class _DynamicQrDialog extends StatefulWidget {
+  final OrmawaAgenda agenda;
 
-  const _QrScannerDialogContent({
-    required this.eventId,
-    required this.title,
-    required this.qrData,
-  });
+  const _DynamicQrDialog({required this.agenda});
 
   @override
-  State<_QrScannerDialogContent> createState() =>
-      _QrScannerDialogContentState();
+  State<_DynamicQrDialog> createState() => _DynamicQrDialogState();
 }
 
-class _QrScannerDialogContentState extends State<_QrScannerDialogContent> {
+class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerProviderStateMixin {
+  int _countdown = 45;
   Timer? _timer;
+  late AnimationController _laserController;
+  String _qrPayload = '';
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
-    });
-    // Poll attendance list every 3 seconds to keep UI synced in real-time
-    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (mounted) {
-        context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
-      }
+    _laserController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    )..repeat(reverse: true);
+
+    _generatePayload();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      setState(() {
+        if (_countdown <= 1) {
+          _countdown = 45;
+          _generatePayload();
+        } else {
+          _countdown--;
+        }
+      });
     });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _laserController.dispose();
     super.dispose();
+  }
+
+  void _generatePayload() {
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    final token = (nowMs ~/ 1000).toString();
+    _qrPayload = 'https://stag.bkustudenthub.com/student/presensi?eventId=${widget.agenda.id}&token=$token&t=$nowMs';
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      elevation: 0,
       backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: context.appColors.onSurface.withAlpha(20),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
+              color: Colors.black.withAlpha(30),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: AppRadius.radiusXl,
-          child: Stack(
-            children: [
-              Positioned(
-                top: -50,
-                right: -50,
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.neutral500.withAlpha(10),
-                  ),
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(14),
               ),
-              Positioned(
-                bottom: -80,
-                left: -80,
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.neutral500.withAlpha(10),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl,
-                  vertical: AppSpacing.xxl,
-                ),
-                child: Consumer<OrmawaProvider>(
-                  builder: (context, provider, child) {
-                    final list = provider.attendanceList;
-                    final attendedCount =
-                        list.where((e) => e.status == 'hadir').length;
+              child: const Icon(Icons.qr_code_scanner_rounded, size: 28, color: Color(0xFF2563EB)),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Pemindaian QR Presensi Kegiatan',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              widget.agenda.title,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 14),
 
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral100,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.qr_code_scanner_rounded,
-                            color: AppColors.neutral800,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s20),
-                        Text(
-                          'PEMINDAI QR PRESENSI',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral600,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 11,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.s10),
-                        Text(
-                          widget.title,
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontSize: 20,
-                            color: context.appColors.primary,
-                            fontWeight: FontWeight.w900,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Arahkan kamera mahasiswa ke kode QR di bawah ini untuk melakukan presensi secara mandiri.',
-                          style: AppTextStyles.bodySm.copyWith(
-                            color: AppColors.neutral600,
-                            height: 1.4,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.s20),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.success.withAlpha(15),
-                            borderRadius: AppRadius.radiusMd,
-                            border: Border.all(
-                              color: AppColors.success.withAlpha(30),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.people_alt_rounded,
-                                color: AppColors.success,
-                                size: 16,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                '$attendedCount Mahasiswa Hadir',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: AppColors.onSuccessContainer,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s20),
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          decoration: BoxDecoration(
-                            color: context.appColors.surface,
-                            borderRadius: AppRadius.radiusXl,
-                            border: Border.all(
-                              color: AppColors.neutral200,
-                              width: 2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: context.appColors.primary.withAlpha(10),
-                                blurRadius: 25,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: QrImageView(
-                            data: widget.qrData,
-                            version: QrVersions.auto,
-                            size: 180.0,
-                            eyeStyle: QrEyeStyle(
-                              eyeShape: QrEyeShape.square,
-                              color: context.appColors.primary,
-                            ),
-                            dataModuleStyle: QrDataModuleStyle(
-                              dataModuleShape: QrDataModuleShape.square,
-                              color: context.appColors.primary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s28),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: BkuButton.primary(
-                            onPressed: () => context.pop(),
-                            text: 'TUTUP',
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class OrmawaAbsensiDetailScreen extends StatefulWidget {
-  final String title;
-  final String eventId;
-  const OrmawaAbsensiDetailScreen({
-    super.key,
-    required this.title,
-    required this.eventId,
-  });
-
-  @override
-  State<OrmawaAbsensiDetailScreen> createState() =>
-      _OrmawaAbsensiDetailScreenState();
-}
-
-class _OrmawaAbsensiDetailScreenState extends State<OrmawaAbsensiDetailScreen> {
-  bool _isSubmitting = false;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
-    });
-    // Start periodic polling for real-time check-in updates
-    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (mounted) {
-        context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _recordAttendance(String mahasiswaId, String status) async {
-    if (_isSubmitting) return;
-    setState(() => _isSubmitting = true);
-    try {
-      await context.read<OrmawaProvider>().submitAttendance(
-        widget.eventId,
-        mahasiswaId,
-        status,
-      );
-      if (mounted) {
-        AppSnackbar.showSuccess(
-          context,
-          status == 'hadir'
-              ? 'Anda sudah berhasil mencatat presensi!'
-              : 'Ketidakhadiran berhasil dicatat!',
-        );
-        context.read<OrmawaProvider>().fetchAttendance(widget.eventId);
-      }
-    } catch (e) {
-      if (mounted) {
-        final msg = ErrorHandler.getMessage(e);
-        if (msg.toLowerCase().contains('sudah') || msg.toLowerCase().contains('already') || msg.toLowerCase().contains('tercatat')) {
-          AppSnackbar.showSuccess(context, 'Anda sudah berhasil mencatat presensi!');
-        } else {
-          AppSnackbar.showError(context, 'Gagal mencatat kehadiran: $msg');
-        }
-      }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: Consumer<OrmawaProvider>(
-        builder: (context, provider, child) {
-          final list = provider.attendanceList;
-
-          final attendedCount = list.where((e) => e.status == 'hadir').length;
-          final absentCount =
-              list.where((e) => e.status == 'tidak_hadir').length;
-
-          return CustomScrollView(
-            slivers: [
-              BkuAppBar(
-                title: 'Konfirmasi Kehadiran',
-                variant: AppBarVariant.ormawa,
-                showBackButton: true,
-                isExpandable: false,
-                showNotification: false,
-                actions: [
-                  IconButton(
-                    onPressed: () => provider.fetchAttendance(widget.eventId),
-                    icon: Icon(
-                      Icons.refresh_rounded,
-                      color: context.appColors.onPrimary,
-                    ),
+            Container(
+              width: 220,
+              height: 220,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE2E8F0), width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF2563EB).withAlpha(20),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
-
-              if (provider.isLoading && list.isEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.xl,
-                    ),
-                    child: Column(
-                      children: const [
-                        BkuShimmer(
-                          width: double.infinity,
-                          height: 140,
-                          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-                        ),
-                        SizedBox(height: AppSpacing.s20),
-                        BkuShimmerList(itemCount: 4, itemHeight: 90),
-                      ],
+              child: Stack(
+                children: [
+                  Center(
+                    child: QrImageView(
+                      data: _qrPayload,
+                      version: QrVersions.auto,
+                      size: 190.0,
+                      eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Color(0xFF1E293B)),
+                      dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Color(0xFF1E293B)),
                     ),
                   ),
-                )
-              else ...[
-                // Beautiful Header Card
-                SliverToBoxAdapter(
-                  child: BkuCard(
-                    margin: const EdgeInsets.fromLTRB(
-                      AppSpacing.s20,
-                      AppSpacing.s20,
-                      AppSpacing.s20,
-                      AppSpacing.s10,
-                    ),
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: AppTextStyles.titleMd.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: context.appColors.primary,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s6),
-                        Text(
-                          'Cek lis secara manual untuk memperbarui status kehadiran mahasiswa.',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral600,
-                            height: 1.3,
-                          ),
-                        ),
-                        if (list.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.s18),
-                          const Divider(color: AppColors.neutral200, height: 1),
-                          const SizedBox(height: AppSpacing.s14),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: AppSpacing.md,
-                                    horizontal: AppSpacing.md,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.successContainer,
-                                    borderRadius: AppRadius.radiusMd,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.check_circle_rounded,
-                                        color: AppColors.success,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Text(
-                                        '$attendedCount Hadir',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: AppColors.onSuccessContainer,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: AppSpacing.md,
-                                    horizontal: AppSpacing.md,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.dangerContainer,
-                                    borderRadius: AppRadius.radiusMd,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.cancel_rounded,
-                                        color: AppColors.error,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Text(
-                                        '$absentCount Alpa',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: AppColors.onDangerContainer,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                  AnimatedBuilder(
+                    animation: _laserController,
+                    builder: (context, child) {
+                      return Positioned(
+                        top: 10 + (_laserController.value * 190),
+                        left: 10,
+                        right: 10,
+                        child: Container(
+                          height: 2,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Colors.transparent, Color(0xFF2563EB), Color(0xFF38BDF8), Color(0xFF2563EB), Colors.transparent],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF2563EB).withAlpha(160),
+                                blurRadius: 6,
+                                spreadRadius: 1,
                               ),
                             ],
                           ),
-                        ],
-                      ],
-                    ),
+                        ),
+                      );
+                    },
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF2563EB)),
+                    SizedBox(width: 4),
+                    Text('Token Otomatis Diperbarui:', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                  ],
                 ),
-
-                if (list.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_off_rounded,
-                            size: 64,
-                            color: AppColors.neutral300,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          Text(
-                            'Belum ada data kehadiran',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: AppColors.neutral500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.s20,
-                      AppSpacing.s10,
-                      AppSpacing.s20,
-                      AppSpacing.s20,
-                    ),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final item = list[index];
-                        final isAttended = item.status == 'hadir';
-                        final isAbsent = item.status == 'tidak_hadir';
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: Container(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color: context.appColors.surface,
-                              borderRadius: AppRadius.radiusXl,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: context.appColors.onSurface.withAlpha(3),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                              border: Border.all(
-                                color:
-                                    isAttended
-                                        ? AppColors.success.withAlpha(80)
-                                        : (isAbsent
-                                            ? AppColors.error.withAlpha(80)
-                                            : AppColors.neutral200),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                // Left status line
-                                Container(
-                                  width: 4,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isAttended
-                                            ? AppColors.success
-                                            : (isAbsent
-                                                ? AppColors.error
-                                                : AppColors.neutral300),
-                                    borderRadius: AppRadius.radiusXs,
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor:
-                                      isAttended
-                                          ? AppColors.success.withAlpha(30)
-                                          : (isAbsent
-                                              ? AppColors.error.withAlpha(30)
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withAlpha(10)),
-                                  child: Text(
-                                    item.mahasiswaName?.isNotEmpty == true
-                                        ? item.mahasiswaName!
-                                            .substring(0, 1)
-                                            
-                                        : '?',
-                                    style: TextStyle(
-                                      color:
-                                          isAttended
-                                              ? AppColors.success
-                                              : (isAbsent
-                                                  ? AppColors.error
-                                                  : Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.s14),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.mahasiswaName ??
-                                            'Mahasiswa #${item.mahasiswaId}',
-                                        style: AppTextStyles.bodyMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.s2),
-                                      Text(
-                                        'NIM. ${item.nim ?? item.mahasiswaId}',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: AppColors.neutral600,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.sm),
-                                () {
-                                  final canEditAttendance = provider
-                                      .hasPermission('edit_attendance');
-                                  if (canEditAttendance) {
-                                    return Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        InkWell(
-                                          onTap:
-                                              () => _recordAttendance(
-                                                item.mahasiswaId,
-                                                'hadir',
-                                              ),
-                                          borderRadius: AppRadius.radiusMd,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(
-                                              AppSpacing.md,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  isAttended
-                                                      ? AppColors.success
-                                                      : Colors.transparent,
-                                              borderRadius: AppRadius.radiusMd,
-                                              border: Border.all(
-                                                color:
-                                                    isAttended
-                                                        ? AppColors.success
-                                                        : context.appColors.outlineVariant,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            child: Icon(
-                                              Icons.check_rounded,
-                                              color:
-                                                  isAttended
-                                                      ? context.appColors.onPrimary
-                                                      : AppColors.neutral600,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: AppSpacing.sm),
-                                        InkWell(
-                                          onTap:
-                                              () => _recordAttendance(
-                                                item.mahasiswaId,
-                                                'tidak_hadir',
-                                              ),
-                                          borderRadius: AppRadius.radiusMd,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(
-                                              AppSpacing.md,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  isAbsent
-                                                      ? AppColors.error
-                                                      : Colors.transparent,
-                                              borderRadius: AppRadius.radiusMd,
-                                              border: Border.all(
-                                                color:
-                                                    isAbsent
-                                                        ? AppColors.error
-                                                        : context.appColors.outlineVariant,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            child: Icon(
-                                              Icons.close_rounded,
-                                              color:
-                                                  isAbsent
-                                                      ? context.appColors.onPrimary
-                                                      : AppColors.neutral600,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return BkuStatusBadge(
-                                      status: isAttended ? BkuStatus.success : (isAbsent ? BkuStatus.error : BkuStatus.inactive),
-                                      customText: isAttended ? 'HADIR' : (isAbsent ? 'ALPA' : 'BELUM ABSEN'),
-                                      showIcon: false,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: AppSpacing.md,
-                                        vertical: 6,
-                                      ),
-                                    );
-                                  }
-                                }(),
-                              ],
-                            ),
-                          ),
-                        );
-                      }, childCount: list.length),
-                    ),
-                  ),
+                Text('$_countdown s', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF2563EB), fontFamily: 'monospace')),
               ],
-            ],
-          );
-        },
+            ),
+            const SizedBox(height: 6),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: _countdown / 45,
+                backgroundColor: const Color(0xFFF1F5F9),
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
+                minHeight: 4,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'QR Code berganti otomatis setiap 45 detik untuk mencegah kecurangan absensi.',
+              style: TextStyle(fontSize: 9.5, color: Color(0xFF94A3B8)),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 14),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFF1F5F9),
+                  foregroundColor: const Color(0xFF334155),
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text('Tutup Panel QR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
