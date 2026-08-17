@@ -110,21 +110,6 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     }
   }
 
-  Color _getStatusDotColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'berlangsung':
-        return const Color(0xFFF59E0B);
-      case 'selesai':
-      case 'terlaksana':
-        return const Color(0xFF10B981);
-      case 'dibatalkan':
-      case 'batal':
-        return const Color(0xFFF43F5E);
-      default:
-        return const Color(0xFF3B82F6);
-    }
-  }
-
   String _getStatusLabel(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
@@ -921,7 +906,6 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     final statusLabel = _getStatusLabel(agenda.status);
     final statusBg = _getStatusBgColor(agenda.status);
     final statusColor = _getStatusTextColor(agenda.status);
-    final statusDot = _getStatusDotColor(agenda.status);
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -959,20 +943,9 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   color: statusBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 5,
-                      height: 5,
-                      decoration: BoxDecoration(color: statusDot, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      statusLabel,
-                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusColor),
-                    ),
-                  ],
+                child: Text(
+                  statusLabel,
+                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusColor),
                 ),
               ),
             ],
@@ -992,9 +965,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 ),
               ),
               if (agenda.pjKegiatan != null && agenda.pjKegiatan!.isNotEmpty) ...[
-                const SizedBox(width: 6),
-                const Text('•', style: TextStyle(color: Color(0xFFCBD5E1))),
-                const SizedBox(width: 6),
+                const SizedBox(width: 8),
                 const Icon(Icons.person_outline_rounded, size: 12, color: Color(0xFF94A3B8)),
                 const SizedBox(width: 3),
                 Expanded(
