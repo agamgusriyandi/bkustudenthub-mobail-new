@@ -53,42 +53,51 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
   }
 
   Future<void> _loadAllData([bool isRefresh = false]) async {
+    if (!mounted) return;
     if (isRefresh) {
       setState(() => _isRefreshing = true);
     } else {
       setState(() => _isLoading = true);
     }
 
-    final provider = context.read<OrmawaProvider>();
-    await provider.getRecruitmentApplicants();
+    try {
+      final provider = context.read<OrmawaProvider>();
+      await provider.getRecruitmentApplicants();
 
-    final settings = provider.recruitmentSettings;
-    if (settings.isNotEmpty && mounted) {
-      setState(() {
-        _openRecruitment = settings['open_recruitment'] ?? settings['isActive'] ?? false;
-        _requirementsController.text = settings['recruitment_requirements'] ?? settings['requirements'] ?? '';
-        final ipkVal = settings['min_ipk'] ?? settings['minIpk'];
-        _minIpkController.text = ipkVal != null ? ipkVal.toString() : '';
+      final settings = provider.recruitmentSettings;
+      if (settings.isNotEmpty && mounted) {
+        setState(() {
+          _openRecruitment = settings['open_recruitment'] ?? settings['isActive'] ?? false;
+          _requirementsController.text = settings['recruitment_requirements'] ?? settings['requirements'] ?? '';
+          final ipkVal = settings['min_ipk'] ?? settings['minIpk'];
+          _minIpkController.text = ipkVal != null ? ipkVal.toString() : '';
 
-        final startStr = settings['recruitment_start'] ?? settings['startDate'];
-        if (startStr != null) {
-          _recruitmentStart = DateTime.tryParse(startStr.toString());
-        }
+          final startStr = settings['recruitment_start'] ?? settings['startDate'];
+          if (startStr != null) {
+            _recruitmentStart = DateTime.tryParse(startStr.toString());
+          }
 
-        final endStr = settings['recruitment_end'] ?? settings['endDate'];
-        if (endStr != null) {
-          _recruitmentEnd = DateTime.tryParse(endStr.toString());
-        }
-      });
-    }
+          final endStr = settings['recruitment_end'] ?? settings['endDate'];
+          if (endStr != null) {
+            _recruitmentEnd = DateTime.tryParse(endStr.toString());
+          }
+        });
+      }
 
-    final fields = provider.recruitmentFormFields;
-    if (mounted) {
-      setState(() {
-        _formFields = fields.map((f) => Map<String, dynamic>.from(f)).toList();
-        _isLoading = false;
-        _isRefreshing = false;
-      });
+      final fields = provider.recruitmentFormFields;
+      if (mounted) {
+        setState(() {
+          _formFields = fields.map((f) => Map<String, dynamic>.from(f)).toList();
+        });
+      }
+    } catch (_) {
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isRefreshing = false;
+        });
+      }
     }
   }
 

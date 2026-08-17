@@ -49,14 +49,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
   }
 
   Future<void> _loadData([bool isManual = false]) async {
+    if (!mounted) return;
     if (isManual) setState(() => _isRefreshing = true);
-    final ormawaProvider = context.read<OrmawaProvider>();
-    await ormawaProvider.refreshData();
-    final ormawaId = ormawaProvider.ormawaId;
-    if (ormawaId != null && mounted) {
-      await context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
+    try {
+      final ormawaProvider = context.read<OrmawaProvider>();
+      await ormawaProvider.refreshData();
+      final ormawaId = ormawaProvider.ormawaId;
+      if (ormawaId != null && mounted) {
+        await context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
+      }
+    } catch (_) {
+    } finally {
+      if (mounted) setState(() => _isRefreshing = false);
     }
-    if (mounted) setState(() => _isRefreshing = false);
   }
 
   String _formatRp(double? val) {
