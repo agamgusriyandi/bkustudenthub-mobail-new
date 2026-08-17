@@ -111,6 +111,13 @@ class _OrmawaAbsensiManagementDetailScreenState
     }
   }
 
+  String _formatSessionTime(String mulai, String selesai) {
+    if ((mulai == '00:00' || mulai == '-') && (selesai == '00:00' || selesai == '-' || selesai == '02:00')) {
+      return 'Sepanjang Hari (Fleksibel)';
+    }
+    return '$mulai - $selesai WIB';
+  }
+
   void _confirmDelete(BuildContext context) {
     BkuDialog.show(
       context: context,
@@ -272,7 +279,7 @@ class _OrmawaAbsensiManagementDetailScreenState
                       const SizedBox(width: 8),
                       _buildMetricCard(
                         'Waktu Sesi',
-                        '$waktuMulai - $waktuSelesai WIB',
+                        _formatSessionTime(waktuMulai, waktuSelesai),
                         Icons.schedule_rounded,
                         primaryColor,
                       ),
