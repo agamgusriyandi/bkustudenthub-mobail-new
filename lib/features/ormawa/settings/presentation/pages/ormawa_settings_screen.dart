@@ -297,17 +297,14 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF0F172A).withAlpha(40),
+                                color: const Color(0xFF94A3B8).withAlpha(20),
                                 blurRadius: 16,
-                                offset: const Offset(0, 6),
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
@@ -323,12 +320,12 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                       children: [
                                         Text(
                                           '${_getGreeting()},',
-                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8)),
+                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
                                           _singkatanController.text.isNotEmpty ? _singkatanController.text : (_namaController.text.isNotEmpty ? _namaController.text : 'ORMAWA'),
-                                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
+                                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -338,18 +335,18 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF2563EB).withAlpha(40),
+                                      color: const Color(0xFFEFF6FF),
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: const Color(0xFF3B82F6).withAlpha(80)),
+                                      border: Border.all(color: const Color(0xFFBFDBFE)),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(Icons.verified_rounded, size: 14, color: Color(0xFF60A5FA)),
+                                        const Icon(Icons.verified_rounded, size: 14, color: Color(0xFF2563EB)),
                                         const SizedBox(width: 5),
                                         Text(
                                           'Kelengkapan: $completeness%',
-                                          style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF93C5FD)),
+                                          style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8)),
                                         ),
                                       ],
                                     ),
@@ -359,7 +356,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               const SizedBox(height: 10),
                               const Text(
                                 'Pusat konfigurasi kelembagaan, branding identitas organisasi, kontak informasi publik, dan rekening kegiatan resmi.',
-                                style: TextStyle(fontSize: 10.5, color: Color(0xFF94A3B8), height: 1.4),
+                                style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B), height: 1.4),
                               ),
                               const SizedBox(height: 14),
                               Row(
@@ -370,8 +367,8 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                       icon: const Icon(Icons.refresh_rounded, size: 14),
                                       label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                       style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        side: const BorderSide(color: Color(0xFF334155)),
+                                        foregroundColor: const Color(0xFF0F172A),
+                                        side: const BorderSide(color: Color(0xFFE2E8F0)),
                                         padding: const EdgeInsets.symmetric(vertical: 10),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                       ),
