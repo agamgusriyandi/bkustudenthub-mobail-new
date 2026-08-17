@@ -1790,6 +1790,13 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF0F172A).withAlpha(6),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1797,58 +1804,97 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                         Row(
                           children: [
                             Container(
-                              width: 24,
-                              height: 24,
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF1F5F9),
+                                color: const Color(0xFFEFF6FF),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Center(
-                                child: Text('${i + 1}', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF334155))),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.help_outline_rounded, size: 12, color: Color(0xFF2563EB)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Pertanyaan ${i + 1}',
+                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                controller: TextEditingController(text: field['label']?.toString() ?? '')..selection = TextSelection.collapsed(offset: (field['label']?.toString() ?? '').length),
-                                onChanged: (val) => field['label'] = val,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                                decoration: const InputDecoration(
-                                  hintText: 'Tulis judul pertanyaan...',
-                                  hintStyle: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                                  isDense: true,
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.zero,
-                                ),
+                            const Spacer(),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8FAFC),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () => _moveFormField(i, -1),
-                              icon: const Icon(Icons.arrow_upward_rounded, size: 16, color: Color(0xFF64748B)),
-                              constraints: const BoxConstraints(),
-                              padding: const EdgeInsets.all(4),
-                            ),
-                            IconButton(
-                              onPressed: () => _moveFormField(i, 1),
-                              icon: const Icon(Icons.arrow_downward_rounded, size: 16, color: Color(0xFF64748B)),
-                              constraints: const BoxConstraints(),
-                              padding: const EdgeInsets.all(4),
-                            ),
-                            IconButton(
-                              onPressed: () => _removeFormField(i),
-                              icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFE11D48)),
-                              constraints: const BoxConstraints(),
-                              padding: const EdgeInsets.all(4),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: i > 0 ? () => _moveFormField(i, -1) : null,
+                                    icon: const Icon(Icons.arrow_upward_rounded, size: 14),
+                                    color: i > 0 ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                    padding: EdgeInsets.zero,
+                                    splashRadius: 14,
+                                  ),
+                                  Container(width: 1, height: 16, color: const Color(0xFFE2E8F0)),
+                                  IconButton(
+                                    onPressed: i < _formFields.length - 1 ? () => _moveFormField(i, 1) : null,
+                                    icon: const Icon(Icons.arrow_downward_rounded, size: 14),
+                                    color: i < _formFields.length - 1 ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                    padding: EdgeInsets.zero,
+                                    splashRadius: 14,
+                                  ),
+                                  Container(width: 1, height: 16, color: const Color(0xFFE2E8F0)),
+                                  IconButton(
+                                    onPressed: () => _removeFormField(i),
+                                    icon: const Icon(Icons.delete_outline_rounded, size: 14, color: Color(0xFFE11D48)),
+                                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                                    padding: EdgeInsets.zero,
+                                    splashRadius: 14,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        const Divider(height: 16, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 10),
+
+                        TextField(
+                          controller: TextEditingController(text: field['label']?.toString() ?? '')..selection = TextSelection.collapsed(offset: (field['label']?.toString() ?? '').length),
+                          onChanged: (val) => field['label'] = val,
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          decoration: InputDecoration(
+                            hintText: 'Tulis judul pertanyaan kustom...',
+                            hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                            filled: true,
+                            fillColor: const Color(0xFFF8FAFC),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
 
                         Row(
                           children: [
                             Expanded(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFF8FAFC),
                                   borderRadius: BorderRadius.circular(10),
@@ -1858,6 +1904,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                   child: DropdownButton<String>(
                                     value: type,
                                     isExpanded: true,
+                                    icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: Color(0xFF64748B)),
                                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
                                     items: const [
                                       DropdownMenuItem(value: 'text', child: Text('Teks Pendek')),
@@ -1873,34 +1920,64 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: field['required'] == true,
-                                  onChanged: (val) => setState(() => field['required'] = val ?? false),
-                                  activeColor: const Color(0xFF2563EB),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            InkWell(
+                              onTap: () => setState(() => field['required'] = !(field['required'] == true)),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: field['required'] == true ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: field['required'] == true ? const Color(0xFF93C5FD) : const Color(0xFFE2E8F0),
+                                  ),
                                 ),
-                                const Text('Wajib', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                              ],
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: Checkbox(
+                                        value: field['required'] == true,
+                                        onChanged: (val) => setState(() => field['required'] = val ?? false),
+                                        activeColor: const Color(0xFF2563EB),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Wajib Diisi',
+                                      style: TextStyle(
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: field['required'] == true ? const Color(0xFF1D4ED8) : const Color(0xFF475569),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
 
                         if (type == 'select') ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 10),
                           TextField(
                             controller: TextEditingController(text: field['options']?.toString() ?? '')..selection = TextSelection.collapsed(offset: (field['options']?.toString() ?? '').length),
                             onChanged: (val) => field['options'] = val,
                             style: const TextStyle(fontSize: 11, color: Color(0xFF0F172A)),
                             decoration: InputDecoration(
-                              hintText: 'Opsi (pisahkan koma): Divisi Acara, Humas, ...',
+                              hintText: 'Opsi pilihan (pisahkan koma): Divisi Acara, Humas, Logistik...',
                               hintStyle: const TextStyle(fontSize: 10.5, color: Color(0xFF94A3B8)),
                               filled: true,
                               fillColor: const Color(0xFFF8FAFC),
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
                               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5)),
                             ),
                           ),
                         ],
@@ -2004,11 +2081,14 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                       ],
                     ),
                   ),
-                  Switch(
+                  Switch.adaptive(
                     value: _openRecruitment,
                     onChanged: (val) => setState(() => _openRecruitment = val),
                     activeThumbColor: Colors.white,
                     activeTrackColor: const Color(0xFF059669),
+                    inactiveThumbColor: Colors.white,
+                    inactiveTrackColor: const Color(0xFFCBD5E1),
+                    trackOutlineColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
                   ),
                 ],
               ),
