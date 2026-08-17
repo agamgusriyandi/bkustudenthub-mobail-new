@@ -160,22 +160,18 @@ class _OrmawaAbsensiManagementDetailScreenState
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final primaryColor = themeProvider.primary;
-
-    final data = widget.absensiData;
-    final nama = (data['Nama'] ?? data['nama'] ?? 'Detail Sesi').toString();
-    final deskripsi = (data['Deskripsi'] ?? data['deskripsi'] ?? '').toString();
-    final lokasi = (data['Lokasi'] ?? data['lokasi'] ?? 'Kampus Utama').toString();
-    final status = (data['Status'] ?? data['status'] ?? 'terjadwal').toString();
-    final tanggalStr = (data['Tanggal'] ?? data['tanggal'] ?? '').toString();
-    final waktuMulai = (data['WaktuMulai'] ?? data['waktu_mulai'] ?? '-').toString();
-    final waktuSelesai = (data['WaktuSelesai'] ?? data['waktu_selesai'] ?? '-').toString();
-
-    DateTime? date;
-    try {
-      date = DateTime.parse(tanggalStr);
-    } catch (_) {}
-
     final provider = context.watch<OrmawaProvider>();
+
+    final matchingAgenda = provider.agendas.where((a) => a.id.toString() == widget.absensiId.toString()).firstOrNull;
+
+    final nama = matchingAgenda?.title ?? (widget.absensiData['Nama'] ?? widget.absensiData['nama'] ?? widget.absensiData['Judul'] ?? 'Detail Sesi').toString();
+    final deskripsi = matchingAgenda?.description ?? (widget.absensiData['Deskripsi'] ?? widget.absensiData['deskripsi'] ?? '').toString();
+    final lokasi = (matchingAgenda != null && matchingAgenda.location.isNotEmpty) ? matchingAgenda.location : (widget.absensiData['Lokasi'] ?? widget.absensiData['lokasi'] ?? 'Kampus Utama').toString();
+    final status = matchingAgenda?.status ?? (widget.absensiData['Status'] ?? widget.absensiData['status'] ?? 'terjadwal').toString();
+    final date = matchingAgenda?.date ?? (widget.absensiData['Tanggal'] != null ? DateTime.tryParse(widget.absensiData['Tanggal'].toString()) : null);
+    final waktuMulai = matchingAgenda != null ? DateFormat('HH:mm').format(matchingAgenda.date) : (widget.absensiData['WaktuMulai'] ?? widget.absensiData['waktu_mulai'] ?? '-').toString();
+    final waktuSelesai = matchingAgenda != null ? DateFormat('HH:mm').format(matchingAgenda.endDate) : (widget.absensiData['WaktuSelesai'] ?? widget.absensiData['waktu_selesai'] ?? '-').toString();
+
     final attendanceList = provider.attendanceList;
     final attendedCount = attendanceList.where((a) => a.status.toLowerCase() == 'hadir').length;
     final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa').length;
@@ -272,7 +268,7 @@ class _OrmawaAbsensiManagementDetailScreenState
                     children: [
                       _buildMetricCard(
                         'Tanggal Pelaksanaan',
-                        date != null ? DateFormat('dd MMMM yyyy', 'id').format(date) : tanggalStr,
+                        date != null ? DateFormat('dd MMMM yyyy', 'id').format(date) : '—',
                         Icons.calendar_today_rounded,
                         primaryColor,
                       ),
@@ -551,13 +547,42 @@ class _OrmawaAbsensiManagementDetailScreenState
                       const SizedBox(width: 8),
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            final currentData = {
+                              'id': widget.absensiId,
+                              'Nama': nama,
+                              'Judul': nama,
+                              'Deskripsi': deskripsi,
+                              'Lokasi': lokasi,
+                              'Status': status,
+                              'Tanggal': (date ?? DateTime.now()).toIso8601String(),
+                              'TanggalMulai': (matchingAgenda?.date ?? date ?? DateTime.now()).toIso8601String(),
+                              'TanggalSelesai': (matchingAgenda?.endDate ?? DateTime.now()).toIso8601String(),
+                              'WaktuMulai': waktuMulai,
+                              'WaktuSelesai': waktuSelesai,
+                              'landasan_kegiatan': matchingAgenda?.landasanKegiatan ?? widget.absensiData['landasan_kegiatan'],
+                              'bentuk_kegiatan': matchingAgenda?.bentukKegiatan ?? widget.absensiData['bentuk_kegiatan'],
+                              'mitra': matchingAgenda?.mitra ?? widget.absensiData['mitra'],
+                              'latar_belakang': matchingAgenda?.latarBelakang ?? widget.absensiData['latar_belakang'],
+                              'tujuan_kegiatan': matchingAgenda?.tujuanKegiatan ?? widget.absensiData['tujuan_kegiatan'],
+                              'jadwal_pelaksanaan': matchingAgenda?.jadwalPelaksanaan ?? widget.absensiData['jadwal_pelaksanaan'],
+                              'sasaran_kegiatan': matchingAgenda?.sasaranKegiatan ?? widget.absensiData['sasaran_kegiatan'],
+                              'indikator_keberhasilan': matchingAgenda?.indikatorKeberhasilan ?? widget.absensiData['indikator_keberhasilan'],
+                              'sumber_dana': matchingAgenda?.sumberDana ?? widget.absensiData['sumber_dana'],
+                              'estimasi_dana': matchingAgenda?.estimasiDana ?? widget.absensiData['estimasi_dana'],
+                              'pj_kegiatan': matchingAgenda?.pjKegiatan ?? widget.absensiData['pj_kegiatan'],
+                            };
+                            final ormProvider = context.read<OrmawaProvider>();
+                            final res = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => EditAbsensiScreen(absensiId: widget.absensiId, absensiData: data),
+                                builder: (_) => EditAbsensiScreen(absensiId: widget.absensiId, absensiData: currentData),
                               ),
-                            ).then((_) => provider.fetchAttendance(widget.absensiId));
+                            );
+                            if (res == true && mounted) {
+                              await ormProvider.refreshData();
+                              await ormProvider.fetchAttendance(widget.absensiId);
+                            }
                           },
                           icon: const Icon(Icons.edit_rounded, size: 16),
                           label: const Text('Edit Sesi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),

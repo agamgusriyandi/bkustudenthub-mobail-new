@@ -139,7 +139,7 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
       };
 
       final provider = context.read<OrmawaProvider>();
-      await provider.updateAbsensiManagement(widget.absensiId, payload);
+      await provider.updateAgenda(widget.absensiId, payload);
       await provider.refreshData();
 
       if (mounted) {
