@@ -386,7 +386,48 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  if (_selectedAgenda != null) ...[
+                  if (_selectedAgenda == null) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF94A3B8).withAlpha(15),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: primaryColor.withAlpha(20),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.qr_code_scanner_rounded, size: 28, color: primaryColor),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Belum Ada Sesi Terpilih',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Pilih salah satu sesi kegiatan dari daftar di bawah untuk membuka QR Code Presensi dan mengelola kehadiran peserta.',
+                            style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                  ] else ...[
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(

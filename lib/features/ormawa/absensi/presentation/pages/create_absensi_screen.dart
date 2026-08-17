@@ -65,18 +65,21 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
         _selectedStartTime.hour,
         _selectedStartTime.minute,
       );
-      final endDt = DateTime(
+      var endDt = DateTime(
         _selectedDate.year,
         _selectedDate.month,
         _selectedDate.day,
         _selectedEndTime.hour,
         _selectedEndTime.minute,
       );
+      if (endDt.isBefore(startDt)) {
+        endDt = startDt.add(const Duration(hours: 2));
+      }
 
       final payload = {
         'Judul': _namaController.text.trim(),
-        'TanggalMulai': startDt.toIso8601String(),
-        'TanggalSelesai': endDt.toIso8601String(),
+        'TanggalMulai': startDt.toUtc().toIso8601String(),
+        'TanggalSelesai': endDt.toUtc().toIso8601String(),
         'Lokasi': _lokasiController.text.trim().isNotEmpty ? _lokasiController.text.trim() : 'Kampus Utama',
         'Status': 'terjadwal',
         'Deskripsi': _deskripsiController.text.trim(),
