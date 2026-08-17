@@ -470,7 +470,7 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
 
   @override
   Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
-    return await dio.put('/ormawa/attendance/$id', data: data);
+    return await dio.put('/ormawa/events/$id', data: data);
   }
 
   @override

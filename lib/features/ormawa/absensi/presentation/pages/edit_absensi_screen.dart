@@ -387,6 +387,29 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                             child: DropdownButton<String>(
                               value: _selectedStatus,
                               isExpanded: true,
+                              icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Color(0xFF64748B)),
+                              selectedItemBuilder: (context) {
+                                return _statusOptions.map((opt) {
+                                  final val = opt['value']!;
+                                  final lbl = opt['label']!;
+                                  final bg = _getStatusBg(val, primaryColor);
+                                  final fg = _getStatusColor(val, primaryColor);
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: bg,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        lbl,
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fg),
+                                      ),
+                                    ),
+                                  );
+                                }).toList();
+                              },
                               items: _statusOptions.map((opt) {
                                 final val = opt['value']!;
                                 final lbl = opt['label']!;
@@ -395,21 +418,16 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                                 return DropdownMenuItem<String>(
                                   value: val,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        lbl,
-                                        style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                                      ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                         decoration: BoxDecoration(
                                           color: bg,
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
                                           lbl,
-                                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg),
+                                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fg),
                                         ),
                                       ),
                                     ],
