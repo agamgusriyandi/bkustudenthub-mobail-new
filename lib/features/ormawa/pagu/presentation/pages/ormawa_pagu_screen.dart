@@ -115,6 +115,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         _buildHeroBanner(context, orgName, setting, canManageFinance, provider),
                         const SizedBox(height: 14),
 
+                        if (provider.allFinancialSettings.length > 1) ...[
+                          _buildOrmawaSelector(context, provider, setting),
+                        ],
+
                         _buildStatsGrid(context, setting, limit, used, pending, remaining, usedPct, pendingPct, remainingPct),
                         const SizedBox(height: 14),
 
@@ -133,6 +137,104 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildOrmawaSelector(
+    BuildContext context,
+    OrmawaProvider provider,
+    OrmawaFinancialSetting? current,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.appColors.primary.withAlpha(50)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 4,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () => _openOrmawaPicker(context, provider),
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: context.appColors.primary.withAlpha(20),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(Icons.swap_horiz_rounded, size: 20, color: context.appColors.primary),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'PILIH ORGANISASI MAHASISWA',
+                    style: TextStyle(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    current?.name ?? 'Pilih ORMAWA',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0F172A),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Ganti',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF475569),
+                    ),
+                  ),
+                  SizedBox(width: 2),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: Color(0xFF64748B)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openOrmawaPicker(BuildContext context, OrmawaProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _OrmawaPickerSheet(provider: provider),
     );
   }
 
@@ -1221,3 +1323,310 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
     );
   }
 }
+
+class _OrmawaPickerSheet extends StatefulWidget {
+  final OrmawaProvider provider;
+
+  const _OrmawaPickerSheet({required this.provider});
+
+  @override
+  State<_OrmawaPickerSheet> createState() => _OrmawaPickerSheetState();
+}
+
+class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchTerm = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final all = widget.provider.allFinancialSettings;
+    final current = widget.provider.financialSetting;
+
+    final filtered = all.where((o) {
+      if (_searchTerm.isEmpty) return true;
+      final q = _searchTerm.toLowerCase();
+      final n = o.name.toLowerCase();
+      final c = o.code.toLowerCase();
+      return n.contains(q) || c.contains(q);
+    }).toList();
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
+      ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 8),
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: const Color(0xFFCBD5E1),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: context.appColors.primary.withAlpha(20),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(Icons.groups_rounded, size: 18, color: context.appColors.primary),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Daftar Organisasi Mahasiswa',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                      Text(
+                        '${filtered.length} / ${all.length} Organisasi',
+                        style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close_rounded, size: 20, color: Color(0xFF64748B)),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (val) => setState(() => _searchTerm = val),
+              style: const TextStyle(fontSize: 12),
+              decoration: InputDecoration(
+                hintText: 'Cari nama atau kode ORMAWA...',
+                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
+                filled: true,
+                fillColor: const Color(0xFFF8FAFC),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: context.appColors.primary),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Flexible(
+            child: filtered.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 36),
+                    child: Center(
+                      child: Text(
+                        'Tidak ada organisasi mahasiswa yang cocok.',
+                        style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                    itemCount: filtered.length,
+                    separatorBuilder: (ctx, i) => const SizedBox(height: 8),
+                    itemBuilder: (ctx, i) {
+                      final item = filtered[i];
+                      final isSelected = current?.ormawaId == item.ormawaId;
+
+                      final limit = item.budgetLimit;
+                      final used = item.usedBudget;
+                      final pending = item.pendingBudget;
+                      final rem = item.remainingBudget;
+
+                      final usedPct = limit > 0 ? (used / limit * 100).clamp(0.0, 100.0) : 0.0;
+                      final pendingPct = limit > 0 ? (pending / limit * 100).clamp(0.0, 100.0) : 0.0;
+                      final remPct = limit > 0 ? (100.0 - usedPct - pendingPct).clamp(0.0, 100.0) : 0.0;
+
+                      return InkWell(
+                        onTap: () {
+                          widget.provider.selectFinancialOrmawa(item);
+                          Navigator.pop(context);
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isSelected ? context.appColors.primary.withAlpha(12) : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isSelected ? context.appColors.primary : const Color(0xFFE2E8F0),
+                              width: isSelected ? 1.5 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? context.appColors.primary : const Color(0xFFE2E8F0),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        item.code.isNotEmpty
+                                            ? item.code.substring(0, item.code.length >= 2 ? 2 : 1).toUpperCase()
+                                            : 'OM',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w900,
+                                          color: isSelected ? Colors.white : const Color(0xFF475569),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: isSelected ? context.appColors.primary : const Color(0xFF0F172A),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          'Kode: ${item.code.isNotEmpty ? item.code : '-'}',
+                                          style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        _formatCurrency(limit),
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                      ),
+                                      const Text('Pagu Tahunan', style: TextStyle(fontSize: 8.5, color: Color(0xFF94A3B8))),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              if (limit > 0) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFE2E8F0),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      if (usedPct > 0)
+                                        Flexible(
+                                          flex: (usedPct * 10).toInt(),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF43F5E),
+                                              borderRadius: BorderRadius.horizontal(
+                                                left: const Radius.circular(3),
+                                                right: (pendingPct == 0 && remPct == 0) ? const Radius.circular(3) : Radius.zero,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      if (pendingPct > 0)
+                                        Flexible(
+                                          flex: (pendingPct * 10).toInt(),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF59E0B),
+                                              borderRadius: (usedPct == 0 && remPct == 0)
+                                                  ? BorderRadius.circular(3)
+                                                  : BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                      if (remPct > 0)
+                                        Flexible(
+                                          flex: (remPct * 10).toInt(),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF10B981),
+                                              borderRadius: BorderRadius.horizontal(
+                                                left: (usedPct == 0 && pendingPct == 0) ? const Radius.circular(3) : Radius.zero,
+                                                right: const Radius.circular(3),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Pakai: ${_formatCurrency(used)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFFE11D48), fontWeight: FontWeight.bold)),
+                                    Text('Review: ${_formatCurrency(pending)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFFD97706), fontWeight: FontWeight.bold)),
+                                    Text('Sisa: ${_formatCurrency(rem)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFF059669), fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatCurrency(double amount) {
+    return NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(amount);
+  }
+}
+

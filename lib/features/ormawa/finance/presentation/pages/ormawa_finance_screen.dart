@@ -15,6 +15,7 @@ import 'create_transaction_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/features/ormawa/pagu/presentation/pages/ormawa_pagu_screen.dart';
 
 class OrmawaFinanceScreen extends StatefulWidget {
   final bool showBackButton;
@@ -98,6 +99,20 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               expandedHeight: 130.0,
               showBackButton: widget.showBackButton,
               isExpandable: false,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.savings_rounded, color: Colors.white),
+                  tooltip: 'Pagu Anggaran',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OrmawaPaguScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
 
             SliverToBoxAdapter(child: _buildSummaryHeader()),
@@ -183,6 +198,14 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                               : 'Hibah: Rp ${_formatNominal(campusMasuk)} | LPJ: Rp ${_formatNominal(campusKeluar)}',
                       accentColor: context.appColors.info,
                       icon: Icons.assured_workload_rounded,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrmawaPaguScreen(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(width: AppSpacing.lg),
                     _buildBalanceCard(
@@ -242,9 +265,11 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     required Color accentColor,
     required IconData icon,
     bool showVisibilityToggle = false,
+    VoidCallback? onTap,
   }) {
     return BkuCard(
       width: 290,
+      onTap: onTap,
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

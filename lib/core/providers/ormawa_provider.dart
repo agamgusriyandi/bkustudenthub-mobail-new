@@ -1067,6 +1067,12 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
+  void selectFinancialOrmawa(OrmawaFinancialSetting setting) {
+    _financialSetting = setting;
+    fetchFinancialAuditLogs(setting.ormawaId.toString());
+    notifyListeners();
+  }
+
   Future<void> fetchFinancialAuditLogs(String targetOrmawaId) async {
     try {
       final logs = await _repository.getFinancialAuditLogs(targetOrmawaId);

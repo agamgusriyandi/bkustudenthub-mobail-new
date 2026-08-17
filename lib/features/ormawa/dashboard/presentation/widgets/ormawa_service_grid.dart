@@ -24,6 +24,7 @@ import 'package:bkuhub_mobile/features/ormawa/notifications/presentation/pages/o
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/ormawa_recruitment_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pagu/presentation/pages/ormawa_pagu_screen.dart';
 
 class OrmawaServiceGrid extends StatelessWidget {
   const OrmawaServiceGrid({super.key});
@@ -150,6 +151,12 @@ class OrmawaServiceGridModal extends StatelessWidget {
           color: AppColors.serviceRose,
           target: OrmawaAspirasiScreen(),
         ),
+      const _ModalServiceIcon(
+        title: 'Pagu',
+        icon: Icons.savings_rounded,
+        color: AppColors.serviceTeal,
+        target: OrmawaPaguScreen(),
+      ),
       const _ModalServiceIcon(
         title: 'Notifikasi',
         icon: Icons.notifications_rounded,
