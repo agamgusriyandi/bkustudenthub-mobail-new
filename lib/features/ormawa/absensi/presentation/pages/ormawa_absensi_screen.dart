@@ -88,8 +88,12 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     });
   }
 
-  String _formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy', 'id').format(date);
+  String _formatDateTime(DateTime date) {
+    final dateStr = DateFormat('dd MMM yyyy', 'id').format(date);
+    if (date.hour == 0 && date.minute == 0) {
+      return dateStr;
+    }
+    return '$dateStr, ${DateFormat('HH:mm').format(date)} WIB';
   }
 
   Color _getStatusBgColor(String status) {
@@ -690,7 +694,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                       child: Text(statusLabel, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusText)),
                                     ),
                                     Text(
-                                      '${_formatDate(agenda.date)}, ${DateFormat('HH:mm').format(agenda.date)} WIB',
+                                      _formatDateTime(agenda.date),
                                       style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
                                     ),
                                   ],
