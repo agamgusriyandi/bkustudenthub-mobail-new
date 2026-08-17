@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -155,7 +154,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.appColors.primary.withAlpha(50)),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x06000000),
@@ -173,10 +172,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: context.appColors.primary.withAlpha(20),
+                color: const Color(0xFFEFF6FF),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.swap_horiz_rounded, size: 20, color: context.appColors.primary),
+              child: const Icon(Icons.swap_horiz_rounded, size: 20, color: Color(0xFF2563EB)),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -296,7 +295,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                       icon: const Icon(Icons.tune_rounded, size: 13),
                       label: const Text('Konfigurasi', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appColors.primary,
+                        backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -318,7 +317,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,11 +326,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
+                  color: const Color(0xFFEFF6FF),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: const Color(0xFFDBEAFE)),
                 ),
-                child: Icon(Icons.account_balance_wallet_rounded, size: 20, color: context.appColors.primary),
+                child: const Icon(Icons.account_balance_wallet_rounded, size: 20, color: Color(0xFF2563EB)),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -343,11 +342,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         children: [
                           TextSpan(
                             text: '${_getGreeting()}, ',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
                           ),
                           TextSpan(
                             text: orgName,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: context.appColors.primary),
+                            style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                           ),
                         ],
                       ),
@@ -390,8 +389,8 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 title: 'Total Pagu Anggaran',
                 value: _formatCurrency(limit),
                 icon: Icons.account_balance_wallet_rounded,
-                iconColor: context.appColors.primary,
-                iconBg: context.appColors.primary.withAlpha(18),
+                iconColor: const Color(0xFF2563EB),
+                iconBg: const Color(0xFFEFF6FF),
                 subtitle: 'Periode Tahun $year',
                 badgeText: isActive ? 'Pagu Aktif' : 'Nonaktif',
                 badgeBg: isActive ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
@@ -623,7 +622,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               ),
               Text(
                 '$totalProcessedPct% Terpakai & Diproses',
-                style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: context.appColors.primary),
+                style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
               ),
             ],
           ),
@@ -686,10 +685,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF1F2),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: const Color(0xFFFECDD3)),
                   ),
                   child: Column(
@@ -697,19 +696,33 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.circle, size: 7, color: Color(0xFFEF4444)),
-                          SizedBox(width: 4),
-                          Text('DANA TERPAKAI', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF9F1239))),
+                          Icon(Icons.circle, size: 6, color: Color(0xFFEF4444)),
+                          SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              'TERPAKAI',
+                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF9F1239)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        _formatCurrency(used),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                      const SizedBox(height: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _formatCurrency(used),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                      ),
+                      const Text(
+                        'Disetujui',
+                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text('Proposal disetujui', style: TextStyle(fontSize: 8.5, color: Color(0xFF64748B))),
                     ],
                   ),
                 ),
@@ -717,10 +730,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFFBEB),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: const Color(0xFFFDE68A)),
                   ),
                   child: Column(
@@ -728,19 +741,33 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.circle, size: 7, color: Color(0xFFF59E0B)),
-                          SizedBox(width: 4),
-                          Text('DALAM PENGAJUAN', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF92400E))),
+                          Icon(Icons.circle, size: 6, color: Color(0xFFF59E0B)),
+                          SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              'PENGAJUAN',
+                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF92400E)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        _formatCurrency(pending),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                      const SizedBox(height: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _formatCurrency(pending),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                      ),
+                      const Text(
+                        'Review',
+                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text('Menunggu review', style: TextStyle(fontSize: 8.5, color: Color(0xFF64748B))),
                     ],
                   ),
                 ),
@@ -748,10 +775,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFFECFDF5),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: const Color(0xFFA7F3D0)),
                   ),
                   child: Column(
@@ -759,19 +786,33 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.circle, size: 7, color: Color(0xFF10B981)),
-                          SizedBox(width: 4),
-                          Text('SISA KUOTA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+                          Icon(Icons.circle, size: 6, color: Color(0xFF10B981)),
+                          SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              'SISA KUOTA',
+                              style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        _formatCurrency(remaining),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                      const SizedBox(height: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _formatCurrency(remaining),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                      ),
+                      const Text(
+                        'Tersedia',
+                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text('Siap diajukan', style: TextStyle(fontSize: 8.5, color: Color(0xFF64748B))),
                     ],
                   ),
                 ),
@@ -839,18 +880,19 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
           if (auditLogs.isEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
               child: const Column(
                 children: [
-                  Icon(Icons.history_edu_rounded, size: 36, color: Color(0xFFCBD5E1)),
+                  Icon(Icons.receipt_long_rounded, size: 28, color: Color(0xFF94A3B8)),
                   SizedBox(height: 6),
                   Text(
                     'Belum ada catatan riwayat perubahan pagu',
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-                  ),
-                  Text(
-                    'Setiap perubahan alokasi oleh kemahasiswaan akan tercatat di sini.',
-                    style: TextStyle(fontSize: 9.5, color: Color(0xFF94A3B8)),
                   ),
                 ],
               ),
@@ -861,8 +903,8 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: auditLogs.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (ctx, i) {
-                final log = auditLogs[i];
+              itemBuilder: (context, index) {
+                final log = auditLogs[index];
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -879,12 +921,12 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                             decoration: BoxDecoration(
-                              color: context.appColors.primary.withAlpha(20),
+                              color: const Color(0xFFEFF6FF),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               'Tahun ${log.periode}',
-                              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: context.appColors.primary),
+                              style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
                             ),
                           ),
                           Text(
@@ -952,11 +994,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFF1F5F9),
+              color: const Color(0xFFEFF6FF),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: const Color(0xFFDBEAFE)),
             ),
-            child: Icon(Icons.info_outline_rounded, size: 18, color: context.appColors.primary),
+            child: const Icon(Icons.info_outline_rounded, size: 18, color: Color(0xFF2563EB)),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -1104,10 +1146,10 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: context.appColors.primary.withAlpha(20),
+                      color: const Color(0xFFEFF6FF),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.tune_rounded, size: 20, color: context.appColors.primary),
+                    child: const Icon(Icons.tune_rounded, size: 20, color: Color(0xFF2563EB)),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
@@ -1160,7 +1202,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                         prefixIcon: Container(
                           width: 36,
                           alignment: Alignment.center,
-                          child: Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: context.appColors.primary)),
+                          child: const Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF2563EB))),
                         ),
                         filled: true,
                         fillColor: Colors.white,
@@ -1171,6 +1213,10 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
@@ -1240,6 +1286,10 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                        ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
@@ -1266,7 +1316,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             value: _active,
                             onChanged: (val) => setState(() => _active = val),
                             activeThumbColor: Colors.white,
-                            activeTrackColor: context.appColors.primary,
+                            activeTrackColor: const Color(0xFF2563EB),
                           ),
                         ],
                       ),
@@ -1294,7 +1344,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             value: _enforceLimit,
                             onChanged: (val) => setState(() => _enforceLimit = val),
                             activeThumbColor: Colors.white,
-                            activeTrackColor: context.appColors.primary,
+                            activeTrackColor: const Color(0xFF2563EB),
                           ),
                         ],
                       ),
@@ -1310,7 +1360,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             : const Icon(Icons.save_rounded, size: 16),
                         label: const Text('Simpan Perubahan Pagu', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
+                          backgroundColor: const Color(0xFF2563EB),
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1388,10 +1438,10 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: context.appColors.primary.withAlpha(20),
+                    color: const Color(0xFFEFF6FF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(Icons.groups_rounded, size: 18, color: context.appColors.primary),
+                  child: const Icon(Icons.groups_rounded, size: 18, color: Color(0xFF2563EB)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -1444,7 +1494,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: context.appColors.primary),
+                  borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
                 ),
               ),
             ),
@@ -1487,10 +1537,10 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isSelected ? context.appColors.primary.withAlpha(12) : const Color(0xFFF8FAFC),
+                            color: isSelected ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: isSelected ? context.appColors.primary : const Color(0xFFE2E8F0),
+                              color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
                               width: isSelected ? 1.5 : 1,
                             ),
                           ),
@@ -1503,7 +1553,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                     width: 32,
                                     height: 32,
                                     decoration: BoxDecoration(
-                                      color: isSelected ? context.appColors.primary : const Color(0xFFE2E8F0),
+                                      color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Center(
@@ -1529,7 +1579,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
-                                            color: isSelected ? context.appColors.primary : const Color(0xFF0F172A),
+                                            color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF0F172A),
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
