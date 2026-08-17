@@ -24,7 +24,6 @@ class OrmawaKalenderScreen extends StatefulWidget {
 }
 
 class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   String _activeTab = 'all';
@@ -503,7 +502,11 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                 firstDay: DateTime.utc(2020, 1, 1),
                                 lastDay: DateTime.utc(2030, 12, 31),
                                 focusedDay: _focusedDay,
-                                calendarFormat: _calendarFormat,
+                                calendarFormat: CalendarFormat.month,
+                                availableCalendarFormats: const {
+                                  CalendarFormat.month: 'Bulan',
+                                },
+                                availableGestures: AvailableGestures.horizontalSwipe,
                                 selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
                                 eventLoader: (day) => _getEventsForDay(day, allAgendas, allProposals, allAnnouncements),
                                 startingDayOfWeek: StartingDayOfWeek.monday,
@@ -517,7 +520,6 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                     _focusedDay = focusedDay;
                                   });
                                 },
-                                onFormatChanged: (format) => setState(() => _calendarFormat = format),
                                 headerStyle: const HeaderStyle(
                                   formatButtonVisible: false,
                                   titleCentered: true,
