@@ -55,13 +55,18 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
     setState(() => _isRefreshing = true);
-    final prov = context.read<OrmawaProvider>();
-    await prov.refreshData();
-    if (_selectedAgenda != null) {
-      await prov.fetchAttendance(_selectedAgenda!.id);
+    try {
+      final prov = context.read<OrmawaProvider>();
+      await prov.refreshData();
+      if (_selectedAgenda != null && mounted) {
+        await prov.fetchAttendance(_selectedAgenda!.id);
+      }
+    } catch (_) {
+    } finally {
+      if (mounted) setState(() => _isRefreshing = false);
     }
-    if (mounted) setState(() => _isRefreshing = false);
   }
 
   void _selectAgenda(OrmawaAgenda agenda) {
@@ -119,24 +124,6 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
         return const Color(0xFFBE123C);
       default:
         return const Color(0xFF1D4ED8);
-    }
-  }
-
-  Color _getStatusDotColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'berlangsung':
-      case 'ongoing':
-        return const Color(0xFFF59E0B);
-      case 'selesai':
-      case 'terlaksana':
-      case 'completed':
-        return const Color(0xFF10B981);
-      case 'dibatalkan':
-      case 'batal':
-      case 'cancelled':
-        return const Color(0xFFF43F5E);
-      default:
-        return const Color(0xFF3B82F6);
     }
   }
 
@@ -277,14 +264,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: const Color(0xFFBFDBFE)),
                               ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CircleAvatar(radius: 3, backgroundColor: Color(0xFF2563EB)),
-                                  SizedBox(width: 5),
-                                  Text('Presensi Realtime', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8))),
-                                ],
-                              ),
+                              child: const Text('Presensi Realtime', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8))),
                             ),
                             Row(
                               children: [
@@ -674,7 +654,6 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
 
                         final statusBg = _getStatusBgColor(agenda.status);
                         final statusText = _getStatusTextColor(agenda.status);
-                        final statusDot = _getStatusDotColor(agenda.status);
                         final statusLabel = _getStatusLabel(agenda.status);
 
                         return Container(
@@ -707,17 +686,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                         color: statusBg,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CircleAvatar(radius: 3, backgroundColor: statusDot),
-                                          const SizedBox(width: 5),
-                                          Text(statusLabel, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusText)),
-                                        ],
-                                      ),
+                                      child: Text(statusLabel, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusText)),
                                     ),
                                     Text(
-                                      '${_formatDate(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} WIB',
+                                      '${_formatDate(agenda.date)}, ${DateFormat('HH:mm').format(agenda.date)} WIB',
                                       style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
                                     ),
                                   ],
