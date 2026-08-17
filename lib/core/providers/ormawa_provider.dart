@@ -916,6 +916,38 @@ class OrmawaProvider extends ChangeNotifier {
   bool get notifFinance => _ormawaSettings['notifFinance'] ?? true;
   bool get notifAspiration => _ormawaSettings['notifAspiration'] ?? false;
 
+  int get profileCompleteness {
+    final fields = [
+      _ormawaSettings['Nama'] ?? _ormawaSettings['nama'],
+      _ormawaSettings['Singkatan'] ?? _ormawaSettings['singkatan'],
+      _ormawaSettings['Deskripsi'] ?? _ormawaSettings['deskripsi'],
+      _ormawaSettings['Visi'] ?? _ormawaSettings['visi'],
+      _ormawaSettings['Misi'] ?? _ormawaSettings['misi'],
+      _ormawaSettings['LogoURL'] ?? _ormawaSettings['logo_url'] ?? _ormawaSettings['Logo'],
+      _ormawaSettings['Email'] ?? _ormawaSettings['email'],
+      _ormawaSettings['Phone'] ?? _ormawaSettings['phone'] ?? _ormawaSettings['Kontak'],
+      _ormawaSettings['Instagram'] ?? _ormawaSettings['instagram'],
+      _ormawaSettings['NoRekening'] ?? _ormawaSettings['no_rekening'] ?? _ormawaSettings['Rekening'] ?? _ormawaSettings['rekening'],
+    ];
+    final filled = fields.where((f) => f != null && f.toString().trim().isNotEmpty).length;
+    return ((filled / fields.length) * 100).round();
+  }
+
+  int get contactChannelsCount {
+    final channels = [
+      _ormawaSettings['Email'] ?? _ormawaSettings['email'],
+      _ormawaSettings['Phone'] ?? _ormawaSettings['phone'] ?? _ormawaSettings['Kontak'],
+      _ormawaSettings['Instagram'] ?? _ormawaSettings['instagram'],
+      _ormawaSettings['Website'] ?? _ormawaSettings['website'],
+    ];
+    return channels.where((c) => c != null && c.toString().trim().isNotEmpty).length;
+  }
+
+  bool get hasBankAccount {
+    final rek = _ormawaSettings['NoRekening'] ?? _ormawaSettings['no_rekening'] ?? _ormawaSettings['Rekening'] ?? _ormawaSettings['rekening'];
+    return rek != null && rek.toString().trim().isNotEmpty;
+  }
+
   Future<void> getOrmawaSettings() async {
     if (ormawaId == null) return;
     try {
@@ -930,7 +962,22 @@ class OrmawaProvider extends ChangeNotifier {
           prefs.getBool('ormawa_notif_aspiration_$ormawaId') ?? false;
       notifyListeners();
     } catch (_) {
-      // ignore
+    }
+  }
+
+  Future<void> updateOrmawaSettings(Map<String, dynamic> data) async {
+    if (ormawaId == null) return;
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _repository.updateOrmawaSettings(ormawaId!, data);
+      _ormawaSettings.addAll(data);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
