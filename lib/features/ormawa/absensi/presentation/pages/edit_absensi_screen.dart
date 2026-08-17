@@ -104,25 +104,38 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
         _selectedStartTime.hour,
         _selectedStartTime.minute,
       );
-      final endDt = DateTime(
+      var endDt = DateTime(
         _selectedDate.year,
         _selectedDate.month,
         _selectedDate.day,
         _selectedEndTime.hour,
         _selectedEndTime.minute,
       );
+      if (endDt.isBefore(startDt)) {
+        endDt = startDt.add(const Duration(hours: 2));
+      }
 
+      final data = widget.absensiData;
       final payload = {
-        'Nama': _namaController.text.trim(),
         'Judul': _namaController.text.trim(),
         'Deskripsi': _deskripsiController.text.trim(),
         'Lokasi': _lokasiController.text.trim().isNotEmpty ? _lokasiController.text.trim() : 'Kampus Utama',
-        'Tanggal': DateFormat('yyyy-MM-dd').format(_selectedDate),
-        'TanggalMulai': startDt.toIso8601String(),
-        'TanggalSelesai': endDt.toIso8601String(),
-        'WaktuMulai': '${_selectedStartTime.hour.toString().padLeft(2, '0')}:${_selectedStartTime.minute.toString().padLeft(2, '0')}',
-        'WaktuSelesai': '${_selectedEndTime.hour.toString().padLeft(2, '0')}:${_selectedEndTime.minute.toString().padLeft(2, '0')}',
+        'TanggalMulai': startDt.toUtc().toIso8601String(),
+        'TanggalSelesai': endDt.toUtc().toIso8601String(),
         'Status': _selectedStatus,
+        'landasan_kegiatan': data['landasan_kegiatan'] ?? data['LandasanKegiatan'] ?? '',
+        'bentuk_kegiatan': data['bentuk_kegiatan'] ?? data['BentukKegiatan'] ?? '',
+        'mitra': data['mitra'] ?? data['Mitra'] ?? '',
+        'latar_belakang': data['latar_belakang'] ?? data['LatarBelakang'] ?? '',
+        'tujuan_kegiatan': data['tujuan_kegiatan'] ?? data['TujuanKegiatan'] ?? '',
+        'jadwal_pelaksanaan': data['jadwal_pelaksanaan'] ?? data['JadwalPelaksanaan'] ?? '',
+        'sasaran_kegiatan': data['sasaran_kegiatan'] ?? data['SasaranKegiatan'] ?? '',
+        'indikator_keberhasilan': data['indikator_keberhasilan'] ?? data['IndikatorKeberhasilan'] ?? '',
+        'sumber_dana': data['sumber_dana'] ?? data['SumberDana'] ?? '',
+        'estimasi_dana': (data['estimasi_dana'] ?? data['EstimasiDana']) != null
+            ? (data['estimasi_dana'] ?? data['EstimasiDana'] as num).toDouble()
+            : 0.0,
+        'pj_kegiatan': data['pj_kegiatan'] ?? data['PJKegiatan'] ?? '',
       };
 
       final provider = context.read<OrmawaProvider>();
