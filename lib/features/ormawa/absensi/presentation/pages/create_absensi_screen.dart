@@ -5,6 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -99,7 +100,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
     }
   }
 
-  Future<void> _pickDate() async {
+  Future<void> _pickDate(Color primaryColor) async {
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
@@ -108,7 +109,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFF2563EB)),
+            colorScheme: ColorScheme.light(primary: primaryColor),
           ),
           child: child!,
         );
@@ -117,14 +118,14 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
     if (picked != null) setState(() => _selectedDate = picked);
   }
 
-  Future<void> _pickTime({required bool isStart}) async {
+  Future<void> _pickTime({required bool isStart, required Color primaryColor}) async {
     final picked = await showTimePicker(
       context: context,
       initialTime: isStart ? _selectedStartTime : _selectedEndTime,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFF2563EB)),
+            colorScheme: ColorScheme.light(primary: primaryColor),
           ),
           child: child!,
         );
@@ -144,6 +145,8 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
   @override
   Widget build(BuildContext context) {
     final agendas = context.watch<OrmawaProvider>().agendas;
+    final themeProvider = context.watch<ThemeProvider>();
+    final primaryColor = themeProvider.primary;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -195,9 +198,9 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                               isExpanded: true,
                               hint: const Text('Pilih kegiatan untuk auto-fill data...', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
                               items: [
-                                const DropdownMenuItem<OrmawaAgenda?>(
+                                DropdownMenuItem<OrmawaAgenda?>(
                                   value: null,
-                                  child: Text('— Buat Sesi Baru (Manual) —', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                                  child: Text('— Buat Sesi Baru (Manual) —', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primaryColor)),
                                 ),
                                 ...agendas.map(
                                   (a) => DropdownMenuItem<OrmawaAgenda?>(
@@ -225,7 +228,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                         const Text('TANGGAL PELAKSANAAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
                         const SizedBox(height: 6),
                         InkWell(
-                          onTap: _pickDate,
+                          onTap: () => _pickDate(primaryColor),
                           borderRadius: BorderRadius.circular(12),
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -236,7 +239,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.calendar_today_rounded, size: 15, color: Color(0xFF2563EB)),
+                                Icon(Icons.calendar_today_rounded, size: 15, color: primaryColor),
                                 const SizedBox(width: 8),
                                 Text(
                                   DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDate),
@@ -257,7 +260,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                                   const Text('MULAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
                                   const SizedBox(height: 6),
                                   InkWell(
-                                    onTap: () => _pickTime(isStart: true),
+                                    onTap: () => _pickTime(isStart: true, primaryColor: primaryColor),
                                     borderRadius: BorderRadius.circular(12),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -268,7 +271,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.schedule_rounded, size: 15, color: Color(0xFF2563EB)),
+                                          Icon(Icons.schedule_rounded, size: 15, color: primaryColor),
                                           const SizedBox(width: 6),
                                           Text(
                                             '${_selectedStartTime.hour.toString().padLeft(2, '0')}:${_selectedStartTime.minute.toString().padLeft(2, '0')} WIB',
@@ -289,7 +292,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                                   const Text('SELESAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
                                   const SizedBox(height: 6),
                                   InkWell(
-                                    onTap: () => _pickTime(isStart: false),
+                                    onTap: () => _pickTime(isStart: false, primaryColor: primaryColor),
                                     borderRadius: BorderRadius.circular(12),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -300,7 +303,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.event_available_rounded, size: 15, color: Color(0xFF2563EB)),
+                                          Icon(Icons.event_available_rounded, size: 15, color: primaryColor),
                                           const SizedBox(width: 6),
                                           Text(
                                             '${_selectedEndTime.hour.toString().padLeft(2, '0')}:${_selectedEndTime.minute.toString().padLeft(2, '0')} WIB',
@@ -351,7 +354,7 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
                           icon: const Icon(Icons.check_rounded, size: 16),
                           label: const Text('Simpan Sesi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2563EB),
+                            backgroundColor: primaryColor,
                             foregroundColor: Colors.white,
                             elevation: 0,
                             padding: const EdgeInsets.symmetric(vertical: 12),

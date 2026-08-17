@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
+import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
@@ -22,12 +23,12 @@ class OrmawaAbsensiScreen extends StatefulWidget {
   State<OrmawaAbsensiScreen> createState() => _OrmawaAbsensiScreenState();
 }
 
-class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTickerProviderStateMixin {
-  String _activeTab = 'all';
+class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _searchAttController = TextEditingController();
   String _searchQuery = '';
   String _searchAttQuery = '';
+  String _activeTab = 'all';
   bool _isRefreshing = false;
   OrmawaAgenda? _selectedAgenda;
   Timer? _attendancePollTimer;
@@ -156,34 +157,32 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrmawaProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
+    final primaryColor = themeProvider.primary;
+    final primaryGradient = themeProvider.primaryGradient;
 
-    if (!provider.hasPermission('view_attendance')) {
+    if (provider.isLoading && provider.agendas.isEmpty) {
       return Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         body: CustomScrollView(
           slivers: [
             BkuAppBar(
+              title: 'Sistem Presensi',
+              subtitle: 'Absensi Kegiatan',
               variant: AppBarVariant.ormawa,
-              title: 'Absensi Kegiatan',
-              subtitle: 'Akses Ditolak',
               expandedHeight: 130.0,
               showBackButton: widget.showBackButton,
               isExpandable: false,
             ),
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.xl),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.lock_outline_rounded, size: 54, color: Color(0xFFE11D48)),
-                      SizedBox(height: 12),
-                      Text('Akses Ditolak', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                      SizedBox(height: 6),
-                      Text('Anda tidak memiliki izin untuk melihat sistem absensi ormawa.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(strokeWidth: 2.5, color: primaryColor),
+                    const SizedBox(height: 12),
+                    const Text('Memuat data presensi kegiatan...', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                  ],
                 ),
               ),
             ),
@@ -260,11 +259,11 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
+                                color: primaryColor.withAlpha(18),
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: const Color(0xFFBFDBFE)),
+                                border: Border.all(color: primaryColor.withAlpha(45)),
                               ),
-                              child: const Text('Presensi Realtime', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8))),
+                              child: Text('Presensi Realtime', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: primaryColor)),
                             ),
                             Row(
                               children: [
@@ -282,8 +281,15 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         _isRefreshing
-                                            ? const SizedBox(width: 11, height: 11, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB)))
-                                            : const Icon(Icons.refresh_rounded, size: 13, color: Color(0xFF2563EB)),
+                                            ? SizedBox(
+                                                width: 12,
+                                                height: 12,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: primaryColor,
+                                                ),
+                                              )
+                                            : Icon(Icons.refresh_rounded, size: 13, color: primaryColor),
                                         const SizedBox(width: 4),
                                         const Text('Refresh', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
                                       ],
@@ -303,7 +309,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF2563EB),
+                                        color: primaryColor,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: const Row(
@@ -343,7 +349,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                         'Total Sesi Kegiatan',
                         'Semua Sesi',
                         Icons.calendar_month_rounded,
-                        const Color(0xFF2563EB),
+                        primaryColor,
                       ),
                       const SizedBox(width: 8),
                       _buildKpiCard(
@@ -381,15 +387,15 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF1E40AF), Color(0xFF2563EB)],
+                        gradient: LinearGradient(
+                          colors: primaryGradient,
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF2563EB).withAlpha(40),
+                            color: primaryColor.withAlpha(40),
                             blurRadius: 14,
                             offset: const Offset(0, 5),
                           ),
@@ -458,7 +464,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                   label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
-                                    foregroundColor: const Color(0xFF1E40AF),
+                                    foregroundColor: primaryColor,
                                     elevation: 0,
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -531,10 +537,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFEFF6FF),
+                                  color: primaryColor.withAlpha(18),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: Text('$attendedCount Hadir', style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                                child: Text('$attendedCount Hadir', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: primaryColor)),
                               ),
                             ],
                           ),
@@ -566,7 +572,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                           ),
                           const Divider(height: 20, color: Color(0xFFF1F5F9)),
 
-                          _buildAttendanceParticipantList(provider, _selectedAgenda!.id),
+                          _buildAttendanceParticipantList(provider, _selectedAgenda!.id, primaryColor),
                         ],
                       ),
                     ),
@@ -577,13 +583,13 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        _buildTabPill('all', 'Semua Sesi', totalSessions),
+                        _buildTabPill('all', 'Semua Sesi', totalSessions, primaryColor),
                         const SizedBox(width: 6),
-                        _buildTabPill('berlangsung', 'Berlangsung', ongoingCount),
+                        _buildTabPill('berlangsung', 'Berlangsung', ongoingCount, primaryColor),
                         const SizedBox(width: 6),
-                        _buildTabPill('terjadwal', 'Terjadwal', plannedCount),
+                        _buildTabPill('terjadwal', 'Terjadwal', plannedCount, primaryColor),
                         const SizedBox(width: 6),
-                        _buildTabPill('selesai', 'Selesai', completedCount),
+                        _buildTabPill('selesai', 'Selesai', completedCount, primaryColor),
                       ],
                     ),
                   ),
@@ -609,7 +615,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                       decoration: InputDecoration(
                         hintText: 'Cari judul kegiatan atau lokasi...',
                         hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
-                        prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF2563EB)),
+                        prefixIcon: Icon(Icons.search_rounded, size: 18, color: primaryColor),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF94A3B8)),
@@ -661,12 +667,12 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                              color: isSelected ? primaryColor : const Color(0xFFE2E8F0),
                               width: isSelected ? 1.5 : 1.0,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: isSelected ? const Color(0xFF2563EB).withAlpha(15) : const Color(0xFF94A3B8).withAlpha(15),
+                                color: isSelected ? primaryColor.withAlpha(15) : const Color(0xFF94A3B8).withAlpha(15),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -722,9 +728,9 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                       child: OutlinedButton(
                                         onPressed: () => _selectAgenda(agenda),
                                         style: OutlinedButton.styleFrom(
-                                          foregroundColor: isSelected ? Colors.white : const Color(0xFF2563EB),
-                                          backgroundColor: isSelected ? const Color(0xFF2563EB) : const Color(0xFFEFF6FF),
-                                          side: BorderSide(color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFBFDBFE)),
+                                          foregroundColor: isSelected ? Colors.white : primaryColor,
+                                          backgroundColor: isSelected ? primaryColor : primaryColor.withAlpha(18),
+                                          side: BorderSide(color: isSelected ? primaryColor : primaryColor.withAlpha(50)),
                                           padding: const EdgeInsets.symmetric(vertical: 8),
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                           minimumSize: Size.zero,
@@ -747,11 +753,11 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
                                           borderRadius: BorderRadius.circular(8),
                                           border: Border.all(color: const Color(0xFFE2E8F0)),
                                         ),
-                                        child: const Row(
+                                        child: Row(
                                           children: [
-                                            Icon(Icons.qr_code_rounded, size: 14, color: Color(0xFF2563EB)),
-                                            SizedBox(width: 4),
-                                            Text('QR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                                            Icon(Icons.qr_code_rounded, size: 14, color: primaryColor),
+                                            const SizedBox(width: 4),
+                                            const Text('QR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
                                           ],
                                         ),
                                       ),
@@ -808,11 +814,11 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
     );
   }
 
-  Widget _buildAttendanceParticipantList(OrmawaProvider provider, String eventId) {
+  Widget _buildAttendanceParticipantList(OrmawaProvider provider, String eventId, Color primaryColor) {
     if (provider.isLoading && provider.attendanceList.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB))),
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: primaryColor)),
       );
     }
 
@@ -849,13 +855,13 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
           children: [
             CircleAvatar(
               radius: 16,
-              backgroundColor: isHadir ? const Color(0xFFD1FAE5) : const Color(0xFFEFF6FF),
+              backgroundColor: isHadir ? const Color(0xFFD1FAE5) : primaryColor.withAlpha(20),
               child: Text(
                 initial,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: isHadir ? const Color(0xFF047857) : const Color(0xFF1D4ED8),
+                  color: isHadir ? const Color(0xFF047857) : primaryColor,
                 ),
               ),
             ),
@@ -991,7 +997,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
     );
   }
 
-  Widget _buildTabPill(String tabId, String label, int count) {
+  Widget _buildTabPill(String tabId, String label, int count, Color primaryColor) {
     final isActive = _activeTab == tabId;
     return InkWell(
       onTap: () => setState(() => _activeTab = tabId),
@@ -999,9 +1005,9 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> with SingleTi
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF2563EB) : Colors.white,
+          color: isActive ? primaryColor : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isActive ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
+          border: Border.all(color: isActive ? primaryColor : const Color(0xFFE2E8F0)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -1090,6 +1096,9 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    final primaryColor = themeProvider.primary;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -1113,10 +1122,10 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
+                color: primaryColor.withAlpha(20),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.qr_code_scanner_rounded, size: 28, color: Color(0xFF2563EB)),
+              child: Icon(Icons.qr_code_scanner_rounded, size: 28, color: primaryColor),
             ),
             const SizedBox(height: 12),
             const Text(
@@ -1127,7 +1136,7 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
             const SizedBox(height: 4),
             Text(
               widget.agenda.title,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -1143,7 +1152,7 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
                 border: Border.all(color: const Color(0xFFE2E8F0), width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2563EB).withAlpha(20),
+                    color: primaryColor.withAlpha(25),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -1170,12 +1179,12 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
                         child: Container(
                           height: 2,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Colors.transparent, Color(0xFF2563EB), Color(0xFF38BDF8), Color(0xFF2563EB), Colors.transparent],
+                            gradient: LinearGradient(
+                              colors: [Colors.transparent, primaryColor, primaryColor.withAlpha(200), primaryColor, Colors.transparent],
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2563EB).withAlpha(160),
+                                color: primaryColor.withAlpha(160),
                                 blurRadius: 6,
                                 spreadRadius: 1,
                               ),
@@ -1193,14 +1202,14 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF2563EB)),
-                    SizedBox(width: 4),
-                    Text('Token Otomatis Diperbarui:', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                    Icon(Icons.access_time_rounded, size: 12, color: primaryColor),
+                    const SizedBox(width: 4),
+                    const Text('Token Otomatis Diperbarui:', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
                   ],
                 ),
-                Text('$_countdown s', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF2563EB), fontFamily: 'monospace')),
+                Text('$_countdown s', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: primaryColor, fontFamily: 'monospace')),
               ],
             ),
             const SizedBox(height: 6),
@@ -1209,7 +1218,7 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
               child: LinearProgressIndicator(
                 value: _countdown / 45,
                 backgroundColor: const Color(0xFFF1F5F9),
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
+                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                 minHeight: 4,
               ),
             ),

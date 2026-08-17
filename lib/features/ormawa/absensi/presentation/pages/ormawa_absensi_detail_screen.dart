@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
+import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_absensi_screen.dart';
 
@@ -100,23 +101,22 @@ class _OrmawaAbsensiManagementDetailScreenState
       case 'selesai':
       case 'terlaksana':
       case 'completed':
-        return 'Selesai (Completed)';
+        return 'Selesai Terlaksana';
       case 'dibatalkan':
       case 'batal':
       case 'cancelled':
-        return 'Dibatalkan (Cancelled)';
+        return 'Dibatalkan';
       default:
-        return 'Terjadwal (Planned)';
+        return 'Terjadwal';
     }
   }
 
   void _confirmDelete(BuildContext context) {
-    final nama = (widget.absensiData['Nama'] ?? widget.absensiData['nama'] ?? 'Sesi Kegiatan').toString();
     BkuDialog.show(
       context: context,
-      title: 'Hapus Sesi Absensi?',
-      message: 'Apakah Anda yakin ingin menghapus sesi presensi "$nama"? Tindakan ini tidak dapat dibatalkan.',
       type: BkuDialogType.error,
+      title: 'Hapus Sesi Kegiatan?',
+      message: 'Sesi absensi ini beserta seluruh log kehadiran peserta akan dihapus secara permanen.',
       primaryButtonText: 'Hapus Sesi',
       onPrimaryPressed: () async {
         Navigator.pop(context);
@@ -151,6 +151,9 @@ class _OrmawaAbsensiManagementDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    final primaryColor = themeProvider.primary;
+
     final data = widget.absensiData;
     final nama = (data['Nama'] ?? data['nama'] ?? 'Detail Sesi').toString();
     final deskripsi = (data['Deskripsi'] ?? data['deskripsi'] ?? '').toString();
@@ -264,14 +267,14 @@ class _OrmawaAbsensiManagementDetailScreenState
                         'Tanggal Pelaksanaan',
                         date != null ? DateFormat('dd MMMM yyyy', 'id').format(date) : tanggalStr,
                         Icons.calendar_today_rounded,
-                        const Color(0xFF2563EB),
+                        primaryColor,
                       ),
                       const SizedBox(width: 8),
                       _buildMetricCard(
                         'Waktu Sesi',
                         '$waktuMulai - $waktuSelesai WIB',
                         Icons.schedule_rounded,
-                        const Color(0xFF2563EB),
+                        primaryColor,
                       ),
                     ],
                   ),
@@ -303,19 +306,23 @@ class _OrmawaAbsensiManagementDetailScreenState
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: const Color(0xFFE2E8F0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF94A3B8).withAlpha(15),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.description_outlined, size: 15, color: Color(0xFF2563EB)),
-                              SizedBox(width: 6),
-                              Text('Keterangan Kegiatan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                            ],
+                          const Text('KETERANGAN KEGIATAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                          const SizedBox(height: 8),
+                          Text(
+                            deskripsi,
+                            style: const TextStyle(fontSize: 11.5, color: Color(0xFF334155), height: 1.4),
                           ),
-                          const Divider(height: 16, color: Color(0xFFF1F5F9)),
-                          Text(deskripsi, style: const TextStyle(fontSize: 12, color: Color(0xFF334155), height: 1.4)),
                         ],
                       ),
                     ),
@@ -352,14 +359,15 @@ class _OrmawaAbsensiManagementDetailScreenState
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
+                                color: primaryColor.withAlpha(18),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Text('$attendedCount Hadir', style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                              child: Text('$attendedCount Hadir', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: primaryColor)),
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
+
                         Container(
                           height: 38,
                           decoration: BoxDecoration(
@@ -388,9 +396,9 @@ class _OrmawaAbsensiManagementDetailScreenState
                         const Divider(height: 20, color: Color(0xFFF1F5F9)),
 
                         if (provider.isLoading && attendanceList.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB))),
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: primaryColor)),
                           )
                         else if (filteredList.isEmpty)
                           const Padding(
@@ -416,13 +424,13 @@ class _OrmawaAbsensiManagementDetailScreenState
                                 children: [
                                   CircleAvatar(
                                     radius: 16,
-                                    backgroundColor: isHadir ? const Color(0xFFD1FAE5) : const Color(0xFFEFF6FF),
+                                    backgroundColor: isHadir ? const Color(0xFFD1FAE5) : primaryColor.withAlpha(20),
                                     child: Text(
                                       initial,
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
-                                        color: isHadir ? const Color(0xFF047857) : const Color(0xFF1D4ED8),
+                                        color: isHadir ? const Color(0xFF047857) : primaryColor,
                                       ),
                                     ),
                                   ),
@@ -508,7 +516,7 @@ class _OrmawaAbsensiManagementDetailScreenState
                       icon: const Icon(Icons.qr_code_rounded, size: 16),
                       label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -567,29 +575,44 @@ class _OrmawaAbsensiManagementDetailScreenState
     );
   }
 
-  Widget _buildMetricCard(String label, String value, IconData icon, Color iconColor) {
+  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFE2E8F0)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF94A3B8).withAlpha(15),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(icon, size: 13, color: iconColor),
-                const SizedBox(width: 4),
-                Text(label, style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
-              ],
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: color.withAlpha(20),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 16, color: color),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               value,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -657,6 +680,9 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    final primaryColor = themeProvider.primary;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -680,10 +706,10 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
+                color: primaryColor.withAlpha(20),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.qr_code_scanner_rounded, size: 28, color: Color(0xFF2563EB)),
+              child: Icon(Icons.qr_code_scanner_rounded, size: 28, color: primaryColor),
             ),
             const SizedBox(height: 12),
             const Text(
@@ -694,7 +720,7 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
             const SizedBox(height: 4),
             Text(
               widget.agendaTitle,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primaryColor),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -710,7 +736,7 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
                 border: Border.all(color: const Color(0xFFE2E8F0), width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2563EB).withAlpha(20),
+                    color: primaryColor.withAlpha(25),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -737,12 +763,12 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
                         child: Container(
                           height: 2,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Colors.transparent, Color(0xFF2563EB), Color(0xFF38BDF8), Color(0xFF2563EB), Colors.transparent],
+                            gradient: LinearGradient(
+                              colors: [Colors.transparent, primaryColor, primaryColor.withAlpha(200), primaryColor, Colors.transparent],
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF2563EB).withAlpha(160),
+                                color: primaryColor.withAlpha(160),
                                 blurRadius: 6,
                                 spreadRadius: 1,
                               ),
@@ -760,14 +786,14 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF2563EB)),
-                    SizedBox(width: 4),
-                    Text('Token Otomatis Diperbarui:', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                    Icon(Icons.access_time_rounded, size: 12, color: primaryColor),
+                    const SizedBox(width: 4),
+                    const Text('Token Otomatis Diperbarui:', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
                   ],
                 ),
-                Text('$_countdown s', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF2563EB), fontFamily: 'monospace')),
+                Text('$_countdown s', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: primaryColor, fontFamily: 'monospace')),
               ],
             ),
             const SizedBox(height: 6),
@@ -776,7 +802,7 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
               child: LinearProgressIndicator(
                 value: _countdown / 45,
                 backgroundColor: const Color(0xFFF1F5F9),
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
+                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                 minHeight: 4,
               ),
             ),
