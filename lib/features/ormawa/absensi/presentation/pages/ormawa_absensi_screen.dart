@@ -159,7 +159,6 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     final provider = context.watch<OrmawaProvider>();
     final themeProvider = context.watch<ThemeProvider>();
     final primaryColor = themeProvider.primary;
-    final primaryGradient = themeProvider.primaryGradient;
 
     if (provider.isLoading && provider.agendas.isEmpty) {
       return Scaffold(
@@ -387,11 +386,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: primaryGradient,
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: primaryColor,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
