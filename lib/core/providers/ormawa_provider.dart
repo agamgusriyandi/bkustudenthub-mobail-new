@@ -11,15 +11,18 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_finance.dar
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_lpj.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/repositories/ormawa_repository.dart';
-// // import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_role_model.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
 
 class OrmawaProvider extends ChangeNotifier {
   final OrmawaRepository _repository;
   final AuthService _authService = AuthService();
+
+  OrmawaRepository get repository => _repository;
 
   OrmawaProvider(this._repository);
 
@@ -27,10 +30,14 @@ class OrmawaProvider extends ChangeNotifier {
   String _orgName = '';
   String _academicYear = '';
 
-  String get orgName =>
-      (_authService.userData?['user']?['nama'] ??
-          _authService.userData?['nama']) ??
-      _orgName;
+  String get orgName {
+    final s = _ormawaSettings['singkatan'] ?? _ormawaSettings['Singkatan'];
+    if (s != null && s.toString().trim().isNotEmpty) return s.toString().trim();
+    if (_orgName.isNotEmpty) return _orgName;
+    final n = _ormawaSettings['nama'] ?? _ormawaSettings['Nama'];
+    if (n != null && n.toString().trim().isNotEmpty) return n.toString().trim();
+    return _authService.ormawaName ?? 'Ormawa';
+  }
   String get academicYear => _academicYear;
 
   // Stats
@@ -43,6 +50,9 @@ class OrmawaProvider extends ChangeNotifier {
   int _gamifikasiPoin = 0;
   int _gamifikasiPeringkat = 0;
   int _totalOrmawa = 0;
+  List<Map<String, dynamic>> _gamifikasiHistory = [];
+  List<Map<String, dynamic>> _gamifikasiLeaderboard = [];
+  List<Map<String, dynamic>> _gamifikasiRules = [];
 
   List<OrmawaProposal> _proposals = [];
   List<OrmawaAgenda> _agendas = [];
@@ -54,10 +64,23 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaAnnouncement> _announcements = [];
   List<OrmawaRole> _roles = [];
   List<OrmawaDivision> _divisions = [];
+  List<OrmawaOrganisasi> _organisasiList = [];
+  List<Map<String, dynamic>> _absensiManagementList = [];
 
   List<OrmawaNotification> _notifications = [];
   List<String> _knownNotificationIds = [];
   bool _isFirstFetch = true;
+
+  // Financial Settings (Pagu Anggaran)
+  OrmawaFinancialSetting? _financialSetting;
+  List<OrmawaFinancialSetting> _allFinancialSettings = [];
+  List<OrmawaFinancialAuditLog> _auditLogs = [];
+  bool _isLoadingPagu = false;
+
+  OrmawaFinancialSetting? get financialSetting => _financialSetting;
+  List<OrmawaFinancialSetting> get allFinancialSettings => _allFinancialSettings;
+  List<OrmawaFinancialAuditLog> get auditLogs => _auditLogs;
+  bool get isLoadingPagu => _isLoadingPagu;
 
   List<OrmawaNotification> get notifications => _notifications;
   int get unreadNotificationsCount =>
@@ -92,6 +115,9 @@ class OrmawaProvider extends ChangeNotifier {
   int get gamifikasiPoin => _gamifikasiPoin;
   int get gamifikasiPeringkat => _gamifikasiPeringkat;
   int get totalOrmawa => _totalOrmawa;
+  List<Map<String, dynamic>> get gamifikasiHistory => _gamifikasiHistory;
+  List<Map<String, dynamic>> get gamifikasiLeaderboard => _gamifikasiLeaderboard;
+  List<Map<String, dynamic>> get gamifikasiRules => _gamifikasiRules;
 
   int get approvalRate {
     if (_proposals.isEmpty) return 0;
@@ -108,7 +134,16 @@ class OrmawaProvider extends ChangeNotifier {
 
   List<OrmawaProposal> get proposals => _proposals;
   List<OrmawaAgenda> get agendas => _agendas;
-  List<OrmawaMember> get members => _members;
+  List<OrmawaMember> get members {
+    final list = List<OrmawaMember>.from(_members);
+    final current = currentMember;
+    if (current != null &&
+        !list.any((m) => m.mahasiswaId == current.mahasiswaId)) {
+      list.add(current);
+    }
+    return list;
+  }
+
   List<OrmawaFinance> get financeList => _financeList;
   List<OrmawaLPJ> get lpjs => _lpjs;
   List<OrmawaAttendance> get attendanceList => _attendanceList;
@@ -116,6 +151,8 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaAnnouncement> get announcements => _announcements;
   List<OrmawaRole> get roles => _roles;
   List<OrmawaDivision> get divisions => _divisions;
+  List<OrmawaOrganisasi> get organisasiList => _organisasiList;
+  List<Map<String, dynamic>> get absensiManagementList => _absensiManagementList;
 
   bool get isLoading => _isLoading;
 
@@ -137,6 +174,45 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       return _members.firstWhere((m) => m.mahasiswaId == mId);
     } catch (e) {
+      final userData = _authService.userData;
+      if (userData != null) {
+        final mahasiswa = userData['mahasiswa'] ?? userData['user'] ?? userData;
+        final roleStr = userData['role']?.toString() ?? 'Pengurus';
+        return OrmawaMember(
+          id: 'me',
+          mahasiswaId: mId,
+          name:
+              mahasiswa['Nama'] ??
+              mahasiswa['nama'] ??
+              userData['name'] ??
+              'Saya',
+          nim: mahasiswa['NIM'] ?? mahasiswa['nim'] ?? userData['nim'] ?? '',
+          role:
+              roleStr
+                  .split('_')
+                  .map((word) => word.isEmpty ? '' : '${word[0]}${word.substring(1).toLowerCase()}')
+                  .join(' '),
+          division: '',
+          status: 'Aktif',
+          fotoUrl:
+              mahasiswa['FotoURL'] ??
+              mahasiswa['foto_url'] ??
+              mahasiswa['foto'] ??
+              mahasiswa['avatar_url'] ??
+              '',
+          joinedAt: DateTime.now(),
+          email:
+              mahasiswa['email_kampus'] ??
+              mahasiswa['EmailKampus'] ??
+              userData['email'] ??
+              '',
+          phone:
+              mahasiswa['no_hp'] ??
+              mahasiswa['NoHP'] ??
+              userData['phone'] ??
+              '',
+        );
+      }
       return null;
     }
   }
@@ -152,6 +228,15 @@ class OrmawaProvider extends ChangeNotifier {
     if (member != null) {
       if (member.role.toUpperCase() == 'KETUA UMUM' ||
           member.role.toUpperCase() == 'KETUA') {
+        return true;
+      }
+    }
+
+    // Always allow attendance permissions for any Ormawa user
+    if (permission == 'view_attendance' ||
+        permission == 'submit_attendance' ||
+        permission == 'edit_attendance') {
+      if (AuthService().currentRole == UserRole.ormawa) {
         return true;
       }
     }
@@ -207,6 +292,10 @@ class OrmawaProvider extends ChangeNotifier {
         _repository.getRoles(), // Roles
         _repository.getDivisions(ormawaId: ormawaId), // Divisions
         _repository.getNotifications(ormawaId), // Notifications
+        _repository.getOrmawaSettings(ormawaId), // Settings
+        _repository.getGamifikasiHistory(), // 14
+        _repository.getGamifikasiLeaderboard(), // 15
+        _repository.getGamifikasiRules(), // 16
       ]);
 
       // Parse results - order matches Future.wait() order
@@ -223,6 +312,10 @@ class OrmawaProvider extends ChangeNotifier {
       final roles = results[10] as List<OrmawaRole>;
       final divisions = results[11] as List<OrmawaDivision>;
       final notifications = results[12] as List<OrmawaNotification>;
+      final ormawaSettings = results[13] as Map<String, dynamic>;
+      final gHistory = results[14] as List<Map<String, dynamic>>;
+      final gLeaderboard = results[15] as List<Map<String, dynamic>>;
+      final gRules = results[16] as List<Map<String, dynamic>>;
 
       // Update stats
       _totalMembers = (stats['totalMembers'] as num?)?.toInt() ?? 0;
@@ -234,6 +327,9 @@ class OrmawaProvider extends ChangeNotifier {
       _gamifikasiPoin = (gamSummary['poin'] as num?)?.toInt() ?? 0;
       _gamifikasiPeringkat = (gamSummary['peringkat'] as num?)?.toInt() ?? 0;
       _totalOrmawa = (gamSummary['total_ormawa'] as num?)?.toInt() ?? 0;
+      _gamifikasiHistory = gHistory;
+      _gamifikasiLeaderboard = gLeaderboard;
+      _gamifikasiRules = gRules;
 
       // Update academic year
       if (activeYear != null && activeYear.isNotEmpty) {
@@ -251,6 +347,12 @@ class OrmawaProvider extends ChangeNotifier {
       _announcements = announcements;
       _roles = roles;
       _divisions = divisions;
+      _ormawaSettings = ormawaSettings;
+      _orgName = _ormawaSettings['singkatan'] ??
+          _ormawaSettings['Singkatan'] ??
+          _ormawaSettings['nama'] ??
+          _ormawaSettings['Nama'] ??
+          '';
 
       // Handle notifications
       if (!_isFirstFetch) {
@@ -267,8 +369,8 @@ class OrmawaProvider extends ChangeNotifier {
       _knownNotificationIds = notifications.map((n) => n.id).toList();
       _isFirstFetch = false;
       _notifications = notifications;
-    } catch (e) {
-      debugPrint('Error refreshing Ormawa data: $e');
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -289,8 +391,8 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       await _repository.deleteProposal(id);
       await refreshData();
-    } catch (e) {
-      debugPrint('Error deleting proposal: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -312,7 +414,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error regenerating members: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -324,7 +425,6 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       return await _repository.getStudents();
     } catch (e) {
-      debugPrint('Error getting students: $e');
       return [];
     }
   }
@@ -340,7 +440,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error adding member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -355,7 +454,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.updateMember(id, data);
       await refreshData();
     } catch (e) {
-      debugPrint('Error updating member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -370,7 +468,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteMember(id);
       await refreshData();
     } catch (e) {
-      debugPrint('Error deleting member: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -390,7 +487,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error adding agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -405,7 +501,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.updateAgenda(id, data);
       await refreshData();
     } catch (e) {
-      debugPrint('Error updating agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -420,7 +515,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteAgenda(id);
       await refreshData();
     } catch (e) {
-      debugPrint('Error deleting agenda: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -439,8 +533,8 @@ class OrmawaProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       _attendanceList = await _repository.getAttendance(eventId);
-    } catch (e) {
-      debugPrint('Error fetching attendance: $e');
+    } catch (_) {
+      // ignore
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -456,7 +550,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.submitAttendance(eventId, mhsId, status);
       await fetchAttendance(eventId);
     } catch (e) {
-      debugPrint('Error submitting attendance: $e');
       rethrow;
     }
   }
@@ -468,8 +561,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (id == null) return;
       _financeList = await _repository.getFinance(id);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error getting finance: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -491,8 +584,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (id == null) return;
       _lpjs = await _repository.getLPJs(id);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error getting LPJs: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -521,7 +614,6 @@ class OrmawaProvider extends ChangeNotifier {
       await _repository.deleteLPJ(id);
       await getLPJs();
     } catch (e) {
-      debugPrint('Error deleting LPJ in provider: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -534,8 +626,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (ormawaId == null) return;
       _aspirations = await _repository.getAspirations(ormawaId!);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading aspirations: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -553,8 +645,8 @@ class OrmawaProvider extends ChangeNotifier {
       if (ormawaId == null) return;
       _announcements = await _repository.getAnnouncements(ormawaId!);
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading announcements: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -614,7 +706,6 @@ class OrmawaProvider extends ChangeNotifier {
         await refreshData();
       }
     } catch (e) {
-      debugPrint('Error inline division creation: $e');
       rethrow;
     }
   }
@@ -667,7 +758,7 @@ class OrmawaProvider extends ChangeNotifier {
   Future<void> markAllAsRead() async {
     final oId = ormawaId;
     if (oId == null) return;
-    await _repository.markAllNotificationsAsRead(oId);
+
     _notifications =
         _notifications
             .map(
@@ -683,12 +774,22 @@ class OrmawaProvider extends ChangeNotifier {
             )
             .toList();
     notifyListeners();
+
+    try {
+      await _repository.markAllNotificationsAsRead(oId);
+    } catch (_) {
+      // ignore
+    }
   }
 
   Future<void> removeNotification(String id) async {
-    await _repository.deleteNotification(id);
     _notifications.removeWhere((n) => n.id == id);
     notifyListeners();
+    try {
+      await _repository.deleteNotification(id);
+    } catch (_) {
+      // ignore
+    }
   }
 
   // RECRUITMENT / OPEN RECRUITMENT
@@ -709,8 +810,8 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment settings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -725,37 +826,23 @@ class OrmawaProvider extends ChangeNotifier {
   }
 
   Future<void> getRecruitmentApplicants() async {
-    debugPrint(
-      'OrmawaProvider.getRecruitmentApplicants called. ormawaId: $ormawaId',
-    );
     if (ormawaId == null) {
-      debugPrint(
-        'OrmawaProvider.getRecruitmentApplicants returned because ormawaId is null',
-      );
       return;
     }
     try {
       _recruitmentApplicants = await _repository.getRecruitmentApplicants(
         ormawaId!,
       );
-      debugPrint(
-        'OrmawaProvider.getRecruitmentApplicants fetched ${_recruitmentApplicants.length} applicants',
-      );
       try {
         _recruitmentFormFields = await _repository.getRecruitmentFormFields(
           ormawaId!,
         );
-        debugPrint(
-          'OrmawaProvider.getRecruitmentApplicants fetched ${_recruitmentFormFields.length} form fields',
-        );
       } catch (err) {
-        debugPrint(
-          'Error loading recruitment form fields inside getRecruitmentApplicants: $err',
-        );
+        // Silenced: non-critical form fields error
       }
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment applicants: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -778,8 +865,8 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading recruitment form fields: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -817,8 +904,8 @@ class OrmawaProvider extends ChangeNotifier {
       _ormawaSettings['notifAspiration'] =
           prefs.getBool('ormawa_notif_aspiration_$ormawaId') ?? false;
       notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading ormawa settings: $e');
+    } catch (_) {
+      // ignore
     }
   }
 
@@ -846,8 +933,50 @@ class OrmawaProvider extends ChangeNotifier {
         _ormawaSettings['notifAspiration'] = notifAspiration;
       }
       notifyListeners();
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  // ORGANISASI METHODS
+  Future<void> fetchOrganisasi() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final result = await _repository.getOrganisasiList();
+      _organisasiList = result;
+    } catch (_) {
+      // ignore
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createOrganisasi(Map<String, dynamic> data) async {
+    try {
+      await _repository.createOrganisasi(data);
+      await fetchOrganisasi();
     } catch (e) {
-      debugPrint('Error updating notification preferences: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateOrganisasi(String id, Map<String, dynamic> data) async {
+    try {
+      await _repository.updateOrganisasi(id, data);
+      await fetchOrganisasi();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteOrganisasi(String id) async {
+    try {
+      await _repository.deleteOrganisasi(id);
+      await fetchOrganisasi();
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -858,10 +987,108 @@ class OrmawaProvider extends ChangeNotifier {
       final url = await _repository.uploadFile(filePath);
       return url;
     } catch (e) {
-      debugPrint('Error uploading file in provider: $e');
       return null;
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Attendance Management Methods
+  Future<void> fetchAbsensiManagement() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _absensiManagementList = await _repository.getAbsensiManagement(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> createAbsensiManagement(Map<String, dynamic> data) async {
+    try {
+      await _repository.createAbsensiManagement(data);
+      await fetchAbsensiManagement();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getAbsensiManagementDetail(String id) async {
+    try {
+      return await _repository.getAbsensiManagementDetail(id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updateAbsensiManagement(String id, Map<String, dynamic> data) async {
+    try {
+      await _repository.updateAbsensiManagement(id, data);
+      await fetchAbsensiManagement();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Financial Settings (Pagu Anggaran)
+  Future<void> fetchFinancialSettings({String? targetOrmawaId, String? periode}) async {
+    try {
+      _isLoadingPagu = true;
+      notifyListeners();
+
+      final oid = targetOrmawaId ?? ormawaId;
+      final settings = await _repository.getFinancialSettings(
+        ormawaId: oid,
+        periode: periode,
+      );
+
+      _allFinancialSettings = settings;
+      if (settings.isNotEmpty) {
+        if (oid != null && oid.isNotEmpty) {
+          _financialSetting = settings.firstWhere(
+            (s) => s.ormawaId.toString() == oid,
+            orElse: () => settings.first,
+          );
+        } else {
+          _financialSetting = settings.first;
+        }
+
+        if (_financialSetting != null) {
+          await fetchFinancialAuditLogs(_financialSetting!.ormawaId.toString());
+        }
+      } else {
+        _financialSetting = null;
+        _auditLogs = [];
+      }
+    } catch (_) {
+    } finally {
+      _isLoadingPagu = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchFinancialAuditLogs(String targetOrmawaId) async {
+    try {
+      final logs = await _repository.getFinancialAuditLogs(targetOrmawaId);
+      _auditLogs = logs;
+      notifyListeners();
+    } catch (_) {
+      _auditLogs = [];
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateFinancialSetting(Map<String, dynamic> data) async {
+    try {
+      _isLoadingPagu = true;
+      notifyListeners();
+
+      await _repository.updateFinancialSetting(data);
+      await fetchFinancialSettings(targetOrmawaId: data['ormawa_id']?.toString());
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoadingPagu = false;
       notifyListeners();
     }
   }

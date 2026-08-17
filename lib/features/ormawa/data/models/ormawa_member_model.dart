@@ -14,10 +14,40 @@ class OrmawaMemberModel extends OrmawaMember {
     super.joinedAt,
     super.fotoUrl,
     super.periode,
+    super.prodi,
   });
 
   factory OrmawaMemberModel.fromJson(Map<String, dynamic> json) {
     final mahasiswa = json['Mahasiswa'] as Map<String, dynamic>?;
+    final programStudi = mahasiswa?['ProgramStudi'] as Map<String, dynamic>?;
+    final pengguna = (mahasiswa?['Pengguna'] ??
+        mahasiswa?['pengguna'] ??
+        json['Pengguna'] ??
+        json['pengguna']) as Map<String, dynamic>?;
+
+    final rawFoto = mahasiswa?['FotoURL'] ??
+        mahasiswa?['foto_url'] ??
+        mahasiswa?['Foto'] ??
+        mahasiswa?['foto'] ??
+        pengguna?['avatar_url'] ??
+        pengguna?['AvatarURL'] ??
+        pengguna?['foto'] ??
+        pengguna?['Foto'] ??
+        json['avatar_url'] ??
+        json['AvatarURL'] ??
+        json['foto_url'] ??
+        json['FotoURL'] ??
+        json['fotoUrl'] ??
+        json['foto'] ??
+        '';
+
+    final prodiName = programStudi?['Nama'] ??
+        programStudi?['nama'] ??
+        mahasiswa?['prodi'] ??
+        mahasiswa?['Prodi'] ??
+        json['prodi'] ??
+        '';
+
     return OrmawaMemberModel(
       id: (json['ID'] ?? json['id'] ?? '').toString(),
       mahasiswaId:
@@ -36,13 +66,9 @@ class OrmawaMemberModel extends OrmawaMember {
       joinedAt: DateTime.tryParse(
         json['JoinedAt'] ?? json['joinedAt'] ?? json['joined_at'] ?? '',
       ),
-      fotoUrl:
-          mahasiswa?['FotoURL'] ??
-          mahasiswa?['foto_url'] ??
-          mahasiswa?['Foto'] ??
-          json['fotoUrl'] ??
-          '',
+      fotoUrl: rawFoto.toString(),
       periode: json['Periode'] ?? json['periode'] ?? '',
+      prodi: prodiName.toString(),
     );
   }
 

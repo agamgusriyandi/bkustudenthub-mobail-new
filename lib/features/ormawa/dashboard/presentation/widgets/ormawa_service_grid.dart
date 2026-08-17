@@ -3,18 +3,15 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 
-// Screens
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/finance/presentation/pages/ormawa_finance_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
@@ -39,74 +36,66 @@ class OrmawaServiceGrid extends StatelessWidget {
         const _ServiceIcon(
           title: 'Proposal',
           icon: Icons.assignment_rounded,
-          color: AppColors.info,
-          delay: 0.5,
+          color: AppColors.serviceIndigo,
           target: OrmawaProposalScreen(),
         ),
       if (ormawaProvider.hasPermission('view_members'))
         const _ServiceIcon(
           title: 'Anggota',
           icon: Icons.groups_rounded,
-          color: AppColors.neutral700,
-          delay: 0.55,
+          color: AppColors.servicePurple,
           target: OrmawaAnggotaScreen(),
         ),
       if (ormawaProvider.hasPermission('view_finance'))
         const _ServiceIcon(
           title: 'Keuangan',
           icon: Icons.account_balance_wallet_rounded,
-          color: AppColors.success,
-          delay: 0.6,
+          color: AppColors.serviceEmerald,
           target: OrmawaFinanceScreen(),
         ),
       if (ormawaProvider.hasPermission('view_attendance'))
-        _ServiceIcon(
+        const _ServiceIcon(
           title: 'Absensi',
           icon: Icons.qr_code_scanner_rounded,
-          color: context.appColors.info,
-          delay: 0.65,
+          color: AppColors.serviceCyan,
           target: OrmawaAbsensiScreen(),
         ),
       if (ormawaProvider.hasPermission('view_calendar'))
-        _ServiceIcon(
+        const _ServiceIcon(
           title: 'Kalender',
           icon: Icons.event_rounded,
-          color: context.appColors.info,
-          delay: 0.7,
+          color: AppColors.serviceAmber,
           target: OrmawaKalenderScreen(),
         ),
       if (ormawaProvider.hasPermission('view_lpj'))
         const _ServiceIcon(
           title: 'Lpj',
           icon: Icons.description_rounded,
-          color: AppColors.error,
-          delay: 0.75,
+          color: AppColors.serviceRose,
           target: OrmawaLaporanScreen(),
         ),
       if (ormawaProvider.hasPermission('view_announcements'))
         const _ServiceIcon(
           title: 'Pengumuman',
           icon: Icons.campaign_rounded,
-          color: AppColors.neutral700,
-          delay: 0.8,
+          color: AppColors.serviceSky,
           target: OrmawaPengumumanScreen(),
         ),
       const _ServiceIcon(
         title: 'Lainnya',
-        icon: Icons.menu_rounded,
+        icon: Icons.grid_view_rounded,
         color: AppColors.neutral600,
-        delay: 0.85,
         isMore: true,
       ),
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final isTablet = constraints.maxWidth >= 600;
-          final crossAxisCount = isTablet ? 8 : 4;
-          final aspectRatio = isTablet ? 1.0 : 0.85;
+          final crossAxisCount = (constraints.maxWidth / 80).floor().clamp(4, 8);
+          final itemWidth = (constraints.maxWidth - (6 * (crossAxisCount - 1))) / crossAxisCount;
+          final aspectRatio = itemWidth / 84;
 
           return GridView.count(
             padding: EdgeInsets.zero,
@@ -114,7 +103,7 @@ class OrmawaServiceGrid extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
             mainAxisSpacing: 10,
-            crossAxisSpacing: 0,
+            crossAxisSpacing: 6,
             childAspectRatio: aspectRatio,
             children: items,
           );
@@ -141,30 +130,30 @@ class OrmawaServiceGridModal extends StatelessWidget {
 
     final modalItems = <Widget>[
       if (ormawaProvider.hasPermission('view_structure'))
-        _ModalServiceIcon(
+        const _ModalServiceIcon(
           title: 'Struktur',
           icon: Icons.account_tree_rounded,
-          color: context.appColors.info,
+          color: AppColors.serviceIndigo,
           target: OrmawaStrukturScreen(),
         ),
       if (isOpenRecruitment && canViewRecruitment)
-        _ModalServiceIcon(
-          title: 'Open Recruitment',
+        const _ModalServiceIcon(
+          title: 'Recruitment',
           icon: Icons.person_add_rounded,
-          color: context.appColors.info,
+          color: AppColors.serviceSky,
           target: OrmawaRecruitmentScreen(),
         ),
       if (canViewAspirations)
-        _ModalServiceIcon(
+        const _ModalServiceIcon(
           title: 'Aspirasi',
           icon: Icons.chat_bubble_outline_rounded,
-          color: context.appColors.error,
+          color: AppColors.serviceRose,
           target: OrmawaAspirasiScreen(),
         ),
-      _ModalServiceIcon(
+      const _ModalServiceIcon(
         title: 'Notifikasi',
         icon: Icons.notifications_rounded,
-        color: context.appColors.warning,
+        color: AppColors.serviceAmber,
         target: OrmawaNotificationsScreen(),
       ),
       const _ModalServiceIcon(
@@ -184,24 +173,28 @@ class OrmawaServiceGridModal extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 40,
+          width: 36,
           height: 4,
           decoration: BoxDecoration(
             color: AppColors.neutral300,
             borderRadius: AppRadius.radiusXs,
           ),
         ),
-        const SizedBox(height: AppSpacing.xxl),
+        const SizedBox(height: AppSpacing.lg),
         Text(
-          'Lainnya',
-          style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.w900),
+          'Layanan Tambahan',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: context.appColors.onSurface,
+          ),
         ),
-        const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.lg),
         Expanded(
           child: GridView.count(
             crossAxisCount: 4,
-            mainAxisSpacing: 24,
-            crossAxisSpacing: 0,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 8,
             childAspectRatio: 0.85,
             children: modalItems,
           ),
@@ -214,7 +207,7 @@ class OrmawaServiceGridModal extends StatelessWidget {
     BkuDialog.show(
       context: context,
       title: 'Keluar Portal?',
-      message: 'Sesi administrasi Anda akan diakhiri. Pastikan semua data laporan sudah tersimpan.',
+      message: 'Sesi administrasi Anda akan diakhiri.',
       type: BkuDialogType.error,
       primaryButtonText: 'Keluar',
       onPrimaryPressed: () async {
@@ -247,7 +240,9 @@ class _ModalServiceIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return BkuBounceButton(
+      scaleFactor: 0.92,
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         if (onTap != null) {
           onTap!();
@@ -259,26 +254,39 @@ class _ModalServiceIcon extends StatelessWidget {
         }
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: color.withAlpha(15),
-              borderRadius: AppRadius.radiusLg,
+              color: color.withAlpha(22),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: color.withAlpha(50),
+                width: 1.0,
+              ),
             ),
-            child: Icon(icon, color: color, size: 26),
+            child: Center(
+              child: Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 6),
           Text(
             title,
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
-            ),
             textAlign: TextAlign.center,
-            maxLines: 2,
+            style: TextStyle(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w700,
+              color: context.appColors.onSurface,
+              letterSpacing: -0.2,
+            ),
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -291,7 +299,6 @@ class _ServiceIcon extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color color;
-  final double delay;
   final Widget? target;
   final bool isMore;
 
@@ -299,48 +306,62 @@ class _ServiceIcon extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.color,
-    required this.delay,
     this.target,
     this.isMore = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FadeInAnimation(
-      delay: delay,
-      child: GestureDetector(
-        onTap: () {
-          if (isMore) {
-            _showMoreServices(context);
-          } else if (target != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => target!),
-            );
-          }
-        },
-        child: Column(
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: color.withAlpha(15),
-                borderRadius: AppRadius.radiusLg,
-              ),
-              child: Icon(icon, color: color, size: 26),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              title,
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral600,
-                fontWeight: FontWeight.bold,
-                fontSize: 10,
+    return BkuBounceButton(
+      scaleFactor: 0.92,
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        if (isMore) {
+          _showMoreServices(context);
+        } else if (target != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => target!),
+          );
+        }
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: color.withAlpha(22),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: color.withAlpha(50),
+                width: 1.0,
               ),
             ),
-          ],
-        ),
+            child: Center(
+              child: Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w700,
+              color: context.appColors.onSurface,
+              letterSpacing: -0.2,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
@@ -350,8 +371,8 @@ class _ServiceIcon extends StatelessWidget {
       context: context,
       padding: EdgeInsets.zero,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.65,
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        height: MediaQuery.of(context).size.height * 0.55,
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: const OrmawaServiceGridModal(),
       ),
     );

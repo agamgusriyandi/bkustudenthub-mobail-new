@@ -11,6 +11,7 @@ class OrmawaMember {
   final DateTime? joinedAt;
   final String? fotoUrl;
   final String? periode;
+  final String? prodi;
 
   OrmawaMember({
     required this.id,
@@ -25,15 +26,16 @@ class OrmawaMember {
     this.joinedAt,
     this.fotoUrl,
     this.periode,
+    this.prodi,
   });
 
   String get initial {
-    if (name.trim().isEmpty) return '?';
-    final parts = name.trim().split(RegExp(r'\s+'));
-    return parts
-        .map((e) => e.isNotEmpty ? e[0] : '')
-        .take(2)
-        .join()
-        ;
+    if (name.trim().isEmpty) return 'M';
+    final parts = name.trim().split(RegExp(r'\s+')).where((e) => e.isNotEmpty).toList();
+    if (parts.isEmpty) return 'M';
+    if (parts.length == 1) {
+      return parts[0].length > 1 ? parts[0].substring(0, 2).toUpperCase() : parts[0].toUpperCase();
+    }
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   }
 }

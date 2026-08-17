@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcemen
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
 
 abstract class OrmawaRepository {
   Future<List<OrmawaProposal>> getProposals(String ormawaId);
@@ -119,4 +120,9 @@ abstract class OrmawaRepository {
   Future<void> createOrganisasi(Map<String, dynamic> data);
   Future<void> updateOrganisasi(String id, Map<String, dynamic> data);
   Future<void> deleteOrganisasi(String id);
+
+  // FINANCIAL SETTINGS (PAGU ANGGARAN)
+  Future<List<OrmawaFinancialSetting>> getFinancialSettings({String? ormawaId, String? periode});
+  Future<List<OrmawaFinancialAuditLog>> getFinancialAuditLogs(String ormawaId);
+  Future<void> updateFinancialSetting(Map<String, dynamic> data);
 }

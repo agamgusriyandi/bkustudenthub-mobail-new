@@ -4,12 +4,10 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
-
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
@@ -26,16 +24,16 @@ class OrmawaRecentMembers extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: BkuSectionHeader(title: 'Anggota Terbaru'),
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            child: const BkuShimmer(
+          const SizedBox(height: AppSpacing.sm),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            child: BkuShimmer(
               width: double.infinity,
-              height: 120,
+              height: 90,
               borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
           ),
@@ -45,7 +43,6 @@ class OrmawaRecentMembers extends StatelessWidget {
 
     if (members.isEmpty) return const SizedBox.shrink();
 
-    // Take max 8 members
     final recentMembers = members.take(8).toList();
 
     return Column(
@@ -65,56 +62,57 @@ class OrmawaRecentMembers extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           child: BkuCard(
             padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.xl,
-              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.md,
             ),
+            borderRadius: AppRadius.radius20,
             child: SizedBox(
-              height: 80,
+              height: 68,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: recentMembers.length,
-                separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.lg),
+                separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.md),
                 itemBuilder: (context, index) {
                   final member = recentMembers[index];
                   final name = member.name.isNotEmpty ? member.name : 'Unknown';
                   final firstName = name.split(' ').first;
-                  final initial = name.substring(0, 1);
+                  final initial = name.substring(0, 1).toUpperCase();
 
                   return Column(
                     children: [
                       Container(
-                        width: 50,
-                        height: 50,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: context.appColors.primary.withAlpha(15),
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: context.appColors.primary.withAlpha(30),
-                            width: 1.5,
+                            width: 1.2,
                           ),
                         ),
                         alignment: Alignment.center,
                         child:
                             member.fotoUrl != null && member.fotoUrl!.isNotEmpty
                                 ? ClipRRect(
-                                  borderRadius: AppRadius.br25,
-                                  child: CachedNetworkImage(imageUrl: 
-                                    ApiGate.getImageUrl(member.fotoUrl!),
-                                    width: 50,
-                                    height: 50,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: CachedNetworkImage(
+                                    imageUrl: ApiGate.getImageUrl(member.fotoUrl!),
+                                    width: 40,
+                                    height: 40,
                                     fit: BoxFit.cover,
                                     errorWidget:
                                         (context, url, error) => Text(
                                           initial,
-                                          style: AppTextStyles.titleLg.copyWith(
+                                          style: TextStyle(
                                             color: context.appColors.primary,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 20,
+                                            fontSize: 14,
                                           ),
                                         ),
                                     placeholder: (context, url) => Container(color: AppColors.neutral200),
@@ -122,20 +120,19 @@ class OrmawaRecentMembers extends StatelessWidget {
                                 )
                                 : Text(
                                   initial,
-                                  style: AppTextStyles.titleLg.copyWith(
-                                    color:
-                                        context.appColors.primary,
+                                  style: TextStyle(
+                                    color: context.appColors.primary,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                                    fontSize: 14,
                                   ),
                                 ),
                       ),
-                      const SizedBox(height: AppSpacing.s6),
+                      const SizedBox(height: 4),
                       SizedBox(
-                        width: 60,
+                        width: 52,
                         child: Text(
                           firstName,
-                          style: AppTextStyles.labelSm.copyWith(
+                          style: const TextStyle(
                             fontSize: 10,
                             color: AppColors.neutral700,
                             fontWeight: FontWeight.w600,

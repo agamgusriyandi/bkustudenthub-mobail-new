@@ -20,6 +20,7 @@ import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_notification_mo
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_member_model.dart';
 import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_organisasi_model.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
 
 class OrmawaRepositoryImpl implements OrmawaRepository {
   @override
@@ -1006,6 +1007,49 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
       await ormawaRemoteDataSource.deleteOrganisasi(id);
     } catch (e) {
       log('Error in deleteOrganisasi: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<OrmawaFinancialSetting>> getFinancialSettings({String? ormawaId, String? periode}) async {
+    try {
+      final response = await ormawaRemoteDataSource.getFinancialSettings(
+        ormawaId: ormawaId,
+        periode: periode,
+      );
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => OrmawaFinancialSetting.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getFinancialSettings: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<List<OrmawaFinancialAuditLog>> getFinancialAuditLogs(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getFinancialAuditLogs(ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => OrmawaFinancialAuditLog.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getFinancialAuditLogs: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> updateFinancialSetting(Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.updateFinancialSetting(data);
+    } catch (e) {
+      log('Error in updateFinancialSetting: $e');
       rethrow;
     }
   }

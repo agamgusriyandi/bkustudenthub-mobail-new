@@ -1,4 +1,5 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
@@ -69,13 +70,19 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               title:
                   'Halo, ${context.watch<OrmawaProvider>().currentMember?.name.split(' ').first ?? context.watch<OrmawaProvider>().orgName}!',
               subtitle:
-                  context.watch<OrmawaProvider>().currentMember?.role ??
-                  'PORTAL ADMINISTRATOR',
+                  context.watch<OrmawaProvider>().currentMember?.role != null &&
+                          context
+                              .watch<OrmawaProvider>()
+                              .currentMember!
+                              .role
+                              .isNotEmpty
+                      ? '${context.watch<OrmawaProvider>().currentMember!.role} • ${context.watch<OrmawaProvider>().orgName}'
+                      : context.watch<OrmawaProvider>().orgName,
               info:
                   'TAHUN AKADEMIK ${context.watch<OrmawaProvider>().academicYear}',
               variant: AppBarVariant.ormawa,
               showBackButton: false,
-              expandedHeight: 200.0,
+              expandedHeight: 140.0,
               showProfileOnCollapse: true,
               profileImage:
                   context.watch<OrmawaProvider>().currentMember?.fotoUrl !=
@@ -112,29 +119,148 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               isExpandable: true,
               notificationCount:
                   context.watch<OrmawaProvider>().unreadNotificationsCount,
+              bottomChild: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm + 2,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(40),
+                        borderRadius: BorderRadius.circular(AppRadius.radius20),
+                        border: Border.all(
+                          color: Colors.white.withAlpha(60),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'Kepengurusan Aktif',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm + 2,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(30),
+                        borderRadius: BorderRadius.circular(AppRadius.radius20),
+                        border: Border.all(
+                          color: Colors.white.withAlpha(50),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.verified_rounded,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            context.watch<OrmawaProvider>().ormawaSettings['nomor_sk'] != null &&
+                                    context
+                                        .watch<OrmawaProvider>()
+                                        .ormawaSettings['nomor_sk']
+                                        .toString()
+                                        .isNotEmpty
+                                ? 'SK: ${context.watch<OrmawaProvider>().ormawaSettings['nomor_sk']}'
+                                : 'SK Terverifikasi',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (context.watch<OrmawaProvider>().gamifikasiPeringkat > 0) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm + 2,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(30),
+                          borderRadius: BorderRadius.circular(AppRadius.radius20),
+                          border: Border.all(
+                            color: Colors.white.withAlpha(50),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.leaderboard_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Rank #${context.watch<OrmawaProvider>().gamifikasiPeringkat} Univ',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
               actions: [],
             ),
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppSpacing.s20),
+                  const SizedBox(height: AppSpacing.s18),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                     child: BkuSectionHeader(title: 'Layanan Administrasi'),
                   ),
-                  const SizedBox(height: AppSpacing.s10),
+                  const SizedBox(height: AppSpacing.sm),
                   const OrmawaServiceGrid(),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.s18),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                     child: BkuSectionHeader(title: 'Statistik Organisasi'),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.sm),
                   const OrmawaQuickStats(),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.s18),
                   const OrmawaGamificationCard(),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.s18),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -146,9 +272,9 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.sm),
                   const OrmawaProposalList(),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.s18),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -160,7 +286,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.sm),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
@@ -180,9 +306,9 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                                       .toList(),
                             ),
                   ),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.s18),
                   const OrmawaRecentMembers(),
-                  const SizedBox(height: AppSpacing.s120),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -192,11 +318,11 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
     );
   }
 
-  // Removed local section header methods
-
   Widget _buildAgendaCard(OrmawaAgenda agenda) {
     return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      borderRadius: AppRadius.lg,
+      padding: const EdgeInsets.all(AppSpacing.md),
       onTap: () {
         context.push(AppRoutes.ormawaAgendaDetail, extra: agenda);
       },
@@ -204,34 +330,38 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              color: context.appColors.primary.withAlpha(15),
+              color: AppColors.serviceAmber.withAlpha(20),
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.event_outlined,
-              color: context.appColors.primary,
-              size: 22,
+              color: AppColors.serviceAmber,
+              size: 18,
             ),
           ),
-          const SizedBox(width: AppSpacing.lg),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   agenda.title,
-                  style: AppTextStyles.bodyMd.copyWith(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                    fontSize: 12,
+                    color: context.appColors.onSurface,
                   ),
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 2),
                 Text(
                   '${DateFormat('dd MMM', 'id').format(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
-                  style: AppTextStyles.labelMd.copyWith(
+                  style: TextStyle(
+                    fontSize: 10,
                     color: context.appColors.onSurfaceVariant,
                   ),
                 ),
@@ -243,8 +373,8 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
             customText: agenda.status.toUpperCase(),
             showIcon: false,
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: 6,
+              horizontal: 8,
+              vertical: 3,
             ),
           ),
         ],

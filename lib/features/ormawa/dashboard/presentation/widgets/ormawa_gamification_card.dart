@@ -5,8 +5,9 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 
 class _GamificationTheme {
   final List<Color> gradientColors;
@@ -15,6 +16,9 @@ class _GamificationTheme {
   final Color valueColor;
   final Color iconColor;
   final Color iconBgColor;
+  final Color iconBorderColor;
+  final Color badgeBgColor;
+  final Color badgeTextColor;
   final Color progressBgColor;
   final Color progressColor;
   final Color borderColor;
@@ -26,6 +30,9 @@ class _GamificationTheme {
     required this.valueColor,
     required this.iconColor,
     required this.iconBgColor,
+    required this.iconBorderColor,
+    required this.badgeBgColor,
+    required this.badgeTextColor,
     required this.progressBgColor,
     required this.progressColor,
     required this.borderColor,
@@ -37,53 +44,61 @@ class OrmawaGamificationCard extends StatelessWidget {
 
   _GamificationTheme _getTheme(BuildContext context, int rank) {
     if (rank == 1) {
-      // Premium Gold
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFFFDF73), const Color(0xFFC5A017)],
-        titleColor: const Color(0xFF594300),
-        textColor: const Color(0xFF7A5C00),
-        valueColor: const Color(0xFF382900),
-        iconColor: const Color(0xFF594300),
-        iconBgColor: Colors.white.withAlpha(150),
-        progressBgColor: Colors.black.withAlpha(20),
-        progressColor: const Color(0xFF594300),
-        borderColor: const Color(0xFFFFF2AE),
+        gradientColors: [const Color(0xFFFFFBEB), Colors.white],
+        titleColor: context.appColors.onSurface,
+        textColor: const Color(0xFFB45309),
+        valueColor: context.appColors.onSurface,
+        iconColor: const Color(0xFFD97706),
+        iconBgColor: const Color(0xFFFEF3C7),
+        iconBorderColor: const Color(0xFFFBBF24),
+        badgeBgColor: const Color(0xFFF59E0B),
+        badgeTextColor: Colors.white,
+        progressBgColor: const Color(0xFFFEF3C7),
+        progressColor: const Color(0xFFF59E0B),
+        borderColor: const Color(0xFFFDE047),
       );
     } else if (rank == 2) {
-      // Premium Silver
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFF5F7FA), const Color(0xFFC3CFE2)],
-        titleColor: const Color(0xFF2C3E50),
-        textColor: const Color(0xFF475B73),
-        valueColor: const Color(0xFF1A252F),
-        iconColor: const Color(0xFF2C3E50),
-        iconBgColor: Colors.white.withAlpha(150),
-        progressBgColor: Colors.black.withAlpha(20),
-        progressColor: const Color(0xFF2C3E50),
-        borderColor: Colors.white,
+        gradientColors: [const Color(0xFFF8FAFC), Colors.white],
+        titleColor: context.appColors.onSurface,
+        textColor: const Color(0xFF64748B),
+        valueColor: context.appColors.onSurface,
+        iconColor: const Color(0xFF64748B),
+        iconBgColor: const Color(0xFFF1F5F9),
+        iconBorderColor: const Color(0xFFCBD5E1),
+        badgeBgColor: const Color(0xFF94A3B8),
+        badgeTextColor: Colors.white,
+        progressBgColor: const Color(0xFFF1F5F9),
+        progressColor: const Color(0xFF64748B),
+        borderColor: const Color(0xFFE2E8F0),
       );
     } else if (rank == 3) {
-      // Premium Bronze
       return _GamificationTheme(
-        gradientColors: [const Color(0xFFD68A59), const Color(0xFF9E5424)],
-        titleColor: Colors.white,
-        textColor: Colors.white.withAlpha(220),
-        valueColor: Colors.white,
-        iconColor: Colors.white,
-        iconBgColor: Colors.white.withAlpha(60),
-        progressBgColor: Colors.black.withAlpha(40),
-        progressColor: Colors.white,
-        borderColor: const Color(0xFFEAA983),
+        gradientColors: [const Color(0xFFFFF7ED), Colors.white],
+        titleColor: context.appColors.onSurface,
+        textColor: const Color(0xFFC2410C),
+        valueColor: context.appColors.onSurface,
+        iconColor: const Color(0xFFEA580C),
+        iconBgColor: const Color(0xFFFFEDD5),
+        iconBorderColor: const Color(0xFFFED7AA),
+        badgeBgColor: const Color(0xFFFB923C),
+        badgeTextColor: Colors.white,
+        progressBgColor: const Color(0xFFFFEDD5),
+        progressColor: const Color(0xFFEA580C),
+        borderColor: const Color(0xFFFED7AA),
       );
     } else {
-      // Default (Polos Putih)
       return _GamificationTheme(
         gradientColors: [context.appColors.surface, context.appColors.surface],
         titleColor: context.appColors.onSurface,
         textColor: AppColors.neutral600,
         valueColor: context.appColors.onSurface,
         iconColor: AppColors.warning,
-        iconBgColor: AppColors.warning.withAlpha(30),
+        iconBgColor: AppColors.warning.withAlpha(20),
+        iconBorderColor: AppColors.warning.withAlpha(50),
+        badgeBgColor: AppColors.warning,
+        badgeTextColor: Colors.white,
         progressBgColor: AppColors.neutral200,
         progressColor: AppColors.info,
         borderColor: AppColors.neutral300,
@@ -96,11 +111,11 @@ class OrmawaGamificationCard extends StatelessWidget {
     final ormawa = context.watch<OrmawaProvider>();
 
     if (ormawa.isLoading) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        child: const BkuShimmer(
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+        child: BkuShimmer(
           width: double.infinity,
-          height: 180,
+          height: 100,
           borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
         ),
       );
@@ -116,176 +131,205 @@ class OrmawaGamificationCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: theme.gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: theme.borderColor),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.onSurface.withAlpha(10),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+      child: GestureDetector(
+        onTap: () => context.push(AppRoutes.ormawaGamifikasi),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: theme.gradientColors,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: theme.iconBgColor,
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  child: Icon(
-                    Icons.emoji_events_rounded,
-                    color: theme.iconColor,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Gamifikasi Ormawa',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: theme.titleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Tingkatkan terus keaktifan organisasi!',
-                        style: AppTextStyles.bodySm.copyWith(
-                          color: theme.textColor,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Peringkat',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: theme.textColor,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            '#$peringkat',
-                            style: AppTextStyles.titleLg.copyWith(
-                              color: theme.valueColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            'dari $total',
-                            style: AppTextStyles.bodySm.copyWith(
-                              color: theme.textColor,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xl),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Akumulasi Poin',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: theme.textColor,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            '$poin',
-                            style: AppTextStyles.titleLg.copyWith(
-                              color: theme.valueColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            'Pts',
-                            style: AppTextStyles.bodySm.copyWith(
-                              color: theme.textColor,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            ClipRRect(
-              borderRadius: AppRadius.radiusMd,
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: theme.progressBgColor,
-                valueColor: AlwaysStoppedAnimation<Color>(theme.progressColor),
-                minHeight: 8,
+            borderRadius: AppRadius.br20,
+            border: Border.all(color: theme.borderColor, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: theme.iconColor.withAlpha(15),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Bawah',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: theme.textColor,
-                    fontSize: 9,
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: theme.iconBgColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: theme.iconBorderColor,
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.iconColor.withAlpha(25),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.emoji_events_rounded,
+                        color: theme.iconColor,
+                        size: 20,
+                      ),
+                    ),
                   ),
-                ),
-                Text(
-                  'Top 1',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: theme.titleColor,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Gamifikasi Ormawa',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: theme.titleColor,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'Peringkat keaktifan se-Universitas',
+                          style: TextStyle(
+                            color: theme.textColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: theme.iconColor.withAlpha(20),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: theme.iconColor.withAlpha(50), width: 0.8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Leaderboard',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: theme.iconColor,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 13,
+                          color: theme.iconColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: theme.badgeBgColor,
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.badgeBgColor.withAlpha(60),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          '#$peringkat',
+                          style: TextStyle(
+                            color: theme.badgeTextColor,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        'dari $total Ormawa',
+                        style: TextStyle(
+                          color: theme.textColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.badgeBgColor,
+                          theme.iconColor,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.badgeBgColor.withAlpha(60),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$poin',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        const Text(
+                          'XP',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: theme.progressBgColor,
+                  valueColor: AlwaysStoppedAnimation<Color>(theme.progressColor),
+                  minHeight: 5,
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

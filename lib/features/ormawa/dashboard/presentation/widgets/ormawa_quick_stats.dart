@@ -1,14 +1,17 @@
-﻿import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/finance/presentation/pages/ormawa_finance_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_kalender_screen.dart';
 
 class OrmawaQuickStats extends StatelessWidget {
   const OrmawaQuickStats({super.key});
@@ -20,134 +23,200 @@ class OrmawaQuickStats extends StatelessWidget {
     if (ormawa.isLoading) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        child: const BkuShimmer(
-          width: double.infinity,
-          height: 180,
-          borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+        child: GridView.count(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 1.75,
+          children: const [
+            BkuShimmer(
+              width: double.infinity,
+              height: 75,
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+            ),
+            BkuShimmer(
+              width: double.infinity,
+              height: 75,
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+            ),
+            BkuShimmer(
+              width: double.infinity,
+              height: 75,
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+            ),
+            BkuShimmer(
+              width: double.infinity,
+              height: 75,
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+            ),
+          ],
         ),
       );
     }
 
+    final formattedKas = NumberFormat.compactCurrency(
+      symbol: 'Rp ',
+      locale: 'id_ID',
+      decimalDigits: 1,
+    ).format(ormawa.balance);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: Column(
-        children: [
-          Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isTablet = constraints.maxWidth >= 600;
+          final crossAxisCount = isTablet ? 4 : 2;
+          final aspectRatio = isTablet ? 2.3 : 1.75;
+
+          return GridView.count(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: aspectRatio,
             children: [
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  icon: Icons.description_rounded,
-                  title: 'Proposal Aktif',
-                  value: ormawa.activeProposalsCount.toString(),
-                  iconColor: AppColors.info,
-                  iconBgColor: AppColors.info.withAlpha(15),
-                ),
+              _StatusItem(
+                label: 'Proposal',
+                value: '${ormawa.activeProposalsCount} Proker',
+                subValue: '${ormawa.approvalRate}% Approved',
+                icon: Icons.description_rounded,
+                color: AppColors.serviceSky,
+                target: const OrmawaProposalScreen(),
               ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  icon: Icons.people_rounded,
-                  title: 'Total Anggota',
-                  value: ormawa.totalMembers.toString(),
-                  iconColor: AppColors.neutral700,
-                  iconBgColor: AppColors.neutral700.withAlpha(15),
-                ),
+              _StatusItem(
+                label: 'Buku Kas',
+                value: formattedKas,
+                subValue: 'Pemasukan Bersih',
+                icon: Icons.account_balance_wallet_rounded,
+                color: AppColors.serviceEmerald,
+                target: const OrmawaFinanceScreen(),
+              ),
+              _StatusItem(
+                label: 'Anggota',
+                value: '${ormawa.totalMembers} Orang',
+                subValue: 'Terverifikasi',
+                icon: Icons.groups_rounded,
+                color: AppColors.servicePurple,
+                target: const OrmawaAnggotaScreen(),
+              ),
+              _StatusItem(
+                label: 'Kegiatan',
+                value: '${ormawa.upcomingAgendasCount} Agenda',
+                subValue: 'Jadwal Dekat',
+                icon: Icons.event_rounded,
+                color: AppColors.serviceAmber,
+                target: const OrmawaKalenderScreen(),
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  icon: Icons.checklist_rounded,
-                  title: 'Approval Rate',
-                  value: '${ormawa.approvalRate}%',
-                  iconColor: context.appColors.info,
-                  iconBgColor: context.appColors.info.withAlpha(15),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: _buildStatCard(
-                  context,
-                  icon: Icons.event_rounded,
-                  title: 'Agenda Dekat',
-                  value: ormawa.upcomingAgendasCount.toString(),
-                  iconColor: context.appColors.info,
-                  iconBgColor: context.appColors.info.withAlpha(15),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          _buildStatCard(
-            context,
-            icon: Icons.account_balance_wallet_rounded,
-            title: 'Kas Organisasi',
-            value: NumberFormat.compactCurrency(
-              symbol: 'Rp',
-              locale: 'id_ID',
-              decimalDigits: 1,
-            ).format(ormawa.balance),
-            iconColor: AppColors.success,
-            iconBgColor: AppColors.success.withAlpha(15),
-            isFullWidth: true,
-          ),
-        ],
+          );
+        },
       ),
     );
   }
+}
 
-  Widget _buildStatCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color iconColor,
-    required Color iconBgColor,
-    bool isFullWidth = false,
-  }) {
+class _StatusItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final String subValue;
+  final IconData icon;
+  final Color color;
+  final Widget target;
+
+  const _StatusItem({
+    required this.label,
+    required this.value,
+    required this.subValue,
+    required this.icon,
+    required this.color,
+    required this.target,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      borderRadius: AppRadius.radius20,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => target),
+      ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            width: 4,
+            height: 48,
             decoration: BoxDecoration(
-              color: iconBgColor,
-              shape: BoxShape.circle,
+              color: color,
+              borderRadius: AppRadius.br2,
             ),
-            child: Icon(icon, color: iconColor, size: 24),
           ),
-          const SizedBox(width: AppSpacing.lg),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Row(
+                  children: [
+                    Icon(icon, size: 16, color: color),
+                    const SizedBox(width: AppSpacing.xs),
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: color,
+                          letterSpacing: 0.5,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
-                  style: AppTextStyles.titleLg.copyWith(
+                  style: TextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w900,
                     color: context.appColors.onSurface,
-                    fontSize: isFullWidth ? 22 : 18,
+                    letterSpacing: -0.2,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacing.s2),
+                const SizedBox(height: 2),
                 Text(
-                  title,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.outline,
-                    fontSize: 12,
+                  subValue,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: context.appColors.onSurfaceVariant,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant.withAlpha(50),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.chevron_right_rounded,
+              size: 16,
+              color: context.appColors.onSurfaceVariant,
             ),
           ),
         ],

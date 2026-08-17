@@ -10,11 +10,13 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+
 class WebRedirectScreen extends StatelessWidget {
   const WebRedirectScreen({super.key});
 
   Future<void> _launchWebsite(BuildContext context) async {
-    final Uri url = Uri.parse('https://bkustudenthub.com/login');
+    final Uri url = Uri.parse('${ApiGate.webUrl}/login');
     try {
       if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
         if (context.mounted) {

@@ -177,10 +177,10 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: context.appColors.surface,
       body: RefreshIndicator(
         onRefresh: _loadNotifications,
-        color: AppColors.primary,
+        color: context.appColors.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
@@ -190,25 +190,27 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               title: 'Notifikasi',
               subtitle: 'Informasi Terbaru',
               variant: AppBarVariant.ormawa,
-              expandedHeight: 140.0,
               showBackButton: true,
               showNotification: false,
               isExpandable: false,
               actions: [
-                BkuButton(
-                  variant: BkuButtonVariant.text,
+                IconButton(
                   onPressed: _markAllAsRead,
-                  text: 'Baca Semua',
-                  customFgColor: context.appColors.onPrimary,
+                  icon: const Icon(
+                    Icons.done_all_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  tooltip: 'Tandai Semua Dibaca',
                 ),
               ],
             ),
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.md),
                   _buildTabBar(),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.md),
                   _buildNotificationList(),
                   const SizedBox(height: AppSpacing.s100),
                 ],
@@ -236,42 +238,31 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               });
             },
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(right: AppSpacing.md),
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.only(right: AppSpacing.sm),
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl,
-                vertical: AppSpacing.md,
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
                 color:
                     isSelected
                         ? context.appColors.primary
                         : context.appColors.surface,
-                borderRadius: AppRadius.radiusXl,
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color:
                       isSelected
                           ? context.appColors.primary
                           : AppColors.neutral300,
                 ),
-                boxShadow:
-                    isSelected
-                        ? [
-                          BoxShadow(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withAlpha(60),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                        : [],
               ),
               child: Text(
                 _tabs[index],
-                style: AppTextStyles.labelMd.copyWith(
-                  color: isSelected ? context.appColors.surface : AppColors.neutral600,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : AppColors.neutral700,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -324,18 +315,21 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
         children: [
           Icon(
             Icons.notifications_none_rounded,
-            size: 64,
-            color: AppColors.neutral300,
+            size: 56,
+            color: AppColors.neutral400,
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Belum ada notifikasi',
-            style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral600),
+            style: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.neutral600,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Notifikasi akan muncul di sini',
-            style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral400),
+            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral400),
           ),
         ],
       ),
@@ -355,108 +349,97 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.error.withAlpha(20),
-          borderRadius: AppRadius.radiusXl,
+          borderRadius: AppRadius.radiusLg,
         ),
         child: const Icon(
           Icons.delete_outline_rounded,
           color: AppColors.error,
-          size: 24,
+          size: 22,
         ),
       ),
-      onDismissed:
-          (_) => context.read<OrmawaProvider>().removeNotification(
-            notification.id,
-          ),
+      onDismissed: (_) {
+        context.read<OrmawaProvider>().removeNotification(notification.id);
+        AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
+      },
       child: GestureDetector(
         onTap: () => _showNotificationDetail(notification),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+        child: Container(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: notification.isRead ? context.appColors.surface : color.withAlpha(6),
-            borderRadius: AppRadius.radiusXl,
+            color: notification.isRead ? context.appColors.surface : color.withAlpha(8),
+            borderRadius: AppRadius.radiusLg,
             border: Border.all(
               color:
                   notification.isRead
-                      ? context.appColors.surface
-                      : color.withAlpha(30),
-              width: notification.isRead ? 1 : 1.5,
+                      ? AppColors.neutral200
+                      : color.withAlpha(40),
+              width: 1.0,
             ),
-            boxShadow:
-                notification.isRead
-                    ? []
-                    : [
-                      BoxShadow(
-                        color: color.withAlpha(15),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  color: color.withAlpha(15),
-                  borderRadius: AppRadius.radiusMd,
+                  color: color.withAlpha(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color, size: 20),
+                child: Icon(icon, color: color, size: 18),
               ),
-              const SizedBox(width: AppSpacing.lg),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            notification.title,
-                            style: AppTextStyles.labelMd.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color: context.appColors.onSurface,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (!notification.isRead)
-                          Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.only(left: AppSpacing.sm, top: AppSpacing.xs),
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
+                    Text(
+                      notification.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12.5,
+                        color: context.appColors.onSurface,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: 2),
                     Text(
                       notification.message,
-                      style: AppTextStyles.labelSm.copyWith(
+                      style: const TextStyle(
                         color: AppColors.neutral600,
-                        height: 1.4,
+                        fontSize: 11,
+                        height: 1.35,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: 6),
                     Text(
                       _formatTime(notification.createdAt),
-                      style: AppTextStyles.labelSm.copyWith(
+                      style: const TextStyle(
                         color: AppColors.neutral500,
-                        fontSize: 10,
+                        fontSize: 9.5,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.delete_outline_rounded,
+                  size: 18,
+                  color: AppColors.neutral400,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  context.read<OrmawaProvider>().removeNotification(notification.id);
+                  AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
+                },
+                tooltip: 'Hapus',
               ),
             ],
           ),
@@ -475,7 +458,7 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
       backgroundColor: Colors.transparent,
       builder:
           (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
               color: context.appColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
@@ -494,62 +477,70 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [color.withValues(alpha: 0.7), color],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: AppRadius.radiusLg,
-                        boxShadow: [
-                          BoxShadow(
-                            color: color.withAlpha(60),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        color: color.withAlpha(20),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(icon, color: context.appColors.onPrimary, size: 28),
+                      child: Icon(icon, color: color, size: 22),
                     ),
-                    const SizedBox(width: AppSpacing.lg),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             notification.title,
-                            style: AppTextStyles.titleMd.copyWith(
+                            style: const TextStyle(
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.xs),
+                          const SizedBox(height: 2),
                           Text(
                             _formatTime(notification.createdAt),
-                            style: AppTextStyles.labelSm.copyWith(
+                            style: const TextStyle(
                               color: AppColors.neutral500,
+                              fontSize: 10,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: AppColors.error,
+                      ),
+                      onPressed: () {
+                        context.read<OrmawaProvider>().removeNotification(notification.id);
+                        Navigator.pop(context);
+                        AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
+                      },
+                      tooltip: 'Hapus Notifikasi',
+                    ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.lg),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Text(
                       notification.message,
-                      style: AppTextStyles.bodyMd.copyWith(height: 1.6),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        height: 1.5,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.md),
                 SizedBox(
+                  width: double.infinity,
                   child: BkuButton.primary(
                     onPressed: () {
                       context.pop();
@@ -574,7 +565,6 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
           ),
     );
 
-    // Mark as read
     if (!notification.isRead) {
       context.read<OrmawaProvider>().markAsRead(notification.id);
     }

@@ -33,10 +33,10 @@ class BkuSectionHeader extends StatelessWidget {
                       letterSpacing: 1.1,
                     )
                     : AppTextStyles.titleLg.copyWith(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.w900,
                       color: AppColors.neutral800,
-                      letterSpacing: -0.5,
+                      letterSpacing: -0.3,
                     ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -50,8 +50,9 @@ class BkuSectionHeader extends StatelessWidget {
               child: Text(
                 seeAllText,
                 style: AppTextStyles.labelSm.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppColors.neutral800,
                   fontWeight: FontWeight.w900,
+                  fontSize: 11,
                 ),
               ),
             ),

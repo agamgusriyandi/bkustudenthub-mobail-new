@@ -97,6 +97,11 @@ abstract class OrmawaRemoteDataSource {
 
   // RBAC Roles
   Future<Response> getRoleDetails(String roleId);
+
+  // Financial Settings (Pagu Anggaran)
+  Future<Response> getFinancialSettings({String? ormawaId, String? periode});
+  Future<Response> getFinancialAuditLogs(String ormawaId);
+  Future<Response> updateFinancialSetting(Map<String, dynamic> data);
 }
 
 class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
@@ -487,5 +492,23 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   @override
   Future<Response> deleteOrganisasi(String id) async {
     return await dio.delete('/ormawa/organisasi/$id');
+  }
+
+  @override
+  Future<Response> getFinancialSettings({String? ormawaId, String? periode}) async {
+    final queryParams = <String, dynamic>{};
+    if (ormawaId != null && ormawaId.isNotEmpty) queryParams['ormawaId'] = ormawaId;
+    if (periode != null && periode.isNotEmpty) queryParams['periode'] = periode;
+    return await dio.get('/ormawa/financial-settings', queryParameters: queryParams);
+  }
+
+  @override
+  Future<Response> getFinancialAuditLogs(String ormawaId) async {
+    return await dio.get('/ormawa/financial-settings/$ormawaId/audit-logs');
+  }
+
+  @override
+  Future<Response> updateFinancialSetting(Map<String, dynamic> data) async {
+    return await dio.put('/ormawa/financial-settings', data: data);
   }
 }

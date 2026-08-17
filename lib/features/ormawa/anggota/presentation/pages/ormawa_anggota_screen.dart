@@ -1,26 +1,140 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
-import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:go_router/go_router.dart';
 
-String? getFullImageUrl(String? path) {
-  if (path == null || path.trim().isEmpty) return null;
-  return ApiGate.getImageUrl(path);
+class _RoleBadgeStyle {
+  final Color bgColor;
+  final Color textColor;
+  final Color borderColor;
+
+  const _RoleBadgeStyle({
+    required this.bgColor,
+    required this.textColor,
+    required this.borderColor,
+  });
+}
+
+_RoleBadgeStyle _getRoleBadgeStyle(String role) {
+  final r = role.toLowerCase().trim();
+  if (r.contains('ketua umum') || (r.contains('ketua') && !r.contains('wakil') && !r.contains('divisi'))) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFFEF3C7),
+      textColor: Color(0xFF92400E),
+      borderColor: Color(0xFFFDE68A),
+    );
+  }
+  if (r.contains('wakil')) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFFFEDD5),
+      textColor: Color(0xFF9A3412),
+      borderColor: Color(0xFFFED7AA),
+    );
+  }
+  if (r.contains('pembina') || r.contains('penanggung jawab') || r.contains('penasihat')) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFF1F5F9),
+      textColor: Color(0xFF1E293B),
+      borderColor: Color(0xFFCBD5E1),
+    );
+  }
+  if (r.contains('sekretaris') || r.contains('bendahara') || r.contains('bph')) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFE0F2FE),
+      textColor: Color(0xFF075985),
+      borderColor: Color(0xFFBAE6FD),
+    );
+  }
+  if (r.contains('kepala') || r.contains('kadiv') || r.contains('koordinator')) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFF1F5F9),
+      textColor: Color(0xFF1E293B),
+      borderColor: Color(0xFFCBD5E1),
+    );
+  }
+  if (r.contains('staff') || r.contains('staf') || r == 'anggota' || r.contains('anggota')) {
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFF8FAFC),
+      textColor: Color(0xFF334155),
+      borderColor: Color(0xFFE2E8F0),
+    );
+  }
+  return const _RoleBadgeStyle(
+    bgColor: Color(0xFFF1F5F9),
+    textColor: Color(0xFF1E293B),
+    borderColor: Color(0xFFCBD5E1),
+  );
+}
+
+Widget _buildAvatar(String name, String? fotoUrl, {double size = 40}) {
+  String initials = 'M';
+  final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+  if (parts.length == 1) {
+    initials = parts[0].substring(0, parts[0].length >= 2 ? 2 : 1).toUpperCase();
+  } else if (parts.length > 1) {
+    initials = '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+  }
+
+  String? fullUrl;
+  if (fotoUrl != null && fotoUrl.isNotEmpty) {
+    fullUrl = ApiGate.getImageUrl(fotoUrl);
+  }
+
+  return Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF1F5F9),
+      borderRadius: BorderRadius.circular(size > 44 ? 20 : (size > 34 ? 12 : 8)),
+      border: Border.all(color: const Color(0xFFE2E8F0), width: 1.0),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x0A000000),
+          blurRadius: 2,
+          offset: Offset(0, 1),
+        ),
+      ],
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: fullUrl != null
+        ? Image.network(
+            fullUrl,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Center(
+              child: Text(
+                initials,
+                style: TextStyle(
+                  fontSize: size * 0.36,
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF475569),
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ),
+          )
+        : Center(
+            child: Text(
+              initials,
+              style: TextStyle(
+                fontSize: size * 0.36,
+                fontWeight: FontWeight.w900,
+                color: const Color(0xFF475569),
+                letterSpacing: -0.5,
+              ),
+            ),
+          ),
+  );
 }
 
 class OrmawaAnggotaScreen extends StatefulWidget {
@@ -33,9 +147,9 @@ class OrmawaAnggotaScreen extends StatefulWidget {
 class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _selectedFilterRole = 'SEMUA';
-  String _selectedFilterDivisi = 'SEMUA';
-  String _selectedFilterStatus = 'SEMUA';
+  String _selectedFilterRole = 'all';
+  String _selectedFilterDivisi = 'all';
+  String _selectedFilterStatus = 'all';
 
   @override
   void initState() {
@@ -56,199 +170,25 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
 
   List<OrmawaMember> _getFilteredMembers(List<OrmawaMember> members) {
     return members.where((m) {
-      final matchesSearch =
-          m.name.toLowerCase().contains(_searchQuery) ||
-          m.nim.toLowerCase().contains(_searchQuery);
-      final matchesRole =
-          _selectedFilterRole == 'SEMUA' ||
-          m.role.toUpperCase() == _selectedFilterRole;
-      final matchesDivisi =
-          _selectedFilterDivisi == 'SEMUA' ||
-          m.division.toUpperCase() == _selectedFilterDivisi;
-      final matchesStatus =
-          _selectedFilterStatus == 'SEMUA' ||
-          m.status.toUpperCase() == _selectedFilterStatus;
+      final q = _searchQuery.toLowerCase().trim();
+      final matchesSearch = q.isEmpty ||
+          m.name.toLowerCase().contains(q) ||
+          m.nim.toLowerCase().contains(q);
+
+      final matchesRole = _selectedFilterRole == 'all' ||
+          m.role.toLowerCase() == _selectedFilterRole.toLowerCase();
+
+      final matchesDivisi = _selectedFilterDivisi == 'all' ||
+          (m.division.isEmpty ? 'Umum' : m.division).toLowerCase() == _selectedFilterDivisi.toLowerCase();
+
+      final statusStr = m.status.toLowerCase().trim();
+      final isAktif = statusStr == 'aktif' || statusStr.isEmpty;
+      final matchesStatus = _selectedFilterStatus == 'all' ||
+          (_selectedFilterStatus == 'aktif' && isAktif) ||
+          (_selectedFilterStatus == 'nonaktif' && !isAktif);
+
       return matchesSearch && matchesRole && matchesDivisi && matchesStatus;
     }).toList();
-  }
-
-  void _showFilterSheet(OrmawaProvider provider) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.appColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
-      builder:
-          (context) => StatefulBuilder(
-            builder: (context, setModalState) {
-              final roles = ['SEMUA', ...provider.roles.map((r) => r.name)];
-              final divisions = [
-                'SEMUA',
-                ...provider.divisions.map((d) => d.name),
-              ];
-              final statuses = ['SEMUA', 'AKTIF', 'NONAKTIF', 'ALUMNI'];
-
-              return DraggableScrollableSheet(
-                initialChildSize: 0.7,
-                minChildSize: 0.4,
-                maxChildSize: 0.9,
-                expand: false,
-                builder:
-                    (_, controller) => Padding(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'FILTER ANGGOTA',
-                                style: AppTextStyles.titleLg.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () => context.pop(),
-                                icon: const Icon(Icons.close),
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 32),
-                          Expanded(
-                            child: ListView(
-                              controller: controller,
-                              children: [
-                                Text(
-                                  'STATUS KEANGGOTAAN',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral500,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children:
-                                      statuses
-                                          .map(
-                                            (s) => ChoiceChip(
-                                              label: Text(s),
-                                              selected:
-                                                  _selectedFilterStatus == s,
-                                              onSelected: (selected) {
-                                                setModalState(
-                                                  () =>
-                                                      _selectedFilterStatus = s,
-                                                );
-                                                setState(() {});
-                                              },
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                                const SizedBox(height: AppSpacing.xl),
-                                Text(
-                                  'STATUS KEANGGOTAAN',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral500,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children:
-                                      roles
-                                          .map(
-                                            (r) => ChoiceChip(
-                                              label: Text(r),
-                                              selected:
-                                                  _selectedFilterRole
-                                                      .toUpperCase() ==
-                                                  r,
-                                              onSelected: (selected) {
-                                                setModalState(
-                                                  () => _selectedFilterRole = r,
-                                                );
-                                                setState(() {});
-                                              },
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                                const SizedBox(height: AppSpacing.xl),
-                                Text(
-                                  'DIVISI',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral500,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children:
-                                      divisions
-                                          .map(
-                                            (d) => ChoiceChip(
-                                              label: Text(d),
-                                              selected:
-                                                  _selectedFilterDivisi
-                                                      .toUpperCase() ==
-                                                  d,
-                                              onSelected: (selected) {
-                                                setModalState(
-                                                  () =>
-                                                      _selectedFilterDivisi = d,
-                                                );
-                                                setState(() {});
-                                              },
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: BkuButton.outline(
-                                  text: 'RESET',
-                                  onPressed: () {
-                                    setModalState(() {
-                                      _selectedFilterRole = 'SEMUA';
-                                      _selectedFilterDivisi = 'SEMUA';
-                                      _selectedFilterStatus = 'SEMUA';
-                                    });
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.lg),
-                              Expanded(
-                                flex: 2,
-                                child: BkuButton.primary(
-                                  text: 'TERAPKAN FILTER',
-                                  onPressed: () => context.pop(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-              );
-            },
-          ),
-    );
   }
 
   void _confirmRegenerate() {
@@ -256,18 +196,15 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
       context: context,
       type: BkuDialogType.warning,
       title: 'Regenerasi Kepengurusan?',
-      message: 'Apakah Anda yakin ingin memulai periode baru? Semua anggota aktif saat ini akan menjadi demisioner.',
-      primaryButtonText: 'Regenerasi',
+      message: 'Apakah Anda yakin ingin memulai periode baru? Semua anggota aktif saat ini akan menjadi demisioner/alumni.',
+      primaryButtonText: 'Regenerasi Sekarang',
       secondaryButtonText: 'Batal',
       onPrimaryPressed: () async {
-        context.pop();
+        Navigator.pop(context);
         try {
           await context.read<OrmawaProvider>().regenerateMembers();
           if (mounted) {
-            AppSnackbar.showSuccess(
-              context,
-              'Regenerasi kepengurusan berhasil!',
-            );
+            AppSnackbar.showSuccess(context, 'Regenerasi kepengurusan berhasil!');
           }
         } catch (e) {
           if (mounted) {
@@ -275,7 +212,44 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
           }
         }
       },
-      onSecondaryPressed: () => context.pop(),
+      onSecondaryPressed: () => Navigator.pop(context),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, OrmawaMember member) {
+    BkuDialog.show(
+      context: context,
+      type: BkuDialogType.error,
+      title: 'Hapus Anggota?',
+      message: 'Hapus "${member.name}" dari basis data keanggotaan ormawa?',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        await context.read<OrmawaProvider>().deleteMember(member.id);
+        if (context.mounted) {
+          AppSnackbar.showSuccess(context, 'Anggota berhasil dihapus');
+        }
+      },
+      onSecondaryPressed: () => Navigator.pop(context),
+    );
+  }
+
+  void _showDetailModal(BuildContext context, OrmawaMember member) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _OrmawaAnggotaDetailSheet(member: member),
+    );
+  }
+
+  void _showFormModal(BuildContext context, [OrmawaMember? member]) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _OrmawaAnggotaFormSheet(initialMember: member),
     );
   }
 
@@ -284,9 +258,12 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
     return Consumer<OrmawaProvider>(
       builder: (context, provider, child) {
         final filteredMembers = _getFilteredMembers(provider.members);
+        final canCreate = provider.hasPermission('create_members') || provider.hasPermission('ormawa.members.create, ormawa.organisasi.manage');
+        final canEdit = provider.hasPermission('edit_members') || provider.hasPermission('ormawa.members.update, ormawa.organisasi.manage');
+        final isAktifPeriod = provider.selectedPeriod == 'aktif';
 
         return Scaffold(
-          backgroundColor: AppColors.neutral100,
+          backgroundColor: const Color(0xFFF8FAFC),
           body: RefreshIndicator(
             onRefresh: () => context.read<OrmawaProvider>().refreshData(),
             child: CustomScrollView(
@@ -294,345 +271,80 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
                   title: 'Manajemen Anggota',
-                  subtitle: 'Database Keanggotaan',
+                  subtitle: 'Database Keanggotaan Ormawa',
                   expandedHeight: 115.0,
                   showBackButton: true,
                   isExpandable: false,
                 ),
+
                 if (provider.isLoading)
-                  SliverFillRemaining(
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.xl,
-                      ),
+                  const SliverFillRemaining(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.xl),
                       child: BkuShimmerList(itemCount: 5, itemHeight: 80),
                     ),
                   )
                 else
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: AppSpacing.sm,
-                        left: AppSpacing.s20,
-                        right: AppSpacing.s20,
-                        bottom: AppSpacing.s20,
-                      ),
+                      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.lg),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSummaryCard(provider),
-                          const SizedBox(height: AppSpacing.s20),
+                          _buildHeroBanner(context, canCreate && isAktifPeriod),
+                          const SizedBox(height: 14),
 
-                          // Period & Regenerate Header
-                          Container(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color: context.appColors.surface,
-                              borderRadius: AppRadius.radiusXl,
-                              border: Border.all(color: AppColors.neutral300),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.onSurface.withAlpha(12),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'PERIODE KEPENGURUSAN',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral600,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.md),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSpacing.lg,
-                                          vertical: AppSpacing.xs,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.neutral100,
-                                          borderRadius: AppRadius.radiusMd,
-                                          border: Border.all(
-                                            color: AppColors.neutral300,
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: BkuDropdown<String>(
-                                            isExpanded: true,
-                                            value: provider.selectedPeriod,
-                                            icon: Icon(
-                                              Icons.expand_more_rounded,
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
-                                            ),
-                                            items: [
-                                              const DropdownMenuItem(
-                                                value: 'aktif',
-                                                child: Text(
-                                                  'Aktif (Terbaru)',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              ...provider.availablePeriods.map(
-                                                (p) => DropdownMenuItem(
-                                                  value: p,
-                                                  child: Text(
-                                                    'Periode $p',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                            onChanged: (val) {
-                                              if (val != null) {
-                                                provider.setMemberPeriod(val);
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    if (provider.selectedPeriod == 'aktif' &&
-                                        provider.hasPermission(
-                                          'edit_members',
-                                        )) ...[
-                                      const SizedBox(width: AppSpacing.md),
-                                      InkWell(
-                                        onTap: () => _confirmRegenerate(),
-                                        borderRadius: AppRadius.radiusMd,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: AppSpacing.lg,
-                                            vertical: AppSpacing.lg,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.error.withAlpha(
-                                              20,
-                                            ),
-                                            borderRadius: AppRadius.radiusMd,
-                                            border: Border.all(
-                                              color: AppColors.error.withAlpha(
-                                                50,
-                                              ),
-                                            ),
-                                          ),
-                                          child: const Row(
-                                            children: [
-                                              Icon(
-                                                Icons.history_rounded,
-                                                color: AppColors.error,
-                                                size: 20,
-                                              ),
-                                              SizedBox(width: AppSpacing.s6),
-                                              Text(
-                                                'Arsipkan',
-                                                style: TextStyle(
-                                                  color: AppColors.error,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-                          OrmawaListHeader(
-                            title: 'DAFTAR ANGGOTA (${filteredMembers.length})',
-                            searchHint: 'Cari nama atau NIM...',
-                            searchController: _searchController,
-                            onRefresh:
-                                () =>
-                                    context
-                                        .read<OrmawaProvider>()
-                                        .refreshData(),
-                            onFilterTap: () => _showFilterSheet(provider),
-                            onChanged:
-                                (value) => setState(
-                                  () => _searchQuery = value.toLowerCase(),
-                                ),
-                          ),
-                          const SizedBox(height: AppSpacing.s20),
+                          _buildStatsGrid(context, provider),
+                          const SizedBox(height: 14),
+
+                          _buildPeriodCard(context, provider, canEdit && isAktifPeriod),
+                          const SizedBox(height: 16),
+
+                          _buildToolbarAndFilter(context, provider, filteredMembers.length),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     ),
                   ),
-                  if (filteredMembers.isEmpty)
-                    SliverToBoxAdapter(child: _buildEmptyState())
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.only(
-                        left: AppSpacing.s20,
-                        right: AppSpacing.s20,
-                        bottom: AppSpacing.s20,
-                      ),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index.isOdd) {
-                              return const SizedBox(height: AppSpacing.md);
-                            }
-                            final memberIndex = index ~/ 2;
-                            final member = filteredMembers[memberIndex];
-                            return _buildMemberCard(
-                              context,
-                              member,
-                              provider,
-                            );
-                          },
-                          childCount: filteredMembers.isEmpty ? 0 : (filteredMembers.length * 2) - 1,
-                        ),
+
+                if (!provider.isLoading && filteredMembers.isEmpty)
+                  SliverToBoxAdapter(child: _buildEmptyState())
+                else if (!provider.isLoading)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 32),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final member = filteredMembers[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: _buildMemberCard(context, member, provider),
+                          );
+                        },
+                        childCount: filteredMembers.length,
                       ),
                     ),
-                ],
+                  ),
+              ],
             ),
           ),
-          floatingActionButton:
-              provider.hasPermission('create_members') &&
-                      provider.selectedPeriod == 'aktif'
-                  ? FloatingActionButton.extended(
-                    onPressed: () => _showAddMember(context),
-                    backgroundColor: context.appColors.primary,
-                    icon: Icon(
-                      Icons.person_add_rounded,
-                      color: context.appColors.onPrimary,
-                    ),
-                    label: Text(
-                      'Tambah Anggota',
-                      style: TextStyle(
-                        color: context.appColors.onPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                  : null,
         );
       },
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: AppColors.onSurface.withAlpha(10), blurRadius: 20),
-                ],
-              ),
-              child: const Icon(
-                Icons.search_off_rounded,
-                size: 64,
-                color: AppColors.neutral400,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Data tidak ditemukan',
-              style: AppTextStyles.titleLg.copyWith(
-                color: AppColors.neutral700,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Coba gunakan kata kunci pencarian atau\nfilter yang berbeda.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
-            ),
-            if (_searchQuery.isNotEmpty ||
-                _selectedFilterRole != 'SEMUA' ||
-                _selectedFilterDivisi != 'SEMUA' ||
-                _selectedFilterStatus != 'SEMUA') ...[
-              const SizedBox(height: AppSpacing.xl),
-              BkuButton.outline(
-                text: 'Reset Filter',
-                onPressed:
-                    () => setState(() {
-                      _searchQuery = '';
-                      _selectedFilterRole = 'SEMUA';
-                      _selectedFilterDivisi = 'SEMUA';
-                      _selectedFilterStatus = 'SEMUA';
-                    }),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryCard(OrmawaProvider provider) {
-    final total = provider.members.length.toString();
-    final aktif =
-        provider.members
-            .where((m) => m.status.toLowerCase() == 'aktif')
-            .length
-            .toString();
-    final pengurus =
-        provider.members
-            .where(
-              (m) => [
-                'KETUA',
-                'WAKIL KETUA',
-                'SEKRETARIS',
-                'BENDAHARA',
-              ].contains(m.role),
-            )
-            .length
-            .toString();
-    final divisi =
-        provider.members
-            .map((m) => m.division)
-            .toSet()
-            .where((d) => d.trim().isNotEmpty)
-            .length
-            .toString();
-
+  Widget _buildHeroBanner(BuildContext context, bool showAddButton) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.xl,
-        vertical: 22,
-      ),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral300),
-        boxShadow: [
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
           BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Color(0x06000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -641,512 +353,348 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.analytics_rounded,
-                color: context.appColors.primary,
-                size: 20,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: const Text(
+                  'ORGANISASI KEMAHASISWAAN',
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF475569),
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'STATISTIK ORGANISASI',
-                style: AppTextStyles.labelSm.copyWith(
-                  color: AppColors.neutral800,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
+              const Spacer(),
+              if (showAddButton)
+                ElevatedButton.icon(
+                  onPressed: () => _showFormModal(context),
+                  icon: const Icon(Icons.person_add_rounded, size: 14),
+                  label: const Text('Tambah Anggota', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.appColors.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: const Icon(Icons.groups_rounded, size: 22, color: Color(0xFF475569)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: 'Manajemen ',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          ),
+                          TextSpan(
+                            text: 'Anggota Ormawa',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: context.appColors.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    const Text(
+                      'Database keanggotaan menyeluruh, pembagian divisi kerja, dan pemantauan status keaktifan mahasiswa.',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Color(0xFF64748B),
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildSummaryItem(total, 'Total Anggota'),
-              _buildSummaryItem(aktif, 'Aktif'),
-              _buildSummaryItem(pengurus, 'Pengurus'),
-              _buildSummaryItem(divisi, 'Divisi'),
-            ],
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryItem(String value, String label) {
-    return Expanded(
+  Widget _buildStatsGrid(BuildContext context, OrmawaProvider provider) {
+    final total = provider.members.length;
+    final aktif = provider.members.where((m) => m.status.toLowerCase() == 'aktif').length;
+    final totalDivisi = provider.divisions.length;
+    final selectedPeriodText = provider.selectedPeriod == 'aktif' ? 'Aktif' : 'Thn ${provider.selectedPeriod}';
+    final periodBadge = provider.selectedPeriod == 'aktif' ? '2025/2026' : provider.selectedPeriod;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                title: 'Total Anggota',
+                value: '$total',
+                icon: Icons.groups_rounded,
+                iconColor: const Color(0xFF475569),
+                iconBg: const Color(0xFFF1F5F9),
+                subtitle: 'Database anggota',
+                badge: '${provider.availablePeriods.length + 1} Periode',
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildStatCard(
+                title: 'Anggota Aktif',
+                value: '$aktif',
+                icon: Icons.how_to_reg_rounded,
+                iconColor: const Color(0xFF10B981),
+                iconBg: const Color(0xFFECFDF5),
+                subtitle: 'Status kepengurusan',
+                badge: 'Aktif',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                title: 'Total Divisi',
+                value: '$totalDivisi',
+                icon: Icons.domain_rounded,
+                iconColor: const Color(0xFF0284C7),
+                iconBg: const Color(0xFFF0F9FF),
+                subtitle: 'Struktur departemen',
+                badge: '$totalDivisi Unit',
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildStatCard(
+                title: 'Periode Terpilih',
+                value: selectedPeriodText,
+                icon: Icons.calendar_month_rounded,
+                iconColor: const Color(0xFFD97706),
+                iconBg: const Color(0xFFFEF3C7),
+                subtitle: 'Masa bakti',
+                badge: periodBadge,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    required String subtitle,
+    required String badge,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 4,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 18, color: iconColor),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  badge,
+                  style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           Text(
             value,
             style: const TextStyle(
-              color: AppColors.neutral800,
-              fontSize: 24,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
+              color: Color(0xFF0F172A),
+              letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: 1),
           Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.neutral500,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
+            title,
+            style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+          ),
+          Text(
+            subtitle,
+            style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8)),
           ),
         ],
       ),
     );
   }
 
-  Color _getRoleColor(String role) {
-    final r = role.toLowerCase();
-    if (r.contains('ketua umum') || r == 'ketua') {
-      return context.appColors.primary;
-    }
-    if (r.contains('wakil ketua')) return context.appColors.info;
-    if (r.contains('sekretaris') || r.contains('bendahara')) {
-      return AppColors.info;
-    }
-    if (r.contains('kepala') || r.contains('kadiv')) return AppColors.warning;
-    if (r.contains('staff') || r.contains('staf') || r == 'anggota') {
-      return AppColors.success;
-    }
-    return AppColors.neutral500;
-  }
-
-  Widget _buildMemberCard(
-    BuildContext context,
-    OrmawaMember member,
-    OrmawaProvider provider,
-  ) {
-    Color roleColor = _getRoleColor(member.role);
-    String? photoUrl = getFullImageUrl(member.fotoUrl);
-    bool isAktif = member.status.toLowerCase() == 'aktif';
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OrmawaAnggotaDetailScreen(member: member),
+  Widget _buildPeriodCard(BuildContext context, OrmawaProvider provider, bool canRegenerate) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 4,
+            offset: Offset(0, 1),
           ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(
-            color: isAktif ? AppColors.neutral200 : AppColors.neutral300,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.history_edu_rounded, size: 18, color: Color(0xFF475569)),
+              SizedBox(width: 8),
+              Text(
+                'PERIODE KEPENGURUSAN',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: roleColor.withAlpha(50), width: 2),
-              ),
-              child: CircleAvatar(
-                radius: 26,
-                backgroundColor: roleColor.withAlpha(20),
-                backgroundImage:
-                    photoUrl != null
-                        ? NetworkImage(ApiGate.getImageUrl(photoUrl))
-                        : null,
-                child:
-                    photoUrl == null
-                        ? Text(
-                          member.initial,
-                          style: TextStyle(
-                            color: roleColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        )
-                        : null,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 3),
+          const Text(
+            'Tampilkan daftar anggota & pengurus berdasarkan tahun periode masa bakti aktif.',
+            style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+          ),
+          const SizedBox(height: 10),
+          Builder(
+            builder: (context) {
+              final uniquePeriods = provider.availablePeriods.where((p) => p.isNotEmpty && p.toLowerCase() != 'aktif').toSet().toList();
+              final allPeriodItems = ['aktif', ...uniquePeriods];
+              final currentSelectedPeriod = allPeriodItems.contains(provider.selectedPeriod) ? provider.selectedPeriod : 'aktif';
+
+              return Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          member.name,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.neutral800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  Expanded(
+                    child: Container(
+                      height: 38,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFCBD5E1)),
                       ),
-                      if (provider.hasPermission('edit_members') &&
-                          provider.selectedPeriod == 'aktif')
-                        SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: PopupMenuButton(
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(
-                              Icons.more_vert_rounded,
-                              size: 20,
-                              color: AppColors.neutral500,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: currentSelectedPeriod,
+                          isExpanded: true,
+                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: Color(0xFF64748B)),
+                          items: [
+                            const DropdownMenuItem(
+                              value: 'aktif',
+                              child: Text('Aktif Sekarang (Terbaru)'),
                             ),
-                            itemBuilder:
-                                (context) => [
-                                  const PopupMenuItem(
-                                    value: 'edit',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.edit_rounded,
-                                          size: 18,
-                                          color: AppColors.info,
-                                        ),
-                                        SizedBox(width: AppSpacing.s10),
-                                        Text(
-                                          'Edit Anggota',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'delete',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete_outline_rounded,
-                                          size: 18,
-                                          color: AppColors.error,
-                                        ),
-                                        SizedBox(width: AppSpacing.s10),
-                                        Text(
-                                          'Hapus Anggota',
-                                          style: TextStyle(
-                                            color: AppColors.error,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                            onSelected: (val) {
-                              if (val == 'edit') {
-                                _showEditMember(context, member);
-                              } else if (val == 'delete') {
-                                _confirmDelete(context, member);
-                              }
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.s2),
-                  Row(
-                    children: [
-                      Text(
-                        member.nim,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral600,
-                          fontFamily: 'monospace',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
-                        ),
-                      ),
-                      if (!isAktif) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral500.withAlpha(30),
-                            borderRadius: AppRadius.radiusXs,
-                          ),
-                          child: Text(
-                            member.status,
-                            style: const TextStyle(
-                              fontSize: 8,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral500,
-                              letterSpacing: 0.5,
+                            ...uniquePeriods.map(
+                              (p) => DropdownMenuItem(
+                                value: p,
+                                child: Text('Periode $p (Demisioner/Alumni)'),
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.s10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: roleColor.withAlpha(15),
-                          borderRadius: AppRadius.radiusSm,
-                          border: Border.all(color: roleColor.withAlpha(30)),
-                        ),
-                        child: Text(
-                          member.role,
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: roleColor,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 9,
-                            letterSpacing: 0.5,
-                          ),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              provider.setMemberPeriod(val);
+                            }
+                          },
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.xs,
-                        ),
+                    ),
+                  ),
+                  if (canRegenerate) ...[
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: _confirmRegenerate,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        height: 38,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(15),
-                          borderRadius: AppRadius.radiusSm,
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withAlpha(30),
-                          ),
+                          color: const Color(0xFFFFF1F2),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFFECDD3)),
                         ),
-                        child: Text(
-                          (member.division.isEmpty ? 'UMUM' : member.division)
-                              ,
-                          style: AppTextStyles.labelSm.copyWith(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 9,
-                            letterSpacing: 0.5,
-                          ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.history_rounded, size: 16, color: Color(0xFFE11D48)),
+                            SizedBox(width: 6),
+                            Text(
+                              'Regenerasi',
+                              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48)),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _confirmDelete(BuildContext context, OrmawaMember member) {
-    BkuDialog.show(
-      context: context,
-      type: BkuDialogType.error,
-      title: 'Hapus Anggota',
-      message: 'Apakah Anda yakin ingin menghapus ${member.name} dari keanggotaan?',
-      primaryButtonText: 'Hapus',
-      secondaryButtonText: 'Batal',
-      onPrimaryPressed: () {
-        context.read<OrmawaProvider>().deleteMember(member.id);
-        context.pop();
-      },
-      onSecondaryPressed: () => context.pop(),
-    );
-  }
-
-  void _showAddMember(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const OrmawaFormAnggotaScreen()),
-    );
-  }
-
-  void _showEditMember(BuildContext context, OrmawaMember member) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OrmawaFormAnggotaScreen(initialMember: member),
-      ),
-    );
-  }
-}
-
-class OrmawaFormAnggotaScreen extends StatefulWidget {
-  final OrmawaMember? initialMember;
-  const OrmawaFormAnggotaScreen({super.key, this.initialMember});
-
-  @override
-  State<OrmawaFormAnggotaScreen> createState() =>
-      _OrmawaFormAnggotaScreenState();
-}
-
-class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
-  Map<String, dynamic>? _selectedStudent;
-
-  String _selectedRole = 'Anggota';
-  String _selectedDivision = 'Umum';
-  String _selectedStatus = 'Aktif';
-
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-
-  final List<String> _statuses = ['Aktif', 'Nonaktif', 'Alumni', 'Cuti'];
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialMember != null) {
-      _selectedDivision =
-          widget.initialMember!.division.isEmpty
-              ? 'Umum'
-              : widget.initialMember!.division;
-      _selectedRole =
-          widget.initialMember!.role.isEmpty
-              ? 'Anggota'
-              : widget.initialMember!.role;
-
-      final mStatus = widget.initialMember!.status;
-      if (_statuses.any((s) => s.toLowerCase() == mStatus.toLowerCase())) {
-        _selectedStatus = _statuses.firstWhere(
-          (s) => s.toLowerCase() == mStatus.toLowerCase(),
-        );
-      }
-
-      _emailController.text = widget.initialMember!.email ?? '';
-      _phoneController.text = widget.initialMember!.phone ?? '';
-    }
-  }
-
-  void _submit() async {
-    if (widget.initialMember == null && _selectedStudent == null) {
-      AppSnackbar.showWarning(context, 'Pilih mahasiswa terlebih dahulu!');
-      return;
-    }
-
-    final rawId =
-        widget.initialMember != null
-            ? widget.initialMember!.mahasiswaId
-            : _selectedStudent!['id'];
-    final mahasiswaId = int.tryParse(rawId.toString());
-
-    final data = {
-      'MahasiswaID': mahasiswaId,
-      'Role': _selectedRole,
-      'Divisi': _selectedDivision == 'Umum' ? '' : _selectedDivision,
-      'Status': _selectedStatus,
-      'EmailKampus': _emailController.text,
-      'NoHP': _phoneController.text,
-    };
-
-    try {
-      if (widget.initialMember != null) {
-        await context.read<OrmawaProvider>().updateMember(
-          widget.initialMember!.id,
-          data,
-        );
-      } else {
-        await context.read<OrmawaProvider>().addMember(data);
-      }
-      if (mounted) {
-        context.pop();
-        AppSnackbar.showSuccess(context, 'Data anggota berhasil disimpan');
-      }
-    } catch (e) {
-      if (mounted) {
-        AppSnackbar.showError(context, 'Gagal: $e');
-      }
-    }
-  }
-
-  void _showStudentSearchModal() async {
-    // Import repository manually to fetch students if not in provider
-    // For now, we will simulate the bottom sheet UI
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.appColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
-      builder: (context) => const _StudentSearchSheet(),
-    ).then((selected) {
-      if (selected != null) {
-        setState(() {
-          _selectedStudent = selected as Map<String, dynamic>;
-          _emailController.text = _selectedStudent!['email_kampus'] ?? '';
-          _phoneController.text = _selectedStudent!['no_hp'] ?? '';
-        });
-      }
-    });
-  }
-
-  void _showCreateDivisionModal() {
-    final ctrl = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text(
-          'Buat Divisi Baru',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: BkuTextField(
-          controller: ctrl,
-          decoration: InputDecoration(
-            hintText: 'Nama Divisi...',
-            border: OutlineInputBorder(borderRadius: AppRadius.radiusMd),
-            filled: true,
-            fillColor: AppColors.neutral100,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: const Text(
-              'Batal',
-              style: TextStyle(
-                color: AppColors.neutral500,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          BkuButton.primary(
-            text: 'Simpan',
-            fullWidth: false,
-            onPressed: () async {
-              if (ctrl.text.trim().isNotEmpty) {
-                try {
-                  await context.read<OrmawaProvider>().createDivisionInline(
-                    ctrl.text.trim(),
-                  );
-                  setState(() => _selectedDivision = ctrl.text.trim());
-                  if (dialogCtx.mounted) Navigator.pop(dialogCtx);
-                } catch (e) {
-                  if (mounted) {
-                    AppSnackbar.showError(context, 'Gagal membuat divisi');
-                  }
-                }
-              }
+              );
             },
           ),
         ],
@@ -1154,513 +702,376 @@ class _OrmawaFormAnggotaScreenState extends State<OrmawaFormAnggotaScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final isEdit = widget.initialMember != null;
+  Widget _buildToolbarAndFilter(BuildContext context, OrmawaProvider provider, int filteredCount) {
+    final rbacRoles = provider.roles.map((r) => r.name.trim()).where((n) => n.isNotEmpty);
+    final memberRoles = provider.members.map((m) => m.role.trim()).where((r) => r.isNotEmpty);
+    final defaults = ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Kepala Divisi', 'Staff', 'Anggota', 'Pembina'];
+    final allRoles = {'all', ...defaults, ...rbacRoles, ...memberRoles}.toList();
 
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      body: Consumer<OrmawaProvider>(
-        builder: (context, provider, child) {
-          final availableRoles = provider.roles.map((r) => r.name).toList();
-          if (!availableRoles.contains('Anggota')) {
-            availableRoles.add('Anggota');
-          }
+    final allDivisions = {'all', 'Umum', ...provider.divisions.map((d) => d.name).where((d) => d.trim().isNotEmpty)}.toList();
 
-          final availableDivisions = [
-            'Umum',
-            ...provider.divisions.map((d) => d.name),
-          ];
-          if (!availableDivisions.contains(_selectedDivision)) {
-            availableDivisions.add(_selectedDivision);
-          }
+    final hasActiveFilter = _searchQuery.isNotEmpty ||
+        _selectedFilterRole != 'all' ||
+        _selectedFilterDivisi != 'all' ||
+        _selectedFilterStatus != 'all';
 
-          return CustomScrollView(
-            slivers: [
-              BkuAppBar(
-                title: isEdit ? 'EDIT DATA ANGGOTA' : 'TAMBAH ANGGOTA BARU',
-                subtitle: 'Registrasi Anggota',
-                variant: AppBarVariant.ormawa,
-                expandedHeight: 130.0,
-                showBackButton: true,
-                isExpandable: false,
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: _searchController,
+            onChanged: (val) => setState(() => _searchQuery = val),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+            decoration: InputDecoration(
+              hintText: 'Cari nama atau NIM anggota...',
+              hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
+              prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF64748B)),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear_rounded, size: 16, color: Color(0xFF94A3B8)),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _searchQuery = '');
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: const Color(0xFFF8FAFC),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Column(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: context.appColors.primary, width: 1.2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  height: 32,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: allRoles.contains(_selectedFilterRole) ? _selectedFilterRole : 'all',
+                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                      icon: const Icon(Icons.arrow_drop_down, size: 16, color: Color(0xFF64748B)),
+                      items: allRoles.map((r) => DropdownMenuItem(
+                        value: r,
+                        child: Text(r == 'all' ? 'Semua Jabatan' : r),
+                      )).toList(),
+                      onChanged: (val) {
+                        if (val != null) setState(() => _selectedFilterRole = val);
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+
+                Container(
+                  height: 32,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: allDivisions.contains(_selectedFilterDivisi) ? _selectedFilterDivisi : 'all',
+                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                      icon: const Icon(Icons.arrow_drop_down, size: 16, color: Color(0xFF64748B)),
+                      items: allDivisions.map((d) => DropdownMenuItem(
+                        value: d,
+                        child: Text(d == 'all' ? 'Semua Divisi' : d),
+                      )).toList(),
+                      onChanged: (val) {
+                        if (val != null) setState(() => _selectedFilterDivisi = val);
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+
+                Container(
+                  height: 32,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: ['all', 'aktif', 'nonaktif'].contains(_selectedFilterStatus) ? _selectedFilterStatus : 'all',
+                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                      icon: const Icon(Icons.arrow_drop_down, size: 16, color: Color(0xFF64748B)),
+                      items: const [
+                        DropdownMenuItem(value: 'all', child: Text('Semua Status')),
+                        DropdownMenuItem(value: 'aktif', child: Text('Aktif')),
+                        DropdownMenuItem(value: 'nonaktif', child: Text('Nonaktif')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _selectedFilterStatus = val);
+                      },
+                    ),
+                  ),
+                ),
+
+                if (hasActiveFilter) ...[
+                  const SizedBox(width: 6),
+                  InkWell(
+                    onTap: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchQuery = '';
+                        _selectedFilterRole = 'all';
+                        _selectedFilterDivisi = 'all';
+                        _selectedFilterStatus = 'all';
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 32,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF1F2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFFECDD3)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Reset',
+                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFFE11D48)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Menampilkan $filteredCount dari ${provider.members.length} anggota',
+                style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMemberCard(BuildContext context, OrmawaMember member, OrmawaProvider provider) {
+    final roleStyle = _getRoleBadgeStyle(member.role);
+    final canEdit = provider.hasPermission('edit_members') || provider.hasPermission('ormawa.members.update, ormawa.organisasi.manage');
+    final canDelete = provider.hasPermission('delete_members') || provider.hasPermission('ormawa.members.delete, ormawa.organisasi.manage');
+    final isAktifPeriod = provider.selectedPeriod == 'aktif';
+
+    final subText = [
+      if (member.nim.isNotEmpty && member.nim != '-') member.nim,
+      if (member.prodi != null && member.prodi!.isNotEmpty) member.prodi!,
+    ].join(' • ');
+
+    final isAktif = member.status.toLowerCase().trim() == 'aktif' || member.status.isEmpty;
+
+    return BkuCard(
+      margin: EdgeInsets.zero,
+      padding: const EdgeInsets.all(12),
+      borderRadius: AppRadius.md,
+      child: InkWell(
+        onTap: () => _showDetailModal(context, member),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildAvatar(member.name, member.fotoUrl, size: 40),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        isEdit
-                            ? 'Update informasi fungsionaris ormawa.'
-                            : 'Daftarkan mahasiswa sebagai anggota aktif ormawa.',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral500,
+                      Expanded(
+                        child: Text(
+                          member.name,
+                          style: const TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0F172A),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xxl),
-
-                      Text(
-                        'Pilih Mahasiswa',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral700,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      GestureDetector(
-                        onTap: isEdit ? null : _showStudentSearchModal,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.lg,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                isEdit
-                                    ? AppColors.neutral200
-                                    : AppColors.neutral100,
-                            borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: AppColors.neutral300),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.person_search_rounded,
-                                color:
-                                    isEdit
-                                        ? AppColors.neutral500
-                                        : context.appColors.primary,
-                                size: 24,
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Text(
-                                  isEdit
-                                      ? widget.initialMember!.name
-                                      : (_selectedStudent != null
-                                          ? "${_selectedStudent!['nama']} (${_selectedStudent!['nim']})"
-                                          : 'Cari Nama / NIM Mahasiswa...'),
-                                  style: TextStyle(
-                                    color:
-                                        (isEdit || _selectedStudent != null)
-                                            ? AppColors.neutral800
-                                            : AppColors.neutral500,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              if (!isEdit)
-                                const Icon(
-                                  Icons.arrow_drop_down_rounded,
-                                  color: AppColors.neutral500,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: AppSpacing.xl),
+                      const SizedBox(width: 4),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Jabatan',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral700,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                _buildDropdown<String>(
-                                  value:
-                                      availableRoles.contains(_selectedRole)
-                                          ? _selectedRole
-                                          : availableRoles.first,
-                                  items: availableRoles,
-                                  onChanged:
-                                      (val) =>
-                                          setState(() => _selectedRole = val!),
-                                ),
-                              ],
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.visibility_outlined, size: 16, color: Color(0xFF64748B)),
+                            padding: const EdgeInsets.all(3),
+                            constraints: const BoxConstraints(),
+                            onPressed: () => _showDetailModal(context, member),
+                            tooltip: 'Lihat Detail',
                           ),
-                          const SizedBox(width: AppSpacing.lg),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Divisi',
-                                      style: AppTextStyles.labelSm.copyWith(
-                                        color: AppColors.neutral700,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: _showCreateDivisionModal,
-                                      child: Text(
-                                        '+ Buat Baru',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                _buildDropdown<String>(
-                                  value:
-                                      availableDivisions.contains(
-                                            _selectedDivision,
-                                          )
-                                          ? _selectedDivision
-                                          : 'Umum',
-                                  items: availableDivisions,
-                                  onChanged:
-                                      (val) => setState(
-                                        () => _selectedDivision = val!,
-                                      ),
-                                ),
-                              ],
+                          if (canEdit && isAktifPeriod) ...[
+                            const SizedBox(width: 4),
+                            IconButton(
+                              icon: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFFD97706)),
+                              padding: const EdgeInsets.all(3),
+                              constraints: const BoxConstraints(),
+                              onPressed: () => _showFormModal(context, member),
+                              tooltip: 'Edit Anggota',
                             ),
-                          ),
+                          ],
+                          if (canDelete && isAktifPeriod) ...[
+                            const SizedBox(width: 4),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFEF4444)),
+                              padding: const EdgeInsets.all(3),
+                              constraints: const BoxConstraints(),
+                              onPressed: () => _confirmDelete(context, member),
+                              tooltip: 'Hapus Anggota',
+                            ),
+                          ],
                         ],
                       ),
-
-                      const SizedBox(height: AppSpacing.xl),
-                      Text(
-                        'Status Keanggotaan',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral700,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      _buildDropdown<String>(
-                        value: _selectedStatus,
-                        items: _statuses,
-                        onChanged:
-                            (val) => setState(() => _selectedStatus = val!),
-                      ),
-
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildInputField(
-                        'Email Kampus (Opsional)',
-                        'email@kampus.ac.id',
-                        Icons.email_rounded,
-                        controller: _emailController,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      _buildInputField(
-                        'Nomor HP / WA (Opsional)',
-                        '08123456789',
-                        Icons.phone_android_rounded,
-                        controller: _phoneController,
-                      ),
-
-                      const SizedBox(height: AppSpacing.xxxl),
-                      BkuButton.primary(
-                        text: isEdit ? 'Perbarui Data Anggota' : 'Simpan Anggota Baru',
-                        onPressed: provider.isLoading ? null : _submit,
-                        isLoading: provider.isLoading,
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
                     ],
                   ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildDropdown<T>({
-    required T value,
-    required List<T> items,
-    required void Function(T?) onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: BkuDropdown<T>(
-          isExpanded: true,
-          value: value,
-          icon: const Icon(
-            Icons.expand_more_rounded,
-            color: AppColors.neutral500,
-          ),
-          items:
-              items
-                  .map(
-                    (item) => DropdownMenuItem<T>(
-                      value: item,
-                      child: Text(
-                        item.toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.neutral800,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  if (subText.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subText,
+                      style: const TextStyle(
+                        fontSize: 9.5,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  )
-                  .toList(),
-          onChanged: onChanged,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputField(
-    String label,
-    String hint,
-    IconData icon, {
-    required TextEditingController controller,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.xs,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.neutral100,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(color: AppColors.neutral300),
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: AppColors.neutral500, size: 20),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: BkuTextField(
-                  controller: controller,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.neutral800,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.neutral500,
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Student Search Bottom Sheet Component
-class _StudentSearchSheet extends StatefulWidget {
-  const _StudentSearchSheet();
-  @override
-  State<_StudentSearchSheet> createState() => _StudentSearchSheetState();
-}
-
-class _StudentSearchSheetState extends State<_StudentSearchSheet> {
-  List<Map<String, dynamic>> _students = [];
-  List<Map<String, dynamic>> _filteredStudents = [];
-  bool _isLoading = true;
-  String _query = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchStudents();
-  }
-
-  Future<void> _fetchStudents() async {
-    try {
-      final students = <Map<String, dynamic>>[];
-      if (mounted) {
-        setState(() {
-          _students = students;
-          _filteredStudents = students;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  void _filter(String val) {
-    setState(() {
-      _query = val.toLowerCase();
-      _filteredStudents =
-          _students.where((s) {
-            return (s['nama']?.toString().toLowerCase().contains(_query) ??
-                    false) ||
-                (s['nim']?.toString().toLowerCase().contains(_query) ?? false);
-          }).toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.8,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (_, controller) {
-        return Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'PILIH MAHASISWA',
-                    style: TextStyle(
-                      color: context.appColors.primary,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.close),
+                  ],
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: roleStyle.bgColor,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: roleStyle.borderColor, width: 0.8),
+                        ),
+                        child: Text(
+                          member.role,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            color: roleStyle.textColor,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: const Color(0xFFE2E8F0), width: 0.8),
+                        ),
+                        child: Text(
+                          member.division.isEmpty ? 'Umum' : member.division,
+                          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700, color: Color(0xFF475569)),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: isAktif ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: isAktif ? const Color(0xFFA7F3D0) : const Color(0xFFE2E8F0),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Text(
+                          isAktif ? 'Aktif' : 'Nonaktif',
+                          style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w800,
+                            color: isAktif ? const Color(0xFF047857) : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.lg),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.neutral100,
-                  borderRadius: AppRadius.radiusLg,
-                  border: Border.all(color: AppColors.neutral300),
-                ),
-                child: BkuTextField(
-                  onChanged: _filter,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.search_rounded,
-                      color: context.appColors.primary,
-                    ),
-                    hintText: 'Cari Nama atau NIM...',
-                    border: InputBorder.none,
-                  ),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: AppSpacing.lg),
-              Expanded(
-                child:
-                    _isLoading
-                        ? const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.xl,
-                          ),
-                          child: BkuShimmerList(itemCount: 5, itemHeight: 80),
-                        )
-                        : _filteredStudents.isEmpty
-                        ? Center(
-                          child: Text(
-                            'Tidak ada mahasiswa ditemukan',
-                            style: TextStyle(
-                              color: AppColors.neutral500,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                        : ListView.separated(
-                          controller: controller,
-                          itemCount: _filteredStudents.length,
-                          separatorBuilder: (_, __) => const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final student = _filteredStudents[index];
-                            final photoUrl = getFullImageUrl(
-                              student['foto_url'] ?? student['FotoURL'],
-                            );
-                            return ListTile(
-                              onTap: () => Navigator.pop(context, student),
-                              leading: CircleAvatar(
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withAlpha(20),
-                                backgroundImage:
-                                    photoUrl != null
-                                        ? NetworkImage(
-                                          ApiGate.getImageUrl(photoUrl),
-                                        )
-                                        : null,
-                                child:
-                                    photoUrl == null
-                                        ? Icon(
-                                          Icons.person,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                        )
-                                        : null,
-                              ),
-                              title: Text(
-                                student['nama'] ?? '-',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              subtitle: Text(
-                                student['nim'] ?? '-',
-                                style: const TextStyle(
-                                  fontFamily: 'monospace',
-                                  fontSize: 12,
-                                  color: AppColors.neutral500,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-              ),
-            ],
-          ),
-        );
-      },
+              child: const Icon(Icons.search_off_rounded, size: 48, color: Color(0xFF94A3B8)),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Anggota tidak ditemukan',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Coba gunakan kata kunci pencarian atau filter yang berbeda.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1670,301 +1081,938 @@ class OrmawaAnggotaDetailScreen extends StatelessWidget {
 
   const OrmawaAnggotaDetailScreen({super.key, required this.member});
 
-  Color _getRoleColor(String role) {
-    final r = role.toLowerCase();
-    if (r.contains('ketua umum') || r == 'ketua') return AppColors.primary;
-    if (r.contains('wakil ketua')) return AppColors.info;
-    if (r.contains('sekretaris') || r.contains('bendahara')) {
-      return AppColors.info;
-    }
-    if (r.contains('kepala') || r.contains('kadiv')) return AppColors.warning;
-    if (r.contains('staff') || r.contains('staf') || r == 'anggota') {
-      return AppColors.success;
-    }
-    return AppColors.neutral500;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final roleColor = _getRoleColor(member.role);
-    final photoUrl = getFullImageUrl(member.fotoUrl);
-
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
-          BkuAppBar(
-            title: 'Profil Anggota',
-            subtitle: 'Informasi Mahasiswa',
+          const BkuAppBar(
             variant: AppBarVariant.ormawa,
-            expandedHeight: 130.0,
+            title: 'Detail Anggota',
+            subtitle: 'Profil Anggota Ormawa',
             showBackButton: true,
             isExpandable: false,
           ),
           SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              child: Column(
+            child: _OrmawaAnggotaDetailSheet(member: member),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class OrmawaFormAnggotaScreen extends StatelessWidget {
+  final OrmawaMember? initialMember;
+
+  const OrmawaFormAnggotaScreen({super.key, this.initialMember});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: CustomScrollView(
+        slivers: [
+          BkuAppBar(
+            variant: AppBarVariant.ormawa,
+            title: initialMember != null ? 'Edit Anggota' : 'Tambah Anggota',
+            subtitle: 'Manajemen Keanggotaan',
+            showBackButton: true,
+            isExpandable: false,
+          ),
+          SliverToBoxAdapter(
+            child: _OrmawaAnggotaFormSheet(initialMember: initialMember),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrmawaAnggotaDetailSheet extends StatelessWidget {
+  final OrmawaMember member;
+
+  const _OrmawaAnggotaDetailSheet({required this.member});
+
+  @override
+  Widget build(BuildContext context) {
+    final roleStyle = _getRoleBadgeStyle(member.role);
+    final isAktif = member.status.toLowerCase().trim() == 'aktif' || member.status.isEmpty;
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4.5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Row(
                 children: [
-                  const SizedBox(height: AppSpacing.xxl),
-                  Center(
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.person_rounded, size: 18, color: Color(0xFF475569)),
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.xs),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: roleColor.withAlpha(50),
-                              width: 3,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: roleColor.withAlpha(20),
-                            backgroundImage:
-                                photoUrl != null
-                                    ? NetworkImage(
-                                      ApiGate.getImageUrl(photoUrl),
-                                    )
-                                    : null,
-                            child:
-                                photoUrl == null
-                                    ? Text(
-                                      member.initial,
-                                      style: TextStyle(
-                                        color: roleColor,
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                    : null,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
                         Text(
-                          member.name,
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
+                          'Detail Anggota',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                         ),
                         Text(
-                          member.nim,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: AppColors.neutral500,
-                            fontFamily: 'monospace',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.lg,
-                                vertical: AppSpacing.sm,
-                              ),
-                              decoration: BoxDecoration(
-                                color: roleColor.withAlpha(15),
-                                borderRadius: AppRadius.radiusMd,
-                                border: Border.all(
-                                  color: roleColor.withAlpha(30),
-                                ),
-                              ),
-                              child: Text(
-                                member.role,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: roleColor,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.lg,
-                                vertical: AppSpacing.sm,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withAlpha(15),
-                                borderRadius: AppRadius.radiusMd,
-                                border: Border.all(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withAlpha(30),
-                                ),
-                              ),
-                              child: Text(
-                                (member.division.isEmpty
-                                        ? 'UMUM'
-                                        : member.division)
-                                    ,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ],
+                          'Informasi keanggotaan aktif organisasi mahasiswa.',
+                          style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSectionTitle('KONTAK & DATA'),
-                        const SizedBox(height: AppSpacing.lg),
-                        _buildDetailRow(
-                          Icons.email_rounded,
-                          'Email',
-                          member.email?.isNotEmpty == true
-                              ? member.email!
-                              : 'Tidak tersedia',
-                        ),
-                        _buildDetailRow(
-                          Icons.phone_android_rounded,
-                          'Nomor HP',
-                          member.phone?.isNotEmpty == true
-                              ? member.phone!
-                              : 'Tidak tersedia',
-                        ),
-                        _buildDetailRow(
-                          Icons.calendar_today_rounded,
-                          'Bergabung Pada',
-                          member.joinedAt?.toString().split(' ')[0] ?? '-',
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                        _buildSectionTitle('STATUS KEANGGOTAAN'),
-                        const SizedBox(height: AppSpacing.lg),
-                        _buildActivityItem(
-                          'Status Saat Ini',
-                          member.status,
-                              member.status.toLowerCase() == 'aktif'
-                                  ? AppColors.success
-                                  : AppColors.neutral500,
-                        ),
-                        if (member.periode != null &&
-                            member.periode!.isNotEmpty)
-                          _buildActivityItem(
-                            'Periode',
-                            member.periode!,
-                            context.appColors.primary,
-                          ),
-                        const SizedBox(height: AppSpacing.xxxl),
-                      ],
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF1F5F9),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF64748B)),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 14),
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.labelSm.copyWith(
-        color: AppColors.neutral500,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1.5,
-      ),
-    );
-  }
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Column(
+                  children: [
+                    _buildAvatar(member.name, member.fotoUrl, size: 84),
+                    const SizedBox(height: 12),
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s20),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.neutral100,
-              borderRadius: AppRadius.radiusMd,
-              border: Border.all(color: AppColors.neutral300),
-            ),
-            child: Icon(icon, size: 20, color: AppColors.neutral600),
-          ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral500,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    Text(
+                      member.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                    ),
+                    const SizedBox(height: 4),
+
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text('NIM', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF475569))),
+                        ),
+                        Text(
+                          member.nim.isNotEmpty ? member.nim : '—',
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                        ),
+                        if (member.prodi != null && member.prodi!.isNotEmpty) ...[
+                          const Text('•', style: TextStyle(color: Color(0xFFCBD5E1))),
+                          Text(
+                            member.prodi!,
+                            style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(Icons.badge_outlined, size: 20, color: Color(0xFF64748B)),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'JABATAN STRUKTURAL',
+                                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF94A3B8), letterSpacing: 0.3),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: roleStyle.bgColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: roleStyle.borderColor, width: 0.8),
+                                  ),
+                                  child: Text(
+                                    member.role,
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: roleStyle.textColor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(Icons.workspaces_outlined, size: 20, color: Color(0xFF3B82F6)),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'DIVISI KERJA',
+                                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF94A3B8), letterSpacing: 0.3),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFEFF6FF),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: const Color(0xFFBFDBFE), width: 0.8),
+                                  ),
+                                  child: Text(
+                                    member.division.isEmpty ? 'Umum' : member.division,
+                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1E40AF)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'EMAIL KAMPUS',
+                                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8)),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  (member.email != null && member.email!.isNotEmpty) ? member.email! : '—',
+                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'NO. WHATSAPP',
+                                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8)),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  (member.phone != null && member.phone!.isNotEmpty) ? member.phone! : '—',
+                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Status Keanggotaan',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: isAktif ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: isAktif ? const Color(0xFFA7F3D0) : const Color(0xFFCBD5E1)),
+                            ),
+                            child: Text(
+                              isAktif ? 'Aktif' : 'Nonaktif',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w900,
+                                color: isAktif ? const Color(0xFF047857) : const Color(0xFF64748B),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacing.s2),
-                Text(
-                  value,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.neutral800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityItem(String label, String value, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.bodyMd.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.neutral700,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: color.withAlpha(20),
-              borderRadius: AppRadius.radiusSm,
-            ),
-            child: Text(
-              value,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: color,
-                fontWeight: FontWeight.w900,
-                fontSize: 12,
-                letterSpacing: 0.5,
               ),
             ),
-          ),
-        ],
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 4, AppSpacing.lg, 8),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF1F5F9),
+                    foregroundColor: const Color(0xFF475569),
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Tutup Profil', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OrmawaAnggotaFormSheet extends StatefulWidget {
+  final OrmawaMember? initialMember;
+
+  const _OrmawaAnggotaFormSheet({this.initialMember});
+
+  @override
+  State<_OrmawaAnggotaFormSheet> createState() => _OrmawaAnggotaFormSheetState();
+}
+
+class _OrmawaAnggotaFormSheetState extends State<_OrmawaAnggotaFormSheet> {
+  Map<String, dynamic>? _selectedStudent;
+  String _selectedRole = 'Anggota';
+  String _selectedDivision = '';
+  String _selectedStatus = 'Aktif';
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  bool _isSubmitting = false;
+
+  List<Map<String, dynamic>> _studentList = [];
+  bool _isLoadingStudents = false;
+  String _studentSearchQuery = '';
+  bool _isSearchingStudent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialMember != null) {
+      final m = widget.initialMember!;
+      _selectedRole = m.role.isNotEmpty ? m.role : 'Anggota';
+      _selectedDivision = (m.division.toLowerCase() == 'umum' || m.division == '-') ? '' : m.division;
+      final s = m.status.trim().toLowerCase();
+      _selectedStatus = (s == 'nonaktif' || s == 'alumni') ? s : 'aktif';
+      _emailController.text = m.email ?? '';
+      _phoneController.text = m.phone ?? '';
+      _selectedStudent = {
+        'id': m.mahasiswaId,
+        'Nama': m.name,
+        'NIM': m.nim,
+        'prodi': m.prodi,
+        'foto_url': m.fotoUrl,
+      };
+    } else {
+      _loadStudents();
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadStudents() async {
+    setState(() => _isLoadingStudents = true);
+    try {
+      final list = await context.read<OrmawaProvider>().getStudents();
+      if (mounted) {
+        setState(() {
+          _studentList = list;
+          _isLoadingStudents = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoadingStudents = false);
+    }
+  }
+
+  Future<void> _handleSave() async {
+    if (_selectedStudent == null) {
+      AppSnackbar.showWarning(context, 'Wajib memilih mahasiswa terlebih dahulu!');
+      return;
+    }
+
+    final rawId = _selectedStudent!['id'] ?? _selectedStudent!['MahasiswaID'] ?? _selectedStudent!['ID'];
+    final mahasiswaId = int.tryParse(rawId.toString());
+
+    setState(() => _isSubmitting = true);
+
+    final data = {
+      'MahasiswaID': mahasiswaId,
+      'Role': _selectedRole,
+      'Divisi': _selectedDivision,
+      'Status': _selectedStatus,
+      'EmailKampus': _emailController.text,
+      'NoHP': _phoneController.text,
+    };
+
+    try {
+      final provider = context.read<OrmawaProvider>();
+      if (widget.initialMember != null) {
+        await provider.updateMember(widget.initialMember!.id, data);
+        if (mounted) {
+          Navigator.pop(context);
+          AppSnackbar.showSuccess(context, 'Data anggota berhasil diperbarui');
+        }
+      } else {
+        await provider.addMember(data);
+        if (mounted) {
+          Navigator.pop(context);
+          AppSnackbar.showSuccess(context, 'Anggota baru berhasil ditambahkan');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<OrmawaProvider>();
+    final isEditMode = widget.initialMember != null;
+
+    final defaults = ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Kepala Divisi', 'Staff', 'Anggota', 'Pembina'];
+    final rbacRoles = provider.roles.map((r) => r.name.trim()).where((n) => n.isNotEmpty);
+    final memberRoles = provider.members.map((m) => m.role.trim()).where((r) => r.isNotEmpty);
+    final rawRoles = <String>{...defaults, ...rbacRoles, ...memberRoles}.toList();
+
+    String currentRole = _selectedRole.trim();
+    if (currentRole.isEmpty) currentRole = 'Anggota';
+    if (!rawRoles.contains(currentRole)) {
+      rawRoles.add(currentRole);
+    }
+
+    final rawDivisions = provider.divisions
+        .map((d) => d.name.trim())
+        .where((d) => d.isNotEmpty && d.toLowerCase() != 'umum' && d != '-')
+        .toSet()
+        .toList();
+    final divisionOptions = <String>['', ...rawDivisions];
+
+    String currentDivision = _selectedDivision.trim();
+    if (currentDivision.toLowerCase() == 'umum' || currentDivision == '-') {
+      currentDivision = '';
+    }
+    if (!divisionOptions.contains(currentDivision)) {
+      divisionOptions.add(currentDivision);
+    }
+
+    final currentStatus = (_selectedStatus == 'nonaktif' || _selectedStatus == 'alumni') ? _selectedStatus : 'aktif';
+
+    final filteredStudents = _studentSearchQuery.isEmpty
+        ? _studentList
+        : _studentList.where((s) {
+            final name = (s['Nama'] ?? s['nama'] ?? s['nama_mahasiswa'] ?? '').toString().toLowerCase();
+            final nim = (s['NIM'] ?? s['nim'] ?? '').toString().toLowerCase();
+            final q = _studentSearchQuery.toLowerCase();
+            return name.contains(q) || nim.contains(q);
+          }).toList();
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.90,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4.5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: context.appColors.primary.withAlpha(20),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      isEditMode ? Icons.edit_rounded : Icons.person_add_rounded,
+                      size: 20,
+                      color: context.appColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEditMode ? 'Edit Anggota' : 'Tambah Anggota Baru',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                        const Text(
+                          'MANAJEMEN KEANGGOTAAN ORMAWA',
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 0.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF1F5F9),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF64748B)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Pilih Mahasiswa', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                    const SizedBox(height: 5),
+
+                    if (_selectedStudent != null && !_isSearchingStudent) ...[
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFCBD5E1)),
+                        ),
+                        child: Row(
+                          children: [
+                            _buildAvatar(
+                              _selectedStudent!['Nama'] ?? _selectedStudent!['nama'] ?? 'M',
+                              _selectedStudent!['foto_url'] ?? _selectedStudent!['FotoURL'],
+                              size: 36,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _selectedStudent!['Nama'] ?? _selectedStudent!['nama'] ?? '—',
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    'NIM: ${_selectedStudent!['NIM'] ?? _selectedStudent!['nim'] ?? '—'}',
+                                    style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (!isEditMode)
+                              OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isSearchingStudent = true;
+                                    _studentSearchQuery = '';
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  minimumSize: Size.zero,
+                                ),
+                                child: const Text('Ganti', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ] else ...[
+                      TextField(
+                        autofocus: _isSearchingStudent,
+                        onChanged: (val) => setState(() {
+                          _isSearchingStudent = true;
+                          _studentSearchQuery = val;
+                        }),
+                        style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+                        decoration: InputDecoration(
+                          hintText: 'Ketik Nama atau NIM mahasiswa...',
+                          hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
+                          prefixIcon: const Icon(Icons.search, size: 16, color: Color(0xFF64748B)),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        height: 140,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white,
+                        ),
+                        child: _isLoadingStudents
+                            ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                            : filteredStudents.isEmpty
+                                ? const Center(
+                                    child: Text('Mahasiswa tidak ditemukan', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                                  )
+                                : ListView.separated(
+                                    itemCount: filteredStudents.length,
+                                    separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                                    itemBuilder: (c, idx) {
+                                      final st = filteredStudents[idx];
+                                      final name = st['Nama'] ?? st['nama'] ?? '—';
+                                      final nim = st['NIM'] ?? st['nim'] ?? '—';
+                                      final prodi = st['ProgramStudi']?['Nama'] ?? st['prodi'] ?? '';
+                                      return ListTile(
+                                        dense: true,
+                                        leading: _buildAvatar(name, st['foto_url'] ?? st['FotoURL'], size: 30),
+                                        title: Text(
+                                          name,
+                                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                        ),
+                                        subtitle: Text(
+                                          'NIM: $nim${prodi.isNotEmpty ? ' • $prodi' : ''}',
+                                          style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedStudent = st;
+                                            _emailController.text = st['EmailKampus'] ?? st['email_kampus'] ?? '';
+                                            _phoneController.text = st['NoHP'] ?? st['no_hp'] ?? '';
+                                            _isSearchingStudent = false;
+                                          });
+                                        },
+                                      );
+                                    },
+                                  ),
+                      ),
+                    ],
+                    const SizedBox(height: 14),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Jabatan (Role)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                              const SizedBox(height: 4),
+                              DropdownButtonFormField<String>(
+                                initialValue: currentRole,
+                                isExpanded: true,
+                                style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                ),
+                                items: rawRoles.map((r) => DropdownMenuItem(
+                                  value: r,
+                                  child: Text(r, style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A))),
+                                )).toList(),
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedRole = val);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Divisi (Departemen)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                              const SizedBox(height: 4),
+                              DropdownButtonFormField<String>(
+                                initialValue: currentDivision,
+                                isExpanded: true,
+                                style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                ),
+                                items: divisionOptions.map((d) => DropdownMenuItem(
+                                  value: d,
+                                  child: Text(
+                                    d.isEmpty ? 'Umum (Tanpa Divisi)' : d,
+                                    style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A)),
+                                  ),
+                                )).toList(),
+                                onChanged: (val) {
+                                  if (val != null) setState(() => _selectedDivision = val);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Status Keaktifan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                        const SizedBox(height: 4),
+                        DropdownButtonFormField<String>(
+                          initialValue: currentStatus,
+                          isExpanded: true,
+                          style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'aktif', child: Text('Aktif')),
+                            DropdownMenuItem(value: 'nonaktif', child: Text('Nonaktif')),
+                            DropdownMenuItem(value: 'alumni', child: Text('Alumni')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) setState(() => _selectedStatus = val);
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Email Kampus', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                              const SizedBox(height: 4),
+                              TextField(
+                                controller: _emailController,
+                                style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+                                decoration: InputDecoration(
+                                  hintText: 'mhs@bku.ac.id',
+                                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('No. WhatsApp', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                              const SizedBox(height: 4),
+                              TextField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+                                decoration: InputDecoration(
+                                  hintText: '081234567890',
+                                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _isSubmitting ? null : _handleSave,
+                        icon: _isSubmitting
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                            : Icon(isEditMode ? Icons.save_rounded : Icons.person_add_rounded, size: 16),
+                        label: Text(
+                          isEditMode ? 'Simpan Perubahan' : 'Daftarkan Anggota',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: context.appColors.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

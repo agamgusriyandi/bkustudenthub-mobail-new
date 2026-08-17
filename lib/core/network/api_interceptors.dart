@@ -5,9 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:developer';
 import 'package:bkuhub_mobile/core/services/secure_storage_service.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
-/// Global key to access navigator from anywhere in the app
-/// Set this in MaterialApp.router or wrap with Navigator material key
 final GlobalKey<NavigatorState> apiNavigatorKey = GlobalKey<NavigatorState>();
 
 class ApiInterceptor extends Interceptor {
@@ -23,12 +22,10 @@ class ApiInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Ensure path has /api prefix (avoids URI resolution issues with leading slashes)
     if (!options.path.startsWith('http') && !options.path.startsWith('/api')) {
       options.path = '/api${options.path.startsWith('/') ? '' : '/'}${options.path}';
     }
 
-    // Inject token if available
     final token = await SecureStorageService().getToken();
 
     final isLoginRequest = options.path.contains('/auth/login');
@@ -37,7 +34,7 @@ class ApiInterceptor extends Interceptor {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
-    options.headers['Origin'] = 'https://bkustudenthub.com';
+    options.headers['Origin'] = ApiGate.webUrl;
 
     if (kDebugMode) {
       log('--> ${options.method} ${options.uri}');

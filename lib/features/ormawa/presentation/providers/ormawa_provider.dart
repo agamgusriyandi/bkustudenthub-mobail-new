@@ -14,6 +14,7 @@ import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcemen
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/repositories/ormawa_repository.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
 
@@ -29,9 +30,14 @@ class OrmawaProvider extends ChangeNotifier {
   String _orgName = '';
   String _academicYear = '';
 
-  // Getters with fallback values
-  String get orgName =>
-      _orgName.isNotEmpty ? _orgName : (_authService.ormawaName ?? 'Ormawa');
+  String get orgName {
+    final s = _ormawaSettings['singkatan'] ?? _ormawaSettings['Singkatan'];
+    if (s != null && s.toString().trim().isNotEmpty) return s.toString().trim();
+    if (_orgName.isNotEmpty) return _orgName;
+    final n = _ormawaSettings['nama'] ?? _ormawaSettings['Nama'];
+    if (n != null && n.toString().trim().isNotEmpty) return n.toString().trim();
+    return _authService.ormawaName ?? 'Ormawa';
+  }
   String get academicYear => _academicYear;
 
   // Stats
@@ -64,6 +70,17 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaNotification> _notifications = [];
   List<String> _knownNotificationIds = [];
   bool _isFirstFetch = true;
+
+  // Financial Settings (Pagu Anggaran)
+  OrmawaFinancialSetting? _financialSetting;
+  List<OrmawaFinancialSetting> _allFinancialSettings = [];
+  List<OrmawaFinancialAuditLog> _auditLogs = [];
+  bool _isLoadingPagu = false;
+
+  OrmawaFinancialSetting? get financialSetting => _financialSetting;
+  List<OrmawaFinancialSetting> get allFinancialSettings => _allFinancialSettings;
+  List<OrmawaFinancialAuditLog> get auditLogs => _auditLogs;
+  bool get isLoadingPagu => _isLoadingPagu;
 
   List<OrmawaNotification> get notifications => _notifications;
   int get unreadNotificationsCount =>
@@ -331,7 +348,11 @@ class OrmawaProvider extends ChangeNotifier {
       _roles = roles;
       _divisions = divisions;
       _ormawaSettings = ormawaSettings;
-      _orgName = _ormawaSettings['nama'] ?? _ormawaSettings['Nama'] ?? '';
+      _orgName = _ormawaSettings['singkatan'] ??
+          _ormawaSettings['Singkatan'] ??
+          _ormawaSettings['nama'] ??
+          _ormawaSettings['Nama'] ??
+          '';
 
       // Handle notifications
       if (!_isFirstFetch) {
@@ -762,9 +783,13 @@ class OrmawaProvider extends ChangeNotifier {
   }
 
   Future<void> removeNotification(String id) async {
-    await _repository.deleteNotification(id);
     _notifications.removeWhere((n) => n.id == id);
     notifyListeners();
+    try {
+      await _repository.deleteNotification(id);
+    } catch (_) {
+      // ignore
+    }
   }
 
   // RECRUITMENT / OPEN RECRUITMENT
@@ -1002,6 +1027,69 @@ class OrmawaProvider extends ChangeNotifier {
       await fetchAbsensiManagement();
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // Financial Settings (Pagu Anggaran)
+  Future<void> fetchFinancialSettings({String? targetOrmawaId, String? periode}) async {
+    try {
+      _isLoadingPagu = true;
+      notifyListeners();
+
+      final oid = targetOrmawaId ?? ormawaId;
+      final settings = await _repository.getFinancialSettings(
+        ormawaId: oid,
+        periode: periode,
+      );
+
+      _allFinancialSettings = settings;
+      if (settings.isNotEmpty) {
+        if (oid != null && oid.isNotEmpty) {
+          _financialSetting = settings.firstWhere(
+            (s) => s.ormawaId.toString() == oid,
+            orElse: () => settings.first,
+          );
+        } else {
+          _financialSetting = settings.first;
+        }
+
+        if (_financialSetting != null) {
+          await fetchFinancialAuditLogs(_financialSetting!.ormawaId.toString());
+        }
+      } else {
+        _financialSetting = null;
+        _auditLogs = [];
+      }
+    } catch (_) {
+    } finally {
+      _isLoadingPagu = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchFinancialAuditLogs(String targetOrmawaId) async {
+    try {
+      final logs = await _repository.getFinancialAuditLogs(targetOrmawaId);
+      _auditLogs = logs;
+      notifyListeners();
+    } catch (_) {
+      _auditLogs = [];
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateFinancialSetting(Map<String, dynamic> data) async {
+    try {
+      _isLoadingPagu = true;
+      notifyListeners();
+
+      await _repository.updateFinancialSetting(data);
+      await fetchFinancialSettings(targetOrmawaId: data['ormawa_id']?.toString());
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoadingPagu = false;
+      notifyListeners();
     }
   }
 }

@@ -31,9 +31,9 @@ class BkuStatusBadge extends StatelessWidget {
     this.customText,
     this.customIcon,
     this.showIcon = false,
-    this.showDot = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-    this.borderRadius = 999.0,
+    this.showDot = false,
+    this.padding = const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+    this.borderRadius = 6.0,
     this.customColor,
   });
 

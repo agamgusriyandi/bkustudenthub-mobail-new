@@ -630,11 +630,15 @@ class AuthService extends ChangeNotifier {
     return data['role_display']?.toString();
   }
 
-  /// Get Ormawa name
   String? get ormawaName {
     final data = _userData?['user'] ?? _userData;
     if (data == null) return null;
-    return data['ormawa_name']?.toString();
+    return data['ormawa_name']?.toString() ??
+        data['ormawa_singkatan']?.toString() ??
+        data['ormawa']?['singkatan']?.toString() ??
+        data['ormawa']?['Singkatan']?.toString() ??
+        data['ormawa']?['nama']?.toString() ??
+        data['ormawa']?['Nama']?.toString();
   }
 
   /// Check if user has specific permission
