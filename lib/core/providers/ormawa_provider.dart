@@ -217,22 +217,18 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  /// Check if current user has specific permission
-  /// Uses PermissionService as source of truth (permissions from login response)
   bool hasPermission(String permission) {
-    // Use PermissionService for permission check
-    // This ensures consistency with Web admin settings
     final member = currentMember;
 
-    // Ketua/Ketua Umum always has all permissions
     if (member != null) {
       if (member.role.toUpperCase() == 'KETUA UMUM' ||
           member.role.toUpperCase() == 'KETUA') {
-        return true;
+        if (PermissionService.allPermissions.contains(permission)) {
+          return true;
+        }
       }
     }
 
-    // Always allow attendance permissions for any Ormawa user
     if (permission == 'view_attendance' ||
         permission == 'submit_attendance' ||
         permission == 'edit_attendance') {
@@ -241,7 +237,6 @@ class OrmawaProvider extends ChangeNotifier {
       }
     }
 
-    // Delegate to PermissionService
     return PermissionService().hasPermission(permission);
   }
 

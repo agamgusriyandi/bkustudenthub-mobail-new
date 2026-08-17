@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
+import 'package:bkuhub_mobile/core/services/auth_service.dart';
 
 String _formatCurrency(double amount) {
   return NumberFormat.currency(
@@ -69,10 +70,14 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         final auditLogs = provider.auditLogs;
         final isLoading = provider.isLoadingPagu;
 
-        final canManageFinance = provider.hasPermission('ormawa.organisasi.manage') ||
-            provider.hasPermission('ormawa.pagu.update') ||
-            provider.hasPermission('ormawa.pagu.manage') ||
-            provider.hasPermission('ormawa.finance.manage');
+        final isOrmawaUser = AuthService().currentRole == UserRole.ormawa || AuthService().currentRole == UserRole.student;
+        final canManageFinance = !isOrmawaUser && (
+          provider.hasPermission('ormawa.organisasi.manage') ||
+          provider.hasPermission('ormawa.pagu.update') ||
+          provider.hasPermission('ormawa.pagu.manage') ||
+          provider.hasPermission('superadmin.dashboard.view') ||
+          provider.hasPermission('kemahasiswaan.manage')
+        );
 
         final limit = setting?.budgetLimit ?? 0.0;
         final used = setting?.usedBudget ?? 0.0;
