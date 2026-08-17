@@ -501,12 +501,11 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
   @override
   Future<Map<String, dynamic>> getRecruitmentSettings(String ormawaId) async {
     try {
-      final response = await ormawaRemoteDataSource.getRecruitmentFormFields(
-        ormawaId,
-      );
-      return response.data['data'] as Map<String, dynamic>? ??
+      final response = await ormawaRemoteDataSource.getOrmawaSettings(ormawaId);
+      final data = response.data['data'] as Map<String, dynamic>? ??
           response.data as Map<String, dynamic>? ??
           {};
+      return data;
     } catch (e) {
       log('Error in getRecruitmentSettings: $e');
       return {};
@@ -514,18 +513,57 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
   }
 
   @override
+  Future<void> updateRecruitmentSettings(
+    String ormawaId,
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      await ormawaRemoteDataSource.updateOrmawaSettings(ormawaId, data);
+    } catch (e) {
+      log('Error in updateRecruitmentSettings: $e');
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> getRecruitmentApplicants(
     String ormawaId,
   ) async {
-    return [];
+    try {
+      final response = await ormawaRemoteDataSource.getMembers(ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return List<Map<String, dynamic>>.from(list);
+      }
+      return [];
+    } catch (e) {
+      log('Error in getRecruitmentApplicants: $e');
+      return [];
+    }
   }
 
   @override
   Future<void> reviewRecruitmentApplicant(
     String applicantId,
-    String status,
-  ) async {
-    return;
+    String status, {
+    String? role,
+    String? divisi,
+    String? rejectionReason,
+  }) async {
+    try {
+      final payload = <String, dynamic>{
+        'Role': role ?? 'Anggota',
+        'Divisi': divisi ?? 'Umum',
+        'Status': status,
+      };
+      if (rejectionReason != null && rejectionReason.isNotEmpty) {
+        payload['rejection_reason'] = rejectionReason;
+      }
+      await ormawaRemoteDataSource.updateMember(applicantId, payload);
+    } catch (e) {
+      log('Error in reviewRecruitmentApplicant: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -544,6 +582,19 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     } catch (e) {
       log('Error in getRecruitmentFormFields: $e');
       return [];
+    }
+  }
+
+  @override
+  Future<void> saveRecruitmentFormFields(
+    String ormawaId,
+    List<Map<String, dynamic>> fields,
+  ) async {
+    try {
+      await ormawaRemoteDataSource.saveRecruitmentFormFields(ormawaId, fields);
+    } catch (e) {
+      log('Error in saveRecruitmentFormFields: $e');
+      rethrow;
     }
   }
 
@@ -629,19 +680,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
   }
 
   @override
-  Future<void> saveRecruitmentFormFields(
-    String ormawaId,
-    List<Map<String, dynamic>> fields,
-  ) async {
-    try {
-      await ormawaRemoteDataSource.saveRecruitmentFormFields(ormawaId, fields);
-    } catch (e) {
-      log('Error in saveRecruitmentFormFields: $e');
-      rethrow;
-    }
-  }
-
-  @override
   Future<void> submitAttendance(
     String eventId,
     String mahasiswaId,
@@ -658,14 +696,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
       log('Error in submitAttendance: $e');
       rethrow;
     }
-  }
-
-  @override
-  Future<void> updateRecruitmentSettings(
-    String ormawaId,
-    Map<String, dynamic> data,
-  ) async {
-    return;
   }
 
   @override

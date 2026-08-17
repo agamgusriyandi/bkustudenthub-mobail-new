@@ -805,9 +805,7 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (_) {
-      // ignore
-    }
+    } catch (_) {}
   }
 
   Future<void> updateRecruitmentSettings(Map<String, dynamic> data) async {
@@ -832,25 +830,59 @@ class OrmawaProvider extends ChangeNotifier {
         _recruitmentFormFields = await _repository.getRecruitmentFormFields(
           ormawaId!,
         );
-      } catch (err) {
-        // Silenced: non-critical form fields error
-      }
+      } catch (_) {}
+      try {
+        _recruitmentSettings = await _repository.getRecruitmentSettings(
+          ormawaId!,
+        );
+      } catch (_) {}
       notifyListeners();
-    } catch (_) {
-      // ignore
-    }
+    } catch (_) {}
   }
 
   Future<void> reviewRecruitmentApplicant(
     String applicantId,
-    String status,
-  ) async {
+    String status, {
+    String? role,
+    String? divisi,
+    String? rejectionReason,
+  }) async {
     try {
-      await _repository.reviewRecruitmentApplicant(applicantId, status);
+      await _repository.reviewRecruitmentApplicant(
+        applicantId,
+        status,
+        role: role,
+        divisi: divisi,
+        rejectionReason: rejectionReason,
+      );
       await getRecruitmentApplicants();
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> bulkReviewApplicants(
+    List<String> applicantIds,
+    String status, {
+    String? rejectionReason,
+  }) async {
+    for (final id in applicantIds) {
+      try {
+        final applicant = _recruitmentApplicants.firstWhere(
+          (a) => (a['ID'] ?? a['id'])?.toString() == id,
+          orElse: () => {},
+        );
+        final divisi = applicant['Divisi']?.toString() ?? applicant['divisi']?.toString() ?? 'Umum';
+        await _repository.reviewRecruitmentApplicant(
+          id,
+          status,
+          role: 'Anggota',
+          divisi: divisi,
+          rejectionReason: rejectionReason,
+        );
+      } catch (_) {}
+    }
+    await getRecruitmentApplicants();
   }
 
   Future<void> getRecruitmentFormFields() async {
@@ -860,9 +892,7 @@ class OrmawaProvider extends ChangeNotifier {
         ormawaId!,
       );
       notifyListeners();
-    } catch (_) {
-      // ignore
-    }
+    } catch (_) {}
   }
 
   Future<void> saveRecruitmentFormFields(

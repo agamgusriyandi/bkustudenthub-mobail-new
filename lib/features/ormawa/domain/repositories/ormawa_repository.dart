@@ -94,14 +94,19 @@ abstract class OrmawaRepository {
   Future<void> deleteNotification(String id);
   Future<String?> getActiveAcademicYear();
 
-  // RECRUITMENT / OPEN RECRUITMENT
   Future<Map<String, dynamic>> getRecruitmentSettings(String ormawaId);
   Future<void> updateRecruitmentSettings(
     String ormawaId,
     Map<String, dynamic> data,
   );
   Future<List<Map<String, dynamic>>> getRecruitmentApplicants(String ormawaId);
-  Future<void> reviewRecruitmentApplicant(String applicantId, String status);
+  Future<void> reviewRecruitmentApplicant(
+    String applicantId,
+    String status, {
+    String? role,
+    String? divisi,
+    String? rejectionReason,
+  });
   Future<List<Map<String, dynamic>>> getRecruitmentFormFields(String ormawaId);
   Future<void> saveRecruitmentFormFields(
     String ormawaId,

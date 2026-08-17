@@ -373,10 +373,15 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.delete('/ormawa/divisions/$id');
   }
 
-  // Members
   @override
   Future<Response> getMembers(String ormawaId) async {
-    return await dio.get('/ormawa/members');
+    return await dio.get(
+      '/ormawa/members',
+      queryParameters: {
+        if (ormawaId.isNotEmpty && ormawaId != 'null') 'ormawaId': ormawaId,
+        'limit': 200,
+      },
+    );
   }
 
   @override
