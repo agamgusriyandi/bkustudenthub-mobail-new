@@ -341,11 +341,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFFFBEB), Colors.white],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: const Color(0xFFFDE047), width: 1.2),
             boxShadow: [
@@ -427,9 +423,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                  ),
+                  color: const Color(0xFFD97706),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -460,14 +454,12 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           const SizedBox(height: 8),
           Row(
             children: [
-              // 🥈 Juara 2
               Expanded(
                 child: second != null
                     ? _buildRunnerUpCard(
                         context,
                         rank: 2,
                         item: second,
-                        gradientColors: const [Color(0xFFF8FAFC), Colors.white],
                         borderColor: const Color(0xFFCBD5E1),
                         badgeColor: const Color(0xFF64748B),
                         trophyColor: const Color(0xFF475569),
@@ -476,14 +468,12 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     : const SizedBox.shrink(),
               ),
               const SizedBox(width: 8),
-              // 🥉 Juara 3
               Expanded(
                 child: third != null
                     ? _buildRunnerUpCard(
                         context,
                         rank: 3,
                         item: third,
-                        gradientColors: const [Color(0xFFFFF7ED), Colors.white],
                         borderColor: const Color(0xFFFED7AA),
                         badgeColor: const Color(0xFFEA580C),
                         trophyColor: const Color(0xFFC2410C),
@@ -502,7 +492,6 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     BuildContext context, {
     required int rank,
     required Map<String, dynamic> item,
-    required List<Color> gradientColors,
     required Color borderColor,
     required Color badgeColor,
     required Color trophyColor,
@@ -516,11 +505,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: gradientColors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: borderColor, width: 1.0),
         boxShadow: [

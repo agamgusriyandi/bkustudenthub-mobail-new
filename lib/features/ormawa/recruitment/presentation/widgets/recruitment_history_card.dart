@@ -47,14 +47,7 @@ class RecruitmentHistoryCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors:
-                      isAccepted
-                          ? [AppColors.success, context.appColors.success]
-                          : [AppColors.error, context.appColors.error],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: isAccepted ? AppColors.success : AppColors.error,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(

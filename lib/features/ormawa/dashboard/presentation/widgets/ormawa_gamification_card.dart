@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_prov
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 
 class _GamificationTheme {
   final List<Color> gradientColors;
@@ -136,13 +137,9 @@ class OrmawaGamificationCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: theme.gradientColors,
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            color: Colors.white,
             borderRadius: AppRadius.br20,
-            border: Border.all(color: theme.borderColor, width: 1.2),
+            border: Border.all(color: OrmawaTheme.border, width: 1),
             boxShadow: [
               BoxShadow(
                 color: theme.iconColor.withAlpha(15),
@@ -277,12 +274,7 @@ class OrmawaGamificationCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.badgeBgColor,
-                          theme.iconColor,
-                        ],
-                      ),
+                      color: theme.iconColor,
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(

@@ -328,10 +328,6 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     OrmawaMember member, {
     required bool isPrimary,
   }) {
-    final bgGradient = isPrimary
-        ? const [Color(0xFFFFFBEB), Colors.white]
-        : const [Color(0xFFFFF7ED), Colors.white];
-    final borderColor = isPrimary ? const Color(0xFFFDE047) : const Color(0xFFFED7AA);
     final badgeColor = isPrimary ? const Color(0xFFD97706) : const Color(0xFFEA580C);
     final roleText = isPrimary ? 'KETUA UMUM' : 'WAKIL KETUA';
 
@@ -344,13 +340,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: bgGradient,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor, width: 1.2),
+        border: Border.all(color: OrmawaTheme.border, width: 1),
         boxShadow: [
           BoxShadow(
             color: badgeColor.withAlpha(12),

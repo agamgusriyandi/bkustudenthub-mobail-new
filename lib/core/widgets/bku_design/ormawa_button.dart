@@ -32,13 +32,13 @@ class OrmawaButton extends StatelessWidget {
     switch (variant) {
       case OrmawaButtonVariant.primary:
         decoration = BoxDecoration(
-          gradient: OrmawaTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(16),
+          color: OrmawaTheme.primary,
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFEA580C).withAlpha(40),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: OrmawaTheme.primary.withAlpha(40),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         );

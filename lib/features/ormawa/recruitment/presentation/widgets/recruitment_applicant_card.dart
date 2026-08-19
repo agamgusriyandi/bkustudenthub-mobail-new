@@ -97,14 +97,7 @@ class RecruitmentApplicantCard extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        context.appColors.primary,
-                        context.appColors.primary.withAlpha(150),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: context.appColors.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(

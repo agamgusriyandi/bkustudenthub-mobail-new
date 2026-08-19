@@ -14,9 +14,8 @@ class OrmawaTheme {
 
   static LinearGradient get primaryGradient => LinearGradient(
         colors: [
-          _colors.gradientStart,
-          _colors.gradientMiddle,
-          _colors.gradientEnd,
+          _colors.primary,
+          _colors.primary,
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

@@ -76,16 +76,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             width: 100,
                             height: 100,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  context.appColors.primary,
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withAlpha(150),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                              color: context.appColors.primary,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
