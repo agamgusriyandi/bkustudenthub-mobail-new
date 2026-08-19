@@ -352,10 +352,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                                     fontFamily: 'monospace',
                                   ),
                                 ),
-                                Divider(
-                                  height: 18,
-                                  color: OrmawaTheme.borderSubtle,
-                                ),
+                                SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

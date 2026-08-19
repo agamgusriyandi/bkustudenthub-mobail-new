@@ -317,10 +317,7 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
                                     ),
                                   ),
                                 ],
-                                Divider(
-                                  height: 18,
-                                  color: OrmawaTheme.borderSubtle,
-                                ),
+                                SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

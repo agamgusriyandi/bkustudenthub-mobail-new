@@ -596,10 +596,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                Divider(
-                                  height: 18,
-                                  color: OrmawaTheme.borderSubtle,
-                                ),
+                                SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

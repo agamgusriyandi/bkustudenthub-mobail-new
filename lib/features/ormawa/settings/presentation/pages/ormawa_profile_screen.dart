@@ -370,23 +370,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           ),
         ),
         OrmawaCard(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Column(
-            children: items.asMap().entries.map((entry) {
-              final isLast = entry.key == items.length - 1;
-              return Column(
-                children: [
-                  entry.value,
-                  if (!isLast)
-                    Divider(
-                      height: 1,
-                      indent: 52,
-                      endIndent: 16,
-                      color: OrmawaTheme.borderSubtle,
-                    ),
-                ],
-              );
-            }).toList(),
+            children: items,
           ),
         ),
       ],
@@ -400,7 +386,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     Color color,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8.5),
       child: Row(
         children: [
           Container(
@@ -445,9 +431,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(14),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8.5),
         child: Row(
           children: [
             Container(
