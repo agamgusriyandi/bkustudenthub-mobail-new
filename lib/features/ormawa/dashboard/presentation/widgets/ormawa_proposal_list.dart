@@ -135,57 +135,46 @@ class OrmawaProposalList extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.only(top: 8),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: Color(0xFFF1F5F9),
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.access_time_rounded,
-                            size: 13,
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time_rounded,
+                          size: 13,
+                          color: OrmawaTheme.textMuted,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          DateFormat('dd MMM yyyy, HH:mm', 'id').format(proposal.date),
+                          style: TextStyle(
                             color: OrmawaTheme.textMuted,
+                            fontSize: 11,
                           ),
-                          SizedBox(width: 4),
-                          Text(
-                            DateFormat('dd MMM yyyy, HH:mm', 'id').format(proposal.date),
-                            style: TextStyle(
-                              color: OrmawaTheme.textMuted,
-                              fontSize: 10.5,
-                            ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Lihat Detail',
+                          style: TextStyle(
+                            color: OrmawaTheme.textMuted,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
                           ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Lihat Detail',
-                            style: TextStyle(
-                              color: OrmawaTheme.primary,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10.5,
-                            ),
-                          ),
-                          SizedBox(width: 2),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: OrmawaTheme.primary,
-                            size: 9,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        SizedBox(width: 2),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: OrmawaTheme.textMuted,
+                          size: 9,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
