@@ -104,6 +104,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                         ),
               isExpandable: true,
               notificationCount: context.watch<OrmawaProvider>().unreadNotificationsCount,
+              onProfileTap: () => context.push(AppRoutes.ormawaProfile),
               bottomChild: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),

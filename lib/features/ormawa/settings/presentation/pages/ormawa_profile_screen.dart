@@ -1,25 +1,29 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_security_screen.dart';
 
 class OrmawaProfileScreen extends StatefulWidget {
-  const OrmawaProfileScreen({super.key});
+  final bool showBackButton;
+  const OrmawaProfileScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaProfileScreen> createState() => _OrmawaProfileScreenState();
@@ -29,11 +33,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   bool _isUploadingAvatar = false;
 
   Future<void> _pickAndUploadAvatar() async {
-    final themeProvider = context.read<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
     final ormawaProvider = context.read<OrmawaProvider>();
-    // Extract context-dependent values BEFORE any await
-    final onPrimaryColor = context.appColors.onPrimary;
 
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
@@ -50,14 +50,14 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
           uiSettings: [
             AndroidUiSettings(
-              toolbarTitle: 'Potong Foto',
-              toolbarColor: primaryColor,
-              toolbarWidgetColor: onPrimaryColor,
+              toolbarTitle: 'Potong Foto Profil',
+              toolbarColor: OrmawaTheme.primaryDark,
+              toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
             ),
             IOSUiSettings(
-              title: 'Potong Foto',
+              title: 'Potong Foto Profil',
               aspectRatioLockEnabled: true,
               resetAspectRatioEnabled: false,
             ),
@@ -75,7 +75,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         }
       } catch (e) {
         if (mounted) {
-          AppSnackbar.showError(context, 'Gagal mengunggah foto: $e');
+          AppSnackbar.showError(context, 'Gagal mengunggah foto');
         }
       } finally {
         if (mounted) {
@@ -85,10 +85,29 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     }
   }
 
+  void _showLogoutDialog(BuildContext context) {
+    BkuDialog.show(
+      context: context,
+      title: 'Keluar Portal Ormawa?',
+      message: 'Sesi administrasi Anda akan diakhiri.',
+      type: BkuDialogType.error,
+      primaryButtonText: 'Keluar',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        await AuthService().logout();
+        if (context.mounted) {
+          context.go(AppRoutes.login);
+        }
+      },
+      secondaryButtonText: 'Batal',
+      onSecondaryPressed: () => Navigator.pop(context),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: Consumer<OrmawaProvider>(
         builder: (context, provider, child) {
           final member = provider.currentMember;
@@ -98,19 +117,18 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
               parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
-              const BkuAppBar(
+              BkuAppBar(
                 variant: AppBarVariant.ormawa,
-                title: 'Profil Pribadi',
-                subtitle: 'Info & Kontak Saya',
-                expandedHeight: 130.0,
-                showBackButton: true,
+                title: 'Profil Saya',
+                subtitle: 'Data Pribadi & Akun Pengurus',
+                expandedHeight: 125.0,
+                showBackButton: widget.showBackButton,
                 isExpandable: false,
               ),
               SliverToBoxAdapter(
-                child:
-                    member != null
-                        ? _buildProfileContent(context, member)
-                        : _buildEmptyState(),
+                child: member != null
+                    ? _buildProfileContent(context, member, provider)
+                    : _buildEmptyState(),
               ),
             ],
           );
@@ -119,275 +137,223 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, OrmawaMember member) {
+  Widget _buildProfileContent(
+    BuildContext context,
+    OrmawaMember member,
+    OrmawaProvider provider,
+  ) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeaderCard(member),
-          const SizedBox(height: AppSpacing.xxl),
-          _buildMenuSection('Informasi Ormawa', [
-            _buildMenuItem(
-              'Jabatan / Role',
-              member.role,
-              Icons.badge_rounded,
-              context.appColors.info,
-            ),
-            _buildMenuItem(
-              'Divisi / Departemen',
-              member.division,
-              Icons.group_work_rounded,
-              AppColors.info,
-            ),
-            _buildMenuItem(
-              'Status Keanggotaan',
-              _capitalize(member.status),
-              Icons.verified_user_rounded,
-              member.status.toLowerCase() == 'aktif'
-                  ? AppColors.success
-                  : AppColors.warning,
-            ),
-            if (member.periode != null && member.periode!.isNotEmpty)
-              _buildMenuItem(
-                'Periode Kepengurusan',
-                member.periode!,
-                Icons.date_range_rounded,
-                AppColors.neutral700,
-              ),
-          ]),
-          const SizedBox(height: AppSpacing.s28),
-          _buildMenuSection('Kontak & Data Diri', [
-            _buildMenuItem(
-              'Email Kampus',
-              member.email ?? 'Belum diatur',
-              Icons.email_rounded,
-              context.appColors.error,
-            ),
-            _buildMenuItem(
-              'No Handphone / WhatsApp',
-              member.phone ?? 'Belum diatur',
-              Icons.phone_rounded,
-              context.appColors.info,
-            ),
-            if (member.joinedAt != null)
-              _buildMenuItem(
-                'Bergabung Sejak',
-                '${member.joinedAt!.day}/${member.joinedAt!.month}/${member.joinedAt!.year}',
-                Icons.access_time_rounded,
-                AppColors.neutral600,
-              ),
-          ]),
-          const SizedBox(height: AppSpacing.xxxl),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeaderCard(OrmawaMember member) {
-    return BkuCard(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Row(
-          children: [
-            Stack(
+          OrmawaCard(
+            child: Row(
               children: [
-                Container(
-                  padding: AppSpacing.padding3,
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral600.withAlpha(26),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Container(
-                    padding: AppSpacing.padding2,
-                    decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClipOval(
-                      child:
-                          member.fotoUrl != null && member.fotoUrl!.isNotEmpty
-                              ? CachedNetworkImage(imageUrl: 
-                                ApiGate.getImageUrl(member.fotoUrl!),
+                Stack(
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: OrmawaTheme.primarySoft,
+                        border: Border.all(
+                          color: OrmawaTheme.primaryBorder,
+                          width: 2,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: member.fotoUrl != null && member.fotoUrl!.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: ApiGate.getImageUrl(member.fotoUrl!),
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
-                                  return Container(
-                                    width: 64,
-                                    height: 64,
-                                    color: AppColors.neutral400.withAlpha(26),
-                                    child: const Icon(
-                                      Icons.person_rounded,
-                                      size: 36,
-                                      color: AppColors.neutral600,
-                                    ),
+                                  return Icon(
+                                    Icons.person_rounded,
+                                    size: 36,
+                                    color: OrmawaTheme.primary,
                                   );
                                 },
-                                placeholder: (context, url) => Container(color: AppColors.neutral200),
+                                placeholder: (context, url) =>
+                                    Container(color: const Color(0xFFF1F5F9)),
                               )
-                              : Container(
-                                width: 64,
-                                height: 64,
-                                color: AppColors.neutral400.withAlpha(26),
-                                child: const Icon(
-                                  Icons.person_rounded,
-                                  size: 36,
-                                  color: AppColors.neutral600,
-                                ),
+                            : Icon(
+                                Icons.person_rounded,
+                                size: 36,
+                                color: OrmawaTheme.primary,
                               ),
+                      ),
                     ),
-                  ),
+                    if (!_isUploadingAvatar)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: BkuBounceButton(
+                          onTap: _pickAndUploadAvatar,
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: OrmawaTheme.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1.5),
+                              boxShadow: OrmawaTheme.cardShadow,
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt_rounded,
+                              size: 11,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (_isUploadingAvatar)
+                      const Positioned.fill(
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: BkuShimmerList(),
+                        ),
+                      ),
+                  ],
                 ),
-                if (!_isUploadingAvatar)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () => _pickAndUploadAvatar(),
-                      child: Container(
-                        padding: AppSpacing.padding6,
-                        decoration: BoxDecoration(
-                          color: context.appColors.surface,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: context.appColors.onSurface.withValues(alpha: 0.12), width: 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: context.appColors.onSurface.withAlpha(26),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.edit_rounded,
-                          size: 12,
-                          color: context.appColors.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                if (_isUploadingAvatar)
-                  const Positioned.fill(
-                    child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
-                  ),
-              ],
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _capitalizeEachWord(member.name),
-                    style: TextStyle(
-                      color: context.appColors.onSurface,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacing.s2),
-                  Text(
-                    '${member.role} • ${member.division}',
-                    style: TextStyle(
-                      color: context.appColors.onSurface.withValues(alpha: 0.87),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppThemeColors.surfaceContainerHighest.withAlpha(128),
-                          borderRadius: AppRadius.radiusMd,
-                          border: Border.all(
-                            color: context.appColors.outline.withAlpha(13),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.badge_rounded,
-                               color: context.appColors.onSurface.withValues(alpha: 0.87),
-                               size: 12,
-                            ),
-                            const SizedBox(width: AppSpacing.s6),
-                            Text(
-                              'NIM: ${member.nim}',
-                              style: TextStyle(
-                                color: context.appColors.onSurface,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        member.name,
+                        style: OrmawaTheme.textCardTitle.copyWith(fontSize: 15),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: (member.status.toLowerCase() == 'aktif'
-                                  ? AppColors.success
-                                  : AppColors.warning)
-                              .withAlpha(26),
-                          borderRadius: AppRadius.radiusMd,
-                          border: Border.all(
-                            color: (member.status.toLowerCase() == 'aktif'
-                                    ? AppColors.success
-                                    : AppColors.warning)
-                                .withAlpha(51),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${member.role} • ${provider.orgName}',
+                        style: OrmawaTheme.textCardSubtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: [
+                          OrmawaBadge(
+                            text: 'NIM: ${member.nim}',
+                            variant: OrmawaBadgeVariant.neutral,
+                            icon: Icons.badge_outlined,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.check_circle_rounded,
-                              color:
-                                  member.status.toLowerCase() == 'aktif'
-                                      ? AppColors.success
-                                      : AppColors.warning,
-                              size: 12,
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              member.status,
-                              style: TextStyle(
-                                color:
-                                    member.status.toLowerCase() == 'aktif'
-                                        ? AppColors.success
-                                        : AppColors.warning,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                          OrmawaBadge(
+                            text: member.status.toUpperCase(),
+                            variant: member.status.toLowerCase() == 'aktif'
+                                ? OrmawaBadgeVariant.success
+                                : OrmawaBadgeVariant.warning,
+                            icon: Icons.check_circle_outline_rounded,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          _buildMenuSection(
+            'Informasi Keanggotaan',
+            [
+              _buildMenuItem(
+                'Jabatan / Peran',
+                member.role,
+                Icons.badge_rounded,
+                OrmawaTheme.primary,
+              ),
+              _buildMenuItem(
+                'Divisi / Departemen',
+                member.division.isEmpty ? 'Umum' : member.division,
+                Icons.group_work_rounded,
+                const Color(0xFF0284C7),
+              ),
+              _buildMenuItem(
+                'Organisasi',
+                provider.orgName,
+                Icons.account_balance_rounded,
+                const Color(0xFF7C3AED),
+              ),
+              if (member.periode != null && member.periode!.isNotEmpty)
+                _buildMenuItem(
+                  'Periode Kepengurusan',
+                  member.periode!,
+                  Icons.date_range_rounded,
+                  const Color(0xFF059669),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildMenuSection(
+            'Kontak & Komunikasi',
+            [
+              _buildMenuItem(
+                'Email Kampus',
+                member.email?.isNotEmpty == true ? member.email! : 'Belum diatur',
+                Icons.email_outlined,
+                const Color(0xFFEA580C),
+              ),
+              _buildMenuItem(
+                'No Handphone / WhatsApp',
+                member.phone?.isNotEmpty == true ? member.phone! : 'Belum diatur',
+                Icons.phone_outlined,
+                const Color(0xFF16A34A),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildMenuSection(
+            'Pengaturan & Keamanan',
+            [
+              _buildActionMenuItem(
+                'Pengaturan Organisasi',
+                'Edit profil ormawa, visi, misi, dan rekening',
+                Icons.tune_rounded,
+                OrmawaTheme.primary,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaSettingsScreen(),
+                    ),
+                  );
+                },
+              ),
+              _buildActionMenuItem(
+                'Keamanan & Sandi',
+                'Ganti kata sandi akun administrasi',
+                Icons.lock_reset_rounded,
+                const Color(0xFF2563EB),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaSecurityScreen(),
+                    ),
+                  );
+                },
+              ),
+              _buildActionMenuItem(
+                'Keluar Akun',
+                'Akhiri sesi portal Ormawa',
+                Icons.logout_rounded,
+                const Color(0xFFDC2626),
+                () => _showLogoutDialog(context),
+                isDestructive: true,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.s100),
+        ],
       ),
     );
   }
@@ -397,46 +363,30 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacing.sm, bottom: AppSpacing.md),
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title,
-            style: AppTextStyles.titleSm.copyWith(
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-            ),
+            style: OrmawaTheme.textSectionTitle,
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: AppRadius.radiusXl,
-            border: Border.all(color: AppColors.neutral300.withAlpha(30)),
-            boxShadow: [
-              BoxShadow(
-                color: context.appColors.onSurface.withAlpha(4),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        OrmawaCard(
+          padding: EdgeInsets.zero,
           child: Column(
-            children:
-                items.asMap().entries.map((entry) {
-                  final isLast = entry.key == items.length - 1;
-                  return Column(
-                    children: [
-                      entry.value,
-                      if (!isLast)
-                        Divider(
-                          height: 1,
-                          indent: 64,
-                          endIndent: 20,
-                          color: AppColors.neutral300.withAlpha(30),
-                        ),
-                    ],
-                  );
-                }).toList(),
+            children: items.asMap().entries.map((entry) {
+              final isLast = entry.key == items.length - 1;
+              return Column(
+                children: [
+                  entry.value,
+                  if (!isLast)
+                    Divider(
+                      height: 1,
+                      indent: 52,
+                      endIndent: 16,
+                      color: OrmawaTheme.borderSubtle,
+                    ),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ],
@@ -449,34 +399,95 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
     IconData icon,
     Color color,
   ) {
-    return Material(
-      color: Colors.transparent,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xl,
-          vertical: AppSpacing.xs,
-        ),
-        leading: Container(
-          padding: AppSpacing.padding9,
-          decoration: BoxDecoration(
-            color: color.withAlpha(20),
-            borderRadius: AppRadius.radiusMd,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withAlpha(20),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color, size: 18),
           ),
-          child: Icon(icon, color: color, size: 20),
-        ),
-        title: Text(
-          title,
-          style: AppTextStyles.bodyMd.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.neutral800,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: OrmawaTheme.textCaption.copyWith(
+                    color: OrmawaTheme.textMuted,
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  subtitle,
+                  style: OrmawaTheme.textCardTitle.copyWith(fontSize: 12.5),
+                ),
+              ],
+            ),
           ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: AppTextStyles.bodySm.copyWith(
-            color: AppColors.neutral500,
-            fontWeight: FontWeight.w500,
-          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionMenuItem(
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    VoidCallback onTap, {
+    bool isDestructive = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withAlpha(20),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: OrmawaTheme.textCardTitle.copyWith(
+                      fontSize: 13,
+                      color: isDestructive ? const Color(0xFFDC2626) : OrmawaTheme.textHeading,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    subtitle,
+                    style: OrmawaTheme.textCaption.copyWith(
+                      color: isDestructive
+                          ? const Color(0xFFDC2626).withAlpha(180)
+                          : OrmawaTheme.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 20,
+              color: isDestructive ? const Color(0xFFDC2626) : OrmawaTheme.textPlaceholder,
+            ),
+          ],
         ),
       ),
     );
@@ -489,37 +500,24 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: AppSpacing.s60),
-          Icon(Icons.person_off_rounded, size: 80, color: AppColors.neutral300),
-          const SizedBox(height: AppSpacing.xl),
+          Icon(
+            Icons.person_off_rounded,
+            size: 64,
+            color: OrmawaTheme.textPlaceholder,
+          ),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Data Profil Tidak Ditemukan',
-            style: AppTextStyles.titleLg.copyWith(
-              color: AppColors.neutral700,
-              fontWeight: FontWeight.w600,
-            ),
+            style: OrmawaTheme.textCardTitle.copyWith(fontSize: 16),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.xs),
           Text(
-            'Gagal memuat informasi pribadi Anda. Pastikan Anda sudah terdaftar sebagai pengurus.',
+            'Gagal memuat informasi pribadi Anda. Pastikan Anda sudah terdaftar sebagai pengurus aktif.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
+            style: OrmawaTheme.textBodyRegular.copyWith(color: OrmawaTheme.textMuted),
           ),
         ],
       ),
     );
-  }
-
-  String _capitalize(String s) =>
-      s.isEmpty ? '' : '${s[0]}${s.substring(1).toLowerCase()}';
-
-  String _capitalizeEachWord(String s) {
-    if (s.isEmpty) return '';
-    return s
-        .split(' ')
-        .map((word) {
-          if (word.isEmpty) return '';
-          return '${word[0]}${word.substring(1).toLowerCase()}';
-        })
-        .join(' ');
   }
 }

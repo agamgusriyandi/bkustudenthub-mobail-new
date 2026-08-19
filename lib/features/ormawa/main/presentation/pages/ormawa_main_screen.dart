@@ -4,7 +4,7 @@ import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/pages/ormaw
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/finance/presentation/pages/ormawa_finance_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 
 class OrmawaMainScreen extends StatefulWidget {
   const OrmawaMainScreen({super.key});
@@ -30,8 +30,8 @@ class _OrmawaMainScreenState extends State<OrmawaMainScreen> {
       key: PageStorageKey('ormawa_finance'),
       showBackButton: false,
     ),
-    const OrmawaSettingsScreen(
-      key: PageStorageKey('ormawa_settings'),
+    const OrmawaProfileScreen(
+      key: PageStorageKey('ormawa_profile'),
       showBackButton: false,
     ),
   ];

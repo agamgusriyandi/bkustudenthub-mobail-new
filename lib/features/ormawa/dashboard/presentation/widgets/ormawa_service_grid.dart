@@ -22,6 +22,7 @@ import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/notifications/presentation/pages/ormawa_notifications_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_settings_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/settings/presentation/pages/ormawa_profile_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/struktur/presentation/pages/ormawa_struktur_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/pages/ormawa_recruitment_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pagu/presentation/pages/ormawa_pagu_screen.dart';
@@ -160,6 +161,12 @@ class OrmawaServiceGridModal extends StatelessWidget {
         icon: Icons.notifications_rounded,
         color: AppColors.serviceAmber,
         target: OrmawaNotificationsScreen(),
+      ),
+      const _ModalServiceIcon(
+        title: 'Profil',
+        icon: Icons.person_rounded,
+        color: AppColors.servicePurple,
+        target: OrmawaProfileScreen(),
       ),
       const _ModalServiceIcon(
         title: 'Pengaturan',

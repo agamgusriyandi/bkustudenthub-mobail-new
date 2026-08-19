@@ -50,7 +50,7 @@ class BottomNavPresets {
       icon: Icons.account_balance_wallet_rounded,
       label: 'Keuangan',
     ),
-    BottomNavItem(index: 4, icon: Icons.settings_rounded, label: 'Pengaturan'),
+    BottomNavItem(index: 4, icon: Icons.person_rounded, label: 'Profil'),
   ];
 
   /// Navigation items for Psychologist
