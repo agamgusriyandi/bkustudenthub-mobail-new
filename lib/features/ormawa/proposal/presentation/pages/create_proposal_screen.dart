@@ -1,23 +1,21 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
-import '../../../../../core/widgets/bku_design/bku_loading_dialog.dart';
-import '../../../../../core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:go_router/go_router.dart';
 
 class CreateProposalScreen extends StatefulWidget {
   final OrmawaProposal? initialProposal;
@@ -36,35 +34,14 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
   final _indikatorController = TextEditingController();
   final _sumberDanaController = TextEditingController();
   final _latarBelakangController = TextEditingController();
-
   final _landasanController = TextEditingController();
   final _pjKegiatanController = TextEditingController();
   final _jadwalController = TextEditingController();
   final _tujuanController = TextEditingController();
   final _deskripsiController = TextEditingController();
 
-  final bool _isSubmitting = false;
   DateTime _selectedDate = DateTime.now();
   PlatformFile? _selectedFile;
-
-  Future<void> _pickFile() async {
-    try {
-      FilePickerResult? result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx'],
-      );
-
-      if (result != null) {
-        setState(() {
-          _selectedFile = result.files.first;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        AppSnackbar.showError(context, 'Gagal memilih file');
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -106,8 +83,27 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
     super.dispose();
   }
 
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _selectedFile = result.files.first;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        AppSnackbar.showError(context, 'Gagal memilih file');
+      }
+    }
+  }
+
   void _handleSubmit() async {
-    if (_nameController.text.isEmpty) {
+    if (_nameController.text.trim().isEmpty) {
       AppSnackbar.showError(context, 'Nama kegiatan tidak boleh kosong');
       return;
     }
@@ -118,310 +114,385 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
     final isEdit = widget.initialProposal != null;
 
     String? uploadedUrl = isEdit ? widget.initialProposal!.fileUrl : null;
-
     if (_selectedFile != null && _selectedFile!.path != null) {
-      uploadedUrl = await provider.uploadFile(_selectedFile!.path!);
-      if (uploadedUrl == null) {
+      try {
+        uploadedUrl = await provider.uploadFile(_selectedFile!.path!);
+      } catch (e) {
         if (mounted) {
-          AppSnackbar.showError(
-            context,
-            'Gagal mengunggah file. Silakan coba lagi.',
-          );
           BkuLoadingDialog.hide(context);
+          AppSnackbar.showError(context, 'Gagal mengunggah berkas proposal: $e');
         }
         return;
       }
     }
 
+    final numBudget =
+        double.tryParse(
+          _budgetController.text.replaceAll('.', '').replaceAll(',', ''),
+        ) ??
+        0.0;
+
     final proposal = OrmawaProposal(
       id: isEdit ? widget.initialProposal!.id : '',
-      ormawaId: isEdit ? widget.initialProposal!.ormawaId : provider.ormawaId,
-      mahasiswaId:
-          isEdit ? widget.initialProposal!.mahasiswaId : provider.mahasiswaId,
-      fakultasId:
-          isEdit ? widget.initialProposal!.fakultasId : provider.fakultasId,
-      title: _nameController.text,
+      title: _nameController.text.trim(),
       code: isEdit ? widget.initialProposal!.code : '',
-      status: isEdit ? widget.initialProposal!.status : 'diajukan',
+      status: isEdit ? widget.initialProposal!.status : 'pending',
       date: _selectedDate,
-      budget: double.tryParse(_budgetController.text.replaceAll('.', '')) ?? 0,
-      description: _deskripsiController.text,
-      landasanKegiatan: _landasanController.text,
-      bentukKegiatan: _bentukController.text,
-      mitra: _mitraController.text,
-      pjKegiatan: _pjKegiatanController.text,
-      jadwalPelaksanaan: _jadwalController.text,
-      sasaranKegiatan: _sasaranController.text,
-      indikatorKeberhasilan: _indikatorController.text,
-      sumberDana: _sumberDanaController.text,
-      latarBelakang: _latarBelakangController.text,
-      tujuanKegiatan: _tujuanController.text,
+      budget: numBudget,
+      bentukKegiatan: _bentukController.text.trim(),
+      mitra: _mitraController.text.trim(),
+      sasaranKegiatan: _sasaranController.text.trim(),
+      indikatorKeberhasilan: _indikatorController.text.trim(),
+      sumberDana: _sumberDanaController.text.trim(),
+      latarBelakang: _latarBelakangController.text.trim(),
+      landasanKegiatan: _landasanController.text.trim(),
+      pjKegiatan: _pjKegiatanController.text.trim(),
+      jadwalPelaksanaan: _jadwalController.text.trim(),
+      tujuanKegiatan: _tujuanController.text.trim(),
+      description: _deskripsiController.text.trim(),
       fileUrl: uploadedUrl,
     );
 
     try {
       if (isEdit) {
         await provider.updateProposal(proposal);
+        if (mounted) {
+          BkuLoadingDialog.hide(context);
+          AppSnackbar.showSuccess(context, 'Proposal berhasil diperbarui');
+          context.pop();
+        }
       } else {
         await provider.addProposal(proposal);
-      }
-
-      if (mounted) {
-        context.pop();
-        AppSnackbar.showSuccess(
-          context,
-          isEdit
-              ? 'Proposal berhasil diperbarui!'
-              : 'Proposal berhasil diajukan ke Pihak Kampus!',
-        );
-      }
-    } catch (e) {
-      String errMsg = ErrorHandler.getMessage(e);
-      if (e is DioException && e.response?.data != null) {
-        final data = e.response!.data;
-        if (data is Map &&
-            (data.containsKey('message') || data.containsKey('Message'))) {
-          errMsg = (data['message'] ?? data['Message']).toString();
+        if (mounted) {
+          BkuLoadingDialog.hide(context);
+          AppSnackbar.showSuccess(context, 'Proposal berhasil diajukan');
+          context.pop();
         }
       }
+    } on DioException catch (e) {
       if (mounted) {
-        AppSnackbar.showError(context, 'Gagal menyimpan proposal: $errMsg');
+        BkuLoadingDialog.hide(context);
+        AppSnackbar.showError(context, ErrorHandler.getMessage(e));
       }
-    } finally {
-      if (mounted) BkuLoadingDialog.hide(context);
+    } catch (e) {
+      if (mounted) {
+        BkuLoadingDialog.hide(context);
+        AppSnackbar.showError(context, 'Terjadi kesalahan: $e');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEdit = widget.initialProposal != null;
+
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
+        physics: const ClampingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
           BkuAppBar(
-            title:
-                widget.initialProposal != null
-                    ? 'EDIT PROPOSAL'
-                    : 'BUAT PROPOSAL BARU',
+            title: isEdit ? 'EDIT PROPOSAL' : 'BUAT PROPOSAL BARU',
+            subtitle: 'Pengajuan Kegiatan Ormawa',
             variant: AppBarVariant.ormawa,
             showBackButton: true,
             isExpandable: false,
             showNotification: false,
+            expandedHeight: 125.0,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: 14,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('Informasi Dasar'),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Nama Kegiatan',
-                    'Contoh: Seminar Nasional IT 2026',
-                    Icons.event_rounded,
-                    controller: _nameController,
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Informasi Dasar',
+                          style: OrmawaTheme.textSectionTitle,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Nama Kegiatan *',
+                          hintText: 'Contoh: Seminar Nasional IT 2026',
+                          prefixIcon: Icons.event_rounded,
+                          controller: _nameController,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Landasan Kegiatan',
+                          'Pilih landasan...',
+                          Icons.foundation_rounded,
+                          [
+                            'Program Kerja Tahunan',
+                            'Instruksi Universitas',
+                            'Instruksi Fakultas',
+                            'Delegasi Ormawa',
+                            'Lainnya',
+                          ],
+                          _landasanController,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Bentuk Kegiatan',
+                          'Pilih bentuk...',
+                          Icons.category_rounded,
+                          [
+                            'Kompetisi / Lomba',
+                            'Seminar / Webinar',
+                            'Pelatihan / Workshop',
+                            'Pengabdian Masyarakat',
+                            'Musyawarah / Rapat Kerja',
+                            'Olahraga / Seni',
+                            'Lainnya',
+                          ],
+                          _bentukController,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Landasan Kegiatan',
-                    'Pilih landasan...',
-                    Icons.foundation_rounded,
-                    [
-                      'Program Kerja Tahunan',
-                      'Instruksi Universitas',
-                      'Instruksi Fakultas',
-                      'Delegasi Ormawa',
-                      'Lainnya',
-                    ],
-                    _landasanController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Bentuk Kegiatan',
-                    'Pilih bentuk...',
-                    Icons.category_rounded,
-                    [
-                      'Kompetisi / Lomba',
-                      'Seminar / Webinar',
-                      'Pelatihan / Workshop',
-                      'Pengabdian Masyarakat',
-                      'Musyawarah / Rapat Kerja',
-                      'Olahraga / Seni',
-                      'Lainnya',
-                    ],
-                    _bentukController,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: 14),
 
-                  _buildSectionTitle('Pelaksanaan'),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Tanggal Kegiatan',
-                    '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                    Icons.calendar_today_rounded,
-                    isReadOnly: true,
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate,
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime(2101),
-                      );
-                      if (picked != null) {
-                        setState(() => _selectedDate = picked);
-                      }
-                    },
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Pelaksanaan & Sasaran',
+                          style: OrmawaTheme.textSectionTitle,
+                        ),
+                        const SizedBox(height: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Tanggal Kegiatan',
+                              style: OrmawaTheme.textCaption.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            InkWell(
+                              onTap: () async {
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: _selectedDate,
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2035),
+                                  builder: (context, child) {
+                                    return Theme(
+                                      data: Theme.of(context).copyWith(
+                                        colorScheme: ColorScheme.light(
+                                          primary: OrmawaTheme.primaryDark,
+                                          onPrimary: Colors.white,
+                                          onSurface: OrmawaTheme.textHeading,
+                                        ),
+                                      ),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null) {
+                                  setState(() => _selectedDate = picked);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: OrmawaTheme.border),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today_rounded,
+                                      size: 18,
+                                      color: OrmawaTheme.primary,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                                      style: OrmawaTheme.textCardTitle.copyWith(
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      color: OrmawaTheme.textMuted,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Jadwal Pelaksanaan',
+                          hintText: 'Contoh: Senin, 15 Juli 2026, 09.00 WIB',
+                          prefixIcon: Icons.schedule_rounded,
+                          controller: _jadwalController,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'PJ Kegiatan',
+                          hintText: 'Contoh: Budi Santoso (Ketua Panitia)',
+                          prefixIcon: Icons.person_outline_rounded,
+                          controller: _pjKegiatanController,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Mitra Kerja',
+                          'Pilih mitra...',
+                          Icons.handshake_outlined,
+                          [
+                            'Tidak Ada Mitra',
+                            'Sponsor Swasta',
+                            'Instansi Pemerintah',
+                            'Ormawa Lain',
+                            'Organisasi Eksternal Kampus',
+                            'Lainnya',
+                          ],
+                          _mitraController,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Sasaran Kegiatan',
+                          'Pilih sasaran...',
+                          Icons.groups_outlined,
+                          [
+                            'Seluruh Mahasiswa Universitas',
+                            'Seluruh Mahasiswa Fakultas',
+                            'Pengurus Ormawa Internal',
+                            'Masyarakat Umum',
+                            'Siswa SMA/SMK',
+                            'Lainnya',
+                          ],
+                          _sasaranController,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Mitra Kerja',
-                    'Pilih mitra...',
-                    Icons.handshake_rounded,
-                    [
-                      'Tidak Ada Mitra',
-                      'Sponsor Swasta',
-                      'Instansi Pemerintah',
-                      'Ormawa Lain',
-                      'Organisasi Eksternal Kampus',
-                      'Lainnya',
-                    ],
-                    _mitraController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'PJ Kegiatan',
-                    'Contoh: Budi Santoso (Ketua Panitia)...',
-                    Icons.person_rounded,
-                    controller: _pjKegiatanController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Jadwal Pelaksanaan',
-                    'Contoh: Senin, 15 Juli 2026, 09.00...',
-                    Icons.schedule_rounded,
-                    controller: _jadwalController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Sasaran Kegiatan',
-                    'Pilih sasaran...',
-                    Icons.group_rounded,
-                    [
-                      'Seluruh Mahasiswa Universitas',
-                      'Seluruh Mahasiswa Fakultas',
-                      'Pengurus Ormawa Internal',
-                      'Masyarakat Umum',
-                      'Siswa SMA/SMK',
-                      'Lainnya',
-                    ],
-                    _sasaranController,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: 14),
 
-                  _buildSectionTitle('Detail Khusus'),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Latar Belakang',
-                    'Uraikan latar belakang...',
-                    Icons.subject_rounded,
-                    maxLines: 5,
-                    controller: _latarBelakangController,
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Detail Khusus & Analisis',
+                          style: OrmawaTheme.textSectionTitle,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Latar Belakang Kegiatan',
+                          hintText: 'Uraikan latar belakang penyelenggaraan...',
+                          controller: _latarBelakangController,
+                          maxLines: 4,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Tujuan Kegiatan',
+                          hintText: 'Uraikan tujuan dan output kegiatan...',
+                          controller: _tujuanController,
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Deskripsi Detail Kegiatan',
+                          hintText: 'Uraikan konsep dan rangkaian acara...',
+                          controller: _deskripsiController,
+                          maxLines: 4,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Indikator Keberhasilan',
+                          'Pilih indikator...',
+                          Icons.insights_rounded,
+                          [
+                            'Target Peserta Terpenuhi',
+                            'Publikasi Media Luas',
+                            'Mendapatkan Profit / Keuntungan',
+                            'Kerjasama Jangka Panjang',
+                            'Meningkatkan Akreditasi',
+                            'Lainnya',
+                          ],
+                          _indikatorController,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Tujuan Kegiatan',
-                    'Uraikan tujuan kegiatan...',
-                    Icons.flag_rounded,
-                    maxLines: 5,
-                    controller: _tujuanController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Deskripsi Detail Kegiatan',
-                    'Uraikan deskripsi kegiatan...',
-                    Icons.description_rounded,
-                    maxLines: 5,
-                    controller: _deskripsiController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Indikator Keberhasilan',
-                    'Pilih indikator...',
-                    Icons.analytics_rounded,
-                    [
-                      'Target Peserta Terpenuhi',
-                      'Publikasi Media Luas',
-                      'Mendapatkan Profit / Keuntungan',
-                      'Kerjasama Jangka Panjang',
-                      'Meningkatkan Akreditasi',
-                      'Lainnya',
-                    ],
-                    _indikatorController,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: 14),
 
-                  _buildSectionTitle('Anggaran & Berkas'),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    'Total Anggaran',
-                    '0',
-                    Icons.payments_rounded,
-                    keyboardType: TextInputType.number,
-                    controller: _budgetController,
-                    isPrice: true,
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Anggaran & Berkas Proposal',
+                          style: OrmawaTheme.textSectionTitle,
+                        ),
+                        const SizedBox(height: 12),
+                        OrmawaTextField(
+                          label: 'Total Anggaran Biaya (Rp) *',
+                          hintText: '0',
+                          prefixIcon: Icons.payments_outlined,
+                          keyboardType: TextInputType.number,
+                          controller: _budgetController,
+                          inputFormatters: [ThousandsSeparatorInputFormatter()],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdownField(
+                          'Sumber Dana',
+                          'Pilih sumber...',
+                          Icons.account_balance_wallet_outlined,
+                          [
+                            'Dana Kemahasiswaan Universitas',
+                            'Dana Kemahasiswaan Fakultas',
+                            'Kas Organisasi',
+                            'Sponsor / Mitra',
+                            'Dana Swadaya Mahasiswa',
+                            'Lainnya',
+                          ],
+                          _sumberDanaController,
+                        ),
+                        const SizedBox(height: 14),
+                        _buildFileUploadBox(),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDropdownField(
-                    'Sumber Dana',
-                    'Pilih sumber...',
-                    Icons.account_balance_wallet_rounded,
-                    [
-                      'Dana Kemahasiswaan Universitas',
-                      'Dana Kemahasiswaan Fakultas',
-                      'Kas Organisasi',
-                      'Sponsor / Mitra',
-                      'Dana Swadaya Mahasiswa',
-                      'Lainnya',
-                    ],
-                    _sumberDanaController,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildFileUploadBox(),
+                  const SizedBox(height: 24),
 
-                  const SizedBox(height: AppSpacing.xxl),
-                  _buildSubmitButton(),
-                  const SizedBox(height: AppSpacing.xxxl),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: OrmawaButton(
+                      text: isEdit ? 'SIMPAN PERUBAHAN' : 'AJUKAN PROPOSAL KE FAKULTAS/UNIVERSITAS',
+                      onPressed: _handleSubmit,
+                      icon: isEdit ? Icons.save_rounded : Icons.send_rounded,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: AppTextStyles.labelMd.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Container(
-          width: 40,
-          height: 3,
-          decoration: BoxDecoration(
-            color: context.appColors.primary,
-            borderRadius: AppRadius.radiusXs,
-          ),
-        ),
-      ],
     );
   }
 
@@ -446,65 +517,53 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
           children: [
             Text(
               label,
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral600,
+              style: OrmawaTheme.textCaption.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: 6),
             BkuDropdown<String>(
               initialValue: currentValue,
               hint: hint,
               isExpanded: true,
-              style: AppTextStyles.bodyMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.appColors.onSurface,              ),
+              style: OrmawaTheme.textCardTitle.copyWith(fontSize: 13),
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   icon,
-                  color: context.appColors.primary,
-                  size: 20,
+                  color: OrmawaTheme.primary,
+                  size: 18,
                 ),
                 filled: true,
-                fillColor: AppColors.neutral100,
+                fillColor: Colors.white,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+                  horizontal: 14,
+                  vertical: 12,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusLg,
-                  borderSide: const BorderSide(
-                    color: AppColors.neutral300,
-                    width: 1,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: OrmawaTheme.border),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusLg,
-                  borderSide: const BorderSide(
-                    color: AppColors.neutral300,
-                    width: 1,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: OrmawaTheme.border),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusLg,
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: context.appColors.primary,
+                    color: OrmawaTheme.primary,
                     width: 1.5,
                   ),
                 ),
               ),
-              items:
-                  options.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: AppTextStyles.bodyMd.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+              items: options.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: OrmawaTheme.textCardTitle.copyWith(fontSize: 13),
+                  ),
+                );
+              }).toList(),
               onChanged: (String? newValue) {
                 if (newValue != null) {
                   setState(() {
@@ -519,45 +578,11 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               },
             ),
             if (currentValue == 'Lainnya') ...[
-              const SizedBox(height: AppSpacing.md),
-              BkuTextField(
+              const SizedBox(height: 8),
+              OrmawaTextField(
+                label: 'Keterangan $label Lainnya',
+                hintText: 'Tuliskan $label lainnya...',
                 controller: controller,
-                style: AppTextStyles.bodyMd.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Tuliskan $label lainnya...',
-                  hintStyle: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.neutral500,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.neutral100,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: const BorderSide(
-                      color: AppColors.neutral300,
-                      width: 1,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: const BorderSide(
-                      color: AppColors.neutral300,
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    borderSide: BorderSide(
-                      color: context.appColors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
               ),
             ],
           ],
@@ -566,165 +591,74 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
     );
   }
 
-  Widget _buildTextField(
-    String label,
-    String hint,
-    IconData icon, {
-    bool isReadOnly = false,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    TextEditingController? controller,
-    VoidCallback? onTap,
-    bool isPrice = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GestureDetector(
-          onTap: onTap,
-          child: BkuTextField(
-            controller: controller,
-            enabled: !isReadOnly && onTap == null,
-            readOnly: isReadOnly || onTap != null,
-            maxLines: maxLines,
-            keyboardType: keyboardType,
-            onTap: onTap,
-            inputFormatters:
-                isPrice ? [ThousandsSeparatorInputFormatter()] : null,
-            style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: AppTextStyles.bodyMd.copyWith(
-                color: context.appColors.outline.withAlpha(100),
-              ),
-              prefixIcon: Icon(
-                icon,
-                color: context.appColors.primary,
-                size: 20,
-              ),
-              prefixText: isPrice ? 'Rp ' : null,
-              prefixStyle: AppTextStyles.bodyMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.appColors.onSurface,              ),
-              filled: true,
-              fillColor: AppColors.neutral100,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 16,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: const BorderSide(
-                  color: AppColors.neutral300,
-                  width: 1,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: const BorderSide(
-                  color: AppColors.neutral300,
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: AppRadius.radiusLg,
-                borderSide: BorderSide(
-                  color: context.appColors.primary,
-                  width: 1.5,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildFileUploadBox() {
+    final hasFile = _selectedFile != null ||
+        (widget.initialProposal?.fileUrl != null &&
+            widget.initialProposal!.fileUrl!.isNotEmpty);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Upload Dokumen (Opsional)',
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
+          'Upload Berkas Dokumen Proposal (Opsional)',
+          style: OrmawaTheme.textCaption.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
-        GestureDetector(
+        const SizedBox(height: 6),
+        InkWell(
           onTap: _pickFile,
+          borderRadius: BorderRadius.circular(14),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.xxl,
-              horizontal: AppSpacing.lg,
+              vertical: 20,
+              horizontal: 16,
             ),
             decoration: BoxDecoration(
-              color: AppColors.neutral200,
-              borderRadius: AppRadius.radiusLg,
+              color: hasFile ? OrmawaTheme.primarySoft : Colors.white,
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: context.appColors.primary.withAlpha(30),
-                style: BorderStyle.solid,
+                color: hasFile ? OrmawaTheme.primaryBorder : OrmawaTheme.border,
               ),
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  color: context.appColors.primary,
-                  size: 32,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: OrmawaTheme.primarySoft,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    hasFile ? Icons.description_rounded : Icons.cloud_upload_outlined,
+                    color: OrmawaTheme.primaryDark,
+                    size: 26,
+                  ),
                 ),
-                const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: 10),
                 Text(
                   _selectedFile != null
                       ? _selectedFile!.name
                       : (widget.initialProposal?.fileUrl != null &&
                               widget.initialProposal!.fileUrl!.isNotEmpty
-                          ? 'File sudah terunggah (Ketuk untuk ganti)'
-                          : 'Ketuk untuk pilih file'),
-                  style: AppTextStyles.labelSm.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                          ? 'Dokumen sudah terunggah (Ketuk untuk ganti)'
+                          : 'Ketuk untuk memilih file PDF / DOCX'),
+                  style: OrmawaTheme.textCardTitle.copyWith(fontSize: 13),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (_selectedFile == null &&
-                    (widget.initialProposal?.fileUrl == null ||
-                        widget.initialProposal!.fileUrl!.isEmpty))
-                  Text(
-                    'Maksimal ukuran file: 10MB (PDF/DOC)',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.outline,
-                      fontSize: 10,
-                    ),
-                  ),
+                const SizedBox(height: 2),
+                Text(
+                  'Format PDF/DOCX maksimal 10MB',
+                  style: OrmawaTheme.textCaption,
+                ),
               ],
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return BkuButton(
-      text:
-          widget.initialProposal != null
-              ? 'SIMPAN PERUBAHAN'
-              : 'AJUKAN PROPOSAL',
-      onPressed: _handleSubmit,
-      isLoading: _isSubmitting,
-      height: 56,
     );
   }
 }

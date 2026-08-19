@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 
 class OrmawaTextField extends StatelessWidget {
@@ -15,6 +16,9 @@ class OrmawaTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
 
+  final List<TextInputFormatter>? inputFormatters;
+  final String? prefixText;
+
   const OrmawaTextField({
     super.key,
     required this.label,
@@ -29,6 +33,8 @@ class OrmawaTextField extends StatelessWidget {
     this.onTap,
     this.validator,
     this.onChanged,
+    this.inputFormatters,
+    this.prefixText,
   });
 
   @override
@@ -55,6 +61,7 @@ class OrmawaTextField extends StatelessWidget {
           onTap: onTap,
           validator: validator,
           onChanged: onChanged,
+          inputFormatters: inputFormatters,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -68,6 +75,12 @@ class OrmawaTextField extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.white,
+            prefixText: prefixText,
+            prefixStyle: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: OrmawaTheme.textHeading,
+            ),
             prefixIcon: prefixIcon != null
                 ? Icon(prefixIcon, color: OrmawaTheme.primary, size: 20)
                 : null,

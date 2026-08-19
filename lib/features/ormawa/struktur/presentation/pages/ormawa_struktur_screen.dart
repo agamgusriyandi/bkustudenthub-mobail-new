@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
@@ -312,25 +313,11 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
   Widget _buildSectionTitle(String title, IconData icon, Color color) {
     return Row(
       children: [
-        Container(
-          width: 3.5,
-          height: 14,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Icon(icon, size: 15, color: color),
-        const SizedBox(width: 4),
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 6),
         Text(
           title,
-          style: TextStyle(
-            color: context.appColors.onSurface,
-            fontWeight: FontWeight.w900,
-            fontSize: 11.5,
-            letterSpacing: 0.3,
-          ),
+          style: OrmawaTheme.textSectionTitle,
         ),
       ],
     );

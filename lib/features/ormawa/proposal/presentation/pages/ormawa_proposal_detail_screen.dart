@@ -521,27 +521,9 @@ class OrmawaProposalDetailScreen extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Row(
-      children: [
-        Container(
-          width: 3.5,
-          height: 13,
-          margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(
-            color: OrmawaTheme.primary,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
-            color: OrmawaTheme.textHeading,
-            letterSpacing: -0.2,
-          ),
-        ),
-      ],
+    return Text(
+      title,
+      style: OrmawaTheme.textSectionTitle,
     );
   }
 

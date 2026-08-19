@@ -235,10 +235,7 @@ class _OrmawaProposalReviewScreenState
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-              child: Divider(color: AppColors.neutral200, height: 1),
-            ),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
