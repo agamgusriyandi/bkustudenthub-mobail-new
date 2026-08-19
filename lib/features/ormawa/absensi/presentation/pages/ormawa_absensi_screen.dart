@@ -8,6 +8,13 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_hero_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
@@ -166,7 +173,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
 
     if (provider.isLoading && provider.agendas.isEmpty) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: OrmawaTheme.scaffoldBg,
         body: CustomScrollView(
           slivers: [
             BkuAppBar(
@@ -222,7 +229,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -347,84 +354,58 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
 
                   Row(
                     children: [
-                      _buildKpiCard(
-                        '$totalSessions',
-                        'Total Sesi Kegiatan',
-                        'Semua Sesi',
-                        Icons.calendar_month_rounded,
-                        primaryColor,
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Total Sesi Kegiatan',
+                          value: '$totalSessions',
+                          badgeText: 'Semua Sesi',
+                          icon: Icons.calendar_month_rounded,
+                          badgeColor: primaryColor,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      _buildKpiCard(
-                        _selectedAgenda != null ? '$totalAttendance' : '${provider.members.length}',
-                        _selectedAgenda != null ? 'Peserta Terdaftar' : 'Total Anggota',
-                        _selectedAgenda != null ? 'Sesi Terpilih' : 'Anggota Aktif',
-                        Icons.people_alt_rounded,
-                        const Color(0xFF0284C7),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: _selectedAgenda != null ? 'Peserta Terdaftar' : 'Total Anggota',
+                          value: _selectedAgenda != null ? '$totalAttendance' : '${provider.members.length}',
+                          badgeText: _selectedAgenda != null ? 'Sesi Terpilih' : 'Anggota Aktif',
+                          icon: Icons.people_alt_rounded,
+                          badgeColor: const Color(0xFF0284C7),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildKpiCard(
-                        _selectedAgenda != null ? '$attendedCount / $absentCount' : '— / —',
-                        'Hadir / Tidak Hadir',
-                        'Presensi',
-                        Icons.check_circle_rounded,
-                        const Color(0xFF059669),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Hadir / Tidak Hadir',
+                          value: _selectedAgenda != null ? '$attendedCount / $absentCount' : '— / —',
+                          badgeText: 'Presensi',
+                          icon: Icons.check_circle_rounded,
+                          badgeColor: const Color(0xFF059669),
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      _buildKpiCard(
-                        _selectedAgenda != null ? '$attendanceRate%' : '0%',
-                        'Rasio Kehadiran',
-                        'Persentase',
-                        Icons.percent_rounded,
-                        const Color(0xFFD97706),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Rasio Kehadiran',
+                          value: _selectedAgenda != null ? '$attendanceRate%' : '0%',
+                          badgeText: 'Persentase',
+                          icon: Icons.percent_rounded,
+                          badgeColor: const Color(0xFFD97706),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 14),
 
                   if (_selectedAgenda == null) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF94A3B8).withAlpha(15),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: primaryColor.withAlpha(20),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.qr_code_scanner_rounded, size: 28, color: primaryColor),
-                          ),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'Belum Ada Sesi Terpilih',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Pilih salah satu sesi kegiatan dari daftar di bawah untuk membuka QR Code Presensi dan mengelola kehadiran peserta.',
-                            style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    const OrmawaHeroCard(
+                      icon: Icons.qr_code_scanner_rounded,
+                      title: 'Belum Ada Sesi Terpilih',
+                      description: 'Pilih salah satu sesi kegiatan dari daftar di bawah untuk membuka QR Code Presensi dan mengelola kehadiran peserta.',
                     ),
                     const SizedBox(height: 14),
                   ] else ...[
@@ -619,74 +600,30 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     const SizedBox(height: 16),
                   ],
 
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildTabPill('all', 'Semua Sesi', totalSessions, primaryColor),
-                        const SizedBox(width: 6),
-                        _buildTabPill('berlangsung', 'Berlangsung', ongoingCount, primaryColor),
-                        const SizedBox(width: 6),
-                        _buildTabPill('terjadwal', 'Terjadwal', plannedCount, primaryColor),
-                        const SizedBox(width: 6),
-                        _buildTabPill('selesai', 'Selesai', completedCount, primaryColor),
-                      ],
-                    ),
+                  OrmawaFilterTabs(
+                    tabs: [
+                      OrmawaTabItem(key: 'all', label: 'Semua Sesi', count: totalSessions),
+                      OrmawaTabItem(key: 'berlangsung', label: 'Berlangsung', count: ongoingCount),
+                      OrmawaTabItem(key: 'terjadwal', label: 'Terjadwal', count: plannedCount),
+                      OrmawaTabItem(key: 'selesai', label: 'Selesai', count: completedCount),
+                    ],
+                    activeKey: _activeTab,
+                    onTabChanged: (val) => setState(() => _activeTab = val),
                   ),
                   const SizedBox(height: 12),
 
-                  Container(
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF94A3B8).withAlpha(10),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                      decoration: InputDecoration(
-                        hintText: 'Cari judul kegiatan atau lokasi...',
-                        hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
-                        prefixIcon: Icon(Icons.search_rounded, size: 18, color: primaryColor),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF94A3B8)),
-                                onPressed: () => _searchController.clear(),
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 11),
-                      ),
-                    ),
+                  OrmawaSearchBar(
+                    controller: _searchController,
+                    hintText: 'Cari judul kegiatan atau lokasi...',
+                    onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
                   ),
                   const SizedBox(height: 14),
 
                   if (filteredAgendas.isEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(32),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: const Column(
-                        children: [
-                          Icon(Icons.event_busy_rounded, size: 42, color: Color(0xFFCBD5E1)),
-                          SizedBox(height: 8),
-                          Text('Belum ada sesi kegiatan', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                          SizedBox(height: 4),
-                          Text('Tidak ada agenda yang cocok dengan filter.', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
-                        ],
-                      ),
+                    const OrmawaEmptyCard(
+                      title: 'Belum ada sesi kegiatan',
+                      description: 'Tidak ada agenda yang cocok dengan filter.',
+                      icon: Icons.event_busy_rounded,
                     )
                   else
                     ListView.separated(
@@ -977,110 +914,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     );
   }
 
-  Widget _buildKpiCard(String value, String title, String subtitle, IconData icon, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF94A3B8).withAlpha(15),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    color: color.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, size: 16, color: color),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(subtitle, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildTabPill(String tabId, String label, int count, Color primaryColor) {
-    final isActive = _activeTab == tabId;
-    return InkWell(
-      onTap: () => setState(() => _activeTab = tabId),
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive ? primaryColor : Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isActive ? primaryColor : const Color(0xFFE2E8F0)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.bold,
-                color: isActive ? Colors.white : const Color(0xFF334155),
-              ),
-            ),
-            const SizedBox(width: 5),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-              decoration: BoxDecoration(
-                color: isActive ? Colors.white.withAlpha(50) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  color: isActive ? Colors.white : const Color(0xFF64748B),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _DynamicQrDialog extends StatefulWidget {
@@ -1131,7 +965,7 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
   void _generatePayload() {
     final nowMs = DateTime.now().millisecondsSinceEpoch;
     final token = (nowMs ~/ 1000).toString();
-    _qrPayload = 'https://stag.bkustudenthub.com/student/presensi?eventId=${widget.agenda.id}&token=$token&t=$nowMs';
+    _qrPayload = '${ApiGate.webUrl}/student/presensi?eventId=${widget.agenda.id}&token=$token&t=$nowMs';
   }
 
   @override

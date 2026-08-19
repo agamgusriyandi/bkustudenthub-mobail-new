@@ -1,423 +1,208 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_role.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_hero_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaRbacScreen extends StatefulWidget {
-  const OrmawaRbacScreen({super.key});
+  final bool showBackButton;
+  const OrmawaRbacScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaRbacScreen> createState() => _OrmawaRbacScreenState();
 }
 
 class _OrmawaRbacScreenState extends State<OrmawaRbacScreen> {
-  List<OrmawaRole> _roles = [];
-  bool _isLoading = true;
-  String? _error;
-
   @override
   void initState() {
     super.initState();
-    _fetchRoles();
-  }
-
-  Future<void> _fetchRoles() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
+    Future.microtask(() {
+      if (mounted) context.read<OrmawaProvider>().refreshData();
     });
-
-    try {
-      final dio = Dio();
-      final response = await dio.get('/ormawa/roles');
-      final data = response.data;
-
-      List<OrmawaRole> roles;
-      if (data is List) {
-        roles = data.map((e) => OrmawaRole(
-          id: (e['id'] ?? '').toString(),
-          name: e['name'] ?? '',
-          description: e['description'] ?? '',
-          permissions: (e['permissions'] as List<dynamic>?)
-                  ?.map((p) => p.toString())
-                  .toList() ??
-              [],
-        )).toList();
-      } else if (data is Map && data['data'] is List) {
-        roles = (data['data'] as List).map((e) => OrmawaRole(
-          id: (e['id'] ?? '').toString(),
-          name: e['name'] ?? '',
-          description: e['description'] ?? '',
-          permissions: (e['permissions'] as List<dynamic>?)
-                  ?.map((p) => p.toString())
-                  .toList() ??
-              [],
-        )).toList();
-      } else {
-        roles = [];
-      }
-
-      if (mounted) {
-        setState(() {
-          _roles = roles;
-          _isLoading = false;
-        });
-      }
-    } on DioException catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.message ?? 'Gagal memuat data role';
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = 'Terjadi kesalahan: $e';
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
-        onRefresh: _fetchRoles,
+        onRefresh: () => context.read<OrmawaProvider>().refreshData(),
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
           slivers: [
             BkuAppBar(
-              title: 'Role-based Access Control',
-              subtitle: 'Hak Akses Role',
+              title: 'Hak Akses & Role (RBAC)',
+              subtitle: 'Manajemen Otoritas Pengguna',
               variant: AppBarVariant.ormawa,
               expandedHeight: 130.0,
-              showBackButton: true,
+              showBackButton: widget.showBackButton,
               isExpandable: false,
             ),
-            if (_isLoading)
-              const SliverFillRemaining(
-                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
-              )
-            else if (_error != null)
-              SliverFillRemaining(
-                child: _buildErrorState(),
-              )
-            else
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeader(),
-                      const SizedBox(height: AppSpacing.lg),
-                      if (_roles.isEmpty)
-                        _buildEmptyState()
-                      else
-                        ...List.generate(_roles.length, (index) {
-                          final role = _roles[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                            child: _buildRoleCard(role),
-                          );
-                        }),
-                      const SizedBox(height: AppSpacing.s80),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+            Consumer<OrmawaProvider>(
+              builder: (context, provider, _) {
+                final roles = provider.roles;
 
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: context.appColors.primary.withAlpha(10),
-              borderRadius: AppRadius.radiusMd,
-            ),
-            child: Icon(
-              Icons.admin_panel_settings_rounded,
-              color: context.appColors.primary,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${_roles.length} ROLE TERDAFTAR',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'Kelola hak akses untuk setiap role dalam organisasi',
-                  style: AppTextStyles.bodySm.copyWith(
-                    color: AppColors.neutral600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoleCard(OrmawaRole role) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: context.appColors.primary.withAlpha(10),
-                  borderRadius: AppRadius.radiusMd,
-                ),
-                child: Icon(
-                  Icons.shield_rounded,
-                  color: context.appColors.primary,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      role.name,
-                      style: AppTextStyles.titleMd.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                if (provider.isLoading && roles.isEmpty) {
+                  return const SliverFillRemaining(
+                    child: Padding(
+                      padding: EdgeInsets.all(AppSpacing.lg),
+                      child: BkuShimmerList(itemCount: 4, itemHeight: 90),
                     ),
-                    if (role.description.isNotEmpty)
-                      Text(
-                        role.description,
-                        style: AppTextStyles.bodySm.copyWith(
-                          color: AppColors.neutral500,
+                  );
+                }
+
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        OrmawaHeroCard(
+                          icon: Icons.admin_panel_settings_rounded,
+                          title: '${roles.length} Role Terdaftar',
+                          description: 'Kelola dan pantau izin akses sistem untuk setiap peran struktural organisasi.',
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: context.appColors.primary.withAlpha(10),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Text(
-                  '${role.permissions.length}',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.primary,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (role.permissions.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.lg),
-            const Divider(height: 1),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              'HAK AKSES',
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral500,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1,
-                fontSize: 10,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: role.permissions.map((perm) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.s6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.success.withAlpha(10),
-                    borderRadius: AppRadius.radiusSm,
-                    border: Border.all(color: AppColors.success.withAlpha(30)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: AppColors.success,
-                        size: 14,
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        perm,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.success,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
+                        SizedBox(height: 14),
+                        if (roles.isEmpty)
+                          const OrmawaEmptyCard(
+                            title: 'Belum Ada Role',
+                            description: 'Konfigurasi role dan hak akses belum tersedia.',
+                            icon: Icons.admin_panel_settings_outlined,
+                          )
+                        else
+                          ...roles.map((role) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: OrmawaCard(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 38,
+                                          height: 38,
+                                          decoration: BoxDecoration(
+                                            color: OrmawaTheme.primarySoft,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Icon(
+                                            Icons.shield_rounded,
+                                            color: OrmawaTheme.primary,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                role.name,
+                                                style: TextStyle(
+                                                  fontSize: 13.5,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: OrmawaTheme.textHeading,
+                                                ),
+                                              ),
+                                              if (role.description.isNotEmpty) ...[
+                                                SizedBox(height: 2),
+                                                Text(
+                                                  role.description,
+                                                  style: TextStyle(
+                                                    fontSize: 10.5,
+                                                    color: OrmawaTheme.textMuted,
+                                                  ),
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 7,
+                                            vertical: 2.5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF1F5F9),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            '${role.permissions.length} Izin',
+                                            style: TextStyle(
+                                              color: OrmawaTheme.textMuted,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 9.5,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (role.permissions.isNotEmpty) ...[
+                                      SizedBox(height: 10),
+                                      const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                                      const SizedBox(height: 10),
+                                      Wrap(
+                                        spacing: 6,
+                                        runSpacing: 6,
+                                        children: role.permissions.map((perm) {
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: OrmawaTheme.statusSuccessBg,
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: OrmawaTheme.statusSuccessText,
+                                                  size: 12,
+                                                ),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  perm,
+                                                  style: TextStyle(
+                                                    color: OrmawaTheme.statusSuccessText,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        const SizedBox(height: AppSpacing.s140),
+                      ],
+                    ),
                   ),
                 );
-              }).toList(),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s60),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.onSurface.withAlpha(10),
-                    blurRadius: 20,
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.admin_panel_settings_outlined,
-                size: 64,
-                color: AppColors.neutral400,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Belum ada role',
-              style: AppTextStyles.titleLg.copyWith(
-                color: AppColors.neutral700,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Role dan hak akses akan muncul di sini\nsetelah dikonfigurasi di server.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.neutral500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: BoxDecoration(
-                color: AppColors.error.withAlpha(10),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.error_outline_rounded,
-                size: 48,
-                color: AppColors.error,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Gagal Memuat Data',
-              style: AppTextStyles.titleLg.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.neutral800,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              _error ?? 'Terjadi kesalahan',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.neutral500,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            BkuButton.primary(
-              fullWidth: false,
-              onPressed: _fetchRoles,
-              icon: Icons.refresh_rounded,
-              text: 'Muat Ulang',
+              },
             ),
           ],
         ),

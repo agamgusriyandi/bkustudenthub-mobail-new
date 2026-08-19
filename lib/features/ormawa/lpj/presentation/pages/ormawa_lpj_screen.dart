@@ -1,23 +1,22 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/create_lpj_screen.dart';
 
 class OrmawaLpjScreen extends StatefulWidget {
-  const OrmawaLpjScreen({super.key});
+  final bool showBackButton;
+  const OrmawaLpjScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaLpjScreen> createState() => _OrmawaLpjScreenState();
@@ -26,7 +25,7 @@ class OrmawaLpjScreen extends StatefulWidget {
 class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _selectedStatusFilter = 'Semua';
+  String _activeTab = 'all';
 
   @override
   void initState() {
@@ -42,19 +41,42 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
     super.dispose();
   }
 
-  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
+  String _normalizeStatus(String rawStatus) {
     final s = rawStatus.toLowerCase();
-    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
-      return BkuStatus.success;
-    } else if (s.contains('tolak') || s.contains('batal')) {
-      return BkuStatus.error;
-    } else if (s.contains('revisi')) {
-      return BkuStatus.warning;
-    }
-    return BkuStatus.info;
+    if (s.contains('setuju') || s.contains('acc')) return 'disetujui';
+    if (s.contains('selesai')) return 'selesai';
+    if (s.contains('tolak') || s.contains('batal')) return 'ditolak';
+    if (s.contains('revisi')) return 'revisi';
+    return 'menunggu';
   }
 
+  Color _getStatusBgColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'disetujui':
+      case 'selesai':
+        return OrmawaTheme.statusSuccessBg;
+      case 'ditolak':
+        return OrmawaTheme.statusDangerBg;
+      case 'revisi':
+        return OrmawaTheme.statusWarningBg;
+      default:
+        return OrmawaTheme.statusInfoBg;
+    }
+  }
 
+  Color _getStatusTextColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'disetujui':
+      case 'selesai':
+        return OrmawaTheme.statusSuccessText;
+      case 'ditolak':
+        return OrmawaTheme.statusDangerText;
+      case 'revisi':
+        return OrmawaTheme.statusWarningText;
+      default:
+        return OrmawaTheme.statusInfoText;
+    }
+  }
 
   String _formatCurrency(double value) {
     return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
@@ -63,339 +85,304 @@ class _OrmawaLpjScreenState extends State<OrmawaLpjScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<OrmawaProvider>();
+    final allLpjs = provider.lpjs;
+
+    final totalCount = allLpjs.length;
+    final approvedCount = allLpjs
+        .where((l) =>
+            _normalizeStatus(l.status) == 'disetujui' ||
+            _normalizeStatus(l.status) == 'selesai')
+        .length;
+    final pendingCount = allLpjs
+        .where((l) => _normalizeStatus(l.status) == 'menunggu')
+        .length;
+    final rejectedCount = allLpjs
+        .where((l) => _normalizeStatus(l.status) == 'ditolak')
+        .length;
+    final revisionCount = allLpjs
+        .where((l) => _normalizeStatus(l.status) == 'revisi')
+        .length;
+
+    final filteredLpjs = allLpjs.where((lpj) {
+      final norm = _normalizeStatus(lpj.status);
+      bool matchTab = true;
+      if (_activeTab == 'menunggu') matchTab = (norm == 'menunggu');
+      if (_activeTab == 'disetujui') matchTab = (norm == 'disetujui' || norm == 'selesai');
+      if (_activeTab == 'revisi') matchTab = (norm == 'revisi');
+      if (_activeTab == 'ditolak') matchTab = (norm == 'ditolak');
+
+      final matchQuery = _searchQuery.isEmpty ||
+          lpj.judul.toLowerCase().contains(_searchQuery) ||
+          (lpj.proposalTitle != null && lpj.proposalTitle!.toLowerCase().contains(_searchQuery));
+
+      return matchTab && matchQuery;
+    }).toList();
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      floatingActionButton: provider.hasPermission('create_lpj')
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.s100),
+              child: FloatingActionButton.extended(
+                onPressed: () async {
+                  final ormawaProv = context.read<OrmawaProvider>();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateLpjScreen(),
+                    ),
+                  );
+                  ormawaProv.refreshData();
+                },
+                backgroundColor: OrmawaTheme.primary,
+                elevation: 4,
+                highlightElevation: 2,
+                icon: const Icon(Icons.add_rounded, color: Colors.white),
+                label: Text(
+                  'Buat LPJ',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12.5,
+                  ),
+                ),
+              ),
+            )
+          : null,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'Lpj',
-              subtitle: 'Laporan Pertanggungjawaban',
+              title: 'Laporan LPJ',
+              subtitle: 'Pertanggungjawaban Kegiatan',
               expandedHeight: 130.0,
-              showBackButton: true,
+              showBackButton: widget.showBackButton,
               isExpandable: false,
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: 12,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSummaryCards(),
-                    const SizedBox(height: AppSpacing.xl),
-                    OrmawaListHeader(
-                      title: 'Daftar Lpj',
-                      searchHint: 'Cari judul LPJ...',
-                      searchController: _searchController,
-                      onRefresh: () =>
-                          context.read<OrmawaProvider>().refreshData(),
-                      onFilterTap: _showFilterSheet,
-                      onChanged: (v) => setState(() => _searchQuery = v),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                  ],
-                ),
-              ),
-            ),
-            _buildLpjList(),
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.s100)),
-          ],
-        ),
-      ),
-      floatingActionButton: Consumer<OrmawaProvider>(
-        builder: (context, provider, _) {
-          if (!provider.hasPermission('create_lpj')) return const SizedBox.shrink();
-          return FloatingActionButton.extended(
-            onPressed: () => _showCreateLpj(),
-            backgroundColor: context.appColors.primary,
-            icon: Icon(Icons.add_rounded, color: context.appColors.onPrimary),
-            label: Text(
-              'Buat LPJ',
-              style: TextStyle(
-                color: context.appColors.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildSummaryCards() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, _) {
-        final lpjs = provider.lpjs;
-        final total = lpjs.length;
-        final approved = lpjs
-            .where((l) =>
-                l.status.toLowerCase().contains('disetujui') ||
-                l.status.toLowerCase() == 'selesai')
-            .length;
-        final pending = lpjs
-            .where((l) =>
-                l.status.toLowerCase().contains('menunggu') ||
-                l.status.toLowerCase() == 'pending')
-            .length;
-
-        return Row(
-          children: [
-            _buildStatCard('Total', total.toString(), AppColors.info),
-            const SizedBox(width: AppSpacing.md),
-            _buildStatCard('Disetujui', approved.toString(), AppColors.success),
-            const SizedBox(width: AppSpacing.md),
-            _buildStatCard('Pending', pending.toString(), AppColors.warning),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildStatCard(String label, String value, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: AppColors.neutral200),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: AppSpacing.padding6,
-              decoration: BoxDecoration(
-                color: color.withAlpha(20),
-                borderRadius: AppRadius.radiusSm,
-              ),
-              child: Icon(
-                label == 'Total'
-                    ? Icons.description_rounded
-                    : label == 'Disetujui'
-                        ? Icons.check_circle_rounded
-                        : Icons.schedule_rounded,
-                color: color,
-                size: 16,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              value,
-              style: AppTextStyles.titleLg.copyWith(
-                color: AppColors.neutral900,
-                fontWeight: FontWeight.w900,
-                fontSize: 20,
-              ),
-            ),
-            Text(
-              label,
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral500,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLpjList() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, _) {
-        final filteredLpjs = provider.lpjs.where((lpj) {
-          final matchesSearch =
-              lpj.judul.toLowerCase().contains(_searchQuery.toLowerCase());
-          final matchesStatus = _selectedStatusFilter == 'Semua' ||
-              lpj.status.toLowerCase() ==
-                  _selectedStatusFilter.toLowerCase();
-          return matchesSearch && matchesStatus;
-        }).toList();
-
-        if (filteredLpjs.isEmpty) {
-          return SliverFillRemaining(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxxl),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.description_outlined, size: 48, color: AppColors.neutral500.withAlpha(50)),
-                    const SizedBox(height: AppSpacing.lg),
-                    Text(
-                      _searchQuery.isEmpty && _selectedStatusFilter == 'Semua'
-                          ? 'Belum ada LPJ'
-                          : 'LPJ tidak ditemukan',
-                      style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-
-        return SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final lpj = filteredLpjs[index];
-                return GestureDetector(
-                  onTap: () => _showLpjDetail(lpj),
-                  child: BkuCard(
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                lpj.judul,
-                                style: AppTextStyles.bodyMd.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                            BkuStatusBadge(
-                              status: _mapStatusToBkuStatus(lpj.status),
-                              customText: lpj.status,
-                              showIcon: false,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.xs),
-                            ),
-                          ],
-                        ),
-                        if (lpj.proposalTitle != null) ...[
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            lpj.proposalTitle!,
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: AppColors.neutral500,
-                            ),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Total Laporan LPJ',
+                            value: '$totalCount',
+                            badgeText: 'Semua',
+                            icon: Icons.description_rounded,
+                            badgeColor: OrmawaTheme.primary,
                           ),
-                        ],
-                        const SizedBox(height: AppSpacing.md),
-                        Row(
-                          children: [
-                            Icon(Icons.account_balance_wallet_rounded,
-                                size: 14, color: AppColors.neutral500),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              _formatCurrency(lpj.realisasiAnggaran),
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.neutral700,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              ' / ${_formatCurrency(lpj.totalAnggaran)}',
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.neutral500,
-                              ),
-                            ),
-                          ],
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Menunggu Review',
+                            value: '$pendingCount',
+                            badgeText: 'Pending',
+                            icon: Icons.hourglass_empty_rounded,
+                            badgeColor: const Color(0xFF0284C7),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                );
-              },
-              childCount: filteredLpjs.length,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Container(
-          decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-          ),
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Filter Status',
-                  style: AppTextStyles.titleLg
-                      .copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: AppSpacing.lg),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: ['Semua', 'Menunggu', 'Disetujui', 'Ditolak', 'Selesai']
-                    .map((s) => GestureDetector(
-                          onTap: () {
-                            setModalState(() => _selectedStatusFilter = s);
-                            setState(() {});
-                            context.pop();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.lg,
-                                vertical: AppSpacing.md),
-                            decoration: BoxDecoration(
-                              color: _selectedStatusFilter == s
-                                  ? context.appColors.primary
-                                  : AppColors.neutral100,
-                              borderRadius: AppRadius.radiusXl,
-                            ),
-                            child: Text(
-                              s,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: _selectedStatusFilter == s
-                                    ? context.appColors.onPrimary
-                                    : AppColors.neutral700,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'LPJ Disetujui',
+                            value: '$approvedCount',
+                            badgeText: 'Disetujui',
+                            icon: Icons.check_circle_rounded,
+                            badgeColor: const Color(0xFF059669),
                           ),
-                        ))
-                    .toList(),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Perlu Revisi / Tolak',
+                            value: '${revisionCount + rejectedCount}',
+                            badgeText: 'Perhatian',
+                            icon: Icons.info_outline_rounded,
+                            badgeColor: const Color(0xFFD97706),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    OrmawaFilterTabs(
+                      tabs: [
+                        OrmawaTabItem(key: 'all', label: 'Semua', count: totalCount),
+                        OrmawaTabItem(key: 'menunggu', label: 'Menunggu', count: pendingCount),
+                        OrmawaTabItem(key: 'disetujui', label: 'Disetujui', count: approvedCount),
+                        OrmawaTabItem(key: 'revisi', label: 'Revisi', count: revisionCount),
+                        OrmawaTabItem(key: 'ditolak', label: 'Ditolak', count: rejectedCount),
+                      ],
+                      activeKey: _activeTab,
+                      onTabChanged: (val) => setState(() => _activeTab = val),
+                    ),
+                    const SizedBox(height: 12),
+                    OrmawaSearchBar(
+                      controller: _searchController,
+                      hintText: 'Cari judul LPJ atau kegiatan...',
+                      onChanged: (val) =>
+                          setState(() => _searchQuery = val.trim().toLowerCase()),
+                    ),
+                    const SizedBox(height: 14),
+                    if (filteredLpjs.isEmpty)
+                      const OrmawaEmptyCard(
+                        title: 'Belum ada LPJ',
+                        description: 'Tidak ada laporan pertanggungjawaban yang sesuai.',
+                        icon: Icons.folder_open_rounded,
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: filteredLpjs.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final lpj = filteredLpjs[index];
+                          final norm = _normalizeStatus(lpj.status);
+                          final statusBg = _getStatusBgColor(norm);
+                          final statusText = _getStatusTextColor(norm);
+
+                          return OrmawaCard(
+                            onTap: () {
+                              context.push(AppRoutes.ormawaLpjDetail, extra: lpj);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: statusBg,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        lpj.status,
+                                        style: TextStyle(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.w900,
+                                          color: statusText,
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right_rounded,
+                                      size: 18,
+                                      color: OrmawaTheme.textPlaceholder,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  lpj.judul,
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w900,
+                                    color: OrmawaTheme.textHeading,
+                                    height: 1.3,
+                                  ),
+                                ),
+                                if (lpj.proposalTitle != null && lpj.proposalTitle!.isNotEmpty) ...[
+                                  SizedBox(height: 4),
+                                  Text(
+                                    lpj.proposalTitle!,
+                                    style: TextStyle(
+                                      fontSize: 10.5,
+                                      color: OrmawaTheme.textMuted,
+                                    ),
+                                  ),
+                                ],
+                                Divider(
+                                  height: 18,
+                                  color: OrmawaTheme.borderSubtle,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'REALISASI ANGGARAN',
+                                          style: TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w800,
+                                            color: OrmawaTheme.textPlaceholder,
+                                          ),
+                                        ),
+                                        Text(
+                                          _formatCurrency(lpj.realisasiAnggaran),
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w900,
+                                            color: Color(0xFF059669),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'TOTAL PENGAJUAN',
+                                          style: TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w800,
+                                            color: OrmawaTheme.textPlaceholder,
+                                          ),
+                                        ),
+                                        Text(
+                                          _formatCurrency(lpj.totalAnggaran),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                            color: OrmawaTheme.textBody,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    const SizedBox(height: AppSpacing.s140),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.xl),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  void _showCreateLpj() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CreateLpjScreen(),
-      ),
-    ).then((_) {
-      if (mounted) context.read<OrmawaProvider>().refreshData();
-    });
-  }
-
-  void _showLpjDetail(dynamic lpj) {
-    context.push(AppRoutes.ormawaLpjDetail, extra: lpj);
   }
 }

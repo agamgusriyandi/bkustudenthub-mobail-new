@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
@@ -118,124 +119,60 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     required String topOrmawaName,
     required int rulesCount,
   }) {
-    return GridView.count(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.75,
+    return Column(
       children: [
-        _buildStatCard(
-          context,
-          title: 'Total Poin Beredar',
-          value: NumberFormat.decimalPattern('id').format(totalPoints),
-          subtitle: 'Akumulasi seluruh ormawa',
-          icon: Icons.workspace_premium_rounded,
-          color: AppColors.serviceAmber,
+        Row(
+          children: [
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Total Poin Beredar',
+                value: NumberFormat.decimalPattern('id').format(totalPoints),
+                badgeText: 'Total XP',
+                icon: Icons.workspace_premium_rounded,
+                badgeColor: const Color(0xFFD97706),
+                subtitle: 'Akumulasi seluruh ormawa',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Rata-rata Skor',
+                value: '$avgPoints XP',
+                badgeText: 'Rata-rata',
+                icon: Icons.trending_up_rounded,
+                badgeColor: const Color(0xFF0284C7),
+                subtitle: 'Per organisasi aktif',
+              ),
+            ),
+          ],
         ),
-        _buildStatCard(
-          context,
-          title: 'Rata-rata Skor',
-          value: '$avgPoints XP',
-          subtitle: 'Per organisasi aktif',
-          icon: Icons.trending_up_rounded,
-          color: AppColors.serviceCyan,
-        ),
-        _buildStatCard(
-          context,
-          title: 'Juara Klasemen',
-          value: topOrmawaName,
-          subtitle: 'Peringkat #1 Univ',
-          icon: Icons.military_tech_rounded,
-          color: AppColors.serviceIndigo,
-        ),
-        _buildStatCard(
-          context,
-          title: 'Aturan Gamifikasi',
-          value: '$rulesCount Aturan',
-          subtitle: 'Trigger poin aktif',
-          icon: Icons.tune_rounded,
-          color: AppColors.serviceEmerald,
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Juara Klasemen',
+                value: topOrmawaName,
+                badgeText: 'Peringkat #1',
+                icon: Icons.military_tech_rounded,
+                badgeColor: const Color(0xFF4F46E5),
+                subtitle: 'Peringkat #1 Univ',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Aturan Gamifikasi',
+                value: '$rulesCount Aturan',
+                badgeText: 'Rules',
+                icon: Icons.tune_rounded,
+                badgeColor: const Color(0xFF059669),
+                subtitle: 'Trigger poin aktif',
+              ),
+            ),
+          ],
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context, {
-    required String title,
-    required String value,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-  }) {
-    return BkuCard(
-      borderRadius: AppRadius.lg,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm + 2,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 3.5,
-            height: 42,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: AppRadius.br2,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 14, color: color),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: color,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: context.appColors.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.appColors.onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

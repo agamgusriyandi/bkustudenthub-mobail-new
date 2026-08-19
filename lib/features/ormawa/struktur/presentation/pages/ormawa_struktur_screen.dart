@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 
@@ -251,124 +252,60 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     required int totalDivisions,
     required int totalPembina,
   }) {
-    return GridView.count(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.75,
+    return Column(
       children: [
-        _buildStatCard(
-          context,
-          title: 'Total Anggota',
-          value: '$totalMembers Anggota',
-          subtitle: 'Pengurus & anggota aktif',
-          icon: Icons.groups_rounded,
-          color: AppColors.serviceIndigo,
+        Row(
+          children: [
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Total Anggota',
+                value: '$totalMembers',
+                badgeText: 'Anggota',
+                icon: Icons.groups_rounded,
+                badgeColor: const Color(0xFF4F46E5),
+                subtitle: 'Pengurus & anggota aktif',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Pengurus BPH',
+                value: '$totalBph',
+                badgeText: 'BPH',
+                icon: Icons.shield_rounded,
+                badgeColor: const Color(0xFF0284C7),
+                subtitle: 'Pimpinan & harian',
+              ),
+            ),
+          ],
         ),
-        _buildStatCard(
-          context,
-          title: 'Pengurus BPH',
-          value: '$totalBph Orang',
-          subtitle: 'Pimpinan & harian',
-          icon: Icons.shield_rounded,
-          color: AppColors.serviceSky,
-        ),
-        _buildStatCard(
-          context,
-          title: 'Divisi & Dept',
-          value: '$totalDivisions Divisi',
-          subtitle: 'Bidang operasional',
-          icon: Icons.category_rounded,
-          color: AppColors.serviceAmber,
-        ),
-        _buildStatCard(
-          context,
-          title: 'Pembina',
-          value: '$totalPembina Dosen',
-          subtitle: 'Dosen penasihat',
-          icon: Icons.school_rounded,
-          color: AppColors.serviceEmerald,
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Divisi & Dept',
+                value: '$totalDivisions',
+                badgeText: 'Divisi',
+                icon: Icons.category_rounded,
+                badgeColor: const Color(0xFFD97706),
+                subtitle: 'Bidang operasional',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OrmawaKpiCard(
+                title: 'Pembina',
+                value: '$totalPembina',
+                badgeText: 'Dosen',
+                icon: Icons.school_rounded,
+                badgeColor: const Color(0xFF059669),
+                subtitle: 'Dosen penasihat',
+              ),
+            ),
+          ],
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context, {
-    required String title,
-    required String value,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-  }) {
-    return BkuCard(
-      borderRadius: AppRadius.md,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm + 2,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 3.5,
-            height: 42,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: AppRadius.br2,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 14, color: color),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: color,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w900,
-                    color: context.appColors.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.appColors.onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -1,16 +1,13 @@
 enum AppEnvironment {
-  staging,
+  production,
   local,
 }
 
 class ApiGate {
-  static const AppEnvironment defaultEnvironment = AppEnvironment.staging;
+  static const AppEnvironment defaultEnvironment = AppEnvironment.production;
 
-  static const String stagingBaseUrl = 'https://stagback.bkustudenthub.com';
-  static const String stagingWebUrl = 'https://stag.bkustudenthub.com';
-
-  // static const String productionBaseUrl = 'https://tukang.bkustudenthub.com';
-  // static const String productionWebUrl = 'https://bkustudenthub.com';
+  static const String productionBaseUrl = 'https://tukang.bkustudenthub.com';
+  static const String productionWebUrl = 'https://bkustudenthub.com';
 
   static const String localBaseUrl = 'http://localhost:3000';
   static const String localWebUrl = 'http://localhost:5173';
@@ -33,8 +30,8 @@ class ApiGate {
     }
 
     switch (currentEnvironment) {
-      case AppEnvironment.staging:
-        return stagingBaseUrl;
+      case AppEnvironment.production:
+        return productionBaseUrl;
       case AppEnvironment.local:
         return localBaseUrl;
     }
@@ -51,8 +48,8 @@ class ApiGate {
     }
 
     switch (currentEnvironment) {
-      case AppEnvironment.staging:
-        return stagingWebUrl;
+      case AppEnvironment.production:
+        return productionWebUrl;
       case AppEnvironment.local:
         return localWebUrl;
     }
@@ -62,13 +59,12 @@ class ApiGate {
     const envStr = String.fromEnvironment('ENVIRONMENT');
     if (envStr.toLowerCase() == 'local') {
       return AppEnvironment.local;
-    } else if (envStr.toLowerCase() == 'staging') {
-      return AppEnvironment.staging;
     }
     return defaultEnvironment;
   }
 
-  static bool get isStaging => currentEnvironment == AppEnvironment.staging;
+  static bool get isProduction => currentEnvironment == AppEnvironment.production;
+  static bool get isStaging => false;
 
   static String getImageUrl(String? path) {
     if (path == null || path.trim().isEmpty) return '';
@@ -83,14 +79,10 @@ class ApiGate {
       final isKnownHost = path.contains('localhost') ||
           path.contains('127.0.0.1') ||
           path.contains('10.0.2.2') ||
-          // path.startsWith('http://bkustudenthub.com') ||
-          // path.startsWith('https://bkustudenthub.com') ||
-          // path.startsWith('http://tukang.bkustudenthub.com') ||
-          // path.startsWith('https://tukang.bkustudenthub.com') ||
-          path.startsWith('http://stag.bkustudenthub.com') ||
-          path.startsWith('https://stag.bkustudenthub.com') ||
-          path.startsWith('http://stagback.bkustudenthub.com') ||
-          path.startsWith('https://stagback.bkustudenthub.com');
+          path.startsWith('http://bkustudenthub.com') ||
+          path.startsWith('https://bkustudenthub.com') ||
+          path.startsWith('http://tukang.bkustudenthub.com') ||
+          path.startsWith('https://tukang.bkustudenthub.com');
 
       if (isKnownHost) {
         final uri = Uri.tryParse(path);

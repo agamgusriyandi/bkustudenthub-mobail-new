@@ -1,25 +1,22 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import "package:bkuhub_mobile/core/providers/theme_provider.dart";
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_aspiration.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaAspirasiScreen extends StatefulWidget {
-  const OrmawaAspirasiScreen({super.key});
+  final bool showBackButton;
+  const OrmawaAspirasiScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaAspirasiScreen> createState() => _OrmawaAspirasiScreenState();
@@ -28,27 +25,13 @@ class OrmawaAspirasiScreen extends StatefulWidget {
 class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _sortOrder = 'terbaru';
-  String _filterStatus = 'Semua';
-
-  final List<String> _sortOptions = ['Terbaru', 'Terlama'];
-  final List<String> _filterOptions = [
-    'Semua',
-    'Menunggu',
-    'Ditanggapi',
-    'Diabaikan',
-  ];
+  String _activeTab = 'all';
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       if (mounted) context.read<OrmawaProvider>().refreshData();
-    });
-    _searchController.addListener(() {
-      setState(() {
-        _searchQuery = _searchController.text.toLowerCase();
-      });
     });
   }
 
@@ -58,1187 +41,620 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
     super.dispose();
   }
 
-  String _normalizeStatus(String status) {
-    final s = status.toLowerCase();
-    if (s.contains('ditanggapi') || s.contains('processed')) {
-      return 'Ditanggapi';
-    }
-    if (s.contains('diabaikan') || s.contains('ignored')) return 'Diabaikan';
-    return 'Menunggu';
+  Future<void> _handleRefresh() async {
+    await context.read<OrmawaProvider>().refreshData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => context.read<OrmawaProvider>().refreshData(),
-        child: CustomScrollView(
-          slivers: [
-            BkuAppBar(
-              variant: AppBarVariant.ormawa,
-              title: 'Aspirasi Organisasi',
-              subtitle: 'Pusat Aspirasi',
-              expandedHeight: 130.0,
-              showBackButton: true,
-              isExpandable: false,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSummaryGrid(),
-                    const SizedBox(height: AppSpacing.xxl),
-                    OrmawaListHeader(
-                      title: 'Rekapitulasi Aspirasi',
-                      searchHint: 'Cari topik aspirasi...',
-                      searchController: _searchController,
-                      onRefresh:
-                          () => context.read<OrmawaProvider>().refreshData(),
-                      onFilterTap: () => _showSortFilterSheet(),
-                    ),
-                    const SizedBox(height: AppSpacing.s20),
-                    _buildAspirasiList(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  void _openDetailModal(BuildContext context, OrmawaAspiration item) {
+    final tanggapanController = TextEditingController();
+    String selectedStatus = 'selesai';
+    bool isSubmitting = false;
 
-  Widget _buildSummaryGrid() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, child) {
-        final aspirations = provider.aspirations;
-        final countIncoming =
-            aspirations.where((e) => e.status == 'pending').length;
-        final countProcessed =
-            aspirations.where((e) => e.status == 'ditanggapi').length;
-        final countIgnored =
-            aspirations.where((e) => e.status == 'diabaikan').length;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogCtx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          final isSelesai = item.status == 'selesai';
+          final isDitolak = item.status == 'ditolak';
 
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: AppRadius.radiusXl,
-            border: Border.all(color: AppColors.neutral200),
-            boxShadow: [
-              BoxShadow(
-                color: context.appColors.onSurface.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildStatItem(
-                'Masuk',
-                countIncoming.toString(),
-                Icons.inbox_rounded,
-                AppColors.info,
-              ),
-              Container(width: 1, height: 50, color: AppColors.neutral200),
-              _buildStatItem(
-                'Ditanggapi',
-                countProcessed.toString(),
-                Icons.check_circle_rounded,
-                AppColors.success,
-              ),
-              Container(width: 1, height: 50, color: AppColors.neutral200),
-              _buildStatItem(
-                'Diabaikan',
-                countIgnored.toString(),
-                Icons.cancel_rounded,
-                AppColors.error,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStatItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            value,
-            style: AppTextStyles.headlineMd.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-              color: AppColors.neutral900,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAspirasiList() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, child) {
-        final filteredList =
-            provider.aspirations.where((item) {
-              final matchesSearch =
-                  item.judul.toLowerCase().contains(_searchQuery) ||
-                  item.isi.toLowerCase().contains(_searchQuery);
-              final itemStatus = _normalizeStatus(item.status);
-              final matchesFilter =
-                  _filterStatus == 'Semua' || itemStatus == _filterStatus;
-              return matchesSearch && matchesFilter;
-            }).toList();
-
-        // Apply sorting
-        filteredList.sort((a, b) {
-          final aDate = a.createdAt ?? DateTime(2000);
-          final bDate = b.createdAt ?? DateTime(2000);
-          return _sortOrder == 'terbaru'
-              ? bDate.compareTo(aDate)
-              : aDate.compareTo(bDate);
-        });
-
-        if (filteredList.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xxxl),
+          return Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 550, maxHeight: 680),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.speaker_notes_off_rounded,
-                    size: 48,
-                    color: AppColors.neutral500.withAlpha(50),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: OrmawaTheme.primary.withAlpha(20),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.forum_rounded, color: OrmawaTheme.primary, size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.judul.isEmpty ? 'Detail Aspirasi' : item.judul,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF0F172A),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const Text(
+                                'Aspirasi Masuk Mahasiswa',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF64748B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded, color: Color(0xFF64748B)),
+                          onPressed: () => Navigator.pop(dialogCtx),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    'Tidak ada aspirasi ditemukan',
-                    style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildStatusBadge(item.status),
+                              if (item.createdAt != null)
+                                Text(
+                                  DateFormat('dd MMM yyyy, HH:mm', 'id').format(item.createdAt!),
+                                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            item.judul.isEmpty ? 'Tanpa Judul' : item.judul,
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            item.isi,
+                            style: const TextStyle(fontSize: 12, color: Color(0xFF334155), height: 1.5),
+                          ),
+                          if (item.lampiranUrl != null && item.lampiranUrl!.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            InkWell(
+                              onTap: () async {
+                                final uri = Uri.parse(item.lampiranUrl!);
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF1F5F9),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.attachment_rounded, size: 14, color: Color(0xFF475569)),
+                                    SizedBox(width: 6),
+                                    Text('Lihat Berkas Lampiran', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 16),
+                          if (isSelesai || isDitolak) ...[
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: isSelesai ? const Color(0xFFECFDF5) : const Color(0xFFFFE4E6),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: isSelesai ? const Color(0xFFA7F3D0) : const Color(0xFFFECDD3)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        isSelesai ? Icons.verified_rounded : Icons.cancel_rounded,
+                                        size: 16,
+                                        color: isSelesai ? const Color(0xFF047857) : const Color(0xFFBE123C),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        isSelesai ? 'Tanggapan Resmi Pengurus' : 'Catatan Penolakan Aspirasi',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w900,
+                                          color: isSelesai ? const Color(0xFF047857) : const Color(0xFFBE123C),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    item.tanggapan != null && item.tanggapan!.isNotEmpty
+                                        ? item.tanggapan!
+                                        : 'Aspirasi telah ditindaklanjuti secara resmi oleh pengurus ormawa.',
+                                    style: TextStyle(
+                                      fontSize: 11.5,
+                                      color: isSelesai ? const Color(0xFF065F46) : const Color(0xFF9F1239),
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ] else ...[
+                            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                            const SizedBox(height: 14),
+                            const Text(
+                              'KEPUTUSAN STATUS',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF475569),
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: selectedStatus,
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: 'selesai',
+                                      child: Text(
+                                        'Selesai / Diterima & Ditindaklanjuti',
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF047857)),
+                                      ),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'ditolak',
+                                      child: Text(
+                                        'Ditolak / Di luar Wewenang',
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFBE123C)),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (val) {
+                                    if (val != null) setDialogState(() => selectedStatus = val);
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'BERIKAN TANGGAPAN / SOLUSI RESMI',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF475569),
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            TextField(
+                              controller: tanggapanController,
+                              maxLines: 4,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                              decoration: InputDecoration(
+                                hintText: 'Tuliskan tanggapan atau tindak lanjut resmi dari pengurus organisasi...',
+                                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
+                                ),
+                                contentPadding: const EdgeInsets.all(12),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: isSubmitting
+                                    ? null
+                                    : () async {
+                                        if (tanggapanController.text.trim().isEmpty) {
+                                          AppSnackbar.showWarning(context, 'Tuliskan tanggapan terlebih dahulu');
+                                          return;
+                                        }
+
+                                        setDialogState(() => isSubmitting = true);
+                                        try {
+                                          await context.read<OrmawaProvider>().respondToAspiration(
+                                            item.id,
+                                            {
+                                              'Status': selectedStatus,
+                                              'Tanggapan': tanggapanController.text.trim(),
+                                            },
+                                          );
+                                          if (context.mounted) {
+                                            Navigator.pop(dialogCtx);
+                                            AppSnackbar.showSuccess(context, 'Tanggapan resmi berhasil dikirim!');
+                                          }
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            AppSnackbar.showError(context, 'Gagal mengirim tanggapan: $e');
+                                          }
+                                        } finally {
+                                          setDialogState(() => isSubmitting = false);
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: OrmawaTheme.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                ),
+                                icon: isSubmitting
+                                    ? const SizedBox(
+                                        width: 14,
+                                        height: 14,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                      )
+                                    : const Icon(Icons.send_rounded, size: 14),
+                                label: Text(
+                                  isSubmitting ? 'Mengirim...' : 'Kirim Tanggapan Resmi',
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      border: Border(top: BorderSide(color: Color(0xFFF1F5F9))),
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogCtx),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: const BorderSide(color: Color(0xFFCBD5E1)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text(
+                          'Tutup',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF475569)),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           );
-        }
-
-        return ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: filteredList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
-          itemBuilder: (context, index) {
-            final item = filteredList[index];
-            Color statusColor = AppColors.info;
-            if (item.status == 'ditanggapi') statusColor = AppColors.success;
-            if (item.status == 'diabaikan') statusColor = AppColors.error;
-
-            return _buildAspirasiCard(item, statusColor);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildAspirasiCard(OrmawaAspiration item, Color color) {
-    String dateStr = 'Baru saja';
-    if (item.createdAt != null) {
-      dateStr = DateFormat('dd MMM yyyy').format(item.createdAt!);
-    }
-
-    return GestureDetector(
-      onTap: () => _showAspirasiDetail(item, color),
-      child: BkuCard(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.1),
-                        borderRadius: AppRadius.radiusSm,
-                      ),
-                      child: Text(
-                        item.status,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: color,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral100,
-                        borderRadius: AppRadius.radiusSm,
-                      ),
-                      child: Text(
-                        item.kategori,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral600,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  dateStr,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral400,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              item.judul,
-              style: AppTextStyles.bodyMd.copyWith(
-                fontWeight: FontWeight.w900,
-                fontSize: 16,
-                color: AppColors.neutral900,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              item.isi,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.neutral600,
-                height: 1.5,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.s20),
-            Row(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                    image:
-                        item.mahasiswaFoto != null &&
-                                item.mahasiswaFoto!.isNotEmpty
-                            ? DecorationImage(
-                              image: NetworkImage(
-                                ApiGate.getImageUrl(item.mahasiswaFoto!),
-                              ),
-                              fit: BoxFit.cover,
-                            )
-                            : null,
-                  ),
-                  child:
-                      item.mahasiswaFoto == null || item.mahasiswaFoto!.isEmpty
-                          ? Icon(
-                            Icons.person_rounded,
-                            size: 16,
-                            color: context.appColors.primary,
-                          )
-                          : null,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.mahasiswaName,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral800,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      if (item.mahasiswaNim.isNotEmpty)
-                        Text(
-                          item.mahasiswaNim,
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral500,
-                            fontSize: 10,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: AppColors.neutral300,
-                  size: 14,
-                ),
-              ],
-            ),
-          ],
-        ),
+        },
       ),
     );
   }
 
-  void _showAspirasiDetail(OrmawaAspiration item, Color color) {
-    final TextEditingController responseController = TextEditingController(
-      text: item.tanggapan,
-    );
-    bool isSubmitting = false;
-    final provider = context.read<OrmawaProvider>();
-    final canRespond = provider.hasPermission('respond_aspirations');
+  Widget _buildStatusBadge(String status) {
+    Color bg = const Color(0xFFEFF6FF);
+    Color text = const Color(0xFF1D4ED8);
+    String label = 'Menunggu';
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => StatefulBuilder(
-            builder:
-                (context, setModalState) => Container(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  decoration: const BoxDecoration(
-                    color: AppColors.neutral100,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(AppRadius.xxl),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // HEADER
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSpacing.xl,
-                          AppSpacing.lg,
-                          AppSpacing.xl,
-                          AppSpacing.xl,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors:
-                                context.read<ThemeProvider>().primaryGradient,
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(AppRadius.xxl),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Container(
-                                width: 40,
-                                height: 4,
-                                margin: const EdgeInsets.only(bottom: AppSpacing.xl),
-                                decoration: BoxDecoration(
-                                  color: context.appColors.surface.withValues(alpha: 0.3),
-                                  borderRadius: AppRadius.radiusXs,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: context.appColors.surface.withValues(alpha: 0.1),
-                                    borderRadius: AppRadius.radiusLg,
-                                    border: Border.all(
-                                      color: context.appColors.surface.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.admin_panel_settings_rounded,
-                                    color: context.appColors.onPrimary,
-                                    size: 28,
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.lg),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'INCIDENT AUDIT',
-                                            style: AppTextStyles.labelSm
-                                                .copyWith(
-                                                  color: context.appColors.info.withValues(alpha: 0.6),
-                                                  fontWeight: FontWeight.w900,
-                                                  letterSpacing: 2,
-                                                  fontSize: 10,
-                                                ),
-                                          ),
-                                          const SizedBox(width: AppSpacing.sm),
-                                          Container(
-                                            width: 4,
-                                            height: 4,
-                                            decoration: BoxDecoration(
-                                              color: context.appColors.info.withValues(alpha: 0.3),
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: AppSpacing.sm),
-                                          Text(
-                                            '#ASP-${item.id.padLeft(4, '0')}',
-                                            style: AppTextStyles.labelSm
-                                                .copyWith(
-                                                   color: context.appColors.onPrimary
-                                                       .withValues(alpha: 0.7),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'monospace',
-                                                  fontSize: 10,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: AppSpacing.xs),
-                                      Text(
-                                        item.judul,
-                                        style: AppTextStyles.titleLg.copyWith(
-                                                  color: context.appColors.onPrimary,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 20,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.s20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.person_rounded,
-                                      color: context.appColors.onPrimary.withValues(alpha: 0.7),
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: AppSpacing.s6),
-                                    Text(
-                                      'Oleh: ',
-                                      style: AppTextStyles.labelSm.copyWith(
-                                        color: context.appColors.info.withValues(alpha: 0.4),
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                    Text(
-                                      item.mahasiswaName,
-                                      style: AppTextStyles.labelSm.copyWith(
-                                        color: context.appColors.onPrimary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: color.withValues(alpha: 0.2),
-                                    border: Border.all(
-                                      color: color.withValues(alpha: 0.3),
-                                    ),
-                                    borderRadius: AppRadius.radiusMd,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: color.withValues(alpha: 0.1),
-                                        blurRadius: 8,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 6,
-                                        height: 6,
-                                        decoration: BoxDecoration(
-                                          color: color,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.s6),
-                                      Text(
-                                        item.status,
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          color: color.withValues(alpha: 0.8),
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 10,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+    switch (status.toLowerCase()) {
+      case 'selesai':
+        bg = const Color(0xFFD1FAE5);
+        text = const Color(0xFF047857);
+        label = 'Selesai';
+        break;
+      case 'diproses':
+      case 'proses':
+        bg = const Color(0xFFFEF3C7);
+        text = const Color(0xFFB45309);
+        label = 'Diproses';
+        break;
+      case 'ditolak':
+        bg = const Color(0xFFFFE4E6);
+        text = const Color(0xFFBE123C);
+        label = 'Ditolak';
+        break;
+      default:
+        bg = const Color(0xFFEFF6FF);
+        text = const Color(0xFF1D4ED8);
+        label = 'Menunggu';
+    }
 
-                      // BODY
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // IDENTITAS PELAPOR
-                              Container(
-                                padding: const EdgeInsets.all(AppSpacing.xl),
-                                decoration: BoxDecoration(
-                                color: context.appColors.surface,
-                                borderRadius: AppRadius.radiusXl,
-                                border: Border.all(
-                                  color: AppColors.neutral200,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: context.appColors.onSurface.withValues(
-                                      alpha: 0.02,
-                                    ),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                  children: [
-                                    Container(
-                                      width: 64,
-                                      height: 64,
-                                      decoration: BoxDecoration(
-                                        borderRadius: AppRadius.radiusLg,
-                                        border: Border.all(
-                                          color: AppColors.neutral200,
-                                          width: 4,
-                                        ),
-                                        image:
-                                            item.mahasiswaFoto != null &&
-                                                    item
-                                                        .mahasiswaFoto!
-                                                        .isNotEmpty
-                                                ? DecorationImage(
-                                                  image: NetworkImage(
-                                                    ApiGate.getImageUrl(
-                                                      item.mahasiswaFoto!,
-                                                    ),
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                )
-                                                : null,
-                                        color: AppColors.neutral100,
-                                      ),
-                                      child:
-                                          item.mahasiswaFoto == null ||
-                                                  item.mahasiswaFoto!.isEmpty
-                                              ? Icon(
-                                                Icons.person_rounded,
-                                                size: 32,
-                                                color: AppColors.neutral400,
-                                              )
-                                              : null,
-                                    ),
-                                    const SizedBox(width: AppSpacing.lg),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'IDENTITAS PELAPOR',
-                                                style: AppTextStyles.labelSm
-                                                    .copyWith(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w900,
-                                                      color:
-                                                          AppColors.neutral500,
-                                                      letterSpacing: 1.5,
-                                                    ),
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 6,
-                                                      vertical: 2,
-                                                    ),
-                                                decoration: BoxDecoration(
-                                                  color: context.appColors.surface,
-                                                  border: Border.all(
-                                                    color: AppColors.neutral200,
-                                                  ),
-                                                  borderRadius:
-                                                      AppRadius.radiusXs,
-                                                ),
-                                                child: Text(
-                                                  'VERIFIED',
-                                                  style: AppTextStyles.labelSm
-                                                      .copyWith(
-                                                        fontSize: 8,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        color:
-                                                            AppColors
-                                                                .neutral500,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: AppSpacing.sm),
-                                          Text(
-                                            item.mahasiswaName,
-                                            style: AppTextStyles.bodyMd
-                                                .copyWith(
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 16,
-                                                  color: AppColors.neutral900,
-                                                ),
-                                          ),
-                                          const SizedBox(height: AppSpacing.xs),
-                                          if (item.mahasiswaNim.isNotEmpty)
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.neutral50,
-                                                    border: Border.all(
-                                                      color:
-                                                          AppColors.neutral200,
-                                                    ),
-                                                    borderRadius: AppRadius.radiusXs,
-                                                  ),
-                                                  child: Text(
-                                                    item.mahasiswaNim,
-                                                    style: AppTextStyles.labelSm
-                                                        .copyWith(
-                                                          fontFamily:
-                                                              'monospace',
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              AppColors
-                                                                  .neutral700,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.xl),
-
-                              // SUBSTANSI ASPIRASI
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.article_rounded,
-                                    size: 20,
-                                    color:
-                                        context.appColors.primary,
-                                  ),
-                                  const SizedBox(width: AppSpacing.sm),
-                                  Text(
-                                    'SUBSTANSI ASPIRASI',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w900,
-                                      color: AppColors.neutral500,
-                                      letterSpacing: 1.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppSpacing.md),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(AppSpacing.xl),
-                                decoration: BoxDecoration(
-                                  color: context.appColors.surface,
-                                  borderRadius: AppRadius.radiusXl,
-                                  border: Border.all(
-                                    color: AppColors.neutral200,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: context.appColors.onSurface.withValues(
-                                        alpha: 0.02,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: -10,
-                                      right: -10,
-                                      child: Icon(
-                                        Icons.format_quote_rounded,
-                                        size: 80,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withValues(alpha: 0.05),
-                                      ),
-                                    ),
-                                    Text(
-                                      item.isi,
-                                      style: AppTextStyles.bodyMd.copyWith(
-                                        color: AppColors.neutral800,
-                                        height: 1.6,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.xxl),
-
-                              // PANEL RESOLUSI
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.neutral200,
-                                      borderRadius: AppRadius.radiusMd,
-                                    ),
-                                    child: Icon(
-                                      Icons.gavel_rounded,
-                                      color: AppColors.neutral600,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppSpacing.md),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Panel Resolusi',
-                                        style: AppTextStyles.bodyMd.copyWith(
-                                          fontWeight: FontWeight.w900,
-                                          color: AppColors.neutral900,
-                                        ),
-                                      ),
-                                      Text(
-                                        'TINDAKAN ADMIN',
-                                        style: AppTextStyles.labelSm.copyWith(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.neutral500,
-                                          letterSpacing: 1.5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppSpacing.s20),
-                              // Tanggapan section - only show if user has permission
-                              if (canRespond) ...[
-                                Text(
-                                  'TANGGAPAN RESMI',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w900,
-                                    color: AppColors.neutral500,
-                                    letterSpacing: 1.5,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.md),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.xl,
-                                    vertical: AppSpacing.sm,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: context.appColors.surface,
-                                    borderRadius: AppRadius.radiusXl,
-                                    border: Border.all(
-                                      color: AppColors.neutral200,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: context.appColors.onSurface.withValues(
-                                          alpha: 0.02,
-                                        ),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: BkuTextField(
-                                    controller: responseController,
-                                    maxLines: 4,
-                                    style: AppTextStyles.bodyMd.copyWith(
-                                      color: AppColors.neutral800,
-                                      fontSize: 14,
-                                    ),
-                                    decoration: InputDecoration(
-                                      hintText:
-                                          'Tuliskan respon resmi, klarifikasi, atau solusi...',
-                                      hintStyle: AppTextStyles.bodyMd.copyWith(
-                                        color: AppColors.neutral400,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.xxl),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // FOOTER ACTIONS - only show if user has permission
-                      if (canRespond)
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          decoration: BoxDecoration(
-                            color: context.appColors.surface.withValues(alpha: 0.9),
-                            border: Border(
-                              top: BorderSide(color: AppColors.neutral200),
-                            ),
-                          ),
-                          child:
-                              isSubmitting
-                                  ? const Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                  : Row(
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          height: 52,
-                                          child: BkuButton.outline(
-                                            text: 'ABAIKAN',
-                                            isLoading: isSubmitting,
-                                            onPressed: () async {
-                                              setModalState(
-                                                () => isSubmitting = true,
-                                              );
-                                              try {
-                                                await context
-                                                    .read<OrmawaProvider>()
-                                                    .respondToAspiration(
-                                                      item.id,
-                                                      {
-                                                        'Status': 'diabaikan',
-                                                        'Tanggapan':
-                                                            responseController
-                                                                .text,
-                                                      },
-                                                    );
-                                                if (context.mounted) {
-                                                  context.pop();
-                                                }
-                                              } catch (e) {
-                                                if (context.mounted) {
-                                                  AppSnackbar.showError(
-                                                    context,
-                                                    'Error: $e',
-                                                  );
-                                                }
-                                              } finally {
-                                                setModalState(
-                                                  () => isSubmitting = false,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.lg),
-                                      Expanded(
-                                        flex: 2,
-                                        child: SizedBox(
-                                          height: 52,
-                                          child: BkuButton.primary(
-                                            text: 'KIRIM TANGGAPAN',
-                                            isLoading: isSubmitting,
-                                            onPressed: () async {
-                                              setModalState(
-                                                () => isSubmitting = true,
-                                              );
-                                              try {
-                                                await context
-                                                    .read<OrmawaProvider>()
-                                                    .respondToAspiration(
-                                                      item.id,
-                                                      {
-                                                        'Status': 'ditanggapi',
-                                                        'Tanggapan':
-                                                            responseController
-                                                                .text,
-                                                      },
-                                                    );
-                                                if (context.mounted) {
-                                                  context.pop();
-                                                }
-                                              } catch (e) {
-                                                if (context.mounted) {
-                                                  AppSnackbar.showError(
-                                                    context,
-                                                    'Error: $e',
-                                                  );
-                                                }
-                                              } finally {
-                                                setModalState(
-                                                  () => isSubmitting = false,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                        ),
-                    ],
-                  ),
-                ),
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: text),
+      ),
     );
   }
 
-  void _showSortFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
+  @override
+  Widget build(BuildContext context) {
+    final ormawaProvider = context.watch<OrmawaProvider>();
+    final aspirations = ormawaProvider.aspirations;
+
+    final totalCount = aspirations.length;
+    final answeredCount = aspirations.where((a) => a.status == 'selesai').length;
+    final pendingCount = aspirations.where((a) => a.status == 'pending' || a.status == 'menunggu').length;
+    final rejectedCount = aspirations.where((a) => a.status == 'ditolak').length;
+
+    final filteredList = aspirations.where((item) {
+      final matchesSearch = _searchQuery.isEmpty ||
+          item.judul.toLowerCase().contains(_searchQuery) ||
+          item.isi.toLowerCase().contains(_searchQuery);
+
+      if (!matchesSearch) return false;
+
+      if (_activeTab == 'all') return true;
+      if (_activeTab == 'pending') return item.status == 'pending' || item.status == 'menunggu';
+      return item.status == _activeTab;
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            BkuAppBar(
+              variant: AppBarVariant.ormawa,
+              title: 'Aspirasi Mahasiswa',
+              subtitle: 'Kanal Suara & Tanggapan',
+              expandedHeight: 130.0,
+              showBackButton: widget.showBackButton,
+              isExpandable: false,
             ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral300,
-                      borderRadius: AppRadius.radiusXs,
-                    ),
-                  ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: 12,
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  'Urutkan & Filter',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Urutkan',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children:
-                      _sortOptions.map((option) {
-                        final isSelected =
-                            _sortOrder ==
-                            option.toLowerCase().replaceAll('ter', '');
-                        return GestureDetector(
-                          onTap: () {
-                            setState(
-                              () =>
-                                  _sortOrder = option.toLowerCase().replaceAll(
-                                    'ter',
-                                    '',
-                                  ),
-                            );
-                            context.pop();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.md,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? context.appColors.primary
-                                      : Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withAlpha(10),
-                              borderRadius: AppRadius.radiusXl,
-                            ),
-                            child: Text(
-                              option,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isSelected
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Total Aspirasi',
+                            value: '$totalCount',
+                            badgeText: 'Semua Masuk',
+                            icon: Icons.forum_outlined,
+                            badgeColor: OrmawaTheme.primary,
                           ),
-                        );
-                      }).toList(),
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  'Filter Status',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral500,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children:
-                      _filterOptions.map((option) {
-                        final isSelected = _filterStatus == option;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() => _filterStatus = option);
-                            context.pop();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.md,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? context.appColors.primary
-                                      : Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withAlpha(10),
-                              borderRadius: AppRadius.radiusXl,
-                            ),
-                            child: Text(
-                              option,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isSelected
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                ),
-                if (_filterStatus != 'Semua' || _sortOrder != 'terbaru')
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.lg),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _sortOrder = 'terbaru';
-                          _filterStatus = 'Semua';
-                        });
-                        context.pop();
-                      },
-                      child: Text(
-                        'Reset',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.error,
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Sudah Ditanggapi',
+                            value: '$answeredCount',
+                            badgeText: 'Selesai',
+                            icon: Icons.check_circle_outline_rounded,
+                            badgeColor: const Color(0xFF059669),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Menunggu Respon',
+                            value: '$pendingCount',
+                            badgeText: 'Pending',
+                            icon: Icons.schedule_rounded,
+                            badgeColor: const Color(0xFFD97706),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Aspirasi Ditolak',
+                            value: '$rejectedCount',
+                            badgeText: 'Ditolak',
+                            icon: Icons.cancel_outlined,
+                            badgeColor: const Color(0xFFE11D48),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    OrmawaFilterTabs(
+                      tabs: [
+                        OrmawaTabItem(key: 'all', label: 'Semua', count: totalCount),
+                        OrmawaTabItem(key: 'pending', label: 'Menunggu', count: pendingCount),
+                        OrmawaTabItem(key: 'selesai', label: 'Selesai', count: answeredCount),
+                        OrmawaTabItem(key: 'ditolak', label: 'Ditolak', count: rejectedCount),
+                      ],
+                      activeKey: _activeTab,
+                      onTabChanged: (val) => setState(() => _activeTab = val),
+                    ),
+                    const SizedBox(height: 12),
+                    OrmawaSearchBar(
+                      controller: _searchController,
+                      hintText: 'Cari judul aspirasi atau isi pesan...',
+                      onChanged: (val) =>
+                          setState(() => _searchQuery = val.trim().toLowerCase()),
+                    ),
+                    const SizedBox(height: 14),
+                    if (filteredList.isEmpty)
+                      const OrmawaEmptyCard(
+                        title: 'Belum ada aspirasi',
+                        description: 'Tidak ada aspirasi mahasiswa yang sesuai.',
+                        icon: Icons.forum_outlined,
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: filteredList.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final item = filteredList[index];
+
+                          return OrmawaCard(
+                            onTap: () => _openDetailModal(context, item),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildStatusBadge(item.status),
+                                    if (item.createdAt != null)
+                                      Text(
+                                        DateFormat('dd MMM yyyy', 'id')
+                                            .format(item.createdAt!),
+                                        style: TextStyle(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.w600,
+                                          color: OrmawaTheme.textMuted,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  item.judul.isEmpty ? 'Tanpa Judul' : item.judul,
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w900,
+                                    color: OrmawaTheme.textHeading,
+                                    height: 1.3,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  item.isi,
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    color: OrmawaTheme.textBody,
+                                    height: 1.4,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Divider(
+                                  height: 18,
+                                  color: OrmawaTheme.borderSubtle,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.person_outline_rounded,
+                                          size: 13,
+                                          color: OrmawaTheme.textMuted,
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          item.mahasiswaName.isNotEmpty
+                                              ? item.mahasiswaName
+                                              : 'Mahasiswa',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600,
+                                            color: OrmawaTheme.textMuted,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () => _openDetailModal(context, item),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: OrmawaTheme.primary,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: const Text(
+                                        'Tanggapi',
+                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    const SizedBox(height: AppSpacing.s140),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 }

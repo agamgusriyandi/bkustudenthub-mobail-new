@@ -1,24 +1,24 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
-import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/create_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/edit_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaPengumumanScreen extends StatefulWidget {
-  const OrmawaPengumumanScreen({super.key});
+  final bool showBackButton;
+  const OrmawaPengumumanScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaPengumumanScreen> createState() => _OrmawaPengumumanScreenState();
@@ -27,58 +27,13 @@ class OrmawaPengumumanScreen extends StatefulWidget {
 class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _filterTarget = 'Semua';
-
-  final List<String> _targetOptions = [
-    'Semua',
-    'Umum',
-    'Kegiatan',
-    'Penting',
-    'Informasi',
-  ];
-
-  Color _getCategoryColor(String target) {
-    switch (target.toLowerCase()) {
-      case 'umum':
-        return AppColors.neutral600;
-      case 'kegiatan':
-        return context.appColors.info;
-      case 'penting':
-        return AppColors.error;
-      case 'info':
-      case 'informasi':
-        return context.appColors.info;
-      default:
-        return AppColors.neutral600;
-    }
-  }
-
-  String _getCategoryLabel(String target) {
-    switch (target.toLowerCase()) {
-      case 'umum':
-        return 'UMUM';
-      case 'kegiatan':
-        return 'KEGIATAN';
-      case 'penting':
-        return 'PENTING';
-      case 'info':
-      case 'informasi':
-        return 'INFORMASI';
-      default:
-        return target;
-    }
-  }
+  String _activeTab = 'all';
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       if (mounted) context.read<OrmawaProvider>().refreshData();
-    });
-    _searchController.addListener(() {
-      setState(() {
-        _searchQuery = _searchController.text.toLowerCase();
-      });
     });
   }
 
@@ -88,1405 +43,731 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final ormawaProvider = context.watch<OrmawaProvider>();
-    final canCreateAnnouncement = ormawaProvider.hasPermission(
-      'create_announcements',
-    );
-
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: RefreshIndicator(
-        onRefresh: () => context.read<OrmawaProvider>().refreshData(),
-        child: CustomScrollView(
-          slivers: [
-            BkuAppBar(
-              variant: AppBarVariant.ormawa,
-              title: 'Pusat Pengumuman',
-              subtitle: 'Informasi',
-              expandedHeight: 130.0,
-              showBackButton: true,
-              isExpandable: false,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSummaryGrid(),
-                    const SizedBox(height: AppSpacing.xl),
-                    OrmawaListHeader(
-                      title: 'Rekapitulasi Siaran',
-                      searchHint: 'Cari judul pengumuman...',
-                      searchController: _searchController,
-                      onRefresh:
-                          () => context.read<OrmawaProvider>().refreshData(),
-                      onFilterTap: () => _showFilterSheet(),
-                      onChanged:
-                          (value) => setState(() => _searchQuery = value),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _buildPengumumanList(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton:
-          canCreateAnnouncement
-              ? FloatingActionButton.extended(
-                onPressed: () => _showAddPengumuman(context),
-                backgroundColor: context.appColors.primary,
-                icon: Icon(Icons.campaign_rounded, color: context.appColors.onPrimary),
-                label: Text(
-                  'Buat Pengumuman',
-                  style: TextStyle(
-                    color: context.appColors.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-              : null,
-    );
+  Future<void> _handleRefresh() async {
+    await context.read<OrmawaProvider>().refreshData();
   }
 
-  Widget _buildSummaryGrid() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, child) {
-        final announcements = provider.announcements;
-        final total = announcements.length;
-        final now = DateTime.now();
-        final active =
-            announcements
-                .where(
-                  (e) =>
-                      (e.tanggalMulai == null ||
-                          e.tanggalMulai!.isBefore(now)) &&
-                      (e.tanggalSelesai == null ||
-                          e.tanggalSelesai!.isAfter(now)),
-                )
-                .length;
-        final archived = total - active;
-
-        return GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 1.15,
-          children: [
-            _buildStatCard(
-              'Total',
-              total.toString(),
-              Icons.record_voice_over_rounded,
-              AppColors.info,
-            ),
-            _buildStatCard(
-              'Aktif',
-              active.toString(),
-              Icons.check_circle_rounded,
-              AppColors.success,
-            ),
-            _buildStatCard(
-              'Arsip',
-              archived.toString(),
-              Icons.archive_rounded,
-              AppColors.neutral500,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return BkuCard(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: AppSpacing.padding6,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(20),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Icon(icon, color: color, size: 16),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral600,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: AppTextStyles.titleLg.copyWith(
-              color: AppColors.neutral900,
-              fontWeight: FontWeight.w900,
-              fontSize: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPengumumanList() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, child) {
-        final filteredList =
-            provider.announcements.where((item) {
-              final matchesSearch =
-                  item.judul.toLowerCase().contains(_searchQuery) ||
-                  item.isi.toLowerCase().contains(_searchQuery);
-
-              if (_filterTarget == 'Semua') {
-                return matchesSearch;
-              }
-
-              final String normFilter = _filterTarget.toLowerCase();
-              final String normItem = item.target.toLowerCase();
-
-              bool matchesFilter = false;
-              if (normFilter == 'informasi') {
-                matchesFilter = (normItem == 'info' || normItem == 'informasi');
-              } else {
-                matchesFilter = (normItem == normFilter);
-              }
-
-              return matchesSearch && matchesFilter;
-            }).toList();
-
-        if (filteredList.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xxxl),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.campaign_outlined,
-                  size: 48,
-                  color: AppColors.neutral500.withAlpha(50),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Text(
-                  'Tidak ada pengumuman ditemukan',
-                  style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral500),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return ListView.separated(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: filteredList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
-          itemBuilder: (context, index) {
-            final announcement = filteredList[index];
-            return _buildPengumumanCard(announcement);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildPengumumanCard(OrmawaAnnouncement announcement) {
-    final color = _getCategoryColor(announcement.target);
-    final label = _getCategoryLabel(announcement.target);
-
-    final displayDate = announcement.tanggalMulai ?? announcement.createdAt;
-    String dateStr = 'Beberapa saat lalu';
-    bool isScheduled = false;
-    if (displayDate != null) {
-      dateStr = DateFormat('dd MMM yyyy', 'id').format(displayDate);
-      if (announcement.tanggalMulai != null &&
-          announcement.tanggalMulai!.isAfter(DateTime.now())) {
-        isScheduled = true;
-      }
-    }
-
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(10),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Text(
-                  label,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 10,
-                  ),
-                ),
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  color: AppColors.neutral500,
-                ),
-                onSelected: (value) async {
-                  if (value == 'edit') {
-                    _showEditPengumuman(context, announcement);
-                  } else if (value == 'delete') {
-                    final confirm = await BkuDialog.show<bool>(
-                      context: context,
-                      type: BkuDialogType.error,
-                      title: 'Hapus Pengumuman?',
-                      message: 'Data yang dihapus tidak dapat dikembalikan.',
-                      primaryButtonText: 'Hapus',
-                      onPrimaryPressed: () => Navigator.pop(context, true),
-                      secondaryButtonText: 'Batal',
-                      onSecondaryPressed: () => Navigator.pop(context, false),
-                    );
-                    if (confirm == true) {
-                      if (mounted) {
-                        await context.read<OrmawaProvider>().deleteAnnouncement(
-                          announcement.id,
-                        );
-                      }
-                    }
-                  }
-                },
-                itemBuilder:
-                    (context) => [
-                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Text(
-                          'Hapus',
-                          style: TextStyle(color: AppColors.error),
-                        ),
-                      ),
-                    ],
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            announcement.judul,
-            style: AppTextStyles.bodyMd.copyWith(
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            announcement.isi,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral600,
-              height: 1.4,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Icon(
-                isScheduled
-                    ? Icons.schedule_rounded
-                    : Icons.access_time_rounded,
-                size: 14,
-                color: isScheduled ? AppColors.warning : AppColors.neutral500,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                isScheduled ? 'Dijadwalkan: $dateStr' : dateStr,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: isScheduled ? AppColors.warning : AppColors.neutral600,
-                  fontWeight: isScheduled ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () => _showAnnouncementDetail(announcement),
-                child: _buildIconButton(
-                  Icons.visibility_outlined,
-                  AppColors.info,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAnnouncementDetail(OrmawaAnnouncement announcement) {
-    final label = _getCategoryLabel(announcement.target);
-
-    final displayDate = announcement.tanggalMulai ?? announcement.createdAt;
-    bool isScheduled = false;
-    String dateLabel = 'Diterbitkan pada';
-    if (displayDate != null) {
-      if (announcement.tanggalMulai != null &&
-          announcement.tanggalMulai!.isAfter(DateTime.now())) {
-        isScheduled = true;
-        dateLabel = 'Dijadwalkan rilis pada';
-      }
-    }
-
-    LinearGradient categoryGradient;
-    switch (announcement.target.toLowerCase()) {
+  Color _getCategoryColor(String cat) {
+    switch (cat.toLowerCase()) {
       case 'umum':
-        categoryGradient = const LinearGradient(
-          colors: [AppColors.neutral600, AppColors.neutral700],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-        break;
+        return const Color(0xFF475569);
       case 'kegiatan':
-        categoryGradient = LinearGradient(
-          colors: [context.appColors.info, context.appColors.info],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-        break;
+        return OrmawaTheme.primary;
       case 'penting':
-        categoryGradient = LinearGradient(
-          colors: [AppColors.error, AppColors.error],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-        break;
-      case 'info':
-      case 'informasi':
-        categoryGradient = LinearGradient(
-          colors: [context.appColors.info, context.appColors.info],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-        break;
+        return const Color(0xFFE11D48);
+      case 'prestasi':
+        return const Color(0xFFD97706);
       default:
-        categoryGradient = const LinearGradient(
-          colors: [AppColors.neutral600, AppColors.neutral700],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
+        return const Color(0xFF475569);
     }
+  }
+
+  Color _getCategoryBgColor(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'umum':
+        return const Color(0xFFF1F5F9);
+      case 'kegiatan':
+        return OrmawaTheme.primarySoft;
+      case 'penting':
+        return const Color(0xFFFFE4E6);
+      case 'prestasi':
+        return const Color(0xFFFEF3C7);
+      default:
+        return const Color(0xFFF1F5F9);
+    }
+  }
+
+  String _getCategoryLabel(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'umum':
+        return 'Umum';
+      case 'kegiatan':
+        return 'Kegiatan';
+      case 'penting':
+        return 'Penting';
+      case 'prestasi':
+        return 'Prestasi';
+      default:
+        return cat.toUpperCase();
+    }
+  }
+
+  void _openDetailModal(BuildContext context, OrmawaAnnouncement item) {
+    final catColor = _getCategoryColor(item.kategori);
+    final catBg = _getCategoryBgColor(item.kategori);
+    final displayDate = item.tanggalMulai ?? item.createdAt;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.85,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(gradient: categoryGradient),
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xl,
-                    AppSpacing.md,
-                    AppSpacing.xl,
-                    AppSpacing.xl,
-                  ),
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.85,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: OrmawaTheme.primary.withAlpha(25),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.campaign_rounded,
+                        color: OrmawaTheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Detail Siaran Pengumuman',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          Text(
+                            'Pusat Informasi Ormawa',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: Color(0xFF64748B)),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: context.appColors.onPrimary,
-                            borderRadius: AppRadius.radiusXs,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.s18),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.md,
-                              vertical: AppSpacing.xs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: context.appColors.onPrimary,
-                              borderRadius: AppRadius.radiusSm,
-                            ),
-                            child: Text(
-                              label,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color: context.appColors.onPrimary,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            'SIARAN ANN-${announcement.id}',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.onPrimary,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Text(
-                        announcement.judul,
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          height: 1.3,
-                          color: context.appColors.onPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Row(
-                        children: [
-                          Icon(
-                            isScheduled
-                                ? Icons.schedule_rounded
-                                : Icons.calendar_month_rounded,
-                            size: 14,
-                            color: context.appColors.onPrimary,
-                          ),
-                          const SizedBox(width: AppSpacing.s6),
-                          Text(
-                            displayDate != null
-                                ? '$dateLabel ${DateFormat('dd MMMM yyyy, HH:mm', 'id').format(displayDate)}'
-                                : '',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.onPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.xl,
-                            AppSpacing.xl,
-                            AppSpacing.xl,
-                            AppSpacing.lg,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(AppSpacing.md),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.neutral100,
-                                    borderRadius: AppRadius.radiusLg,
-                                    border: Border.all(
-                                      color: AppColors.neutral300,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(
-                                          AppSpacing.sm,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.08),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          Icons.admin_panel_settings_rounded,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.md),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'OLEH ORMAWA',
-                                              style: AppTextStyles.labelSm
-                                                  .copyWith(
-                                                    color: AppColors.neutral500,
-                                                    fontSize: 8,
-                                                    fontWeight: FontWeight.w900,
-                                                  ),
-                                            ),
-                                            const SizedBox(height: AppSpacing.s2),
-                                            Text(
-                                              'Badan Pengurus Harian',
-                                              style: AppTextStyles.bodyMd
-                                                  .copyWith(
-                                                    color: AppColors.neutral700,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                  ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(AppSpacing.md),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.neutral100,
-                                    borderRadius: AppRadius.radiusLg,
-                                    border: Border.all(
-                                      color: AppColors.neutral300,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(
-                                          AppSpacing.sm,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.success.withValues(
-                                            alpha: 0.08,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.people_alt_rounded,
-                                          color: AppColors.success,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.md),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'TARGET PEMBACA',
-                                              style: AppTextStyles.labelSm
-                                                  .copyWith(
-                                                    color: AppColors.neutral500,
-                                                    fontSize: 8,
-                                                    fontWeight: FontWeight.w900,
-                                                  ),
-                                            ),
-                                            const SizedBox(height: AppSpacing.s2),
-                                            Text(
-                                              'Seluruh Anggota',
-                                              style: AppTextStyles.bodyMd
-                                                  .copyWith(
-                                                    color: AppColors.neutral700,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                  ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Content Header and Box
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xl,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ISI PENGUMUMAN RESMI',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: AppColors.neutral500,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(AppSpacing.xl),
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral100,
-                                  borderRadius: AppRadius.radiusXl,
-                                  border: Border.all(
-                                    color: AppColors.neutral300,
-                                  ),
-                                ),
-                                child: Text(
-                                  announcement.isi,
-                                  style: AppTextStyles.bodyMd.copyWith(
-                                    color: AppColors.neutral700,
-                                    height: 1.6,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.xl),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Bottom Buttons Bar
-                Container(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xl,
-                    AppSpacing.lg,
-                    AppSpacing.xl,
-                    AppSpacing.xl,
-                  ),
-                decoration: BoxDecoration(
-                  color: context.appColors.surface,
-                  border: Border(
-                      top: BorderSide(color: AppColors.neutral300, width: 1),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: BkuButton(
-                          text: 'TUTUP',
-                          onPressed: () => context.pop(),
-                          variant: BkuButtonVariant.outline,
-                          height: 50,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        flex: 2,
-                        child: BkuButton(
-                          text: 'EDIT PENGUMUMAN',
-                          onPressed: () {
-                            context.pop();
-                            _showEditPengumuman(context, announcement);
-                          },
-                          variant: BkuButtonVariant.primary,
-                          icon: Icons.edit_note_rounded,
-                          height: 50,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-    );
-  }
-
-  Widget _buildIconButton(IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: color.withAlpha(10),
-        borderRadius: AppRadius.radiusMd,
-      ),
-      child: Icon(icon, color: color, size: 18),
-    );
-  }
-
-  void _showAddPengumuman(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const OrmawaCreatePengumumanScreen(),
-      ),
-    );
-  }
-
-  void _showEditPengumuman(
-    BuildContext context,
-    OrmawaAnnouncement announcement,
-  ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) =>
-                OrmawaCreatePengumumanScreen(announcement: announcement),
-      ),
-    );
-  }
-
-  void _showFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral300,
-                      borderRadius: AppRadius.radiusXs,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  'Filter Kategori',
-                  style: AppTextStyles.titleLg.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children:
-                      _targetOptions.map((option) {
-                        final isSelected = _filterTarget == option;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() => _filterTarget = option);
-                            context.pop();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.md,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? context.appColors.primary
-                                      : Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withAlpha(10),
-                              borderRadius: AppRadius.radiusXl,
-                            ),
-                            child: Text(
-                              option,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isSelected
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                ),
-                if (_filterTarget != 'Semua')
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.lg),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() => _filterTarget = 'Semua');
-                        context.pop();
-                      },
-                      child: Text(
-                        'Reset Filter',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.error,
-                        ),
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
-            ),
-          ),
-    );
-  }
-}
-
-class OrmawaCreatePengumumanScreen extends StatefulWidget {
-  final OrmawaAnnouncement? announcement;
-
-  const OrmawaCreatePengumumanScreen({super.key, this.announcement});
-
-  @override
-  State<OrmawaCreatePengumumanScreen> createState() =>
-      _OrmawaCreatePengumumanScreenState();
-}
-
-class _OrmawaCreatePengumumanScreenState
-    extends State<OrmawaCreatePengumumanScreen> {
-  final TextEditingController _judulController = TextEditingController();
-  final TextEditingController _isiController = TextEditingController();
-  String _selectedTarget = 'umum';
-  bool _isSubmitting = false;
-  DateTime? _selectedTanggalMulai;
-
-  bool get isEditing => widget.announcement != null;
-
-  @override
-  void initState() {
-    super.initState();
-    if (isEditing) {
-      _judulController.text = widget.announcement!.judul;
-      _isiController.text = widget.announcement!.isi;
-
-      final originalTarget = widget.announcement!.target.toLowerCase();
-      if (originalTarget == 'informasi') {
-        _selectedTarget = 'info';
-      } else {
-        _selectedTarget = originalTarget;
-      }
-      _selectedTanggalMulai = widget.announcement!.tanggalMulai;
-    } else {
-      _selectedTarget = 'umum';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ormawaId = context.read<OrmawaProvider>().ormawaId;
-
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      body: CustomScrollView(
-        slivers: [
-          BkuAppBar(
-            title: isEditing ? 'EDIT PENGUMUMAN' : 'BUAT PENGUMUMAN BARU',
-            subtitle: 'Publikasi Informasi',
-            variant: AppBarVariant.ormawa,
-            expandedHeight: 130.0,
-            showBackButton: true,
-            isExpandable: false,
-            showNotification: false,
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xxl),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
                       Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(10),
-                          borderRadius: AppRadius.radiusMd,
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
                         ),
-                        child: Icon(
-                          Icons.campaign_rounded,
-                          color: context.appColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.lg),
-                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.sm,
-                                vertical: AppSpacing.xs,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.neutral200,
-                                borderRadius: AppRadius.radiusXs,
-                              ),
-                              child: Text(
-                                'ANNOUNCEMENT',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: context.appColors.primary,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 8,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: catBg,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: catColor.withAlpha(60)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                          color: catColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        _getCategoryLabel(item.kategori),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w900,
+                                          color: catColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                if (displayDate != null)
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.calendar_today_rounded,
+                                        size: 12,
+                                        color: Color(0xFF64748B),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        DateFormat('dd MMM yyyy', 'id').format(displayDate),
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF64748B),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              item.judul,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF0F172A),
+                                height: 1.3,
                               ),
                             ),
+                            const SizedBox(height: 8),
                             Text(
-                              'BUAT PENGUMUMAN BARU',
-                              style: AppTextStyles.titleLg.copyWith(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                              item.isi,
+                              style: const TextStyle(
+                                fontSize: 12.5,
+                                color: Color(0xFF334155),
+                                height: 1.5,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Publikasikan informasi penting untuk seluruh anggota.',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.neutral500,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  _buildInputField(
-                    'JUDUL PENGUMUMAN',
-                    'Masukkan judul pengumuman...',
-                    Icons.title_rounded,
-                    controller: _judulController,
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  _buildCategorySelector(),
-                  const SizedBox(height: AppSpacing.s20),
-                  _buildDateField(
-                    'TANGGAL RILIS (OPSIONAL)',
-                    'Pilih tanggal rilis...',
-                    Icons.calendar_month_rounded,
-                    _selectedTanggalMulai,
-                    (date) {
-                      setState(() {
-                        _selectedTanggalMulai = date;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  _buildInputField(
-                    'ISI PENGUMUMAN',
-                    'Tuliskan isi pengumuman di sini...',
-                    Icons.description_rounded,
-                    maxLines: 8,
-                    controller: _isiController,
-                  ),
-                  const SizedBox(height: AppSpacing.xxxl),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: BkuButton(
-                          text: 'BATALKAN',
-                          onPressed: () => context.pop(),
-                          variant: BkuButtonVariant.outline,
-                          height: 50,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.lg),
-                      Expanded(
-                        flex: 2,
-                        child: BkuButton(
-                          text:
-                              isEditing
-                                  ? 'SIMPAN PERUBAHAN'
-                                  : 'PUBLISH SEKARANG',
-                          onPressed: () async {
-                            if (_judulController.text.isEmpty ||
-                                _isiController.text.isEmpty) {
-                              AppSnackbar.showWarning(
-                                context,
-                                'Judul dan Isi wajib diisi',
-                              );
-                              return;
-                            }
-
-                            setState(() => _isSubmitting = true);
-                            try {
-                              final provider = context.read<OrmawaProvider>();
-                              if (isEditing) {
-                                await provider.updateAnnouncement(
-                                  widget.announcement!.id,
-                                  {
-                                    'Judul': _judulController.text,
-                                    'Isi': _isiController.text,
-                                    'Target': _selectedTarget,
-                                    if (_selectedTanggalMulai != null)
-                                      'TanggalMulai':
-                                          _selectedTanggalMulai!
-                                              .toUtc()
-                                              .toIso8601String(),
-                                  },
-                                );
-                              } else {
-                                await provider.createAnnouncement({
-                                  'OrmawaID': int.parse(ormawaId!),
-                                  'Judul': _judulController.text,
-                                  'Isi': _isiController.text,
-                                  'Target': _selectedTarget,
-                                  if (_selectedTanggalMulai != null)
-                                    'TanggalMulai':
-                                        _selectedTanggalMulai!
-                                            .toUtc()
-                                            .toIso8601String(),
-                                });
-                              }
-                              if (context.mounted) context.pop();
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppSnackbar.showError(context, 'Error: $e');
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSubmitting = false);
-                              }
+                      if (item.lampiranUrl != null && item.lampiranUrl!.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        InkWell(
+                          onTap: () async {
+                            final uri = Uri.parse(item.lampiranUrl!);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
                             }
                           },
-                          variant: BkuButtonVariant.success,
-                          isLoading: _isSubmitting,
-                          icon:
-                              isEditing
-                                  ? Icons.save_rounded
-                                  : Icons.send_rounded,
-                          height: 50,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: OrmawaTheme.primarySoft,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: OrmawaTheme.primary.withAlpha(40)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.attach_file_rounded, color: OrmawaTheme.primary, size: 18),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Buka Berkas Lampiran',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: OrmawaTheme.primary,
+                                    ),
+                                  ),
+                                ),
+                                Icon(Icons.open_in_new_rounded, color: OrmawaTheme.primary, size: 16),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.s120),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputField(
-    String label,
-    String hint,
-    IconData icon, {
-    int maxLines = 1,
-    required TextEditingController controller,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.w900,
-            fontSize: 10,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        BkuTextField(
-          controller: controller,
-          maxLines: maxLines,
-          style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral400,
-            ),
-            prefixIcon: Icon(icon, color: AppColors.neutral500, size: 20),
-            filled: true,
-            fillColor: context.appColors.surface,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(
-                color: AppColors.neutral300,
-                width: 1,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: const BorderSide(
-                color: AppColors.neutral300,
-                width: 1,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(
-                color: context.appColors.primary,
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategorySelector() {
-    final categories = [
-      {
-        'id': 'umum',
-        'label': 'UMUM',
-        'icon': Icons.feed_rounded,
-        'color': AppColors.neutral600,
-      },
-      {
-        'id': 'kegiatan',
-        'label': 'KEGIATAN',
-        'icon': Icons.event_rounded,
-        'color': context.appColors.info,
-      },
-      {
-        'id': 'penting',
-        'label': 'PENTING',
-        'icon': Icons.warning_rounded,
-        'color': AppColors.error,
-      },
-      {
-        'id': 'info',
-        'label': 'INFORMASI',
-        'icon': Icons.info_rounded,
-        'color': context.appColors.info,
-      },
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'PILIH KATEGORI SIARAN',
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.w900,
-            fontSize: 10,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 3.5,
-          ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final cat = categories[index];
-            final id = cat['id'] as String;
-            final label = cat['label'] as String;
-            final icon = cat['icon'] as IconData;
-            final baseColor = cat['color'] as Color;
-            final isSelected = _selectedTarget.toLowerCase() == id;
-
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedTarget = id;
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: isSelected ? baseColor : context.appColors.onPrimary,
-                  borderRadius: AppRadius.radiusMd,
-                  border: Border.all(
-                    color:
-                        isSelected ? Colors.transparent : AppColors.neutral300,
-                    width: 1,
-                  ),
-                  boxShadow:
-                      isSelected
-                          ? [
-                            BoxShadow(
-                              color: baseColor.withAlpha(50),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                          : null,
                 ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              Padding(
+                padding: const EdgeInsets.all(16),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      icon,
-                      size: 16,
-                      color: isSelected ? context.appColors.onPrimary : baseColor,
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: const BorderSide(color: Color(0xFFCBD5E1)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text(
+                          'Tutup',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF475569),
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      label,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: isSelected ? context.appColors.onPrimary : AppColors.neutral700,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditPengumumanScreen(announcement: item),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: OrmawaTheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        icon: const Icon(Icons.edit_rounded, size: 16),
+                        label: const Text(
+                          'Edit Siaran',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        ),
-      ],
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildDateField(
-    String label,
-    String hint,
-    IconData icon,
-    DateTime? date,
-    Function(DateTime) onDateSelected,
-  ) {
-    final displayStr =
-        date != null ? DateFormat('dd MMMM yyyy', 'id').format(date) : hint;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral700,
-            fontWeight: FontWeight.w900,
-            fontSize: 10,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        InkWell(
-          onTap: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: date ?? DateTime.now(),
-              firstDate: DateTime(2020),
-              lastDate: DateTime(2101),
-              builder: (context, child) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(
-                      primary: context.appColors.primary,
-                      onPrimary: context.appColors.onPrimary,
-                      onSurface: AppColors.neutral800,
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
-            );
-            if (picked != null) {
-              onDateSelected(picked);
-            }
-          },
-          borderRadius: AppRadius.radiusMd,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.lg,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: AppRadius.radiusMd,
-              border: Border.all(color: AppColors.neutral300),
-            ),
-            child: Row(
-              children: [
-                Icon(icon, color: AppColors.neutral500, size: 20),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    displayStr,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color:
-                          date != null
-                              ? AppColors.neutral800
-                              : AppColors.neutral500,
-                      fontWeight:
-                          date != null ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
+  void _confirmDelete(BuildContext context, OrmawaAnnouncement item) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFE4E6),
+                  shape: BoxShape.circle,
                 ),
-                if (date != null)
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedTanggalMulai = null;
-                      });
-                    },
-                    child: const Icon(
-                      Icons.clear_rounded,
-                      color: AppColors.error,
-                      size: 20,
-                    ),
-                  ),
-              ],
-            ),
+                child: const Icon(Icons.delete_forever_rounded, color: Color(0xFFE11D48), size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Hapus Pengumuman?',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                ),
+              ),
+            ],
           ),
+          content: Text(
+            'Apakah Anda yakin ingin menghapus siaran "${item.judul}"? Tindakan ini bersifat permanen.',
+            style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                try {
+                  await context.read<OrmawaProvider>().deleteAnnouncement(item.id);
+                  if (context.mounted) {
+                    AppSnackbar.showSuccess(context, 'Pengumuman berhasil dihapus');
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    AppSnackbar.showError(context, 'Gagal menghapus pengumuman: $e');
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE11D48),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                elevation: 0,
+              ),
+              child: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w800)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ormawaProvider = context.watch<OrmawaProvider>();
+    final announcements = ormawaProvider.announcements;
+
+    final totalSiaran = announcements.length;
+    final totalPenting = announcements.where((p) => p.kategori == 'penting').length;
+    final totalKegiatan = announcements.where((p) => p.kategori == 'kegiatan').length;
+    final totalPrestasi = announcements.where((p) => p.kategori == 'prestasi').length;
+
+    final filteredList = announcements.where((item) {
+      final matchesSearch = _searchQuery.isEmpty ||
+          item.judul.toLowerCase().contains(_searchQuery) ||
+          item.isi.toLowerCase().contains(_searchQuery);
+
+      if (!matchesSearch) return false;
+
+      if (_activeTab == 'all') return true;
+      return item.kategori == _activeTab;
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      floatingActionButton: ormawaProvider.hasPermission('create_announcement')
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.s100),
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CreatePengumumanScreen()),
+                  );
+                },
+                backgroundColor: OrmawaTheme.primary,
+                foregroundColor: Colors.white,
+                elevation: 4,
+                icon: const Icon(Icons.campaign_rounded, size: 20),
+                label: Text(
+                  'Buat Pengumuman',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
+                ),
+              ),
+            )
+          : null,
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            BkuAppBar(
+              variant: AppBarVariant.ormawa,
+              title: 'Siaran & Pengumuman',
+              subtitle: 'Pusat Informasi & Publikasi',
+              expandedHeight: 130.0,
+              showBackButton: widget.showBackButton,
+              isExpandable: false,
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Total Siaran',
+                            value: '$totalSiaran',
+                            badgeText: 'Semua Terbit',
+                            icon: Icons.campaign_rounded,
+                            badgeColor: OrmawaTheme.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Penting & Urgen',
+                            value: '$totalPenting',
+                            badgeText: 'Prioritas',
+                            icon: Icons.priority_high_rounded,
+                            badgeColor: const Color(0xFFE11D48),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Info Kegiatan',
+                            value: '$totalKegiatan',
+                            badgeText: 'Agenda Proker',
+                            icon: Icons.event_rounded,
+                            badgeColor: const Color(0xFF0284C7),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Kabar Prestasi',
+                            value: '$totalPrestasi',
+                            badgeText: 'Apresiasi',
+                            icon: Icons.emoji_events_rounded,
+                            badgeColor: const Color(0xFFD97706),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    OrmawaFilterTabs(
+                      tabs: [
+                        OrmawaTabItem(key: 'all', label: 'Semua', count: totalSiaran),
+                        OrmawaTabItem(key: 'umum', label: 'Umum', count: announcements.where((p) => p.kategori == 'umum').length),
+                        OrmawaTabItem(key: 'kegiatan', label: 'Kegiatan', count: totalKegiatan),
+                        OrmawaTabItem(key: 'penting', label: 'Penting', count: totalPenting),
+                        OrmawaTabItem(key: 'prestasi', label: 'Prestasi', count: totalPrestasi),
+                      ],
+                      activeKey: _activeTab,
+                      onTabChanged: (val) => setState(() => _activeTab = val),
+                    ),
+                    const SizedBox(height: 12),
+                    OrmawaSearchBar(
+                      controller: _searchController,
+                      hintText: 'Cari judul siaran atau isi informasi...',
+                      onChanged: (val) =>
+                          setState(() => _searchQuery = val.trim().toLowerCase()),
+                    ),
+                    const SizedBox(height: 14),
+                    if (filteredList.isEmpty)
+                      const OrmawaEmptyCard(
+                        title: 'Belum ada pengumuman',
+                        description: 'Tidak ada siaran atau pengumuman yang sesuai.',
+                        icon: Icons.campaign_outlined,
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: filteredList.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final item = filteredList[index];
+                          final catColor = _getCategoryColor(item.kategori);
+                          final catBg = _getCategoryBgColor(item.kategori);
+                          final displayDate = item.tanggalMulai ?? item.createdAt;
+
+                          return OrmawaCard(
+                            onTap: () => _openDetailModal(context, item),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: catBg,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        _getCategoryLabel(item.kategori),
+                                        style: TextStyle(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.w900,
+                                          color: catColor,
+                                        ),
+                                      ),
+                                    ),
+                                    if (displayDate != null)
+                                      Text(
+                                        DateFormat('dd MMM yyyy', 'id')
+                                            .format(displayDate),
+                                        style: TextStyle(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.w600,
+                                          color: OrmawaTheme.textMuted,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  item.judul,
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w900,
+                                    color: OrmawaTheme.textHeading,
+                                    height: 1.3,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  item.isi,
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    color: OrmawaTheme.textBody,
+                                    height: 1.4,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Divider(
+                                  height: 18,
+                                  color: OrmawaTheme.borderSubtle,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.account_circle_outlined,
+                                          size: 13,
+                                          color: OrmawaTheme.textMuted,
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          item.targetAudiens.isNotEmpty
+                                              ? item.targetAudiens
+                                              : 'Publik Kampus',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600,
+                                            color: OrmawaTheme.textMuted,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () =>
+                                              _openDetailModal(context, item),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF8FAFC),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: OrmawaTheme.border,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.visibility_outlined,
+                                              size: 15,
+                                              color: Color(0xFF0284C7),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    EditPengumumanScreen(
+                                                  announcement: item,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF8FAFC),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: OrmawaTheme.border,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              Icons.edit_outlined,
+                                              size: 15,
+                                              color: OrmawaTheme.primary,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 6),
+                                        InkWell(
+                                          onTap: () =>
+                                              _confirmDelete(context, item),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF8FAFC),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: OrmawaTheme.border,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.delete_outline_rounded,
+                                              size: 15,
+                                              color: Color(0xFFE11D48),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    const SizedBox(height: AppSpacing.s140),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

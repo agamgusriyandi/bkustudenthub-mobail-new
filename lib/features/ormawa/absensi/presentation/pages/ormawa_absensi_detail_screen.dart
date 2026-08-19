@@ -10,6 +10,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_absensi_screen.dart';
 
@@ -707,7 +708,7 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
   void _generatePayload() {
     final nowMs = DateTime.now().millisecondsSinceEpoch;
     final token = (nowMs ~/ 1000).toString();
-    _qrPayload = 'https://stag.bkustudenthub.com/student/presensi?eventId=${widget.agendaId}&token=$token&t=$nowMs';
+    _qrPayload = '${ApiGate.webUrl}/student/presensi?eventId=${widget.agendaId}&token=$token&t=$nowMs';
   }
 
   @override

@@ -1,40 +1,30 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
 
 class OrmawaProposalPipelineScreen extends StatefulWidget {
   const OrmawaProposalPipelineScreen({super.key});
 
   @override
-  State<OrmawaProposalPipelineScreen> createState() =>
-      _OrmawaProposalPipelineScreenState();
+  State<OrmawaProposalPipelineScreen> createState() => _OrmawaProposalPipelineScreenState();
 }
 
-class _OrmawaProposalPipelineScreenState
-    extends State<OrmawaProposalPipelineScreen> {
+class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _selectedStatus = 'Semua';
-
-  static const List<String> _statusOptions = [
-    'Semua',
-    'Diajukan',
-    'Diproses',
-    'Disetujui',
-    'Ditolak',
-  ];
+  String _activeTab = 'all';
 
   @override
   void initState() {
@@ -52,22 +42,22 @@ class _OrmawaProposalPipelineScreenState
 
   String _normalizeStatus(String status) {
     final s = status.toLowerCase();
-    if (s.contains('disetujui') || s.contains('setuju')) return 'Disetujui';
-    if (s.contains('ditolak') || s.contains('tolak')) return 'Ditolak';
-    if (s.contains('diajukan') || s.contains('proses')) return 'Diproses';
-    return 'Diajukan';
+    if (s.contains('disetujui') || s.contains('setuju')) return 'disetujui';
+    if (s.contains('ditolak') || s.contains('tolak')) return 'ditolak';
+    if (s.contains('revisi')) return 'revisi';
+    return 'diajukan';
   }
 
-  Color _getStatusColor(String status) {
+  OrmawaBadgeVariant _getBadgeVariant(String status) {
     switch (_normalizeStatus(status)) {
-      case 'Disetujui':
-        return AppColors.success;
-      case 'Ditolak':
-        return AppColors.error;
-      case 'Diproses':
-        return AppColors.warning;
+      case 'disetujui':
+        return OrmawaBadgeVariant.success;
+      case 'ditolak':
+        return OrmawaBadgeVariant.danger;
+      case 'revisi':
+        return OrmawaBadgeVariant.warning;
       default:
-        return AppColors.info;
+        return OrmawaBadgeVariant.info;
     }
   }
 
@@ -76,450 +66,257 @@ class _OrmawaProposalPipelineScreenState
     final ormawaProvider = context.watch<OrmawaProvider>();
     final allProposals = ormawaProvider.proposals;
 
+    final diajukanCount = allProposals.where((p) => _normalizeStatus(p.status) == 'diajukan').length;
+    final revisiCount = allProposals.where((p) => _normalizeStatus(p.status) == 'revisi').length;
+    final disetujuiCount = allProposals.where((p) => _normalizeStatus(p.status) == 'disetujui').length;
+    final ditolakCount = allProposals.where((p) => _normalizeStatus(p.status) == 'ditolak').length;
+
     final filteredProposals = allProposals.where((p) {
-      final matchesSearch =
-          _searchQuery.isEmpty ||
+      final matchesSearch = _searchQuery.isEmpty ||
           p.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           p.code.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus =
-          _selectedStatus == 'Semua' ||
-          _normalizeStatus(p.status) == _selectedStatus;
+      final matchesStatus = _activeTab == 'all' || _normalizeStatus(p.status) == _activeTab;
       return matchesSearch && matchesStatus;
     }).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+        color: OrmawaTheme.primary,
+        backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
-            parent: ClampingScrollPhysics(),
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
           ),
           slivers: [
-            BkuAppBar(
+            const BkuAppBar(
               title: 'Pipeline Proposal',
-              subtitle: 'Antrian Review Proposal',
+              subtitle: 'Antrian Review Berjenjang',
               variant: AppBarVariant.ormawa,
-              expandedHeight: 130.0,
+              expandedHeight: 125.0,
               showBackButton: true,
               isExpandable: false,
             ),
             SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppSpacing.xl),
-                  _buildPipelineStats(allProposals),
-                  const SizedBox(height: AppSpacing.xl),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Diajukan',
+                            value: '$diajukanCount',
+                            badgeText: 'Review',
+                            icon: Icons.hourglass_top_rounded,
+                            badgeColor: OrmawaTheme.statusInfoText,
+                            subtitle: 'Tahap telaah',
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Revisi',
+                            value: '$revisiCount',
+                            badgeText: 'Perlu Cek',
+                            icon: Icons.edit_document,
+                            badgeColor: OrmawaTheme.statusWarningText,
+                            subtitle: 'Catatan reviewer',
+                          ),
+                        ),
+                      ],
                     ),
-                    child: OrmawaListHeader(
-                      title: 'ANTRIAN PROPOSAL (${filteredProposals.length})',
-                      searchHint: 'Cari proposal...',
-                      searchController: _searchController,
-                      onRefresh:
-                          () => context.read<OrmawaProvider>().refreshData(),
-                      onFilterTap: _showFilterSheet,
-                      onChanged: (value) =>
-                          setState(() => _searchQuery = value),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Disetujui',
+                            value: '$disetujuiCount',
+                            badgeText: 'Acc',
+                            icon: Icons.check_circle_rounded,
+                            badgeColor: OrmawaTheme.statusSuccessText,
+                            subtitle: 'Siap cair / jalan',
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: OrmawaKpiCard(
+                            title: 'Ditolak',
+                            value: '$ditolakCount',
+                            badgeText: 'Reject',
+                            icon: Icons.cancel_rounded,
+                            badgeColor: OrmawaTheme.statusDangerText,
+                            subtitle: 'Tidak disetujui',
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (filteredProposals.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.xxxl,
-                      ),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.inbox_outlined,
-                              size: 60,
-                              color: AppColors.neutral400.withAlpha(80),
+                    const SizedBox(height: 14),
+                    OrmawaSearchBar(
+                      controller: _searchController,
+                      hintText: 'Cari judul atau kode proposal...',
+                      onChanged: (v) => setState(() => _searchQuery = v),
+                      onClear: () => setState(() => _searchQuery = ''),
+                    ),
+                    const SizedBox(height: 10),
+                    OrmawaFilterTabs(
+                      tabs: [
+                        OrmawaTabItem(key: 'all', label: 'Semua', count: allProposals.length),
+                        OrmawaTabItem(key: 'diajukan', label: 'Diajukan', count: diajukanCount),
+                        OrmawaTabItem(key: 'revisi', label: 'Revisi', count: revisiCount),
+                        OrmawaTabItem(key: 'disetujui', label: 'Disetujui', count: disetujuiCount),
+                        OrmawaTabItem(key: 'ditolak', label: 'Ditolak', count: ditolakCount),
+                      ],
+                      activeKey: _activeTab,
+                      onTabChanged: (val) => setState(() => _activeTab = val),
+                    ),
+                    const SizedBox(height: 14),
+                    if (ormawaProvider.isLoading && allProposals.isEmpty)
+                      const BkuShimmerList(itemCount: 3, itemHeight: 90)
+                    else if (filteredProposals.isEmpty)
+                      const OrmawaEmptyCard(
+                        title: 'Tidak Ada Proposal',
+                        description: 'Tidak ada proposal kegiatan pada status ini.',
+                        icon: Icons.assignment_outlined,
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: filteredProposals.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final proposal = filteredProposals[index];
+                          return OrmawaCard(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrmawaProposalDetailScreen(proposal: proposal),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 38,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        color: OrmawaTheme.primarySoft,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(
+                                        Icons.description_outlined,
+                                        color: OrmawaTheme.primary,
+                                        size: 19,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            proposal.title,
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: OrmawaTheme.textHeading,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            proposal.code,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: OrmawaTheme.textMuted,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    OrmawaBadge(
+                                      text: proposal.status.toUpperCase(),
+                                      variant: _getBadgeVariant(proposal.status),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Color(0xFFF1F5F9),
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.payments_outlined,
+                                            size: 13,
+                                            color: OrmawaTheme.textMuted,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(proposal.budget),
+                                            style: TextStyle(
+                                              color: OrmawaTheme.textHeading,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            DateFormat('dd MMM yyyy', 'id').format(proposal.date),
+                                            style: TextStyle(
+                                              color: OrmawaTheme.textMuted,
+                                              fontSize: 10.5,
+                                            ),
+                                          ),
+                                          SizedBox(width: 4),
+                                          Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            size: 9,
+                                            color: OrmawaTheme.primary,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: AppSpacing.lg),
-                            Text(
-                              'Tidak ada proposal',
-                              style: AppTextStyles.bodyMd.copyWith(
-                                color: context.appColors.outline,
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    ),
-                ],
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) =>
-                      _buildPipelineItem(filteredProposals[index], index),
-                  childCount: filteredProposals.length,
+                    const SizedBox(height: AppSpacing.s120),
+                  ],
                 ),
               ),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.s150)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPipelineStats(List<OrmawaProposal> proposals) {
-    final diajukan =
-        proposals.where((p) => _normalizeStatus(p.status) == 'Diajukan').length;
-    final diproses =
-        proposals.where((p) => _normalizeStatus(p.status) == 'Diproses').length;
-    final disetujui =
-        proposals.where((p) => _normalizeStatus(p.status) == 'Disetujui').length;
-    final ditolak =
-        proposals.where((p) => _normalizeStatus(p.status) == 'Ditolak').length;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.xl,
-          horizontal: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(8),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildStatMetric(
-              'Diajukan',
-              diajukan.toString(),
-              AppColors.info,
-              Icons.send_rounded,
-            ),
-            _buildMetricDivider(),
-            _buildStatMetric(
-              'Diproses',
-              diproses.toString(),
-              AppColors.warning,
-              Icons.autorenew_rounded,
-            ),
-            _buildMetricDivider(),
-            _buildStatMetric(
-              'Disetujui',
-              disetujui.toString(),
-              AppColors.success,
-              Icons.check_circle_outline_rounded,
-            ),
-            _buildMetricDivider(),
-            _buildStatMetric(
-              'Ditolak',
-              ditolak.toString(),
-              AppColors.error,
-              Icons.cancel_outlined,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMetricDivider() {
-    return Container(
-      width: 1.5,
-      height: 35,
-      decoration: BoxDecoration(
-        color: AppColors.neutral200,
-        borderRadius: AppRadius.radiusXs,
-      ),
-    );
-  }
-
-  Widget _buildStatMetric(
-    String label,
-    String value,
-    Color color,
-    IconData icon,
-  ) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: color.withAlpha(15),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 16),
-          ),
-          const SizedBox(height: AppSpacing.s10),
-          Text(
-            value,
-            style: AppTextStyles.titleLg.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: AppColors.neutral800,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s2),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPipelineItem(OrmawaProposal proposal, int index) {
-    final currencyFormatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp ',
-      decimalDigits: 0,
-    );
-    final dateFormatter = DateFormat('dd MMM yyyy', 'id');
-
-    final statusColor = _getStatusColor(proposal.status);
-    final normalizedStatus = _normalizeStatus(proposal.status);
-
-    return GestureDetector(
-      onTap: () {
-        context.push(AppRoutes.ormawaProposalDetail, extra: proposal);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200),
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(8),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(15),
-                    borderRadius: AppRadius.radiusLg,
-                  ),
-                  child: Icon(
-                    _getPipelineIcon(normalizedStatus),
-                    color: statusColor,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        proposal.title,
-                        style: AppTextStyles.bodyMd.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        '${proposal.code} \u2022 ${dateFormatter.format(proposal.date)}',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Text(
-                    normalizedStatus,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: statusColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-              child: Divider(color: AppColors.neutral200, height: 1),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Anggaran: ${currencyFormatter.format(proposal.budget)}',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral600,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.appColors.primary.withAlpha(10),
-                    borderRadius: AppRadius.radiusSm,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 10,
-                        color: context.appColors.primary,
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        'Review',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  IconData _getPipelineIcon(String status) {
-    switch (status) {
-      case 'Disetujui':
-        return Icons.check_circle_rounded;
-      case 'Ditolak':
-        return Icons.cancel_rounded;
-      case 'Diproses':
-        return Icons.autorenew_rounded;
-      default:
-        return Icons.send_rounded;
-    }
-  }
-
-  void _showFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppRadius.xxl),
-          ),
-        ),
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusXs,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Filter Status',
-              style: AppTextStyles.titleLg.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _statusOptions.map((status) {
-                final isSelected = _selectedStatus == status;
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => _selectedStatus = status);
-                    context.pop();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.md,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? context.appColors.primary
-                          : context.appColors.primary.withAlpha(10),
-                      borderRadius: AppRadius.radiusXl,
-                    ),
-                    child: Text(
-                      status,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: isSelected
-                            ? context.appColors.onPrimary
-                            : context.appColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            if (_selectedStatus != 'Semua')
-              Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.lg),
-                child: BkuButton.text(
-                  text: 'Reset Filter',
-                  onPressed: () {
-                    setState(() => _selectedStatus = 'Semua');
-                    context.pop();
-                  },
-                ),
-              ),
-            const SizedBox(height: AppSpacing.lg),
           ],
         ),
       ),

@@ -1,13 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/finance/presentation/pages/ormawa_finance_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
@@ -28,28 +26,28 @@ class OrmawaQuickStats extends StatelessWidget {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 1.75,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.6,
           children: const [
             BkuShimmer(
               width: double.infinity,
-              height: 75,
+              height: 80,
               borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
             BkuShimmer(
               width: double.infinity,
-              height: 75,
+              height: 80,
               borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
             BkuShimmer(
               width: double.infinity,
-              height: 75,
+              height: 80,
               borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
             BkuShimmer(
               width: double.infinity,
-              height: 75,
+              height: 80,
               borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
             ),
           ],
@@ -65,159 +63,82 @@ class OrmawaQuickStats extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isTablet = constraints.maxWidth >= 600;
-          final crossAxisCount = isTablet ? 4 : 2;
-          final aspectRatio = isTablet ? 2.3 : 1.75;
-
-          return GridView.count(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: aspectRatio,
+      child: Column(
+        children: [
+          Row(
             children: [
-              _StatusItem(
-                label: 'Proposal',
-                value: '${ormawa.activeProposalsCount} Proker',
-                subValue: '${ormawa.approvalRate}% Approved',
-                icon: Icons.description_rounded,
-                color: AppColors.serviceSky,
-                target: const OrmawaProposalScreen(),
+              Expanded(
+                child: OrmawaKpiCard(
+                  title: 'Proposal Proker',
+                  value: '${ormawa.activeProposalsCount}',
+                  badgeText: '${ormawa.approvalRate}% Acc',
+                  icon: Icons.description_rounded,
+                  badgeColor: const Color(0xFF0284C7),
+                  subtitle: 'Pengajuan aktif',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaProposalScreen(),
+                    ),
+                  ),
+                ),
               ),
-              _StatusItem(
-                label: 'Buku Kas',
-                value: formattedKas,
-                subValue: 'Pemasukan Bersih',
-                icon: Icons.account_balance_wallet_rounded,
-                color: AppColors.serviceEmerald,
-                target: const OrmawaFinanceScreen(),
-              ),
-              _StatusItem(
-                label: 'Anggota',
-                value: '${ormawa.totalMembers} Orang',
-                subValue: 'Terverifikasi',
-                icon: Icons.groups_rounded,
-                color: AppColors.servicePurple,
-                target: const OrmawaAnggotaScreen(),
-              ),
-              _StatusItem(
-                label: 'Kegiatan',
-                value: '${ormawa.upcomingAgendasCount} Agenda',
-                subValue: 'Jadwal Dekat',
-                icon: Icons.event_rounded,
-                color: AppColors.serviceAmber,
-                target: const OrmawaKalenderScreen(),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OrmawaKpiCard(
+                  title: 'Buku Kas',
+                  value: formattedKas,
+                  badgeText: 'Saldo',
+                  icon: Icons.account_balance_wallet_rounded,
+                  badgeColor: const Color(0xFF059669),
+                  subtitle: 'Saldo kas bersih',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaFinanceScreen(),
+                    ),
+                  ),
+                ),
               ),
             ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _StatusItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final String subValue;
-  final IconData icon;
-  final Color color;
-  final Widget target;
-
-  const _StatusItem({
-    required this.label,
-    required this.value,
-    required this.subValue,
-    required this.icon,
-    required this.color,
-    required this.target,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BkuCard(
-      borderRadius: AppRadius.radius20,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => target),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 4,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: AppRadius.br2,
-            ),
           ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 16, color: color),
-                    const SizedBox(width: AppSpacing.xs),
-                    Expanded(
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: color,
-                          letterSpacing: 0.5,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: OrmawaKpiCard(
+                  title: 'Total Anggota',
+                  value: '${ormawa.totalMembers}',
+                  badgeText: 'Anggota',
+                  icon: Icons.groups_rounded,
+                  badgeColor: const Color(0xFF9333EA),
+                  subtitle: 'Terverifikasi',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaAnggotaScreen(),
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                    color: context.appColors.onSurface,
-                    letterSpacing: -0.2,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  subValue,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: context.appColors.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OrmawaKpiCard(
+                  title: 'Agenda Kegiatan',
+                  value: '${ormawa.upcomingAgendasCount}',
+                  badgeText: 'Jadwal',
+                  icon: Icons.event_rounded,
+                  badgeColor: const Color(0xFFD97706),
+                  subtitle: 'Agenda terdekat',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrmawaKalenderScreen(),
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.xs),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withAlpha(50),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.chevron_right_rounded,
-              size: 16,
-              color: context.appColors.onSurfaceVariant,
-            ),
+              ),
+            ],
           ),
         ],
       ),

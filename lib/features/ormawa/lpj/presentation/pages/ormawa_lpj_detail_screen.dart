@@ -1,17 +1,15 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
 
 class OrmawaLpjDetailScreen extends StatefulWidget {
   final dynamic lpj;
@@ -41,7 +39,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
           _isLoadingDocs = false;
         });
       }
-    } catch (e) {
+    } catch (_) {
       if (mounted) {
         setState(() {
           _isLoadingDocs = false;
@@ -50,117 +48,154 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
     }
   }
 
-
-
   String _formatCurrency(double value) {
-    return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-        .format(value);
+    return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(value);
+  }
+
+  OrmawaBadgeVariant _getBadgeVariant(String status) {
+    switch (status.toLowerCase()) {
+      case 'disetujui':
+      case 'selesai':
+      case 'completed':
+        return OrmawaBadgeVariant.success;
+      case 'ditolak':
+      case 'batal':
+        return OrmawaBadgeVariant.danger;
+      case 'revisi':
+        return OrmawaBadgeVariant.warning;
+      default:
+        return OrmawaBadgeVariant.info;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final statusStr = (widget.lpj.status ?? 'Menunggu').toString();
+    final title = (widget.lpj.title ?? widget.lpj.judul ?? 'Detail LPJ').toString();
+    final proposalTitle = widget.lpj.proposalTitle;
+    final totalBudget = (widget.lpj.totalBudget ?? widget.lpj.totalAnggaran ?? 0.0) as double;
+    final realization = (widget.lpj.realizationBudget ?? widget.lpj.realisasiAnggaran ?? 0.0) as double;
+    final sisa = totalBudget - realization;
+    final catatan = (widget.lpj.note ?? widget.lpj.catatan ?? '').toString();
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
-          BkuAppBar(
-            title: 'Detail Lpj',
+          const BkuAppBar(
+            title: 'Detail LPJ',
             subtitle: 'Laporan Pertanggungjawaban',
             variant: AppBarVariant.ormawa,
-            expandedHeight: 130.0,
+            expandedHeight: 125.0,
             showBackButton: true,
             isExpandable: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BkuCard(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(AppSpacing.xl),
+                  OrmawaCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                widget.lpj.judul,
-                                style: AppTextStyles.titleLg.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: OrmawaTheme.primarySoft,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.assignment_turned_in_rounded,
+                                color: OrmawaTheme.primary,
+                                size: 22,
                               ),
                             ),
-                            BkuStatusBadge(
-                              status: _mapStatusToBkuStatus(widget.lpj.status),
-                              customText: widget.lpj.status,
-                              showIcon: false,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.xs),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      color: OrmawaTheme.textHeading,
+                                    ),
+                                  ),
+                                  if (proposalTitle != null && proposalTitle.toString().isNotEmpty) ...[
+                                    SizedBox(height: 3),
+                                    Text(
+                                      'Proposal: $proposalTitle',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: OrmawaTheme.textMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            OrmawaBadge(
+                              text: statusStr.toUpperCase(),
+                              variant: _getBadgeVariant(statusStr),
                             ),
                           ],
                         ),
-                        if (widget.lpj.proposalTitle != null) ...[
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            widget.lpj.proposalTitle!,
-                            style: AppTextStyles.labelMd.copyWith(
-                              color: AppColors.neutral600,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildInfoCard(
-                    context,
-                    'ANGGARAN',
-                    [
-                      _buildInfoRow('Total Anggaran',
-                          _formatCurrency(widget.lpj.totalAnggaran)),
-                      _buildInfoRow('Realisasi',
-                          _formatCurrency(widget.lpj.realisasiAnggaran)),
-                      _buildInfoRow(
-                          'Sisa',
-                          _formatCurrency(
-                              widget.lpj.totalAnggaran - widget.lpj.realisasiAnggaran)),
-                    ],
-                  ),
-                  if (widget.lpj.catatan.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    _buildInfoCard(
-                      context,
-                      'CATATAN',
-                      [
-                        Text(
-                          widget.lpj.catatan,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: AppColors.neutral700,
-                            height: 1.5,
-                          ),
+                  SizedBox(height: 16),
+                  _buildSectionTitle('Realisasi Anggaran'),
+                  const SizedBox(height: 8),
+                  OrmawaCard(
+                    child: Column(
+                      children: [
+                        _buildInfoRow('Total Anggaran', _formatCurrency(totalBudget)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
                         ),
+                        _buildInfoRow('Realisasi Digunakan', _formatCurrency(realization)),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
+                        ),
+                        _buildInfoRow('Sisa Anggaran', _formatCurrency(sisa), isHighlight: true),
                       ],
                     ),
-                  ],
-                  if (widget.lpj.createdAt != null) ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    _buildInfoCard(
-                      context,
-                      'INFORMASI',
-                      [
-                        _buildInfoRow(
-                            'Dibuat',
-                            DateFormat('dd MMMM yyyy', 'id')
-                                .format(widget.lpj.createdAt!)),
-                      ],
+                  ),
+                  if (catatan.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _buildSectionTitle('Catatan Penguji / Verifikator'),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: OrmawaTheme.statusWarningBg,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: OrmawaTheme.statusWarningBorder),
+                      ),
+                      child: Text(
+                        catatan,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: OrmawaTheme.textHeading,
+                          height: 1.4,
+                        ),
+                      ),
                     ),
                   ],
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: 16),
+                  _buildSectionTitle('Dokumen Lampiran & Bukti'),
+                  const SizedBox(height: 8),
                   _buildDocumentsCard(context),
                   const SizedBox(height: AppSpacing.s100),
                 ],
@@ -181,13 +216,14 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                 ),
               ).then((_) => provider.refreshData());
             },
-            backgroundColor: context.appColors.primary,
-            icon: Icon(Icons.edit_rounded, color: context.appColors.onPrimary),
-            label: Text(
+            backgroundColor: OrmawaTheme.primary,
+            icon: const Icon(Icons.edit_rounded, color: Colors.white),
+            label: const Text(
               'Edit LPJ',
               style: TextStyle(
-                color: context.appColors.onPrimary,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
+                fontSize: 12.5,
               ),
             ),
           );
@@ -196,118 +232,108 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
     );
   }
 
+  Widget _buildSectionTitle(String title) {
+    return Row(
+      children: [
+        Container(
+          width: 3.5,
+          height: 13,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: OrmawaTheme.primary,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w900,
+            color: OrmawaTheme.textHeading,
+            letterSpacing: -0.2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, {bool isHighlight = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11.5,
+            color: OrmawaTheme.textMuted,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: FontWeight.bold,
+            color: isHighlight ? OrmawaTheme.primaryDark : OrmawaTheme.textHeading,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDocumentsCard(BuildContext context) {
-    return BkuCard(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+    return OrmawaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'DOKUMEN LAMPIRAN',
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
           if (_isLoadingDocs)
-            const Padding(padding: EdgeInsets.all(20), child: BkuShimmerList())
+            Center(child: Padding(padding: EdgeInsets.all(12), child: BkuShimmerList(itemCount: 2, itemHeight: 40)))
           else if (_documents.isEmpty)
-            Text(
-              'Tidak ada dokumen terlampir.',
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                'Tidak ada dokumen lampiran',
+                style: TextStyle(
+                  fontSize: 11.5,
+                  color: OrmawaTheme.textMuted,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             )
           else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: _documents.length,
-              separatorBuilder: (context, index) => const Divider(),
-              itemBuilder: (context, index) {
-                final doc = _documents[index];
-                final url = doc['file_url'] ?? doc['url'];
-                final name = doc['file_name'] ?? doc['nama_dokumen'] ?? 'Dokumen ${index + 1}';
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(
-                    Icons.picture_as_pdf_rounded,
-                    color: context.appColors.primary,
+            ..._documents.map((doc) {
+              final fileName = (doc['NamaFile'] ?? doc['nama_file'] ?? 'Dokumen LPJ').toString();
+              final fileUrl = (doc['FileUrl'] ?? doc['file_url'] ?? '').toString();
+              return ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: OrmawaTheme.primarySoft,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  title: Text(
-                    name,
-                    style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Icon(Icons.download_rounded, color: context.appColors.primary),
-                  onTap: () async {
-                    if (url != null) {
-                      final uri = Uri.parse(url);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                      }
+                  child: Icon(Icons.insert_drive_file_outlined, color: OrmawaTheme.primary, size: 18),
+                ),
+                title: Text(
+                  fileName,
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.download_rounded, color: OrmawaTheme.primary, size: 20),
+                  onPressed: () {
+                    if (fileUrl.isNotEmpty) {
+                      launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
                     }
                   },
-                );
-              },
-            ),
+                ),
+              );
+            }),
         ],
       ),
     );
-  }
-
-  Widget _buildInfoCard(
-      BuildContext context, String title, List<Widget> children) {
-    return BkuCard(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          ...children,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,
-              style: AppTextStyles.bodyMd
-                  .copyWith(color: AppColors.neutral600)),
-          Text(value,
-              style: AppTextStyles.bodyMd
-                  .copyWith(fontWeight: FontWeight.w900)),
-        ],
-      ),
-    );
-  }
-
-  BkuStatus _mapStatusToBkuStatus(String rawStatus) {
-    final s = rawStatus.toLowerCase();
-    if (s.contains('setuju') || s.contains('selesai') || s.contains('acc')) {
-      return BkuStatus.success;
-    } else if (s.contains('tolak') || s.contains('batal')) {
-      return BkuStatus.error;
-    } else if (s.contains('revisi')) {
-      return BkuStatus.warning;
-    }
-    return BkuStatus.info;
   }
 }

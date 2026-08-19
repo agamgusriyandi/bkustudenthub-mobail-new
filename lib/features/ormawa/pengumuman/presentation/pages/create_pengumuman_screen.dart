@@ -1,17 +1,11 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:go_router/go_router.dart';
 
 class CreatePengumumanScreen extends StatefulWidget {
   const CreatePengumumanScreen({super.key});
@@ -21,21 +15,92 @@ class CreatePengumumanScreen extends StatefulWidget {
 }
 
 class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
-  final _judulController = TextEditingController();
-  final _isiController = TextEditingController();
-  String _selectedTarget = 'umum';
+  final TextEditingController _judulController = TextEditingController();
+  final TextEditingController _isiController = TextEditingController();
+  final TextEditingController _lampiranController = TextEditingController();
+
+  String _selectedCategory = 'umum';
+  String _selectedTargetAudiens = 'Semua Mahasiswa';
+  DateTime? _tanggalMulai = DateTime.now();
+  DateTime? _tanggalSelesai;
   bool _isSubmitting = false;
+
+  final List<Map<String, dynamic>> _categories = [
+    {
+      'id': 'umum',
+      'label': 'Umum',
+      'desc': 'Informasi umum & keorganisasian',
+      'icon': Icons.campaign_rounded,
+      'color': const Color(0xFF475569),
+      'bgColor': const Color(0xFFF1F5F9),
+    },
+    {
+      'id': 'kegiatan',
+      'label': 'Info Kegiatan',
+      'desc': 'Agenda acara, webinar & workshop',
+      'icon': Icons.event_rounded,
+      'color': const Color(0xFF0284C7),
+      'bgColor': const Color(0xFFE0F2FE),
+    },
+    {
+      'id': 'penting',
+      'label': 'Penting & Urgen',
+      'desc': 'Pemberitahuan mendesak & wajib',
+      'icon': Icons.priority_high_rounded,
+      'color': const Color(0xFFE11D48),
+      'bgColor': const Color(0xFFFFE4E6),
+    },
+    {
+      'id': 'prestasi',
+      'label': 'Kabar Prestasi',
+      'desc': 'Apresiasi & capaian mahasiswa',
+      'icon': Icons.emoji_events_rounded,
+      'color': const Color(0xFFD97706),
+      'bgColor': const Color(0xFFFEF3C7),
+    },
+  ];
+
+  final List<String> _audiensOptions = [
+    'Semua Mahasiswa',
+    'Khusus Mahasiswa Fakultas',
+    'Anggota Internal',
+    'Umum / Publik',
+  ];
 
   @override
   void dispose() {
     _judulController.dispose();
     _isiController.dispose();
+    _lampiranController.dispose();
     super.dispose();
   }
 
-  void _handleSubmit() async {
-    if (_judulController.text.isEmpty || _isiController.text.isEmpty) {
-      AppSnackbar.showWarning(context, 'Judul dan Isi wajib diisi');
+  Future<void> _selectDate(BuildContext context, bool isStart) async {
+    final initialDate = isStart ? (_tanggalMulai ?? DateTime.now()) : (_tanggalSelesai ?? DateTime.now());
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _tanggalMulai = picked;
+        } else {
+          _tanggalSelesai = picked;
+        }
+      });
+    }
+  }
+
+  Future<void> _handleSave() async {
+    if (_judulController.text.trim().isEmpty) {
+      AppSnackbar.showWarning(context, 'Judul pengumuman wajib diisi');
+      return;
+    }
+    if (_isiController.text.trim().isEmpty) {
+      AppSnackbar.showWarning(context, 'Isi pesan pengumuman wajib diisi');
       return;
     }
 
@@ -43,29 +108,29 @@ class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
 
     try {
       final ormawaId = context.read<OrmawaProvider>().ormawaId;
-      final data = {
-        'OrmawaID': int.parse(ormawaId!),
-        'Judul': _judulController.text,
-        'Isi': _isiController.text,
-        'Target': _selectedTarget,
+      final payload = {
+        'OrmawaID': int.parse(ormawaId ?? '0'),
+        'Judul': _judulController.text.trim(),
+        'Isi': _isiController.text.trim(),
+        'Kategori': _selectedCategory,
+        'Target': _selectedCategory,
+        'TargetAudiens': _selectedTargetAudiens,
+        'LampiranUrl': _lampiranController.text.trim(),
+        'TanggalMulai': _tanggalMulai?.toUtc().toIso8601String() ?? DateTime.now().toUtc().toIso8601String(),
+        if (_tanggalSelesai != null)
+          'TanggalSelesai': _tanggalSelesai!.toUtc().toIso8601String(),
       };
 
-      await context.read<OrmawaProvider>().createAnnouncement(data);
+      await context.read<OrmawaProvider>().createAnnouncement(payload);
+
       if (mounted) {
-        BkuDialog.show(
-          context: context,
-          type: BkuDialogType.success,
-          title: 'Pengumuman Dibuat!',
-          message: 'Pengumuman baru berhasil diterbitkan.',
-          primaryButtonText: 'Kembali',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Pengumuman baru berhasil diterbitkan!');
+        Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) AppSnackbar.showError(context, 'Gagal: $e');
+      if (mounted) {
+        AppSnackbar.showError(context, 'Gagal menerbitkan pengumuman: $e');
+      }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
@@ -73,40 +138,391 @@ class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.appColors.primary;
+
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: const BkuStaticAppBar(
         title: 'Buat Pengumuman',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('JUDUL PENGUMUMAN'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-                controller: _judulController,
-                hint: 'Masukkan judul...',
-                icon: Icons.title_rounded),
-            const SizedBox(height: AppSpacing.xl),
-            _buildLabel('KATEGORI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildCategorySelector(),
-            const SizedBox(height: AppSpacing.xl),
-            _buildLabel('ISI PENGUMUMAN'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-                controller: _isiController,
-                hint: 'Tuliskan isi pengumuman...',
-                icon: Icons.description_rounded,
-                maxLines: 8),
-            const SizedBox(height: AppSpacing.s48),
-            BkuButton.primary(
-              text: 'TERBITKAN PENGUMUMAN',
-              onPressed: _isSubmitting ? null : _handleSubmit,
-              isLoading: _isSubmitting,
+            _buildSectionCard(
+              title: 'Kategori & Klasifikasi Siaran',
+              subtitle: 'Tentukan kategori dan sasaran penerima pengumuman.',
+              icon: Icons.category_rounded,
+              primaryColor: primaryColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'PILIH KATEGORI SIARAN *',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF475569),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 1.5,
+                    ),
+                    itemCount: _categories.length,
+                    itemBuilder: (context, index) {
+                      final cat = _categories[index];
+                      final isSelected = _selectedCategory == cat['id'];
+                      final color = cat['color'] as Color;
+
+                      return GestureDetector(
+                        onTap: () => setState(() => _selectedCategory = cat['id'] as String),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isSelected ? primaryColor.withAlpha(15) : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected ? primaryColor : const Color(0xFFE2E8F0),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? primaryColor : cat['bgColor'] as Color,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(
+                                      cat['icon'] as IconData,
+                                      size: 16,
+                                      color: isSelected ? Colors.white : color,
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Text(
+                                        'Terpilih',
+                                        style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.white),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cat['label'] as String,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900,
+                                      color: isSelected ? primaryColor : const Color(0xFF0F172A),
+                                    ),
+                                  ),
+                                  Text(
+                                    cat['desc'] as String,
+                                    style: const TextStyle(fontSize: 9, color: Color(0xFF64748B), height: 1.2),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildDateInput(
+                          label: 'Tgl. Mulai Terbit',
+                          date: _tanggalMulai,
+                          onTap: () => _selectDate(context, true),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _buildDateInput(
+                          label: 'Tgl. Selesai (Opsional)',
+                          date: _tanggalSelesai,
+                          onTap: () => _selectDate(context, false),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'TARGET AUDIENS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF475569),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedTargetAudiens,
+                        isExpanded: true,
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
+                        items: _audiensOptions.map((opt) {
+                          return DropdownMenuItem(
+                            value: opt,
+                            child: Text(
+                              opt,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          if (val != null) setState(() => _selectedTargetAudiens = val);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildSectionCard(
+              title: 'Konten & Teks Pengumuman',
+              subtitle: 'Tuliskan judul siaran dan uraikan pesan secara lengkap.',
+              icon: Icons.article_rounded,
+              primaryColor: primaryColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'JUDUL PENGUMUMAN *',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF475569),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: _judulController,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    decoration: InputDecoration(
+                      hintText: 'Contoh: Pendaftaran Open Recruitment Panitia...',
+                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primaryColor, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'ISI PESAN PENGUMUMAN *',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF475569),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: _isiController,
+                    maxLines: 7,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, height: 1.5),
+                    decoration: InputDecoration(
+                      hintText: 'Tuliskan rincian pengumuman, agenda, instruksi, dan narahubung...',
+                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primaryColor, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.all(14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildSectionCard(
+              title: 'Lampiran & Tautan Pendukung',
+              subtitle: 'Lampirkan Google Drive, formulir pendaftaran, atau flyer.',
+              icon: Icons.link_rounded,
+              primaryColor: primaryColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'TAUTAN DOKUMEN / DRIVE (OPSIONAL)',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF475569),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      if (_lampiranController.text.trim().startsWith('http'))
+                        InkWell(
+                          onTap: () async {
+                            final uri = Uri.tryParse(_lampiranController.text.trim());
+                            if (uri != null && await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Buka Tautan',
+                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: primaryColor),
+                              ),
+                              const SizedBox(width: 2),
+                              Icon(Icons.open_in_new_rounded, size: 12, color: primaryColor),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: _lampiranController,
+                    onChanged: (_) => setState(() {}),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    decoration: InputDecoration(
+                      hintText: 'https://drive.google.com/... atau https://forms.gle/...',
+                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                      prefixIcon: const Icon(Icons.link_rounded, size: 18, color: Color(0xFF94A3B8)),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primaryColor, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomSheet: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: const Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF64748B).withAlpha(15),
+              blurRadius: 10,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text(
+                  'Batal',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF475569)),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: ElevatedButton.icon(
+                onPressed: _isSubmitting ? null : _handleSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: _isSubmitting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.send_rounded, size: 16),
+                label: Text(
+                  _isSubmitting ? 'Memproses...' : 'Terbitkan Siaran',
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                ),
+              ),
             ),
           ],
         ),
@@ -114,92 +530,119 @@ class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Text(text,
-        style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            fontSize: 10));
-  }
-
-  Widget _buildCategorySelector() {
-    final categories = [
-      {'id': 'umum', 'label': 'UMUM', 'icon': Icons.feed_rounded},
-      {'id': 'kegiatan', 'label': 'KEGIATAN', 'icon': Icons.event_rounded},
-      {'id': 'penting', 'label': 'PENTING', 'icon': Icons.priority_high_rounded},
-      {'id': 'info', 'label': 'INFO', 'icon': Icons.info_rounded},
-    ];
-
-    return Row(
-      children: categories
-          .map((c) => Expanded(
-                child: GestureDetector(
-                  onTap: () =>
-                      setState(() => _selectedTarget = c['id'] as String),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: _selectedTarget == c['id']
-                          ? context.appColors.primary.withAlpha(15)
-                          : AppColors.neutral100,
-                      borderRadius: AppRadius.radiusMd,
-                      border: Border.all(
-                        color: _selectedTarget == c['id']
-                            ? context.appColors.primary
-                            : AppColors.neutral300,
+  Widget _buildSectionCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color primaryColor,
+    required Widget child,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: primaryColor.withAlpha(20),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: primaryColor, size: 18),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF0F172A),
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        Icon(c['icon'] as IconData,
-                            color: _selectedTarget == c['id']
-                                ? context.appColors.primary
-                                : AppColors.neutral500,
-                            size: 20),
-                        const SizedBox(height: 4),
-                        Text(c['label'] as String,
-                            style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                color: _selectedTarget == c['id']
-                                    ? context.appColors.primary
-                                    : AppColors.neutral600)),
-                      ],
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ))
-          .toList(),
+              ),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+          ),
+          child,
+        ],
+      ),
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    int maxLines = 1,
+  Widget _buildDateInput({
+    required String label,
+    required DateTime? date,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: BkuTextField(
-        controller: controller,
-        maxLines: maxLines,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon:
-              Icon(icon, color: AppColors.neutral500, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFF475569),
+            letterSpacing: 0.5,
+          ),
         ),
-      ),
+        const SizedBox(height: 6),
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.calendar_today_rounded, size: 14, color: Color(0xFF64748B)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    date != null ? DateFormat('dd MMM yyyy', 'id').format(date) : 'Pilih tgl...',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: date != null ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

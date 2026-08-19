@@ -17,7 +17,7 @@ import 'package:bkuhub_mobile/features/ormawa/finance/presentation/pages/ormawa_
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/anggota/presentation/pages/ormawa_anggota_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/kalender/presentation/pages/ormawa_kalender_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/laporan/presentation/pages/ormawa_laporan_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/ormawa_lpj_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/aspirasi/presentation/pages/ormawa_aspirasi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/notifications/presentation/pages/ormawa_notifications_screen.dart';
@@ -73,7 +73,7 @@ class OrmawaServiceGrid extends StatelessWidget {
           title: 'Lpj',
           icon: Icons.description_rounded,
           color: AppColors.serviceRose,
-          target: OrmawaLaporanScreen(),
+          target: OrmawaLpjScreen(),
         ),
       if (ormawaProvider.hasPermission('view_announcements'))
         const _ServiceIcon(
@@ -344,6 +344,13 @@ class _ServiceIcon extends StatelessWidget {
                 color: color.withAlpha(50),
                 width: 1.0,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withAlpha(20),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Center(
               child: Icon(
@@ -357,10 +364,10 @@ class _ServiceIcon extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-              color: context.appColors.onSurface,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF0F172A),
               letterSpacing: -0.2,
             ),
             maxLines: 1,

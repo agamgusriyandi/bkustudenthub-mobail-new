@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
@@ -385,148 +386,55 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Total Pagu Anggaran',
                 value: _formatCurrency(limit),
                 icon: Icons.account_balance_wallet_rounded,
-                iconColor: const Color(0xFF2563EB),
-                iconBg: const Color(0xFFEFF6FF),
+                badgeColor: const Color(0xFF0284C7),
                 subtitle: 'Periode Tahun $year',
                 badgeText: isActive ? 'Pagu Aktif' : 'Nonaktif',
-                badgeBg: isActive ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
-                badgeColor: isActive ? const Color(0xFF047857) : const Color(0xFF64748B),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Dana Terpakai',
                 value: _formatCurrency(used),
                 icon: Icons.trending_up_rounded,
-                iconColor: const Color(0xFFE11D48),
-                iconBg: const Color(0xFFFFF1F2),
+                badgeColor: const Color(0xFFE11D48),
                 subtitle: 'Proposal & kegiatan disetujui',
                 badgeText: '${usedPct.round()}% Serapan',
-                badgeBg: const Color(0xFFFFF1F2),
-                badgeColor: const Color(0xFFE11D48),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Dalam Pengajuan',
                 value: _formatCurrency(pending),
                 icon: Icons.hourglass_top_rounded,
-                iconColor: const Color(0xFFD97706),
-                iconBg: const Color(0xFFFEF3C7),
+                badgeColor: const Color(0xFFD97706),
                 subtitle: 'Menunggu review/approval',
                 badgeText: '${pendingPct.round()}% Kuota',
-                badgeBg: const Color(0xFFFEF3C7),
-                badgeColor: const Color(0xFFB45309),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Sisa Pagu Tersedia',
                 value: _formatCurrency(remaining),
                 icon: Icons.savings_rounded,
-                iconColor: const Color(0xFF059669),
-                iconBg: const Color(0xFFECFDF5),
+                badgeColor: const Color(0xFF059669),
                 subtitle: 'Dapat diajukan proposal baru',
                 badgeText: '${remainingPct.round()}% Tersedia',
-                badgeBg: const Color(0xFFECFDF5),
-                badgeColor: const Color(0xFF047857),
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBg,
-    required String subtitle,
-    required String badgeText,
-    required Color badgeBg,
-    required Color badgeColor,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 18, color: iconColor),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: badgeBg,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  badgeText,
-                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: badgeColor),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF0F172A),
-              letterSpacing: -0.5,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 1),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8)),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 

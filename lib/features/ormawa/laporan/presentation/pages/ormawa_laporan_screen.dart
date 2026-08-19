@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
@@ -62,16 +63,23 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
     final canCreateLPJ = ormawaProvider.hasPermission('create_lpj');
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+        color: OrmawaTheme.primary,
+        backgroundColor: Colors.white,
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
           slivers: [
-            BkuAppBar(
+            const BkuAppBar(
               variant: AppBarVariant.ormawa,
-              title: 'Laporan & Lpj',
+              title: 'Laporan & LPJ',
               subtitle: 'Dokumentasi Kegiatan',
-              expandedHeight: 130.0,
+              expandedHeight: 125.0,
               showBackButton: true,
               isExpandable: false,
             ),

@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 
@@ -452,134 +453,55 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Total Anggota',
                 value: '$total',
                 icon: Icons.groups_rounded,
-                iconColor: const Color(0xFF475569),
-                iconBg: const Color(0xFFF1F5F9),
+                badgeColor: const Color(0xFF475569),
                 subtitle: 'Database anggota',
-                badge: '${provider.availablePeriods.length + 1} Periode',
+                badgeText: '${provider.availablePeriods.length + 1} Periode',
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Anggota Aktif',
                 value: '$aktif',
                 icon: Icons.how_to_reg_rounded,
-                iconColor: const Color(0xFF10B981),
-                iconBg: const Color(0xFFECFDF5),
+                badgeColor: const Color(0xFF10B981),
                 subtitle: 'Status kepengurusan',
-                badge: 'Aktif',
+                badgeText: 'Aktif',
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Total Divisi',
                 value: '$totalDivisi',
                 icon: Icons.domain_rounded,
-                iconColor: const Color(0xFF0284C7),
-                iconBg: const Color(0xFFF0F9FF),
+                badgeColor: const Color(0xFF0284C7),
                 subtitle: 'Struktur departemen',
-                badge: '$totalDivisi Unit',
+                badgeText: '$totalDivisi Unit',
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
-              child: _buildStatCard(
+              child: OrmawaKpiCard(
                 title: 'Periode Terpilih',
                 value: selectedPeriodText,
                 icon: Icons.calendar_month_rounded,
-                iconColor: const Color(0xFFD97706),
-                iconBg: const Color(0xFFFEF3C7),
+                badgeColor: const Color(0xFFD97706),
                 subtitle: 'Masa bakti',
-                badge: periodBadge,
+                badgeText: periodBadge,
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBg,
-    required String subtitle,
-    required String badge,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 18, color: iconColor),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  badge,
-                  style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF0F172A),
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8)),
-          ),
-        ],
-      ),
     );
   }
 

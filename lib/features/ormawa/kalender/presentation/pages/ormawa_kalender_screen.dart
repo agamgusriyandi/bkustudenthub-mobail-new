@@ -10,6 +10,10 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_calendar_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
@@ -273,7 +277,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14),
 
                       FadeInAnimation(
                         delay: 0.1,
@@ -297,7 +301,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -322,7 +326,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(color: const Color(0xFFBFDBFE)),
                                     ),
-                                    child: const Row(
+                                    child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(Icons.event_note_rounded, size: 14, color: Color(0xFF2563EB)),
@@ -337,7 +341,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'Kalender operasional, sinkronisasi timeline kegiatan, dan pemantauan program kerja organisasi mahasiswa.',
                                 style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B), height: 1.4),
                               ),
@@ -386,50 +390,52 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      FadeInAnimation(
-                        delay: 0.15,
-                        child: Row(
-                          children: [
-                            _buildStatCard(
-                              '$totalEvents',
-                              'Total Kegiatan',
-                              'Semua Agenda',
-                              Icons.calendar_month_rounded,
-                              const Color(0xFF2563EB),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Total Kegiatan',
+                              value: '$totalEvents',
+                              badgeText: 'Semua Agenda',
+                              icon: Icons.calendar_month_rounded,
+                              badgeColor: OrmawaTheme.primary,
                             ),
-                            const SizedBox(width: 8),
-                            _buildStatCard(
-                              '$activeEvents',
-                              'Sedang Berlangsung',
-                              'Live Active',
-                              Icons.schedule_rounded,
-                              const Color(0xFFD97706),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Sedang Berlangsung',
+                              value: '$activeEvents',
+                              badgeText: 'Live Active',
+                              icon: Icons.schedule_rounded,
+                              badgeColor: const Color(0xFFD97706),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 8),
-                      FadeInAnimation(
-                        delay: 0.2,
-                        child: Row(
-                          children: [
-                            _buildStatCard(
-                              '$upcomingEvents',
-                              'Terjadwal (Upcoming)',
-                              'Akan Datang',
-                              Icons.event_available_rounded,
-                              const Color(0xFF0284C7),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Terjadwal (Upcoming)',
+                              value: '$upcomingEvents',
+                              badgeText: 'Akan Datang',
+                              icon: Icons.event_available_rounded,
+                              badgeColor: const Color(0xFF0284C7),
                             ),
-                            const SizedBox(width: 8),
-                            _buildStatCard(
-                              '$completedEvents',
-                              'Selesai Terlaksana',
-                              'Tuntas',
-                              Icons.check_circle_rounded,
-                              const Color(0xFF059669),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Selesai Terlaksana',
+                              value: '$completedEvents',
+                              badgeText: 'Tuntas',
+                              icon: Icons.check_circle_rounded,
+                              badgeColor: const Color(0xFF059669),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
 
@@ -703,53 +709,22 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      FadeInAnimation(
-                        delay: 0.3,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _buildTabPill('all', 'Semua Agenda', totalEvents),
-                              const SizedBox(width: 6),
-                              _buildTabPill('berlangsung', 'Berlangsung', activeEvents),
-                              const SizedBox(width: 6),
-                              _buildTabPill('terjadwal', 'Terjadwal', upcomingEvents),
-                              const SizedBox(width: 6),
-                              _buildTabPill('selesai', 'Selesai', completedEvents),
-                              const SizedBox(width: 6),
-                              _buildTabPill('dibatalkan', 'Dibatalkan', cancelledEvents),
-                            ],
-                          ),
-                        ),
+                      OrmawaFilterTabs(
+                        tabs: [
+                          OrmawaTabItem(key: 'all', label: 'Semua Agenda', count: totalEvents),
+                          OrmawaTabItem(key: 'berlangsung', label: 'Berlangsung', count: activeEvents),
+                          OrmawaTabItem(key: 'terjadwal', label: 'Terjadwal', count: upcomingEvents),
+                          OrmawaTabItem(key: 'selesai', label: 'Selesai', count: completedEvents),
+                          OrmawaTabItem(key: 'dibatalkan', label: 'Dibatalkan', count: cancelledEvents),
+                        ],
+                        activeKey: _activeTab,
+                        onTabChanged: (val) => setState(() => _activeTab = val),
                       ),
                       const SizedBox(height: 12),
-
-                      FadeInAnimation(
-                        delay: 0.35,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                            decoration: InputDecoration(
-                              hintText: 'Cari judul, lokasi, atau PJ kegiatan...',
-                              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.normal),
-                              prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
-                              suffixIcon: _searchQuery.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear_rounded, size: 16, color: Color(0xFF94A3B8)),
-                                      onPressed: () => _searchController.clear(),
-                                    )
-                                  : null,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                            ),
-                          ),
-                        ),
+                      OrmawaSearchBar(
+                        controller: _searchController,
+                        hintText: 'Cari judul, lokasi, atau PJ kegiatan...',
+                        onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
                       ),
                       const SizedBox(height: 14),
 
@@ -812,90 +787,6 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   ),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabPill(String id, String label, int count) {
-    final isActive = _activeTab == id;
-    return InkWell(
-      onTap: () => setState(() => _activeTab = id),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF2563EB) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isActive ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
-          boxShadow: isActive
-              ? [BoxShadow(color: const Color(0xFF2563EB).withAlpha(40), blurRadius: 8, offset: const Offset(0, 2))]
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: isActive ? Colors.white : const Color(0xFF475569),
-              ),
-            ),
-            const SizedBox(width: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-              decoration: BoxDecoration(
-                color: isActive ? Colors.white.withAlpha(50) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w900,
-                  color: isActive ? Colors.white : const Color(0xFF64748B),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String val, String label, String sub, IconData icon, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF94A3B8).withAlpha(15),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
-                Icon(icon, size: 16, color: color),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(val, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-            const SizedBox(height: 1),
-            Text(sub, style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),

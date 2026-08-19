@@ -9,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaSettingsScreen extends StatefulWidget {
@@ -380,50 +381,54 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      FadeInAnimation(
-                        delay: 0.2,
-                        child: Row(
-                          children: [
-                            _buildStatCard(
-                              '$completeness%',
-                              'Kelengkapan',
-                              completeness >= 80 ? 'Sangat lengkap' : 'Perlu diisi',
-                              Icons.account_circle_rounded,
-                              completeness >= 80 ? const Color(0xFF059669) : const Color(0xFF2563EB),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Kelengkapan',
+                              value: '$completeness%',
+                              badgeText: completeness >= 80 ? 'Sangat lengkap' : 'Perlu diisi',
+                              icon: Icons.account_circle_rounded,
+                              badgeColor: completeness >= 80 ? const Color(0xFF059669) : const Color(0xFF0284C7),
                             ),
-                            const SizedBox(width: 8),
-                            _buildStatCard(
-                              'Aktif',
-                              'Status Lembaga',
-                              'ID #$ormawaId',
-                              Icons.verified_user_rounded,
-                              const Color(0xFF059669),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Status Lembaga',
+                              value: 'Aktif',
+                              badgeText: 'ID #$ormawaId',
+                              icon: Icons.verified_user_rounded,
+                              badgeColor: const Color(0xFF059669),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 8),
-                      FadeInAnimation(
-                        delay: 0.25,
-                        child: Row(
-                          children: [
-                            _buildStatCard(
-                              '$contactCount / 4',
-                              'Saluran Info',
-                              'Email, WA, IG, Web',
-                              Icons.contact_mail_rounded,
-                              const Color(0xFF2563EB),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Saluran Info',
+                              value: '$contactCount / 4',
+                              badgeText: 'Saluran',
+                              icon: Icons.contact_mail_rounded,
+                              badgeColor: const Color(0xFF0284C7),
+                              subtitle: 'Email, WA, IG, Web',
                             ),
-                            const SizedBox(width: 8),
-                            _buildStatCard(
-                              hasBank ? 'Terdaftar' : 'Belum Ada',
-                              'Rekening Kas',
-                              hasBank ? (_namaBankController.text.isNotEmpty ? _namaBankController.text : 'Bank Aktif') : 'Perlu diisi',
-                              Icons.account_balance_rounded,
-                              hasBank ? const Color(0xFF059669) : const Color(0xFFD97706),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OrmawaKpiCard(
+                              title: 'Rekening Kas',
+                              value: hasBank ? 'Terdaftar' : 'Belum Ada',
+                              badgeText: hasBank ? 'Siap' : 'Perlu diisi',
+                              icon: Icons.account_balance_rounded,
+                              badgeColor: hasBank ? const Color(0xFF059669) : const Color(0xFFD97706),
+                              subtitle: hasBank ? (_namaBankController.text.isNotEmpty ? _namaBankController.text : 'Bank Aktif') : 'Perlu diisi',
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
 
@@ -693,35 +698,6 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                   ),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String val, String label, String sub, IconData icon, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
-                Icon(icon, size: 16, color: color),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(val, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-            const SizedBox(height: 1),
-            Text(sub, style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),

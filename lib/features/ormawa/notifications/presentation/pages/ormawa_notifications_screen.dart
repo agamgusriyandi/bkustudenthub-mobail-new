@@ -1,48 +1,32 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_notification.dart';
-import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:go_router/go_router.dart';
 
 class OrmawaNotificationsScreen extends StatefulWidget {
-  const OrmawaNotificationsScreen({super.key});
+  final bool showBackButton;
+  const OrmawaNotificationsScreen({super.key, this.showBackButton = true});
 
   @override
-  State<OrmawaNotificationsScreen> createState() =>
-      _OrmawaNotificationsScreenState();
+  State<OrmawaNotificationsScreen> createState() => _OrmawaNotificationsScreenState();
 }
 
-class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  int _selectedTabIndex = 0;
-
-  final List<String> _tabs = ['Semua', 'Agenda', 'LPJ', 'Pengumuman'];
+class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen> {
+  String _activeTab = 'all';
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-    _tabController.addListener(_onTabChanged);
     _loadNotifications();
-  }
-
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) return;
-    setState(() {
-      _selectedTabIndex = _tabController.index;
-    });
   }
 
   Future<void> _loadNotifications() async {
@@ -52,46 +36,31 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
   Future<void> _markAllAsRead() async {
     await context.read<OrmawaProvider>().markAllAsRead();
     if (mounted) {
-      AppSnackbar.showSuccess(
-        context,
-        'Semua notifikasi ditandai sebagai dibaca',
-      );
+      AppSnackbar.showSuccess(context, 'Semua notifikasi ditandai sebagai dibaca');
     }
   }
 
-  List<OrmawaNotification> _getFilteredNotifications(
-    List<OrmawaNotification> all,
-  ) {
+  List<OrmawaNotification> _getFilteredNotifications(List<OrmawaNotification> all) {
     final sorted = List<OrmawaNotification>.from(all)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    if (_selectedTabIndex == 0) return sorted;
-
-    final typeMap = {1: 'agenda', 2: 'lpj', 3: 'pengumuman'};
-
-    final type = typeMap[_selectedTabIndex];
-    if (type == null) return sorted;
+    if (_activeTab == 'all') return sorted;
 
     return sorted.where((n) {
       final t = n.type.toLowerCase();
       final title = n.title.toLowerCase();
-      if (type == 'agenda') {
-        return t == 'agenda' ||
-            title.contains('agenda') ||
-            title.contains('kegiatan');
+      if (_activeTab == 'agenda') {
+        return t == 'agenda' || title.contains('agenda') || title.contains('kegiatan');
       }
-      if (type == 'lpj') return t == 'lpj' || title.contains('lpj');
-      if (type == 'pengumuman') {
-        return t == 'announcement' ||
-            t == 'pengumuman' ||
-            title.contains('pengumuman');
+      if (_activeTab == 'lpj') return t == 'lpj' || title.contains('lpj');
+      if (_activeTab == 'pengumuman') {
+        return t == 'announcement' || t == 'pengumuman' || title.contains('pengumuman');
       }
       return false;
     }).toList();
   }
 
   IconData _getNotificationIcon(String type, String title) {
-    final typeLower = type.toLowerCase();
     final titleLower = title.toLowerCase();
 
     if (titleLower.contains('setuju') || titleLower.contains('lulus')) {
@@ -100,23 +69,10 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
     if (titleLower.contains('tolak') || titleLower.contains('gagal')) {
       return Icons.cancel_rounded;
     }
-    if (typeLower == 'proposal' || titleLower.contains('proposal')) {
-      return Icons.description_rounded;
-    }
-    if (typeLower == 'finance' ||
-        titleLower.contains('kas') ||
-        titleLower.contains('uang')) {
-      return Icons.account_balance_wallet_rounded;
-    }
-    if (typeLower == 'aspiration' || titleLower.contains('aspirasi')) {
-      return Icons.forum_rounded;
-    }
-    if (titleLower.contains('anggota') || titleLower.contains('daftar')) {
-      return Icons.person_add_rounded;
-    }
-    if (titleLower.contains('agenda') || titleLower.contains('kegiatan')) {
-      return Icons.event_available_rounded;
-    }
+    if (titleLower.contains('proposal')) return Icons.description_rounded;
+    if (titleLower.contains('kas') || titleLower.contains('uang')) return Icons.account_balance_wallet_rounded;
+    if (titleLower.contains('aspirasi')) return Icons.chat_bubble_outline_rounded;
+    if (titleLower.contains('agenda') || titleLower.contains('kegiatan')) return Icons.event_available_rounded;
     if (titleLower.contains('lpj')) return Icons.assignment_turned_in_rounded;
     if (titleLower.contains('pengumuman')) return Icons.campaign_rounded;
 
@@ -124,36 +80,22 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
   }
 
   Color _getNotificationColor(String type, String title) {
-    final typeLower = type.toLowerCase();
     final titleLower = title.toLowerCase();
 
     if (titleLower.contains('setuju') || titleLower.contains('lulus')) {
-      return AppColors.success;
+      return const Color(0xFF059669);
     }
     if (titleLower.contains('tolak') || titleLower.contains('gagal')) {
-      return AppColors.error;
+      return const Color(0xFFE11D48);
     }
-    if (typeLower == 'proposal' || titleLower.contains('proposal')) {
-      return AppColors.info;
-    }
-    if (typeLower == 'finance' || titleLower.contains('kas')) {
-      return context.appColors.success;
-    }
-    if (typeLower == 'aspiration' || titleLower.contains('aspirasi')) {
-      return context.appColors.warning;
-    }
-    if (titleLower.contains('anggota')) {
-      return context.appColors.info;
-    }
-    if (titleLower.contains('agenda') || titleLower.contains('kegiatan')) {
-      return context.appColors.info;
-    }
-    if (titleLower.contains('lpj')) return context.appColors.info;
-    if (titleLower.contains('pengumuman')) {
-      return AppColors.warning;
-    }
+    if (titleLower.contains('proposal')) return const Color(0xFF0284C7);
+    if (titleLower.contains('kas')) return const Color(0xFF059669);
+    if (titleLower.contains('aspirasi')) return const Color(0xFFD97706);
+    if (titleLower.contains('agenda') || titleLower.contains('kegiatan')) return const Color(0xFF0284C7);
+    if (titleLower.contains('lpj')) return const Color(0xFF0284C7);
+    if (titleLower.contains('pengumuman')) return const Color(0xFFD97706);
 
-    return AppColors.primary;
+    return OrmawaTheme.primary;
   }
 
   String _formatTime(DateTime date) {
@@ -167,31 +109,124 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
     return DateFormat('dd MMM yyyy', 'id').format(date);
   }
 
-  @override
-  void dispose() {
-    _tabController.removeListener(_onTabChanged);
-    _tabController.dispose();
-    super.dispose();
+  void _showNotificationDetail(OrmawaNotification notification) {
+    context.read<OrmawaProvider>().markAsRead(notification.id);
+    final color = _getNotificationColor(notification.type, notification.title);
+    final icon = _getNotificationIcon(notification.type, notification.title);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(20),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color, size: 22),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: OrmawaTheme.textHeading,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        _formatTime(notification.createdAt),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: OrmawaTheme.textMuted,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              notification.message,
+              style: TextStyle(
+                fontSize: 12.5,
+                color: OrmawaTheme.textBody,
+                height: 1.5,
+              ),
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: OrmawaTheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: _loadNotifications,
-        color: context.appColors.primary,
+        color: OrmawaTheme.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
           ),
           slivers: [
             BkuAppBar(
               title: 'Notifikasi',
-              subtitle: 'Informasi Terbaru',
+              subtitle: 'Informasi & Pembaruan Sistem',
               variant: AppBarVariant.ormawa,
-              showBackButton: true,
+              showBackButton: widget.showBackButton,
               showNotification: false,
+              expandedHeight: 125.0,
               isExpandable: false,
               actions: [
                 IconButton(
@@ -206,132 +241,79 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
               ],
             ),
             SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTabBar(),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildNotificationList(),
-                  const SizedBox(height: AppSpacing.s100),
-                ],
+              child: Consumer<OrmawaProvider>(
+                builder: (context, provider, _) {
+                  final notifications = provider.notifications;
+                  final totalCount = notifications.length;
+                  final agendaCount = notifications.where((n) {
+                    final t = n.type.toLowerCase();
+                    final title = n.title.toLowerCase();
+                    return t == 'agenda' || title.contains('agenda') || title.contains('kegiatan');
+                  }).length;
+                  final lpjCount = notifications.where((n) {
+                    final t = n.type.toLowerCase();
+                    final title = n.title.toLowerCase();
+                    return t == 'lpj' || title.contains('lpj');
+                  }).length;
+                  final pengumumanCount = notifications.where((n) {
+                    final t = n.type.toLowerCase();
+                    final title = n.title.toLowerCase();
+                    return t == 'announcement' || t == 'pengumuman' || title.contains('pengumuman');
+                  }).length;
+
+                  final filtered = _getFilteredNotifications(notifications);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        OrmawaFilterTabs(
+                          tabs: [
+                            OrmawaTabItem(key: 'all', label: 'Semua', count: totalCount),
+                            OrmawaTabItem(key: 'agenda', label: 'Agenda', count: agendaCount),
+                            OrmawaTabItem(key: 'lpj', label: 'LPJ', count: lpjCount),
+                            OrmawaTabItem(key: 'pengumuman', label: 'Pengumuman', count: pengumumanCount),
+                          ],
+                          activeKey: _activeTab,
+                          onTabChanged: (val) => setState(() => _activeTab = val),
+                        ),
+                        const SizedBox(height: 14),
+                        if (provider.isLoading && notifications.isEmpty)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
+                            child: BkuShimmerList(itemCount: 5, itemHeight: 80),
+                          )
+                        else if (filtered.isEmpty)
+                          const OrmawaEmptyCard(
+                            title: 'Belum Ada Notifikasi',
+                            description: 'Notifikasi terbaru mengenai kegiatan, proposal, dan pengumuman akan muncul di sini.',
+                            icon: Icons.notifications_none_rounded,
+                          )
+                        else
+                          ListView.separated(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: filtered.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 10),
+                            itemBuilder: (context, index) {
+                              final notification = filtered[index];
+                              return _buildNotificationCard(notification);
+                            },
+                          ),
+                        const SizedBox(height: AppSpacing.s140),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      physics: const BouncingScrollPhysics(),
-      child: Row(
-        children: List.generate(_tabs.length, (index) {
-          final isSelected = _selectedTabIndex == index;
-          return GestureDetector(
-            onTap: () {
-              _tabController.animateTo(index);
-              setState(() {
-                _selectedTabIndex = index;
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: AppSpacing.sm),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? context.appColors.primary
-                        : context.appColors.surface,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color:
-                      isSelected
-                          ? context.appColors.primary
-                          : AppColors.neutral300,
-                ),
-              ),
-              child: Text(
-                _tabs[index],
-                style: TextStyle(
-                  color: isSelected ? Colors.white : AppColors.neutral700,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildNotificationList() {
-    return Consumer<OrmawaProvider>(
-      builder: (context, provider, child) {
-        if (provider.isLoading && provider.notifications.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.xl,
-            ),
-            child: BkuShimmerList(itemCount: 5, itemHeight: 80),
-          );
-        }
-
-        final filteredNotifications = _getFilteredNotifications(
-          provider.notifications,
-        );
-
-        if (filteredNotifications.isEmpty) {
-          return _buildEmptyState();
-        }
-
-        return ListView.builder(
-          shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: filteredNotifications.length,
-          itemBuilder: (context, index) {
-            final notification = filteredNotifications[index];
-            return _buildNotificationCard(notification);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xxxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.notifications_none_rounded,
-            size: 56,
-            color: AppColors.neutral400,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Belum ada notifikasi',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Notifikasi akan muncul di sini',
-            style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral400),
-          ),
-        ],
       ),
     );
   }
@@ -345,15 +327,14 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: AppSpacing.s20),
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
-          color: AppColors.error.withAlpha(20),
-          borderRadius: AppRadius.radiusLg,
+          color: const Color(0xFFFEE2E2),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: const Icon(
           Icons.delete_outline_rounded,
-          color: AppColors.error,
+          color: Color(0xFFDC2626),
           size: 22,
         ),
       ),
@@ -361,212 +342,78 @@ class _OrmawaNotificationsScreenState extends State<OrmawaNotificationsScreen>
         context.read<OrmawaProvider>().removeNotification(notification.id);
         AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
       },
-      child: GestureDetector(
+      child: OrmawaCard(
         onTap: () => _showNotificationDetail(notification),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: AppSpacing.md),
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: notification.isRead ? context.appColors.surface : color.withAlpha(8),
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(
-              color:
-                  notification.isRead
-                      ? AppColors.neutral200
-                      : color.withAlpha(40),
-              width: 1.0,
+        color: notification.isRead ? Colors.white : color.withAlpha(8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: color.withAlpha(20),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color, size: 20),
             ),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(20),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      notification.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12.5,
-                        color: context.appColors.onSurface,
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          notification.title,
+                          style: TextStyle(
+                            fontWeight: notification.isRead ? FontWeight.bold : FontWeight.w900,
+                            fontSize: 13,
+                            color: OrmawaTheme.textHeading,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      if (!notification.isRead)
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 3),
+                  Text(
+                    notification.message,
+                    style: TextStyle(
+                      color: OrmawaTheme.textBody,
+                      fontSize: 11,
+                      height: 1.35,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      notification.message,
-                      style: const TextStyle(
-                        color: AppColors.neutral600,
-                        fontSize: 11,
-                        height: 1.35,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    _formatTime(notification.createdAt),
+                    style: TextStyle(
+                      color: OrmawaTheme.textPlaceholder,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      _formatTime(notification.createdAt),
-                      style: const TextStyle(
-                        color: AppColors.neutral500,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.delete_outline_rounded,
-                  size: 18,
-                  color: AppColors.neutral400,
-                ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  context.read<OrmawaProvider>().removeNotification(notification.id);
-                  AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
-                },
-                tooltip: 'Hapus',
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  void _showNotificationDetail(OrmawaNotification notification) {
-    final color = _getNotificationColor(notification.type, notification.title);
-    final icon = _getNotificationIcon(notification.type, notification.title);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral300,
-                      borderRadius: AppRadius.radiusXs,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Row(
-                  children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: color.withAlpha(20),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(icon, color: color, size: 22),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            notification.title,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            _formatTime(notification.createdAt),
-                            style: const TextStyle(
-                              color: AppColors.neutral500,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete_outline_rounded,
-                        color: AppColors.error,
-                      ),
-                      onPressed: () {
-                        context.read<OrmawaProvider>().removeNotification(notification.id);
-                        Navigator.pop(context);
-                        AppSnackbar.showSuccess(context, 'Notifikasi berhasil dihapus');
-                      },
-                      tooltip: 'Hapus Notifikasi',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      notification.message,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                SizedBox(
-                  width: double.infinity,
-                  child: BkuButton.primary(
-                    onPressed: () {
-                      context.pop();
-                      final t = notification.type.toLowerCase();
-                      if (t.contains('proposal')) {
-                        context.push(AppRoutes.ormawaProposal);
-                      } else if (t.contains('recruitment') ||
-                          t.contains('rekrutmen') ||
-                          t.contains('anggota')) {
-                        context.push(AppRoutes.ormawaRecruitment);
-                      } else if (t.contains('aspirasi')) {
-                        context.push(AppRoutes.ormawaAspirasi);
-                      } else if (t.contains('pengumuman')) {
-                        context.push(AppRoutes.ormawaPengumuman);
-                      }
-                    },
-                    text: 'Tutup & Lihat Detail',
-                  ),
-                ),
-              ],
-            ),
-          ),
-    );
-
-    if (!notification.isRead) {
-      context.read<OrmawaProvider>().markAsRead(notification.id);
-    }
   }
 }

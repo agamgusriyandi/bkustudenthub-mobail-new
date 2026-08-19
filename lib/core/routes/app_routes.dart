@@ -13,6 +13,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/o
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/psychologist_main_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/student_counseling_screen.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/session_note_screen.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/pages/counseling_booking_screen.dart';
@@ -1166,14 +1167,14 @@ class AppRoutes {
       GoRoute(
         path: ormawaPengumumanDetail,
         builder: (context, state) {
-          final announcement = state.extra;
+          final announcement = state.extra as OrmawaAnnouncement;
           return OrmawaPengumumanDetailScreen(announcement: announcement);
         },
       ),
       GoRoute(
         path: ormawaPengumumanEdit,
         builder: (context, state) {
-          final announcement = state.extra;
+          final announcement = state.extra as OrmawaAnnouncement;
           return EditPengumumanScreen(announcement: announcement);
         },
       ),

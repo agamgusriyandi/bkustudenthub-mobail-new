@@ -1,27 +1,20 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import '../../../../../core/theme/app_text_styles.dart';
-import '../../../../../core/widgets/bku_design/bku_app_bar.dart';
-import '../../../../../core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:go_router/go_router.dart';
 
 class CreateTransactionScreen extends StatefulWidget {
   const CreateTransactionScreen({super.key});
 
   @override
-  State<CreateTransactionScreen> createState() =>
-      _CreateTransactionScreenState();
+  State<CreateTransactionScreen> createState() => _CreateTransactionScreenState();
 }
 
 class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
@@ -30,7 +23,7 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   String _selectedType = 'pemasukan';
   String _selectedSource = 'organisasi';
   String _selectedCategory = 'Lainnya';
-  final bool _isSubmitting = false;
+  bool _isSubmitting = false;
 
   final List<String> _categories = [
     'Iuran Anggota',
@@ -43,313 +36,273 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.appColors.surface,
-      appBar: const BkuStaticAppBar(
-        title: 'Catat Transaksi',
-        variant: AppBarVariant.ormawa,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLabel('JENIS TRANSAKSI'),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                _buildTypeCard(
-                  'PEMASUKAN',
-                  'pemasukan',
-                  Icons.arrow_downward_rounded,
-                  AppColors.success,
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                _buildTypeCard(
-                  'PENGELUARAN',
-                  'pengeluaran',
-                  Icons.arrow_upward_rounded,
-                  AppColors.error,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('SUMBER DANA'),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                _buildSourceCard(
-                  'KAS MANDIRI',
-                  'organisasi',
-                  Icons.payments_rounded,
-                  AppColors.success,
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                _buildSourceCard(
-                  'PAGU KAMPUS',
-                  'kampus',
-                  Icons.assured_workload_rounded,
-                  context.appColors.info,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('DESKRIPSI / KETERANGAN'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-              controller: _descriptionController,
-              hint: 'Contoh: Iuran Kas Bulan Mei',
-              icon: Icons.edit_note_rounded,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('NOMINAL (RP)'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(
-              controller: _amountController,
-              hint: '0',
-              icon: Icons.payments_rounded,
-              isNumber: true,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('KATEGORI'),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: AppColors.neutral100,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(color: AppColors.neutral300),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: BkuDropdown<String>(
-                  value: _selectedCategory,
-                  isExpanded: true,
-                  items:
-                      _categories
-                          .map(
-                            (c) => DropdownMenuItem(value: c, child: Text(c)),
-                          )
-                          .toList(),
-                  onChanged: (val) => setState(() => _selectedCategory = val!),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.s48),
-
-            BkuButton.primary(
-              text: 'SIMPAN TRANSAKSI',
-              onPressed: _isSubmitting ? null : _handleSubmit,
-              isLoading: _isSubmitting,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppTextStyles.labelSm.copyWith(
-        color: AppColors.neutral600,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1,
-        fontSize: 10,
-      ),
-    );
-  }
-
-  Widget _buildTypeCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    final isSelected = _selectedType == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedType = value),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: isSelected ? color.withAlpha(15) : context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(
-              color: isSelected ? color : AppColors.neutral300,
-              width: 2,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: isSelected ? color : AppColors.neutral400, size: 24),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                label,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: isSelected ? color : AppColors.neutral400,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSourceCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    final isSelected = _selectedSource == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedSource = value),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: isSelected ? color.withAlpha(15) : context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
-            border: Border.all(
-              color: isSelected ? color : AppColors.neutral300,
-              width: 2,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: isSelected ? color : AppColors.neutral400, size: 24),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                label,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: isSelected ? color : AppColors.neutral400,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    bool isNumber = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: BkuTextField(
-        controller: controller,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        inputFormatters: isNumber ? [ThousandsSeparatorInputFormatter()] : null,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixText: isNumber ? 'Rp ' : null,
-          prefixStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: context.appColors.onSurface,
-          ),
-          prefixIcon: Icon(
-            icon,
-            color: context.appColors.primary,
-            size: 20,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.lg,
-          ),
-        ),
-      ),
-    );
+  void dispose() {
+    _descriptionController.dispose();
+    _amountController.dispose();
+    super.dispose();
   }
 
   void _handleSubmit() async {
-    if (_descriptionController.text.isEmpty || _amountController.text.isEmpty) {
-      AppSnackbar.showWarning(context, 'Harap isi semua field');
+    final desc = _descriptionController.text.trim();
+    final rawAmount = _amountController.text.replaceAll('.', '').replaceAll(',', '').trim();
+    final amount = double.tryParse(rawAmount);
+
+    if (desc.isEmpty) {
+      AppSnackbar.showWarning(context, 'Deskripsi transaksi wajib diisi');
       return;
     }
 
+    if (amount == null || amount <= 0) {
+      AppSnackbar.showWarning(context, 'Nominal transaksi harus lebih dari 0');
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
     BkuLoadingDialog.show(context);
 
     try {
-      final data = {
-        'type': _selectedType,
-        'nominal': double.parse(_amountController.text.replaceAll('.', '')),
-        'category': _selectedCategory,
-        'description': _descriptionController.text,
-        'sumber': _selectedSource,
-        'date': DateTime.now().toIso8601String(),
+      final payload = {
+        'Tipe': _selectedType,
+        'SumberDana': _selectedSource,
+        'Deskripsi': desc,
+        'Nominal': amount,
+        'Kategori': _selectedCategory,
+        'Tanggal': DateTime.now().toIso8601String(),
       };
 
-      await context.read<OrmawaProvider>().addFinance(data);
+      await context.read<OrmawaProvider>().addFinance(payload);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        BkuDialog.show(
-          context: context,
-          type: BkuDialogType.success,
-          title: 'Transaksi Disimpan!',
-          message: 'Data transaksi keuangan berhasil ditambahkan.',
-          primaryButtonText: 'Kembali',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Transaksi berhasil dicatat');
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+        setState(() => _isSubmitting = false);
+        AppSnackbar.showError(context, 'Gagal mencatat transaksi');
       }
     }
   }
-}
 
-class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.text.isEmpty) {
-      return newValue.copyWith(text: '');
-    }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      body: CustomScrollView(
+        slivers: [
+          const BkuAppBar(
+            title: 'Catat Transaksi',
+            subtitle: 'Buku Kas & Keuangan',
+            variant: AppBarVariant.ormawa,
+            expandedHeight: 125.0,
+            showBackButton: true,
+            isExpandable: false,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'JENIS TRANSAKSI',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: OrmawaTheme.textMuted,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            _buildTypeCard(
+                              'Pemasukan',
+                              'pemasukan',
+                              Icons.arrow_downward_rounded,
+                              OrmawaTheme.statusSuccessText,
+                              OrmawaTheme.statusSuccessBg,
+                            ),
+                            SizedBox(width: 8),
+                            _buildTypeCard(
+                              'Pengeluaran',
+                              'pengeluaran',
+                              Icons.arrow_upward_rounded,
+                              OrmawaTheme.statusDangerText,
+                              OrmawaTheme.statusDangerBg,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'SUMBER DANA',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: OrmawaTheme.textMuted,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            _buildSourceCard('Kas Mandiri', 'organisasi', Icons.account_balance_wallet_outlined),
+                            const SizedBox(width: 8),
+                            _buildSourceCard('Pagu Kampus', 'kampus', Icons.assured_workload_outlined),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        OrmawaTextField(
+                          label: 'Deskripsi / Keterangan *',
+                          hintText: 'Contoh: Iuran Kas Bulan Mei',
+                          controller: _descriptionController,
+                          prefixIcon: Icons.edit_note_rounded,
+                        ),
+                        const SizedBox(height: 14),
+                        OrmawaTextField(
+                          label: 'Nominal (Rp) *',
+                          hintText: '0',
+                          controller: _amountController,
+                          prefixIcon: Icons.payments_outlined,
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          'Kategori Transaksi',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: OrmawaTheme.textHeading,
+                          ),
+                        ),
+                        SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: OrmawaTheme.border),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedCategory,
+                              isExpanded: true,
+                              icon: Icon(Icons.keyboard_arrow_down_rounded, color: OrmawaTheme.primary),
+                              items: _categories.map((c) {
+                                return DropdownMenuItem(
+                                  value: c,
+                                  child: Text(
+                                    c,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: OrmawaTheme.textHeading,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (val) => setState(() => _selectedCategory = val!),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: OrmawaButton(
+                            text: 'SIMPAN TRANSAKSI',
+                            isLoading: _isSubmitting,
+                            onPressed: _isSubmitting ? null : _handleSubmit,
+                            icon: Icons.check_circle_outline_rounded,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s100),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    // Only allow digits
-    String cleanedText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    if (cleanedText.isEmpty) {
-      return newValue.copyWith(text: '');
-    }
+  Widget _buildTypeCard(String label, String value, IconData icon, Color color, Color bg) {
+    final isSelected = _selectedType == value;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedType = value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? bg : const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? color : const Color(0xFFE2E8F0),
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 18, color: isSelected ? color : OrmawaTheme.textMuted),
+              SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? color : OrmawaTheme.textHeading,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-    // Format with dot separator
-    final buffer = StringBuffer();
-    for (int i = 0; i < cleanedText.length; i++) {
-      if (i > 0 && (cleanedText.length - i) % 3 == 0) {
-        buffer.write('.');
-      }
-      buffer.write(cleanedText[i]);
-    }
-
-    final newText = buffer.toString();
-    return newValue.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
+  Widget _buildSourceCard(String label, String value, IconData icon) {
+    final isSelected = _selectedSource == value;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedSource = value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? OrmawaTheme.primarySoft : const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? OrmawaTheme.primary : const Color(0xFFE2E8F0),
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 18, color: isSelected ? OrmawaTheme.primary : OrmawaTheme.textMuted),
+              SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? OrmawaTheme.primaryDark : OrmawaTheme.textHeading,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

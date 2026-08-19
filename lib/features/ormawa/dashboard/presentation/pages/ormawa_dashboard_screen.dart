@@ -1,33 +1,24 @@
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
-import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-
-// Unified Core Widgets
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-
-// Modular Widgets
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_quick_stats.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_gamification_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_service_grid.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_proposal_list.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/widgets/ormawa_recent_members.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class OrmawaDashboardScreen extends StatefulWidget {
   const OrmawaDashboardScreen({super.key});
@@ -50,15 +41,14 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
     return Scaffold(
-      backgroundColor: themeProvider.background,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () async {
           await context.read<OrmawaProvider>().refreshData();
         },
-        color: context.appColors.primary,
-        backgroundColor: context.appColors.surface,
+        color: OrmawaTheme.primary,
+        backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: ClampingScrollPhysics(
@@ -85,40 +75,35 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
               expandedHeight: 140.0,
               showProfileOnCollapse: true,
               profileImage:
-                  context.watch<OrmawaProvider>().currentMember?.fotoUrl !=
-                              null &&
+                  context.watch<OrmawaProvider>().currentMember?.fotoUrl != null &&
                           context
                               .watch<OrmawaProvider>()
                               .currentMember!
                               .fotoUrl!
                               .isNotEmpty
-                      ? CachedNetworkImage(imageUrl: 
-                        ApiGate.getImageUrl(
-                          context
-                              .watch<OrmawaProvider>()
-                              .currentMember!
-                              .fotoUrl!,
+                      ? CachedNetworkImage(
+                          imageUrl: ApiGate.getImageUrl(
+                            context.watch<OrmawaProvider>().currentMember!.fotoUrl!,
+                          ),
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorWidget: (context, url, error) {
+                            return const Icon(
+                              Icons.groups_rounded,
+                              color: Colors.white,
+                              size: 28,
+                            );
+                          },
+                          placeholder: (context, url) => Container(color: const Color(0xFFF1F5F9)),
+                        )
+                      : const Icon(
+                          Icons.groups_rounded,
+                          color: Colors.white,
+                          size: 28,
                         ),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        errorWidget: (context, url, error) {
-                          return Icon(
-                            Icons.groups_rounded,
-                            color: context.appColors.onPrimary,
-                            size: 28,
-                          );
-                        },
-                        placeholder: (context, url) => Container(color: AppColors.neutral200),
-                      )
-                      : Icon(
-                        Icons.groups_rounded,
-                        color: context.appColors.onPrimary,
-                        size: 28,
-                      ),
               isExpandable: true,
-              notificationCount:
-                  context.watch<OrmawaProvider>().unreadNotificationsCount,
+              notificationCount: context.watch<OrmawaProvider>().unreadNotificationsCount,
               bottomChild: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -131,7 +116,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(40),
-                        borderRadius: BorderRadius.circular(AppRadius.radius20),
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: Colors.white.withAlpha(60),
                           width: 0.8,
@@ -166,7 +151,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(30),
-                        borderRadius: BorderRadius.circular(AppRadius.radius20),
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: Colors.white.withAlpha(50),
                           width: 0.8,
@@ -208,7 +193,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha(30),
-                          borderRadius: BorderRadius.circular(AppRadius.radius20),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: Colors.white.withAlpha(50),
                             width: 0.8,
@@ -238,7 +223,7 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                   ],
                 ),
               ),
-              actions: [],
+              actions: const [],
             ),
             SliverToBoxAdapter(
               child: Column(
@@ -291,20 +276,22 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
                     ),
-                    child:
-                        context.watch<OrmawaProvider>().isLoading
-                            ? const BkuShimmerList(itemCount: 2, itemHeight: 80)
-                            : context.watch<OrmawaProvider>().agendas.isEmpty
-                            ? _buildEmptyState('Belum ada agenda terdekat')
+                    child: context.watch<OrmawaProvider>().isLoading
+                        ? const BkuShimmerList(itemCount: 2, itemHeight: 80)
+                        : context.watch<OrmawaProvider>().agendas.isEmpty
+                            ? const OrmawaEmptyCard(
+                                title: 'Belum Ada Agenda Terdekat',
+                                description: 'Agenda kegiatan mendatang akan ditampilkan di sini.',
+                                icon: Icons.event_note_outlined,
+                              )
                             : Column(
-                              children:
-                                  context
-                                      .watch<OrmawaProvider>()
-                                      .agendas
-                                      .take(2)
-                                      .map((agenda) => _buildAgendaCard(agenda))
-                                      .toList(),
-                            ),
+                                children: context
+                                    .watch<OrmawaProvider>()
+                                    .agendas
+                                    .take(2)
+                                    .map((agenda) => _buildAgendaCard(agenda))
+                                    .toList(),
+                              ),
                   ),
                   const SizedBox(height: AppSpacing.s18),
                   const OrmawaRecentMembers(),
@@ -319,109 +306,87 @@ class _OrmawaDashboardScreenState extends State<OrmawaDashboardScreen> {
   }
 
   Widget _buildAgendaCard(OrmawaAgenda agenda) {
-    return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      borderRadius: AppRadius.lg,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      onTap: () {
-        context.push(AppRoutes.ormawaAgendaDetail, extra: agenda);
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.serviceAmber.withAlpha(20),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.event_outlined,
-              color: AppColors.serviceAmber,
-              size: 18,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  agenda.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: context.appColors.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${DateFormat('dd MMM', 'id').format(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: context.appColors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          BkuStatusBadge(
-            status: _getAgendaStatus(agenda.status),
-            customText: agenda.status.toUpperCase(),
-            showIcon: false,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 3,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    final statusLower = agenda.status.toLowerCase();
+    Color badgeBg = OrmawaTheme.statusInfoBg;
+    Color badgeText = OrmawaTheme.statusInfoText;
 
-  Widget _buildEmptyState(String message) {
-    return BkuCard(
-      child: Column(
-        children: [
-          Icon(
-            Icons.event_note_rounded,
-            color: context.appColors.outlineVariant,
-            size: 40,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            message,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: context.appColors.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  BkuStatus _getAgendaStatus(String status) {
-    switch (status.toLowerCase()) {
-      case 'aktif':
-      case 'berlangsung':
-      case 'ongoing':
-        return BkuStatus.active;
-      case 'selesai':
-      case 'completed':
-        return BkuStatus.success;
-      case 'batal':
-      case 'dibatalkan':
-      case 'cancelled':
-        return BkuStatus.error;
-      case 'menunggu':
-      case 'pending':
-        return BkuStatus.pending;
-      default:
-        return BkuStatus.info;
+    if (statusLower == 'selesai' || statusLower == 'completed') {
+      badgeBg = OrmawaTheme.statusSuccessBg;
+      badgeText = OrmawaTheme.statusSuccessText;
+    } else if (statusLower == 'batal' || statusLower == 'cancelled') {
+      badgeBg = OrmawaTheme.statusDangerBg;
+      badgeText = OrmawaTheme.statusDangerText;
+    } else if (statusLower == 'aktif' || statusLower == 'ongoing' || statusLower == 'berlangsung') {
+      badgeBg = OrmawaTheme.statusSuccessBg;
+      badgeText = OrmawaTheme.statusSuccessText;
     }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: OrmawaCard(
+        onTap: () {
+          context.push(AppRoutes.ormawaAgendaDetail, extra: agenda);
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: OrmawaTheme.primarySoft,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.event_outlined,
+                color: OrmawaTheme.primary,
+                size: 19,
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    agenda.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: OrmawaTheme.textHeading,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    '${DateFormat('dd MMM yyyy', 'id').format(agenda.date)} • ${DateFormat('HH:mm').format(agenda.date)} - ${DateFormat('HH:mm').format(agenda.endDate)}',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: OrmawaTheme.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+              decoration: BoxDecoration(
+                color: badgeBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                agenda.status.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w900,
+                  color: badgeText,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

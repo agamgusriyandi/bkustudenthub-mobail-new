@@ -1,12 +1,13 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaIuranScreen extends StatefulWidget {
   const OrmawaIuranScreen({super.key});
@@ -27,22 +28,29 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+        color: OrmawaTheme.primary,
+        backgroundColor: Colors.white,
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: ClampingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+          ),
           slivers: [
-            BkuAppBar(
+            const BkuAppBar(
               title: 'Iuran Anggota',
-              subtitle: 'Rekap Pembayaran Iuran',
+              subtitle: 'Rekap Pembayaran Kas',
               variant: AppBarVariant.ormawa,
-              expandedHeight: 130.0,
+              expandedHeight: 125.0,
               showBackButton: true,
               isExpandable: false,
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
                 child: Consumer<OrmawaProvider>(
                   builder: (context, provider, _) {
                     final members = provider.members;
@@ -61,143 +69,133 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          decoration: BoxDecoration(
-                            color: context.appColors.surface,
-                            borderRadius: AppRadius.radiusXl,
-                            border: Border.all(color: AppColors.neutral200),
-                            boxShadow: [
-                              BoxShadow(
-                                color: context.appColors.onSurface.withAlpha(12),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.payments_rounded,
-                                      color:
-                                          context.appColors.primary,
-                                      size: 20),
-                                  const SizedBox(width: AppSpacing.sm),
-                                  Text(
-                                    'RINGKASAN IURAN',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: AppColors.neutral600,
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: 1.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppSpacing.lg),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildSummaryItem(
-                                      activeMembers.toString(), 'Anggota Aktif'),
-                                  _buildSummaryItem(
-                                      iuranTransactions.length.toString(),
-                                      'Transaksi Iuran'),
-                                  _buildSummaryItem(
-                                      'Rp ${(totalIuran / 1000).toStringAsFixed(0)}K',
-                                      'Total Terkumpul'),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Text(
-                          'RIWAYAT IURAN',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral500,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
-                            fontSize: 10,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        if (iuranTransactions.isEmpty)
-                          Center(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.all(AppSpacing.xxxl),
-                              child: Column(
-                                children: [
-                                  Icon(Icons.payments_outlined,
-                                      size: 48,
-                                      color:
-                                          AppColors.neutral500.withAlpha(50)),
-                                  const SizedBox(height: AppSpacing.lg),
-                                  Text('Belum ada iuran tercatat',
-                                      style: AppTextStyles.labelMd.copyWith(
-                                          color: AppColors.neutral500)),
-                                ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OrmawaKpiCard(
+                                title: 'Anggota Aktif',
+                                value: '$activeMembers',
+                                badgeText: 'Member',
+                                icon: Icons.groups_rounded,
+                                badgeColor: OrmawaTheme.statusInfoText,
+                                subtitle: 'Wajib iuran',
                               ),
                             ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: OrmawaKpiCard(
+                                title: 'Transaksi',
+                                value: '${iuranTransactions.length}',
+                                badgeText: 'Log',
+                                icon: Icons.receipt_rounded,
+                                badgeColor: OrmawaTheme.statusSuccessText,
+                                subtitle: 'Pembayaran kas',
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        OrmawaKpiCard(
+                          title: 'Total Iuran Terkumpul',
+                          value: NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(totalIuran),
+                          badgeText: 'Kas Masuk',
+                          icon: Icons.payments_rounded,
+                          badgeColor: OrmawaTheme.statusSuccessText,
+                          subtitle: 'Saldo iuran terakumulasi',
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Container(
+                              width: 3.5,
+                              height: 13,
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: OrmawaTheme.primary,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            Text(
+                              'Riwayat Pembayaran Iuran',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w900,
+                                color: OrmawaTheme.textHeading,
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        if (iuranTransactions.isEmpty)
+                          const OrmawaEmptyCard(
+                            title: 'Belum Ada Iuran Tercatat',
+                            description: 'Riwayat pembayaran iuran anggota akan muncul di sini.',
+                            icon: Icons.payments_outlined,
                           )
                         else
-                          ...iuranTransactions.map(
-                            (t) => Container(
-                              margin:
-                                  const EdgeInsets.only(bottom: AppSpacing.md),
-                              padding: const EdgeInsets.all(AppSpacing.lg),
-                              decoration: BoxDecoration(
-                                color: context.appColors.surface,
-                                borderRadius: AppRadius.radiusLg,
-                                border: Border.all(color: AppColors.neutral200),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(AppSpacing.sm),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.success.withAlpha(10),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
+                          ListView.separated(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: iuranTransactions.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 10),
+                            itemBuilder: (context, index) {
+                              final t = iuranTransactions[index];
+                              return OrmawaCard(
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 38,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        color: OrmawaTheme.statusSuccessBg,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(
                                         Icons.check_circle_rounded,
-                                        color: AppColors.success,
-                                        size: 18),
-                                  ),
-                                  const SizedBox(width: AppSpacing.lg),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(t.description,
-                                            style: AppTextStyles.bodyMd.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13)),
-                                        Text(
-                                          t.category,
-                                          style: AppTextStyles.labelSm.copyWith(
-                                              color: AppColors.neutral500,
-                                              fontSize: 11),
-                                        ),
-                                      ],
+                                        color: OrmawaTheme.statusSuccessText,
+                                        size: 18,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '+ Rp ${t.nominal.toStringAsFixed(0)}',
-                                    style: AppTextStyles.bodyMd.copyWith(
-                                      color: AppColors.success,
-                                      fontWeight: FontWeight.w900,
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            t.description,
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: OrmawaTheme.textHeading,
+                                            ),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            '${t.category} • ${DateFormat('dd MMM yyyy', 'id').format(t.date)}',
+                                            style: TextStyle(
+                                              fontSize: 10.5,
+                                              color: OrmawaTheme.textMuted,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    Text(
+                                      '+ ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(t.nominal)}',
+                                      style: TextStyle(
+                                        color: OrmawaTheme.statusSuccessText,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 12.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
+                        const SizedBox(height: AppSpacing.s100),
                       ],
                     );
                   },
@@ -206,27 +204,6 @@ class _OrmawaIuranScreenState extends State<OrmawaIuranScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String value, String label) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(value,
-              style: const TextStyle(
-                  color: AppColors.neutral800,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900)),
-          const SizedBox(height: AppSpacing.xs),
-          Text(label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: AppColors.neutral500,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700)),
-        ],
       ),
     );
   }

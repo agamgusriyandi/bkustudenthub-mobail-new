@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaRecruitmentScreen extends StatefulWidget {
@@ -1155,27 +1156,24 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                         Row(
                           children: [
                             Expanded(
-                              child: _buildKpiCard(
-                                title: 'TOTAL PELAMAR',
+                              child: OrmawaKpiCard(
+                                title: 'Total Pelamar',
                                 value: '$totalCount',
                                 subtitle: 'Pendaftar terdata',
                                 icon: Icons.groups_rounded,
-                                iconColor: const Color(0xFF2563EB),
-                                iconBg: const Color(0xFFEFF6FF),
+                                badgeColor: const Color(0xFF0284C7),
+                                badgeText: 'Semua',
                               ),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: _buildKpiCard(
-                                title: 'MENUNGGU REVIEW',
+                              child: OrmawaKpiCard(
+                                title: 'Menunggu Review',
                                 value: '$pendingCount',
                                 subtitle: 'Perlu diverifikasi',
                                 icon: Icons.hourglass_top_rounded,
-                                iconColor: const Color(0xFFD97706),
-                                iconBg: const Color(0xFFFFFBEB),
-                                badgeText: pendingCount > 0 ? '$pendingCount Baru' : null,
-                                badgeColor: const Color(0xFFB45309),
-                                badgeBg: const Color(0xFFFEF3C7),
+                                badgeColor: const Color(0xFFD97706),
+                                badgeText: pendingCount > 0 ? '$pendingCount Baru' : 'Antrean',
                               ),
                             ),
                           ],
@@ -1184,27 +1182,24 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                         Row(
                           children: [
                             Expanded(
-                              child: _buildKpiCard(
-                                title: 'DITERIMA',
+                              child: OrmawaKpiCard(
+                                title: 'Diterima',
                                 value: '$acceptedCount',
                                 subtitle: 'Resmi anggota',
                                 icon: Icons.check_circle_rounded,
-                                iconColor: const Color(0xFF059669),
-                                iconBg: const Color(0xFFECFDF5),
-                                badgeText: totalCount > 0 ? '$acceptanceRate%' : null,
-                                badgeColor: const Color(0xFF047857),
-                                badgeBg: const Color(0xFFD1FAE5),
+                                badgeColor: const Color(0xFF059669),
+                                badgeText: totalCount > 0 ? '$acceptanceRate%' : 'Lolos',
                               ),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: _buildKpiCard(
-                                title: 'TIDAK LOLOS',
+                              child: OrmawaKpiCard(
+                                title: 'Tidak Lolos',
                                 value: '$rejectedCount',
                                 subtitle: 'Belum sesuai',
                                 icon: Icons.cancel_rounded,
-                                iconColor: const Color(0xFFE11D48),
-                                iconBg: const Color(0xFFFFF1F2),
+                                badgeColor: const Color(0xFFE11D48),
+                                badgeText: 'Gagal',
                               ),
                             ),
                           ],
@@ -1333,76 +1328,6 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildKpiCard({
-    required String title,
-    required String value,
-    required String subtitle,
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBg,
-    String? badgeText,
-    Color? badgeColor,
-    Color? badgeBg,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 15, color: iconColor),
-              ),
-              if (badgeText != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: badgeBg ?? const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    badgeText,
-                    style: TextStyle(
-                      fontSize: 8,
-                      fontWeight: FontWeight.w900,
-                      color: badgeColor ?? const Color(0xFF64748B),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 0.3),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(fontSize: 8.5, color: Color(0xFF94A3B8)),
-          ),
-        ],
       ),
     );
   }

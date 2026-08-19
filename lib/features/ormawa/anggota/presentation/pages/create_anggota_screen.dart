@@ -1,19 +1,14 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class CreateAnggotaScreen extends StatefulWidget {
   const CreateAnggotaScreen({super.key});
@@ -37,8 +32,8 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
   }
 
   void _handleSubmit() async {
-    if (_nimController.text.isEmpty || _namaController.text.isEmpty) {
-      AppSnackbar.showWarning(context, 'NIM dan Nama wajib diisi');
+    if (_nimController.text.trim().isEmpty || _namaController.text.trim().isEmpty) {
+      AppSnackbar.showWarning(context, 'NIM dan Nama Lengkap wajib diisi');
       return;
     }
 
@@ -47,8 +42,8 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
 
     try {
       final data = {
-        'NIM': _nimController.text,
-        'Nama': _namaController.text,
+        'NIM': _nimController.text.trim(),
+        'Nama': _namaController.text.trim(),
         'Role': _selectedRole,
         'Divisi': _selectedDivision == 'Umum' ? '' : _selectedDivision,
         'Status': 'Aktif',
@@ -57,36 +52,22 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
       await context.read<OrmawaProvider>().addMember(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        BkuDialog.show(
-          context: context,
-          type: BkuDialogType.success,
-          title: 'Anggota Ditambahkan!',
-          message: 'Data anggota baru berhasil disimpan.',
-          primaryButtonText: 'Kembali',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Data anggota berhasil ditambahkan');
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+        setState(() => _isSubmitting = false);
+        AppSnackbar.showError(context, 'Gagal menambahkan anggota');
       }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      appBar: const BkuStaticAppBar(
-        title: 'Tambah Anggota',
-        variant: AppBarVariant.ormawa,
-      ),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: Consumer<OrmawaProvider>(
         builder: (context, provider, _) {
           final roles = provider.roles.map((r) => r.name).toList();
@@ -96,118 +77,139 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
             ...provider.divisions.map((d) => d.name),
           ];
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildLabel('NIM'),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                    controller: _nimController,
-                    hint: 'Masukkan NIM',
-                    icon: Icons.badge_rounded),
-                const SizedBox(height: AppSpacing.xl),
-                _buildLabel('NAMA LENGKAP'),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                    controller: _namaController,
-                    hint: 'Masukkan nama lengkap',
-                    icon: Icons.person_rounded),
-                const SizedBox(height: AppSpacing.xl),
-                _buildLabel('JABATAN'),
-                const SizedBox(height: AppSpacing.md),
-                _buildDropdown(
-                  value: _selectedRole,
-                  items: roles,
-                  onChanged: (val) => setState(() => _selectedRole = val!),
+          return CustomScrollView(
+            slivers: [
+              const BkuAppBar(
+                title: 'Tambah Anggota',
+                subtitle: 'Pendaftaran Struktur & Anggota',
+                variant: AppBarVariant.ormawa,
+                expandedHeight: 125.0,
+                showBackButton: true,
+                isExpandable: false,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      OrmawaCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            OrmawaTextField(
+                              label: 'Nomor Induk Mahasiswa (NIM) *',
+                              hintText: 'Masukkan NIM mahasiswa',
+                              controller: _nimController,
+                              prefixIcon: Icons.badge_outlined,
+                            ),
+                            SizedBox(height: 14),
+                            OrmawaTextField(
+                              label: 'Nama Lengkap *',
+                              hintText: 'Masukkan nama lengkap',
+                              controller: _namaController,
+                              prefixIcon: Icons.person_outline_rounded,
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              'Jabatan / Peran *',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: OrmawaTheme.textHeading,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: OrmawaTheme.border),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: _selectedRole,
+                                  isExpanded: true,
+                                  icon: Icon(Icons.keyboard_arrow_down_rounded, color: OrmawaTheme.primary),
+                                  items: roles.map((role) {
+                                    return DropdownMenuItem(
+                                      value: role,
+                                      child: Text(
+                                        role,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: OrmawaTheme.textHeading,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) => setState(() => _selectedRole = val!),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 14),
+                            Text(
+                              'Divisi / Departemen *',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: OrmawaTheme.textHeading,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: OrmawaTheme.border),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: _selectedDivision,
+                                  isExpanded: true,
+                                  icon: Icon(Icons.keyboard_arrow_down_rounded, color: OrmawaTheme.primary),
+                                  items: divisions.map((div) {
+                                    return DropdownMenuItem(
+                                      value: div,
+                                      child: Text(
+                                        div,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: OrmawaTheme.textHeading,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) => setState(() => _selectedDivision = val!),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: OrmawaButton(
+                                text: 'SIMPAN DATA ANGGOTA',
+                                isLoading: _isSubmitting,
+                                onPressed: _isSubmitting ? null : _handleSubmit,
+                                icon: Icons.check_circle_outline_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.s100),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                _buildLabel('DIVISI'),
-                const SizedBox(height: AppSpacing.md),
-                _buildDropdown(
-                  value: _selectedDivision,
-                  items: divisions,
-                  onChanged: (val) =>
-                      setState(() => _selectedDivision = val!),
-                ),
-                const SizedBox(height: AppSpacing.s48),
-                BkuButton.primary(
-                  text: 'SIMPAN ANGGOTA',
-                  onPressed: _isSubmitting ? null : _handleSubmit,
-                  isLoading: _isSubmitting,
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(text,
-        style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            fontSize: 10));
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: BkuTextField(
-        controller: controller,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon:
-              Icon(icon, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown<T>({
-    required T value,
-    required List<T> items,
-    required void Function(T?) onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: BkuDropdown<T>(
-          isExpanded: true,
-          value: value,
-          items: items
-              .map((item) => DropdownMenuItem<T>(
-                    value: item,
-                    child: Text(item.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.neutral800)),
-                  ))
-              .toList(),
-          onChanged: onChanged,
-        ),
       ),
     );
   }

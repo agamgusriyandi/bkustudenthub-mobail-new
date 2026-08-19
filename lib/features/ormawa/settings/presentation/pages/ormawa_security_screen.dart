@@ -1,14 +1,12 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
 class OrmawaSecurityScreen extends StatefulWidget {
   const OrmawaSecurityScreen({super.key});
@@ -48,38 +46,13 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(
-                  result['success']
-                      ? Icons.check_circle_outline_rounded
-                      : Icons.error_outline_rounded,
-                  color: context.appColors.onPrimary,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    result['message'] ??
-                        (result['success'] ? 'Berhasil' : 'Gagal'),
-                    style: AppTextStyles.bodyMd.copyWith(color: context.appColors.onPrimary),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor:
-                result['success'] ? AppColors.success : AppColors.error,
-            behavior: SnackBarBehavior.floating,
-
-            margin: const EdgeInsets.all(AppSpacing.xl),
-          ),
-        );
-
-        if (result['success']) {
+        if (result['success'] == true) {
+          AppSnackbar.showSuccess(context, result['message'] ?? 'Kata sandi berhasil diperbarui');
           _oldPasswordController.clear();
           _newPasswordController.clear();
           _confirmPasswordController.clear();
+        } else {
+          AppSnackbar.showError(context, result['message'] ?? 'Gagal memperbarui kata sandi');
         }
       }
     }
@@ -88,7 +61,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
@@ -98,20 +71,64 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
             variant: AppBarVariant.ormawa,
             title: 'Keamanan Akun',
             subtitle: 'Kontrol Akses Pribadi',
-            expandedHeight: 120.0,
+            expandedHeight: 125.0,
             showBackButton: true,
             isExpandable: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSecurityAlertCard(),
-                  const SizedBox(height: AppSpacing.xl),
-                  _buildSectionTitle('UBAH KATA SANDI'),
-                  const SizedBox(height: AppSpacing.md),
+                  OrmawaCard(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: OrmawaTheme.primarySoft,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            Icons.security_rounded,
+                            color: OrmawaTheme.primary,
+                            size: 22,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Amankan Akun Anda',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: OrmawaTheme.textHeading,
+                                ),
+                              ),
+                              SizedBox(height: 3),
+                              Text(
+                                'Gunakan kombinasi kata sandi yang kuat dan jangan pernah membagikan akses ke orang lain.',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: OrmawaTheme.textMuted,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionTitle('Ubah Kata Sandi'),
+                  const SizedBox(height: 8),
                   _buildPasswordForm(),
                   const SizedBox(height: AppSpacing.xxxl),
                 ],
@@ -123,177 +140,106 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
     );
   }
 
-  Widget _buildSecurityAlertCard() {
-    return BkuCard(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: context.appColors.primary.withAlpha(30),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.security_rounded,
-              color: context.appColors.primary,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Amankan Akun Anda',
-                  style: AppTextStyles.titleMd.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'Gunakan kombinasi kata sandi yang kuat dan jangan pernah membagikan akses ke orang lain.',
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.neutral700,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.xs),
-      child: Text(
-        title,
-        style: AppTextStyles.overline.copyWith(
-          color: AppColors.neutral500,
-          fontWeight: FontWeight.bold,
+    return Row(
+      children: [
+        Container(
+          width: 3.5,
+          height: 13,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: OrmawaTheme.primary,
+            borderRadius: BorderRadius.circular(2),
+          ),
         ),
-      ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w900,
+            color: OrmawaTheme.textHeading,
+            letterSpacing: -0.2,
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildPasswordForm() {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Form(
-        key: _formKey,
+    return Form(
+      key: _formKey,
+      child: OrmawaCard(
         child: Column(
           children: [
-            _buildPasswordField(
-              label: 'Kata Sandi Saat Ini',
+            BkuTextField(
               controller: _oldPasswordController,
+              label: 'Kata Sandi Saat Ini',
+              hint: 'Masukkan kata sandi lama',
               obscureText: _obscureOld,
-              onToggle: () => setState(() => _obscureOld = !_obscureOld),
+              prefixIcon: Icon(Icons.lock_outline_rounded, color: OrmawaTheme.primary),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureOld ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  color: OrmawaTheme.textMuted,
+                ),
+                onPressed: () => setState(() => _obscureOld = !_obscureOld),
+              ),
+              validator: (v) => v == null || v.isEmpty ? 'Kata sandi saat ini wajib diisi' : null,
             ),
-            const SizedBox(height: AppSpacing.lg),
-            _buildPasswordField(
-              label: 'Kata Sandi Baru',
+            SizedBox(height: 14),
+            BkuTextField(
               controller: _newPasswordController,
+              label: 'Kata Sandi Baru',
+              hint: 'Minimal 8 karakter',
               obscureText: _obscureNew,
-              onToggle: () => setState(() => _obscureNew = !_obscureNew),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            _buildPasswordField(
-              label: 'Konfirmasi Sandi Baru',
-              controller: _confirmPasswordController,
-              obscureText: _obscureConfirm,
-              onToggle:
-                  () => setState(() => _obscureConfirm = !_obscureConfirm),
-              validator: (val) {
-                if (val != _newPasswordController.text) {
-                  return 'Konfirmasi sandi tidak cocok';
-                }
+              prefixIcon: Icon(Icons.lock_reset_rounded, color: OrmawaTheme.primary),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureNew ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  color: OrmawaTheme.textMuted,
+                ),
+                onPressed: () => setState(() => _obscureNew = !_obscureNew),
+              ),
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Kata sandi baru wajib diisi';
+                if (v.length < 8) return 'Minimal 8 karakter';
                 return null;
               },
             ),
-            const SizedBox(height: AppSpacing.xl),
-            BkuButton.primary(
-              text: 'PERBARUI SANDI',
-              isLoading: _isLoading,
-              onPressed: _handleSave,
+            SizedBox(height: 14),
+            BkuTextField(
+              controller: _confirmPasswordController,
+              label: 'Konfirmasi Kata Sandi Baru',
+              hint: 'Ulangi kata sandi baru',
+              obscureText: _obscureConfirm,
+              prefixIcon: Icon(Icons.check_circle_outline_rounded, color: OrmawaTheme.primary),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  color: OrmawaTheme.textMuted,
+                ),
+                onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+              ),
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Konfirmasi kata sandi wajib diisi';
+                if (v != _newPasswordController.text) return 'Kata sandi tidak cocok';
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OrmawaButton(
+                text: 'SIMPAN PERUBAHAN',
+                isLoading: _isLoading,
+                onPressed: _isLoading ? null : _handleSave,
+                icon: Icons.save_rounded,
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPasswordField({
-    required String label,
-    required TextEditingController controller,
-    required bool obscureText,
-    required VoidCallback onToggle,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelMd.copyWith(
-            color: AppColors.neutral600,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        BkuTextField(
-          controller: controller,
-          obscureText: obscureText,
-          style: AppTextStyles.bodyLg,
-          decoration: InputDecoration(
-            hintText: '••••••••',
-            hintStyle: TextStyle(color: AppColors.neutral400),
-            filled: true,
-            fillColor: AppColors.neutral50,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.lg,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral200),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral200),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(
-                color: context.appColors.primary,
-              ),
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                obscureText
-                    ? Icons.visibility_off_rounded
-                    : Icons.visibility_rounded,
-                color: AppColors.neutral400,
-                size: 20,
-              ),
-              onPressed: onToggle,
-            ),
-          ),
-          validator:
-              validator ??
-              (val) {
-                if (val == null || val.isEmpty) {
-                  return 'Bagian ini tidak boleh kosong';
-                }
-                if (val.length < 6) return 'Minimal 6 karakter';
-                return null;
-              },
-        ),
-      ],
     );
   }
 }

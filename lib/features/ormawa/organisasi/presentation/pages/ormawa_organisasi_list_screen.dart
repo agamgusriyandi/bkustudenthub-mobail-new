@@ -1,24 +1,24 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
 import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/create_organisasi_screen.dart';
-import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/ormawa_organisasi_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/edit_organisasi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/organisasi/presentation/pages/ormawa_organisasi_detail_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaOrganisasiListScreen extends StatefulWidget {
-  const OrmawaOrganisasiListScreen({super.key});
+  final bool showBackButton;
+  const OrmawaOrganisasiListScreen({super.key, this.showBackButton = true});
 
   @override
   State<OrmawaOrganisasiListScreen> createState() => _OrmawaOrganisasiListScreenState();
@@ -80,9 +80,12 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
     return Consumer<OrmawaProvider>(
       builder: (context, provider, child) {
         final filtered = _getFiltered(provider.organisasiList);
+        final total = provider.organisasiList.length;
+        final aktif = provider.organisasiList.where((o) => o.status.toLowerCase() == 'aktif').length;
+        final nonaktif = total - aktif;
 
         return Scaffold(
-          backgroundColor: AppColors.neutral100,
+          backgroundColor: OrmawaTheme.scaffoldBg,
           body: RefreshIndicator(
             onRefresh: () => provider.fetchOrganisasi(),
             child: CustomScrollView(
@@ -90,14 +93,14 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
                 BkuAppBar(
                   variant: AppBarVariant.ormawa,
                   title: 'Manajemen Organisasi',
-                  subtitle: 'Database Organisasi',
-                  expandedHeight: 115.0,
-                  showBackButton: true,
+                  subtitle: 'Database Organisasi Mahasiswa',
+                  expandedHeight: 120.0,
+                  showBackButton: widget.showBackButton,
                   isExpandable: false,
                 ),
                 if (provider.isLoading)
-                  SliverFillRemaining(
-                    child: const Padding(
+                  const SliverFillRemaining(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: AppSpacing.lg,
                         vertical: AppSpacing.xl,
@@ -108,33 +111,86 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
                 else
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: AppSpacing.sm,
-                        left: AppSpacing.s20,
-                        right: AppSpacing.s20,
-                        bottom: AppSpacing.s20,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: 12,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSummaryCard(provider),
-                          const SizedBox(height: AppSpacing.xxl),
-                          _buildSearchBar(),
-                          const SizedBox(height: AppSpacing.s20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OrmawaKpiCard(
+                                  title: 'Total Ormawa',
+                                  value: '$total',
+                                  badgeText: 'Terdaftar',
+                                  icon: Icons.business_rounded,
+                                  badgeColor: OrmawaTheme.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OrmawaKpiCard(
+                                  title: 'Status Aktif',
+                                  value: '$aktif',
+                                  badgeText: 'Operasional',
+                                  icon: Icons.check_circle_rounded,
+                                  badgeColor: const Color(0xFF059669),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OrmawaKpiCard(
+                                  title: 'Status Nonaktif',
+                                  value: '$nonaktif',
+                                  badgeText: 'Vakum',
+                                  icon: Icons.pause_circle_rounded,
+                                  badgeColor: const Color(0xFF64748B),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OrmawaKpiCard(
+                                  title: 'Hasil Pencarian',
+                                  value: '${filtered.length}',
+                                  badgeText: 'Tersaring',
+                                  icon: Icons.filter_alt_rounded,
+                                  badgeColor: const Color(0xFF0284C7),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          OrmawaSearchBar(
+                            controller: _searchController,
+                            hintText: 'Cari organisasi, bidang, atau deskripsi...',
+                            onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
+                          ),
+                          const SizedBox(height: 14),
                           if (filtered.isEmpty)
-                            _buildEmptyState()
+                            const OrmawaEmptyCard(
+                              title: 'Belum Ada Organisasi',
+                              description: 'Tidak ada data organisasi yang sesuai dengan kata kunci pencarian.',
+                              icon: Icons.business_outlined,
+                            )
                           else
                             ListView.separated(
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: filtered.length,
-                              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+                              separatorBuilder: (_, __) => const SizedBox(height: 10),
                               itemBuilder: (context, index) {
                                 final org = filtered[index];
                                 return _buildOrganisasiCard(org, provider);
                               },
                             ),
+                          const SizedBox(height: AppSpacing.s140),
                         ],
                       ),
                     ),
@@ -149,294 +205,163 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
                 MaterialPageRoute(builder: (_) => const CreateOrganisasiScreen()),
               );
             },
-            backgroundColor: context.appColors.primary,
-            icon: Icon(Icons.add_business_rounded, color: context.appColors.onPrimary),
-            label: Text(
+            backgroundColor: OrmawaTheme.primary,
+            icon: const Icon(Icons.add_business_rounded, color: Colors.white),
+            label: const Text(
               'Tambah Organisasi',
               style: TextStyle(
-                color: context.appColors.onPrimary,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildSummaryCard(OrmawaProvider provider) {
-    final total = provider.organisasiList.length;
-    final aktif = provider.organisasiList.where((o) => o.status.toLowerCase() == 'aktif').length;
-
-    return BkuCard(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 22),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.business_rounded, color: context.appColors.primary, size: 20),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'STATISTIK ORGANISASI',
-                style: AppTextStyles.labelSm.copyWith(
-                  color: AppColors.neutral800,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildSummaryItem(total.toString(), 'Total'),
-              _buildSummaryItem(aktif.toString(), 'Aktif'),
-              _buildSummaryItem((total - aktif).toString(), 'Nonaktif'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String value, String label) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: AppColors.neutral800,
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.neutral500,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: BkuTextField(
-        controller: _searchController,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: 'Cari organisasi...',
-          prefixIcon: Icon(Icons.search_rounded, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.lg,
-          ),
-        ),
-        onChanged: (v) => setState(() => _searchQuery = v.toLowerCase()),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: AppColors.onSurface.withAlpha(10), blurRadius: 20),
-                ],
-              ),
-              child: const Icon(Icons.business_outlined, size: 64, color: AppColors.neutral400),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Belum ada organisasi',
-              style: AppTextStyles.titleLg.copyWith(
-                color: AppColors.neutral700,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Tambahkan organisasi baru untuk\nmemulai mengelola data.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral500),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
   Widget _buildOrganisasiCard(OrmawaOrganisasi org, OrmawaProvider provider) {
     final isAktif = org.status.toLowerCase() == 'aktif';
 
-    return GestureDetector(
+    return OrmawaCard(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => OrmawaOrganisasiDetailScreen(organisasi: org)),
         );
       },
-      child: BkuCard(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: context.appColors.primary.withAlpha(15),
-                borderRadius: AppRadius.radiusMd,
-                border: Border.all(color: context.appColors.primary.withAlpha(30)),
-              ),
-              child: Icon(
-                Icons.business_rounded,
-                color: context.appColors.primary,
-                size: 24,
-              ),
+      child: Row(
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: OrmawaTheme.primary.withAlpha(20),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: OrmawaTheme.primary.withAlpha(30)),
             ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          org.nama,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.neutral800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+            child: Icon(
+              Icons.business_rounded,
+              color: OrmawaTheme.primary,
+              size: 22,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        org.nama,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13.5,
+                          color: OrmawaTheme.textHeading,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      PopupMenuButton(
-                        padding: EdgeInsets.zero,
-                        icon: const Icon(Icons.more_vert_rounded, size: 20, color: AppColors.neutral500),
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit_rounded, size: 18, color: AppColors.info),
-                                SizedBox(width: AppSpacing.s10),
-                                Text('Edit', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.error),
-                                SizedBox(width: AppSpacing.s10),
-                                Text('Hapus', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ],
-                        onSelected: (val) {
-                          if (val == 'edit') {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => EditOrganisasiScreen(organisasi: org)),
-                            );
-                          } else if (val == 'delete') {
-                            _confirmDelete(org);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.s2),
-                  if (org.deskripsi.isNotEmpty)
-                    Text(
-                      org.deskripsi,
-                      style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral600),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  const SizedBox(height: AppSpacing.s10),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                        decoration: BoxDecoration(
-                          color: isAktif
-                              ? AppColors.success.withAlpha(15)
-                              : AppColors.neutral500.withAlpha(15),
-                          borderRadius: AppRadius.radiusSm,
-                          border: Border.all(
-                            color: isAktif
-                                ? AppColors.success.withAlpha(30)
-                                : AppColors.neutral500.withAlpha(30),
+                    PopupMenuButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.more_vert_rounded, size: 18, color: OrmawaTheme.textPlaceholder),
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit_rounded, size: 16, color: Color(0xFF0284C7)),
+                              SizedBox(width: 8),
+                              Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            ],
                           ),
                         ),
-                        child: Text(
-                          org.status,
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: isAktif ? AppColors.success : AppColors.neutral500,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 9,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                      if (org.tahunBerdiri != null && org.tahunBerdiri!.isNotEmpty) ...[
-                        const SizedBox(width: AppSpacing.sm),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                          decoration: BoxDecoration(
-                            color: context.appColors.primary.withAlpha(15),
-                            borderRadius: AppRadius.radiusSm,
-                            border: Border.all(color: context.appColors.primary.withAlpha(30)),
-                          ),
-                          child: Text(
-                            'Berdiri ${org.tahunBerdiri}',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.primary,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 9,
-                              letterSpacing: 0.5,
-                            ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFE11D48)),
+                              SizedBox(width: 8),
+                              Text('Hapus', style: TextStyle(color: Color(0xFFE11D48), fontWeight: FontWeight.bold, fontSize: 12)),
+                            ],
                           ),
                         ),
                       ],
-                    ],
+                      onSelected: (val) {
+                        if (val == 'edit') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => EditOrganisasiScreen(organisasi: org)),
+                          );
+                        } else if (val == 'delete') {
+                          _confirmDelete(org);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                if (org.deskripsi.isNotEmpty) ...[
+                  SizedBox(height: 2),
+                  Text(
+                    org.deskripsi,
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: OrmawaTheme.textMuted,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
-              ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: isAktif
+                            ? OrmawaTheme.statusSuccessBg
+                            : const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        org.status.toUpperCase(),
+                        style: TextStyle(
+                          color: isAktif ? OrmawaTheme.statusSuccessText : OrmawaTheme.textMuted,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 9,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    if (org.tahunBerdiri != null && org.tahunBerdiri!.isNotEmpty) ...[
+                      SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: OrmawaTheme.primarySoft,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          'Berdiri ${org.tahunBerdiri}',
+                          style: TextStyle(
+                            color: OrmawaTheme.primary,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 9,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
