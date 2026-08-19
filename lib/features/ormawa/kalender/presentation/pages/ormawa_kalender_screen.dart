@@ -245,10 +245,10 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
         : [];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => _loadData(true),
-        color: const Color(0xFF2563EB),
+        color: OrmawaTheme.primary,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           slivers: [
@@ -322,18 +322,18 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFEFF6FF),
+                                      color: OrmawaTheme.primarySoft,
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: const Color(0xFFBFDBFE)),
+                                      border: Border.all(color: OrmawaTheme.primaryBorder),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.event_note_rounded, size: 14, color: Color(0xFF2563EB)),
-                                        SizedBox(width: 5),
+                                        Icon(Icons.event_note_rounded, size: 14, color: OrmawaTheme.primary),
+                                        const SizedBox(width: 5),
                                         Text(
                                           'Kalender Ormawa',
-                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF1D4ED8)),
+                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
                                         ),
                                       ],
                                     ),
@@ -343,7 +343,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 'Kalender operasional, sinkronisasi timeline kegiatan, dan pemantauan program kerja organisasi mahasiswa.',
-                                style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B), height: 1.4),
+                                style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
                               ),
                               const SizedBox(height: 14),
                               Row(
@@ -352,12 +352,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                     child: OutlinedButton.icon(
                                       onPressed: () => _loadData(true),
                                       icon: _isRefreshing
-                                          ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB)))
+                                          ? SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: OrmawaTheme.primary))
                                           : const Icon(Icons.refresh_rounded, size: 14),
                                       label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                       style: OutlinedButton.styleFrom(
-                                        foregroundColor: const Color(0xFF0F172A),
-                                        side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                        foregroundColor: OrmawaTheme.textHeading,
+                                        side: BorderSide(color: OrmawaTheme.border),
                                         padding: const EdgeInsets.symmetric(vertical: 8),
                                         minimumSize: Size.zero,
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -372,7 +372,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                       icon: const Icon(Icons.add_rounded, size: 15),
                                       label: const Text('Tambah Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF2563EB),
+                                        backgroundColor: OrmawaTheme.primary,
                                         foregroundColor: Colors.white,
                                         elevation: 0,
                                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -457,94 +457,92 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(14),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Row(
+                                  Padding(
+                                    padding: const EdgeInsets.all(14),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Icon(Icons.calendar_month_rounded, size: 18, color: Color(0xFF2563EB)),
-                                        SizedBox(width: 8),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                        Row(
                                           children: [
-                                            Text('Kalender Agenda', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                                            Text('Pilih tanggal untuk melihat jadwal khusus', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                            Icon(Icons.calendar_month_rounded, size: 18, color: OrmawaTheme.primary),
+                                            const SizedBox(width: 8),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Kalender Agenda', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
+                                                Text('Pilih tanggal untuk melihat jadwal khusus', style: TextStyle(fontSize: 9.5, color: OrmawaTheme.textMuted)),
+                                              ],
+                                            ),
                                           ],
                                         ),
+                                        if (_selectedDay != null)
+                                          InkWell(
+                                            onTap: () => setState(() => _selectedDay = null),
+                                            borderRadius: BorderRadius.circular(8),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: OrmawaTheme.statusDangerBg,
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(color: OrmawaTheme.statusDangerBorder),
+                                              ),
+                                              child: Text('Reset Filter', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: OrmawaTheme.statusDangerText)),
+                                            ),
+                                          ),
                                       ],
                                     ),
-                                    if (_selectedDay != null)
-                                      InkWell(
-                                        onTap: () => setState(() => _selectedDay = null),
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFFFF1F2),
-                                            borderRadius: BorderRadius.circular(8),
-                                            border: Border.all(color: const Color(0xFFFECDD3)),
-                                          ),
-                                          child: const Text('Reset Filter', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFFE11D48))),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                                  ),
+                                  const SizedBox(height: 4),
 
-                              TableCalendar(
-                                firstDay: DateTime.utc(2020, 1, 1),
-                                lastDay: DateTime.utc(2030, 12, 31),
-                                focusedDay: _focusedDay,
-                                calendarFormat: CalendarFormat.month,
-                                availableCalendarFormats: const {
-                                  CalendarFormat.month: 'Bulan',
-                                },
-                                availableGestures: AvailableGestures.horizontalSwipe,
-                                selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
-                                eventLoader: (day) => _getEventsForDay(day, allAgendas, allProposals, allAnnouncements),
-                                startingDayOfWeek: StartingDayOfWeek.monday,
-                                onDaySelected: (selectedDay, focusedDay) {
-                                  setState(() {
-                                    if (_selectedDay != null && isSameDay(_selectedDay, selectedDay)) {
-                                      _selectedDay = null;
-                                    } else {
-                                      _selectedDay = selectedDay;
-                                    }
-                                    _focusedDay = focusedDay;
-                                  });
-                                },
-                                headerStyle: const HeaderStyle(
-                                  formatButtonVisible: false,
-                                  titleCentered: true,
-                                  titleTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                                  leftChevronIcon: Icon(Icons.chevron_left_rounded, color: Color(0xFF64748B), size: 20),
-                                  rightChevronIcon: Icon(Icons.chevron_right_rounded, color: Color(0xFF64748B), size: 20),
-                                ),
-                                calendarStyle: const CalendarStyle(
-                                  outsideDaysVisible: false,
-                                  defaultTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
-                                  weekendTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFE11D48)),
-                                  selectedDecoration: BoxDecoration(
-                                    color: Color(0xFF2563EB),
-                                    shape: BoxShape.circle,
+                                  TableCalendar(
+                                    firstDay: DateTime.utc(2020, 1, 1),
+                                    lastDay: DateTime.utc(2030, 12, 31),
+                                    focusedDay: _focusedDay,
+                                    calendarFormat: CalendarFormat.month,
+                                    availableCalendarFormats: const {
+                                      CalendarFormat.month: 'Bulan',
+                                    },
+                                    availableGestures: AvailableGestures.horizontalSwipe,
+                                    selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
+                                    eventLoader: (day) => _getEventsForDay(day, allAgendas, allProposals, allAnnouncements),
+                                    startingDayOfWeek: StartingDayOfWeek.monday,
+                                    onDaySelected: (selectedDay, focusedDay) {
+                                      setState(() {
+                                        if (_selectedDay != null && isSameDay(_selectedDay, selectedDay)) {
+                                          _selectedDay = null;
+                                        } else {
+                                          _selectedDay = selectedDay;
+                                        }
+                                        _focusedDay = focusedDay;
+                                      });
+                                    },
+                                    headerStyle: const HeaderStyle(
+                                      formatButtonVisible: false,
+                                      titleCentered: true,
+                                      titleTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                    ),
+                                    calendarStyle: CalendarStyle(
+                                      outsideDaysVisible: false,
+                                      defaultTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                                      weekendTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFE11D48)),
+                                      selectedDecoration: BoxDecoration(
+                                        color: OrmawaTheme.primary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      selectedTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                                      todayDecoration: BoxDecoration(
+                                        color: OrmawaTheme.primarySoft,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      todayTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark),
+                                      markerDecoration: BoxDecoration(
+                                        color: OrmawaTheme.primary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      markerSize: 5,
+                                      markersMaxCount: 1,
+                                    ),
                                   ),
-                                  selectedTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                                  todayDecoration: BoxDecoration(
-                                    color: Color(0xFFEFF6FF),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  todayTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
-                                  markerDecoration: BoxDecoration(
-                                    color: Color(0xFF2563EB),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  markerSize: 5,
-                                  markersMaxCount: 1,
-                                ),
-                              ),
 
                               Padding(
                                 padding: const EdgeInsets.all(12),
@@ -874,29 +872,29 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
 
           Row(
             children: [
-              const Icon(Icons.event_rounded, size: 12, color: Color(0xFF2563EB)),
+              Icon(Icons.event_rounded, size: 12, color: OrmawaTheme.primary),
               const SizedBox(width: 4),
               Text(
                 _formatDateRange(agenda.date, agenda.endDate),
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: OrmawaTheme.textBody),
               ),
               const Spacer(),
               if (agenda.estimasiDana != null && agenda.estimasiDana! > 0)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
+                    color: OrmawaTheme.borderSubtle,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(color: OrmawaTheme.border),
                   ),
                   child: Text(
                     _formatRp(agenda.estimasiDana),
-                    style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), fontFamily: 'monospace'),
+                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading, fontFamily: 'monospace'),
                   ),
                 ),
             ],
           ),
-          const Divider(height: 18, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 10),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -907,15 +905,15 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
+                    color: OrmawaTheme.primarySoft,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.visibility_rounded, size: 13, color: Color(0xFF2563EB)),
-                      SizedBox(width: 4),
-                      Text('Detail', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                      Icon(Icons.visibility_rounded, size: 13, color: OrmawaTheme.primary),
+                      const SizedBox(width: 4),
+                      Text('Detail', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark)),
                     ],
                   ),
                 ),

@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -184,15 +185,15 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
 
                   Row(
                     children: [
-                      _buildMetricCard('Mulai', _formatDate(startDate), Icons.calendar_today_rounded, const Color(0xFF2563EB)),
+                      _buildMetricCard('Mulai', _formatDate(startDate), Icons.calendar_today_rounded, OrmawaTheme.primary),
                       const SizedBox(width: 8),
-                      _buildMetricCard('Selesai', _formatDate(endDate), Icons.event_available_rounded, const Color(0xFF2563EB)),
+                      _buildMetricCard('Selesai', _formatDate(endDate), Icons.event_available_rounded, OrmawaTheme.primary),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildMetricCard('Lokasi', loc.isNotEmpty ? loc : 'Belum ditentukan', Icons.location_on_outlined, const Color(0xFF2563EB)),
+                      _buildMetricCard('Lokasi', loc.isNotEmpty ? loc : 'Belum ditentukan', Icons.location_on_outlined, OrmawaTheme.primary),
                       const SizedBox(width: 8),
                       _buildMetricCard('Estimasi Dana', _formatRp(dana), Icons.payments_outlined, const Color(0xFF059669)),
                     ],
@@ -204,26 +205,20 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF94A3B8).withAlpha(15),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      border: Border.all(color: OrmawaTheme.border),
+                      boxShadow: OrmawaTheme.cardShadow,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.assignment_outlined, size: 16, color: Color(0xFF2563EB)),
-                            SizedBox(width: 8),
-                            Text('Rincian Teknis & Pelaksanaan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                            Icon(Icons.assignment_outlined, size: 16, color: OrmawaTheme.primary),
+                            const SizedBox(width: 8),
+                            Text('Rincian Teknis & Pelaksanaan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
                           ],
                         ),
-                        const Divider(height: 20, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 14),
 
                         _buildInfoTile('Penanggung Jawab (PJ)', pj.isNotEmpty ? pj : '—'),
                         _buildInfoTile('Mitra / Kolaborator', mitra.isNotEmpty ? mitra : '—'),
@@ -268,7 +263,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                           icon: const Icon(Icons.edit_rounded, size: 16),
                           label: const Text('Edit Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2563EB),
+                            backgroundColor: OrmawaTheme.primary,
                             foregroundColor: Colors.white,
                             elevation: 0,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -427,10 +422,10 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF2563EB),
+            colorScheme: ColorScheme.light(
+              primary: OrmawaTheme.primary,
               onPrimary: Colors.white,
-              onSurface: Color(0xFF0F172A),
+              onSurface: OrmawaTheme.textHeading,
             ),
           ),
           child: child!,
@@ -536,7 +531,7 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.calendar_today_rounded, size: 14, color: Color(0xFF2563EB)),
+                                  Icon(Icons.calendar_today_rounded, size: 14, color: OrmawaTheme.primary),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -631,7 +626,7 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
                           : const Icon(Icons.save_rounded, size: 18),
                       label: const Text('Simpan Perubahan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: OrmawaTheme.primary,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -669,12 +664,12 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: const Color(0xFF2563EB)),
+              Icon(icon, size: 16, color: OrmawaTheme.primary),
               const SizedBox(width: 8),
-              Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+              Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
             ],
           ),
-          const Divider(height: 18, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
           ...children,
         ],
       ),
@@ -696,10 +691,18 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
         Row(
           children: [
             if (prefixIcon != null) ...[
-              Icon(prefixIcon, size: 12, color: const Color(0xFF64748B)),
+              Icon(prefixIcon, size: 12, color: OrmawaTheme.textMuted),
               const SizedBox(width: 4),
             ],
-            Text(label, style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.3)),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 8.5,
+                fontWeight: FontWeight.w900,
+                color: OrmawaTheme.textMuted,
+                letterSpacing: 0.3,
+              ),
+            ),
             if (isRequired)
               const Text(' *', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
           ],
@@ -709,25 +712,25 @@ class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
           controller: controller,
           maxLines: maxLines,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+          style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.normal),
+            hintStyle: TextStyle(fontSize: 11, color: OrmawaTheme.textPlaceholder, fontWeight: FontWeight.normal),
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: Colors.white,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderSide: BorderSide(color: OrmawaTheme.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderSide: BorderSide(color: OrmawaTheme.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+              borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
             ),
           ),
         ),

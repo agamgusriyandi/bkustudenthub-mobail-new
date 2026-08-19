@@ -7,6 +7,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
@@ -209,15 +210,15 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.person_rounded, size: 14, color: Color(0xFF2563EB)),
+                                Icon(Icons.person_rounded, size: 14, color: OrmawaTheme.primary),
                                 const SizedBox(width: 6),
                                 Text(
                                   'PJ Kegiatan: ',
-                                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                  style: TextStyle(fontSize: 11, color: OrmawaTheme.textMuted),
                                 ),
                                 Text(
                                   agenda.pjKegiatan!,
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading),
                                 ),
                               ],
                             ),
@@ -234,14 +235,14 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         'Mulai Pelaksanaan',
                         _formatDate(agenda.date),
                         Icons.calendar_today_rounded,
-                        const Color(0xFF2563EB),
+                        OrmawaTheme.primary,
                       ),
                       const SizedBox(width: 8),
                       _buildMetricCard(
                         'Selesai Pelaksanaan',
                         _formatDate(agenda.endDate),
                         Icons.event_available_rounded,
-                        const Color(0xFF2563EB),
+                        OrmawaTheme.primary,
                       ),
                     ],
                   ),
@@ -252,7 +253,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         'Lokasi Kegiatan',
                         agenda.location.isNotEmpty ? agenda.location : 'Belum ditentukan',
                         Icons.location_on_outlined,
-                        const Color(0xFF2563EB),
+                        OrmawaTheme.primary,
                       ),
                       const SizedBox(width: 8),
                       _buildMetricCard(
@@ -282,14 +283,14 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.article_outlined, size: 16, color: Color(0xFF2563EB)),
-                            SizedBox(width: 8),
-                            Text('Informasi Detail Kegiatan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                            Icon(Icons.article_outlined, size: 16, color: OrmawaTheme.primary),
+                            const SizedBox(width: 8),
+                            Text('Informasi Detail Kegiatan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
                           ],
                         ),
-                        const Divider(height: 20, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 14),
 
                         _buildDetailTile('Landasan Kegiatan', agenda.landasanKegiatan, Icons.balance_rounded),
                         _buildDetailTile('Bentuk Kegiatan', agenda.bentukKegiatan, Icons.category_rounded),
@@ -328,7 +329,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                           icon: const Icon(Icons.edit_rounded, size: 16),
                           label: const Text('Edit Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2563EB),
+                            backgroundColor: OrmawaTheme.primary,
                             foregroundColor: Colors.white,
                             elevation: 0,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -359,9 +360,9 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                           icon: const Icon(Icons.qr_code_scanner_rounded, size: 16),
                           label: const Text('Buka Absensi Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF2563EB),
-                            side: const BorderSide(color: Color(0xFFBFDBFE)),
-                            backgroundColor: const Color(0xFFEFF6FF),
+                            foregroundColor: OrmawaTheme.primaryDark,
+                            side: BorderSide(color: OrmawaTheme.primaryBorder),
+                            backgroundColor: OrmawaTheme.primarySoft,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),

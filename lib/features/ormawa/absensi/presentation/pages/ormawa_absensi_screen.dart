@@ -591,7 +591,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                               ),
                             ),
                           ),
-                          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+                          const SizedBox(height: 12),
 
                           _buildAttendanceParticipantList(provider, _selectedAgenda!.id, primaryColor),
                         ],
@@ -697,7 +697,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                     ),
                                   ],
                                 ),
-                                const Divider(height: 18, color: Color(0xFFF1F5F9)),
+                                const SizedBox(height: 10),
 
                                 Row(
                                   children: [
@@ -820,7 +820,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: filtered.length,
-      separatorBuilder: (_, __) => const Divider(height: 12, color: Color(0xFFF1F5F9)),
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, idx) {
         final item = filtered[idx];
         final isHadir = item.status.toLowerCase() == 'hadir';

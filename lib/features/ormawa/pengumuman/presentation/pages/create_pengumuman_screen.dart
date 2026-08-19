@@ -584,10 +584,7 @@ class _CreatePengumumanScreenState extends State<CreatePengumumanScreen> {
               ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(height: 1, color: Color(0xFFF1F5F9)),
-          ),
+          const SizedBox(height: 12),
           child,
         ],
       ),

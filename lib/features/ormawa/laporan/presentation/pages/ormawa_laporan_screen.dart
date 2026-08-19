@@ -735,8 +735,6 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s14),
-          const Divider(height: 1, color: AppColors.neutral200),
           const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -266,7 +266,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
               ),
             ],
           ),
-          const Divider(height: 16, thickness: 0.8),
+          const SizedBox(height: 10),
           Row(
             children: [
               Container(
@@ -804,8 +804,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                  const SizedBox(height: 8),
 
                   Expanded(
                     child: SingleChildScrollView(
@@ -948,7 +947,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                           )
                                         : ListView.separated(
                                             itemCount: filteredStudents.length,
-                                            separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                                            separatorBuilder: (_, __) => const SizedBox(height: 4),
                                             itemBuilder: (c, idx) {
                                               final st = filteredStudents[idx];
                                               final isSelected = selectedMember?.mahasiswaId == st.mahasiswaId;

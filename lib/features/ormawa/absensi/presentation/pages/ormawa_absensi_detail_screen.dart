@@ -397,7 +397,7 @@ class _OrmawaAbsensiManagementDetailScreenState
                             ),
                           ),
                         ),
-                        const Divider(height: 20, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 12),
 
                         if (provider.isLoading && attendanceList.isEmpty)
                           Padding(
@@ -416,7 +416,7 @@ class _OrmawaAbsensiManagementDetailScreenState
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: filteredList.length,
-                            separatorBuilder: (_, __) => const Divider(height: 12, color: Color(0xFFF1F5F9)),
+                            separatorBuilder: (_, __) => const SizedBox(height: 8),
                             itemBuilder: (context, idx) {
                               final item = filteredList[idx];
                               final isHadir = item.status.toLowerCase() == 'hadir';

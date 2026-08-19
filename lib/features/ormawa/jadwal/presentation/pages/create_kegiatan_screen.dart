@@ -3,8 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -94,10 +97,10 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF2563EB),
+            colorScheme: ColorScheme.light(
+              primary: OrmawaTheme.primary,
               onPrimary: Colors.white,
-              onSurface: Color(0xFF0F172A),
+              onSurface: OrmawaTheme.textHeading,
             ),
           ),
           child: child!,
@@ -122,44 +125,38 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      final double? parsedDana = double.tryParse(_estimasiDanaController.text.trim().replaceAll(RegExp(r'[^0-9]'), ''));
+      final estimasi = double.tryParse(_estimasiDanaController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0;
 
-      final payload = {
-        'Judul': _judulController.text.trim(),
-        'Lokasi': _lokasiController.text.trim(),
-        'Deskripsi': _deskripsiController.text.trim(),
-        'Status': _selectedStatus,
-        'TanggalMulai': _tanggalMulai.toIso8601String(),
-        'TanggalSelesai': _tanggalSelesai.toIso8601String(),
-        'landasan_kegiatan': _landasanController.text.trim(),
+      final data = {
+        'nama_kegiatan': _judulController.text.trim(),
+        'lokasi': _lokasiController.text.trim(),
+        'tanggal_mulai': _tanggalMulai.toIso8601String(),
+        'tanggal_selesai': _tanggalSelesai.toIso8601String(),
+        'status': _selectedStatus,
+        'deskripsi': _deskripsiController.text.trim(),
+        'pj_kegiatan': _pjController.text.trim(),
+        'estimasi_dana': estimasi,
+        'sumber_dana': _sumberDanaController.text.trim(),
         'bentuk_kegiatan': _bentukKegiatanController.text.trim(),
         'mitra': _mitraController.text.trim(),
+        'sasaran_kegiatan': _sasaranController.text.trim(),
+        'indikator_keberhasilan': _indikatorController.text.trim(),
+        'landasan_kegiatan': _landasanController.text.trim(),
         'latar_belakang': _latarBelakangController.text.trim(),
         'tujuan_kegiatan': _tujuanController.text.trim(),
         'jadwal_pelaksanaan': _jadwalPelaksanaanController.text.trim(),
-        'sasaran_kegiatan': _sasaranController.text.trim(),
-        'indikator_keberhasilan': _indikatorController.text.trim(),
-        'sumber_dana': _sumberDanaController.text.trim(),
-        'estimasi_dana': parsedDana ?? 0.0,
-        'pj_kegiatan': _pjController.text.trim(),
       };
 
-      await context.read<OrmawaProvider>().addAgenda(payload);
+      await context.read<OrmawaProvider>().addAgenda(data);
+
       if (mounted) {
-        BkuDialog.show(
-          context: context,
-          title: 'Kegiatan Dijadwalkan!',
-          message: 'Jadwal kegiatan baru berhasil disimpan ke dalam kalender ormawa.',
-          type: BkuDialogType.success,
-          primaryButtonText: 'Selesai',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Agenda kegiatan berhasil ditambahkan!');
+        context.pop();
       }
     } catch (e) {
-      if (mounted) AppSnackbar.showError(context, 'Gagal menyimpan kegiatan: $e');
+      if (mounted) {
+        AppSnackbar.showError(context, 'Terjadi kesalahan: $e');
+      }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
@@ -168,33 +165,36 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
+        physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
           const BkuAppBar(
-            title: 'Buat Jadwal Kegiatan',
-            subtitle: 'Event Management',
             variant: AppBarVariant.ormawa,
+            title: 'Tambah Jadwal',
+            subtitle: 'Agenda Kegiatan Ormawa',
             expandedHeight: 130.0,
             showBackButton: true,
             isExpandable: false,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 14),
+
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFEF3C7).withAlpha(150),
+                      color: const Color(0xFFFFFBEB),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xFFFDE68A)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.auto_fix_high_rounded, color: Color(0xFFD97706), size: 22),
+                        const Icon(Icons.lightbulb_outline_rounded, color: Color(0xFFD97706), size: 20),
                         const SizedBox(width: 10),
                         const Expanded(
                           child: Column(
@@ -227,67 +227,82 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                     title: 'Informasi Utama Agenda',
                     icon: Icons.info_outline_rounded,
                     children: [
-                      _buildTextField(
-                        label: 'NAMA KEGIATAN',
+                      OrmawaTextField(
+                        label: 'NAMA KEGIATAN *',
                         controller: _judulController,
-                        hint: 'Contoh: Samudra Leadership',
-                        isRequired: true,
+                        hintText: 'Contoh: Samudra Leadership',
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'LOKASI PELAKSANAAN',
                         controller: _lokasiController,
-                        hint: 'Contoh: Auditorium Utama UBK',
+                        hintText: 'Contoh: Auditorium Utama UBK',
                         prefixIcon: Icons.location_on_outlined,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('PERIODE PELAKSANAAN *', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.3)),
-                          const SizedBox(height: 4),
+                          Text(
+                            'PERIODE PELAKSANAAN *',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: OrmawaTheme.textHeading,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
                           InkWell(
                             onTap: _pickDateRange,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(14),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF8FAFC),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: OrmawaTheme.border),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.calendar_today_rounded, size: 14, color: Color(0xFF2563EB)),
-                                  const SizedBox(width: 8),
+                                  Icon(Icons.calendar_today_rounded, size: 15, color: OrmawaTheme.primary),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       '${DateFormat('dd MMM yyyy', 'id').format(_tanggalMulai)} s/d ${DateFormat('dd MMM yyyy', 'id').format(_tanggalSelesai)}',
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading),
                                     ),
                                   ),
-                                  const Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: Color(0xFF94A3B8)),
+                                  Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: OrmawaTheme.textMuted),
                                 ],
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('STATUS AGENDA', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.3)),
-                          const SizedBox(height: 4),
+                          Text(
+                            'STATUS AGENDA',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: OrmawaTheme.textHeading,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: OrmawaTheme.border),
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
@@ -296,7 +311,7 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                                 items: _statuses.map((s) {
                                   return DropdownMenuItem<String>(
                                     value: s['value'],
-                                    child: Text(s['label']!, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                                    child: Text(s['label']!, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading)),
                                   );
                                 }).toList(),
                                 onChanged: (v) => setState(() => _selectedStatus = v ?? 'Planned'),
@@ -305,12 +320,12 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'DESKRIPSI KEGIATAN',
                         controller: _deskripsiController,
-                        hint: 'Tuliskan deskripsi ringkas pelaksanaan kegiatan...',
+                        hintText: 'Tuliskan deskripsi ringkas pelaksanaan kegiatan...',
                         maxLines: 3,
                       ),
                     ],
@@ -321,48 +336,48 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                     title: 'Teknis & Anggaran',
                     icon: Icons.account_balance_wallet_outlined,
                     children: [
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'PENANGGUNG JAWAB (PJ)',
                         controller: _pjController,
-                        hint: 'Nama lengkap ketua pelaksana / PJ...',
+                        hintText: 'Nama lengkap ketua pelaksana / PJ...',
                         prefixIcon: Icons.person_outline_rounded,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'ESTIMASI DANA (RP)',
                         controller: _estimasiDanaController,
-                        hint: 'Contoh: 5000000',
+                        hintText: 'Contoh: 5000000',
                         keyboardType: TextInputType.number,
                         prefixIcon: Icons.payments_outlined,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'SUMBER PENDANAAN',
                         controller: _sumberDanaController,
-                        hint: 'Contoh: Pagu Ormawa & Iuran Peserta',
+                        hintText: 'Contoh: Pagu Ormawa & Iuran Peserta',
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'BENTUK KEGIATAN',
                         controller: _bentukKegiatanController,
-                        hint: 'Contoh: LKMM Dasar / Workshop / Seminar',
+                        hintText: 'Contoh: LKMM Dasar / Workshop / Seminar',
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'MITRA / KOLABORATOR',
                         controller: _mitraController,
-                        hint: 'Contoh: KSR PMI / Lembaga Kemahasiswaan',
+                        hintText: 'Contoh: KSR PMI / Lembaga Kemahasiswaan',
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'WAKTU PELAKSANAAN SPESIFIK',
                         controller: _jadwalPelaksanaanController,
-                        hint: 'Contoh: Sabtu, 08.00 - 16.00 WIB',
+                        hintText: 'Contoh: Sabtu, 08.00 - 16.00 WIB',
                       ),
                     ],
                   ),
@@ -372,64 +387,54 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                     title: 'Landasan & Sasaran Strategis',
                     icon: Icons.track_changes_rounded,
                     children: [
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'SASARAN KEGIATAN',
                         controller: _sasaranController,
-                        hint: 'Sasaran peserta atau target penerima manfaat...',
+                        hintText: 'Sasaran peserta atau target penerima manfaat...',
                         maxLines: 2,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'INDIKATOR KEBERHASILAN',
                         controller: _indikatorController,
-                        hint: 'Poin tolok ukur kesuksesan agenda...',
+                        hintText: 'Poin tolok ukur kesuksesan agenda...',
                         maxLines: 3,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'LANDASAN KEGIATAN',
                         controller: _landasanController,
-                        hint: 'Dasar hukum / arahan kebijakan kemahasiswaan...',
+                        hintText: 'Dasar hukum / arahan kebijakan kemahasiswaan...',
                         maxLines: 2,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'LATAR BELAKANG',
                         controller: _latarBelakangController,
-                        hint: 'Alasan urgensi diselenggarakannya kegiatan ini...',
+                        hintText: 'Alasan urgensi diselenggarakannya kegiatan ini...',
                         maxLines: 3,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      _buildTextField(
+                      OrmawaTextField(
                         label: 'TUJUAN KEGIATAN',
                         controller: _tujuanController,
-                        hint: 'Tujuan yang ingin dicapai melalui kegiatan ini...',
+                        hintText: 'Tujuan yang ingin dicapai melalui kegiatan ini...',
                         maxLines: 2,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 20),
 
-                  SizedBox(
+                  OrmawaButton(
+                    text: 'Simpan Jadwal Kegiatan',
+                    icon: Icons.save_rounded,
+                    isLoading: _isSubmitting,
+                    onPressed: _handleSubmit,
                     width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _isSubmitting ? null : _handleSubmit,
-                      icon: _isSubmitting
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Icon(Icons.save_rounded, size: 18),
-                      label: const Text('Simpan Jadwal Kegiatan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      ),
-                    ),
                   ),
                   const SizedBox(height: AppSpacing.s140),
                 ],
@@ -442,88 +447,25 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
   }
 
   Widget _buildFormSection({required String title, required IconData icon, required List<Widget> children}) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF94A3B8).withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return OrmawaCard(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: const Color(0xFF2563EB)),
+              Icon(icon, size: 16, color: OrmawaTheme.primary),
               const SizedBox(width: 8),
-              Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+              Text(
+                title,
+                style: OrmawaTheme.textSectionTitle,
+              ),
             ],
           ),
-          const Divider(height: 18, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 14),
           ...children,
         ],
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required String hint,
-    bool isRequired = false,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    IconData? prefixIcon,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            if (prefixIcon != null) ...[
-              Icon(prefixIcon, size: 12, color: const Color(0xFF64748B)),
-              const SizedBox(width: 4),
-            ],
-            Text(label, style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.3)),
-            if (isRequired)
-              const Text(' *', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
-          ],
-        ),
-        const SizedBox(height: 4),
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.normal),
-            filled: true,
-            fillColor: const Color(0xFFF8FAFC),
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

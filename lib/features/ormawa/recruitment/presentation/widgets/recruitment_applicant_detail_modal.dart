@@ -545,13 +545,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                               .customAnswers
                                               .keys
                                               .last) ...[
-                                        Divider(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.outline.withAlpha(30),
-                                          height: 1,
-                                        ),
-                                        const SizedBox(height: AppSpacing.lg),
+                                        const SizedBox(height: AppSpacing.md),
                                       ],
                                     ],
                                   );

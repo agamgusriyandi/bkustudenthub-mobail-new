@@ -216,8 +216,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                               ),
                             ),
                           ] else ...[
-                            const Divider(height: 1, color: Color(0xFFF1F5F9)),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 12),
                             const Text(
                               'KEPUTUSAN STATUS',
                               style: TextStyle(

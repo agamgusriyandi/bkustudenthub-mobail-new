@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
@@ -297,16 +298,16 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: OrmawaTheme.primarySoft,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFBFDBFE)),
+                  border: Border.all(color: OrmawaTheme.primaryBorder),
                 ),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2563EB),
+                        color: OrmawaTheme.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.attachment_rounded, size: 20, color: Colors.white),
@@ -316,19 +317,19 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Tautan Dokumen / Lampiran',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF1E3A8A),
+                              color: OrmawaTheme.primaryDark,
                             ),
                           ),
                           Text(
                             announcement.lampiranUrl!.trim(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
-                              color: Color(0xFF2563EB),
+                              color: OrmawaTheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 1,
@@ -346,7 +347,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: OrmawaTheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         elevation: 0,

@@ -6,6 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
@@ -173,10 +174,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
+                color: OrmawaTheme.primarySoft,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.swap_horiz_rounded, size: 20, color: Color(0xFF2563EB)),
+              child: Icon(Icons.swap_horiz_rounded, size: 20, color: OrmawaTheme.primary),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -296,7 +297,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                       icon: const Icon(Icons.tune_rounded, size: 13),
                       label: const Text('Konfigurasi', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: OrmawaTheme.primary,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -327,11 +328,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: OrmawaTheme.primarySoft,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFDBEAFE)),
+                  border: Border.all(color: OrmawaTheme.primaryBorder),
                 ),
-                child: const Icon(Icons.account_balance_wallet_rounded, size: 20, color: Color(0xFF2563EB)),
+                child: Icon(Icons.account_balance_wallet_rounded, size: 20, color: OrmawaTheme.primary),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -823,12 +824,12 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
+                              color: OrmawaTheme.primarySoft,
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               'Tahun ${log.periode}',
-                              style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+                              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark),
                             ),
                           ),
                           Text(
@@ -896,11 +897,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: OrmawaTheme.primarySoft,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFDBEAFE)),
+              border: Border.all(color: OrmawaTheme.primaryBorder),
             ),
-            child: const Icon(Icons.info_outline_rounded, size: 18, color: Color(0xFF2563EB)),
+            child: Icon(Icons.info_outline_rounded, size: 18, color: OrmawaTheme.primary),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -1048,10 +1049,10 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEFF6FF),
+                      color: OrmawaTheme.primarySoft,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.tune_rounded, size: 20, color: Color(0xFF2563EB)),
+                    child: Icon(Icons.tune_rounded, size: 20, color: OrmawaTheme.primary),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
@@ -1104,21 +1105,21 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                         prefixIcon: Container(
                           width: 36,
                           alignment: Alignment.center,
-                          child: const Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF2563EB))),
+                          child: Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.primary)),
                         ),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                          borderSide: BorderSide(color: OrmawaTheme.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                          borderSide: BorderSide(color: OrmawaTheme.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                          borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
@@ -1157,11 +1158,11 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                               Text(_formatCurrency(pending), style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
                             ],
                           ),
-                          const Divider(height: 12, color: Color(0xFFCBD5E1)),
+                          const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Sisa Kuota Tersedia:', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+                              Text('Sisa Kuota Tersedia:', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading)),
                               Text(_formatCurrency(simulatedRemaining), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF059669))),
                             ],
                           ),
@@ -1190,7 +1191,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                          borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
@@ -1218,7 +1219,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             value: _active,
                             onChanged: (val) => setState(() => _active = val),
                             activeThumbColor: Colors.white,
-                            activeTrackColor: const Color(0xFF2563EB),
+                            activeTrackColor: OrmawaTheme.primary,
                           ),
                         ],
                       ),
@@ -1246,7 +1247,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             value: _enforceLimit,
                             onChanged: (val) => setState(() => _enforceLimit = val),
                             activeThumbColor: Colors.white,
-                            activeTrackColor: const Color(0xFF2563EB),
+                            activeTrackColor: OrmawaTheme.primary,
                           ),
                         ],
                       ),
@@ -1262,7 +1263,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                             : const Icon(Icons.save_rounded, size: 16),
                         label: const Text('Simpan Perubahan Pagu', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2563EB),
+                          backgroundColor: OrmawaTheme.primary,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1337,14 +1338,14 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(10),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: OrmawaTheme.primarySoft,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.groups_rounded, size: 18, color: OrmawaTheme.primary),
                   ),
-                  child: const Icon(Icons.groups_rounded, size: 18, color: Color(0xFF2563EB)),
-                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -1396,7 +1397,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                  borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                 ),
               ),
             ),
@@ -1439,10 +1440,10 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC),
+                            color: isSelected ? OrmawaTheme.primarySoft : const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                              color: isSelected ? OrmawaTheme.primary : OrmawaTheme.border,
                               width: isSelected ? 1.5 : 1,
                             ),
                           ),
@@ -1455,7 +1456,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                     width: 32,
                                     height: 32,
                                     decoration: BoxDecoration(
-                                      color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                                      color: isSelected ? OrmawaTheme.primary : OrmawaTheme.border,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Center(
@@ -1481,7 +1482,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
-                                            color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF0F172A),
+                                            color: isSelected ? OrmawaTheme.primaryDark : OrmawaTheme.textHeading,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,

@@ -169,7 +169,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const SizedBox(height: 4),
               Flexible(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
@@ -303,7 +303,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                   ),
                 ),
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(

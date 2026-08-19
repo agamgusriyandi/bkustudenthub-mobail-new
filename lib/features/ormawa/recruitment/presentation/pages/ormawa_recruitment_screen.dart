@@ -597,7 +597,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                   ],
                 ),
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const SizedBox(height: 4),
 
               Expanded(
                 child: SingleChildScrollView(
