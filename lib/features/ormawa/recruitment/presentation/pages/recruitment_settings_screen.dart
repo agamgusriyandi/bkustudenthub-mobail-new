@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_date_field.dart';
 
 class RecruitmentSettingsScreen extends StatefulWidget {
   const RecruitmentSettingsScreen({super.key});
 
   @override
-  State<RecruitmentSettingsScreen> createState() =>
-      _RecruitmentSettingsScreenState();
+  State<RecruitmentSettingsScreen> createState() => _RecruitmentSettingsScreenState();
 }
 
 class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
@@ -34,6 +31,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
     _loadSettings();
   }
 
+  @override
+  void dispose() {
+    _requirementsController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadSettings() async {
     final provider = context.read<OrmawaProvider>();
     await provider.getRecruitmentSettings();
@@ -41,16 +44,20 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
     final settings = provider.recruitmentSettings;
     if (settings.isNotEmpty && mounted) {
       setState(() {
-        _isOpenRecruitment = settings['isActive'] ?? false;
-        _minIpk =
-            double.tryParse(settings['minIpk']?.toString() ?? '2.5') ?? 2.5;
-        _requirementsController.text = settings['requirements'] ?? '';
+        _isOpenRecruitment = settings['open_recruitment'] ?? settings['isActive'] ?? false;
+        final ipkRaw = settings['min_ipk'] ?? settings['minIpk'];
+        _minIpk = double.tryParse(ipkRaw?.toString() ?? '2.5') ?? 2.5;
+        _requirementsController.text =
+            settings['recruitment_requirements'] ?? settings['requirements'] ?? '';
 
-        if (settings['startDate'] != null) {
-          _startDate = DateTime.tryParse(settings['startDate'].toString());
+        final startRaw = settings['recruitment_start'] ?? settings['startDate'];
+        if (startRaw != null) {
+          _startDate = DateTime.tryParse(startRaw.toString());
         }
-        if (settings['endDate'] != null) {
-          _endDate = DateTime.tryParse(settings['endDate'].toString());
+
+        final endRaw = settings['recruitment_end'] ?? settings['endDate'];
+        if (endRaw != null) {
+          _endDate = DateTime.tryParse(endRaw.toString());
         }
       });
     } else {
@@ -60,16 +67,36 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
   }
 
   Future<void> _selectDate(bool isStart) async {
+    final initialDate = isStart
+        ? (_startDate ?? DateTime.now())
+        : (_endDate ?? _startDate ?? DateTime.now());
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime(2035),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: OrmawaTheme.primaryDark,
+              onPrimary: Colors.white,
+              onSurface: OrmawaTheme.textHeading,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null) {
       setState(() {
         if (isStart) {
           _startDate = picked;
+          if (_endDate != null && _endDate!.isBefore(_startDate!)) {
+            _endDate = _startDate;
+          }
         } else {
           _endDate = picked;
         }
@@ -80,19 +107,36 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
   Future<void> _saveSettings() async {
     setState(() => _isLoading = true);
     try {
-      await context.read<OrmawaProvider>().updateRecruitmentSettings({
-        'isActive': _isOpenRecruitment,
-        'startDate': _startDate?.toIso8601String(),
-        'endDate': _endDate?.toIso8601String(),
-        'minIpk': _minIpk,
-        'requirements': _requirementsController.text,
-      });
+      final payload = {
+        'open_recruitment': _isOpenRecruitment,
+        'recruitment_requirements': _requirementsController.text.trim(),
+        'min_ipk': _minIpk,
+        'recruitment_start': _startDate != null
+            ? DateTime.utc(
+                _startDate!.year,
+                _startDate!.month,
+                _startDate!.day,
+              ).toIso8601String()
+            : null,
+        'recruitment_end': _endDate != null
+            ? DateTime.utc(
+                _endDate!.year,
+                _endDate!.month,
+                _endDate!.day,
+                23,
+                59,
+                59,
+              ).toIso8601String()
+            : null,
+      };
+
+      await context.read<OrmawaProvider>().updateRecruitmentSettings(payload);
       if (mounted) {
-        AppSnackbar.showSuccess(context, 'Pengaturan berhasil disimpan');
+        AppSnackbar.showSuccess(context, 'Pengaturan Open Recruitment berhasil disimpan!');
       }
     } catch (e) {
       if (mounted) {
-        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+        AppSnackbar.showError(context, 'Gagal menyimpan pengaturan: $e');
       }
     } finally {
       if (mounted) {
@@ -104,45 +148,16 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xl,
-          vertical: AppSpacing.lg,
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors:
-                      _isOpenRecruitment
-                          ? [
-                            context.appColors.primary,
-                            Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.8),
-                          ]
-                          : [AppColors.neutral100, AppColors.neutral200],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: AppRadius.radiusXl,
-                boxShadow:
-                    _isOpenRecruitment
-                        ? [
-                          BoxShadow(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.6),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ]
-                        : null,
-              ),
-              padding: const EdgeInsets.all(AppSpacing.xl),
+            OrmawaCard(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -150,93 +165,71 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Pendaftaran Anggota',
-                          style: AppTextStyles.titleSm.copyWith(
-                            color:
-                                _isOpenRecruitment
-                                    ? context.appColors.onPrimary
-                                    : AppColors.neutral800,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              'Status Open Recruitment',
+                              style: OrmawaTheme.textCardTitle.copyWith(
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            OrmawaBadge(
+                              text: _isOpenRecruitment ? 'AKTIF' : 'NONAKTIF',
+                              variant: _isOpenRecruitment
+                                  ? OrmawaBadgeVariant.success
+                                  : OrmawaBadgeVariant.neutral,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: 3),
                         Text(
                           _isOpenRecruitment
-                              ? 'Pendaftaran saat ini sedang DIBUKA'
-                              : 'Pendaftaran saat ini sedang DITUTUP',
-                          style: AppTextStyles.labelMd.copyWith(
-                            color:
-                                _isOpenRecruitment
-                                    ? context.appColors.onPrimary
-                                    : AppColors.neutral500,
-                          ),
+                              ? 'Pendaftaran sedang terbuka untuk mahasiswa'
+                              : 'Pendaftaran saat ini sedang ditutup',
+                          style: OrmawaTheme.textCaption,
                         ),
                       ],
                     ),
                   ),
                   Switch(
                     value: _isOpenRecruitment,
-                    onChanged:
-                        (value) => setState(() => _isOpenRecruitment = value),
-                    activeThumbColor: context.appColors.onPrimary,
-                    activeTrackColor: context.appColors.success,
-                    inactiveThumbColor: AppColors.neutral400,
-                    inactiveTrackColor: AppColors.neutral300,
+                    onChanged: (value) => setState(() => _isOpenRecruitment = value),
+                    activeThumbColor: Colors.white,
+                    activeTrackColor: const Color(0xFF16A34A),
+                    inactiveThumbColor: const Color(0xFF94A3B8),
+                    inactiveTrackColor: const Color(0xFFE2E8F0),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-
+            const SizedBox(height: 16),
             Text(
-              'Periode & Syarat',
-              style: AppTextStyles.titleSm.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.neutral800,
-              ),
+              'Periode Pendaftaran',
+              style: OrmawaTheme.textSectionTitle,
             ),
-            const SizedBox(height: AppSpacing.md),
-
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: RecruitmentDateField(
-                    label: 'Mulai',
+                    label: 'Tanggal Buka',
                     date: _startDate,
                     onTap: () => _selectDate(true),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: 10),
                 Expanded(
                   child: RecruitmentDateField(
-                    label: 'Selesai',
+                    label: 'Tanggal Tutup',
                     date: _endDate,
                     onTap: () => _selectDate(false),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.lg),
-
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusXl,
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.outline.withValues(alpha: 0.5),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.neutral200.withValues(alpha: 0.5),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 16),
+            OrmawaCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -246,57 +239,52 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(AppSpacing.sm),
+                            padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: AppColors.warning.withValues(alpha: 0.2),
-                              borderRadius: AppRadius.radiusMd,
+                              color: OrmawaTheme.statusWarningBg,
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
                               Icons.star_rounded,
-                              color: AppColors.warning,
-                              size: 20,
+                              color: Color(0xFFD97706),
+                              size: 18,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.md),
+                          const SizedBox(width: 10),
                           Text(
-                            'IPK Minimal',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            'Standar IPK Minimal',
+                            style: OrmawaTheme.textCardTitle,
                           ),
                         ],
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: 6,
+                          horizontal: 10,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: context.appColors.primary,
-                          borderRadius: AppRadius.radiusMd,
+                          color: OrmawaTheme.primarySoft,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: OrmawaTheme.primaryBorder),
                         ),
                         child: Text(
                           _minIpk.toStringAsFixed(2),
-                          style: AppTextStyles.labelMd.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.appColors.onPrimary,
+                          style: OrmawaTheme.textBadge.copyWith(
+                            color: OrmawaTheme.primaryDark,
+                            fontSize: 12,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 8),
                   SliderTheme(
                     data: SliderThemeData(
-                      activeTrackColor: context.appColors.primary,
-                      inactiveTrackColor: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.3),
-                      thumbColor: context.appColors.primary,
-                      overlayColor: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.3),
-                      trackHeight: 6,
+                      activeTrackColor: OrmawaTheme.primary,
+                      inactiveTrackColor: OrmawaTheme.primaryBorder,
+                      thumbColor: OrmawaTheme.primaryDark,
+                      overlayColor: OrmawaTheme.primarySoft,
+                      trackHeight: 5,
                     ),
                     child: Slider(
                       value: _minIpk,
@@ -309,80 +297,52 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
-
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusXl,
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.outline.withValues(alpha: 0.5),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.neutral200.withValues(alpha: 0.5),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 16),
+            OrmawaCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.info.withValues(alpha: 0.2),
-                          borderRadius: AppRadius.radiusMd,
+                          color: OrmawaTheme.statusInfoBg,
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(
-                          Icons.assignment_rounded,
-                          color: AppColors.info,
-                          size: 20,
+                          Icons.assignment_outlined,
+                          color: Color(0xFF0284C7),
+                          size: 18,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.md),
+                      const SizedBox(width: 10),
                       Text(
-                        'Persyaratan Utama',
-                        style: AppTextStyles.bodyMd.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        'Persyaratan Utama Pendaftaran',
+                        style: OrmawaTheme.textCardTitle,
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  BkuTextField(
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'Persyaratan Khusus',
+                    hintText: 'Tuliskan syarat pendaftaran (pisahkan per baris)...',
                     controller: _requirementsController,
                     maxLines: 4,
-                    style: AppTextStyles.bodyMd,
-                    decoration: InputDecoration(
-                      hintText: 'Tuliskan persyaratan pendaftaran...',
-                      hintStyle: AppTextStyles.bodyMd.copyWith(
-                        color: AppColors.neutral400,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.neutral100.withValues(alpha: 0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusLg,
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.all(AppSpacing.lg),
-                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xxl),
-
-            BkuButton.primary(
-              text: 'Simpan Pengaturan',
-              onPressed: _isLoading ? null : _saveSettings,
-              isLoading: _isLoading,
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OrmawaButton(
+                text: 'SIMPAN PENGATURAN',
+                onPressed: _isLoading ? null : _saveSettings,
+                isLoading: _isLoading,
+                icon: Icons.save_rounded,
+              ),
             ),
             const SizedBox(height: AppSpacing.s100),
           ],
@@ -391,4 +351,3 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
     );
   }
 }
-

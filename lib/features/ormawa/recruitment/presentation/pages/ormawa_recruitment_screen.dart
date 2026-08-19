@@ -391,8 +391,23 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
         'open_recruitment': _openRecruitment,
         'recruitment_requirements': _requirementsController.text.trim(),
         'min_ipk': minIpk,
-        'recruitment_start': _recruitmentStart?.toIso8601String(),
-        'recruitment_end': _recruitmentEnd?.toIso8601String(),
+        'recruitment_start': _recruitmentStart != null
+            ? DateTime.utc(
+                _recruitmentStart!.year,
+                _recruitmentStart!.month,
+                _recruitmentStart!.day,
+              ).toIso8601String()
+            : null,
+        'recruitment_end': _recruitmentEnd != null
+            ? DateTime.utc(
+                _recruitmentEnd!.year,
+                _recruitmentEnd!.month,
+                _recruitmentEnd!.day,
+                23,
+                59,
+                59,
+              ).toIso8601String()
+            : null,
       };
       await provider.updateRecruitmentSettings(payload);
       if (mounted) {
