@@ -27,6 +27,14 @@ class OrmawaLPJ {
     this.updatedAt,
   });
 
+  String get title => judul;
+  String get note => catatan;
+  double get totalBudget => totalAnggaran;
+  double get realizationBudget => realisasiAnggaran;
+  double get amount => totalAnggaran;
+  double get realization => realisasiAnggaran;
+  String? get description => catatan;
+
   factory OrmawaLPJ.fromJson(Map<String, dynamic> json) {
     DateTime? parsedTenggat;
     if (json['Proposal'] != null) {

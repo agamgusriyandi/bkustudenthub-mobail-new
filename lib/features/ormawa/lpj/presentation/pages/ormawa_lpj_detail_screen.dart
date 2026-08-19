@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_lpj.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/lpj/presentation/pages/edit_lpj_screen.dart';
 
@@ -32,7 +33,10 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
 
   Future<void> _loadDocuments() async {
     try {
-      final docs = await context.read<OrmawaProvider>().repository.getLpjDocuments(widget.lpj.id.toString());
+      final id = widget.lpj is OrmawaLPJ
+          ? widget.lpj.id
+          : (widget.lpj['id'] ?? widget.lpj['ID'] ?? '').toString();
+      final docs = await context.read<OrmawaProvider>().repository.getLpjDocuments(id);
       if (mounted) {
         setState(() {
           _documents = docs;
@@ -70,13 +74,25 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusStr = (widget.lpj.status ?? 'Menunggu').toString();
-    final title = (widget.lpj.title ?? widget.lpj.judul ?? 'Detail LPJ').toString();
-    final proposalTitle = widget.lpj.proposalTitle;
-    final totalBudget = (widget.lpj.totalBudget ?? widget.lpj.totalAnggaran ?? 0.0) as double;
-    final realization = (widget.lpj.realizationBudget ?? widget.lpj.realisasiAnggaran ?? 0.0) as double;
-    final sisa = totalBudget - realization;
-    final catatan = (widget.lpj.note ?? widget.lpj.catatan ?? '').toString();
+    final String statusStr = widget.lpj is OrmawaLPJ
+        ? widget.lpj.status
+        : (widget.lpj['status'] ?? widget.lpj['Status'] ?? 'Menunggu').toString();
+    final String title = widget.lpj is OrmawaLPJ
+        ? widget.lpj.judul
+        : (widget.lpj['judul'] ?? widget.lpj['Judul'] ?? widget.lpj['title'] ?? 'Detail LPJ').toString();
+    final String? proposalTitle = widget.lpj is OrmawaLPJ
+        ? widget.lpj.proposalTitle
+        : (widget.lpj['proposalTitle'] ?? widget.lpj['proposal_title'] ?? widget.lpj['Proposal']?['Judul'])?.toString();
+    final double totalBudget = widget.lpj is OrmawaLPJ
+        ? widget.lpj.totalAnggaran
+        : ((widget.lpj['totalAnggaran'] ?? widget.lpj['TotalAnggaran'] ?? widget.lpj['totalBudget'] ?? 0.0) as num).toDouble();
+    final double realization = widget.lpj is OrmawaLPJ
+        ? widget.lpj.realisasiAnggaran
+        : ((widget.lpj['realisasiAnggaran'] ?? widget.lpj['RealisasiAnggaran'] ?? widget.lpj['realizationBudget'] ?? 0.0) as num).toDouble();
+    final double sisa = totalBudget - realization;
+    final String catatan = widget.lpj is OrmawaLPJ
+        ? widget.lpj.catatan
+        : (widget.lpj['catatan'] ?? widget.lpj['Catatan'] ?? widget.lpj['note'] ?? '').toString();
 
     return Scaffold(
       backgroundColor: OrmawaTheme.scaffoldBg,
@@ -116,7 +132,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                                 size: 22,
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +146,7 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                                     ),
                                   ),
                                   if (proposalTitle != null && proposalTitle.toString().isNotEmpty) ...[
-                                    SizedBox(height: 3),
+                                    const SizedBox(height: 3),
                                     Text(
                                       'Proposal: $proposalTitle',
                                       style: TextStyle(
@@ -151,22 +167,16 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildSectionTitle('Realisasi Anggaran'),
                   const SizedBox(height: 8),
                   OrmawaCard(
                     child: Column(
                       children: [
                         _buildInfoRow('Total Anggaran', _formatCurrency(totalBudget)),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
-                        ),
+                        const SizedBox(height: 10),
                         _buildInfoRow('Realisasi Digunakan', _formatCurrency(realization)),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
-                        ),
+                        const SizedBox(height: 10),
                         _buildInfoRow('Sisa Anggaran', _formatCurrency(sisa), isHighlight: true),
                       ],
                     ),
@@ -269,10 +279,10 @@ class _OrmawaLpjDetailScreenState extends State<OrmawaLpjDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_isLoadingDocs)
-            Center(child: Padding(padding: EdgeInsets.all(12), child: BkuShimmerList(itemCount: 2, itemHeight: 40)))
+            const Center(child: Padding(padding: EdgeInsets.all(12), child: BkuShimmerList(itemCount: 2, itemHeight: 40)))
           else if (_documents.isEmpty)
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 'Tidak ada dokumen lampiran',
                 style: TextStyle(
