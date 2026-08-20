@@ -36,8 +36,8 @@ class OrmawaButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: OrmawaTheme.primary.withAlpha(40),
-              blurRadius: 8,
+              color: OrmawaTheme.primary.withAlpha(35),
+              blurRadius: 10,
               offset: const Offset(0, 3),
             ),
           ],
@@ -47,26 +47,26 @@ class OrmawaButton extends StatelessWidget {
       case OrmawaButtonVariant.secondary:
         decoration = BoxDecoration(
           color: OrmawaTheme.primarySoft,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: OrmawaTheme.primaryBorder),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: OrmawaTheme.primaryBorder.withAlpha(30)),
         );
-        textColor = OrmawaTheme.primaryDark;
+        textColor = OrmawaTheme.primary;
         break;
       case OrmawaButtonVariant.outline:
         decoration = BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: OrmawaTheme.border),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
         );
         textColor = OrmawaTheme.textHeading;
         break;
       case OrmawaButtonVariant.danger:
         decoration = BoxDecoration(
-          color: OrmawaTheme.statusDangerBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: OrmawaTheme.statusDangerBorder),
+          color: OrmawaTheme.roseSoft,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: OrmawaTheme.roseBorder),
         );
-        textColor = OrmawaTheme.statusDangerText;
+        textColor = OrmawaTheme.rose;
         break;
     }
 

@@ -63,6 +63,7 @@ dependencies:
   image_cropper: ^12.2.1
   cached_network_image: ^3.4.1
   share_plus: ^12.0.2
+  path_provider: ^2.1.5
   upgrader: ^13.6.0
 
 dev_dependencies:

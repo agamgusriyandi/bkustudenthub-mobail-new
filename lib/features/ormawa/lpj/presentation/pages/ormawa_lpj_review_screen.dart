@@ -4,12 +4,12 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
-
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -119,7 +119,7 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: _loadLpjs,
         child: CustomScrollView(
@@ -239,28 +239,25 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-              child: Divider(color: AppColors.neutral200, height: 1),
-            ),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                   decoration: BoxDecoration(
-                    color: context.appColors.primary.withAlpha(10),
+                    color: OrmawaTheme.primarySoft,
                     borderRadius: AppRadius.radiusSm,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.arrow_forward_ios_rounded, size: 10, color: context.appColors.primary),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 10, color: OrmawaTheme.primary),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         'Review',
                         style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.primary,
+                          color: OrmawaTheme.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                         ),
@@ -282,7 +279,7 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: context.appColors.surface,
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
         ),
         padding: const EdgeInsets.all(AppSpacing.xl),
@@ -316,13 +313,13 @@ class _OrmawaLpjReviewScreenState extends State<OrmawaLpjReviewScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: isSelected ? context.appColors.primary : context.appColors.primary.withAlpha(10),
+                      color: isSelected ? OrmawaTheme.primary : OrmawaTheme.primarySoft,
                       borderRadius: AppRadius.radiusXl,
                     ),
                     child: Text(
                       status,
                       style: AppTextStyles.labelSm.copyWith(
-                        color: isSelected ? context.appColors.onPrimary : context.appColors.primary,
+                        color: isSelected ? Colors.white : OrmawaTheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

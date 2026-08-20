@@ -17,7 +17,6 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> update(String id, Map<String, dynamic> data);
   Future<Response> delete(String id);
 
-  // Ormawa Role Dashboards
   Future<Response> getOrmawaStats(String ormawaId);
   Future<Response> getOrmawaGamifikasi();
   Future<Response> getOrmawaGamifikasiHistory();
@@ -26,6 +25,7 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> getProposals(String ormawaId);
   Future<Response> addProposal(Map<String, dynamic> data);
   Future<Response> updateProposal(String id, Map<String, dynamic> data);
+  Future<Response> resubmitProposal(String id);
   Future<Response> deleteProposal(String id);
   Future<Response> getAgendas(String ormawaId);
   Future<Response> addAgenda(Map<String, dynamic> data);
@@ -35,6 +35,17 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> submitAttendance(Map<String, dynamic> data);
   Future<Response> getFinance(String ormawaId);
   Future<Response> addFinance(String ormawaId, Map<String, dynamic> data);
+  Future<Response> deleteFinance(String id);
+  Future<Response> getBudgetStatus(String ormawaId);
+  Future<Response> generateReportNumber(String ormawaId);
+  Future<Response> getBankAccount(String ormawaId);
+  Future<Response> updateBankAccount(String ormawaId, Map<String, dynamic> data);
+  Future<Response> getIurans(String ormawaId);
+  Future<Response> createIuran(String ormawaId, Map<String, dynamic> data);
+  Future<Response> getIuranMembers(String iuranId, String ormawaId);
+  Future<Response> verifyIuranPayment(String detailId, String ormawaId, Map<String, dynamic> data);
+  Future<Response> getMyIurans(String ormawaId);
+  Future<Response> payMyIuran(String detailId, String ormawaId, Map<String, dynamic> data);
   Future<Response> getLPJs(String ormawaId);
   Future<Response> getLpjDocuments(String lpjId);
   Future<Response> addLPJ(Map<String, dynamic> data);
@@ -47,58 +58,48 @@ abstract class OrmawaRemoteDataSource {
   Future<Response> updateAnnouncement(String id, Map<String, dynamic> data);
   Future<Response> deleteAnnouncement(String id);
 
-  // Notifications
   Future<Response> getNotifications(String ormawaId);
   Future<Response> markNotificationAsRead(String id);
   Future<Response> markAllNotificationsAsRead(String ormawaId);
   Future<Response> deleteNotification(String id);
 
-  // Divisions
   Future<Response> getDivisions(String ormawaId);
   Future<Response> createDivision(Map<String, dynamic> data);
   Future<Response> deleteDivision(String id);
 
-  // Members
   Future<Response> getMembers(String ormawaId);
   Future<Response> createMember(Map<String, dynamic> data);
   Future<Response> regenerateMembers(String ormawaId);
   Future<Response> updateMember(String id, Map<String, dynamic> data);
   Future<Response> deleteMember(String id);
 
-  // Recruitment Form Builder
   Future<Response> getRecruitmentFormFields(String ormawaId);
   Future<Response> saveRecruitmentFormFields(
     String ormawaId,
     List<Map<String, dynamic>> fields,
   );
 
-  // Settings
   Future<Response> getOrmawaSettings(String ormawaId);
   Future<Response> updateOrmawaSettings(
     String ormawaId,
     Map<String, dynamic> data,
   );
 
-  // Student Lookup
   Future<Response> getStudents();
   Future<Response> uploadFile(FormData data);
 
-  // Organisasi
   Future<Response> getOrganisasiList();
   Future<Response> createOrganisasi(Map<String, dynamic> data);
   Future<Response> updateOrganisasi(String id, Map<String, dynamic> data);
   Future<Response> deleteOrganisasi(String id);
 
-  // Attendance Management
   Future<Response> getAbsensiManagement(String ormawaId);
   Future<Response> createAbsensiManagement(Map<String, dynamic> data);
   Future<Response> getAbsensiManagementDetail(String id);
   Future<Response> updateAbsensiManagement(String id, Map<String, dynamic> data);
 
-  // RBAC Roles
   Future<Response> getRoleDetails(String roleId);
 
-  // Financial Settings (Pagu Anggaran)
   Future<Response> getFinancialSettings({String? ormawaId, String? periode});
   Future<Response> getFinancialAuditLogs(String ormawaId);
   Future<Response> updateFinancialSetting(Map<String, dynamic> data);
@@ -184,7 +185,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.delete('/organisasi/$id');
   }
 
-  // Ormawa Role Dashboards HTTP Implementation
   @override
   Future<Response> getOrmawaStats(String ormawaId) async {
     return await dio.get('/ormawa/stats');
@@ -226,6 +226,11 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
   }
 
   @override
+  Future<Response> resubmitProposal(String id) async {
+    return await dio.post('/ormawa/proposals/$id/resubmit');
+  }
+
+  @override
   Future<Response> deleteProposal(String id) async {
     return await dio.delete('/ormawa/proposals/$id');
   }
@@ -252,7 +257,7 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
 
   @override
   Future<Response> getFinance(String ormawaId) async {
-    return await dio.get('/ormawa/kas');
+    return await dio.get('/ormawa/kas', queryParameters: {'ormawaId': ormawaId});
   }
 
   @override
@@ -261,6 +266,61 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     Map<String, dynamic> data,
   ) async {
     return await dio.post('/ormawa/kas', data: data);
+  }
+
+  @override
+  Future<Response> deleteFinance(String id) async {
+    return await dio.delete('/ormawa/kas/$id');
+  }
+
+  @override
+  Future<Response> getBudgetStatus(String ormawaId) async {
+    return await dio.get('/ormawa/budget-status', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> generateReportNumber(String ormawaId) async {
+    return await dio.post('/ormawa/kas/generate-report-number', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> getBankAccount(String ormawaId) async {
+    return await dio.get('/ormawa/bank-account', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> updateBankAccount(String ormawaId, Map<String, dynamic> data) async {
+    return await dio.put('/ormawa/bank-account', queryParameters: {'ormawaId': ormawaId}, data: data);
+  }
+
+  @override
+  Future<Response> getIurans(String ormawaId) async {
+    return await dio.get('/ormawa/iuran', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> createIuran(String ormawaId, Map<String, dynamic> data) async {
+    return await dio.post('/ormawa/iuran', queryParameters: {'ormawaId': ormawaId}, data: data);
+  }
+
+  @override
+  Future<Response> getIuranMembers(String iuranId, String ormawaId) async {
+    return await dio.get('/ormawa/iuran/$iuranId/anggota', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> verifyIuranPayment(String detailId, String ormawaId, Map<String, dynamic> data) async {
+    return await dio.put('/ormawa/iuran/pembayaran/$detailId/verifikasi', queryParameters: {'ormawaId': ormawaId}, data: data);
+  }
+
+  @override
+  Future<Response> getMyIurans(String ormawaId) async {
+    return await dio.get('/ormawa/iuran-saya', queryParameters: {'ormawaId': ormawaId});
+  }
+
+  @override
+  Future<Response> payMyIuran(String detailId, String ormawaId, Map<String, dynamic> data) async {
+    return await dio.post('/ormawa/iuran-pembayaran/$detailId', queryParameters: {'ormawaId': ormawaId}, data: data);
   }
 
   @override
@@ -330,7 +390,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.delete('/ormawa/announcements/$id');
   }
 
-  // Notifications
   @override
   Future<Response> getNotifications(String ormawaId) async {
     return await dio.get(
@@ -357,7 +416,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.delete('/ormawa/notifications/$id');
   }
 
-  // Divisions
   @override
   Future<Response> getDivisions(String ormawaId) async {
     return await dio.get('/ormawa/divisions');
@@ -404,7 +462,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.delete('/ormawa/members/$id');
   }
 
-  // Recruitment Form Fields
   @override
   Future<Response> getRecruitmentFormFields(String ormawaId) async {
     return await dio.get('/ormawa/recruitment-fields');
@@ -418,7 +475,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.post('/ormawa/recruitment-fields', data: fields);
   }
 
-  // Settings
   @override
   Future<Response> getOrmawaSettings(String ormawaId) async {
     return await dio.get('/ormawa/settings/$ormawaId');
@@ -452,7 +508,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.post('/ormawa/upload', data: data);
   }
 
-  // Attendance Management
   @override
   Future<Response> getAbsensiManagement(String ormawaId) async {
     return await dio.get('/ormawa/attendance', queryParameters: {'ormawa_id': ormawaId});
@@ -478,7 +533,6 @@ class OrmawaRemoteDataSourceImpl implements OrmawaRemoteDataSource {
     return await dio.get('/ormawa/roles/$roleId');
   }
 
-  // Organisasi
   @override
   Future<Response> getOrganisasiList() async {
     return await dio.get('/ormawa/organisasi');

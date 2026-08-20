@@ -4,7 +4,6 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,6 +22,8 @@ class OrmawaStrukturScreen extends StatefulWidget {
 }
 
 class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
+  String _viewMode = 'tree';
+
   @override
   void initState() {
     super.initState();
@@ -109,10 +110,10 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         bphInti.length;
 
     final canManage = ormawaProvider.hasPermission('manage_structure') ||
-        ormawaProvider.hasPermission('view_structure');
+        ormawaProvider.hasPermission('ormawa.structure.manage, ormawa.structure.update, ormawa.organisasi.manage, ormawa.members.update');
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
         child: CustomScrollView(
@@ -149,7 +150,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   AppSpacing.xl,
                   AppSpacing.lg,
                   AppSpacing.xl,
-                  AppSpacing.s100,
+                  AppSpacing.xxl,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,76 +162,96 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       totalDivisions: allDivNames.length,
                       totalPembina: pembina.length,
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: 14),
 
-                    if (pembina.isNotEmpty) ...[
-                      _buildSectionTitle('PEMBINA & PENASIHAT', Icons.school_rounded, AppColors.serviceIndigo),
-                      const SizedBox(height: AppSpacing.sm),
-                      ...pembina.map((m) => _buildMemberCard(context, m, customRoleBadge: 'Pembina')),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
+                    _buildViewSwitcher(),
+                    const SizedBox(height: 14),
 
-                    if (ketua != null || wakil != null) ...[
-                      _buildSectionTitle('PIMPINAN UTAMA', Icons.military_tech_rounded, AppColors.serviceAmber),
-                      const SizedBox(height: AppSpacing.sm),
-                      if (ketua != null)
-                        _buildHeroLeaderCard(context, ketua, isPrimary: true),
-                      if (wakil != null) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        _buildHeroLeaderCard(context, wakil, isPrimary: false),
+                    if (_viewMode == 'tree') ...[
+                      if (pembina.isNotEmpty) ...[
+                        _buildSectionTitle('PEMBINA & PENASIHAT', Icons.school_rounded, const Color(0xFF4F46E5)),
+                        const SizedBox(height: AppSpacing.sm),
+                        ...pembina.map((m) => _buildMemberCard(context, m, customRoleBadge: 'Pembina')),
+                        const SizedBox(height: AppSpacing.lg),
                       ],
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
 
-                    if (sekretaris.isNotEmpty || bendahara.isNotEmpty || bphInti.isNotEmpty) ...[
-                      _buildSectionTitle('BADAN PENGURUS HARIAN (BPH)', Icons.shield_rounded, AppColors.serviceSky),
-                      const SizedBox(height: AppSpacing.sm),
-                      ...sekretaris.map((m) => _buildMemberCard(context, m)),
-                      ...bendahara.map((m) => _buildMemberCard(context, m)),
-                      ...bphInti.map((m) => _buildMemberCard(context, m)),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
+                      if (ketua != null || wakil != null) ...[
+                        _buildSectionTitle('PIMPINAN UTAMA', Icons.military_tech_rounded, const Color(0xFFD97706)),
+                        const SizedBox(height: AppSpacing.sm),
+                        if (ketua != null)
+                          _buildHeroLeaderCard(context, ketua, isPrimary: true),
+                        if (wakil != null) ...[
+                          const SizedBox(height: AppSpacing.xs),
+                          _buildHeroLeaderCard(context, wakil, isPrimary: false),
+                        ],
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
 
-                    if (allDivNames.isNotEmpty) ...[
-                      _buildSectionTitle('DIVISI & DEPARTEMEN', Icons.category_rounded, AppColors.servicePurple),
-                      const SizedBox(height: AppSpacing.sm),
-                      ...allDivNames.map((divName) {
-                        final divMembers = members.where((m) => m.division == divName && !pembinaIds.contains(m.id)).toList();
-                        accountedIds.addAll(divMembers.map((m) => m.id));
+                      if (sekretaris.isNotEmpty || bendahara.isNotEmpty || bphInti.isNotEmpty) ...[
+                        _buildSectionTitle('BADAN PENGURUS HARIAN (BPH)', Icons.shield_rounded, const Color(0xFF0284C7)),
+                        const SizedBox(height: AppSpacing.sm),
+                        ...sekretaris.map((m) => _buildMemberCard(context, m)),
+                        ...bendahara.map((m) => _buildMemberCard(context, m)),
+                        ...bphInti.map((m) => _buildMemberCard(context, m)),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
 
-                        final kadivList = divMembers.where((m) {
-                          final r = m.role.toLowerCase();
-                          return r.contains('kepala') ||
-                              r.contains('kadiv') ||
-                              r.contains('koordinator') ||
-                              r.contains('ketua divisi');
-                        }).toList();
-                        final kadivIds = kadivList.map((m) => m.id).toSet();
-                        final stafList = divMembers.where((m) => !kadivIds.contains(m.id)).toList();
+                      if (allDivNames.isNotEmpty) ...[
+                        _buildSectionTitle('DIVISI & DEPARTEMEN', Icons.category_rounded, const Color(0xFF8B5CF6)),
+                        const SizedBox(height: AppSpacing.sm),
+                        ...allDivNames.map((divName) {
+                          final divMembers = members.where((m) => m.division == divName && !pembinaIds.contains(m.id)).toList();
+                          accountedIds.addAll(divMembers.map((m) => m.id));
 
-                        return _buildDivisionContainer(
-                          context,
-                          divisionName: divName,
-                          kadivList: kadivList,
-                          stafList: stafList,
-                        );
-                      }),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
+                          final kadivList = divMembers.where((m) {
+                            final r = m.role.toLowerCase();
+                            return r.contains('kepala') ||
+                                r.contains('kadiv') ||
+                                r.contains('koordinator') ||
+                                r.contains('ketua divisi');
+                          }).toList();
+                          final kadivIds = kadivList.map((m) => m.id).toSet();
+                          final stafList = divMembers.where((m) => !kadivIds.contains(m.id)).toList();
 
-                    ...[
-                      Builder(builder: (context) {
-                        final generalMembers = members.where((m) => !accountedIds.contains(m.id)).toList();
-                        if (generalMembers.isEmpty) return const SizedBox.shrink();
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildSectionTitle('ANGGOTA ORGANISASI', Icons.groups_rounded, AppColors.serviceEmerald),
-                            const SizedBox(height: AppSpacing.sm),
-                            ...generalMembers.map((m) => _buildMemberCard(context, m)),
-                          ],
-                        );
-                      }),
+                          return _buildDivisionContainer(
+                            context,
+                            divisionName: divName,
+                            kadivList: kadivList,
+                            stafList: stafList,
+                          );
+                        }),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
+
+                      ...[
+                        Builder(builder: (context) {
+                          final generalMembers = members.where((m) => !accountedIds.contains(m.id)).toList();
+                          if (generalMembers.isEmpty) return const SizedBox.shrink();
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSectionTitle('ANGGOTA ORGANISASI', Icons.groups_rounded, const Color(0xFF059669)),
+                              const SizedBox(height: AppSpacing.sm),
+                              ...generalMembers.map((m) => _buildMemberCard(context, m)),
+                            ],
+                          );
+                        }),
+                      ],
+                    ] else ...[
+                      _buildGridMode(
+                        context,
+                        ketua: ketua,
+                        wakil: wakil,
+                        sekretaris: sekretaris,
+                        bendahara: bendahara,
+                        bphInti: bphInti,
+                        pembina: pembina,
+                        divisions: allDivNames,
+                        members: members,
+                        accountedIds: accountedIds,
+                        pembinaIds: pembinaIds,
+                        totalBph: totalBph,
+                      ),
                     ],
 
                     if (members.isEmpty && !ormawaProvider.isLoading)
@@ -242,7 +263,268 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
           ],
         ),
       ),
-      floatingActionButton: canManage ? _buildFab(context) : null,
+    );
+  }
+
+  Widget _buildViewSwitcher() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: OrmawaTheme.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => setState(() => _viewMode = 'tree'),
+              borderRadius: BorderRadius.circular(9),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: _viewMode == 'tree' ? OrmawaTheme.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.account_tree_rounded,
+                      size: 16,
+                      color: _viewMode == 'tree' ? Colors.white : const Color(0xFF64748B),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Bagan Pohon',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: _viewMode == 'tree' ? Colors.white : const Color(0xFF64748B),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: InkWell(
+              onTap: () => setState(() => _viewMode = 'grid'),
+              borderRadius: BorderRadius.circular(9),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: _viewMode == 'grid' ? OrmawaTheme.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.grid_view_rounded,
+                      size: 16,
+                      color: _viewMode == 'grid' ? Colors.white : const Color(0xFF64748B),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Grid Departemen',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: _viewMode == 'grid' ? Colors.white : const Color(0xFF64748B),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGridMode(
+    BuildContext context, {
+    required OrmawaMember? ketua,
+    required OrmawaMember? wakil,
+    required List<OrmawaMember> sekretaris,
+    required List<OrmawaMember> bendahara,
+    required List<OrmawaMember> bphInti,
+    required List<OrmawaMember> pembina,
+    required List<String> divisions,
+    required List<OrmawaMember> members,
+    required Set<String> accountedIds,
+    required Set<String> pembinaIds,
+    required int totalBph,
+  }) {
+    final allBph = [
+      if (ketua != null) ketua,
+      if (wakil != null) wakil,
+      ...sekretaris,
+      ...bendahara,
+      ...bphInti,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('PIMPINAN & BPH ($totalBph)', Icons.shield_rounded, const Color(0xFF0284C7)),
+        const SizedBox(height: AppSpacing.sm),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: allBph.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 2.2,
+          ),
+          itemBuilder: (context, i) {
+            final m = allBph[i];
+            return _buildGridMemberCard(context, m);
+          },
+        ),
+        const SizedBox(height: AppSpacing.lg),
+
+        if (pembina.isNotEmpty) ...[
+          _buildSectionTitle('PEMBINA (${pembina.length})', Icons.school_rounded, const Color(0xFF4F46E5)),
+          const SizedBox(height: AppSpacing.sm),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: pembina.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 2.2,
+            ),
+            itemBuilder: (context, i) {
+              final m = pembina[i];
+              return _buildGridMemberCard(context, m, customBadge: 'Pembina');
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+
+        if (divisions.isNotEmpty) ...[
+          _buildSectionTitle('DEPARTEMEN & DIVISI (${divisions.length})', Icons.category_rounded, const Color(0xFF8B5CF6)),
+          const SizedBox(height: AppSpacing.sm),
+          ...divisions.map((divName) {
+            final divMembers = members.where((m) => m.division == divName && !pembinaIds.contains(m.id)).toList();
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: OrmawaTheme.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8B5CF6).withAlpha(20),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.folder_shared_rounded, size: 15, color: Color(0xFF8B5CF6)),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            divName,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${divMembers.length} Anggota',
+                          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (divMembers.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: divMembers.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 2.3,
+                      ),
+                      itemBuilder: (context, i) {
+                        return _buildGridMemberCard(context, divMembers[i]);
+                      },
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildGridMemberCard(BuildContext context, OrmawaMember member, {String? customBadge}) {
+    final role = customBadge ?? member.role;
+    final roleStyle = _getRoleBadgeStyle(role);
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Row(
+        children: [
+          _buildAvatar(member.name, member.fotoUrl, size: 30),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  member.name,
+                  style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  role,
+                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: roleStyle.textColor),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -403,7 +685,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w900,
-                    color: context.appColors.onSurface,
+                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -413,7 +695,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     subText,
                     style: TextStyle(
                       fontSize: 9.5,
-                      color: context.appColors.onSurfaceVariant,
+                      color: OrmawaTheme.textMuted,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -457,7 +739,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: context.appColors.onSurface,
+                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -467,7 +749,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     subText,
                     style: TextStyle(
                       fontSize: 9,
-                      color: context.appColors.onSurfaceVariant,
+                      color: OrmawaTheme.textMuted,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -540,9 +822,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.neutral200, width: 1.0),
+        border: Border.all(color: OrmawaTheme.border, width: 1.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -768,26 +1050,6 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFab(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () {
-        context.push(AppRoutes.ormawaStrukturManage);
-      },
-      backgroundColor: context.appColors.primary,
-      elevation: 4,
-      icon: const Icon(Icons.settings_suggest_rounded, color: Colors.white, size: 18),
-      label: const Text(
-        'Kelola Struktur',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 11,
-          letterSpacing: 0.3,
         ),
       ),
     );

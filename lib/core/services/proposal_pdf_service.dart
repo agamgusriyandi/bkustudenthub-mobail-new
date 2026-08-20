@@ -5,14 +5,17 @@ import 'package:printing/printing.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 
+import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+
 class ProposalPdfService {
-  static Future<void> generateAndPrintPdf(
+  static Future<pw.Document> generatePdfDocument(
     OrmawaProposal proposal, {
     String ormawaName = 'Organisasi Kemahasiswaan',
   }) async {
     final pdf = pw.Document();
 
-    // Standard built-in font
     final customTheme = pw.ThemeData.withFont(
       base: pw.Font.helvetica(),
       bold: pw.Font.helveticaBold(),
@@ -76,10 +79,126 @@ class ProposalPdfService {
       ),
     );
 
+    return pdf;
+  }
+
+  static Future<void> generateAndPrintPdf(
+    OrmawaProposal proposal, {
+    String ormawaName = 'Organisasi Kemahasiswaan',
+  }) async {
+    final pdf = await generatePdfDocument(proposal, ormawaName: ormawaName);
     final bytes = await pdf.save();
     await Printing.sharePdf(
       bytes: bytes,
       filename: 'Proposal_${proposal.code}.pdf',
+    );
+  }
+
+  static void showPdfActionSheet(
+    BuildContext context,
+    OrmawaProposal proposal, {
+    String ormawaName = 'Organisasi Kemahasiswaan',
+  }) {
+    BkuBottomSheet.show(
+      context: context,
+      title: 'Dokumen Proposal: ${proposal.code}',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEEF2FF),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.picture_as_pdf_rounded, color: Color(0xFF4F46E5), size: 24),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        proposal.title,
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Total Anggaran: Rp ${NumberFormat('#,###', 'id_ID').format(proposal.budget)}',
+                        style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    final pdf = await generatePdfDocument(proposal, ormawaName: ormawaName);
+                    await Printing.layoutPdf(
+                      onLayout: (PdfPageFormat format) async => pdf.save(),
+                      name: 'Proposal_${proposal.code}',
+                    );
+                  },
+                  icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF0F172A)),
+                  label: const Text(
+                    'Cetak / Preview',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    side: const BorderSide(color: Color(0xFFCBD5E1)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await generateAndPrintPdf(proposal, ormawaName: ormawaName);
+                  },
+                  icon: const Icon(Icons.share_rounded, size: 16),
+                  label: const Text(
+                    'Bagikan PDF',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: OrmawaTheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
     );
   }
 

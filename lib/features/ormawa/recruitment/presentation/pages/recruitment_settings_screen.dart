@@ -78,13 +78,14 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
       lastDate: DateTime(2035),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primaryDark,
+              primary: OrmawaTheme.primary,
               onPrimary: Colors.white,
-              onSurface: OrmawaTheme.textHeading,
+              surface: Colors.white,
+              onSurface: const Color(0xFF0F172A),
             ),
-          ),
+                      ),
           child: child!,
         );
       },

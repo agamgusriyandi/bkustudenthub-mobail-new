@@ -41,7 +41,6 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
   String? _attachmentName;
   bool _isAnonimEnabled = true;
 
-
   @override
   void initState() {
     super.initState();
@@ -146,6 +145,8 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                 'Fakultas',
                 'Universitas',
                 'Program Studi (Prodi)',
+                'Biro Kemahasiswaan / BAAK',
+                'Sarana & Prasarana',
                 'Organisasi Mahasiswa (Ormawa)',
               ].map((String value) {
                 return DropdownMenuItem<String>(
@@ -484,11 +485,11 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       );
       await context.read<StudentVoiceProvider>().addAspiration(newAsp);
       if (!mounted) return;
-      BkuLoadingDialog.hide(context); // Hide loading first
+      BkuLoadingDialog.hide(context); 
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      BkuLoadingDialog.hide(context); // Hide loading first
+      BkuLoadingDialog.hide(context); 
       AppSnackbar.showError(context, ErrorHandler.getMessage(e));
     }
   }
@@ -501,8 +502,8 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       message: 'Aspirasi Anda berhasil dikirimkan.',
       primaryButtonText: 'Kembali',
       onPrimaryPressed: () {
-        Navigator.pop(context); // Close dialog
-        context.pop(); // Go back
+        Navigator.pop(context); 
+        context.pop(); 
       },
     );
   }

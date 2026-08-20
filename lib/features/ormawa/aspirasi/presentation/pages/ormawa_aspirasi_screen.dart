@@ -215,7 +215,7 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                                 ],
                               ),
                             ),
-                          ] else ...[
+                          ] else if (context.read<OrmawaProvider>().hasPermission('ormawa.aspiration.update, ormawa.aspirations.update, respond_aspirations, ormawa.organisasi.manage')) ...[
                             const SizedBox(height: 12),
                             const Text(
                               'KEPUTUSAN STATUS',
@@ -538,10 +538,23 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                     ),
                     const SizedBox(height: 14),
                     if (filteredList.isEmpty)
-                      const OrmawaEmptyCard(
+                      OrmawaEmptyCard(
                         title: 'Belum ada aspirasi',
-                        description: 'Tidak ada aspirasi mahasiswa yang sesuai.',
+                        description: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                            ? 'Tidak ada aspirasi mahasiswa yang cocok dengan filter pencarian atau status aktif.'
+                            : 'Belum ada pesan aspirasi atau masukan dari mahasiswa untuk organisasi ini.',
                         icon: Icons.forum_outlined,
+                        actionLabel: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                            ? 'Reset Filter & Cari Ulang'
+                            : null,
+                        actionIcon: Icons.refresh_rounded,
+                        onAction: () {
+                          setState(() {
+                            _searchController.clear();
+                            _searchQuery = '';
+                            _activeTab = 'semua';
+                          });
+                        },
                       )
                     else
                       ListView.separated(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 
 import 'package:bkuhub_mobile/features/ormawa/recruitment/domain/entities/recruitment_applicant.dart';
 
@@ -71,14 +71,14 @@ class RecruitmentApplicantCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
+        color: Colors.white,
         borderRadius: AppRadius.radiusXl,
         border: Border.all(
-          color: context.appColors.outline.withAlpha(50),
+          color: OrmawaTheme.border,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.neutral200.withAlpha(40),
+            color: Colors.black.withAlpha(8),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -97,13 +97,11 @@ class RecruitmentApplicantCard extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: context.appColors.primary,
+                    color: OrmawaTheme.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withAlpha(60),
+                        color: OrmawaTheme.primary.withAlpha(60),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -113,7 +111,7 @@ class RecruitmentApplicantCard extends StatelessWidget {
                   child: Text(
                     applicant.name.substring(0, 1),
                     style: AppTextStyles.titleSm.copyWith(
-                      color: context.appColors.onPrimary,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -176,4 +174,3 @@ class RecruitmentApplicantCard extends StatelessWidget {
     );
   }
 }
-

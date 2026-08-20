@@ -9,10 +9,12 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/edit_absensi_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_qr_scan_screen.dart';
 
 class OrmawaAbsensiManagementDetailScreen extends StatefulWidget {
   final String absensiId;
@@ -34,6 +36,7 @@ class _OrmawaAbsensiManagementDetailScreenState
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   Timer? _pollTimer;
+  bool _isMutatingStatus = false;
 
   @override
   void initState() {
@@ -58,6 +61,51 @@ class _OrmawaAbsensiManagementDetailScreenState
     super.dispose();
   }
 
+  bool _isEventAttendanceActive(OrmawaAgenda? agenda, DateTime? date, String status) {
+    final s = status.toLowerCase();
+    if (s == 'selesai' || s == 'terlaksana' || s == 'completed' || s == 'dibatalkan' || s == 'batal' || s == 'cancelled') {
+      return false;
+    }
+    if (s == 'berlangsung' || s == 'ongoing') {
+      return true;
+    }
+
+    final startDate = agenda?.date ?? date;
+    final endDate = agenda?.endDate ?? startDate;
+
+    if (startDate == null) return false;
+
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+    final startDay = DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+    final endDay = DateTime(endDate!.year, endDate.month, endDate.day, 23, 59, 59);
+
+    return (todayStart.isAtSameMomentAs(startDay) || todayStart.isAfter(startDay)) &&
+        (todayStart.isAtSameMomentAs(endDay) || todayStart.isBefore(endDay));
+  }
+
+  Future<void> _handleStartEventNow() async {
+    setState(() => _isMutatingStatus = true);
+    try {
+      final provider = context.read<OrmawaProvider>();
+      await provider.updateAgenda(widget.absensiId, {
+        'Status': 'berlangsung',
+        'status': 'berlangsung',
+      });
+      if (mounted) {
+        AppSnackbar.showSuccess(context, 'Status kegiatan diubah menjadi Berlangsung');
+        await provider.refreshData();
+        setState(() => _isMutatingStatus = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isMutatingStatus = false);
+        AppSnackbar.showError(context, 'Gagal mengubah status kegiatan: $e');
+      }
+    }
+  }
+
   Color _getStatusBgColor(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
@@ -71,6 +119,10 @@ class _OrmawaAbsensiManagementDetailScreenState
       case 'batal':
       case 'cancelled':
         return const Color(0xFFFFE4E6);
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return const Color(0xFFEEF2FF);
       default:
         return const Color(0xFFEFF6FF);
     }
@@ -89,6 +141,10 @@ class _OrmawaAbsensiManagementDetailScreenState
       case 'batal':
       case 'cancelled':
         return const Color(0xFFBE123C);
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return const Color(0xFF4338CA);
       default:
         return const Color(0xFF1D4ED8);
     }
@@ -107,6 +163,10 @@ class _OrmawaAbsensiManagementDetailScreenState
       case 'batal':
       case 'cancelled':
         return 'Dibatalkan';
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return 'Direncanakan';
       default:
         return 'Terjadwal';
     }
@@ -145,22 +205,20 @@ class _OrmawaAbsensiManagementDetailScreenState
     );
   }
 
-  void _showDynamicQrModal(BuildContext context) {
-    final nama = (widget.absensiData['Nama'] ?? widget.absensiData['nama'] ?? 'Sesi Kegiatan').toString();
+  void _showDynamicQrModal(BuildContext context, String title) {
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) => _DetailDynamicQrDialog(
         agendaId: widget.absensiId,
-        agendaTitle: nama,
+        agendaTitle: title,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
+    final primaryColor = OrmawaTheme.primary;
     final provider = context.watch<OrmawaProvider>();
 
     final matchingAgenda = provider.agendas.where((a) => a.id.toString() == widget.absensiId.toString()).firstOrNull;
@@ -173,9 +231,13 @@ class _OrmawaAbsensiManagementDetailScreenState
     final waktuMulai = matchingAgenda != null ? DateFormat('HH:mm').format(matchingAgenda.date) : (widget.absensiData['WaktuMulai'] ?? widget.absensiData['waktu_mulai'] ?? '-').toString();
     final waktuSelesai = matchingAgenda != null ? DateFormat('HH:mm').format(matchingAgenda.endDate) : (widget.absensiData['WaktuSelesai'] ?? widget.absensiData['waktu_selesai'] ?? '-').toString();
 
+    final isProposal = widget.absensiId.startsWith('prop-');
+    final isAttendanceActive = _isEventAttendanceActive(matchingAgenda, date, status);
+    final canManageAttendance = provider.hasPermission('ormawa.attendance.manage') || provider.hasPermission('ormawa.events.update') || provider.hasPermission('ormawa.events.manage');
+
     final attendanceList = provider.attendanceList;
     final attendedCount = attendanceList.where((a) => a.status.toLowerCase() == 'hadir').length;
-    final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa').length;
+    final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa' || a.status.toLowerCase() == 'belum_absen').length;
     final totalAttendance = attendanceList.length;
     final attendanceRate = totalAttendance > 0 ? ((attendedCount / totalAttendance) * 100).round() : 0;
 
@@ -228,16 +290,37 @@ class _OrmawaAbsensiManagementDetailScreenState
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: statusBg,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                statusLabel,
-                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: statusColor),
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: statusBg,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    statusLabel,
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: statusColor),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                                  decoration: BoxDecoration(
+                                    color: isProposal ? const Color(0xFFEEF2FF) : const Color(0xFFF0F9FF),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: isProposal ? const Color(0xFFC7D2FE) : const Color(0xFFBAE6FD)),
+                                  ),
+                                  child: Text(
+                                    isProposal ? 'PROPOSAL' : 'KEGIATAN MANDIRI',
+                                    style: TextStyle(
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.w800,
+                                      color: isProposal ? const Color(0xFF4338CA) : const Color(0xFF0369A1),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             Text(
                               'ID #${widget.absensiId}',
@@ -513,22 +596,102 @@ class _OrmawaAbsensiManagementDetailScreenState
                   ),
                   const SizedBox(height: 16),
 
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showDynamicQrModal(context),
-                      icon: const Icon(Icons.qr_code_rounded, size: 16),
-                      label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  if (!isAttendanceActive) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFFBEB),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFFDE68A)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.event_busy_rounded, size: 18, color: Color(0xFFD97706)),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Sesi presensi belum dibuka. Pemindaian QR hanya aktif saat kegiatan berstatus Berlangsung atau pada hari tanggal kegiatan (${date != null ? DateFormat('d MMM yyyy', 'id').format(date) : '-'}).',
+                                  style: const TextStyle(fontSize: 10.5, color: Color(0xFF92400E), height: 1.35),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (canManageAttendance && status.toLowerCase() != 'selesai' && status.toLowerCase() != 'dibatalkan') ...[
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 36,
+                              child: ElevatedButton.icon(
+                                onPressed: _isMutatingStatus ? null : _handleStartEventNow,
+                                icon: _isMutatingStatus
+                                    ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                    : const Icon(Icons.play_arrow_rounded, size: 16),
+                                label: const Text('Mulai Kegiatan Sekarang', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF059669),
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
+                    const SizedBox(height: 12),
+                  ] else ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _showDynamicQrModal(context, nama),
+                            icon: const Icon(Icons.qr_code_rounded, size: 16),
+                            label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              final ormawaProv = context.read<OrmawaProvider>();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => OrmawaQrScanScreen(
+                                    eventId: widget.absensiId,
+                                    eventTitle: nama,
+                                  ),
+                                ),
+                              ).then((_) {
+                                ormawaProv.fetchAttendance(widget.absensiId);
+                              });
+                            },
+                            icon: Icon(Icons.qr_code_scanner_rounded, size: 16, color: primaryColor),
+                            label: Text('Scan QR Peserta', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: primaryColor)),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: primaryColor,
+                              side: BorderSide(color: primaryColor.withAlpha(80)),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
 
                   Row(
                     children: [
@@ -608,7 +771,7 @@ class _OrmawaAbsensiManagementDetailScreenState
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(String label, String value, IconData icon, Color color) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -618,34 +781,33 @@ class _OrmawaAbsensiManagementDetailScreenState
           border: Border.all(color: const Color(0xFFE2E8F0)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF94A3B8).withAlpha(15),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
+              color: const Color(0xFF94A3B8).withAlpha(10),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                color: color.withAlpha(20),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, size: 16, color: color),
+            Row(
+              children: [
+                Icon(icon, size: 14, color: color),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               value,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -669,7 +831,8 @@ class _DetailDynamicQrDialog extends StatefulWidget {
   State<_DetailDynamicQrDialog> createState() => _DetailDynamicQrDialogState();
 }
 
-class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with SingleTickerProviderStateMixin {
+class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog>
+    with SingleTickerProviderStateMixin {
   int _countdown = 45;
   Timer? _timer;
   late AnimationController _laserController;
@@ -713,8 +876,7 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
+    final primaryColor = OrmawaTheme.primary;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -849,16 +1011,15 @@ class _DetailDynamicQrDialogState extends State<_DetailDynamicQrDialog> with Sin
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              height: 44,
+              child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF1F5F9),
-                  foregroundColor: const Color(0xFF334155),
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF475569),
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Tutup Panel QR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                child: const Text('Tutup Panel QR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
               ),
             ),
           ],

@@ -1,15 +1,13 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_colors.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaGamifikasiScreen extends StatefulWidget {
   const OrmawaGamifikasiScreen({super.key});
@@ -21,20 +19,176 @@ class OrmawaGamifikasiScreen extends StatefulWidget {
 class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    Future.microtask(() {
-      if (mounted) context.read<OrmawaProvider>().refreshData();
-    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _showRuleDetailModal(BuildContext context, Map<String, dynamic> rule) {
+    final title = rule['label']?.toString() ?? rule['aksi']?.toString() ?? 'Aturan Gamifikasi';
+    final desc = rule['deskripsi']?.toString() ?? rule['key']?.toString() ?? 'Trigger poin otomatis.';
+    final key = rule['key']?.toString() ?? '';
+    final poin = int.tryParse(rule['poin']?.toString() ?? '0') ?? 0;
+    final isMinus = poin < 0;
+    final color = isMinus ? AppColors.error : AppColors.serviceEmerald;
+
+    IconData icon;
+    if (key.contains('proposal')) {
+      icon = Icons.assignment_turned_in_rounded;
+    } else if (key.contains('kegiatan') || key.contains('event')) {
+      icon = Icons.event_available_rounded;
+    } else if (key.contains('aspirasi')) {
+      icon = Icons.campaign_rounded;
+    } else if (key.contains('prestasi')) {
+      icon = Icons.military_tech_rounded;
+    } else if (key.contains('lpj')) {
+      icon = Icons.description_rounded;
+    } else {
+      icon = Icons.stars_rounded;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(20),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color, size: 24),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'TRIGGER OTOMATIS: ${key.toUpperCase()}',
+                        style: const TextStyle(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF64748B),
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(20),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: color.withAlpha(60)),
+                  ),
+                  child: Text(
+                    '${isMinus ? '' : '+'}$poin XP',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'DESKRIPSI ATURAN',
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF64748B),
+                letterSpacing: 0.3,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Text(
+                desc,
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  color: Color(0xFF0F172A),
+                  height: 1.45,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: OrmawaTheme.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Tutup',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -58,9 +212,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             : '—';
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+        color: OrmawaTheme.primary,
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -155,7 +310,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 value: topOrmawaName,
                 badgeText: 'Peringkat #1',
                 icon: Icons.military_tech_rounded,
-                badgeColor: const Color(0xFF4F46E5),
+                badgeColor: OrmawaTheme.primary,
                 subtitle: 'Peringkat #1 Univ',
               ),
             ),
@@ -181,34 +336,27 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
       height: 38,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: AppColors.neutral200.withAlpha(80),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.neutral300, width: 0.8),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: BorderRadius.circular(7),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(12),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          color: OrmawaTheme.primary,
+          borderRadius: BorderRadius.circular(9),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
-        labelColor: context.appColors.onSurface,
-        unselectedLabelColor: AppColors.neutral600,
+        labelColor: Colors.white,
+        unselectedLabelColor: const Color(0xFF64748B),
         labelStyle: const TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w900,
         ),
         unselectedLabelStyle: const TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
         tabs: const [
           Tab(
@@ -267,6 +415,13 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
 
     final top3 = leaderboard.take(3).toList();
 
+    final filteredLeaderboard = leaderboard.where((item) {
+      if (_searchQuery.isEmpty) return true;
+      final nama = (item['nama'] ?? '').toString().toLowerCase();
+      final singkatan = (item['singkatan'] ?? '').toString().toLowerCase();
+      return nama.contains(_searchQuery) || singkatan.contains(_searchQuery);
+    }).toList();
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.xl,
@@ -275,47 +430,90 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         AppSpacing.s100,
       ),
       children: [
-        if (top3.isNotEmpty) ...[
+        if (top3.isNotEmpty && _searchQuery.isEmpty) ...[
           _buildPodiumTop3(context, top3),
           const SizedBox(height: AppSpacing.lg),
         ],
+        TextField(
+          controller: _searchController,
+          onChanged: (val) => setState(() => _searchQuery = val.toLowerCase().trim()),
+          style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+          decoration: InputDecoration(
+            hintText: 'Cari organisasi mahasiswa...',
+            hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+            prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Klasemen Lengkap',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w900,
-                color: context.appColors.onSurface,
+                color: Color(0xFF0F172A),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: AppColors.serviceSky.withAlpha(25),
+                color: OrmawaTheme.primarySoft,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: AppColors.serviceSky.withAlpha(60),
+                  color: OrmawaTheme.primaryBorder,
                   width: 0.8,
                 ),
               ),
               child: Text(
-                '${leaderboard.length} Organisasi',
-                style: const TextStyle(
+                '${filteredLeaderboard.length} Organisasi',
+                style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.serviceSky,
+                  color: OrmawaTheme.primary,
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
-        ...List.generate(leaderboard.length, (index) {
-          final item = leaderboard[index];
-          return _buildLeaderboardRow(context, item, index + 1);
-        }),
+        if (filteredLeaderboard.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: const Center(
+              child: Text(
+                'Organisasi tidak ditemukan.',
+                style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
+        else
+          ...List.generate(filteredLeaderboard.length, (index) {
+            final item = filteredLeaderboard[index];
+            final originalRank = leaderboard.indexOf(item) + 1;
+            return _buildLeaderboardRow(context, provider, item, originalRank > 0 ? originalRank : index + 1);
+          }),
       ],
     );
   }
@@ -336,7 +534,6 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
 
     return Column(
       children: [
-        // 🥇 Juara 1 Hero Card
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -397,10 +594,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     const SizedBox(height: 3),
                     Text(
                       firstName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w900,
-                        color: context.appColors.onSurface,
+                        color: Color(0xFF0F172A),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -408,9 +605,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     if (firstShort.isNotEmpty)
                       Text(
                         firstShort,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 10,
-                          color: context.appColors.onSurfaceVariant,
+                          color: Color(0xFF64748B),
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -574,10 +771,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 const SizedBox(height: 2),
                 Text(
                   displayName,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w800,
-                    color: context.appColors.onSurface,
+                    color: Color(0xFF0F172A),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -592,12 +789,15 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
 
   Widget _buildLeaderboardRow(
     BuildContext context,
+    OrmawaProvider provider,
     Map<String, dynamic> item,
     int rank,
   ) {
     final nama = item['nama']?.toString() ?? 'Ormawa';
     final singkatan = item['singkatan']?.toString() ?? '';
     final poin = int.tryParse(item['total_poin']?.toString() ?? item['poin']?.toString() ?? '0') ?? 0;
+    final id = item['id']?.toString() ?? item['ID']?.toString();
+    final isMyOrmawa = id != null && id == provider.ormawaId?.toString();
 
     Color rankBg;
     Color rankColor;
@@ -611,23 +811,30 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
       rankBg = const Color(0xFFFFEDD5);
       rankColor = const Color(0xFFEA580C);
     } else {
-      rankBg = AppColors.neutral200;
-      rankColor = AppColors.neutral700;
+      rankBg = const Color(0xFFF1F5F9);
+      rankColor = const Color(0xFF475569);
     }
 
     final initial = singkatan.isNotEmpty
         ? (singkatan.length > 4 ? singkatan.substring(0, 4) : singkatan)
         : (nama.length > 2 ? nama.substring(0, 2).toUpperCase() : 'OR');
 
-    return BkuCard(
+    return Container(
       margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      borderRadius: AppRadius.md,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: isMyOrmawa ? OrmawaTheme.primarySoft : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isMyOrmawa ? OrmawaTheme.primary : const Color(0xFFE2E8F0),
+          width: isMyOrmawa ? 1.5 : 1,
+        ),
+      ),
       child: Row(
         children: [
           Container(
-            width: 22,
-            height: 22,
+            width: 24,
+            height: 24,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: rankBg,
@@ -644,23 +851,23 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           ),
           const SizedBox(width: AppSpacing.sm),
           Container(
-            width: 30,
-            height: 30,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
-              color: AppColors.serviceSky.withAlpha(20),
-              borderRadius: BorderRadius.circular(6),
+              color: OrmawaTheme.primarySoft,
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: AppColors.serviceSky.withAlpha(40),
+                color: OrmawaTheme.primaryBorder,
                 width: 0.8,
               ),
             ),
             child: Center(
               child: Text(
                 initial,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w900,
-                  color: AppColors.serviceSky,
+                  color: OrmawaTheme.primary,
                 ),
               ),
             ),
@@ -670,21 +877,45 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  nama,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: context.appColors.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        nama,
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (isMyOrmawa) ...[
+                      const SizedBox(width: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: OrmawaTheme.primary,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'Ormawa Anda',
+                          style: TextStyle(
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 Text(
                   singkatan.isNotEmpty ? singkatan : 'Unit Kegiatan Mahasiswa',
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.appColors.onSurfaceVariant,
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    color: Color(0xFF64748B),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -693,7 +924,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
               color: const Color(0xFFFEF3C7),
               borderRadius: BorderRadius.circular(6),
@@ -757,7 +988,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         final isMinus = poin < 0;
         final color = isMinus ? AppColors.error : AppColors.success;
         final deskripsi = item['deskripsi']?.toString() ?? item['aksi']?.toString() ?? 'Aktivitas Ormawa';
-        final rawDate = item['created_at']?.toString() ?? '';
+        final rawDate = item['created_at']?.toString() ?? item['Tanggal']?.toString() ?? '';
 
         String formattedDate = '';
         if (rawDate.isNotEmpty) {
@@ -769,10 +1000,14 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           }
         }
 
-        return BkuCard(
+        return Container(
           margin: const EdgeInsets.only(bottom: 6),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          borderRadius: AppRadius.radius14,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
           child: Row(
             children: [
               Container(
@@ -797,10 +1032,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                   children: [
                     Text(
                       deskripsi,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.bold,
-                        color: context.appColors.onSurface,
+                        color: Color(0xFF0F172A),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -808,9 +1043,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     if (formattedDate.isNotEmpty)
                       Text(
                         formattedDate,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 9.5,
-                          color: context.appColors.onSurfaceVariant,
+                          color: Color(0xFF64748B),
                         ),
                       ),
                   ],
@@ -884,72 +1119,82 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           icon = Icons.campaign_rounded;
         } else if (key.contains('prestasi')) {
           icon = Icons.military_tech_rounded;
+        } else if (key.contains('lpj')) {
+          icon = Icons.description_rounded;
         } else {
           icon = Icons.stars_rounded;
         }
 
-        return BkuCard(
-          margin: const EdgeInsets.only(bottom: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          borderRadius: AppRadius.radius14,
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(18),
-                  borderRadius: BorderRadius.circular(8),
+        return InkWell(
+          onTap: () => _showRuleDetailModal(context, rule),
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(18),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: color, size: 18),
                 ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.bold,
-                        color: context.appColors.onSurface,
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0F172A),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      desc,
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        color: context.appColors.onSurfaceVariant,
+                      Text(
+                        desc,
+                        style: const TextStyle(
+                          fontSize: 9.5,
+                          color: Color(0xFF64748B),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(15),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: color.withAlpha(40),
-                    width: 0.8,
+                    ],
                   ),
                 ),
-                child: Text(
-                  '${isMinus ? '' : '+'}$poin Poin',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    color: color,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(15),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: color.withAlpha(40),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: Text(
+                    '${isMinus ? '' : '+'}$poin Poin',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -961,16 +1206,16 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.emoji_events_outlined,
-            color: AppColors.neutral400,
+            color: Color(0xFF94A3B8),
             size: 48,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             message,
-            style: TextStyle(
-              color: AppColors.neutral500,
+            style: const TextStyle(
+              color: Color(0xFF64748B),
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),

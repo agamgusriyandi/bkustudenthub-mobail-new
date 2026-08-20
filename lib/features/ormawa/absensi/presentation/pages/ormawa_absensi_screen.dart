@@ -7,7 +7,6 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
@@ -37,6 +36,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
   String _searchAttQuery = '';
   String _activeTab = 'all';
   bool _isRefreshing = false;
+  bool _isMutatingStatus = false;
   OrmawaAgenda? _selectedAgenda;
   Timer? _attendancePollTimer;
 
@@ -48,9 +48,6 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     });
     _searchAttController.addListener(() {
       setState(() => _searchAttQuery = _searchAttController.text.trim().toLowerCase());
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadData();
     });
   }
 
@@ -82,8 +79,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       if (_selectedAgenda?.id == agenda.id) {
         _selectedAgenda = null;
         _attendancePollTimer?.cancel();
+        _searchAttController.clear();
       } else {
         _selectedAgenda = agenda;
+        _searchAttController.clear();
         context.read<OrmawaProvider>().fetchAttendance(agenda.id);
         _attendancePollTimer?.cancel();
         _attendancePollTimer = Timer.periodic(const Duration(seconds: 5), (_) {
@@ -95,12 +94,70 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     });
   }
 
-  String _formatDateTime(DateTime date) {
-    final dateStr = DateFormat('dd MMM yyyy', 'id').format(date);
-    if (date.hour == 0 && date.minute == 0) {
-      return dateStr;
+  bool _isEventAttendanceActive(OrmawaAgenda agenda) {
+    final s = agenda.status.toLowerCase();
+    if (s == 'selesai' || s == 'terlaksana' || s == 'completed' || s == 'dibatalkan' || s == 'batal' || s == 'cancelled') {
+      return false;
     }
-    return '$dateStr, ${DateFormat('HH:mm').format(date)} WIB';
+    if (s == 'berlangsung' || s == 'ongoing') {
+      return true;
+    }
+
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+    final startDay = DateTime(agenda.date.year, agenda.date.month, agenda.date.day, 0, 0, 0);
+    final endDay = DateTime(agenda.endDate.year, agenda.endDate.month, agenda.endDate.day, 23, 59, 59);
+
+    return (todayStart.isAtSameMomentAs(startDay) || todayStart.isAfter(startDay)) &&
+        (todayStart.isAtSameMomentAs(endDay) || todayStart.isBefore(endDay));
+  }
+
+  Future<void> _handleStartEventNow(OrmawaAgenda agenda) async {
+    setState(() => _isMutatingStatus = true);
+    try {
+      final provider = context.read<OrmawaProvider>();
+      await provider.updateAgenda(agenda.id, {
+        'Status': 'berlangsung',
+        'status': 'berlangsung',
+      });
+      if (mounted) {
+        AppSnackbar.showSuccess(context, 'Status kegiatan diubah menjadi Berlangsung');
+        OrmawaAgenda updated = agenda;
+        for (final a in provider.agendas) {
+          if (a.id == agenda.id) {
+            updated = a;
+            break;
+          }
+        }
+        setState(() {
+          _selectedAgenda = updated;
+          _isMutatingStatus = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isMutatingStatus = false);
+        AppSnackbar.showError(context, 'Gagal mengubah status kegiatan: $e');
+      }
+    }
+  }
+
+  String _formatDateRange(DateTime start, DateTime end) {
+    final isSame = start.year == end.year && start.month == end.month && start.day == end.day;
+    if (isSame) {
+      return DateFormat('EEEE, d MMMM yyyy', 'id').format(start);
+    }
+    return '${DateFormat('d MMM yyyy', 'id').format(start)} s/d ${DateFormat('d MMM yyyy', 'id').format(end)}';
+  }
+
+  String _formatTimeRange(DateTime start, DateTime end) {
+    final startStr = DateFormat('HH:mm').format(start);
+    final endStr = DateFormat('HH:mm').format(end);
+    if (startStr == endStr || (start.hour == 0 && start.minute == 0 && end.hour == 0 && end.minute == 0)) {
+      return '';
+    }
+    return '$startStr - $endStr WIB';
   }
 
   Color _getStatusBgColor(String status) {
@@ -116,6 +173,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       case 'batal':
       case 'cancelled':
         return const Color(0xFFFFE4E6);
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return const Color(0xFFEEF2FF);
       default:
         return const Color(0xFFEFF6FF);
     }
@@ -134,6 +195,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       case 'batal':
       case 'cancelled':
         return const Color(0xFFBE123C);
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return const Color(0xFF4338CA);
       default:
         return const Color(0xFF1D4ED8);
     }
@@ -152,6 +217,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       case 'batal':
       case 'cancelled':
         return 'Dibatalkan';
+      case 'direncanakan':
+      case 'planned':
+      case 'diajukan':
+        return 'Direncanakan';
       default:
         return 'Terjadwal';
     }
@@ -168,8 +237,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrmawaProvider>();
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
+    final primaryColor = OrmawaTheme.primary;
 
     if (provider.isLoading && provider.agendas.isEmpty) {
       return Scaffold(
@@ -204,12 +272,16 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
     final allAgendas = provider.agendas;
     final totalSessions = allAgendas.length;
     final ongoingCount = allAgendas.where((e) => e.status.toLowerCase() == 'berlangsung' || e.status.toLowerCase() == 'ongoing').length;
-    final plannedCount = allAgendas.where((e) => e.status.toLowerCase() == 'terjadwal' || e.status.toLowerCase() == 'planned').length;
+    final plannedCount = allAgendas.where((e) => e.status.toLowerCase() == 'terjadwal').length;
+    final direncanakanCount = allAgendas.where((e) {
+      final s = e.status.toLowerCase();
+      return s == 'direncanakan' || s == 'planned' || s == 'diajukan';
+    }).length;
     final completedCount = allAgendas.where((e) => e.status.toLowerCase() == 'selesai' || e.status.toLowerCase() == 'terlaksana' || e.status.toLowerCase() == 'completed').length;
 
     final attendanceList = provider.attendanceList;
     final attendedCount = attendanceList.where((a) => a.status.toLowerCase() == 'hadir').length;
-    final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa').length;
+    final absentCount = attendanceList.where((a) => a.status.toLowerCase() == 'tidak_hadir' || a.status.toLowerCase() == 'alpa' || a.status.toLowerCase() == 'belum_absen').length;
     final totalAttendance = attendanceList.length;
     final attendanceRate = totalAttendance > 0 ? ((attendedCount / totalAttendance) * 100).round() : 0;
 
@@ -217,7 +289,8 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       final statusKey = agenda.status.toLowerCase();
       bool matchTab = true;
       if (_activeTab == 'berlangsung') matchTab = (statusKey == 'berlangsung' || statusKey == 'ongoing');
-      if (_activeTab == 'terjadwal') matchTab = (statusKey == 'terjadwal' || statusKey == 'planned');
+      if (_activeTab == 'terjadwal') matchTab = (statusKey == 'terjadwal');
+      if (_activeTab == 'direncanakan') matchTab = (statusKey == 'direncanakan' || statusKey == 'planned' || statusKey == 'diajukan');
       if (_activeTab == 'selesai') matchTab = (statusKey == 'selesai' || statusKey == 'terlaksana' || statusKey == 'completed');
 
       final matchQuery = _searchQuery.isEmpty ||
@@ -227,6 +300,23 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
 
       return matchTab && matchQuery;
     }).toList();
+
+    final canCreateEvent = provider.hasPermission('ormawa.events.create') || provider.hasPermission('submit_attendance');
+    final canManageAttendance = provider.hasPermission('ormawa.attendance.manage') || provider.hasPermission('ormawa.events.update') || provider.hasPermission('ormawa.events.manage');
+
+    OrmawaAgenda? selected;
+    if (_selectedAgenda != null) {
+      for (final a in provider.agendas) {
+        if (a.id == _selectedAgenda!.id) {
+          selected = a;
+          break;
+        }
+      }
+      selected ??= _selectedAgenda;
+    }
+    final liveSelectedAgenda = selected;
+
+    final isAttendanceActive = liveSelectedAgenda != null ? _isEventAttendanceActive(liveSelectedAgenda) : false;
 
     return Scaffold(
       backgroundColor: OrmawaTheme.scaffoldBg,
@@ -306,7 +396,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                     ),
                                   ),
                                 ),
-                                if (provider.hasPermission('submit_attendance')) ...[
+                                if (canCreateEvent) ...[
                                   const SizedBox(width: 6),
                                   InkWell(
                                     onTap: () {
@@ -366,9 +456,9 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: OrmawaKpiCard(
-                          title: _selectedAgenda != null ? 'Peserta Terdaftar' : 'Total Anggota',
-                          value: _selectedAgenda != null ? '$totalAttendance' : '${provider.members.length}',
-                          badgeText: _selectedAgenda != null ? 'Sesi Terpilih' : 'Anggota Aktif',
+                          title: liveSelectedAgenda != null ? 'Peserta Terdaftar' : 'Total Anggota',
+                          value: liveSelectedAgenda != null ? '$totalAttendance' : '${provider.members.length}',
+                          badgeText: liveSelectedAgenda != null ? 'Sesi Terpilih' : 'Anggota Aktif',
                           icon: Icons.people_alt_rounded,
                           badgeColor: const Color(0xFF0284C7),
                         ),
@@ -381,7 +471,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       Expanded(
                         child: OrmawaKpiCard(
                           title: 'Hadir / Tidak Hadir',
-                          value: _selectedAgenda != null ? '$attendedCount / $absentCount' : '— / —',
+                          value: liveSelectedAgenda != null ? '$attendedCount / $absentCount' : '— / —',
                           badgeText: 'Presensi',
                           icon: Icons.check_circle_rounded,
                           badgeColor: const Color(0xFF059669),
@@ -391,7 +481,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       Expanded(
                         child: OrmawaKpiCard(
                           title: 'Rasio Kehadiran',
-                          value: _selectedAgenda != null ? '$attendanceRate%' : '0%',
+                          value: liveSelectedAgenda != null ? '$attendanceRate%' : '0%',
                           badgeText: 'Persentase',
                           icon: Icons.percent_rounded,
                           badgeColor: const Color(0xFFD97706),
@@ -401,7 +491,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  if (_selectedAgenda == null) ...[
+                  if (liveSelectedAgenda == null) ...[
                     const OrmawaHeroCard(
                       icon: Icons.qr_code_scanner_rounded,
                       title: 'Belum Ada Sesi Terpilih',
@@ -412,13 +502,14 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: primaryColor,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withAlpha(40),
-                            blurRadius: 14,
-                            offset: const Offset(0, 5),
+                            color: const Color(0xFF94A3B8).withAlpha(15),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -428,27 +519,57 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withAlpha(40),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: const Text('SESI AKTIF TERPILIH', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 0.5)),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: isAttendanceActive ? const Color(0xFFD1FAE5) : const Color(0xFFFEF3C7),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: isAttendanceActive ? const Color(0xFFA7F3D0) : const Color(0xFFFDE68A)),
+                                    ),
+                                    child: Text(
+                                      isAttendanceActive ? 'SESI PRESENSI AKTIF' : 'SESI BELUM DIBUKA',
+                                      style: TextStyle(
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.w900,
+                                        color: isAttendanceActive ? const Color(0xFF047857) : const Color(0xFFB45309),
+                                        letterSpacing: 0.3,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: liveSelectedAgenda.id.startsWith('prop-') ? const Color(0xFFEEF2FF) : const Color(0xFFF0F9FF),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: liveSelectedAgenda.id.startsWith('prop-') ? const Color(0xFFC7D2FE) : const Color(0xFFBAE6FD)),
+                                    ),
+                                    child: Text(
+                                      liveSelectedAgenda.id.startsWith('prop-') ? 'PROPOSAL' : 'KEGIATAN MANDIRI',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w800,
+                                        color: liveSelectedAgenda.id.startsWith('prop-') ? const Color(0xFF4338CA) : const Color(0xFF0369A1),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               InkWell(
                                 onTap: () => setState(() => _selectedAgenda = null),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withAlpha(40),
+                                    color: const Color(0xFFF1F5F9),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Row(
                                     children: [
-                                      Icon(Icons.close_rounded, size: 12, color: Colors.white),
+                                      Icon(Icons.close_rounded, size: 12, color: Color(0xFF475569)),
                                       SizedBox(width: 3),
-                                      Text('Tutup Sesi', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Colors.white)),
+                                      Text('Tutup', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
                                     ],
                                   ),
                                 ),
@@ -457,72 +578,142 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            _selectedAgenda!.title,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+                            liveSelectedAgenda.title,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.25),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Row(
                             children: [
-                              const Icon(Icons.location_on_outlined, size: 12, color: Colors.white70),
+                              const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFF64748B)),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  _selectedAgenda!.location.isNotEmpty ? _selectedAgenda!.location : 'Kampus Utama',
-                                  style: const TextStyle(fontSize: 11, color: Colors.white70),
+                                  liveSelectedAgenda.location.isNotEmpty ? liveSelectedAgenda.location : 'Kampus Utama',
+                                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 4),
                           Row(
                             children: [
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed: () => _showDynamicQrModal(context, _selectedAgenda!),
-                                  icon: const Icon(Icons.qr_code_rounded, size: 15),
-                                  label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: primaryColor,
-                                    elevation: 0,
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  ),
-                                ),
+                              Icon(Icons.calendar_today_rounded, size: 12, color: primaryColor),
+                              const SizedBox(width: 4),
+                              Text(
+                                _formatDateRange(liveSelectedAgenda.date, liveSelectedAgenda.endDate),
+                                style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    final selectedId = _selectedAgenda!.id;
-                                    final selectedTitle = _selectedAgenda!.title;
-                                    final ormawaProv = context.read<OrmawaProvider>();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => OrmawaQrScanScreen(
-                                          eventId: selectedId,
-                                          eventTitle: selectedTitle,
-                                        ),
-                                      ),
-                                    ).then((_) {
-                                      ormawaProv.fetchAttendance(selectedId);
-                                    });
-                                  },
-                                  icon: const Icon(Icons.qr_code_scanner_rounded, size: 15),
-                                  label: const Text('Scan QR Peserta', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    side: const BorderSide(color: Colors.white54),
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  ),
+                              if (_formatTimeRange(liveSelectedAgenda.date, liveSelectedAgenda.endDate).isNotEmpty) ...[
+                                const SizedBox(width: 8),
+                                const Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF64748B)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _formatTimeRange(liveSelectedAgenda.date, liveSelectedAgenda.endDate),
+                                  style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
                                 ),
-                              ),
+                              ],
                             ],
                           ),
+                          const SizedBox(height: 12),
+
+                          if (!isAttendanceActive) ...[
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFFBEB),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: const Color(0xFFFDE68A)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.event_busy_rounded, size: 18, color: Color(0xFFD97706)),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Sesi presensi belum dibuka. Pemindaian QR hanya aktif saat kegiatan berstatus Berlangsung atau pada hari tanggal kegiatan (${DateFormat('d MMM yyyy', 'id').format(liveSelectedAgenda.date)}).',
+                                          style: const TextStyle(fontSize: 10.5, color: Color(0xFF92400E), height: 1.35),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (canManageAttendance && liveSelectedAgenda.status.toLowerCase() != 'selesai' && liveSelectedAgenda.status.toLowerCase() != 'dibatalkan') ...[
+                                    const SizedBox(height: 10),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 36,
+                                      child: ElevatedButton.icon(
+                                        onPressed: _isMutatingStatus ? null : () => _handleStartEventNow(liveSelectedAgenda),
+                                        icon: _isMutatingStatus
+                                            ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                            : const Icon(Icons.play_arrow_rounded, size: 16),
+                                        label: const Text('Mulai Kegiatan Sekarang', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xFF059669),
+                                          foregroundColor: Colors.white,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ] else ...[
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () => _showDynamicQrModal(context, liveSelectedAgenda),
+                                    icon: const Icon(Icons.qr_code_rounded, size: 15),
+                                    label: const Text('Buka QR Presensi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryColor,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      final selectedId = liveSelectedAgenda.id;
+                                      final selectedTitle = liveSelectedAgenda.title;
+                                      final ormawaProv = context.read<OrmawaProvider>();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => OrmawaQrScanScreen(
+                                            eventId: selectedId,
+                                            eventTitle: selectedTitle,
+                                          ),
+                                        ),
+                                      ).then((_) {
+                                        ormawaProv.fetchAttendance(selectedId);
+                                      });
+                                    },
+                                    icon: Icon(Icons.qr_code_scanner_rounded, size: 15, color: primaryColor),
+                                    label: Text('Scan QR Peserta', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: primaryColor)),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: primaryColor,
+                                      side: BorderSide(color: primaryColor.withAlpha(80)),
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -593,7 +784,7 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                           ),
                           const SizedBox(height: 12),
 
-                          _buildAttendanceParticipantList(provider, _selectedAgenda!.id, primaryColor),
+                          _buildAttendanceParticipantList(provider, liveSelectedAgenda.id, primaryColor),
                         ],
                       ),
                     ),
@@ -602,9 +793,10 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
 
                   OrmawaFilterTabs(
                     tabs: [
-                      OrmawaTabItem(key: 'all', label: 'Semua Sesi', count: totalSessions),
-                      OrmawaTabItem(key: 'berlangsung', label: 'Berlangsung', count: ongoingCount),
+                      OrmawaTabItem(key: 'all', label: 'Semua', count: totalSessions),
                       OrmawaTabItem(key: 'terjadwal', label: 'Terjadwal', count: plannedCount),
+                      OrmawaTabItem(key: 'direncanakan', label: 'Direncanakan', count: direncanakanCount),
+                      OrmawaTabItem(key: 'berlangsung', label: 'Berlangsung', count: ongoingCount),
                       OrmawaTabItem(key: 'selesai', label: 'Selesai', count: completedCount),
                     ],
                     activeKey: _activeTab,
@@ -633,7 +825,8 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final agenda = filteredAgendas[index];
-                        final isSelected = _selectedAgenda?.id == agenda.id;
+                        final isSelected = liveSelectedAgenda?.id == agenda.id;
+                        final isProp = agenda.id.startsWith('prop-');
 
                         final statusBg = _getStatusBgColor(agenda.status);
                         final statusText = _getStatusTextColor(agenda.status);
@@ -663,16 +856,37 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: statusBg,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(statusLabel, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: statusText)),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                                          decoration: BoxDecoration(
+                                            color: isProp ? const Color(0xFFEEF2FF) : const Color(0xFFF0F9FF),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: isProp ? const Color(0xFFC7D2FE) : const Color(0xFFBAE6FD)),
+                                          ),
+                                          child: Text(
+                                            isProp ? 'PROPOSAL' : 'KEGIATAN MANDIRI',
+                                            style: TextStyle(
+                                              fontSize: 8.5,
+                                              fontWeight: FontWeight.w800,
+                                              color: isProp ? const Color(0xFF4338CA) : const Color(0xFF0369A1),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                                          decoration: BoxDecoration(
+                                            color: statusBg,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(statusLabel, style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: statusText)),
+                                        ),
+                                      ],
                                     ),
                                     Text(
-                                      _formatDateTime(agenda.date),
+                                      DateFormat('d MMM yyyy', 'id').format(agenda.date),
                                       style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
                                     ),
                                   ],
@@ -697,6 +911,19 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
                                     ),
                                   ],
                                 ),
+                                if (_formatTimeRange(agenda.date, agenda.endDate).isNotEmpty) ...[
+                                  const SizedBox(height: 3),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF94A3B8)),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        _formatTimeRange(agenda.date, agenda.endDate),
+                                        style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                                 const SizedBox(height: 10),
 
                                 Row(
@@ -913,8 +1140,6 @@ class _OrmawaAbsensiScreenState extends State<OrmawaAbsensiScreen> {
       },
     );
   }
-
-
 }
 
 class _DynamicQrDialog extends StatefulWidget {
@@ -970,8 +1195,7 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
+    final primaryColor = OrmawaTheme.primary;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -1106,16 +1330,15 @@ class _DynamicQrDialogState extends State<_DynamicQrDialog> with SingleTickerPro
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              height: 44,
+              child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF1F5F9),
-                  foregroundColor: const Color(0xFF334155),
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF475569),
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Tutup Panel QR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                child: const Text('Tutup Panel QR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
               ),
             ),
           ],

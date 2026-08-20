@@ -1,19 +1,22 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 
 class CreateLpjScreen extends StatefulWidget {
   const CreateLpjScreen({super.key});
@@ -24,189 +27,676 @@ class CreateLpjScreen extends StatefulWidget {
 
 class _CreateLpjScreenState extends State<CreateLpjScreen> {
   final _judulController = TextEditingController();
-  final _catatanController = TextEditingController();
+  final _jenisController = TextEditingController(text: 'LPJ');
+  final _periodeController = TextEditingController(text: '2024/2025');
+  final _paguController = TextEditingController();
   final _realisasiController = TextEditingController();
+  final _deskripsiController = TextEditingController();
+  final _kendalaController = TextEditingController();
+  final _driveUrlController = TextEditingController();
+
   String? _selectedProposalId;
+  String? _uploadedFileUrl;
+  String? _uploadedFileName;
+  int? _uploadedFileSize;
+  bool _isUploading = false;
   bool _isSubmitting = false;
 
   @override
   void dispose() {
     _judulController.dispose();
-    _catatanController.dispose();
+    _jenisController.dispose();
+    _periodeController.dispose();
+    _paguController.dispose();
     _realisasiController.dispose();
+    _deskripsiController.dispose();
+    _kendalaController.dispose();
+    _driveUrlController.dispose();
     super.dispose();
   }
 
+  String _formatRp(double val) {
+    return NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(val);
+  }
+
+  void _onProposalChanged(String? propId, List<OrmawaProposal> proposals) {
+    setState(() {
+      _selectedProposalId = propId;
+      if (propId != null) {
+        final selected = proposals.firstWhere(
+          (p) => p.id.toString() == propId,
+          orElse: () => proposals.first,
+        );
+        final budget = selected.budget;
+        _judulController.text = 'LPJ - ${selected.title}';
+        _paguController.text = NumberFormat('#,###', 'id_ID').format(budget.toInt());
+        if (_realisasiController.text.isEmpty && budget > 0) {
+          _realisasiController.text = NumberFormat('#,###', 'id_ID').format(budget.toInt());
+        }
+        _deskripsiController.text = 'Laporan Pertanggungjawaban pelaksanaan kegiatan "${selected.title}".';
+      } else {
+        _paguController.clear();
+      }
+    });
+  }
+
+  Future<void> _pickAndUploadFile() async {
+    final provider = context.read<OrmawaProvider>();
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'zip'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final file = File(result.files.single.path!);
+        final size = await file.length();
+
+        if (size > 10 * 1024 * 1024) {
+          if (mounted) {
+            AppSnackbar.showWarning(context, 'Ukuran berkas melebihi batas maksimal 10 MB');
+          }
+          return;
+        }
+
+        setState(() => _isUploading = true);
+        final url = await provider.uploadFile(file.path);
+
+        if (mounted) {
+          setState(() {
+            _isUploading = false;
+            if (url != null && url.isNotEmpty) {
+              _uploadedFileUrl = url;
+              _uploadedFileName = result.files.single.name;
+              _uploadedFileSize = size;
+              AppSnackbar.showSuccess(context, 'Berkas LPJ berhasil diunggah');
+            } else {
+              AppSnackbar.showError(context, 'Gagal mengunggah berkas LPJ');
+            }
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isUploading = false);
+        AppSnackbar.showError(context, 'Terjadi kesalahan saat memilih berkas: $e');
+      }
+    }
+  }
+
   void _handleSubmit() async {
-    if (_judulController.text.isEmpty || _selectedProposalId == null) {
-      AppSnackbar.showWarning(context, 'Judul dan Proposal wajib diisi');
+    if (_judulController.text.trim().isEmpty) {
+      AppSnackbar.showWarning(context, 'Judul LPJ wajib diisi');
       return;
     }
+
+    if (_selectedProposalId == null || _selectedProposalId!.isEmpty) {
+      AppSnackbar.showWarning(context, 'Silakan pilih proposal kegiatan terkait');
+      return;
+    }
+
+    final finalFileUrl = _uploadedFileUrl ?? _driveUrlController.text.trim();
+    if (finalFileUrl.isEmpty) {
+      AppSnackbar.showWarning(context, 'Silakan unggah berkas dokumen LPJ atau cantumkan tautan Google Drive');
+      return;
+    }
+
+    final rawPagu = _paguController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final rawRealisasi = _realisasiController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final paguNum = double.tryParse(rawPagu) ?? 0.0;
+    final realisasiNum = double.tryParse(rawRealisasi) ?? 0.0;
+
+    final extraNotes = <String>[];
+    if (_kendalaController.text.trim().isNotEmpty) {
+      extraNotes.add('[Kendala & Evaluasi]: ${_kendalaController.text.trim()}');
+    }
+    if (_uploadedFileUrl != null && _driveUrlController.text.trim().isNotEmpty) {
+      extraNotes.add('[Tautan Drive Cadangan]: ${_driveUrlController.text.trim()}');
+    }
+
+    final fullCatatan = extraNotes.isNotEmpty
+        ? '${_deskripsiController.text.trim().isNotEmpty ? "${_deskripsiController.text.trim()}\n\n" : ""}${extraNotes.join("\n\n")}'
+        : _deskripsiController.text.trim();
+
+    final data = <String, dynamic>{
+      'Judul': _judulController.text.trim(),
+      'ProposalID': int.tryParse(_selectedProposalId!) ?? _selectedProposalId,
+      'Jenis': 'LPJ',
+      'Periode': _periodeController.text.trim(),
+      'TotalPagu': paguNum,
+      'TotalAnggaran': paguNum,
+      'TotalRealisasi': realisasiNum,
+      'RealisasiAnggaran': realisasiNum,
+      'TotalPengeluaran': realisasiNum,
+      'Kendala': _kendalaController.text.trim(),
+      'FileUrl': finalFileUrl,
+      'FileURL': finalFileUrl,
+      'Catatan': fullCatatan,
+      'Deskripsi': _deskripsiController.text.trim(),
+      'Status': 'diajukan',
+    };
 
     setState(() => _isSubmitting = true);
     BkuLoadingDialog.show(context);
 
     try {
-      final data = {
-        'Judul': _judulController.text,
-        'ProposalID': int.parse(_selectedProposalId!),
-        'Catatan': _catatanController.text,
-        'RealisasiAnggaran': double.tryParse(
-                _realisasiController.text.replaceAll('.', '')) ??
-            0,
-        'Status': 'Menunggu',
-      };
-
       await context.read<OrmawaProvider>().addLPJ(data);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        BkuDialog.show(
-          context: context,
-          type: BkuDialogType.success,
-          title: 'LPJ Dibuat!',
-          message: 'Laporan pertanggungjawaban berhasil disimpan.',
-          primaryButtonText: 'Kembali',
-          onPrimaryPressed: () {
-            context.pop();
-            context.pop();
-          },
-        );
+        AppSnackbar.showSuccess(context, 'Berkas LPJ berhasil diajukan untuk review');
+        context.pop();
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showError(context, 'Gagal menyimpan: $e');
+        setState(() => _isSubmitting = false);
+        AppSnackbar.showError(context, 'Gagal menyimpan LPJ: $e');
       }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      body: Consumer<OrmawaProvider>(
-        builder: (context, provider, _) {
-          final proposals = provider.proposals
-              .where((p) =>
-                  p.status.toLowerCase().contains('disetujui') ||
-                  p.status.toLowerCase() == 'selesai')
-              .toList();
+    final provider = context.watch<OrmawaProvider>();
+    final proposals = provider.proposals.where((p) {
+      final s = p.status.toLowerCase();
+      return s.contains('setuju') || s == 'selesai';
+    }).toList();
 
-          return CustomScrollView(
-            slivers: [
-              BkuAppBar(
-                title: 'Buat Lpj Baru',
-                subtitle: 'Laporan Pertanggungjawaban',
-                variant: AppBarVariant.ormawa,
-                expandedHeight: 130.0,
-                showBackButton: true,
-                isExpandable: false,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    final rawPagu = _paguController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final rawRealisasi = _realisasiController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final paguNum = double.tryParse(rawPagu) ?? 0.0;
+    final realisasiNum = double.tryParse(rawRealisasi) ?? 0.0;
+    final selisih = paguNum - realisasiNum;
+    final absorptionPct = paguNum > 0 ? ((realisasiNum / paguNum) * 100).toStringAsFixed(1) : '0.0';
+
+    return Scaffold(
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          const BkuAppBar(
+            title: 'Buat LPJ Baru',
+            subtitle: 'Laporan Pertanggungjawaban Kegiatan',
+            variant: AppBarVariant.ormawa,
+            expandedHeight: 130.0,
+            showBackButton: true,
+            isExpandable: false,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      _buildLabel('JUDUL LPJ'),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildTextField(
-                        controller: _judulController,
-                        hint: 'Contoh: LPJ Kegiatan Seminar',
-                        icon: Icons.title_rounded,
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildLabel('PROPOSAL TERKAIT'),
-                      const SizedBox(height: AppSpacing.md),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg),
-                        decoration: BoxDecoration(
-                          color: AppColors.neutral100,
-                          borderRadius: AppRadius.radiusLg,
-                          border: Border.all(color: AppColors.neutral300),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: BkuDropdown<String>(
-                            value: _selectedProposalId,
-                            isExpanded: true,
-                            hint: 'Pilih Proposal',
-                            items: proposals
-                                .map((p) => DropdownMenuItem(
-                                      value: p.id.toString(),
-                                        child: Text(p.title,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ))
-                                .toList(),
-                            onChanged: (val) =>
-                                setState(() => _selectedProposalId = val),
-                          ),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Pagu Anggaran',
+                          value: _formatRp(paguNum),
+                          badgeText: _selectedProposalId != null ? 'Terkait' : 'Pagu',
+                          icon: Icons.account_balance_wallet_rounded,
+                          badgeColor: OrmawaTheme.primary,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildLabel('CATATAN'),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildTextField(
-                        controller: _catatanController,
-                        hint: 'Catatan tambahan...',
-                        icon: Icons.notes_rounded,
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildLabel('REALISASI ANGGRAN (RP)'),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildTextField(
-                        controller: _realisasiController,
-                        hint: '0',
-                        icon: Icons.payments_rounded,
-                        isNumber: true,
-                      ),
-                      const SizedBox(height: AppSpacing.s48),
-                      BkuButton.primary(
-                        text: 'SIMPAN LPJ',
-                        onPressed: _isSubmitting ? null : _handleSubmit,
-                        isLoading: _isSubmitting,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Total Realisasi',
+                          value: _formatRp(realisasiNum),
+                          badgeText: 'Pengeluaran',
+                          icon: Icons.payments_rounded,
+                          badgeColor: const Color(0xFF0284C7),
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: selisih >= 0 ? 'Sisa Efisiensi' : 'Defisit Anggaran',
+                          value: _formatRp(selisih.abs()),
+                          badgeText: selisih >= 0 ? 'Hemat' : 'Over',
+                          icon: selisih >= 0 ? Icons.savings_rounded : Icons.trending_down_rounded,
+                          badgeColor: selisih >= 0 ? const Color(0xFF10B981) : const Color(0xFFE11D48),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OrmawaKpiCard(
+                          title: 'Tingkat Serapan',
+                          value: '$absorptionPct%',
+                          badgeText: (double.tryParse(absorptionPct) ?? 0.0) <= 100.0 ? 'Optimal' : 'Over',
+                          icon: Icons.check_circle_rounded,
+                          badgeColor: (double.tryParse(absorptionPct) ?? 0.0) <= 100.0 ? const Color(0xFF7C3AED) : const Color(0xFFE11D48),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEFF6FF),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.assignment_turned_in_rounded, color: Color(0xFF2563EB), size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Informasi Proposal & Kegiatan', style: OrmawaTheme.textSectionTitle),
+                                  const Text(
+                                    'Pilih proposal kegiatan yang telah selesai dilaksanakan.',
+                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'TAUTKAN PROPOSAL TERKAIT *',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF334155),
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: _selectedProposalId,
+                                  isExpanded: true,
+                                  hint: Text(
+                                    proposals.isEmpty
+                                        ? 'Tidak ada proposal disetujui'
+                                        : '-- Pilih Proposal Kegiatan --',
+                                    style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                                  ),
+                                  items: proposals.map((p) {
+                                    return DropdownMenuItem<String>(
+                                      value: p.id.toString(),
+                                      child: Text(
+                                        '${p.title} (${_formatRp(p.budget)})',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) => _onProposalChanged(val, proposals),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Memilih proposal akan otomatis mengisi pagu dana yang telah disetujui.',
+                              style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+
+                        OrmawaTextField(
+                          label: 'NAMA / JUDUL LPJ *',
+                          controller: _judulController,
+                          hintText: 'Contoh: LPJ Kegiatan Latihan Kepemimpinan Mahasiswa 2025',
+                          prefixIcon: Icons.title_rounded,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OrmawaTextField(
+                                label: 'JENIS DOKUMEN',
+                                controller: _jenisController,
+                                readOnly: true,
+                                prefixIcon: Icons.description_rounded,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OrmawaTextField(
+                                label: 'PERIODE KEPENGURUSAN',
+                                controller: _periodeController,
+                                hintText: '2024/2025',
+                                prefixIcon: Icons.calendar_today_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF0FDF4),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.account_balance_wallet_rounded, color: Color(0xFF16A34A), size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Alokasi & Realisasi Anggaran', style: OrmawaTheme.textSectionTitle),
+                                  const Text(
+                                    'Bandingkan pagu dana disetujui dengan pengeluaran riil.',
+                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OrmawaTextField(
+                                label: 'PAGU DISETUJUI (RP)',
+                                controller: _paguController,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                prefixIcon: Icons.account_balance_rounded,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChanged: (_) => setState(() {}),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OrmawaTextField(
+                                label: 'REALISASI TERPAKAI (RP) *',
+                                controller: _realisasiController,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                prefixIcon: Icons.payments_rounded,
+                                prefixIconColor: const Color(0xFF16A34A),
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChanged: (_) => setState(() {}),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+
+                        if (paguNum > 0)
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: selisih >= 0 ? const Color(0xFFF0FDF4) : const Color(0xFFFFF1F2),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: selisih >= 0 ? const Color(0xFFBBF7D0) : const Color(0xFFFECDD3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: selisih >= 0 ? const Color(0xFFDCFCE7) : const Color(0xFFFFE4E6),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    selisih >= 0 ? Icons.savings_rounded : Icons.trending_down_rounded,
+                                    color: selisih >= 0 ? const Color(0xFF16A34A) : const Color(0xFFE11D48),
+                                    size: 18,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        selisih >= 0 ? 'Efisiensi Anggaran Berhasil Tercatat' : 'Peringatan Defisit / Over Budget',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w800,
+                                          color: selisih >= 0 ? const Color(0xFF14532D) : const Color(0xFF881337),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        selisih >= 0
+                                            ? 'Hemat ${_formatRp(selisih)} (${(100.0 - (double.tryParse(absorptionPct) ?? 0.0)).toStringAsFixed(1)}% dari pagu).'
+                                            : 'Realisasi melebihi pagu sebesar ${_formatRp(selisih.abs())}.',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: selisih >= 0 ? const Color(0xFF166534) : const Color(0xFF9F1239),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  '$absorptionPct%',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w900,
+                                    color: selisih >= 0 ? const Color(0xFF16A34A) : const Color(0xFFE11D48),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  OrmawaCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5F3FF),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.fact_check_rounded, color: Color(0xFF7C3AED), size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Capaian, Evaluasi & Berkas Dokumen', style: OrmawaTheme.textSectionTitle),
+                                  const Text(
+                                    'Uraikan pencapaian acara dan unggah berkas dokumen LPJ.',
+                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        OrmawaTextField(
+                          label: 'RINGKASAN HASIL KEGIATAN',
+                          controller: _deskripsiController,
+                          hintText: 'Jelaskan ringkasan jalannya kegiatan, output, dan hasil capaian acara...',
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 12),
+
+                        OrmawaTextField(
+                          label: 'KENDALA & SARAN REKOMENDASI',
+                          controller: _kendalaController,
+                          hintText: 'Uraikan kendala operasional yang dihadapi serta evaluasi perbaikan...',
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 14),
+
+                        const Text(
+                          'DOKUMEN BERKAS UTAMA LPJ (PDF/DOCX) *',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF334155),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+
+                        if (_uploadedFileUrl != null) ...[
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF0FDF4),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFBBF7D0)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFF16A34A), size: 28),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _uploadedFileName ?? 'Berkas Dokumen LPJ Terunggah',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      if (_uploadedFileSize != null)
+                                        Text(
+                                          '${(_uploadedFileSize! / (1024 * 1024)).toStringAsFixed(2)} MB',
+                                          style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _uploadedFileUrl = null;
+                                      _uploadedFileName = null;
+                                      _uploadedFileSize = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFE11D48), size: 20),
+                                  tooltip: 'Hapus Berkas',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ] else ...[
+                          BkuBounceButton(
+                            onTap: _isUploading ? null : _pickAndUploadFile,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8FAFC),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: const Color(0xFFCBD5E1), style: BorderStyle.solid),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_isUploading) ...[
+                                    const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Text('Mengunggah berkas...', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                                  ] else ...[
+                                    Icon(Icons.cloud_upload_outlined, size: 32, color: OrmawaTheme.primary),
+                                    const SizedBox(height: 6),
+                                    const Text(
+                                      'Pilih & Unggah Berkas Dokumen LPJ',
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    const Text(
+                                      'Format PDF, DOCX, ZIP (Maksimal 10 MB)',
+                                      style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 12),
+
+                        OrmawaTextField(
+                          label: 'TAUTAN GOOGLE DRIVE CADANGAN / FOTO (OPSIONAL)',
+                          controller: _driveUrlController,
+                          hintText: 'https://drive.google.com/...',
+                          prefixIcon: Icons.link_rounded,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  OrmawaButton(
+                    text: 'Ajukan Berkas LPJ',
+                    icon: Icons.send_rounded,
+                    isLoading: _isSubmitting,
+                    onPressed: _handleSubmit,
+                    width: double.infinity,
+                  ),
+                  const SizedBox(height: AppSpacing.s140),
+                ],
               ),
-            ],
-          );
-        },
+            ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppTextStyles.labelSm.copyWith(
-        color: AppColors.neutral600,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1,
-        fontSize: 10,
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    bool isNumber = false,
-    int maxLines = 1,
-  }) {
-    return BkuTextField(
-      controller: controller,
-      hint: hint,
-      prefixIcon: Icon(icon),
-      maxLines: maxLines,
-      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-      inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
     );
   }
 }

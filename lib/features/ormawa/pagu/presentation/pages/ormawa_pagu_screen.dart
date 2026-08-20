@@ -270,24 +270,28 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: const Color(0xFFCBD5E1)),
-                ),
-                child: const Text(
-                  'SENTRALISASI PAGU ANGGARAN',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF475569),
-                    letterSpacing: 0.4,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: const Text(
+                    'SENTRALISASI PAGU ANGGARAN',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF475569),
+                      letterSpacing: 0.4,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -857,19 +861,25 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         children: [
                           const Icon(Icons.person_outline_rounded, size: 12, color: Color(0xFF64748B)),
                           const SizedBox(width: 4),
-                          Text(
-                            log.user,
-                            style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
+                          Flexible(
                             child: Text(
-                              '• ${log.reason}',
-                              style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                              log.user,
+                              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (log.reason.trim().isNotEmpty && log.reason.trim() != '-') ...[
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                '• ${log.reason}',
+                                style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],
@@ -946,7 +956,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
   void initState() {
     super.initState();
     _budgetController = TextEditingController(
-      text: widget.setting.budgetLimit.toInt().toString(),
+      text: NumberFormat.decimalPattern('id_ID').format(widget.setting.budgetLimit.toInt()),
     );
     _yearController = TextEditingController(
       text: widget.setting.fiscalYear,
@@ -963,6 +973,22 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
   }
 
   double get _currentLimit => double.tryParse(_budgetController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0;
+
+  void _onBudgetChanged(String val) {
+    final clean = val.replaceAll(RegExp(r'[^0-9]'), '');
+    if (clean.isEmpty) {
+      _budgetController.value = const TextEditingValue(text: '0');
+      setState(() {});
+      return;
+    }
+    final numVal = int.tryParse(clean) ?? 0;
+    final formatted = NumberFormat.decimalPattern('id_ID').format(numVal);
+    _budgetController.value = TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+    setState(() {});
+  }
 
   void _handleSubmit() {
     final newBudget = _currentLimit;
@@ -1017,6 +1043,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
     final used = widget.setting.usedBudget;
     final pending = widget.setting.pendingBudget;
     final simulatedRemaining = (_currentLimit - used - pending).clamp(0.0, double.infinity);
+    final isYearLocked = widget.setting.budgetLimit > 0;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
@@ -1099,7 +1126,7 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                     TextField(
                       controller: _budgetController,
                       keyboardType: TextInputType.number,
-                      onChanged: (_) => setState(() {}),
+                      onChanged: _onBudgetChanged,
                       style: const TextStyle(fontSize: 13, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
                       decoration: InputDecoration(
                         prefixIcon: Container(
@@ -1175,12 +1202,21 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                     const SizedBox(height: 4),
                     TextField(
                       controller: _yearController,
+                      enabled: !isYearLocked,
                       keyboardType: TextInputType.number,
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isYearLocked ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
+                        fontWeight: FontWeight.bold,
+                      ),
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.calendar_today_rounded, size: 16, color: Color(0xFF64748B)),
+                        prefixIcon: Icon(
+                          Icons.calendar_today_rounded,
+                          size: 16,
+                          color: isYearLocked ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: isYearLocked ? const Color(0xFFF1F5F9) : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
@@ -1189,6 +1225,10 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
                         ),
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
@@ -1196,6 +1236,21 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
                         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                     ),
+                    if (isYearLocked) ...[
+                      const SizedBox(height: 4),
+                      const Row(
+                        children: [
+                          Icon(Icons.lock_outline_rounded, size: 12, color: Color(0xFF64748B)),
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              'Tahun fiskal terkunci untuk konsistensi data anggaran tahun berjalan.',
+                              style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 14),
 
                     Container(
@@ -1587,4 +1642,3 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
     ).format(amount);
   }
 }
-

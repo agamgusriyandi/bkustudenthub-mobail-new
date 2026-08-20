@@ -9,6 +9,8 @@ class OrmawaKpiCard extends StatelessWidget {
   final Color? badgeColor;
   final String? subtitle;
   final VoidCallback? onTap;
+  final double? progress;
+  final Color? progressColor;
 
   const OrmawaKpiCard({
     super.key,
@@ -19,57 +21,85 @@ class OrmawaKpiCard extends StatelessWidget {
     this.badgeColor,
     this.subtitle,
     this.onTap,
+    this.progress,
+    this.progressColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final effectiveColor = badgeColor ?? OrmawaTheme.primary;
+    final effectiveProgressColor = progressColor ?? effectiveColor;
 
     Widget card = Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       decoration: BoxDecoration(
         color: OrmawaTheme.cardSurface,
         borderRadius: OrmawaTheme.r20,
-        border: Border.all(color: OrmawaTheme.border),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.0),
         boxShadow: OrmawaTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (badgeText != null) ...[
+          if (badgeText != null || icon != null || progress != null) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (icon != null)
                   Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: effectiveColor.withAlpha(20),
-                      shape: BoxShape.circle,
+                      color: effectiveColor.withAlpha(18),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(icon, size: 13, color: effectiveColor),
+                    child: Icon(icon, size: 14, color: effectiveColor),
                   )
                 else
                   const SizedBox.shrink(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: effectiveColor.withAlpha(15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    badgeText!,
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      color: effectiveColor,
-                    ),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (progress != null) ...[
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              value: progress!.clamp(0.0, 1.0),
+                              strokeWidth: 2.5,
+                              backgroundColor: effectiveProgressColor.withAlpha(30),
+                              valueColor: AlwaysStoppedAnimation<Color>(effectiveProgressColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
+                    if (badgeText != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
+                        decoration: BoxDecoration(
+                          color: effectiveColor.withAlpha(14),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          badgeText!,
+                          style: TextStyle(
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                            color: effectiveColor,
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 10),
           ],
           Text(
             value,
@@ -77,7 +107,7 @@ class OrmawaKpiCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 3),
+          const SizedBox(height: 4),
           Text(
             title,
             style: OrmawaTheme.textKpiLabel,
@@ -85,7 +115,7 @@ class OrmawaKpiCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           if (subtitle != null) ...[
-            SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
               subtitle!,
               style: OrmawaTheme.textCaption.copyWith(
@@ -94,6 +124,18 @@ class OrmawaKpiCard extends StatelessWidget {
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          if (progress != null) ...[
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: progress!.clamp(0.0, 1.0),
+                minHeight: 3.5,
+                backgroundColor: effectiveProgressColor.withAlpha(25),
+                valueColor: AlwaysStoppedAnimation<Color>(effectiveProgressColor),
+              ),
             ),
           ],
         ],

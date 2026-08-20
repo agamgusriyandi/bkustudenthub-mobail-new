@@ -82,12 +82,12 @@ class OrmawaProposalList extends StatelessWidget {
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: OrmawaTheme.primarySoft,
+                        color: const Color(0xFFEFF6FF),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.description_outlined,
-                        color: OrmawaTheme.primary,
+                        color: Color(0xFF2563EB),
                         size: 19,
                       ),
                     ),
@@ -135,45 +135,59 @@ class OrmawaProposalList extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 13,
-                          color: OrmawaTheme.textMuted,
+                        const Icon(
+                          Icons.calendar_today_rounded,
+                          size: 12,
+                          color: Color(0xFF64748B),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
-                          DateFormat('dd MMM yyyy, HH:mm', 'id').format(proposal.date),
-                          style: TextStyle(
-                            color: OrmawaTheme.textMuted,
+                          (proposal.date.hour != 0 || proposal.date.minute != 0)
+                              ? DateFormat('dd MMM yyyy, HH:mm', 'id').format(proposal.date)
+                              : DateFormat('dd MMM yyyy', 'id').format(proposal.date),
+                          style: const TextStyle(
+                            color: Color(0xFF64748B),
                             fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Lihat Detail',
-                          style: TextStyle(
-                            color: OrmawaTheme.textMuted,
                             fontWeight: FontWeight.w600,
-                            fontSize: 11,
                           ),
-                        ),
-                        SizedBox(width: 2),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: OrmawaTheme.textMuted,
-                          size: 9,
                         ),
                       ],
                     ),
+                    if (proposal.budget > 0)
+                      Text(
+                        _formatRp(proposal.budget),
+                        style: const TextStyle(
+                          color: Color(0xFF059669),
+                          fontWeight: FontWeight.w800,
+                          fontSize: 11.5,
+                          fontFamily: 'monospace',
+                        ),
+                      )
+                    else
+                      const Row(
+                        children: [
+                          Text(
+                            'Lihat Detail',
+                            style: TextStyle(
+                              color: Color(0xFF64748B),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                            ),
+                          ),
+                          SizedBox(width: 2),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Color(0xFF64748B),
+                            size: 9,
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ],
@@ -182,5 +196,14 @@ class OrmawaProposalList extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _formatRp(double amount) {
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+    return formatter.format(amount);
   }
 }

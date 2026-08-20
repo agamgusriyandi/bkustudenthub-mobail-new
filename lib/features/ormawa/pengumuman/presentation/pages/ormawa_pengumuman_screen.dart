@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/create_pengumuman_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/edit_pengumuman_screen.dart';
@@ -445,29 +446,12 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
       return item.kategori == _activeTab;
     }).toList();
 
+    final canCreate = ormawaProvider.hasPermission('ormawa.announcements.create, create_announcements, create_announcement');
+    final canEdit = ormawaProvider.hasPermission('ormawa.announcements.update, edit_announcements, edit_announcement');
+    final canDelete = ormawaProvider.hasPermission('ormawa.announcements.delete, delete_announcements, delete_announcement');
+
     return Scaffold(
       backgroundColor: OrmawaTheme.scaffoldBg,
-      floatingActionButton: ormawaProvider.hasPermission('create_announcement')
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.s100),
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CreatePengumumanScreen()),
-                  );
-                },
-                backgroundColor: OrmawaTheme.primary,
-                foregroundColor: Colors.white,
-                elevation: 4,
-                icon: const Icon(Icons.campaign_rounded, size: 20),
-                label: Text(
-                  'Buat Pengumuman',
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
-                ),
-              ),
-            )
-          : null,
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
         child: CustomScrollView(
@@ -490,6 +474,121 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    FadeInAnimation(
+                      delay: 0.1,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF94A3B8).withAlpha(20),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Pusat Publikasi &',
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Text(
+                                        'Siaran Pengumuman',
+                                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: OrmawaTheme.primarySoft,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: OrmawaTheme.primaryBorder),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.campaign_rounded, size: 14, color: OrmawaTheme.primary),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        'Warta Ormawa',
+                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Penyampaian maklumat resmi, surat edaran, dan kabar penting ke seluruh anggota dan mahasiswa.',
+                              style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    onPressed: _handleRefresh,
+                                    icon: const Icon(Icons.refresh_rounded, size: 14),
+                                    label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: OrmawaTheme.textHeading,
+                                      side: BorderSide(color: OrmawaTheme.border),
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      minimumSize: Size.zero,
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                  ),
+                                ),
+                                if (canCreate) ...[
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => const CreatePengumumanScreen()),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.add_rounded, size: 15),
+                                      label: const Text('Buat Pengumuman', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: OrmawaTheme.primary,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
                     Row(
                       children: [
                         Expanded(
@@ -558,10 +657,37 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     ),
                     const SizedBox(height: 14),
                     if (filteredList.isEmpty)
-                      const OrmawaEmptyCard(
+                      OrmawaEmptyCard(
                         title: 'Belum ada pengumuman',
-                        description: 'Tidak ada siaran atau pengumuman yang sesuai.',
+                        description: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                            ? 'Tidak ada siaran atau pengumuman yang sesuai kriteria pencarian atau filter aktif.'
+                            : 'Belum ada siaran pengumuman yang dipublikasikan untuk organisasi ini.',
                         icon: Icons.campaign_outlined,
+                        actionLabel: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                            ? 'Reset Filter & Cari Ulang'
+                            : (canCreate ? '+ Buat Pengumuman Baru' : null),
+                        actionIcon: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                            ? Icons.refresh_rounded
+                            : Icons.add_rounded,
+                        isPrimaryAction: _searchQuery.isEmpty && _activeTab == 'semua',
+                        onAction: () async {
+                          if (_searchQuery.isNotEmpty || _activeTab != 'semua') {
+                            setState(() {
+                              _searchController.clear();
+                              _searchQuery = '';
+                              _activeTab = 'semua';
+                            });
+                          } else if (canCreate) {
+                            final prov = context.read<OrmawaProvider>();
+                            final res = await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute(builder: (_) => const CreatePengumumanScreen()),
+                            );
+                            if (res == true && mounted) {
+                              prov.refreshData();
+                            }
+                          }
+                        },
                       )
                     else
                       ListView.separated(
@@ -687,67 +813,71 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 6),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    EditPengumumanScreen(
-                                                  announcement: item,
+                                        if (canEdit) ...[
+                                          const SizedBox(width: 6),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      EditPengumumanScreen(
+                                                    announcement: item,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 6,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFF8FAFC),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: OrmawaTheme.border,
                                                 ),
                                               ),
-                                            );
-                                          },
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFF8FAFC),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              border: Border.all(
-                                                color: OrmawaTheme.border,
+                                              child: Icon(
+                                                Icons.edit_outlined,
+                                                size: 15,
+                                                color: OrmawaTheme.primary,
                                               ),
                                             ),
-                                            child: Icon(
-                                              Icons.edit_outlined,
-                                              size: 15,
-                                              color: OrmawaTheme.primary,
-                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 6),
-                                        InkWell(
-                                          onTap: () =>
-                                              _confirmDelete(context, item),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFF8FAFC),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              border: Border.all(
-                                                color: OrmawaTheme.border,
+                                        ],
+                                        if (canDelete) ...[
+                                          const SizedBox(width: 6),
+                                          InkWell(
+                                            onTap: () =>
+                                                _confirmDelete(context, item),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 6,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFF8FAFC),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: OrmawaTheme.border,
+                                                ),
+                                              ),
+                                              child: const Icon(
+                                                Icons.delete_outline_rounded,
+                                                size: 15,
+                                                color: Color(0xFFE11D48),
                                               ),
                                             ),
-                                            child: const Icon(
-                                              Icons.delete_outline_rounded,
-                                              size: 15,
-                                              color: Color(0xFFE11D48),
-                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ],
                                     ),
                                   ],

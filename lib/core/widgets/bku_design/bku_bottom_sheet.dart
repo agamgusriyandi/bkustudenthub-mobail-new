@@ -14,21 +14,27 @@ class BkuBottomSheet {
     String? title,
     bool isScrollControlled = true,
     bool isDismissible = true,
+    bool useRootNavigator = true,
     EdgeInsets padding = const EdgeInsets.all(AppSpacing.lg),
   }) {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
+      useRootNavigator: useRootNavigator,
       backgroundColor: Colors.transparent,
       builder: (context) {
         final theme = context.watch<ThemeProvider>();
+        final mediaQuery = MediaQuery.of(context);
 
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+            bottom: mediaQuery.viewInsets.bottom,
           ),
           child: Container(
+            constraints: BoxConstraints(
+              maxHeight: mediaQuery.size.height * 0.90,
+            ),
             decoration: BoxDecoration(
               color: theme.surface,
               borderRadius: const BorderRadius.vertical(
@@ -48,7 +54,6 @@ class BkuBottomSheet {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Handle indicator
                   Center(
                     child: Container(
                       margin: const EdgeInsets.only(top: AppSpacing.md, bottom: AppSpacing.sm),
@@ -77,7 +82,9 @@ class BkuBottomSheet {
                     ),
                     const Divider(height: 1, color: AppColors.neutral200),
                   ],
-                  Padding(padding: padding, child: child),
+                  Flexible(
+                    child: Padding(padding: padding, child: child),
+                  ),
                 ],
               ),
             ),

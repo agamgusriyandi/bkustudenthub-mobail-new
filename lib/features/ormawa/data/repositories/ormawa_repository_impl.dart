@@ -130,6 +130,7 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
         code: proposal.code,
         status: proposal.status,
         date: proposal.date,
+        tanggalSelesai: proposal.tanggalSelesai,
         budget: proposal.budget,
         description: proposal.description,
         landasanKegiatan: proposal.landasanKegiatan,
@@ -153,6 +154,16 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
   }
 
   @override
+  Future<void> createProposal(Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.addProposal(data);
+    } catch (e) {
+      log('Error in createProposal: $e');
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> updateProposal(OrmawaProposal proposal) async {
     try {
       final model = OrmawaProposalModel(
@@ -164,6 +175,7 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
         code: proposal.code,
         status: proposal.status,
         date: proposal.date,
+        tanggalSelesai: proposal.tanggalSelesai,
         budget: proposal.budget,
         description: proposal.description,
         landasanKegiatan: proposal.landasanKegiatan,
@@ -182,6 +194,26 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
       await ormawaRemoteDataSource.updateProposal(proposal.id, model.toJson());
     } catch (e) {
       log('Error in updateProposal: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateProposalData(String id, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.updateProposal(id, data);
+    } catch (e) {
+      log('Error in updateProposalData: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> resubmitProposal(String proposalId) async {
+    try {
+      await ormawaRemoteDataSource.resubmitProposal(proposalId);
+    } catch (e) {
+      log('Error in resubmitProposal: $e');
       rethrow;
     }
   }
@@ -247,6 +279,142 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
       await ormawaRemoteDataSource.addFinance(ormawaId, data);
     } catch (e) {
       log('Error in addFinance: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteFinance(String id) async {
+    try {
+      await ormawaRemoteDataSource.deleteFinance(id);
+    } catch (e) {
+      log('Error in deleteFinance: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getBudgetStatus(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getBudgetStatus(ormawaId);
+      final data = response.data['data'] ?? response.data;
+      if (data is Map<String, dynamic>) {
+        return data;
+      }
+      return null;
+    } catch (e) {
+      log('Error in getBudgetStatus: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<String> generateReportNumber(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.generateReportNumber(ormawaId);
+      return response.data['document_number'] ?? response.data['data']?['document_number'] ?? '001/LAP-ORMAWA/X/2026';
+    } catch (e) {
+      log('Error in generateReportNumber: $e');
+      return '001/LAP-ORMAWA/X/2026';
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getBankAccount(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getBankAccount(ormawaId);
+      final data = response.data['data'] ?? response.data;
+      if (data is Map<String, dynamic>) {
+        return data;
+      }
+      return {'nama_bank': '', 'no_rekening': '', 'nama_rekening': ''};
+    } catch (e) {
+      log('Error in getBankAccount: $e');
+      return {'nama_bank': '', 'no_rekening': '', 'nama_rekening': ''};
+    }
+  }
+
+  @override
+  Future<void> updateBankAccount(String ormawaId, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.updateBankAccount(ormawaId, data);
+    } catch (e) {
+      log('Error in updateBankAccount: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getIurans(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getIurans(ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getIurans: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> createIuran(String ormawaId, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.createIuran(ormawaId, data);
+    } catch (e) {
+      log('Error in createIuran: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getIuranMembers(String iuranId, String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getIuranMembers(iuranId, ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getIuranMembers: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> verifyIuranPayment(String detailId, String ormawaId, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.verifyIuranPayment(detailId, ormawaId, data);
+    } catch (e) {
+      log('Error in verifyIuranPayment: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMyIurans(String ormawaId) async {
+    try {
+      final response = await ormawaRemoteDataSource.getMyIurans(ormawaId);
+      final dynamic list = response.data['data'] ?? response.data;
+      if (list is List) {
+        return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error in getMyIurans: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> payMyIuran(String detailId, String ormawaId, Map<String, dynamic> data) async {
+    try {
+      await ormawaRemoteDataSource.payMyIuran(detailId, ormawaId, data);
+    } catch (e) {
+      log('Error in payMyIuran: $e');
       rethrow;
     }
   }
@@ -920,7 +1088,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     }
   }
 
-  // Attendance Management
   @override
   Future<List<Map<String, dynamic>>> getAbsensiManagement(String ormawaId) async {
     try {
@@ -967,7 +1134,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     }
   }
 
-  // RBAC Roles
   @override
   Future<Map<String, dynamic>> getRoleDetails(String roleId) async {
     try {
@@ -979,7 +1145,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     }
   }
 
-  // LPJ
   @override
   Future<List<dynamic>> getLpjDocuments(String lpjId) async {
     try {
@@ -995,7 +1160,6 @@ class OrmawaRepositoryImpl implements OrmawaRepository {
     }
   }
 
-  // Organisasi
   @override
   Future<List<OrmawaOrganisasi>> getOrganisasiList() async {
     try {

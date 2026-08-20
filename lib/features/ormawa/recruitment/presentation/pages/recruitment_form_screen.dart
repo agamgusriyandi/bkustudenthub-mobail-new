@@ -6,10 +6,10 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
@@ -179,9 +179,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                   leading: Container(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      color: OrmawaTheme.primarySoft,
                       borderRadius: AppRadius.radiusSm,
                     ),
                     child: Icon(
@@ -194,7 +192,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                           : type == 'Pilihan Ganda'
                           ? Icons.check_box_rounded
                           : Icons.upload_file_rounded,
-                      color: context.appColors.primary,
+                      color: OrmawaTheme.primary,
                       size: 20,
                     ),
                   ),
@@ -230,105 +228,127 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
-      appBar: const BkuStaticAppBar(title: 'Form Builder'),
-      body: Stack(
+      backgroundColor: OrmawaTheme.scaffoldBg,
+      appBar: const BkuStaticAppBar(
+        title: 'Form Builder',
+        subtitle: 'Kustomisasi Formulir Pendaftaran',
+        variant: AppBarVariant.ormawa,
+      ),
+      body: Column(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child:
-                    _fields.isEmpty
-                        ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.dynamic_form_rounded,
-                                size: 64,
-                                color: AppColors.neutral300,
-                              ),
-                              const SizedBox(height: AppSpacing.lg),
-                              Text(
-                                'Belum ada field',
-                                style: AppTextStyles.bodyMd.copyWith(
-                                  color: AppColors.neutral600,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                'Tekan tombol + di bawah untuk membuat formulir',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color: AppColors.neutral400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                        : ReorderableListView.builder(
-                          padding: const EdgeInsets.only(
-                            left: AppSpacing.s20,
-                            right: AppSpacing.s20,
-                            top: AppSpacing.lg,
-                            bottom: AppSpacing.s100,
-                          ),
-                          itemCount: _fields.length,
-                          onReorderItem: (oldIndex, newIndex) {
-                            setState(() {
-                              final item = _fields.removeAt(oldIndex);
-                              _fields.insert(newIndex, item);
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              key: ValueKey(_fields[index].id),
-                              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                              child: _buildFieldCard(_fields[index], index),
-                            );
-                          },
+          Expanded(
+            child: _fields.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.dynamic_form_rounded,
+                          size: 64,
+                          color: AppColors.neutral300,
                         ),
-              ),
-              if (_fields.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  decoration: BoxDecoration(
-                    color: context.appColors.surface,
-                    border: Border(
-                      top: BorderSide(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.outline.withValues(alpha: 0.2),
-                      ),
+                        const SizedBox(height: AppSpacing.lg),
+                        Text(
+                          'Belum Ada Field Formulir',
+                          style: AppTextStyles.bodyMd.copyWith(
+                            color: AppColors.neutral600,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Tambahkan pertanyaan untuk formulir pendaftaran ormawa',
+                          style: AppTextStyles.labelMd.copyWith(
+                            color: AppColors.neutral400,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        ElevatedButton.icon(
+                          onPressed: _showAddFieldSheet,
+                          icon: const Icon(Icons.add_rounded, size: 16),
+                          label: const Text('Tambah Field Baru', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: OrmawaTheme.primary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.appColors.onSurface.withValues(alpha: 0.02),
-                        blurRadius: 10,
-                        offset: const Offset(0, -5),
-                      ),
-                    ],
+                  )
+                : ReorderableListView.builder(
+                    padding: const EdgeInsets.all(AppSpacing.s20),
+                    itemCount: _fields.length,
+                    onReorderItem: (oldIndex, newIndex) {
+                      setState(() {
+                        final item = _fields.removeAt(oldIndex);
+                        _fields.insert(newIndex, item);
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        key: ValueKey(_fields[index].id),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                        child: _buildFieldCard(_fields[index], index),
+                      );
+                    },
                   ),
-                  child: BkuButton.primary(
-                    text: 'Simpan Form',
-                    onPressed: _isLoading ? null : _saveForm,
-                    isLoading: _isLoading,
+          ),
+          if (_fields.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: OrmawaTheme.border,
                   ),
                 ),
-            ],
-          ),
-          Positioned(
-            right: 20,
-            bottom: _fields.isEmpty ? 20 : 100,
-            child: FloatingActionButton(
-              heroTag: 'add_field_fab',
-              backgroundColor: context.appColors.primary,
-              foregroundColor: context.appColors.onPrimary,
-              elevation: 4,
-              onPressed: _showAddFieldSheet,
-              child: const Icon(Icons.add_rounded),
+                boxShadow: [
+                  BoxShadow(
+                    color: context.appColors.onSurface.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _showAddFieldSheet,
+                      icon: const Icon(Icons.add_rounded, size: 16),
+                      label: const Text('Tambah Field', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: OrmawaTheme.textHeading,
+                        side: BorderSide(color: OrmawaTheme.border),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _isLoading ? null : _saveForm,
+                      icon: _isLoading
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.save_rounded, size: 16),
+                      label: const Text('Simpan Form', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: OrmawaTheme.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -378,15 +398,13 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    color: OrmawaTheme.primarySoft,
                     borderRadius: AppRadius.radiusXs,
                   ),
                   child: Text(
                     'Field ${index + 1}',
                     style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.primary,
+                      color: OrmawaTheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -474,7 +492,8 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                       onChanged: (val) {
                         setState(() => field.required = val);
                       },
-                      activeThumbColor: context.appColors.primary,
+                      activeThumbColor: OrmawaTheme.primary,
+                      activeTrackColor: OrmawaTheme.primarySoft,
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
@@ -493,4 +512,3 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
     );
   }
 }
-

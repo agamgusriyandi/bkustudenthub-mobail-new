@@ -11,6 +11,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
@@ -96,12 +97,127 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                   return matchesSearch && matchesFilter;
                 }).toList();
 
+                final canCreate = provider.hasPermission('ormawa.attendance.create, ormawa.attendance.manage, create_attendance, edit_attendance, ormawa.events.create, ormawa.events.manage');
+
                 return SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        FadeInAnimation(
+                          delay: 0.1,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF94A3B8).withAlpha(20),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Manajemen Presensi &',
+                                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            'Sesi Kehadiran Kegiatan',
+                                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: OrmawaTheme.primarySoft,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: OrmawaTheme.primaryBorder),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.qr_code_scanner_rounded, size: 14, color: OrmawaTheme.primary),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            'Presensi Ormawa',
+                                            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Buat barcode presensi QR Code, atur radius lokasi, dan pantau rekapitulasi kehadiran anggota.',
+                                  style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                                ),
+                                const SizedBox(height: 14),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton.icon(
+                                        onPressed: () => provider.fetchAbsensiManagement(),
+                                        icon: const Icon(Icons.refresh_rounded, size: 14),
+                                        label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: OrmawaTheme.textHeading,
+                                          side: BorderSide(color: OrmawaTheme.border),
+                                          padding: const EdgeInsets.symmetric(vertical: 8),
+                                          minimumSize: Size.zero,
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        ),
+                                      ),
+                                    ),
+                                    if (canCreate) ...[
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => const CreateAbsensiScreen()),
+                                          ).then((_) => provider.fetchAbsensiManagement()),
+                                          icon: const Icon(Icons.add_rounded, size: 15),
+                                          label: const Text('Buat Sesi Baru', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: OrmawaTheme.primary,
+                                            foregroundColor: Colors.white,
+                                            elevation: 0,
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                            minimumSize: Size.zero,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
                         Row(
                           children: [
                             Expanded(
@@ -291,7 +407,7 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                               );
                             },
                           ),
-                        const SizedBox(height: AppSpacing.s100),
+                        const SizedBox(height: AppSpacing.xxl),
                       ],
                     ),
                   ),
@@ -300,27 +416,6 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
             ),
           ],
         ),
-      ),
-      floatingActionButton: Consumer<OrmawaProvider>(
-        builder: (context, provider, _) {
-          if (!provider.hasPermission('edit_attendance')) return const SizedBox.shrink();
-          return FloatingActionButton.extended(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreateAbsensiScreen()),
-            ).then((_) => provider.fetchAbsensiManagement()),
-            backgroundColor: OrmawaTheme.primary,
-            icon: const Icon(Icons.add_rounded, color: Colors.white),
-            label: const Text(
-              'Buat Absensi',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontSize: 12.5,
-              ),
-            ),
-          );
-        },
       ),
     );
   }

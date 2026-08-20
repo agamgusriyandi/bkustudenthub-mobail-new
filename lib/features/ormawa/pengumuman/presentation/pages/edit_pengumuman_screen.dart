@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
@@ -114,6 +114,25 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
       initialDate: initialDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: OrmawaTheme.primary,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: const Color(0xFF0F172A),
+            ),
+                        textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: OrmawaTheme.primary,
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
@@ -171,12 +190,13 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = context.appColors.primary;
+    final primaryColor = OrmawaTheme.primary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Edit Pengumuman',
+        subtitle: 'Siaran Informasi Ormawa',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

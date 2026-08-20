@@ -16,16 +16,16 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
-class CreateProposalScreen extends StatefulWidget {
-  final OrmawaProposal? initialProposal;
+class EditProposalScreen extends StatefulWidget {
+  final OrmawaProposal proposal;
 
-  const CreateProposalScreen({super.key, this.initialProposal});
+  const EditProposalScreen({super.key, required this.proposal});
 
   @override
-  State<CreateProposalScreen> createState() => _CreateProposalScreenState();
+  State<EditProposalScreen> createState() => _EditProposalScreenState();
 }
 
-class _CreateProposalScreenState extends State<CreateProposalScreen> {
+class _EditProposalScreenState extends State<EditProposalScreen> {
   final _judulController = TextEditingController();
   final _bentukController = TextEditingController();
   final _sasaranController = TextEditingController();
@@ -70,9 +70,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialProposal != null) {
-      _initFromProposal(widget.initialProposal!);
-    }
+    _initData();
   }
 
   DateTime? _parseIndonesianDate(String text) {
@@ -103,7 +101,8 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
     return null;
   }
 
-  void _initFromProposal(OrmawaProposal p) {
+  void _initData() {
+    final p = widget.proposal;
     _judulController.text = p.title;
     _bentukController.text = p.bentukKegiatan ?? '';
     _sasaranController.text = p.sasaranKegiatan ?? '';
@@ -184,31 +183,6 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
     _indikatorController.dispose();
     _catatanController.dispose();
     super.dispose();
-  }
-
-  void _loadSampleData() {
-    setState(() {
-      _judulController.text = 'Latihan Keterampilan Manajemen Mahasiswa Tingkat Dasar (LKMM-TD) 2026';
-      _bentukController.text = 'Pelatihan & Kaderisasi Kepemimpinan Mahasiswa';
-      _sasaranController.text = 'Seluruh Mahasiswa Baru & Calon Pengurus Ormawa Angkatan 2025/2026';
-      _mitraController.text = 'BEM Universitas, Himpunan Mahasiswa Jurusan, & UKM KEMA UBK';
-      _deskripsiController.text =
-          'Program kaderisasi kepemimpinan komprehensif yang dirancang untuk membekali mahasiswa dengan wawasan organisasi, manajemen konflik, komunikasi publik, dan etika kepemimpinan transformatif.';
-      _lokasiController.text = 'Auditorium Utama UBK & Ruang Kelas Teori Kampus';
-      _selectedSumberDana = 'Pagu Ormawa';
-      _anggaranController.text = '12500000';
-      _latarBelakangController.text =
-          'Pentingnya regenerasi kepemimpinan yang berintegritas dan memiliki kecakapan manajerial modern dalam menggerakkan roda organisasi mahasiswa di lingkungan civitas akademika Universitas Bung Karno.';
-      _tujuanController.text =
-          '1. Meningkatkan kapabilitas manajerial pengurus organisasi.\n2. Menanamkan nilai-nilai kepemimpinan Pancasila dan integritas akademis.\n3. Membangun sinergi kolaboratif antar elemen lembaga kemahasiswaan.';
-      _landasanController.text =
-          'AD/ART Organisasi Mahasiswa, Keputusan Rektor UBK No. 042/SK/UBK/2025, dan Program Kerja Tahunan Divisi Kaderisasi.';
-      _indikatorController.text =
-          '1. Partisipasi aktif minimal 120 mahasiswa terdaftar.\n2. Kelulusan evaluasi kaderisasi mencapai 95% peserta.\n3. Terbentuknya 10 portofolio rencana aksi program mahasiswa baru.';
-      _catatanController.text =
-          'Mohon arahan dan verifikasi dari Wadek III Kemahasiswaan agar pagu alokasi dapat segera dicairkan untuk persiapan logistik.';
-    });
-    AppSnackbar.showSuccess(context, 'Contoh usulan LKMM-TD 2026 berhasil dimuat!');
   }
 
   Future<void> _pickTanggalMulai() async {
@@ -847,19 +821,21 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
         'catatan': _catatanController.text.trim(),
         'JadwalPelaksanaan': _buildJadwalText(),
         'jadwal_pelaksanaan': _buildJadwalText(),
-        'Status': 'diajukan',
-        'status': 'diajukan',
       };
 
+      String? finalFileUrl = widget.proposal.fileUrl;
       if (_selectedFile != null && _selectedFile!.path != null) {
         final uploaded = await provider.uploadFile(_selectedFile!.path!);
         if (uploaded != null && uploaded.isNotEmpty) {
-          payload['FileURL'] = uploaded;
-          payload['file_url'] = uploaded;
+          finalFileUrl = uploaded;
         }
       }
+      if (finalFileUrl != null && finalFileUrl.isNotEmpty) {
+        payload['FileURL'] = finalFileUrl;
+        payload['file_url'] = finalFileUrl;
+      }
 
-      final ormawaId = provider.ormawaId;
+      final ormawaId = widget.proposal.ormawaId ?? provider.ormawaId;
       if (ormawaId != null && ormawaId.isNotEmpty) {
         final parsedOrmawaId = int.tryParse(ormawaId) ?? 0;
         if (parsedOrmawaId > 0) {
@@ -867,18 +843,25 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
           payload['ormawa_id'] = parsedOrmawaId;
         }
       }
+      if (widget.proposal.mahasiswaId != null && widget.proposal.mahasiswaId!.isNotEmpty) {
+        final parsedMahasiswaId = int.tryParse(widget.proposal.mahasiswaId!) ?? 0;
+        if (parsedMahasiswaId > 0) {
+          payload['MahasiswaID'] = parsedMahasiswaId;
+          payload['mahasiswa_id'] = parsedMahasiswaId;
+        }
+      }
 
-      await provider.createProposal(payload);
+      await provider.updateProposal(widget.proposal.id, payload);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showSuccess(context, 'Proposal kegiatan berhasil diajukan');
+        AppSnackbar.showSuccess(context, 'Perubahan proposal berhasil disimpan');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
         setState(() => _isSubmitting = false);
-        var msg = 'Gagal mengajukan proposal: $e';
+        var msg = 'Gagal memperbarui proposal: $e';
         if (e is DioException && e.response?.data != null) {
           final data = e.response!.data;
           if (data is Map && data['message'] != null) {
@@ -892,6 +875,7 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRevisi = widget.proposal.status.toLowerCase() == 'revisi';
     final effectiveOptions = List<String>.from(_sumberDanaOptions);
     if (_selectedSumberDana.isNotEmpty && !effectiveOptions.contains(_selectedSumberDana)) {
       effectiveOptions.insert(0, _selectedSumberDana);
@@ -903,8 +887,8 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
         slivers: [
           BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'Tambah Usulan Proposal',
-            subtitle: 'Rancangan Program & Anggaran',
+            title: 'Edit Usulan Proposal',
+            subtitle: 'Pembaruan Data & Naskah Kegiatan',
             expandedHeight: 130.0,
             showBackButton: true,
             isExpandable: false,
@@ -915,40 +899,42 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BkuBounceButton(
-                    onTap: _loadSampleData,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  if (isRevisi) ...[
+                    Container(
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFBFDBFE)),
+                        color: const Color(0xFFFFFBEB),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFFDE68A)),
                       ),
-                      child: const Row(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.auto_awesome_rounded, size: 18, color: Color(0xFF2563EB)),
-                          SizedBox(width: 10),
+                          const Icon(Icons.error_outline_rounded, color: Color(0xFFD97706), size: 20),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Muat Contoh Usulan Cepat',
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF1E40AF)),
+                                const Text(
+                                  'Status: Butuh Revisi Pengajuan',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFFB45309)),
                                 ),
+                                const SizedBox(height: 2),
                                 Text(
-                                  'Isi formulir otomatis dengan preset LKMM-TD 2026',
-                                  style: TextStyle(fontSize: 10, color: Color(0xFF3B82F6)),
+                                  widget.proposal.catatan != null && widget.proposal.catatan!.isNotEmpty
+                                      ? 'Catatan Reviewer: "${widget.proposal.catatan}"'
+                                      : 'Silakan lakukan penyesuaian naskah, anggaran, atau berkas sesuai arahan reviewer, lalu ajukan kembali.',
+                                  style: const TextStyle(fontSize: 11, color: Color(0xFF78350F), height: 1.3),
                                 ),
                               ],
                             ),
                           ),
-                          Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFF2563EB)),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 14),
+                    const SizedBox(height: 14),
+                  ],
 
                   OrmawaCard(
                     child: Column(
@@ -1273,7 +1259,11 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _selectedFile != null ? _selectedFile!.name : 'Pilih file dokumen lampiran',
+                                        _selectedFile != null
+                                            ? _selectedFile!.name
+                                            : (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty
+                                                ? 'Dokumen lampiran tersimpan'
+                                                : 'Pilih file dokumen lampiran baru'),
                                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -1311,10 +1301,10 @@ class _CreateProposalScreenState extends State<CreateProposalScreen> {
                     width: double.infinity,
                     height: 48,
                     child: OrmawaButton(
-                      text: 'AJUKAN PROPOSAL KEGIATAN',
+                      text: 'SIMPAN PERUBAHAN PROPOSAL',
                       isLoading: _isSubmitting,
                       onPressed: _isSubmitting ? null : _handleSubmit,
-                      icon: Icons.send_rounded,
+                      icon: Icons.save_rounded,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s100),

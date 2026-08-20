@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
@@ -60,7 +61,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
   @override
   Widget build(BuildContext context) {
     final ormawaProvider = context.watch<OrmawaProvider>();
-    final canCreateLPJ = ormawaProvider.hasPermission('create_lpj');
+    final canCreateLPJ = ormawaProvider.hasPermission('ormawa.lpj.create, create_lpj');
 
     return Scaffold(
       backgroundColor: OrmawaTheme.scaffoldBg,
@@ -89,6 +90,116 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    FadeInAnimation(
+                      delay: 0.1,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF94A3B8).withAlpha(20),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Pusat Eksekutif &',
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Text(
+                                        'Laporan & Dokumentasi',
+                                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: OrmawaTheme.primarySoft,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: OrmawaTheme.primaryBorder),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.assessment_rounded, size: 14, color: OrmawaTheme.primary),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        'Laporan Ormawa',
+                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Ringkasan eksekutif kegiatan, realisasi penggunaan dana anggaran, dan rekapitulasi kinerja ormawa.',
+                              style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    onPressed: () => context.read<OrmawaProvider>().refreshData(),
+                                    icon: const Icon(Icons.refresh_rounded, size: 14),
+                                    label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: OrmawaTheme.textHeading,
+                                      side: BorderSide(color: OrmawaTheme.border),
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      minimumSize: Size.zero,
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                  ),
+                                ),
+                                if (canCreateLPJ) ...[
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _showAddLaporan(context),
+                                      icon: const Icon(Icons.add_rounded, size: 15),
+                                      label: const Text('Buat LPJ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: OrmawaTheme.primary,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
                     _buildSummaryGrid(),
                     const SizedBox(height: AppSpacing.xxl),
                     OrmawaListHeader(
@@ -103,7 +214,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _buildLaporanList(),
-                    const SizedBox(height: AppSpacing.s80),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
                 ),
               ),
@@ -111,21 +222,6 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
           ],
         ),
       ),
-      floatingActionButton:
-          canCreateLPJ
-              ? FloatingActionButton.extended(
-                onPressed: () => _showAddLaporan(context),
-                backgroundColor: context.appColors.primary,
-                icon: Icon(Icons.note_add_rounded, color: context.appColors.onPrimary),
-                label: Text(
-                  'Buat LPJ',
-                  style: TextStyle(
-                    color: context.appColors.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-              : null,
     );
   }
 
@@ -725,7 +821,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         decimalDigits: 0,
                       ).format(report.realisasiAnggaran),
                       style: AppTextStyles.bodyMd.copyWith(
-                        color: context.appColors.primary,
+                        color: OrmawaTheme.primary,
                         fontWeight: FontWeight.w900,
                         fontSize: 13,
                       ),
@@ -826,7 +922,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     Text(
                       'DETAIL LAPORAN',
                       style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.primary,
+                        color: OrmawaTheme.primary,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -875,7 +971,6 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
-                    // Budget Absorption Card (Visual Progress Bar)
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       decoration: BoxDecoration(
@@ -1257,21 +1352,13 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                               vertical: AppSpacing.md,
                             ),
                             decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? context.appColors.primary
-                                      : Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withAlpha(10),
+                              color: isSelected ? OrmawaTheme.primary : OrmawaTheme.primarySoft,
                               borderRadius: AppRadius.radiusXl,
                             ),
                             child: Text(
                               option,
                               style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isSelected
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.primary,
+                                color: isSelected ? Colors.white : OrmawaTheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1331,7 +1418,6 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
     );
     _catatanController = TextEditingController(text: widget.report.catatan);
 
-    // Listeners for live Rupiah preview formatting
     _totalAnggaranController.addListener(() => setState(() {}));
     _realisasiController.addListener(() => setState(() {}));
   }
@@ -1756,14 +1842,12 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(10),
+                          color: OrmawaTheme.primarySoft,
                           borderRadius: AppRadius.radiusMd,
                         ),
                         child: Icon(
                           Icons.note_add_rounded,
-                          color: context.appColors.primary,
+                          color: OrmawaTheme.primary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.lg),
@@ -1783,7 +1867,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                               child: Text(
                                 'NEW DOCUMENT',
                                 style: AppTextStyles.labelSm.copyWith(
-                                  color: context.appColors.primary,
+                                  color: OrmawaTheme.primary,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 8,
                                 ),
@@ -1972,7 +2056,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
   Widget _buildProposalSelector() {
     return Consumer<OrmawaProvider>(
       builder: (context, provider, child) {
-        // Only show approved proposals that might need LPJ
+        
         final availableProposals = provider.proposals;
 
         return Column(

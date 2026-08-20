@@ -1,5 +1,4 @@
 
-
 class RecruitmentFormField {
   int id;
   String label;
@@ -15,4 +14,3 @@ class RecruitmentFormField {
     required this.required,
   });
 }
-

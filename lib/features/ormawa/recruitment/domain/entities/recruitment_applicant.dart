@@ -1,5 +1,4 @@
 
-
 class RecruitmentApplicant {
   final String name;
   final String nim;
@@ -25,5 +24,3 @@ class RecruitmentApplicant {
     required this.customAnswers,
   });
 }
-
-// Tab 4: Riwayat Keputusan

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
@@ -10,6 +9,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 
@@ -378,7 +378,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                   icon: const Icon(Icons.person_add_rounded, size: 14),
                   label: const Text('Tambah Anggota', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: context.appColors.primary,
+                    backgroundColor: OrmawaTheme.primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -417,7 +417,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
                           ),
                           TextSpan(
                             text: 'Anggota Ormawa',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: context.appColors.primary),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                           ),
                         ],
                       ),
@@ -446,7 +446,10 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
     final aktif = provider.members.where((m) => m.status.toLowerCase() == 'aktif').length;
     final totalDivisi = provider.divisions.length;
     final selectedPeriodText = provider.selectedPeriod == 'aktif' ? 'Aktif' : 'Thn ${provider.selectedPeriod}';
-    final periodBadge = provider.selectedPeriod == 'aktif' ? '2025/2026' : provider.selectedPeriod;
+    final now = DateTime.now();
+    final dynamicDefaultYear = '${now.year}/${now.year + 1}';
+    final activeYear = provider.academicYear.isNotEmpty ? provider.academicYear : dynamicDefaultYear;
+    final periodBadge = provider.selectedPeriod == 'aktif' ? activeYear : provider.selectedPeriod;
 
     return Column(
       children: [
@@ -676,7 +679,7 @@ class _OrmawaAnggotaScreenState extends State<OrmawaAnggotaScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: context.appColors.primary, width: 1.2),
+                borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.2),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             ),
@@ -1555,13 +1558,13 @@ class _OrmawaAnggotaFormSheetState extends State<_OrmawaAnggotaFormSheet> {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: context.appColors.primary.withAlpha(20),
+                      color: OrmawaTheme.primarySoft,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       isEditMode ? Icons.edit_rounded : Icons.person_add_rounded,
                       size: 20,
-                      color: context.appColors.primary,
+                      color: OrmawaTheme.primary,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1921,7 +1924,7 @@ class _OrmawaAnggotaFormSheetState extends State<_OrmawaAnggotaFormSheet> {
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appColors.primary,
+                          backgroundColor: OrmawaTheme.primary,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),

@@ -26,7 +26,6 @@ class OrmawaProvider extends ChangeNotifier {
 
   OrmawaProvider(this._repository);
 
-  // Organization Info - populated from API
   String _orgName = '';
   String _academicYear = '';
 
@@ -40,13 +39,11 @@ class OrmawaProvider extends ChangeNotifier {
   }
   String get academicYear => _academicYear;
 
-  // Stats
   int _totalMembers = 0;
   double _balance = 0;
   int _activeProposalsCount = 0;
   int _upcomingAgendasCount = 0;
 
-  // Gamifikasi
   int _gamifikasiPoin = 0;
   int _gamifikasiPeringkat = 0;
   int _totalOrmawa = 0;
@@ -58,6 +55,11 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaAgenda> _agendas = [];
   List<OrmawaMember> _members = [];
   List<OrmawaFinance> _financeList = [];
+  Map<String, dynamic>? _budgetStatus;
+  Map<String, dynamic> _bankAccount = {'nama_bank': '', 'no_rekening': '', 'nama_rekening': ''};
+  List<Map<String, dynamic>> _iurans = [];
+  List<Map<String, dynamic>> _myInvoices = [];
+  List<Map<String, dynamic>> _iuranMembers = [];
   List<OrmawaLPJ> _lpjs = [];
   List<OrmawaAttendance> _attendanceList = [];
   List<OrmawaAspiration> _aspirations = [];
@@ -71,7 +73,6 @@ class OrmawaProvider extends ChangeNotifier {
   List<String> _knownNotificationIds = [];
   bool _isFirstFetch = true;
 
-  // Financial Settings (Pagu Anggaran)
   OrmawaFinancialSetting? _financialSetting;
   List<OrmawaFinancialSetting> _allFinancialSettings = [];
   List<OrmawaFinancialAuditLog> _auditLogs = [];
@@ -93,8 +94,8 @@ class OrmawaProvider extends ChangeNotifier {
   String get selectedPeriod => _selectedPeriod;
 
   bool _isLoading = false;
-
-  // Getters
+  bool _isRefreshingData = false;
+  bool get isFirstFetch => _isFirstFetch;
   int get totalMembers => _totalMembers;
   double get balance {
     if (_financeList.isEmpty) return _balance;
@@ -145,6 +146,11 @@ class OrmawaProvider extends ChangeNotifier {
   }
 
   List<OrmawaFinance> get financeList => _financeList;
+  Map<String, dynamic>? get budgetStatus => _budgetStatus;
+  Map<String, dynamic> get bankAccount => _bankAccount;
+  List<Map<String, dynamic>> get iurans => _iurans;
+  List<Map<String, dynamic>> get myInvoices => _myInvoices;
+  List<Map<String, dynamic>> get iuranMembers => _iuranMembers;
   List<OrmawaLPJ> get lpjs => _lpjs;
   List<OrmawaAttendance> get attendanceList => _attendanceList;
   List<OrmawaAspiration> get aspirations => _aspirations;
@@ -217,83 +223,179 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  bool hasPermission(String permission) {
+  String get userSubRole {
     final member = currentMember;
-
-    if (member != null) {
-      if (member.role.toUpperCase() == 'KETUA UMUM' ||
-          member.role.toUpperCase() == 'KETUA') {
-        if (PermissionService.allPermissions.contains(permission)) {
-          return true;
-        }
+    if (member != null && member.role.trim().isNotEmpty && member.role.trim().toLowerCase() != 'ormawa') {
+      return member.role.trim();
+    }
+    final userData = AuthService().userData;
+    if (userData != null) {
+      final userObj = userData['user'] ?? userData;
+      final raw = userObj['role_display'] ?? userObj['roleDisplay'] ?? userObj['jabatan'] ?? userObj['Role'];
+      if (raw != null && raw.toString().trim().isNotEmpty && raw.toString().trim().toLowerCase() != 'ormawa') {
+        return raw.toString().trim();
       }
     }
+    return 'Pengurus';
+  }
 
-    if (permission == 'view_attendance' ||
-        permission == 'submit_attendance' ||
-        permission == 'edit_attendance') {
-      if (AuthService().currentRole == UserRole.ormawa) {
+  bool hasPermission(String permission) {
+    if (permission.contains(',')) {
+      final perms = permission.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty);
+      return perms.any((p) => hasPermission(p));
+    }
+
+    final p = permission.toLowerCase().trim();
+
+    if (p == 'notifications.view' ||
+        p == 'core.notifications.view' ||
+        p == 'profile.view' ||
+        p == 'core.profile.view' ||
+        p == 'view_notifications' ||
+        p == 'view_profile') {
+      return true;
+    }
+
+    final permService = PermissionService();
+    if (permService.hasPermissions) {
+      if (permService.hasPermission(permission)) {
         return true;
       }
     }
 
-    return PermissionService().hasPermission(permission);
+    final member = currentMember;
+    final r = (member?.role ?? userSubRole).toLowerCase().trim();
+
+    if (r.contains('ketua') || r.contains('pembina') || r.contains('penasihat') || r.contains('admin')) {
+      return true;
+    }
+
+    if (r.contains('wakil')) {
+      if (!p.contains('delete') && !p.contains('pagu.manage') && !p.contains('settings.manage')) {
+        return true;
+      }
+      return false;
+    }
+
+    if (r.contains('bendahara')) {
+      if (p.contains('finance') ||
+          p.contains('keuangan') ||
+          p.contains('kas') ||
+          p.contains('pagu') ||
+          p.contains('lpj') ||
+          p.contains('event') ||
+          p.contains('calendar') ||
+          p.contains('jadwal')) {
+        return true;
+      }
+      return false;
+    }
+
+    if (r.contains('sekretaris')) {
+      if (p.contains('proposal') ||
+          p.contains('lpj') ||
+          p.contains('event') ||
+          p.contains('calendar') ||
+          p.contains('jadwal') ||
+          p.contains('attendance') ||
+          p.contains('absensi') ||
+          p.contains('member') ||
+          p.contains('anggota') ||
+          p.contains('staff') ||
+          p.contains('staf') ||
+          p.contains('structure') ||
+          p.contains('struktur') ||
+          p.contains('recruitment') ||
+          p.contains('rekrutmen') ||
+          p.contains('announcement') ||
+          p.contains('pengumuman') ||
+          p.contains('aspiration') ||
+          p.contains('aspirasi')) {
+        return true;
+      }
+      return false;
+    }
+
+    if (r.contains('kadiv') || r.contains('kepala') || r.contains('koordinator')) {
+      if (p.contains('proposal') ||
+          p.contains('event') ||
+          p.contains('calendar') ||
+          p.contains('jadwal') ||
+          p.contains('attendance') ||
+          p.contains('absensi') ||
+          p.contains('aspiration') ||
+          p.contains('aspirasi')) {
+        return true;
+      }
+      return false;
+    }
+
+    if (r.contains('staf') || r.contains('staff') || r == 'anggota' || r.contains('anggota') || r == 'member') {
+      if (p.contains('event') ||
+          p.contains('calendar') ||
+          p.contains('jadwal') ||
+          p.contains('attendance') ||
+          p.contains('absensi') ||
+          p.contains('aspiration') ||
+          p.contains('aspirasi')) {
+        return true;
+      }
+      return false;
+    }
+
+    return false;
   }
 
-  /// Check if current user has ALL of the specified permissions
   bool hasAllPermissions(List<String> permissions) {
-    return PermissionService().hasAllPermissions(permissions);
+    return permissions.every((p) => hasPermission(p));
   }
 
-  /// Check if current user has ANY of the specified permissions
   bool hasAnyPermission(List<String> permissions) {
-    return PermissionService().hasAnyPermission(permissions);
+    return permissions.any((p) => hasPermission(p));
   }
 
-  /// Get current permissions list from PermissionService
   List<String> get currentPermissions => PermissionService().permissions;
 
-  /// Sync permissions from backend
-  /// Call this on app resume to get fresh permissions
   Future<void> syncPermissions() async {
     await PermissionService().syncPermissions();
     notifyListeners();
   }
 
-  // Logic Bridge Methods
   Future<void> refreshData() async {
     final ormawaId = this.ormawaId;
     if (ormawaId == null) return;
+    if (_isRefreshingData) return;
+    _isRefreshingData = true;
 
-    _isLoading = true;
-    notifyListeners();
+    if (_isFirstFetch && _members.isEmpty && _proposals.isEmpty) {
+      _isLoading = true;
+      notifyListeners();
+    }
 
     try {
-      // Fetch independent data in parallel for better performance
       final results = await Future.wait([
-        _repository.getStats(ormawaId), // Stats
-        _repository.getGamifikasiSummary(), // Gamification
-        _repository.getActiveAcademicYear(), // Academic year
-        _repository.getProposals(ormawaId), // Proposals
-        _repository.getAgendas(ormawaId), // Agendas
+        _repository.getStats(ormawaId),
+        _repository.getGamifikasiSummary(),
+        _repository.getActiveAcademicYear(),
+        _repository.getProposals(ormawaId),
+        _repository.getAgendas(ormawaId),
         _repository.getMembersData(
           ormawaId,
           periode: _selectedPeriod,
-        ), // Members
-        _repository.getFinance(ormawaId), // Finance
-        _repository.getLPJs(ormawaId), // LPJs
-        _repository.getAspirations(ormawaId), // Aspirations
-        _repository.getAnnouncements(ormawaId), // Announcements
-        _repository.getRoles(), // Roles
-        _repository.getDivisions(ormawaId: ormawaId), // Divisions
-        _repository.getNotifications(ormawaId), // Notifications
-        _repository.getOrmawaSettings(ormawaId), // Settings
-        _repository.getGamifikasiHistory(), // 14
-        _repository.getGamifikasiLeaderboard(), // 15
-        _repository.getGamifikasiRules(), // 16
+        ),
+        _repository.getFinance(ormawaId),
+        _repository.getLPJs(ormawaId),
+        _repository.getAspirations(ormawaId),
+        _repository.getAnnouncements(ormawaId),
+        _repository.getRoles(),
+        _repository.getDivisions(ormawaId: ormawaId),
+        _repository.getNotifications(ormawaId),
+        _repository.getOrmawaSettings(ormawaId),
+        _repository.getGamifikasiHistory(),
+        _repository.getGamifikasiLeaderboard(),
+        _repository.getGamifikasiRules(),
       ]);
 
-      // Parse results - order matches Future.wait() order
       final stats = results[0] as Map<String, dynamic>;
       final gamSummary = results[1] as Map<String, dynamic>;
       final activeYear = results[2] as String?;
@@ -312,13 +414,11 @@ class OrmawaProvider extends ChangeNotifier {
       final gLeaderboard = results[15] as List<Map<String, dynamic>>;
       final gRules = results[16] as List<Map<String, dynamic>>;
 
-      // Update stats
       _totalMembers = (stats['totalMembers'] as num?)?.toInt() ?? 0;
       _balance = (stats['totalKas'] as num?)?.toDouble() ?? 0;
       _activeProposalsCount = (stats['totalProposals'] as num?)?.toInt() ?? 0;
       _upcomingAgendasCount = (stats['totalEvents'] as num?)?.toInt() ?? 0;
 
-      // Update gamification
       _gamifikasiPoin = (gamSummary['poin'] as num?)?.toInt() ?? 0;
       _gamifikasiPeringkat = (gamSummary['peringkat'] as num?)?.toInt() ?? 0;
       _totalOrmawa = (gamSummary['total_ormawa'] as num?)?.toInt() ?? 0;
@@ -326,20 +426,18 @@ class OrmawaProvider extends ChangeNotifier {
       _gamifikasiLeaderboard = gLeaderboard;
       _gamifikasiRules = gRules;
 
-      // Update academic year
       if (activeYear != null && activeYear.isNotEmpty) {
         _academicYear = activeYear;
       }
 
-      // Update lists
-      _proposals = proposals;
-      _agendas = agendas;
-      _members = membersData['members'] as List<OrmawaMember>;
-      _availablePeriods = membersData['periods'] as List<String>;
-      _financeList = finance;
-      _lpjs = lpjs;
-      _aspirations = aspirations;
-      _announcements = announcements;
+      _proposals = List<OrmawaProposal>.from(proposals);
+      _agendas = List<OrmawaAgenda>.from(agendas);
+      _members = List<OrmawaMember>.from(membersData['members'] as List<OrmawaMember>);
+      _availablePeriods = List<String>.from(membersData['periods'] as List<String>);
+      _financeList = List<OrmawaFinance>.from(finance);
+      _lpjs = List<OrmawaLPJ>.from(lpjs);
+      _aspirations = List<OrmawaAspiration>.from(aspirations);
+      _announcements = List<OrmawaAnnouncement>.from(announcements);
       _roles = roles;
       _divisions = divisions;
       _ormawaSettings = ormawaSettings;
@@ -349,7 +447,6 @@ class OrmawaProvider extends ChangeNotifier {
           _ormawaSettings['Nama'] ??
           '';
 
-      // Handle notifications
       if (!_isFirstFetch) {
         for (var n in notifications) {
           if (!n.isRead && !_knownNotificationIds.contains(n.id)) {
@@ -365,9 +462,9 @@ class OrmawaProvider extends ChangeNotifier {
       _isFirstFetch = false;
       _notifications = notifications;
     } catch (_) {
-      // ignore
     } finally {
       _isLoading = false;
+      _isRefreshingData = false;
       notifyListeners();
     }
   }
@@ -377,21 +474,66 @@ class OrmawaProvider extends ChangeNotifier {
     await refreshData();
   }
 
-  Future<void> updateProposal(OrmawaProposal proposal) async {
-    await _repository.updateProposal(proposal);
-    await refreshData();
+  Future<void> createProposal(Map<String, dynamic> data) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _repository.createProposal(data);
+      await refreshData();
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateProposal(dynamic proposalOrId, [Map<String, dynamic>? data]) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      if (proposalOrId is OrmawaProposal) {
+        await _repository.updateProposal(proposalOrId);
+      } else if (proposalOrId is String && data != null) {
+        await _repository.updateProposalData(proposalOrId, data);
+      }
+      await refreshData();
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> resubmitProposal(String id) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _repository.resubmitProposal(id);
+      await refreshData();
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> deleteProposal(String id) async {
     try {
+      _isLoading = true;
+      notifyListeners();
       await _repository.deleteProposal(id);
       await refreshData();
-    } catch (_) {
-      // ignore
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
-  // Members Management
   Future<void> setMemberPeriod(String periode) async {
     _selectedPeriod = periode;
     await refreshData();
@@ -470,7 +612,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // Agendas Management
   Future<void> addAgenda(Map<String, dynamic> data) async {
     try {
       _isLoading = true;
@@ -522,16 +663,11 @@ class OrmawaProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Attendance Methods
   Future<void> fetchAttendance(String eventId) async {
     try {
-      _isLoading = true;
-      notifyListeners();
       _attendanceList = await _repository.getAttendance(eventId);
     } catch (_) {
-      // ignore
     } finally {
-      _isLoading = false;
       notifyListeners();
     }
   }
@@ -549,7 +685,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // FINANCE METHODS
   Future<void> getFinance() async {
     try {
       final id = ormawaId;
@@ -557,7 +692,7 @@ class OrmawaProvider extends ChangeNotifier {
       _financeList = await _repository.getFinance(id);
       notifyListeners();
     } catch (_) {
-      // ignore
+      
     }
   }
 
@@ -567,12 +702,127 @@ class OrmawaProvider extends ChangeNotifier {
       if (id == null) throw Exception('Ormawa ID not found');
       await _repository.addFinance(id, data);
       await getFinance();
+      await fetchBudgetStatus();
     } catch (e) {
       rethrow;
     }
   }
 
-  // LPJ METHODS
+  Future<void> deleteFinance(String transactionId) async {
+    try {
+      await _repository.deleteFinance(transactionId);
+      await getFinance();
+      await fetchBudgetStatus();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchBudgetStatus() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _budgetStatus = await _repository.getBudgetStatus(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<String> generateReportNumber() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return '001/LAP-ORMAWA/X/2026';
+      return await _repository.generateReportNumber(id);
+    } catch (_) {
+      return '001/LAP-ORMAWA/X/2026';
+    }
+  }
+
+  Future<void> fetchBankAccount() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _bankAccount = await _repository.getBankAccount(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> updateBankAccount(Map<String, dynamic> data) async {
+    try {
+      final id = ormawaId;
+      if (id == null) throw Exception('Ormawa ID not found');
+      await _repository.updateBankAccount(id, data);
+      await fetchBankAccount();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchIurans() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _iurans = await _repository.getIurans(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> createIuran(Map<String, dynamic> data) async {
+    try {
+      final id = ormawaId;
+      if (id == null) throw Exception('Ormawa ID not found');
+      await _repository.createIuran(id, data);
+      await fetchIurans();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchIuranMembers(String iuranId) async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _iuranMembers = await _repository.getIuranMembers(iuranId, id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> verifyIuranPayment(String detailId, Map<String, dynamic> data, [String? iuranId]) async {
+    try {
+      final id = ormawaId;
+      if (id == null) throw Exception('Ormawa ID not found');
+      await _repository.verifyIuranPayment(detailId, id, data);
+      if (iuranId != null) {
+        await fetchIuranMembers(iuranId);
+      }
+      await fetchIurans();
+      await getFinance();
+      await fetchBudgetStatus();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchMyInvoices() async {
+    try {
+      final id = ormawaId;
+      if (id == null) return;
+      _myInvoices = await _repository.getMyIurans(id);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> payMyIuran(String detailId, String proofUrl) async {
+    try {
+      final id = ormawaId;
+      if (id == null) throw Exception('Ormawa ID not found');
+      await _repository.payMyIuran(detailId, id, {'bukti_transfer': proofUrl});
+      await fetchIurans();
+      await fetchMyInvoices();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> getLPJs() async {
     try {
       final id = ormawaId;
@@ -580,7 +830,7 @@ class OrmawaProvider extends ChangeNotifier {
       _lpjs = await _repository.getLPJs(id);
       notifyListeners();
     } catch (_) {
-      // ignore
+      
     }
   }
 
@@ -622,7 +872,7 @@ class OrmawaProvider extends ChangeNotifier {
       _aspirations = await _repository.getAspirations(ormawaId!);
       notifyListeners();
     } catch (_) {
-      // ignore
+      
     }
   }
 
@@ -641,7 +891,7 @@ class OrmawaProvider extends ChangeNotifier {
       _announcements = await _repository.getAnnouncements(ormawaId!);
       notifyListeners();
     } catch (_) {
-      // ignore
+      
     }
   }
 
@@ -672,7 +922,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // ROLES & DIVISIONS
   Future<void> createRole(Map<String, dynamic> data) async {
     await _repository.createRole(data);
     await refreshData();
@@ -773,7 +1022,7 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       await _repository.markAllNotificationsAsRead(oId);
     } catch (_) {
-      // ignore
+      
     }
   }
 
@@ -783,11 +1032,10 @@ class OrmawaProvider extends ChangeNotifier {
     try {
       await _repository.deleteNotification(id);
     } catch (_) {
-      // ignore
+      
     }
   }
 
-  // RECRUITMENT / OPEN RECRUITMENT
   Map<String, dynamic> _recruitmentSettings = {};
   List<Map<String, dynamic>> _recruitmentApplicants = [];
   List<Map<String, dynamic>> _recruitmentFormFields = [];
@@ -907,7 +1155,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // SETTINGS / PREFERENCES
   Map<String, dynamic> _ormawaSettings = {};
 
   Map<String, dynamic> get ormawaSettings => _ormawaSettings;
@@ -1006,11 +1253,10 @@ class OrmawaProvider extends ChangeNotifier {
       }
       notifyListeners();
     } catch (_) {
-      // ignore
+      
     }
   }
 
-  // ORGANISASI METHODS
   Future<void> fetchOrganisasi() async {
     try {
       _isLoading = true;
@@ -1018,7 +1264,7 @@ class OrmawaProvider extends ChangeNotifier {
       final result = await _repository.getOrganisasiList();
       _organisasiList = result;
     } catch (_) {
-      // ignore
+      
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -1066,7 +1312,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // Attendance Management Methods
   Future<void> fetchAbsensiManagement() async {
     try {
       final id = ormawaId;
@@ -1102,7 +1347,6 @@ class OrmawaProvider extends ChangeNotifier {
     }
   }
 
-  // Financial Settings (Pagu Anggaran)
   Future<void> fetchFinancialSettings({String? targetOrmawaId, String? periode}) async {
     try {
       _isLoadingPagu = true;

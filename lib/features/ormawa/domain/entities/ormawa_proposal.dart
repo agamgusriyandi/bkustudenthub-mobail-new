@@ -7,6 +7,7 @@ class OrmawaProposal {
   final String code;
   final String status;
   final DateTime date;
+  final DateTime? tanggalSelesai;
   final double budget;
   final String? description;
   final String? landasanKegiatan;
@@ -31,6 +32,7 @@ class OrmawaProposal {
     required this.code,
     required this.status,
     required this.date,
+    this.tanggalSelesai,
     this.budget = 0,
     this.description,
     this.landasanKegiatan,

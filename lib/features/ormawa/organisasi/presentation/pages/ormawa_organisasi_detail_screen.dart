@@ -132,10 +132,7 @@ class OrmawaOrganisasiDetailScreen extends StatelessWidget {
                             height: 1.4,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
-                        ),
+                        const SizedBox(height: 10),
                         Text(
                           'Misi',
                           style: TextStyle(
@@ -167,19 +164,13 @@ class OrmawaOrganisasiDetailScreen extends StatelessWidget {
                           'Email',
                           organisasi.email != null && organisasi.email!.isNotEmpty ? organisasi.email! : '-',
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
-                        ),
+                        const SizedBox(height: 10),
                         _buildContactRow(
                           Icons.language_rounded,
                           'Website',
                           organisasi.website != null && organisasi.website!.isNotEmpty ? organisasi.website! : '-',
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Divider(color: Color(0xFFF1F5F9), height: 1),
-                        ),
+                        const SizedBox(height: 10),
                         _buildContactRow(
                           Icons.location_on_outlined,
                           'Sekretariat',

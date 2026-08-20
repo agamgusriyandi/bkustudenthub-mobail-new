@@ -4,7 +4,7 @@ import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
@@ -86,37 +86,34 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 42,
+                          height: 42,
                           decoration: BoxDecoration(
-                            color: OrmawaTheme.primarySoft,
-                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFFEFF6FF),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFDBEAFE)),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.security_rounded,
-                            color: OrmawaTheme.primary,
+                            color: Color(0xFF2563EB),
                             size: 22,
                           ),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Amankan Akun Anda',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: OrmawaTheme.textHeading,
-                                ),
+                                style: OrmawaTheme.textSectionTitle,
                               ),
-                              SizedBox(height: 3),
-                              Text(
+                              const SizedBox(height: 3),
+                              const Text(
                                 'Gunakan kombinasi kata sandi yang kuat dan jangan pernah membagikan akses ke orang lain.',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: OrmawaTheme.textMuted,
+                                  color: Color(0xFF64748B),
                                   height: 1.4,
                                 ),
                               ),
@@ -130,7 +127,7 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                   _buildSectionTitle('Ubah Kata Sandi'),
                   const SizedBox(height: 8),
                   _buildPasswordForm(),
-                  const SizedBox(height: AppSpacing.xxxl),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),
@@ -148,18 +145,13 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
           height: 13,
           margin: const EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
-            color: OrmawaTheme.primary,
+            color: const Color(0xFF2563EB),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
-            color: OrmawaTheme.textHeading,
-            letterSpacing: -0.2,
-          ),
+          style: OrmawaTheme.textSectionTitle,
         ),
       ],
     );
@@ -171,32 +163,36 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
       child: OrmawaCard(
         child: Column(
           children: [
-            BkuTextField(
+            OrmawaTextField(
               controller: _oldPasswordController,
-              label: 'Kata Sandi Saat Ini',
-              hint: 'Masukkan kata sandi lama',
+              label: 'Kata Sandi Saat Ini *',
+              hintText: 'Masukkan kata sandi lama',
               obscureText: _obscureOld,
-              prefixIcon: Icon(Icons.lock_outline_rounded, color: OrmawaTheme.primary),
+              prefixIcon: Icons.lock_outline_rounded,
+              prefixIconColor: const Color(0xFF2563EB),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureOld ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                  color: OrmawaTheme.textMuted,
+                  color: const Color(0xFF94A3B8),
+                  size: 20,
                 ),
                 onPressed: () => setState(() => _obscureOld = !_obscureOld),
               ),
               validator: (v) => v == null || v.isEmpty ? 'Kata sandi saat ini wajib diisi' : null,
             ),
-            SizedBox(height: 14),
-            BkuTextField(
+            const SizedBox(height: 14),
+            OrmawaTextField(
               controller: _newPasswordController,
-              label: 'Kata Sandi Baru',
-              hint: 'Minimal 8 karakter',
+              label: 'Kata Sandi Baru *',
+              hintText: 'Minimal 8 karakter',
               obscureText: _obscureNew,
-              prefixIcon: Icon(Icons.lock_reset_rounded, color: OrmawaTheme.primary),
+              prefixIcon: Icons.lock_reset_rounded,
+              prefixIconColor: const Color(0xFF7C3AED),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureNew ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                  color: OrmawaTheme.textMuted,
+                  color: const Color(0xFF94A3B8),
+                  size: 20,
                 ),
                 onPressed: () => setState(() => _obscureNew = !_obscureNew),
               ),
@@ -206,17 +202,19 @@ class _OrmawaSecurityScreenState extends State<OrmawaSecurityScreen> {
                 return null;
               },
             ),
-            SizedBox(height: 14),
-            BkuTextField(
+            const SizedBox(height: 14),
+            OrmawaTextField(
               controller: _confirmPasswordController,
-              label: 'Konfirmasi Kata Sandi Baru',
-              hint: 'Ulangi kata sandi baru',
+              label: 'Konfirmasi Kata Sandi Baru *',
+              hintText: 'Ulangi kata sandi baru',
               obscureText: _obscureConfirm,
-              prefixIcon: Icon(Icons.check_circle_outline_rounded, color: OrmawaTheme.primary),
+              prefixIcon: Icons.check_circle_outline_rounded,
+              prefixIconColor: const Color(0xFF059669),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                  color: OrmawaTheme.textMuted,
+                  color: const Color(0xFF94A3B8),
+                  size: 20,
                 ),
                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
               ),

@@ -1,18 +1,16 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_organisasi.dart';
-import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:go_router/go_router.dart';
 
 class EditOrganisasiScreen extends StatefulWidget {
   final OrmawaOrganisasi organisasi;
@@ -66,7 +64,7 @@ class _EditOrganisasiScreenState extends State<EditOrganisasiScreen> {
   }
 
   void _handleSubmit() async {
-    if (_namaController.text.isEmpty) {
+    if (_namaController.text.trim().isEmpty) {
       AppSnackbar.showWarning(context, 'Nama organisasi wajib diisi');
       return;
     }
@@ -75,15 +73,15 @@ class _EditOrganisasiScreenState extends State<EditOrganisasiScreen> {
 
     try {
       final data = {
-        'Nama': _namaController.text,
-        'Deskripsi': _deskripsiController.text,
-        'Visi': _visiController.text.isNotEmpty ? _visiController.text : null,
-        'Misi': _misiController.text.isNotEmpty ? _misiController.text : null,
-        'Alamat': _alamatController.text.isNotEmpty ? _alamatController.text : null,
-        'Email': _emailController.text.isNotEmpty ? _emailController.text : null,
-        'Website': _websiteController.text.isNotEmpty ? _websiteController.text : null,
-        'Instagram': _instagramController.text.isNotEmpty ? _instagramController.text : null,
-        'TahunBerdiri': _tahunBerdiriController.text.isNotEmpty ? _tahunBerdiriController.text : null,
+        'Nama': _namaController.text.trim(),
+        'Deskripsi': _deskripsiController.text.trim(),
+        'Visi': _visiController.text.trim().isNotEmpty ? _visiController.text.trim() : null,
+        'Misi': _misiController.text.trim().isNotEmpty ? _misiController.text.trim() : null,
+        'Alamat': _alamatController.text.trim().isNotEmpty ? _alamatController.text.trim() : null,
+        'Email': _emailController.text.trim().isNotEmpty ? _emailController.text.trim() : null,
+        'Website': _websiteController.text.trim().isNotEmpty ? _websiteController.text.trim() : null,
+        'Instagram': _instagramController.text.trim().isNotEmpty ? _instagramController.text.trim() : null,
+        'TahunBerdiri': _tahunBerdiriController.text.trim().isNotEmpty ? _tahunBerdiriController.text.trim() : null,
         'Status': _selectedStatus,
       }..removeWhere((_, v) => v == null);
 
@@ -105,192 +103,159 @@ class _EditOrganisasiScreenState extends State<EditOrganisasiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Edit Organisasi',
+        subtitle: 'Data Organisasi Mahasiswa',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Info Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusXl,
-                border: Border.all(color: AppColors.neutral200),
-              ),
-              child: Row(
+            OrmawaCard(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: context.appColors.primary.withAlpha(20),
-                      borderRadius: AppRadius.radiusMd,
-                    ),
-                    child: Icon(
-                      Icons.business_rounded,
-                      color: context.appColors.primary,
-                    ),
+                  Row(
+                    children: [
+                      Icon(Icons.business_rounded, size: 18, color: OrmawaTheme.primary),
+                      const SizedBox(width: 8),
+                      Text('Informasi Umum', style: OrmawaTheme.textSectionTitle),
+                    ],
                   ),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.organisasi.nama,
-                          style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w900),
-                        ),
-                        Text(
-                          'ID: ${widget.organisasi.id}',
-                          style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 14),
+                  OrmawaTextField(
+                    label: 'NAMA ORGANISASI *',
+                    controller: _namaController,
+                    hintText: 'Contoh: BEM Universitas',
+                    prefixIcon: Icons.business_rounded,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'DESKRIPSI',
+                    controller: _deskripsiController,
+                    hintText: 'Deskripsi singkat organisasi...',
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'VISI',
+                    controller: _visiController,
+                    hintText: 'Visi organisasi...',
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'MISI',
+                    controller: _misiController,
+                    hintText: 'Misi organisasi...',
+                    maxLines: 3,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('NAMA ORGANISASI *'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _namaController, hint: 'Nama organisasi', icon: Icons.business_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('DESKRIPSI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _deskripsiController, hint: 'Deskripsi...', icon: Icons.description_rounded, maxLines: 3),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('VISI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _visiController, hint: 'Visi...', icon: Icons.visibility_rounded, maxLines: 3),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('MISI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _misiController, hint: 'Misi...', icon: Icons.flag_rounded, maxLines: 3),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('ALAMAT'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _alamatController, hint: 'Alamat...', icon: Icons.location_on_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('EMAIL'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _emailController, hint: 'email@organisasi.ac.id', icon: Icons.email_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('WEBSITE'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _websiteController, hint: 'https://...', icon: Icons.language_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('INSTAGRAM'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _instagramController, hint: '@organisasi', icon: Icons.camera_alt_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('TAHUN BERDIRI'),
-            const SizedBox(height: AppSpacing.md),
-            _buildTextField(controller: _tahunBerdiriController, hint: '2020', icon: Icons.calendar_today_rounded),
-            const SizedBox(height: AppSpacing.xl),
-
-            _buildLabel('STATUS'),
-            const SizedBox(height: AppSpacing.md),
-            _buildDropdown(
-              value: _selectedStatus,
-              items: const ['aktif', 'nonaktif'],
-              onChanged: (val) => setState(() => _selectedStatus = val!),
+            const SizedBox(height: 14),
+            OrmawaCard(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.contact_mail_outlined, size: 18, color: OrmawaTheme.primary),
+                      const SizedBox(width: 8),
+                      Text('Kontak & Media Sosial', style: OrmawaTheme.textSectionTitle),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  OrmawaTextField(
+                    label: 'ALAMAT SEKRETARIAT',
+                    controller: _alamatController,
+                    hintText: 'Gedung / Ruang sekretariat...',
+                    prefixIcon: Icons.location_on_outlined,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'EMAIL',
+                    controller: _emailController,
+                    hintText: 'email@organisasi.ac.id',
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'WEBSITE',
+                    controller: _websiteController,
+                    hintText: 'https://organisasi.ac.id',
+                    prefixIcon: Icons.language_rounded,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'INSTAGRAM',
+                    controller: _instagramController,
+                    hintText: '@organisasi',
+                    prefixIcon: Icons.camera_alt_outlined,
+                  ),
+                  const SizedBox(height: 12),
+                  OrmawaTextField(
+                    label: 'TAHUN BERDIRI',
+                    controller: _tahunBerdiriController,
+                    hintText: '2020',
+                    keyboardType: TextInputType.number,
+                    prefixIcon: Icons.calendar_today_rounded,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                  const SizedBox(height: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'STATUS ORGANISASI',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: OrmawaTheme.textHeading,
+                          letterSpacing: 0.1,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: OrmawaTheme.border),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _selectedStatus,
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(value: 'aktif', child: Text('Aktif', style: TextStyle(fontWeight: FontWeight.bold))),
+                              DropdownMenuItem(value: 'nonaktif', child: Text('Nonaktif', style: TextStyle(fontWeight: FontWeight.bold))),
+                            ],
+                            onChanged: (val) => setState(() => _selectedStatus = val ?? 'aktif'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: AppSpacing.s48),
-
-            BkuButton.primary(
-              text: 'SIMPAN PERUBAHAN',
-              onPressed: _isSubmitting ? null : _handleSubmit,
+            const SizedBox(height: 24),
+            OrmawaButton(
+              text: 'Simpan Perubahan',
+              icon: Icons.save_rounded,
               isLoading: _isSubmitting,
+              onPressed: _handleSubmit,
+              width: double.infinity,
             ),
+            const SizedBox(height: AppSpacing.s140),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppTextStyles.labelSm.copyWith(
-        color: AppColors.neutral600,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1,
-        fontSize: 10,
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    int maxLines = 1,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: BkuTextField(
-        controller: controller,
-        maxLines: maxLines,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon, color: context.appColors.primary, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.lg,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown({
-    required String value,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: BkuDropdown<String>(
-          isExpanded: true,
-          value: value,
-          items: items
-              .map((item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.neutral800),
-                    ),
-                  ))
-              .toList(),
-          onChanged: onChanged,
         ),
       ),
     );

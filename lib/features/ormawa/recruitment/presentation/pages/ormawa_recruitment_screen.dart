@@ -1,8 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -155,6 +161,56 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
       'border': const Color(0xFFA7F3D0),
       'icon': Icons.check_circle_outline_rounded,
     };
+  }
+
+  Future<void> _handleExportCsv() async {
+    final provider = context.read<OrmawaProvider>();
+    final ormawaId = provider.ormawaId;
+    if (ormawaId == null) {
+      AppSnackbar.showError(context, 'Data Ormawa tidak valid');
+      return;
+    }
+
+    setState(() => _actionLoading = true);
+    try {
+      final statusParam = _filterStatus != 'semua' ? '?status=$_filterStatus' : '';
+      final response = await ApiClient().client.get<List<int>>(
+        '/ormawa/recruitment/export$statusParam',
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {
+            'Accept': 'text/csv, application/json',
+          },
+        ),
+      );
+
+      final bytes = response.data;
+      if (bytes == null || bytes.isEmpty) {
+        if (mounted) AppSnackbar.showError(context, 'Data export kosong');
+        return;
+      }
+
+      final tempDir = await getTemporaryDirectory();
+      final fileName = 'rekrutmen_ormawa_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv';
+      final file = File('${tempDir.path}/$fileName');
+      await file.writeAsBytes(bytes);
+
+      if (mounted) {
+        AppSnackbar.showSuccess(context, 'Export CSV berhasil!');
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path)],
+            text: 'Data Rekrutmen Calon Anggota Ormawa',
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppSnackbar.showError(context, 'Gagal mengekspor data: $e');
+      }
+    } finally {
+      if (mounted) setState(() => _actionLoading = false);
+    }
   }
 
   Future<void> _handleAccept(String id, Map<String, dynamic> applicant) async {
@@ -491,13 +547,14 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
       firstDate: DateTime(2020),
       lastDate: DateTime(2035),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Color(0xFF2563EB),
+        data: ThemeData.light().copyWith(
+          colorScheme: ColorScheme.light(
+            primary: OrmawaTheme.primary,
             onPrimary: Colors.white,
-            onSurface: Color(0xFF0F172A),
+            surface: Colors.white,
+            onSurface: const Color(0xFF0F172A),
           ),
-        ),
+                  ),
         child: child!,
       ),
     );
@@ -569,10 +626,10 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
+                        color: OrmawaTheme.primarySoft,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.person_search_rounded, size: 20, color: Color(0xFF2563EB)),
+                      child: Icon(Icons.person_search_rounded, size: 20, color: OrmawaTheme.primary),
                     ),
                     const SizedBox(width: 10),
                     const Expanded(
@@ -618,14 +675,14 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                               width: 52,
                               height: 52,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
+                                color: OrmawaTheme.primarySoft,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFDBEAFE)),
+                                border: Border.all(color: OrmawaTheme.primaryBorder),
                               ),
                               child: Center(
                                 child: Text(
                                   (name.toString().isNotEmpty ? name.toString()[0] : 'P').toUpperCase(),
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                                 ),
                               ),
                             ),
@@ -685,7 +742,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                     children: [
                                       Text(
                                         nim.toString(),
-                                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: OrmawaTheme.primary),
                                       ),
                                       const SizedBox(width: 6),
                                       const Text('•', style: TextStyle(color: Color(0xFF94A3B8))),
@@ -747,7 +804,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                   const SizedBox(height: 3),
                                   Text(
                                     divisi1.toString().toUpperCase(),
-                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -891,11 +948,11 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                         await launchUrl(uri, mode: LaunchMode.externalApplication);
                                       }
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
-                                        Icon(Icons.attach_file_rounded, size: 14, color: Color(0xFF2563EB)),
-                                        SizedBox(width: 4),
-                                        Text('Buka File Lampiran', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF2563EB), decoration: TextDecoration.underline)),
+                                        Icon(Icons.attach_file_rounded, size: 14, color: OrmawaTheme.primary),
+                                        const SizedBox(width: 4),
+                                        Text('Buka File Lampiran', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: OrmawaTheme.primary, decoration: TextDecoration.underline)),
                                       ],
                                     ),
                                   )
@@ -923,24 +980,24 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                           child: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
+                              color: OrmawaTheme.primarySoft,
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: const Color(0xFFBFDBFE)),
+                              border: Border.all(color: OrmawaTheme.primaryBorder),
                             ),
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(Icons.description_rounded, color: Color(0xFF2563EB), size: 20),
-                                SizedBox(width: 10),
+                                Icon(Icons.description_rounded, color: OrmawaTheme.primary, size: 20),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Curriculum Vitae / Portofolio', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF2563EB))),
-                                      Text('Klik untuk meninjau berkas CV pelamar', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
+                                      Text('Curriculum Vitae / Portofolio', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primary)),
+                                      const Text('Klik untuk meninjau berkas CV pelamar', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
                                     ],
                                   ),
                                 ),
-                                Icon(Icons.open_in_new_rounded, size: 16, color: Color(0xFF2563EB)),
+                                Icon(Icons.open_in_new_rounded, size: 16, color: OrmawaTheme.primary),
                               ],
                             ),
                           ),
@@ -964,7 +1021,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                 ),
               ),
 
-              if (statusStr == 'pending')
+              if (statusStr == 'pending' && context.read<OrmawaProvider>().hasPermission('ormawa.recruitment.manage, ormawa.recruitment.update, manage_recruitment'))
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(
@@ -1063,7 +1120,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
 
           return RefreshIndicator(
             onRefresh: () => _loadAllData(true),
-            color: const Color(0xFF2563EB),
+            color: OrmawaTheme.primary,
             child: CustomScrollView(
               slivers: [
                 BkuAppBar(
@@ -1101,10 +1158,10 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                         width: 36,
                                         height: 36,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFEFF6FF),
+                                          color: OrmawaTheme.primarySoft,
                                           borderRadius: BorderRadius.circular(10),
                                         ),
-                                        child: const Icon(Icons.how_to_reg_rounded, size: 20, color: Color(0xFF2563EB)),
+                                        child: Icon(Icons.how_to_reg_rounded, size: 20, color: OrmawaTheme.primary),
                                       ),
                                       const SizedBox(width: 10),
                                       Column(
@@ -1122,19 +1179,45 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                       ),
                                     ],
                                   ),
-                                  InkWell(
-                                    onTap: _isRefreshing ? null : () => _loadAllData(true),
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF1F5F9),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: _actionLoading ? null : _handleExportCsv,
                                         borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFECFDF5),
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: const Color(0xFFA7F3D0)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              _actionLoading
+                                                  ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF059669)))
+                                                  : const Icon(Icons.download_rounded, size: 14, color: Color(0xFF059669)),
+                                              const SizedBox(width: 4),
+                                              const Text('CSV', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF047857))),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      child: _isRefreshing
-                                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2563EB)))
-                                          : const Icon(Icons.refresh_rounded, size: 16, color: Color(0xFF475569)),
-                                    ),
+                                      const SizedBox(width: 6),
+                                      InkWell(
+                                        onTap: _isRefreshing ? null : () => _loadAllData(true),
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF1F5F9),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: _isRefreshing
+                                              ? SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: OrmawaTheme.primary))
+                                              : const Icon(Icons.refresh_rounded, size: 16, color: Color(0xFF475569)),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -1176,7 +1259,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                 value: '$totalCount',
                                 subtitle: 'Pendaftar terdata',
                                 icon: Icons.groups_rounded,
-                                badgeColor: const Color(0xFF0284C7),
+                                badgeColor: OrmawaTheme.primary,
                                 badgeText: 'Semua',
                               ),
                             ),
@@ -1295,7 +1378,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF2563EB) : Colors.transparent,
+            color: isActive ? OrmawaTheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1324,7 +1407,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                     style: TextStyle(
                       fontSize: 8.5,
                       fontWeight: FontWeight.w900,
-                      color: isActive ? const Color(0xFF2563EB) : const Color(0xFF64748B),
+                      color: isActive ? OrmawaTheme.primary : const Color(0xFF64748B),
                     ),
                   ),
                 ),
@@ -1381,7 +1464,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                  borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                 ),
               ),
             ),
@@ -1407,15 +1490,15 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: OrmawaTheme.primarySoft,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFBFDBFE)),
+                  border: Border.all(color: OrmawaTheme.primaryBorder),
                 ),
                 child: Row(
                   children: [
                     Text(
                       '${_selectedIds.length} Dipilih',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                     ),
                     const Spacer(),
                     InkWell(
@@ -1504,7 +1587,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                          color: isSelected ? OrmawaTheme.primary : const Color(0xFFE2E8F0),
                           width: isSelected ? 1.5 : 1,
                         ),
                       ),
@@ -1522,20 +1605,20 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                 }
                               });
                             },
-                            activeColor: const Color(0xFF2563EB),
+                            activeColor: OrmawaTheme.primary,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                           ),
                           Container(
                             width: 38,
                             height: 38,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
+                              color: OrmawaTheme.primarySoft,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
                               child: Text(
                                 (name.toString().isNotEmpty ? name.toString()[0] : 'P').toUpperCase(),
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                               ),
                             ),
                           ),
@@ -1642,9 +1725,9 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2563EB) : Colors.white,
+          color: isSelected ? OrmawaTheme.primary : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
+          border: Border.all(color: isSelected ? OrmawaTheme.primary : const Color(0xFFE2E8F0)),
         ),
         child: Text(
           label,
@@ -1710,11 +1793,11 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                     Container(
                       width: 44,
                       height: 44,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEFF6FF),
+                      decoration: BoxDecoration(
+                        color: OrmawaTheme.primarySoft,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.dynamic_form_rounded, color: Color(0xFF2563EB), size: 24),
+                      child: Icon(Icons.dynamic_form_rounded, color: OrmawaTheme.primary, size: 24),
                     ),
                     const SizedBox(height: 10),
                     const Text('Belum Ada Pertanyaan Tambahan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
@@ -1755,17 +1838,17 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
+                                color: OrmawaTheme.primarySoft,
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.help_outline_rounded, size: 12, color: Color(0xFF2563EB)),
+                                  Icon(Icons.help_outline_rounded, size: 12, color: OrmawaTheme.primary),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Pertanyaan ${i + 1}',
-                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
                                   ),
                                 ],
                               ),
@@ -1833,7 +1916,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                              borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                             ),
                           ),
                         ),
@@ -1875,10 +1958,10 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: field['required'] == true ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC),
+                                  color: field['required'] == true ? OrmawaTheme.primarySoft : const Color(0xFFF8FAFC),
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    color: field['required'] == true ? const Color(0xFF93C5FD) : const Color(0xFFE2E8F0),
+                                    color: field['required'] == true ? OrmawaTheme.primaryBorder : const Color(0xFFE2E8F0),
                                   ),
                                 ),
                                 child: Row(
@@ -1890,7 +1973,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                       child: Checkbox(
                                         value: field['required'] == true,
                                         onChanged: (val) => setState(() => field['required'] = val ?? false),
-                                        activeColor: const Color(0xFF2563EB),
+                                        activeColor: OrmawaTheme.primary,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       ),
@@ -1901,7 +1984,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                                       style: TextStyle(
                                         fontSize: 10.5,
                                         fontWeight: FontWeight.bold,
-                                        color: field['required'] == true ? const Color(0xFF1D4ED8) : const Color(0xFF475569),
+                                        color: field['required'] == true ? OrmawaTheme.primaryDark : const Color(0xFF475569),
                                       ),
                                     ),
                                   ],
@@ -1926,7 +2009,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
                               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5)),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5)),
                             ),
                           ),
                         ],
@@ -1937,23 +2020,24 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
               ),
             const SizedBox(height: 16),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _settingsLoading ? null : _saveFormFields,
-                icon: _settingsLoading
-                    ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Icon(Icons.save_rounded, size: 16),
-                label: const Text('Simpan Perubahan Formulir', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            if (context.watch<OrmawaProvider>().hasPermission('ormawa.recruitment.manage, ormawa.recruitment.update, manage_recruitment'))
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _settingsLoading ? null : _saveFormFields,
+                  icon: _settingsLoading
+                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.save_rounded, size: 16),
+                  label: const Text('Simpan Perubahan Formulir', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: OrmawaTheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -1974,7 +2058,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 14, color: const Color(0xFF2563EB)),
+            Icon(icon, size: 14, color: OrmawaTheme.primary),
             const SizedBox(width: 4),
             Text(label, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
           ],
@@ -2064,7 +2148,7 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              const Icon(Icons.event_available_rounded, size: 14, color: Color(0xFF2563EB)),
+                              Icon(Icons.event_available_rounded, size: 14, color: OrmawaTheme.primary),
                               const SizedBox(width: 6),
                               Text(
                                 _recruitmentStart != null ? DateFormat('d MMM yyyy', 'id_ID').format(_recruitmentStart!) : 'Pilih Tanggal',
@@ -2176,23 +2260,24 @@ class _OrmawaRecruitmentScreenState extends State<OrmawaRecruitmentScreen> with 
             ),
             const SizedBox(height: 16),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _settingsLoading ? null : _saveSettings,
-                icon: _settingsLoading
-                    ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Icon(Icons.save_rounded, size: 16),
-                label: const Text('Simpan Pengaturan Pendaftaran', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            if (context.watch<OrmawaProvider>().hasPermission('ormawa.recruitment.manage, ormawa.recruitment.update, manage_recruitment'))
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _settingsLoading ? null : _saveSettings,
+                  icon: _settingsLoading
+                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.save_rounded, size: 16),
+                  label: const Text('Simpan Pengaturan Pendaftaran', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: OrmawaTheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

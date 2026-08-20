@@ -7,6 +7,7 @@ class OrmawaTextField extends StatelessWidget {
   final String? hintText;
   final TextEditingController? controller;
   final IconData? prefixIcon;
+  final Color? prefixIconColor;
   final Widget? suffixIcon;
   final bool obscureText;
   final TextInputType? keyboardType;
@@ -25,6 +26,7 @@ class OrmawaTextField extends StatelessWidget {
     this.hintText,
     this.controller,
     this.prefixIcon,
+    this.prefixIconColor,
     this.suffixIcon,
     this.obscureText = false,
     this.keyboardType,
@@ -51,7 +53,7 @@ class OrmawaTextField extends StatelessWidget {
             letterSpacing: 0.1,
           ),
         ),
-        SizedBox(height: 6),
+        const SizedBox(height: 6),
         TextFormField(
           controller: controller,
           obscureText: obscureText,
@@ -82,7 +84,7 @@ class OrmawaTextField extends StatelessWidget {
               color: OrmawaTheme.textHeading,
             ),
             prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: OrmawaTheme.primary, size: 20)
+                ? Icon(prefixIcon, color: prefixIconColor ?? const Color(0xFF64748B), size: 20)
                 : null,
             suffixIcon: suffixIcon,
             contentPadding: const EdgeInsets.symmetric(

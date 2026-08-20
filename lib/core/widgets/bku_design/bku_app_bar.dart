@@ -85,7 +85,9 @@ class BkuAppBar extends StatelessWidget {
     final Color onColor =
         variant == AppBarVariant.secondary
             ? themeProvider.onSecondary
-            : themeProvider.onPrimary;
+            : (variant == AppBarVariant.ormawa
+                ? Colors.white
+                : themeProvider.onPrimary);
     // SETAN DUMMY UNTUK TESTING VISUAL (Ganti ke 0 jika ingin menggunakan data asli dari database/server)
     final int mockCountForTesting = 0;
     final int dynamicNotificationCount =
@@ -660,7 +662,9 @@ class BkuStaticAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Color onColor =
         variant == AppBarVariant.secondary
             ? themeProvider.onSecondary
-            : themeProvider.onPrimary;
+            : (variant == AppBarVariant.ormawa
+                ? Colors.white
+                : themeProvider.onPrimary);
     final resolvedSubtitle = subtitle ?? info;
 
     return Container(

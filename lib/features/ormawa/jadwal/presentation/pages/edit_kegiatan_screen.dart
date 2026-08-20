@@ -11,16 +11,19 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
-class CreateKegiatanScreen extends StatefulWidget {
-  const CreateKegiatanScreen({super.key});
+class EditKegiatanScreen extends StatefulWidget {
+  final dynamic kegiatan;
+
+  const EditKegiatanScreen({super.key, required this.kegiatan});
 
   @override
-  State<CreateKegiatanScreen> createState() => _CreateKegiatanScreenState();
+  State<EditKegiatanScreen> createState() => _EditKegiatanScreenState();
 }
 
-class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
+class _EditKegiatanScreenState extends State<EditKegiatanScreen> {
   final _judulController = TextEditingController();
   final _kategoriController = TextEditingController();
   final _lokasiController = TextEditingController();
@@ -41,6 +44,7 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
   DateTime _tanggalMulai = DateTime.now();
   DateTime _tanggalSelesai = DateTime.now();
   bool _isSubmitting = false;
+  String _eventId = '';
 
   final List<String> _venueSuggestions = [
     'Auditorium Utama UBK',
@@ -55,6 +59,65 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
     {'value': 'selesai', 'label': 'Selesai Terlaksana'},
     {'value': 'dibatalkan', 'label': 'Dibatalkan'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  void _initData() {
+    final k = widget.kegiatan;
+    if (k is OrmawaAgenda) {
+      _eventId = k.id;
+      _judulController.text = k.title;
+      _kategoriController.text = k.bentukKegiatan ?? '';
+      _lokasiController.text = k.location;
+      _deskripsiController.text = k.description;
+      _selectedStatus = k.status.toLowerCase();
+      _tanggalMulai = k.date;
+      _tanggalSelesai = k.endDate;
+      _waktuMulaiController.text = DateFormat('HH:mm').format(k.date);
+      _waktuSelesaiController.text = DateFormat('HH:mm').format(k.endDate);
+      _pjController.text = k.pjKegiatan ?? '';
+      _estimasiDanaController.text = k.estimasiDana != null && k.estimasiDana! > 0 ? k.estimasiDana!.toInt().toString() : '';
+      _sumberDanaController.text = k.sumberDana ?? '';
+      _mitraController.text = k.mitra ?? '';
+      _sasaranController.text = k.sasaranKegiatan ?? '';
+      _landasanController.text = k.landasanKegiatan ?? '';
+      _latarBelakangController.text = k.latarBelakang ?? '';
+      _tujuanController.text = k.tujuanKegiatan ?? '';
+      _indikatorController.text = k.indikatorKeberhasilan ?? '';
+    } else if (k is Map<String, dynamic>) {
+      _eventId = (k['ID'] ?? k['id'] ?? '').toString();
+      _judulController.text = (k['Judul'] ?? k['judul'] ?? '').toString();
+      _kategoriController.text = (k['BentukKegiatan'] ?? k['bentuk_kegiatan'] ?? '').toString();
+      _lokasiController.text = (k['Lokasi'] ?? k['lokasi'] ?? '').toString();
+      _deskripsiController.text = (k['Deskripsi'] ?? k['deskripsi'] ?? '').toString();
+      _selectedStatus = (k['Status'] ?? k['status'] ?? 'terjadwal').toString().toLowerCase();
+      if (k['TanggalMulai'] != null) {
+        try {
+          _tanggalMulai = DateTime.parse(k['TanggalMulai'].toString());
+          _waktuMulaiController.text = DateFormat('HH:mm').format(_tanggalMulai);
+        } catch (_) {}
+      }
+      if (k['TanggalSelesai'] != null) {
+        try {
+          _tanggalSelesai = DateTime.parse(k['TanggalSelesai'].toString());
+          _waktuSelesaiController.text = DateFormat('HH:mm').format(_tanggalSelesai);
+        } catch (_) {}
+      }
+      _pjController.text = (k['PJKegiatan'] ?? k['pj_kegiatan'] ?? '').toString();
+      _mitraController.text = (k['Mitra'] ?? k['mitra'] ?? '').toString();
+      _sasaranController.text = (k['SasaranKegiatan'] ?? k['sasaran_kegiatan'] ?? '').toString();
+      _estimasiDanaController.text = (k['EstimasiDana'] ?? k['estimasi_dana'] ?? '').toString();
+      _sumberDanaController.text = (k['SumberDana'] ?? k['sumber_dana'] ?? '').toString();
+      _landasanController.text = (k['LandasanKegiatan'] ?? k['landasan_kegiatan'] ?? '').toString();
+      _latarBelakangController.text = (k['LatarBelakang'] ?? k['latar_belakang'] ?? '').toString();
+      _tujuanController.text = (k['TujuanKegiatan'] ?? k['tujuan_kegiatan'] ?? '').toString();
+      _indikatorController.text = (k['IndikatorKeberhasilan'] ?? k['indikator_keberhasilan'] ?? '').toString();
+    }
+  }
 
   @override
   void dispose() {
@@ -74,30 +137,6 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
     _waktuMulaiController.dispose();
     _waktuSelesaiController.dispose();
     super.dispose();
-  }
-
-  void _fillPreset() {
-    setState(() {
-      _judulController.text = 'Samudra Leadership 2026';
-      _kategoriController.text = 'LKMM Dasar';
-      _lokasiController.text = 'Auditorium Utama UBK & Ruang Diskusi Kampus';
-      _tanggalMulai = DateTime.now().add(const Duration(days: 7));
-      _tanggalSelesai = DateTime.now().add(const Duration(days: 7));
-      _waktuMulaiController.text = '08:00';
-      _waktuSelesaiController.text = '16:00';
-      _selectedStatus = 'terjadwal';
-      _pjController.text = 'Regina Felling Yuan Ananta';
-      _estimasiDanaController.text = '10075000';
-      _sumberDanaController.text = 'Kas Internal Ormawa & Pagu Anggaran Kampus';
-      _mitraController.text = 'Seluruh LK dan UKM KEMA UBK';
-      _sasaranController.text = 'Lembaga Kemahasiswaan (LK), UKM dan Mahasiswa Aktif UBK';
-      _indikatorController.text = '1. Seluruh peserta mengikuti minimal 3 dari 4 sesi interaktif.\n2. Tercipta minimal 1 output rencana kerja dari setiap kelompok.\n3. Teridentifikasi minimal 15 calon kader pengurus.';
-      _landasanController.text = 'Arahan Kebijakan Kemahasiswaan Universitas Bhakti Kencana';
-      _latarBelakangController.text = 'Mahasiswa sebagai calon pemimpin bangsa perlu dibekali karakter kepemimpinan, kemampuan manajerial organisasi, serta integritas yang tangguh.';
-      _tujuanController.text = 'Mempersiapkan mahasiswa aktif untuk memiliki kompetensi kepemimpinan dan manajemen organisasi yang adaptif.';
-      _deskripsiController.text = 'Samudra Leadership adalah program pelatihan kepemimpinan dan manajemen organisasi mahasiswa Universitas Bhakti Kencana yang dirancang secara terstruktur dan aplikatif.';
-    });
-    AppSnackbar.showSuccess(context, 'Contoh data (Samudra Leadership) berhasil dimuat!');
   }
 
   Future<void> _pickDateRange() async {
@@ -345,17 +384,17 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
         'jadwal_pelaksanaan': _buildJadwalText(),
       };
 
-      await context.read<OrmawaProvider>().addAgenda(payload);
+      await context.read<OrmawaProvider>().updateAgenda(_eventId, payload);
       if (mounted) {
         BkuLoadingDialog.hide(context);
-        AppSnackbar.showSuccess(context, 'Jadwal kegiatan berhasil disimpan');
+        AppSnackbar.showSuccess(context, 'Perubahan kegiatan berhasil disimpan');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
         BkuLoadingDialog.hide(context);
         setState(() => _isSubmitting = false);
-        AppSnackbar.showError(context, 'Gagal menambahkan kegiatan: $e');
+        AppSnackbar.showError(context, 'Gagal memperbarui kegiatan: $e');
       }
     }
   }
@@ -374,8 +413,8 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
         slivers: [
           BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'Tambah Jadwal Kegiatan',
-            subtitle: 'Formulir Rencana Agenda Ormawa',
+            title: 'Edit Jadwal Kegiatan',
+            subtitle: 'Pembaruan Data & Pelaksanaan Agenda',
             expandedHeight: 130.0,
             showBackButton: true,
             isExpandable: false,
@@ -386,45 +425,6 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BkuBounceButton(
-                    onTap: _fillPreset,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFBFDBFE)),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.auto_awesome_rounded, size: 16, color: Color(0xFF2563EB)),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Muat Contoh Data Cepat',
-                                  style: TextStyle(
-                                    fontSize: 11.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF1D4ED8),
-                                  ),
-                                ),
-                                Text(
-                                  'Isi otomatis form dengan preset Samudra Leadership',
-                                  style: TextStyle(fontSize: 9.5, color: Color(0xFF3B82F6)),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Color(0xFF2563EB)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-
                   OrmawaCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,7 +799,7 @@ class _CreateKegiatanScreenState extends State<CreateKegiatanScreen> {
                     width: double.infinity,
                     height: 48,
                     child: OrmawaButton(
-                      text: 'SIMPAN JADWAL KEGIATAN',
+                      text: 'SIMPAN PERUBAHAN KEGIATAN',
                       isLoading: _isSubmitting,
                       onPressed: _isSubmitting ? null : _handleSubmit,
                       icon: Icons.save_rounded,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
@@ -127,16 +126,17 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = context.appColors.primary;
+    final primaryColor = OrmawaTheme.primary;
     final meta = _getCategoryMeta(announcement.kategori);
     final catColor = meta['color'] as Color;
     final catBg = meta['bg'] as Color;
     final displayDate = announcement.tanggalMulai ?? announcement.createdAt;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Detail Pengumuman',
+        subtitle: 'Informasi Siaran Ormawa',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(

@@ -103,10 +103,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       backgroundColor: context.appColors.onSurface,
       body: Stack(
         children: [
-          // Camera Preview
+          
           MobileScanner(controller: _scannerController, onDetect: _onDetect),
 
-          // Glassmorphism/Dark Overlay with Hole Punch
           AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
@@ -120,7 +119,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             },
           ),
 
-          // Scan Area frame
           Center(
             child: SizedBox(
               width: 280,
@@ -128,7 +126,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             ),
           ),
 
-          // Header
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -174,7 +171,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           ],
                         ),
                       ),
-                      // Torch Toggle
+                      
                       IconButton(
                         onPressed: () => _scannerController.toggleTorch(),
                         icon: Container(
@@ -196,7 +193,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             ),
           ),
 
-          // Feedback Status at bottom of scan area
           Positioned(
             bottom: 110,
             left: 0,
@@ -320,13 +316,12 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         throw Exception('QR Code tidak valid! Harap pindai QR Code Presensi Sesi Kencana / Kegiatan resmi.');
       }
 
-      // Robust parsing of student NIM
       String nim = code;
       if (code.contains('?')) {
         try {
           final uri = Uri.parse(code);
           nim = uri.queryParameters['nim'] ?? uri.queryParameters['NIM'] ?? nim;
-        } catch (_) { /* Silenced: non-critical lookup fallback */ }
+        } catch (_) {  }
       } else if (code.contains(':')) {
         nim = code.split(':').last;
       }
@@ -337,7 +332,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       String? studentName;
       String targetEventId = widget.eventId;
 
-      // Mode 3: Scanning a Kencana Mentor Session QR Code (JWT)
       if (code.startsWith('eyJ') && code.split('.').length == 3) {
         final response = await ApiClient().client.post(
           '/kencana-student/attendance',
@@ -374,14 +368,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       }
 
       if (code.contains('eventId=') || code.contains('student/presensi')) {
-        // Mode 1: Scanning an Event QR Code to check in the logged-in student (Self-Presensi)
-
+        
         String? parsedEventId;
         try {
           final uri = Uri.parse(code);
           parsedEventId =
               uri.queryParameters['eventId'] ?? uri.queryParameters['event_id'];
-        } catch (_) { /* Silenced: non-critical lookup fallback */ }
+        } catch (_) {  }
 
         if (parsedEventId == null ||
             parsedEventId.isEmpty ||
@@ -391,7 +384,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
         targetEventId = parsedEventId;
 
-        // Get the logged-in student ID
         resolvedId = provider.mahasiswaId;
         if (resolvedId == null || resolvedId.isEmpty) {
           throw Exception(
@@ -399,7 +391,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
           );
         }
 
-        // Get name and nim of the logged-in student
         final authData = AuthService().userData;
         studentName =
             authData?['mahasiswa']?['Nama'] ??
@@ -413,22 +404,19 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             'NIM Anda';
 
       } else {
-        // Mode 2: Admin scanning student KTM/NIM QR
-
+        
         if (nim.isEmpty) {
           throw Exception('Kode QR tidak valid.');
         }
 
-        // 1. Check in provider.members
         try {
           final match = provider.members.firstWhere(
             (m) => m.nim.trim().toLowerCase() == nim.toLowerCase(),
           );
           resolvedId = match.mahasiswaId;
           studentName = match.name;
-        } catch (_) { /* Silenced: non-critical lookup fallback */ }
+        } catch (_) {  }
 
-        // 2. Check in provider.attendanceList
         if (resolvedId == null) {
           try {
             final match = provider.attendanceList.firstWhere(
@@ -436,10 +424,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             );
             resolvedId = match.mahasiswaId;
             studentName = match.mahasiswaName;
-          } catch (_) { /* Silenced: non-critical lookup fallback */ }
+          } catch (_) {  }
         }
 
-        // 3. Check in preloaded _studentsLookup
         if (resolvedId == null) {
           if (_studentsLookup.isNotEmpty) {
             try {
@@ -450,11 +437,10 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
               );
               resolvedId = match['id']?.toString();
               studentName = match['nama']?.toString();
-            } catch (_) { /* Silenced: non-critical lookup fallback */ }
+            } catch (_) {  }
           }
         }
 
-        // 4. Fallback if still loading students lookup
         if (resolvedId == null && _isLoadingStudents) {
           final students = <Map<String, dynamic>>[];
           setState(() {
@@ -469,7 +455,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             );
             resolvedId = match['id']?.toString();
             studentName = match['nama']?.toString();
-          } catch (_) { /* Silenced: non-critical lookup fallback */ }
+          } catch (_) {  }
         }
 
         if (resolvedId == null) {
@@ -477,7 +463,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         }
       }
 
-      // Submit attendance directly using the resolved database ID
       await provider.submitAttendance(targetEventId, resolvedId, 'hadir');
 
       if (!mounted) return;
@@ -488,7 +473,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         _scannedStudentName = studentName ?? 'Mahasiswa NIM $nim';
       });
 
-      // Navigate to success screen
       await Navigator.push(
         context,
         MaterialPageRoute(
@@ -503,7 +487,6 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         ),
       );
 
-      // Reset state when returned from success screen
       if (mounted) {
         setState(() {
           _hasScanned = false;

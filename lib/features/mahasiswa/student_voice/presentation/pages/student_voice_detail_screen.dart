@@ -256,7 +256,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header / Metadata
+          
           FadeInAnimation(
             delay: 0.1,
             child: Row(
@@ -301,7 +301,6 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // Title & Date
           FadeInAnimation(
             delay: 0.2,
             child: Text(
@@ -367,7 +366,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.xxl),
-          // Content
+          
           FadeInAnimation(
             delay: 0.4,
             child: Text(
@@ -379,7 +378,6 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             ),
           ),
 
-          // Attachment
           if (ticket.imageUrl != null && ticket.imageUrl!.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.xl),
             FadeInAnimation(
@@ -483,7 +481,6 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
           ),
           const SizedBox(height: AppSpacing.xl),
 
-          // Timeline
           FadeInAnimation(
             delay: 0.7,
             child:
@@ -549,7 +546,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Timeline Line & Icon
+          
           SizedBox(
             width: 40,
             child: Column(
@@ -586,7 +583,7 @@ class _StudentVoiceDetailScreenState extends State<StudentVoiceDetailScreen> {
             ),
           ),
           const SizedBox(width: AppSpacing.lg),
-          // Event Content
+          
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.xl),

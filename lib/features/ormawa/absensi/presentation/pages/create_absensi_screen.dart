@@ -5,7 +5,7 @@ import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -111,9 +111,14 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: primaryColor),
-          ),
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: const Color(0xFF0F172A),
+            ),
+                      ),
           child: child!,
         );
       },
@@ -127,9 +132,14 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
       initialTime: isStart ? _selectedStartTime : _selectedEndTime,
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: primaryColor),
-          ),
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: const Color(0xFF0F172A),
+            ),
+                      ),
           child: child!,
         );
       },
@@ -148,11 +158,10 @@ class _CreateAbsensiScreenState extends State<CreateAbsensiScreen> {
   @override
   Widget build(BuildContext context) {
     final agendas = context.watch<OrmawaProvider>().agendas;
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
+    final primaryColor = OrmawaTheme.primary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(

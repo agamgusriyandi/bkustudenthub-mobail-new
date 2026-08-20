@@ -27,7 +27,7 @@ class OrmawaCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? OrmawaTheme.cardSurface,
         borderRadius: effectiveBorderRadius,
-        border: border ?? Border.all(color: OrmawaTheme.border),
+        border: border ?? Border.all(color: const Color(0xFFF1F5F9), width: 1.0),
         boxShadow: OrmawaTheme.cardShadow,
       ),
       child: Material(
@@ -36,6 +36,8 @@ class OrmawaCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: effectiveBorderRadius,
+          splashColor: OrmawaTheme.primary.withAlpha(12),
+          highlightColor: OrmawaTheme.primary.withAlpha(6),
           child: Padding(
             padding: padding,
             child: child,

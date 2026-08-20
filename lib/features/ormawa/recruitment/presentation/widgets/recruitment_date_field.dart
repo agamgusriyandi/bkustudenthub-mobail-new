@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:intl/intl.dart';
-
 
 class RecruitmentDateField extends StatelessWidget {
   final String label;
@@ -25,31 +23,33 @@ class RecruitmentDateField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelMd.copyWith(color: AppColors.neutral600),
+          style: AppTextStyles.labelMd.copyWith(
+            color: OrmawaTheme.textHeading,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         InkWell(
           onTap: onTap,
-          borderRadius: AppRadius.radiusMd,
+          borderRadius: BorderRadius.circular(14),
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.md,
             ),
             decoration: BoxDecoration(
+              color: Colors.white,
               border: Border.all(
-                color: Theme.of(
-                  context,
-                ).colorScheme.outline.withValues(alpha: 0.5),
+                color: OrmawaTheme.border,
               ),
-              borderRadius: AppRadius.radiusMd,
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.calendar_today_rounded,
                   size: 18,
-                  color: AppColors.neutral600,
+                  color: OrmawaTheme.primary,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
@@ -57,10 +57,10 @@ class RecruitmentDateField extends StatelessWidget {
                       ? DateFormat('dd MMM yyyy').format(date!)
                       : 'Pilih Tanggal',
                   style: AppTextStyles.bodyMd.copyWith(
-                    color:
-                        date != null
-                            ? AppColors.neutral900
-                            : AppColors.neutral400,
+                    color: date != null
+                        ? OrmawaTheme.textHeading
+                        : OrmawaTheme.textMuted,
+                    fontWeight: date != null ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ],
@@ -71,4 +71,3 @@ class RecruitmentDateField extends StatelessWidget {
     );
   }
 }
-

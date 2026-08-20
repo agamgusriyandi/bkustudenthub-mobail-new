@@ -244,6 +244,10 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
         ? _getEventsForDay(_selectedDay!, allAgendas, allProposals, allAnnouncements)
         : [];
 
+    final canCreateEvent = provider.hasPermission('ormawa.events.create, create_calendar');
+    final canEditEvent = provider.hasPermission('ormawa.events.update, edit_calendar');
+    final canDeleteEvent = provider.hasPermission('ormawa.events.delete, delete_calendar');
+
     return Scaffold(
       backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
@@ -365,23 +369,25 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: () => context.push(AppRoutes.ormawaJadwalCreate),
-                                      icon: const Icon(Icons.add_rounded, size: 15),
-                                      label: const Text('Tambah Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: OrmawaTheme.primary,
-                                        foregroundColor: Colors.white,
-                                        elevation: 0,
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  if (canCreateEvent) ...[
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () => context.push(AppRoutes.ormawaJadwalCreate),
+                                        icon: const Icon(Icons.add_rounded, size: 15),
+                                        label: const Text('Tambah Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: OrmawaTheme.primary,
+                                          foregroundColor: Colors.white,
+                                          elevation: 0,
+                                          padding: const EdgeInsets.symmetric(vertical: 8),
+                                          minimumSize: Size.zero,
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ],
                               ),
                             ],
@@ -776,7 +782,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                           separatorBuilder: (_, __) => const SizedBox(height: 10),
                           itemBuilder: (context, idx) {
                             final agenda = filteredAgendas[idx];
-                            return _buildAgendaCard(context, agenda);
+                            return _buildAgendaCard(
+                              context,
+                              agenda,
+                              canEdit: canEditEvent,
+                              canDelete: canDeleteEvent,
+                            );
                           },
                         ),
 
@@ -791,7 +802,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     );
   }
 
-  Widget _buildAgendaCard(BuildContext context, OrmawaAgenda agenda) {
+  Widget _buildAgendaCard(
+    BuildContext context,
+    OrmawaAgenda agenda, {
+    required bool canEdit,
+    required bool canDelete,
+  }) {
     final statusLabel = _getStatusLabel(agenda.status);
     final statusBg = _getStatusBgColor(agenda.status);
     final statusColor = _getStatusTextColor(agenda.status);
@@ -918,46 +934,50 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 6),
-              InkWell(
-                onTap: () => context.push(AppRoutes.ormawaJadwalEdit, extra: agenda),
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFEF3C7),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.edit_rounded, size: 13, color: Color(0xFFD97706)),
-                      SizedBox(width: 4),
-                      Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 6),
-              InkWell(
-                onTap: () => _confirmDelete(context, agenda),
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.delete_outline_rounded, size: 13, color: Color(0xFFE11D48)),
-                      SizedBox(width: 4),
-                      Text('Batal', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFE11D48))),
-                    ],
+              if (canEdit) ...[
+                const SizedBox(width: 6),
+                InkWell(
+                  onTap: () => context.push(AppRoutes.ormawaJadwalEdit, extra: agenda),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit_rounded, size: 13, color: Color(0xFFD97706)),
+                        SizedBox(width: 4),
+                        Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
+              if (canDelete) ...[
+                const SizedBox(width: 6),
+                InkWell(
+                  onTap: () => _confirmDelete(context, agenda),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF1F2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.delete_outline_rounded, size: 13, color: Color(0xFFE11D48)),
+                        SizedBox(width: 4),
+                        Text('Batal', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFE11D48))),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ],

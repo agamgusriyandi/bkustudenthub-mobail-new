@@ -140,26 +140,25 @@ class PermissionService {
   }
 
   static const Map<String, List<String>> _legacyToDomainMap = {
-    'view_dashboard': ['ormawa.core.view', 'ormawa.dashboard.view'],
-    'view_notifications': ['ormawa.notifications.view'],
-    'view_members': ['ormawa.members.view'],
-    'create_members': ['ormawa.members.create'],
-    'edit_members': ['ormawa.members.update'],
-    'delete_members': ['ormawa.members.delete'],
-    'view_staff': ['ormawa.staff.view'],
+    'view_dashboard': ['ormawa.core.view', 'ormawa.dashboard.view', 'core.dashboard.view'],
+    'view_notifications': ['core.notifications.view', 'notifications.view'],
+    'view_members': ['ormawa.members.view', 'ormawa.members.manage'],
+    'create_members': ['ormawa.members.create', 'ormawa.members.manage', 'ormawa.organisasi.manage'],
+    'edit_members': ['ormawa.members.update', 'ormawa.members.manage', 'ormawa.organisasi.manage'],
+    'delete_members': ['ormawa.members.delete', 'ormawa.members.manage', 'ormawa.organisasi.manage'],
+    'view_staff': ['ormawa.staff.view', 'ormawa.staff.manage'],
     'manage_staff': [
       'ormawa.staff.create',
       'ormawa.staff.update',
       'ormawa.staff.delete',
       'ormawa.staff.manage',
+      'ormawa.organisasi.manage',
     ],
     'view_recruitment': [
       'ormawa.recruitment.view',
       'ormawa.recruitment.create',
       'ormawa.recruitment.manage',
       'ormawa.rekrutmen.manage',
-      'ormawa.members.view',
-      'ormawa.core.view',
     ],
     'manage_recruitment': [
       'ormawa.recruitment.view',
@@ -168,66 +167,74 @@ class PermissionService {
       'ormawa.recruitment.delete',
       'ormawa.recruitment.manage',
       'ormawa.rekrutmen.manage',
-      'ormawa.members.view',
-      'ormawa.core.view',
     ],
-    'view_structure': ['ormawa.structure.view'],
-    'manage_structure': ['ormawa.structure.manage'],
-    'view_proposal': ['ormawa.proposals.view'],
-    'create_proposal': ['ormawa.proposals.create'],
-    'edit_proposal': ['ormawa.proposals.update'],
-    'delete_proposal': ['ormawa.proposals.delete'],
-    'view_lpj': ['ormawa.lpj.view'],
-    'create_lpj': ['ormawa.lpj.create'],
-    'edit_lpj': ['ormawa.lpj.update'],
-    'upload_lpj_doc': ['ormawa.lpj.update'],
-    'delete_lpj': ['ormawa.lpj.delete'],
-    'view_calendar': ['ormawa.events.view'],
-    'create_calendar': ['ormawa.events.create'],
-    'edit_calendar': ['ormawa.events.update'],
-    'delete_calendar': ['ormawa.events.delete'],
-    'view_attendance': ['ormawa.attendance.view'],
-    'submit_attendance': ['ormawa.attendance.manage'],
-    'edit_attendance': ['ormawa.attendance.manage'],
-    'view_finance': ['ormawa.finance.view'],
-    'create_finance': ['ormawa.finance.create'],
-    'delete_finance': ['ormawa.finance.delete'],
-    'view_aspirations': ['ormawa.aspirations.view'],
-    'respond_aspirations': ['ormawa.aspirations.update'],
-    'view_announcements': ['ormawa.announcements.view'],
-    'create_announcements': ['ormawa.announcements.create'],
-    'edit_announcements': ['ormawa.announcements.update'],
-    'delete_announcements': ['ormawa.announcements.delete'],
-    'view_settings': ['ormawa.settings.view'],
-    'manage_settings': ['ormawa.settings.manage'],
-    'view_rbac': ['ormawa.rbac.view'],
+    'view_structure': ['ormawa.structure.view', 'ormawa.structure.manage'],
+    'manage_structure': ['ormawa.structure.manage', 'ormawa.structure.update', 'ormawa.organisasi.manage'],
+    'view_proposal': ['ormawa.proposals.view', 'ormawa.proposal-pipeline.view', 'ormawa.proposals.manage'],
+    'create_proposal': ['ormawa.proposals.create', 'ormawa.proposals.manage'],
+    'edit_proposal': ['ormawa.proposals.update', 'ormawa.proposals.manage'],
+    'delete_proposal': ['ormawa.proposals.delete', 'ormawa.proposals.manage'],
+    'view_lpj': ['ormawa.lpj.view', 'ormawa.lpj-pipeline.view', 'ormawa.lpj.manage'],
+    'create_lpj': ['ormawa.lpj.create', 'ormawa.lpj.manage'],
+    'edit_lpj': ['ormawa.lpj.update', 'ormawa.lpj.manage'],
+    'upload_lpj_doc': ['ormawa.lpj.update', 'ormawa.lpj.manage', 'ormawa.lpj.create'],
+    'delete_lpj': ['ormawa.lpj.delete', 'ormawa.lpj.manage'],
+    'view_calendar': ['ormawa.events.view', 'ormawa.events.manage'],
+    'create_calendar': ['ormawa.events.create', 'ormawa.events.manage'],
+    'edit_calendar': ['ormawa.events.update', 'ormawa.events.manage'],
+    'delete_calendar': ['ormawa.events.delete', 'ormawa.events.manage'],
+    'view_attendance': ['ormawa.attendance.view', 'ormawa.attendance.manage'],
+    'submit_attendance': ['ormawa.attendance.manage', 'ormawa.attendance.create'],
+    'edit_attendance': ['ormawa.attendance.manage', 'ormawa.attendance.update'],
+    'view_finance': ['ormawa.finance.view', 'ormawa.finance.manage'],
+    'create_finance': ['ormawa.finance.create', 'ormawa.finance.manage'],
+    'delete_finance': ['ormawa.finance.delete', 'ormawa.finance.manage'],
+    'view_pagu': ['ormawa.pagu.view', 'ormawa.pagu.manage'],
+    'manage_pagu': ['ormawa.pagu.manage', 'ormawa.pagu.update', 'ormawa.organisasi.manage'],
+    'view_aspirations': ['ormawa.aspirations.view', 'ormawa.aspiration.view'],
+    'respond_aspirations': ['ormawa.aspirations.update', 'ormawa.aspiration.update', 'ormawa.aspiration.manage'],
+    'view_announcements': ['ormawa.announcements.view', 'ormawa.announcements.manage'],
+    'create_announcements': ['ormawa.announcements.create', 'ormawa.announcements.manage'],
+    'edit_announcements': ['ormawa.announcements.update', 'ormawa.announcements.manage'],
+    'delete_announcements': ['ormawa.announcements.delete', 'ormawa.announcements.manage'],
+    'view_settings': ['ormawa.settings.view', 'ormawa.settings.manage'],
+    'manage_settings': ['ormawa.settings.manage', 'ormawa.settings.update', 'ormawa.organisasi.manage'],
+    'view_rbac': ['ormawa.rbac.view', 'ormawa.rbac.manage'],
     'manage_rbac': [
       'ormawa.rbac.manage',
       'ormawa.rbac.create',
       'ormawa.rbac.update',
       'ormawa.rbac.delete',
     ],
-    'view_gamifikasi': ['ormawa.gamifikasi.view'],
+    'view_gamifikasi': ['ormawa.gamifikasi.view', 'ormawa.gamifikasi.manage'],
   };
 
-  /// Check if user has specific permission
-  /// Returns true if:
-  /// 1. User has wildcard (*) - full access
-  /// 2. User has the exact permission or mapped domain permission
   bool hasPermission(String permission) {
     if (_permissions.isEmpty) {
       return false;
     }
-    if (_permissions.contains('*')) return true;
+    if (_permissions.contains('*') || _permissions.contains('superadmin.dashboard.view')) {
+      return true;
+    }
 
-    // Check direct match
-    if (_permissions.contains(permission)) return true;
+    if (permission.contains(',')) {
+      final list = permission.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty);
+      return list.any((p) => hasPermission(p));
+    }
 
-    // Check mapped domain permissions
-    final mapped = _legacyToDomainMap[permission];
+    final trimmed = permission.trim();
+    if (_permissions.contains(trimmed)) return true;
+
+    final mapped = _legacyToDomainMap[trimmed];
     if (mapped != null) {
       for (final p in mapped) {
         if (_permissions.contains(p)) return true;
+      }
+    }
+
+    for (final entry in _legacyToDomainMap.entries) {
+      if (entry.value.contains(trimmed) && _permissions.contains(entry.key)) {
+        return true;
       }
     }
 

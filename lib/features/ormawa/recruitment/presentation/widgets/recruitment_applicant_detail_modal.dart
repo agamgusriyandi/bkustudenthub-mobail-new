@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -60,15 +61,12 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xxl),
-                        // Profile Avatar Modern
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xs),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withAlpha(50),
+                              color: OrmawaTheme.primarySoft,
                               width: 2,
                             ),
                           ),
@@ -76,13 +74,11 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             width: 100,
                             height: 100,
                             decoration: BoxDecoration(
-                              color: context.appColors.primary,
+                              color: OrmawaTheme.primary,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withAlpha(60),
+                                  color: OrmawaTheme.primary.withAlpha(60),
                                   blurRadius: 15,
                                   offset: const Offset(0, 5),
                                 ),
@@ -92,7 +88,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                             child: Text(
                               applicant.name.substring(0, 1),
                               style: AppTextStyles.displaySmall.copyWith(
-                                color: context.appColors.onPrimary,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -134,7 +130,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                         _buildStatusBadge(applicant.status),
                         const SizedBox(height: AppSpacing.s20),
 
-                        // Detail Data
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppSpacing.xl,
@@ -142,7 +137,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // IPK modern
                               Row(
                                 children: [
                                   Expanded(
@@ -296,7 +290,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                             );
                                           }
                                         } catch (_) {
-                                          // Silenced: non-critical launch error
                                         }
                                       }
                                     },
@@ -306,14 +299,10 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                         AppSpacing.lg,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary.withAlpha(10),
+                                        color: OrmawaTheme.primarySoft,
                                         borderRadius: AppRadius.radiusXl,
                                         border: Border.all(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary.withAlpha(30),
+                                          color: OrmawaTheme.primary.withAlpha(60),
                                         ),
                                       ),
                                       child: Row(
@@ -323,18 +312,12 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                               AppSpacing.md,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withAlpha(20),
+                                              color: OrmawaTheme.primary.withAlpha(30),
                                               shape: BoxShape.circle,
                                             ),
                                             child: Icon(
                                               Icons.description_rounded,
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
+                                              color: OrmawaTheme.primary,
                                               size: 24,
                                             ),
                                           ),
@@ -350,10 +333,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                       .copyWith(
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .primary,
+                                                        color: OrmawaTheme.primary,
                                                       ),
                                                 ),
                                                 Text(
@@ -361,8 +341,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                   style: AppTextStyles.labelMd
                                                       .copyWith(
                                                         color:
-                                                            AppColors
-                                                                .neutral500,
+                                                            OrmawaTheme.textMuted,
                                                       ),
                                                 ),
                                               ],
@@ -370,10 +349,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                           ),
                                           Icon(
                                             Icons.open_in_new_rounded,
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
+                                            color: OrmawaTheme.primary,
                                             size: 20,
                                           ),
                                         ],
@@ -387,12 +363,10 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                       AppSpacing.lg,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.neutral100,
+                                      color: OrmawaTheme.cardSurface,
                                       borderRadius: AppRadius.radiusXl,
                                       border: Border.all(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.outline.withAlpha(30),
+                                        color: OrmawaTheme.border,
                                       ),
                                     ),
                                     child: Center(
@@ -423,7 +397,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                   final fieldId = entry.key;
                                   final answer = entry.value;
 
-                                  // Find the field label from formFields
                                   final field = formFields.firstWhere(
                                     (f) =>
                                         (f['id'] ?? f['ID']).toString() ==
@@ -446,7 +419,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                   'text')
                                               .toString()
                                               .toLowerCase()
-                                          : 'text';
+                                              : 'text';
 
                                   final isFile = type == 'file';
 
@@ -488,7 +461,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                   );
                                                 }
                                               } catch (_) {
-                                                // Silenced: non-critical launch error
                                               }
                                             }
                                           },
@@ -496,10 +468,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                             children: [
                                               Icon(
                                                 Icons.open_in_new_rounded,
-                                                color:
-                                                    Theme.of(
-                                                      context,
-                                                    ).colorScheme.primary,
+                                                color: OrmawaTheme.primary,
                                                 size: 16,
                                               ),
                                               const SizedBox(width: AppSpacing.sm),
@@ -508,10 +477,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                                   'Buka Dokumen',
                                                   style: AppTextStyles.bodyMd
                                                       .copyWith(
-                                                        color:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .primary,
+                                                        color: OrmawaTheme.primary,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         decoration:
@@ -560,7 +526,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                   ),
                 ],
               ),
-              // Sticky Action Buttons
               if (isPending &&
                   context.read<OrmawaProvider>().hasPermission(
                     'manage_recruitment',
@@ -667,4 +632,3 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
     );
   }
 }
-

@@ -6,7 +6,7 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_division.dart';
@@ -56,8 +56,11 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
           r.contains('pembina');
     }).toList();
 
+    final canManage = provider.hasPermission('manage_structure') ||
+        provider.hasPermission('ormawa.structure.manage, ormawa.structure.update, ormawa.organisasi.manage, ormawa.members.update');
+
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
         child: CustomScrollView(
@@ -97,7 +100,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildSectionHeader('PIMPINAN & PENGURUS BPH', Icons.shield_rounded, AppColors.serviceSky),
-                              if (provider.hasPermission('manage_structure'))
+                              if (canManage)
                                 GestureDetector(
                                   onTap: () => _showManageBphBottomSheet(context, provider),
                                   child: Container(
@@ -147,7 +150,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildSectionHeader('DEPARTEMEN & DIVISI', Icons.category_rounded, AppColors.servicePurple),
-                              if (provider.hasPermission('manage_structure'))
+                              if (canManage)
                                 GestureDetector(
                                   onTap: () => _showAddDivisionDialog(context, provider),
                                   child: Container(
@@ -216,7 +219,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
         Text(
           title,
           style: TextStyle(
-            color: context.appColors.onSurface,
+            color: OrmawaTheme.textHeading,
             fontWeight: FontWeight.w900,
             fontSize: 11.5,
             letterSpacing: 0.3,
@@ -228,7 +231,9 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
 
   Widget _buildCabinetInfoCard(String orgName, String academicYear) {
     final displayOrg = orgName.isNotEmpty ? orgName : 'Organisasi Mahasiswa';
-    final displayYear = academicYear.isNotEmpty ? academicYear : '2025/2026';
+    final now = DateTime.now();
+    final dynamicDefaultYear = '${now.year}/${now.year + 1}';
+    final displayYear = academicYear.isNotEmpty ? academicYear : dynamicDefaultYear;
 
     return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -257,7 +262,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     ),
                     Text(
                       displayOrg,
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: context.appColors.onSurface),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: OrmawaTheme.textHeading),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -289,7 +294,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     ),
                     Text(
                       'Periode $displayYear',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: context.appColors.onSurface),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: OrmawaTheme.textHeading),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -411,7 +416,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: context.appColors.onSurface,
+                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -422,7 +427,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                     subText,
                     style: TextStyle(
                       fontSize: 9.5,
-                      color: context.appColors.onSurfaceVariant,
+                      color: OrmawaTheme.textMuted,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -527,7 +532,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.bold,
-                    color: context.appColors.onSurface,
+                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -542,7 +547,8 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
               ],
             ),
           ),
-          if (provider.hasPermission('manage_structure'))
+          if (provider.hasPermission('manage_structure') ||
+              provider.hasPermission('ormawa.structure.manage, ormawa.structure.update, ormawa.organisasi.manage, ormawa.members.update'))
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.error),
               padding: EdgeInsets.zero,
@@ -618,7 +624,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                  borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
               ),
@@ -658,7 +664,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appColors.primary,
+                      backgroundColor: OrmawaTheme.primary,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -686,19 +692,21 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     OrmawaProvider provider, [
     OrmawaMember? existingMember,
   ]) {
-    final rbacRoles = provider.roles.map((r) => r.name.trim()).where((n) => n.isNotEmpty);
-    final memberRoles = provider.members.map((m) => m.role.trim()).where((r) => r.isNotEmpty);
-    final defaults = ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Kepala Divisi', 'Staff', 'Anggota', 'Pembina'];
+    final rbacRoles = provider.roles.map((r) => r.name.trim()).where((n) => n.isNotEmpty).toSet().toList();
+    final memberRoles = provider.members.map((m) => m.role.trim()).where((r) => r.isNotEmpty).toSet().toList();
     final dynamicRoles = {
-      ...defaults,
       ...rbacRoles,
       ...memberRoles,
       if (existingMember != null && existingMember.role.trim().isNotEmpty) existingMember.role.trim(),
     }.toList();
 
+    if (dynamicRoles.isEmpty) {
+      dynamicRoles.addAll(['Ketua Umum', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Kepala Divisi', 'Staff', 'Anggota', 'Pembina']);
+    }
+
     final allDivisions = provider.divisions.map((d) => d.name).where((d) => d.trim().isNotEmpty).toSet().toList();
 
-    String selectedRole = existingMember?.role.trim() ?? 'Sekretaris';
+    String selectedRole = existingMember?.role.trim() ?? dynamicRoles.first;
     if (!dynamicRoles.contains(selectedRole)) {
       selectedRole = dynamicRoles.first;
     }
@@ -711,6 +719,8 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
     OrmawaMember? selectedMember = existingMember;
     String searchKeyword = '';
     bool isSearching = false;
+    List<Map<String, dynamic>> loadedStudents = [];
+    bool isLoadingStudents = true;
 
     showModalBottomSheet(
       context: context,
@@ -718,12 +728,31 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setModalState) {
-          final students = provider.members;
+          if (isLoadingStudents && loadedStudents.isEmpty) {
+            provider.getStudents().then((res) {
+              if (ctx.mounted) {
+                setModalState(() {
+                  loadedStudents = res;
+                  isLoadingStudents = false;
+                });
+              }
+            }).catchError((_) {
+              if (ctx.mounted) {
+                setModalState(() {
+                  isLoadingStudents = false;
+                });
+              }
+            });
+          }
+
           final filteredStudents = searchKeyword.isEmpty
-              ? students
-              : students.where((m) =>
-                  m.name.toLowerCase().contains(searchKeyword.toLowerCase()) ||
-                  m.nim.toLowerCase().contains(searchKeyword.toLowerCase())).toList();
+              ? loadedStudents
+              : loadedStudents.where((s) {
+                  final name = (s['Nama'] ?? s['nama'] ?? s['nama_mahasiswa'] ?? '').toString().toLowerCase();
+                  final nim = (s['NIM'] ?? s['nim'] ?? '').toString().toLowerCase();
+                  final q = searchKeyword.toLowerCase();
+                  return name.contains(q) || nim.contains(q);
+                }).toList();
 
           return Container(
             height: MediaQuery.of(ctx).size.height * 0.90,
@@ -757,10 +786,10 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: context.appColors.primary.withAlpha(20),
+                            color: OrmawaTheme.primarySoft,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.group_add_rounded, size: 20, color: context.appColors.primary),
+                          child: Icon(Icons.group_add_rounded, size: 20, color: OrmawaTheme.primary),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -827,7 +856,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                       decoration: BoxDecoration(
-                                        color: context.appColors.primary.withAlpha(20),
+                                        color: OrmawaTheme.primarySoft,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
@@ -835,7 +864,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                         style: TextStyle(
                                           fontSize: 9.5,
                                           fontWeight: FontWeight.w900,
-                                          color: context.appColors.primary,
+                                          color: OrmawaTheme.primary,
                                           letterSpacing: 0.5,
                                         ),
                                       ),
@@ -925,7 +954,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: context.appColors.primary, width: 1.5),
+                                        borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
                                       ),
                                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                     ),
@@ -938,50 +967,67 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                       color: Colors.white,
                                     ),
-                                    child: filteredStudents.isEmpty
+                                    child: isLoadingStudents
                                         ? const Center(
-                                            child: Text(
-                                              'Mahasiswa tidak ditemukan',
-                                              style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                            child: SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
                                             ),
                                           )
-                                        : ListView.separated(
-                                            itemCount: filteredStudents.length,
-                                            separatorBuilder: (_, __) => const SizedBox(height: 4),
-                                            itemBuilder: (c, idx) {
-                                              final st = filteredStudents[idx];
-                                              final isSelected = selectedMember?.mahasiswaId == st.mahasiswaId;
-                                              return ListTile(
-                                                dense: true,
-                                                tileColor: isSelected ? const Color(0xFFF1F5F9) : Colors.transparent,
-                                                leading: _buildAvatar(st.name, st.fotoUrl, size: 30),
-                                                title: Text(
-                                                  st.name,
-                                                  style: const TextStyle(
-                                                    fontSize: 11.5,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFF0F172A),
-                                                  ),
+                                        : filteredStudents.isEmpty
+                                            ? const Center(
+                                                child: Text(
+                                                  'Mahasiswa tidak ditemukan',
+                                                  style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
                                                 ),
-                                                subtitle: Text(
-                                                  'NIM: ${st.nim}${st.prodi != null && st.prodi!.isNotEmpty ? ' • ${st.prodi}' : ''}',
-                                                  style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
-                                                ),
-                                                onTap: () {
-                                                  setModalState(() {
-                                                    selectedMember = st;
-                                                    if (st.role.isNotEmpty && dynamicRoles.contains(st.role)) {
-                                                      selectedRole = st.role;
-                                                    }
-                                                    if (st.division.isNotEmpty) {
-                                                      selectedDivision = st.division;
-                                                    }
-                                                    isSearching = false;
-                                                  });
+                                              )
+                                            : ListView.separated(
+                                                itemCount: filteredStudents.length,
+                                                separatorBuilder: (_, __) => const SizedBox(height: 4),
+                                                itemBuilder: (c, idx) {
+                                                  final st = filteredStudents[idx];
+                                                  final mId = (st['id'] ?? st['ID'] ?? st['mahasiswa_id'] ?? st['MahasiswaID'])?.toString() ?? '';
+                                                  final stName = (st['Nama'] ?? st['nama'] ?? st['nama_mahasiswa'] ?? '').toString();
+                                                  final stNim = (st['NIM'] ?? st['nim'] ?? '').toString();
+                                                  final stProdi = (st['ProgramStudi'] is Map ? (st['ProgramStudi']['Nama'] ?? st['ProgramStudi']['nama']) : (st['prodi'] ?? st['Prodi']))?.toString() ?? '';
+                                                  final stFoto = (st['foto_url'] ?? st['avatar_url'] ?? st['foto'] ?? st['Foto'])?.toString();
+                                                  final isSelected = selectedMember?.mahasiswaId == mId;
+                                                  return ListTile(
+                                                    dense: true,
+                                                    tileColor: isSelected ? const Color(0xFFF1F5F9) : Colors.transparent,
+                                                    leading: _buildAvatar(stName, stFoto, size: 30),
+                                                    title: Text(
+                                                      stName,
+                                                      style: const TextStyle(
+                                                        fontSize: 11.5,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Color(0xFF0F172A),
+                                                      ),
+                                                    ),
+                                                    subtitle: Text(
+                                                      'NIM: $stNim${stProdi.isNotEmpty ? ' • $stProdi' : ''}',
+                                                      style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                                    ),
+                                                    onTap: () {
+                                                      setModalState(() {
+                                                        selectedMember = OrmawaMember(
+                                                          id: '',
+                                                          mahasiswaId: mId,
+                                                          name: stName,
+                                                          nim: stNim,
+                                                          role: selectedRole,
+                                                          division: selectedDivision,
+                                                          status: 'aktif',
+                                                          prodi: stProdi,
+                                                          fotoUrl: stFoto,
+                                                        );
+                                                        isSearching = false;
+                                                      });
+                                                    },
+                                                  );
                                                 },
-                                              );
-                                            },
-                                          ),
+                                              ),
                                   ),
                                 ],
                                 const SizedBox(height: 12),
@@ -1117,7 +1163,7 @@ class _ManageStrukturScreenState extends State<ManageStrukturScreen> {
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: context.appColors.primary,
+                                      backgroundColor: OrmawaTheme.primary,
                                       foregroundColor: Colors.white,
                                       elevation: 0,
                                       padding: const EdgeInsets.symmetric(vertical: 12),

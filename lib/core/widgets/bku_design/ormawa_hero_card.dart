@@ -27,7 +27,7 @@ class OrmawaHeroCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: OrmawaTheme.cardSurface,
         borderRadius: OrmawaTheme.r24,
-        border: Border.all(color: OrmawaTheme.border),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.0),
         boxShadow: OrmawaTheme.cardShadow,
       ),
       child: Column(
@@ -38,10 +38,11 @@ class OrmawaHeroCard extends StatelessWidget {
             width: 58,
             height: 58,
             decoration: BoxDecoration(
-              color: iconBgColor ?? OrmawaTheme.primarySoft,
-              shape: BoxShape.circle,
+              color: iconBgColor ?? (iconColor ?? OrmawaTheme.primary).withAlpha(18),
+              borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                color: (iconColor ?? OrmawaTheme.primary).withAlpha(40),
+                color: (iconColor ?? OrmawaTheme.primary).withAlpha(25),
+                width: 0.8,
               ),
             ),
             child: Center(
@@ -52,25 +53,25 @@ class OrmawaHeroCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           Text(
             title,
             style: TextStyle(
               fontSize: 15.5,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: OrmawaTheme.textHeading,
               letterSpacing: -0.2,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
             description,
             style: TextStyle(
               fontSize: 11.5,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
               color: OrmawaTheme.textMuted,
-              height: 1.4,
+              height: 1.45,
             ),
             textAlign: TextAlign.center,
           ),

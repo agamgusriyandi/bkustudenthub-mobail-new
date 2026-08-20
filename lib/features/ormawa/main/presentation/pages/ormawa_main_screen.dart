@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_nav_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/dashboard/presentation/pages/ormawa_dashboard_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_screen.dart';
@@ -47,7 +48,7 @@ class _OrmawaMainScreenState extends State<OrmawaMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: OrmawaTheme.scaffoldBg,
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BkuBottomNavBar.ormawa(
         currentIndex: _currentIndex,

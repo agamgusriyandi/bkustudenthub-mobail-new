@@ -1,4 +1,3 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -91,18 +90,18 @@ class OrmawaGamificationCard extends StatelessWidget {
       );
     } else {
       return _GamificationTheme(
-        gradientColors: [context.appColors.surface, context.appColors.surface],
-        titleColor: context.appColors.onSurface,
-        textColor: AppColors.neutral600,
-        valueColor: context.appColors.onSurface,
-        iconColor: AppColors.warning,
-        iconBgColor: AppColors.warning.withAlpha(20),
-        iconBorderColor: AppColors.warning.withAlpha(50),
-        badgeBgColor: AppColors.warning,
+        gradientColors: const [Color(0xFFF8FAFC), Colors.white],
+        titleColor: OrmawaTheme.textHeading,
+        textColor: OrmawaTheme.textMuted,
+        valueColor: OrmawaTheme.textHeading,
+        iconColor: OrmawaTheme.primary,
+        iconBgColor: OrmawaTheme.primarySoft,
+        iconBorderColor: OrmawaTheme.primaryBorder,
+        badgeBgColor: OrmawaTheme.primary,
         badgeTextColor: Colors.white,
-        progressBgColor: AppColors.neutral200,
-        progressColor: AppColors.info,
-        borderColor: AppColors.neutral300,
+        progressBgColor: const Color(0xFFE2E8F0),
+        progressColor: OrmawaTheme.primary,
+        borderColor: OrmawaTheme.border,
       );
     }
   }

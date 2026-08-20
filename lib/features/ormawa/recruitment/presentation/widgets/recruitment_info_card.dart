@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-
+import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 
 class RecruitmentInfoCard extends StatelessWidget {
   final String label;
@@ -21,10 +17,10 @@ class RecruitmentInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.primary.withAlpha(10),
-        borderRadius: AppRadius.radiusXl,
+        color: OrmawaTheme.primarySoft,
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: context.appColors.primary.withAlpha(30),
+          color: OrmawaTheme.primary.withAlpha(40),
         ),
       ),
       child: Column(
@@ -32,17 +28,20 @@ class RecruitmentInfoCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.primary,
-              fontWeight: FontWeight.bold,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: OrmawaTheme.primaryDark,
+              letterSpacing: 0.3,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             value,
-            style: AppTextStyles.bodyMd.copyWith(
+            style: TextStyle(
+              fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: AppColors.neutral900,
+              color: OrmawaTheme.textHeading,
             ),
           ),
         ],

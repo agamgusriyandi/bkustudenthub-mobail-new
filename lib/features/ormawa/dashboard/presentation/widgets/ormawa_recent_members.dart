@@ -89,8 +89,8 @@ class OrmawaRecentMembers extends StatelessWidget {
                           color: OrmawaTheme.primarySoft,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFFFED7AA),
-                            width: 1.5,
+                            color: OrmawaTheme.primaryBorder.withAlpha(50),
+                            width: 1.2,
                           ),
                         ),
                         alignment: Alignment.center,
@@ -106,7 +106,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                                     initial,
                                     style: TextStyle(
                                       color: OrmawaTheme.primary,
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -117,12 +117,12 @@ class OrmawaRecentMembers extends StatelessWidget {
                                 initial,
                                 style: TextStyle(
                                   color: OrmawaTheme.primary,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 14,
                                 ),
                               ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       SizedBox(
                         width: 54,
                         child: Text(
@@ -130,7 +130,7 @@ class OrmawaRecentMembers extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10.5,
                             color: OrmawaTheme.textHeading,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 1,
