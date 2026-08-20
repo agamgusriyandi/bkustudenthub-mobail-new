@@ -45,18 +45,15 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
   String _bmiStatus = '-';
   Color _bmiColor = AppColors.outline;
 
-  // Gaya Hidup
   String _selectedSleepHours = '8';
   String _selectedExerciseFreq = '2';
   String _selectedWaterLitres = '2.0';
   String _selectedSmoking = 'Tidak';
 
-  // Mental
   double _selectedStressLevel = 5.0;
   String _selectedMood = 'Biasa Saja';
   String _selectedMotivation = 'Biasa Saja';
 
-  // Keluhan
   bool _keluhanSakitKepala = false;
   bool _keluhanPusing = false;
   bool _keluhanLelah = false;
@@ -90,7 +87,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
             _selectedBloodType = latest.bloodType;
           }
 
-          // Try parsing JSON from notes
           try {
             final parsedNotes =
                 jsonDecode(latest.notes) as Map<String, dynamic>;
@@ -119,7 +115,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               _notesController.text = latest.notes;
             }
           } catch (e) {
-            // Fallback for non-JSON notes
             _notesController.text = latest.notes;
           }
         });
@@ -211,7 +206,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               _buildBMIPreview(),
               const SizedBox(height: AppSpacing.xxl),
 
-              // 1. Fisik
               _buildInputCard(
                 '1. Kategori Fisik',
                 Icons.accessibility_new_rounded,
@@ -242,7 +236,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // 2. Gaya Hidup
               _buildInputCard(
                 '2. Gaya Hidup (Self-report)',
                 Icons.sports_gymnastics_rounded,
@@ -315,7 +308,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // 3. Mental
               _buildInputCard(
                 '3. Kategori Mental (Self-report)',
                 Icons.psychology_rounded,
@@ -417,7 +409,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // 4. Keluhan
               _buildInputCard(
                 '4. Kategori Keluhan (Bila Ada)',
                 Icons.medical_information_rounded,
@@ -457,7 +448,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // 5. Opsional
               _buildInputCard(
                 '5. Kategori Opsional (Alat/Klinik)',
                 Icons.query_stats_rounded,
@@ -525,7 +515,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // Catatan Tambahan
               _buildInputCard(
                 'Catatan Tambahan',
                 Icons.sticky_note_2_rounded,
@@ -1039,11 +1028,11 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
       if (!mounted) return;
       BkuLoadingDialog.hide(
         context,
-      ); // Hide loading BEFORE showing success dialog
+      );
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      BkuLoadingDialog.hide(context); // Hide loading BEFORE showing error
+      BkuLoadingDialog.hide(context);
       AppSnackbar.showError(context, ErrorHandler.getMessage(e));
     }
   }
@@ -1051,7 +1040,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
   int _calculateScore(HealthRecord r) {
     double score = 100;
 
-    // BMI deductions
     double bmi = r.bmi;
     if (bmi >= 30) {
       score -= 25;
@@ -1059,7 +1047,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
       score -= 12;
     }
 
-    // BP deductions
     final parts = r.bloodPressure.split('/');
     if (parts.length == 2) {
       int sys = int.tryParse(parts[0]) ?? 120;
@@ -1071,12 +1058,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
       }
     }
 
-    // Lifestyle & mental deductions from notes json
     if (r.notes.startsWith('{')) {
       try {
         final data = jsonDecode(r.notes);
 
-        // sleep
         int sleep = data['jam_tidur'] ?? 8;
         if (sleep < 7) {
           score -= (7 - sleep) * 4;
@@ -1084,31 +1069,26 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
           score -= (sleep - 9) * 4;
         }
 
-        // water
         double water = double.tryParse(data['konsumsi_air'].toString()) ?? 2.0;
         if (water < 2.0) {
           score -= ((2.0 - water) / 0.5) * 5;
         }
 
-        // sports
         int sports = data['olahraga'] ?? 0;
         if (sports < 2) {
           score -= (2 - sports) * 6;
         }
 
-        // stress
         int stress = data['tingkat_stres'] ?? 5;
         if (stress > 4) {
           score -= (stress - 4) * 4;
         }
 
-        // smoking
         String smoking = data['merokok'] ?? 'Tidak';
         if (smoking.toLowerCase() == 'ya') {
           score -= 15;
         }
 
-        // symptoms
         final symptoms = data['daftar_keluhan'] as List?;
         if (symptoms != null) {
           score -= symptoms.length * 6;
@@ -1134,7 +1114,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
     double curBmi = cur.bmi;
 
     if (curBmi >= 25) {
-      // overweight
       if (wDiff < 0) {
         return {
           'type': 'success',
@@ -1149,7 +1128,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         };
       }
     } else if (curBmi < 18.5) {
-      // underweight
       if (wDiff > 0) {
         return {
           'type': 'success',
@@ -1164,7 +1142,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
         };
       }
     } else {
-      // normal
       if (wDiff.abs() <= 1.0) {
         return {
           'type': 'success',
@@ -1194,7 +1171,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
     final score = _calculateScore(currentRecord);
     final delta = _getDelta(currentRecord, previousRecord);
 
-    // Check if needs counseling (stressLevel >= 7 or BMI obese)
     int stressLevel = 0;
     if (currentRecord.notes.startsWith('{')) {
       try {
@@ -1258,14 +1234,12 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                       ],
                     ),
                   ),
-                  // Scrollable Body
                   Flexible(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Circular Score Widget
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
@@ -1352,7 +1326,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                           ),
                           const SizedBox(height: AppSpacing.lg),
 
-                          // Delta Card
                           if (delta != null) ...[
                             Container(
                               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -1433,7 +1406,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                             const SizedBox(height: AppSpacing.lg),
                           ],
 
-                          // Counseling Recommendation
                           if (needsCounseling) ...[
                             Container(
                               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -1486,10 +1458,10 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                                   const SizedBox(height: AppSpacing.s10),
                                   InkWell(
                                     onTap: () {
-                                      context.pop(); // close dialog
+                                      context.pop();
                                       Navigator.pop(
                                         context,
-                                      ); // close report screen
+                                      );
                                       context.push(AppRoutes.studentCounseling);
                                     },
                                     child: Row(
@@ -1524,7 +1496,6 @@ class _ReportHealthScreenState extends State<ReportHealthScreen> {
                     ),
                   ),
 
-                  // Action Buttons
                   Padding(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: SizedBox(

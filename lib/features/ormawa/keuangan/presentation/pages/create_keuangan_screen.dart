@@ -141,7 +141,7 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
                           children: [
                             Expanded(
                               child: _buildTypeButton(
-                                label: 'PEMASUKAN',
+                                label: 'Pemasukan',
                                 value: 'pemasukan',
                                 icon: Icons.arrow_downward_rounded,
                                 activeColor: const Color(0xFF059669),
@@ -152,7 +152,7 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: _buildTypeButton(
-                                label: 'PENGELUARAN',
+                                label: 'Pengeluaran',
                                 value: 'pengeluaran',
                                 icon: Icons.arrow_upward_rounded,
                                 activeColor: const Color(0xFFE11D48),
@@ -167,7 +167,7 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
                           children: [
                             Expanded(
                               child: _buildSourceButton(
-                                label: 'KAS MANDIRI',
+                                label: 'Kas Mandiri',
                                 value: 'organisasi',
                                 icon: Icons.account_balance_wallet_rounded,
                                 activeColor: const Color(0xFF4338CA),
@@ -178,7 +178,7 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: _buildSourceButton(
-                                label: 'PAGU KAMPUS',
+                                label: 'Pagu Kampus',
                                 value: 'kampus',
                                 icon: Icons.assured_workload_rounded,
                                 activeColor: const Color(0xFF0284C7),
@@ -292,7 +292,7 @@ class _CreateKeuanganScreenState extends State<CreateKeuanganScreen> {
                         ),
                         const SizedBox(height: 14),
                         const Text(
-                          'KATEGORI ANGGARAN',
+                          'Kategori Anggaran',
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w800,

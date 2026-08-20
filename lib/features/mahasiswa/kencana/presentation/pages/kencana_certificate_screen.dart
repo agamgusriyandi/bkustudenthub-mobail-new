@@ -162,11 +162,11 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'SERTIFIKAT KELULUSAN',
+            'Sertifikat Kelulusan',
             style: AppTextStyles.titleLg.copyWith(
               fontWeight: FontWeight.w900,
               color: AppColors.success,
-              letterSpacing: 1,
+              letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -200,12 +200,12 @@ class _KencanaCertificateScreenState extends State<KencanaCertificateScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'INFORMASI SERTIFIKAT',
+            'Informasi Sertifikat',
             style: AppTextStyles.labelSm.copyWith(
               fontWeight: FontWeight.w900,
               color: AppColors.primary,
-              fontSize: 10,
-              letterSpacing: 0.5,
+              fontSize: 10.5,
+              letterSpacing: 0.2,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),

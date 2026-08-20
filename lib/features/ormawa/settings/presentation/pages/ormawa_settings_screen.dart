@@ -4,13 +4,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -115,7 +115,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
           uiSettings: [
             AndroidUiSettings(
               toolbarTitle: 'Potong Logo Ormawa',
-              toolbarColor: OrmawaTheme.primaryDark,
+              toolbarColor: BkuTheme.primaryDark,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
@@ -255,10 +255,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
     final bankName = _namaBankController.text.trim();
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => _loadSettings(true),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -295,8 +295,8 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               title: 'Kelengkapan Profil',
                               value: '$completeness%',
                               icon: Icons.account_circle_rounded,
-                              badgeText: completeness == 100 ? '100% Sempurna' : (completeness >= 80 ? 'LENGKAP' : 'BELUM LENGKAP'),
-                              badgeColor: completeness >= 80 ? const Color(0xFF059669) : const Color(0xFFD97706),
+                              badgeText: completeness == 100 ? '100% Sempurna' : (completeness >= 80 ? 'Lengkap' : 'Belum Lengkap'),
+                              badgeColor: completeness >= 80 ? BkuTheme.emerald : BkuTheme.amber,
                               subtitle: completeness >= 80 ? 'Profil sangat lengkap' : 'Lengkapi data lembaga',
                             ),
                           ),
@@ -307,7 +307,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               value: 'Aktif',
                               icon: Icons.verified_user_rounded,
                               badgeText: 'ID #$ormawaId',
-                              badgeColor: const Color(0xFF059669),
+                              badgeColor: BkuTheme.emerald,
                               subtitle: 'Terdaftar resmi di BKU',
                             ),
                           ),
@@ -322,7 +322,7 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               value: '$contactCount / 4',
                               icon: Icons.contact_mail_rounded,
                               badgeText: 'Kanal Aktif',
-                              badgeColor: const Color(0xFF7C3AED),
+                              badgeColor: BkuTheme.purple,
                               subtitle: 'Email, WA, IG, Web',
                             ),
                           ),
@@ -332,8 +332,8 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               title: 'Rekening Kas',
                               value: hasBank ? 'Terdaftar' : 'Belum Ada',
                               icon: Icons.account_balance_rounded,
-                              badgeText: hasBank ? 'AKTIF' : 'PERLU DIISI',
-                              badgeColor: hasBank ? const Color(0xFF059669) : const Color(0xFFD97706),
+                              badgeText: hasBank ? 'Aktif' : 'Perlu Diisi',
+                              badgeColor: hasBank ? BkuTheme.emerald : BkuTheme.amber,
                               subtitle: hasBank ? (bankName.isNotEmpty ? bankName : 'Bank Resmi') : 'Belum diatur',
                             ),
                           ),
@@ -341,7 +341,9 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      OrmawaCard(
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        borderRadius: 16,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -351,10 +353,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFEFF6FF),
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: BkuTheme.primarySoft,
+                                    borderRadius: BkuTheme.r8,
                                   ),
-                                  child: const Icon(Icons.badge_rounded, color: Color(0xFF2563EB), size: 18),
+                                  child: Icon(Icons.badge_rounded, color: BkuTheme.primary, size: 18),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -363,11 +365,11 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                     children: [
                                       Text(
                                         'Identitas & Branding Lembaga',
-                                        style: OrmawaTheme.textSectionTitle,
+                                        style: BkuTheme.textSectionTitle,
                                       ),
-                                      const Text(
+                                      Text(
                                         'Foto resmi, nama lembaga, dan profil publik organisasi.',
-                                        style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                       ),
                                     ],
                                   ),
@@ -383,10 +385,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                       width: 72,
                                       height: 72,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(16),
-                                        color: const Color(0xFFEFF6FF),
+                                        borderRadius: BkuTheme.r16,
+                                        color: BkuTheme.primarySoft,
                                         border: Border.all(
-                                          color: const Color(0xFFBFDBFE),
+                                          color: BkuTheme.primaryBorder,
                                           width: 1.5,
                                         ),
                                       ),
@@ -396,17 +398,17 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                             ? CachedNetworkImage(
                                                 imageUrl: ApiGate.getImageUrl(_logoUrl),
                                                 fit: BoxFit.cover,
-                                                errorWidget: (_, __, ___) => const Icon(
+                                                errorWidget: (_, __, ___) => Icon(
                                                   Icons.groups_rounded,
-                                                  color: Color(0xFF2563EB),
+                                                  color: BkuTheme.primary,
                                                   size: 36,
                                                 ),
                                                 placeholder: (_, __) =>
-                                                    Container(color: const Color(0xFFF1F5F9)),
+                                                    Container(color: BkuTheme.borderSubtle),
                                               )
-                                            : const Icon(
+                                            : Icon(
                                                 Icons.groups_rounded,
-                                                color: Color(0xFF2563EB),
+                                                color: BkuTheme.primary,
                                                 size: 36,
                                               ),
                                       ),
@@ -429,14 +431,14 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                         _singkatanController.text.isNotEmpty
                                             ? _singkatanController.text
                                             : 'Logo Organisasi',
-                                        style: OrmawaTheme.textCardTitle,
+                                        style: BkuTheme.textCardTitle,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 2),
-                                      const Text(
+                                      Text(
                                         'PNG, JPG, WebP maksimal 5MB (Rasio 1:1)',
-                                        style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.textMuted),
                                       ),
                                       const SizedBox(height: 8),
                                       Row(
@@ -446,8 +448,8 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                             child: Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFF2563EB),
-                                                borderRadius: BorderRadius.circular(8),
+                                                color: BkuTheme.primary,
+                                                borderRadius: BkuTheme.r8,
                                               ),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
@@ -469,18 +471,18 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                               child: Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFFFFF1F2),
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  border: Border.all(color: const Color(0xFFFECDD3)),
+                                                  color: BkuTheme.roseSoft,
+                                                  borderRadius: BkuTheme.r8,
+                                                  border: Border.all(color: BkuTheme.roseBorder),
                                                 ),
                                                 child: const Row(
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
-                                                    Icon(Icons.delete_outline_rounded, size: 13, color: Color(0xFFE11D48)),
+                                                    Icon(Icons.delete_outline_rounded, size: 13, color: BkuTheme.rose),
                                                     SizedBox(width: 3),
                                                     Text(
                                                       'Hapus',
-                                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFE11D48)),
+                                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: BkuTheme.rose),
                                                     ),
                                                   ],
                                                 ),
@@ -495,25 +497,23 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Nama Resmi Ormawa *',
-                              hintText: 'e.g. Badan Eksekutif Mahasiswa',
+                              hint: 'e.g. Badan Eksekutif Mahasiswa',
                               controller: _namaController,
-                              prefixIcon: Icons.account_balance_rounded,
-                              prefixIconColor: const Color(0xFF2563EB),
+                              prefixIcon: Icon(Icons.account_balance_rounded, size: 18, color: BkuTheme.primary),
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Singkatan / Akronim *',
-                              hintText: 'e.g. BEM KEMA UBK',
+                              hint: 'e.g. BEM KEMA UBK',
                               controller: _singkatanController,
-                              prefixIcon: Icons.short_text_rounded,
-                              prefixIconColor: const Color(0xFF0284C7),
+                              prefixIcon: Icon(Icons.short_text_rounded, size: 18, color: BkuTheme.sky),
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Narasi Profil Lembaga',
-                              hintText: 'Tuliskan profil singkat latar belakang dan fokus organisasi...',
+                              hint: 'Tuliskan profil singkat latar belakang dan fokus organisasi...',
                               controller: _deskripsiController,
                               maxLines: 3,
                             ),
@@ -522,7 +522,9 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      OrmawaCard(
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        borderRadius: 16,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -532,10 +534,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF0FDF4),
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: BkuTheme.emeraldSoft,
+                                    borderRadius: BkuTheme.r8,
                                   ),
-                                  child: const Icon(Icons.explore_rounded, color: Color(0xFF059669), size: 18),
+                                  child: const Icon(Icons.explore_rounded, color: BkuTheme.emerald, size: 18),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -544,11 +546,11 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                     children: [
                                       Text(
                                         'Filosofi Visi & Misi Strategis',
-                                        style: OrmawaTheme.textSectionTitle,
+                                        style: BkuTheme.textSectionTitle,
                                       ),
-                                      const Text(
+                                      Text(
                                         'Landasan gerak dan arah tujuan kepengurusan.',
-                                        style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                       ),
                                     ],
                                   ),
@@ -556,21 +558,19 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Pernyataan Visi Organisasi',
-                              hintText: 'Tuliskan visi besar organisasi untuk periode kepengurusan...',
+                              hint: 'Tuliskan visi besar organisasi untuk periode kepengurusan...',
                               controller: _visiController,
-                              prefixIcon: Icons.visibility_rounded,
-                              prefixIconColor: const Color(0xFF2563EB),
+                              prefixIcon: Icon(Icons.visibility_rounded, size: 18, color: BkuTheme.primary),
                               maxLines: 3,
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Poin-Poin Misi Strategis',
-                              hintText: 'Tuliskan butir-butir misi yang akan dilaksanakan (pisahkan baris baru)...',
+                              hint: 'Tuliskan butir-butir misi yang akan dilaksanakan (pisahkan baris baru)...',
                               controller: _misiController,
-                              prefixIcon: Icons.task_alt_rounded,
-                              prefixIconColor: const Color(0xFF059669),
+                              prefixIcon: const Icon(Icons.task_alt_rounded, size: 18, color: BkuTheme.emerald),
                               maxLines: 4,
                             ),
                           ],
@@ -578,7 +578,9 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      OrmawaCard(
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        borderRadius: 16,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -588,10 +590,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF5F3FF),
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: BkuTheme.purpleSoft,
+                                    borderRadius: BkuTheme.r8,
                                   ),
-                                  child: const Icon(Icons.contact_mail_rounded, color: Color(0xFF7C3AED), size: 18),
+                                  child: const Icon(Icons.contact_mail_rounded, color: BkuTheme.purple, size: 18),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -600,11 +602,11 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                     children: [
                                       Text(
                                         'Kontak & Saluran Informasi Publik',
-                                        style: OrmawaTheme.textSectionTitle,
+                                        style: BkuTheme.textSectionTitle,
                                       ),
-                                      const Text(
+                                      Text(
                                         'Informasi kontak direktori kemahasiswaan.',
-                                        style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                       ),
                                     ],
                                   ),
@@ -612,38 +614,34 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Email Resmi Organisasi',
-                              hintText: 'bem@student.bku.ac.id',
+                              hint: 'bem@student.bku.ac.id',
                               controller: _emailController,
-                              prefixIcon: Icons.alternate_email_rounded,
-                              prefixIconColor: const Color(0xFFE11D48),
+                              prefixIcon: const Icon(Icons.alternate_email_rounded, size: 18, color: BkuTheme.rose),
                               keyboardType: TextInputType.emailAddress,
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Nomor Kontak (WhatsApp)',
-                              hintText: '0812-3456-7890',
+                              hint: '0812-3456-7890',
                               controller: _phoneController,
-                              prefixIcon: Icons.call_rounded,
-                              prefixIconColor: const Color(0xFF059669),
+                              prefixIcon: const Icon(Icons.call_rounded, size: 18, color: BkuTheme.emerald),
                               keyboardType: TextInputType.phone,
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Akun Instagram Resmi',
-                              hintText: '@bem_bku',
+                              hint: '@bem_bku',
                               controller: _instagramController,
-                              prefixIcon: Icons.photo_camera_rounded,
-                              prefixIconColor: const Color(0xFF9333EA),
+                              prefixIcon: const Icon(Icons.photo_camera_rounded, size: 18, color: BkuTheme.purple),
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Alamat Website / Linktree',
-                              hintText: 'https://bem.bku.ac.id',
+                              hint: 'https://bem.bku.ac.id',
                               controller: _websiteController,
-                              prefixIcon: Icons.language_rounded,
-                              prefixIconColor: const Color(0xFF0284C7),
+                              prefixIcon: Icon(Icons.language_rounded, size: 18, color: BkuTheme.sky),
                               keyboardType: TextInputType.url,
                             ),
                           ],
@@ -651,7 +649,9 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       ),
                       const SizedBox(height: 14),
 
-                      OrmawaCard(
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        borderRadius: 16,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -661,10 +661,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFECFDF5),
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: BkuTheme.emeraldSoft,
+                                    borderRadius: BkuTheme.r8,
                                   ),
-                                  child: const Icon(Icons.account_balance_rounded, color: Color(0xFF059669), size: 18),
+                                  child: const Icon(Icons.account_balance_rounded, color: BkuTheme.emerald, size: 18),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -673,45 +673,43 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                                     children: [
                                       Text(
                                         'Rekening Penerimaan Dana Kegiatan',
-                                        style: OrmawaTheme.textSectionTitle,
+                                        style: BkuTheme.textSectionTitle,
                                       ),
-                                      const Text(
+                                      Text(
                                         'Rekening resmi untuk pencairan dana proposal & kas.',
-                                        style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                       ),
                                     ],
                                   ),
                                 ),
-                                OrmawaBadge(
-                                  text: hasBank ? 'TERDAFTAR' : 'BELUM DIATUR',
-                                  variant: hasBank ? OrmawaBadgeVariant.success : OrmawaBadgeVariant.neutral,
+                                BkuStatusBadge(
+                                  status: hasBank ? BkuStatus.success : BkuStatus.neutral,
+                                  customText: hasBank ? 'Terdaftar' : 'Belum Diatur',
+                                  showIcon: false,
                                 ),
                               ],
                             ),
                             const SizedBox(height: 14),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Nama Bank / Lembaga Keuangan',
-                              hintText: 'Bank Mandiri / BNI / BRI / BCA / BSI',
+                              hint: 'Bank Mandiri / BNI / BRI / BCA / BSI',
                               controller: _namaBankController,
-                              prefixIcon: Icons.account_balance_outlined,
-                              prefixIconColor: const Color(0xFF0D9488),
+                              prefixIcon: const Icon(Icons.account_balance_outlined, size: 18, color: BkuTheme.teal),
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Nomor Rekening',
-                              hintText: '1234-5678-9012',
+                              hint: '1234-5678-9012',
                               controller: _noRekeningController,
-                              prefixIcon: Icons.credit_card_rounded,
-                              prefixIconColor: const Color(0xFF2563EB),
+                              prefixIcon: Icon(Icons.credit_card_rounded, size: 18, color: BkuTheme.primary),
                               keyboardType: TextInputType.number,
                             ),
                             const SizedBox(height: 12),
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Atas Nama Rekening',
-                              hintText: 'BEM UNIVERSITAS BHAKTI KENCANA',
+                              hint: 'BEM Universitas Bhakti Kencana',
                               controller: _namaRekeningController,
-                              prefixIcon: Icons.person_outline_rounded,
-                              prefixIconColor: const Color(0xFF64748B),
+                              prefixIcon: Icon(Icons.person_outline_rounded, size: 18, color: BkuTheme.textMuted),
                             ),
                           ],
                         ),
@@ -721,10 +719,10 @@ class _OrmawaSettingsScreenState extends State<OrmawaSettingsScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 48,
-                        child: OrmawaButton(
+                        child: BkuButton.primary(
                           text: provider.hasPermission('ormawa.settings.manage, ormawa.settings.update, ormawa.core.update')
-                              ? 'SIMPAN PERUBAHAN ORGANISASI'
-                              : 'SIMPAN REKENING BANK',
+                              ? 'Simpan Perubahan Organisasi'
+                              : 'Simpan Rekening Bank',
                           isLoading: _isSaving,
                           onPressed: _isSaving ? null : () => _saveSettings(),
                           icon: Icons.save_rounded,

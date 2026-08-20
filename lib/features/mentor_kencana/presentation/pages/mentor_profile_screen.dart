@@ -357,7 +357,7 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                   ),
                   const SizedBox(height: AppSpacing.s2),
                   Text(
-                    'BKU HUB MEMBER',
+                    'BKU Hub Member',
                     style: TextStyle(
                       color: context.appColors.onSurface,
                       fontSize: 11,
@@ -427,10 +427,10 @@ class _MentorProfileScreenState extends State<MentorProfileScreen> {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              'FASILITATOR KENCANA',
+                              'Fasilitator Kencana',
                               style: TextStyle(
                                 color: context.appColors.success,
-                                fontSize: 10,
+                                fontSize: 10.5,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

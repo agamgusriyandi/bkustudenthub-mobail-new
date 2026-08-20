@@ -184,7 +184,7 @@ class OrmawaOrganisasiDetailScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 48,
                     child: OrmawaButton(
-                      text: 'EDIT INFORMASI ORGANISASI',
+                      text: 'Edit Informasi Organisasi',
                       icon: Icons.edit_rounded,
                       onPressed: () {
                         Navigator.push(

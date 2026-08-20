@@ -45,9 +45,10 @@ class AcademicProvider extends ChangeNotifier {
   double get missionProgress => _missions.isEmpty ? 0 : completedMissionsCount / _missions.length;
   
   int get totalAchievements => _achievements.length;
-  int get validatedAchievements => _achievements.where((a) => a.status == 'Validated' || a.status == 'Diverifikasi' || a.status == 'Valid').length;
+  int get validatedAchievements => _achievements.where((a) => a.status == 'Validated' || a.status == 'Diverifikasi' || a.status == 'Valid' || a.status == 'Disetujui').length;
   int get pendingAchievements => _achievements.where((a) => a.status == 'Pending' || a.status == 'Menunggu').length;
-  int get syncedAchievements => _achievements.where((a) => a.isSynced || a.status == 'Diverifikasi').length;
+  int get rejectedAchievements => _achievements.where((a) => a.status == 'Rejected' || a.status == 'Ditolak').length;
+  int get syncedAchievements => _achievements.where((a) => a.isSynced || a.status == 'Diverifikasi' || a.status == 'Disetujui').length;
 
   Future<void> loadAcademicData() async {
     _isLoading = true;

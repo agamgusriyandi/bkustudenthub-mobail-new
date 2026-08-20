@@ -2,29 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 
 class BkuTextField extends StatefulWidget {
   final String? label;
   final String? hint;
+  final String? hintText;
   final TextEditingController? controller;
   final bool obscureText;
   final Widget? prefixIcon;
+  final Color? prefixIconColor;
+  final String? prefixText;
+  final TextStyle? prefixStyle;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
+  final void Function(String)? onFieldSubmitted;
   final int maxLines;
   final int? minLines;
+  final int? maxLength;
+  final MaxLengthEnforcement? maxLengthEnforcement;
   final bool readOnly;
   final VoidCallback? onTap;
-
-  // Legacy TextFormField parameters for drop-in replacement
   final InputDecoration? decoration;
   final TextStyle? style;
   final String? initialValue;
@@ -35,22 +37,33 @@ class BkuTextField extends StatefulWidget {
   final AutovalidateMode? autovalidateMode;
   final bool? enabled;
   final TextAlign textAlign;
+  final bool expands;
+  final EdgeInsets scrollPadding;
+  final Color? cursorColor;
+  final Widget? Function(BuildContext, {required int currentLength, required bool isFocused, required int? maxLength})? buildCounter;
 
   const BkuTextField({
     super.key,
     this.label,
     this.hint,
+    this.hintText,
     this.controller,
     this.obscureText = false,
     this.prefixIcon,
+    this.prefixIconColor,
+    this.prefixText,
+    this.prefixStyle,
     this.suffixIcon,
     this.validator,
     this.keyboardType,
     this.textInputAction,
     this.onChanged,
     this.onSubmitted,
+    this.onFieldSubmitted,
     this.maxLines = 1,
     this.minLines,
+    this.maxLength,
+    this.maxLengthEnforcement,
     this.readOnly = false,
     this.onTap,
     this.decoration,
@@ -63,6 +76,10 @@ class BkuTextField extends StatefulWidget {
     this.autovalidateMode,
     this.enabled,
     this.textAlign = TextAlign.start,
+    this.expands = false,
+    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.cursorColor,
+    this.buildCounter,
   });
 
   @override
@@ -79,34 +96,44 @@ class _BkuTextFieldState extends State<BkuTextField> {
   }
 
   @override
+  void didUpdateWidget(covariant BkuTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.obscureText != widget.obscureText) {
+      _obscureText = widget.obscureText;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
 
     final border = OutlineInputBorder(
-      borderRadius: AppRadius.radiusMd, // 12px radius
-      borderSide: const BorderSide(color: AppColors.neutral200),
+      borderRadius: BkuTheme.r16,
+      borderSide: const BorderSide(color: BkuTheme.border, width: 1.0),
     );
 
     final focusedBorder = OutlineInputBorder(
-      borderRadius: AppRadius.radiusMd,
+      borderRadius: BkuTheme.r16,
       borderSide: BorderSide(color: theme.primary, width: 1.5),
     );
 
     final errorBorder = OutlineInputBorder(
-      borderRadius: AppRadius.radiusMd,
+      borderRadius: BkuTheme.r16,
       borderSide: BorderSide(color: theme.colorError, width: 1.5),
     );
 
     final resolvedLabel = widget.label ?? widget.decoration?.labelText;
-    final resolvedHint = widget.hint ?? widget.decoration?.hintText;
-    final resolvedPrefixIcon =
-        widget.prefixIcon ?? widget.decoration?.prefixIcon;
+    final resolvedHint = widget.hint ?? widget.hintText ?? widget.decoration?.hintText;
+    final resolvedPrefixIcon = widget.prefixIcon ?? widget.decoration?.prefixIcon;
+    final resolvedSubmitted = widget.onFieldSubmitted ?? widget.onSubmitted;
+
     Widget? suffixIcon = widget.suffixIcon ?? widget.decoration?.suffixIcon;
     if (widget.obscureText) {
       suffixIcon = IconButton(
         icon: Icon(
-          _obscureText ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.neutral500,
+          _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          color: BkuTheme.textPlaceholder,
+          size: 20,
         ),
         tooltip: _obscureText ? 'Tampilkan password' : 'Sembunyikan password',
         onPressed: () {
@@ -119,16 +146,19 @@ class _BkuTextFieldState extends State<BkuTextField> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (resolvedLabel != null) ...[
           Text(
             resolvedLabel,
-            style: AppTextStyles.labelMd.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.neutral900,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: BkuTheme.textHeading,
+              letterSpacing: 0.1,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 6),
         ],
         TextFormField(
           controller: widget.controller,
@@ -140,7 +170,7 @@ class _BkuTextFieldState extends State<BkuTextField> {
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           onChanged: widget.onChanged,
-          onFieldSubmitted: widget.onSubmitted,
+          onFieldSubmitted: resolvedSubmitted,
           onSaved: widget.onSaved,
           inputFormatters: widget.inputFormatters,
           autovalidateMode: widget.autovalidateMode,
@@ -148,27 +178,41 @@ class _BkuTextFieldState extends State<BkuTextField> {
           textAlign: widget.textAlign,
           maxLines: widget.maxLines,
           minLines: widget.minLines,
+          maxLength: widget.maxLength,
+          maxLengthEnforcement: widget.maxLengthEnforcement,
           readOnly: widget.readOnly,
           onTap: widget.onTap,
-          style:
-              widget.style ??
-              AppTextStyles.bodyLg.copyWith(color: AppColors.neutral900),
-          decoration:
-              widget.decoration?.copyWith(
+          expands: widget.expands,
+          scrollPadding: widget.scrollPadding,
+          cursorColor: widget.cursorColor ?? theme.primary,
+          buildCounter: widget.buildCounter,
+          style: widget.style ??
+              const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: BkuTheme.textHeading,
+              ),
+          decoration: widget.decoration?.copyWith(
                 hintText: resolvedHint,
-                hintStyle: AppTextStyles.bodyLg.copyWith(
-                  color: AppColors.neutral400,
+                hintStyle: const TextStyle(
+                  fontSize: 12.5,
+                  color: BkuTheme.textPlaceholder,
                 ),
                 filled: true,
-                fillColor:
-                    widget.readOnly
-                        ? AppColors.neutral100
-                        : AppColors.neutral50,
+                fillColor: widget.readOnly ? BkuTheme.borderSubtle : BkuTheme.cardSurface,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 14,
+                  vertical: 13,
                 ),
+                prefixText: widget.prefixText,
+                prefixStyle: widget.prefixStyle ??
+                    const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: BkuTheme.textHeading,
+                    ),
                 prefixIcon: resolvedPrefixIcon,
+                prefixIconColor: widget.prefixIconColor,
                 suffixIcon: suffixIcon,
                 border: border,
                 enabledBorder: border,
@@ -180,19 +224,25 @@ class _BkuTextFieldState extends State<BkuTextField> {
               ) ??
               InputDecoration(
                 hintText: resolvedHint,
-                hintStyle: AppTextStyles.bodyLg.copyWith(
-                  color: AppColors.neutral400,
+                hintStyle: const TextStyle(
+                  fontSize: 12.5,
+                  color: BkuTheme.textPlaceholder,
                 ),
                 filled: true,
-                fillColor:
-                    widget.readOnly
-                        ? AppColors.neutral100
-                        : AppColors.neutral50,
+                fillColor: widget.readOnly ? BkuTheme.borderSubtle : BkuTheme.cardSurface,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 14,
+                  vertical: 13,
                 ),
+                prefixText: widget.prefixText,
+                prefixStyle: widget.prefixStyle ??
+                    const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: BkuTheme.textHeading,
+                    ),
                 prefixIcon: resolvedPrefixIcon,
+                prefixIconColor: widget.prefixIconColor,
                 suffixIcon: suffixIcon,
                 border: border,
                 enabledBorder: border,

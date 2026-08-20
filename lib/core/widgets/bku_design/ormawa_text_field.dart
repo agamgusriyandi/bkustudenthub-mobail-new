@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 
 class OrmawaTextField extends StatelessWidget {
   final String label;
@@ -16,7 +16,6 @@ class OrmawaTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
-
   final List<TextInputFormatter>? inputFormatters;
   final String? prefixText;
 
@@ -41,75 +40,28 @@ class OrmawaTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: OrmawaTheme.textHeading,
-            letterSpacing: 0.1,
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          readOnly: readOnly,
-          onTap: onTap,
-          validator: validator,
-          onChanged: onChanged,
-          inputFormatters: inputFormatters,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: OrmawaTheme.textHeading,
-          ),
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(
-              fontSize: 12.5,
-              color: OrmawaTheme.textPlaceholder,
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            prefixText: prefixText,
-            prefixStyle: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: OrmawaTheme.textHeading,
-            ),
-            prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: prefixIconColor ?? const Color(0xFF64748B), size: 20)
-                : null,
-            suffixIcon: suffixIcon,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 13,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: OrmawaTheme.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: OrmawaTheme.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: OrmawaTheme.statusDangerText),
-            ),
-          ),
-        ),
-      ],
+    return BkuTextField(
+      label: label,
+      hint: hintText,
+      controller: controller,
+      prefixIcon: prefixIcon != null
+          ? Icon(
+              prefixIcon,
+              color: prefixIconColor ?? const Color(0xFF64748B),
+              size: 20,
+            )
+          : null,
+      prefixIconColor: prefixIconColor,
+      suffixIcon: suffixIcon,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      readOnly: readOnly,
+      onTap: onTap,
+      validator: validator,
+      onChanged: onChanged,
+      inputFormatters: inputFormatters,
+      prefixText: prefixText,
     );
   }
 }

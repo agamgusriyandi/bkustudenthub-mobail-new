@@ -4,18 +4,20 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_calendar_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
@@ -58,10 +60,6 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     try {
       final ormawaProvider = context.read<OrmawaProvider>();
       await ormawaProvider.refreshData();
-      final ormawaId = ormawaProvider.ormawaId;
-      if (ormawaId != null && mounted) {
-        await context.read<OrmawaCalendarProvider>().fetchAgendas(ormawaId);
-      }
     } catch (_) {
     } finally {
       if (mounted) setState(() => _isRefreshing = false);
@@ -78,39 +76,56 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
   }
 
   String _formatDateRange(DateTime start, DateTime end) {
-    final startStr = DateFormat('dd MMM yyyy', 'id').format(start);
-    if (isSameDay(start, end)) return startStr;
-    final endStr = DateFormat('dd MMM yyyy', 'id').format(end);
-    return '$startStr s/d $endStr';
+    try {
+      final startStr = DateFormat('dd MMM yyyy', 'id_ID').format(start);
+      if (isSameDay(start, end)) return startStr;
+      final endStr = DateFormat('dd MMM yyyy', 'id_ID').format(end);
+      return '$startStr s/d $endStr';
+    } catch (_) {
+      return '${start.day}/${start.month}/${start.year}';
+    }
+  }
+
+  String _formatSelectedDate(DateTime? date) {
+    if (date == null) return 'Pilih tanggal pada kalender';
+    try {
+      return DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(date);
+    } catch (_) {
+      try {
+        return DateFormat('EEEE, dd MMMM yyyy').format(date);
+      } catch (_) {
+        return '${date.day}/${date.month}/${date.year}';
+      }
+    }
   }
 
   Color _getStatusBgColor(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
-        return const Color(0xFFFEF3C7);
+        return BkuTheme.amberSoft;
       case 'selesai':
       case 'terlaksana':
-        return const Color(0xFFD1FAE5);
+        return BkuTheme.emeraldSoft;
       case 'dibatalkan':
       case 'batal':
-        return const Color(0xFFFFE4E6);
+        return BkuTheme.roseSoft;
       default:
-        return const Color(0xFFEFF6FF);
+        return BkuTheme.skySoft;
     }
   }
 
   Color _getStatusTextColor(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
-        return const Color(0xFFB45309);
+        return BkuTheme.amber;
       case 'selesai':
       case 'terlaksana':
-        return const Color(0xFF047857);
+        return BkuTheme.emerald;
       case 'dibatalkan':
       case 'batal':
-        return const Color(0xFFBE123C);
+        return BkuTheme.rose;
       default:
-        return const Color(0xFF1D4ED8);
+        return BkuTheme.sky;
     }
   }
 
@@ -249,10 +264,10 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     final canDeleteEvent = provider.hasPermission('ormawa.events.delete, delete_calendar');
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => _loadData(true),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           slivers: [
@@ -281,24 +296,13 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 14),
+                      const SizedBox(height: 14),
 
                       FadeInAnimation(
                         delay: 0.1,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF94A3B8).withAlpha(20),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
+                        child: BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          borderRadius: 16,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -311,12 +315,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                       children: [
                                         Text(
                                           'Manajemen Jadwal &',
-                                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                          style: BkuTheme.textCaption.copyWith(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: BkuTheme.textMuted,
+                                          ),
                                         ),
-                                        SizedBox(height: 2),
+                                        const SizedBox(height: 2),
                                         Text(
                                           'Agenda Kegiatan',
-                                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                          style: BkuTheme.textCardTitle.copyWith(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w900,
+                                          ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -326,18 +337,22 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
-                                      color: OrmawaTheme.primarySoft,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: OrmawaTheme.primaryBorder),
+                                      color: BkuTheme.primarySoft,
+                                      borderRadius: BkuTheme.r8,
+                                      border: Border.all(color: BkuTheme.primaryBorder),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.event_note_rounded, size: 14, color: OrmawaTheme.primary),
+                                        Icon(Icons.event_note_rounded, size: 14, color: BkuTheme.primary),
                                         const SizedBox(width: 5),
                                         Text(
                                           'Kalender Ormawa',
-                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                          style: TextStyle(
+                                            fontSize: 10.5,
+                                            fontWeight: FontWeight.w900,
+                                            color: BkuTheme.primaryDark,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -347,44 +362,35 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 'Kalender operasional, sinkronisasi timeline kegiatan, dan pemantauan program kerja organisasi mahasiswa.',
-                                style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                                style: BkuTheme.textCaption.copyWith(
+                                  fontSize: 11,
+                                  color: BkuTheme.textMuted,
+                                  height: 1.4,
+                                ),
                               ),
                               const SizedBox(height: 14),
                               Row(
                                 children: [
                                   Expanded(
-                                    child: OutlinedButton.icon(
+                                    child: BkuButton.outline(
                                       onPressed: () => _loadData(true),
-                                      icon: _isRefreshing
-                                          ? SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: OrmawaTheme.primary))
-                                          : const Icon(Icons.refresh_rounded, size: 14),
-                                      label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: OrmawaTheme.textHeading,
-                                        side: BorderSide(color: OrmawaTheme.border),
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                      ),
+                                      icon: Icons.refresh_rounded,
+                                      text: _isRefreshing ? 'Memuat...' : 'Refresh',
+                                      height: 38,
+                                      fontSize: 11,
+                                      customRadius: BkuTheme.r10,
                                     ),
                                   ),
                                   if (canCreateEvent) ...[
                                     const SizedBox(width: 8),
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: BkuButton.primary(
                                         onPressed: () => context.push(AppRoutes.ormawaJadwalCreate),
-                                        icon: const Icon(Icons.add_rounded, size: 15),
-                                        label: const Text('Tambah Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: OrmawaTheme.primary,
-                                          foregroundColor: Colors.white,
-                                          elevation: 0,
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                          minimumSize: Size.zero,
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                        ),
+                                        icon: Icons.add_rounded,
+                                        text: 'Tambah Kegiatan',
+                                        height: 38,
+                                        fontSize: 11,
+                                        customRadius: BkuTheme.r10,
                                       ),
                                     ),
                                   ],
@@ -404,7 +410,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               value: '$totalEvents',
                               badgeText: 'Semua Agenda',
                               icon: Icons.calendar_month_rounded,
-                              badgeColor: OrmawaTheme.primary,
+                              badgeColor: BkuTheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -414,7 +420,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               value: '$activeEvents',
                               badgeText: 'Live Active',
                               icon: Icons.schedule_rounded,
-                              badgeColor: const Color(0xFFD97706),
+                              badgeColor: BkuTheme.amber,
                             ),
                           ),
                         ],
@@ -428,7 +434,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               value: '$upcomingEvents',
                               badgeText: 'Akan Datang',
                               icon: Icons.event_available_rounded,
-                              badgeColor: const Color(0xFF0284C7),
+                              badgeColor: BkuTheme.sky,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -438,7 +444,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                               value: '$completedEvents',
                               badgeText: 'Tuntas',
                               icon: Icons.check_circle_rounded,
-                              badgeColor: const Color(0xFF059669),
+                              badgeColor: BkuTheme.emerald,
                             ),
                           ),
                         ],
@@ -447,117 +453,121 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
 
                       FadeInAnimation(
                         delay: 0.25,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF94A3B8).withAlpha(20),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
+                        child: BkuCard(
+                          padding: EdgeInsets.zero,
+                          borderRadius: 16,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(14),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              Padding(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
                                       children: [
-                                        Row(
+                                        Icon(Icons.calendar_month_rounded, size: 18, color: BkuTheme.primary),
+                                        const SizedBox(width: 8),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Icon(Icons.calendar_month_rounded, size: 18, color: OrmawaTheme.primary),
-                                            const SizedBox(width: 8),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Kalender Agenda', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
-                                                Text('Pilih tanggal untuk melihat jadwal khusus', style: TextStyle(fontSize: 9.5, color: OrmawaTheme.textMuted)),
-                                              ],
+                                            Text(
+                                              'Kalender Agenda',
+                                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5, fontWeight: FontWeight.w900),
+                                            ),
+                                            Text(
+                                              'Pilih tanggal untuk melihat jadwal khusus',
+                                              style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.textMuted),
                                             ),
                                           ],
                                         ),
-                                        if (_selectedDay != null)
-                                          InkWell(
-                                            onTap: () => setState(() => _selectedDay = null),
-                                            borderRadius: BorderRadius.circular(8),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: OrmawaTheme.statusDangerBg,
-                                                borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(color: OrmawaTheme.statusDangerBorder),
-                                              ),
-                                              child: Text('Reset Filter', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: OrmawaTheme.statusDangerText)),
-                                            ),
-                                          ),
                                       ],
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
+                                    if (_selectedDay != null)
+                                      InkWell(
+                                        onTap: () => setState(() => _selectedDay = null),
+                                        borderRadius: BkuTheme.r8,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: BkuTheme.roseSoft,
+                                            borderRadius: BkuTheme.r8,
+                                            border: Border.all(color: BkuTheme.roseBorder),
+                                          ),
+                                          child: const Text(
+                                            'Reset Filter',
+                                            style: TextStyle(
+                                              fontSize: 9.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: BkuTheme.rose,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
 
-                                  TableCalendar(
-                                    firstDay: DateTime.utc(2020, 1, 1),
-                                    lastDay: DateTime.utc(2030, 12, 31),
-                                    focusedDay: _focusedDay,
-                                    calendarFormat: CalendarFormat.month,
-                                    availableCalendarFormats: const {
-                                      CalendarFormat.month: 'Bulan',
-                                    },
-                                    availableGestures: AvailableGestures.horizontalSwipe,
-                                    selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
-                                    eventLoader: (day) => _getEventsForDay(day, allAgendas, allProposals, allAnnouncements),
-                                    startingDayOfWeek: StartingDayOfWeek.monday,
-                                    onDaySelected: (selectedDay, focusedDay) {
-                                      setState(() {
-                                        if (_selectedDay != null && isSameDay(_selectedDay, selectedDay)) {
-                                          _selectedDay = null;
-                                        } else {
-                                          _selectedDay = selectedDay;
-                                        }
-                                        _focusedDay = focusedDay;
-                                      });
-                                    },
-                                    headerStyle: const HeaderStyle(
-                                      formatButtonVisible: false,
-                                      titleCentered: true,
-                                      titleTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                                    ),
-                                    calendarStyle: CalendarStyle(
-                                      outsideDaysVisible: false,
-                                      defaultTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
-                                      weekendTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFE11D48)),
-                                      selectedDecoration: BoxDecoration(
-                                        color: OrmawaTheme.primary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      selectedTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                                      todayDecoration: BoxDecoration(
-                                        color: OrmawaTheme.primarySoft,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      todayTextStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark),
-                                      markerDecoration: BoxDecoration(
-                                        color: OrmawaTheme.primary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      markerSize: 5,
-                                      markersMaxCount: 1,
-                                    ),
+                              TableCalendar(
+                                locale: 'id_ID',
+                                firstDay: DateTime.utc(2020, 1, 1),
+                                lastDay: DateTime.utc(2030, 12, 31),
+                                focusedDay: _focusedDay,
+                                calendarFormat: CalendarFormat.month,
+                                availableCalendarFormats: const {
+                                  CalendarFormat.month: 'Bulan',
+                                },
+                                availableGestures: AvailableGestures.horizontalSwipe,
+                                selectedDayPredicate: (day) => _selectedDay != null && isSameDay(_selectedDay, day),
+                                eventLoader: (day) => _getEventsForDay(day, allAgendas, allProposals, allAnnouncements),
+                                startingDayOfWeek: StartingDayOfWeek.monday,
+                                onDaySelected: (selectedDay, focusedDay) {
+                                  setState(() {
+                                    if (_selectedDay != null && isSameDay(_selectedDay, selectedDay)) {
+                                      _selectedDay = null;
+                                    } else {
+                                      _selectedDay = selectedDay;
+                                    }
+                                    _focusedDay = focusedDay;
+                                  });
+                                },
+                                headerStyle: const HeaderStyle(
+                                  formatButtonVisible: false,
+                                  titleCentered: true,
+                                  titleTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                ),
+                                calendarStyle: CalendarStyle(
+                                  outsideDaysVisible: false,
+                                  defaultTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                                  weekendTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFE11D48)),
+                                  selectedDecoration: BoxDecoration(
+                                    color: BkuTheme.primary,
+                                    shape: BoxShape.circle,
                                   ),
+                                  selectedTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                                  todayDecoration: BoxDecoration(
+                                    color: BkuTheme.primarySoft,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  todayTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                  markerDecoration: BoxDecoration(
+                                    color: BkuTheme.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  markerSize: 5,
+                                  markersMaxCount: 1,
+                                ),
+                              ),
 
                               Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF8FAFC),
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    color: BkuTheme.borderSubtle,
+                                    borderRadius: BkuTheme.r12,
+                                    border: Border.all(color: BkuTheme.border),
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,21 +576,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            _selectedDay != null
-                                                ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDay!)
-                                                : 'Pilih tanggal pada kalender',
-                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                            _formatSelectedDate(_selectedDay),
+                                            style: BkuTheme.textCardTitle.copyWith(fontSize: 11, fontWeight: FontWeight.w900),
                                           ),
                                           if (_selectedDay != null)
                                             Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFFEFF6FF),
-                                                borderRadius: BorderRadius.circular(6),
+                                                color: BkuTheme.skySoft,
+                                                borderRadius: BkuTheme.r8,
                                               ),
                                               child: Text(
                                                 '${selectedDayItems.length} Agenda',
-                                                style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+                                                style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: BkuTheme.sky),
                                               ),
                                             ),
                                         ],
@@ -597,8 +605,8 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                             itemBuilder: (context, idx) {
                                               final item = selectedDayItems[idx];
                                               String typeLabel = 'Kegiatan';
-                                              Color typeColor = const Color(0xFF2563EB);
-                                              Color typeBg = const Color(0xFFEFF6FF);
+                                              Color typeColor = BkuTheme.sky;
+                                              Color typeBg = BkuTheme.skySoft;
                                               String title = '';
                                               String loc = '';
                                               String statusStr = '';
@@ -610,14 +618,14 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                                 statusStr = _getStatusLabel(item.status);
                                               } else if (item is OrmawaProposal) {
                                                 typeLabel = 'Proposal';
-                                                typeColor = const Color(0xFFD97706);
-                                                typeBg = const Color(0xFFFEF3C7);
+                                                typeColor = BkuTheme.amber;
+                                                typeBg = BkuTheme.amberSoft;
                                                 title = item.title;
                                                 statusStr = item.status;
                                               } else if (item is OrmawaAnnouncement) {
                                                 typeLabel = 'Pengumuman';
-                                                typeColor = const Color(0xFF059669);
-                                                typeBg = const Color(0xFFD1FAE5);
+                                                typeColor = BkuTheme.emerald;
+                                                typeBg = BkuTheme.emeraldSoft;
                                                 title = item.judul;
                                               }
 
@@ -625,13 +633,13 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                                 onTap: item is OrmawaAgenda
                                                     ? () => context.push(AppRoutes.ormawaAgendaDetail, extra: item)
                                                     : null,
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius: BkuTheme.r10,
                                                 child: Container(
                                                   padding: const EdgeInsets.all(8),
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                                    borderRadius: BkuTheme.r10,
+                                                    border: Border.all(color: BkuTheme.border),
                                                   ),
                                                   child: Row(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,7 +648,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                         decoration: BoxDecoration(
                                                           color: typeBg,
-                                                          borderRadius: BorderRadius.circular(6),
+                                                          borderRadius: BkuTheme.r8,
                                                         ),
                                                         child: Text(
                                                           typeLabel,
@@ -654,7 +662,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                                           children: [
                                                             Text(
                                                               title,
-                                                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                                              style: BkuTheme.textCardTitle.copyWith(fontSize: 11, fontWeight: FontWeight.bold),
                                                               maxLines: 1,
                                                               overflow: TextOverflow.ellipsis,
                                                             ),
@@ -662,12 +670,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                                               const SizedBox(height: 2),
                                                               Row(
                                                                 children: [
-                                                                  const Icon(Icons.location_on_rounded, size: 10, color: Color(0xFF94A3B8)),
+                                                                  const Icon(Icons.location_on_rounded, size: 10, color: BkuTheme.textPlaceholder),
                                                                   const SizedBox(width: 2),
                                                                   Expanded(
                                                                     child: Text(
                                                                       loc,
-                                                                      style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                                                      style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.textMuted),
                                                                       maxLines: 1,
                                                                       overflow: TextOverflow.ellipsis,
                                                                     ),
@@ -693,14 +701,14 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                           const Center(
                                             child: Padding(
                                               padding: EdgeInsets.symmetric(vertical: 8),
-                                              child: Text('Tidak ada agenda pada tanggal ini.', style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                                              child: Text('Tidak ada agenda pada tanggal ini.', style: TextStyle(fontSize: 10, color: BkuTheme.textPlaceholder)),
                                             ),
                                           )
                                       ] else
                                         const Center(
                                           child: Padding(
                                             padding: EdgeInsets.symmetric(vertical: 6),
-                                            child: Text('Klik tanggal pada kalender untuk melihat agenda khusus.', style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                                            child: Text('Klik tanggal pada kalender untuk melihat agenda khusus.', style: TextStyle(fontSize: 10, color: BkuTheme.textPlaceholder)),
                                           ),
                                         ),
                                     ],
@@ -737,7 +745,12 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                         children: [
                           Text(
                             'DAFTAR JADWAL KEGIATAN (${filteredAgendas.length})',
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5),
+                            style: BkuTheme.textBadge.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color: BkuTheme.textMuted,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                           if (_selectedDay != null || _activeTab != 'all' || _searchQuery.isNotEmpty)
                             InkWell(
@@ -748,29 +761,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                                   _searchController.clear();
                                 });
                               },
-                              child: const Text('Reset Semua Filter', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                              child: const Text('Reset Semua Filter', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
                             ),
                         ],
                       ),
                       const SizedBox(height: 10),
 
                       if (filteredAgendas.isEmpty)
-                        Container(
-                          padding: const EdgeInsets.all(28),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: const Column(
-                            children: [
-                              Icon(Icons.event_busy_rounded, size: 40, color: Color(0xFFCBD5E1)),
-                              SizedBox(height: 10),
-                              Text('Belum Ada Jadwal Kegiatan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                              SizedBox(height: 4),
-                              Text('Tidak ada agenda kegiatan yang cocok dengan filter aktif.', style: TextStyle(fontSize: 11, color: Color(0xFF64748B)), textAlign: TextAlign.center),
-                            ],
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: BkuEmptyState(
+                            title: 'Belum Ada Jadwal Kegiatan',
+                            message: 'Tidak ada agenda kegiatan yang cocok dengan filter aktif.',
+                            icon: Icons.event_busy_rounded,
                           ),
                         )
                       else
@@ -812,20 +815,9 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
     final statusBg = _getStatusBgColor(agenda.status);
     final statusColor = _getStatusTextColor(agenda.status);
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF94A3B8).withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      borderRadius: 14,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -836,7 +828,11 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
               Expanded(
                 child: Text(
                   agenda.title,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.3),
+                  style: BkuTheme.textCardTitle.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    height: 1.3,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -846,7 +842,7 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                 decoration: BoxDecoration(
                   color: statusBg,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Text(
                   statusLabel,
@@ -859,24 +855,24 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
 
           Row(
             children: [
-              const Icon(Icons.location_on_outlined, size: 12, color: Color(0xFF94A3B8)),
+              const Icon(Icons.location_on_outlined, size: 12, color: BkuTheme.textPlaceholder),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
                   agenda.location.isNotEmpty ? agenda.location : 'Lokasi belum ditentukan',
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (agenda.pjKegiatan != null && agenda.pjKegiatan!.isNotEmpty) ...[
                 const SizedBox(width: 8),
-                const Icon(Icons.person_outline_rounded, size: 12, color: Color(0xFF94A3B8)),
+                const Icon(Icons.person_outline_rounded, size: 12, color: BkuTheme.textPlaceholder),
                 const SizedBox(width: 3),
                 Expanded(
                   child: Text(
                     agenda.pjKegiatan!,
-                    style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontWeight: FontWeight.w600),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -888,24 +884,29 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
 
           Row(
             children: [
-              Icon(Icons.event_rounded, size: 12, color: OrmawaTheme.primary),
+              Icon(Icons.event_rounded, size: 12, color: BkuTheme.primary),
               const SizedBox(width: 4),
               Text(
                 _formatDateRange(agenda.date, agenda.endDate),
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: OrmawaTheme.textBody),
+                style: BkuTheme.textCaption.copyWith(fontSize: 10, fontWeight: FontWeight.bold, color: BkuTheme.textBody),
               ),
               const Spacer(),
               if (agenda.estimasiDana != null && agenda.estimasiDana! > 0)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                   decoration: BoxDecoration(
-                    color: OrmawaTheme.borderSubtle,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: OrmawaTheme.border),
+                    color: BkuTheme.borderSubtle,
+                    borderRadius: BkuTheme.r8,
+                    border: Border.all(color: BkuTheme.border),
                   ),
                   child: Text(
                     _formatRp(agenda.estimasiDana),
-                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading, fontFamily: 'monospace'),
+                    style: const TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w900,
+                      color: BkuTheme.textHeading,
+                      fontFamily: 'monospace',
+                    ),
                   ),
                 ),
             ],
@@ -915,42 +916,31 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              InkWell(
-                onTap: () => context.push(AppRoutes.ormawaAgendaDetail, extra: agenda),
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: OrmawaTheme.primarySoft,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.visibility_rounded, size: 13, color: OrmawaTheme.primary),
-                      const SizedBox(width: 4),
-                      Text('Detail', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark)),
-                    ],
-                  ),
-                ),
+              BkuButton.outline(
+                onPressed: () => context.push(AppRoutes.ormawaAgendaDetail, extra: agenda),
+                icon: Icons.visibility_rounded,
+                text: 'Detail',
+                height: 28,
+                fontSize: 10,
+                customRadius: BkuTheme.r8,
               ),
               if (canEdit) ...[
                 const SizedBox(width: 6),
                 InkWell(
                   onTap: () => context.push(AppRoutes.ormawaJadwalEdit, extra: agenda),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BkuTheme.r8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFEF3C7),
-                      borderRadius: BorderRadius.circular(8),
+                      color: BkuTheme.amberSoft,
+                      borderRadius: BkuTheme.r8,
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.edit_rounded, size: 13, color: Color(0xFFD97706)),
+                        Icon(Icons.edit_rounded, size: 13, color: BkuTheme.amber),
                         SizedBox(width: 4),
-                        Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
+                        Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: BkuTheme.amber)),
                       ],
                     ),
                   ),
@@ -960,19 +950,19 @@ class _OrmawaKalenderScreenState extends State<OrmawaKalenderScreen> {
                 const SizedBox(width: 6),
                 InkWell(
                   onTap: () => _confirmDelete(context, agenda),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BkuTheme.r8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF1F2),
-                      borderRadius: BorderRadius.circular(8),
+                      color: BkuTheme.roseSoft,
+                      borderRadius: BkuTheme.r8,
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.delete_outline_rounded, size: 13, color: Color(0xFFE11D48)),
+                        Icon(Icons.delete_outline_rounded, size: 13, color: BkuTheme.rose),
                         SizedBox(width: 4),
-                        Text('Batal', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFE11D48))),
+                        Text('Batal', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: BkuTheme.rose)),
                       ],
                     ),
                   ),

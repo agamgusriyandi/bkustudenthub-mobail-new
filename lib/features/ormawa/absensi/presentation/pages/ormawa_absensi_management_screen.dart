@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/create_absensi_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_detail_screen.dart';
@@ -42,30 +41,51 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
     super.dispose();
   }
 
-  OrmawaBadgeVariant _getBadgeVariant(String status) {
-    switch (status.toLowerCase()) {
-      case 'aktif':
-      case 'berlangsung':
-      case 'ongoing':
-        return OrmawaBadgeVariant.success;
-      case 'selesai':
-      case 'completed':
-        return OrmawaBadgeVariant.info;
-      case 'dibatalkan':
-      case 'batal':
-        return OrmawaBadgeVariant.danger;
-      default:
-        return OrmawaBadgeVariant.warning;
+  Widget _buildStatusBadge(String status) {
+    final s = status.toLowerCase();
+    Color bg = BkuTheme.borderSubtle;
+    Color fg = BkuTheme.textBody;
+    Color border = BkuTheme.border;
+
+    if (s == 'aktif' || s == 'berlangsung' || s == 'ongoing') {
+      bg = BkuTheme.emeraldSoft;
+      fg = BkuTheme.emerald;
+      border = BkuTheme.emeraldBorder;
+    } else if (s == 'selesai' || s == 'completed') {
+      bg = BkuTheme.skySoft;
+      fg = BkuTheme.sky;
+      border = BkuTheme.skyBorder;
+    } else if (s == 'dibatalkan' || s == 'batal') {
+      bg = BkuTheme.roseSoft;
+      fg = BkuTheme.rose;
+      border = BkuTheme.roseBorder;
     }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BkuTheme.r8,
+        border: Border.all(color: border, width: 0.8),
+      ),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(
+          fontSize: 8.5,
+          fontWeight: FontWeight.w900,
+          color: fg,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().fetchAbsensiManagement(),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -105,119 +125,95 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FadeInAnimation(
-                          delay: 0.1,
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF94A3B8).withAlpha(20),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Manajemen Presensi &',
-                                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-                                          ),
-                                          SizedBox(height: 2),
-                                          Text(
-                                            'Sesi Kehadiran Kegiatan',
-                                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
+                        BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          borderRadius: 18,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Manajemen Presensi &',
+                                          style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.textMuted),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Sesi Kehadiran Kegiatan',
+                                          style: BkuTheme.textPageTitle.copyWith(fontSize: 17, fontWeight: FontWeight.w900),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      decoration: BoxDecoration(
-                                        color: OrmawaTheme.primarySoft,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: OrmawaTheme.primaryBorder),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.qr_code_scanner_rounded, size: 14, color: OrmawaTheme.primary),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            'Presensi Ormawa',
-                                            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
-                                          ),
-                                        ],
-                                      ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF1F5F9),
+                                      borderRadius: BkuTheme.r10,
+                                      border: Border.all(color: const Color(0xFFE2E8F0)),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Buat barcode presensi QR Code, atur radius lokasi, dan pantau rekapitulasi kehadiran anggota.',
-                                  style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
-                                ),
-                                const SizedBox(height: 14),
-                                Row(
-                                  children: [
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.qr_code_scanner_rounded, size: 14, color: Color(0xFF0F172A)),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Presensi Ormawa',
+                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Buat barcode presensi QR Code, atur radius lokasi, dan pantau rekapitulasi kehadiran anggota.',
+                                style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted, height: 1.4),
+                              ),
+                              const SizedBox(height: 14),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: BkuButton.outline(
+                                      onPressed: () => provider.fetchAbsensiManagement(),
+                                      icon: Icons.refresh_rounded,
+                                      text: 'Refresh',
+                                      height: 38,
+                                      fontSize: 11,
+                                      customRadius: BkuTheme.r10,
+                                    ),
+                                  ),
+                                  if (canCreate) ...[
+                                    const SizedBox(width: 8),
                                     Expanded(
-                                      child: OutlinedButton.icon(
-                                        onPressed: () => provider.fetchAbsensiManagement(),
-                                        icon: const Icon(Icons.refresh_rounded, size: 14),
-                                        label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor: OrmawaTheme.textHeading,
-                                          side: BorderSide(color: OrmawaTheme.border),
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                          minimumSize: Size.zero,
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                        ),
+                                      child: BkuButton.primary(
+                                        onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const CreateAbsensiScreen()),
+                                        ).then((_) => provider.fetchAbsensiManagement()),
+                                        icon: Icons.add_rounded,
+                                        text: 'Buat Sesi Baru',
+                                        height: 38,
+                                        fontSize: 11,
+                                        customRadius: BkuTheme.r10,
                                       ),
                                     ),
-                                    if (canCreate) ...[
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: ElevatedButton.icon(
-                                          onPressed: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => const CreateAbsensiScreen()),
-                                          ).then((_) => provider.fetchAbsensiManagement()),
-                                          icon: const Icon(Icons.add_rounded, size: 15),
-                                          label: const Text('Buat Sesi Baru', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: OrmawaTheme.primary,
-                                            foregroundColor: Colors.white,
-                                            elevation: 0,
-                                            padding: const EdgeInsets.symmetric(vertical: 8),
-                                            minimumSize: Size.zero,
-                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
                                   ],
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(height: 14),
+
                         Row(
                           children: [
                             Expanded(
@@ -226,35 +222,36 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                                 value: '$total',
                                 badgeText: 'Total',
                                 icon: Icons.event_rounded,
-                                badgeColor: OrmawaTheme.statusInfoText,
+                                badgeColor: BkuTheme.sky,
                                 subtitle: 'Semua event',
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: OrmawaKpiCard(
                                 title: 'Sesi Aktif',
                                 value: '$active',
                                 badgeText: 'Live',
                                 icon: Icons.play_circle_fill_rounded,
-                                badgeColor: OrmawaTheme.statusSuccessText,
+                                badgeColor: BkuTheme.emerald,
                                 subtitle: 'Buka presensi',
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: OrmawaKpiCard(
                                 title: 'Selesai',
                                 value: '$completed',
                                 badgeText: 'Arsip',
                                 icon: Icons.check_circle_rounded,
-                                badgeColor: OrmawaTheme.textMuted,
+                                badgeColor: BkuTheme.slate,
                                 subtitle: 'Telah ditutup',
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 14),
+
                         OrmawaSearchBar(
                           controller: _searchController,
                           hintText: 'Cari kegiatan absensi...',
@@ -262,6 +259,7 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                           onClear: () => setState(() => _searchQuery = ''),
                         ),
                         const SizedBox(height: 10),
+
                         OrmawaFilterTabs(
                           tabs: [
                             OrmawaTabItem(key: 'all', label: 'Semua', count: total),
@@ -272,13 +270,17 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                           onTabChanged: (val) => setState(() => _activeTab = val),
                         ),
                         const SizedBox(height: 14),
+
                         if (provider.isLoading && list.isEmpty)
                           const BkuShimmerList(itemCount: 3, itemHeight: 90)
                         else if (filteredList.isEmpty)
-                          const OrmawaEmptyCard(
-                            title: 'Tidak Ada Data Absensi',
-                            description: 'Belum ada sesi presensi kegiatan yang sesuai kriteria.',
-                            icon: Icons.event_busy_rounded,
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24),
+                            child: BkuEmptyState(
+                              title: 'Tidak Ada Data Absensi',
+                              message: 'Belum ada sesi presensi kegiatan yang sesuai kriteria.',
+                              icon: Icons.event_busy_rounded,
+                            ),
                           )
                         else
                           ListView.separated(
@@ -302,7 +304,9 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                                 date = DateTime.parse(tanggal);
                               } catch (_) {}
 
-                              return OrmawaCard(
+                              return BkuCard(
+                                padding: const EdgeInsets.all(12),
+                                borderRadius: 16,
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -319,54 +323,51 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                                           width: 38,
                                           height: 38,
                                           decoration: BoxDecoration(
-                                            color: OrmawaTheme.primarySoft,
-                                            borderRadius: BorderRadius.circular(10),
+                                            color: BkuTheme.primarySoft,
+                                            borderRadius: BkuTheme.r10,
+                                            border: Border.all(color: BkuTheme.primaryBorder),
                                           ),
                                           child: Icon(
                                             Icons.qr_code_scanner_rounded,
-                                            color: OrmawaTheme.primary,
+                                            color: BkuTheme.primary,
                                             size: 20,
                                           ),
                                         ),
-                                        SizedBox(width: 12),
+                                        const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 nama,
-                                                style: TextStyle(
+                                                style: BkuTheme.textCardTitle.copyWith(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.bold,
-                                                  color: OrmawaTheme.textHeading,
                                                 ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
-                                              SizedBox(height: 3),
+                                              const SizedBox(height: 3),
                                               Text(
                                                 date != null ? DateFormat('dd MMM yyyy', 'id').format(date) : tanggal,
-                                                style: TextStyle(
+                                                style: BkuTheme.textCaption.copyWith(
                                                   fontSize: 10.5,
-                                                  color: OrmawaTheme.textMuted,
+                                                  color: BkuTheme.textMuted,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        OrmawaBadge(
-                                          text: statusStr.toUpperCase(),
-                                          variant: _getBadgeVariant(statusStr),
-                                        ),
+                                        _buildStatusBadge(statusStr),
                                       ],
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Container(
                                       padding: const EdgeInsets.only(top: 8),
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         border: Border(
                                           top: BorderSide(
-                                            color: Color(0xFFF1F5F9),
+                                            color: BkuTheme.borderSubtle,
                                             width: 1,
                                           ),
                                         ),
@@ -376,27 +377,27 @@ class _OrmawaAbsensiManagementScreenState extends State<OrmawaAbsensiManagementS
                                         children: [
                                           Row(
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 Icons.location_on_outlined,
                                                 size: 13,
-                                                color: OrmawaTheme.textMuted,
+                                                color: BkuTheme.textMuted,
                                               ),
-                                              SizedBox(width: 4),
+                                              const SizedBox(width: 4),
                                               Text(
                                                 lokasi,
-                                                style: TextStyle(
+                                                style: BkuTheme.textCaption.copyWith(
                                                   fontSize: 10.5,
-                                                  color: OrmawaTheme.textMuted,
+                                                  color: BkuTheme.textMuted,
                                                 ),
                                               ),
                                             ],
                                           ),
                                           Text(
                                             '$jumlahHadir / $jumlahTotal Hadir',
-                                            style: TextStyle(
+                                            style: BkuTheme.textCaption.copyWith(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w800,
-                                              color: OrmawaTheme.primaryDark,
+                                              color: BkuTheme.primaryDark,
                                             ),
                                           ),
                                         ],

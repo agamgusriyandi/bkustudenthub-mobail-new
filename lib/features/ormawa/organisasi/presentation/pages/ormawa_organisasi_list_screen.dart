@@ -163,18 +163,18 @@ class _OrmawaOrganisasiListScreenState extends State<OrmawaOrganisasiListScreen>
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                         decoration: BoxDecoration(
-                                          color: OrmawaTheme.primarySoft,
+                                          color: const Color(0xFFF1F5F9),
                                           borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: OrmawaTheme.primaryBorder),
+                                          border: Border.all(color: const Color(0xFFE2E8F0)),
                                         ),
-                                        child: Row(
+                                        child: const Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(Icons.apartment_rounded, size: 14, color: OrmawaTheme.primary),
-                                            const SizedBox(width: 5),
+                                            Icon(Icons.apartment_rounded, size: 14, color: Color(0xFF0F172A)),
+                                            SizedBox(width: 5),
                                             Text(
                                               'Database Ormawa',
-                                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                                             ),
                                           ],
                                         ),

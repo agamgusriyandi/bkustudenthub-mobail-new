@@ -185,11 +185,9 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                         ),
                       ),
 
-                    // Brief Dokter
                     _buildHealthWorkerBrief(widget.worker),
                     const SizedBox(height: AppSpacing.xxl),
 
-                    // Pilih Slot
                     _buildSectionHeader('Pilih Slot Jadwal'),
                     const SizedBox(height: AppSpacing.sm),
                     Container(
@@ -224,7 +222,6 @@ class _HealthBookingFormScreenState extends State<HealthBookingFormScreen> {
                       ),
                     ),
 
-                    // Filter dropdowns
                     Row(
                       children: [
                         Expanded(

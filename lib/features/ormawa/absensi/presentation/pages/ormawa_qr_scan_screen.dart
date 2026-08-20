@@ -1,20 +1,16 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/scanner_overlay.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:flutter/material.dart';
-
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:bkuhub_mobile/core/widgets/scanner_overlay.dart';
-import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_success_screen.dart';
-import '../../../../../core/error/error_handler.dart';
-import 'package:go_router/go_router.dart';
 
 class OrmawaQrScanScreen extends StatefulWidget {
   final String eventId;
@@ -100,10 +96,9 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.onSurface,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          
           MobileScanner(controller: _scannerController, onDetect: _onDetect),
 
           AnimatedBuilder(
@@ -112,14 +107,14 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
               return CustomPaint(
                 size: Size.infinite,
                 painter: ScannerOverlayPainter(
-                  overlayColor: context.appColors.onSurface.withAlpha(150),
+                  overlayColor: Colors.black.withAlpha(150),
                   animationValue: _animation.value,
                 ),
               );
             },
           ),
 
-          Center(
+          const Center(
             child: SizedBox(
               width: 280,
               height: 280,
@@ -139,12 +134,12 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: context.appColors.surface.withAlpha(40),
-                            borderRadius: AppRadius.radiusMd,
+                            color: Colors.white.withAlpha(40),
+                            borderRadius: BkuTheme.r10,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.close_rounded,
-                            color: context.appColors.onPrimary,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -155,15 +150,17 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           children: [
                             Text(
                               'Scan Presensi',
-                              style: AppTextStyles.titleLg.copyWith(
-                                color: context.appColors.onPrimary,
+                              style: BkuTheme.textPageTitle.copyWith(
+                                color: Colors.white,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
                               widget.eventTitle,
-                              style: AppTextStyles.bodySm.copyWith(
-                                color: context.appColors.surface.withValues(alpha: 0.7),
+                              style: BkuTheme.textCaption.copyWith(
+                                color: Colors.white.withAlpha(180),
+                                fontSize: 11,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -171,18 +168,17 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                           ],
                         ),
                       ),
-                      
                       IconButton(
                         onPressed: () => _scannerController.toggleTorch(),
                         icon: Container(
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           decoration: BoxDecoration(
-                            color: context.appColors.surface.withAlpha(40),
-                            borderRadius: AppRadius.radiusMd,
+                            color: Colors.white.withAlpha(40),
+                            borderRadius: BkuTheme.r10,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.flash_on_rounded,
-                            color: context.appColors.onPrimary,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -200,12 +196,12 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             child: Column(
               children: [
                 if (_isProcessing) ...[
-                  CircularProgressIndicator(color: context.appColors.onPrimary),
+                  const CircularProgressIndicator(color: Colors.white),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Mencatat kehadiran...',
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: context.appColors.onPrimary,
+                    style: BkuTheme.textBodyRegular.copyWith(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -216,15 +212,15 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withAlpha(220),
-                      borderRadius: AppRadius.radiusXl,
+                      color: BkuTheme.emerald.withAlpha(220),
+                      borderRadius: BkuTheme.rPill,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.check_circle_rounded,
-                          color: context.appColors.onPrimary,
+                          color: Colors.white,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
@@ -233,8 +229,8 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                               : (_scannedStudentName != null
                                   ? 'Hadir: $_scannedStudentName'
                                   : 'Berhasil Terabsen!'),
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: context.appColors.onPrimary,
+                          style: BkuTheme.textBodyRegular.copyWith(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -248,22 +244,23 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: context.appColors.surface.withAlpha(30),
-                      borderRadius: AppRadius.radiusXl,
+                      color: Colors.white.withAlpha(30),
+                      borderRadius: BkuTheme.rPill,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.qr_code_scanner_rounded,
-                          color: context.appColors.onPrimary,
+                          color: Colors.white,
                           size: 20,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           'Arahkan kamera ke KTM Digital mahasiswa',
-                          style: AppTextStyles.bodySm.copyWith(
-                            color: context.appColors.onPrimary,
+                          style: BkuTheme.textCaption.copyWith(
+                            color: Colors.white,
+                            fontSize: 11.5,
                           ),
                         ),
                       ],
@@ -321,7 +318,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         try {
           final uri = Uri.parse(code);
           nim = uri.queryParameters['nim'] ?? uri.queryParameters['NIM'] ?? nim;
-        } catch (_) {  }
+        } catch (_) {}
       } else if (code.contains(':')) {
         nim = code.split(':').last;
       }
@@ -368,17 +365,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       }
 
       if (code.contains('eventId=') || code.contains('student/presensi')) {
-        
         String? parsedEventId;
         try {
           final uri = Uri.parse(code);
-          parsedEventId =
-              uri.queryParameters['eventId'] ?? uri.queryParameters['event_id'];
-        } catch (_) {  }
+          parsedEventId = uri.queryParameters['eventId'] ?? uri.queryParameters['event_id'];
+        } catch (_) {}
 
-        if (parsedEventId == null ||
-            parsedEventId.isEmpty ||
-            parsedEventId == 'undefined') {
+        if (parsedEventId == null || parsedEventId.isEmpty || parsedEventId == 'undefined') {
           throw Exception('ID Kegiatan tidak valid pada QR Code ini.');
         }
 
@@ -386,25 +379,19 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
 
         resolvedId = provider.mahasiswaId;
         if (resolvedId == null || resolvedId.isEmpty) {
-          throw Exception(
-            'Gagal melakukan presensi mandiri: Akun mahasiswa tidak terdeteksi.',
-          );
+          throw Exception('Gagal melakukan presensi mandiri: Akun mahasiswa tidak terdeteksi.');
         }
 
         final authData = AuthService().userData;
-        studentName =
-            authData?['mahasiswa']?['Nama'] ??
+        studentName = authData?['mahasiswa']?['Nama'] ??
             authData?['mahasiswa']?['nama'] ??
             authData?['user']?['nama'] ??
             'Anda';
-        nim =
-            authData?['mahasiswa']?['NIM'] ??
+        nim = authData?['mahasiswa']?['NIM'] ??
             authData?['mahasiswa']?['nim'] ??
             authData?['user']?['nim'] ??
             'NIM Anda';
-
       } else {
-        
         if (nim.isEmpty) {
           throw Exception('Kode QR tidak valid.');
         }
@@ -415,7 +402,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
           );
           resolvedId = match.mahasiswaId;
           studentName = match.name;
-        } catch (_) {  }
+        } catch (_) {}
 
         if (resolvedId == null) {
           try {
@@ -424,20 +411,18 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
             );
             resolvedId = match.mahasiswaId;
             studentName = match.mahasiswaName;
-          } catch (_) {  }
+          } catch (_) {}
         }
 
         if (resolvedId == null) {
           if (_studentsLookup.isNotEmpty) {
             try {
               final match = _studentsLookup.firstWhere(
-                (s) =>
-                    s['nim']?.toString().trim().toLowerCase() ==
-                    nim.toLowerCase(),
+                (s) => s['nim']?.toString().trim().toLowerCase() == nim.toLowerCase(),
               );
               resolvedId = match['id']?.toString();
               studentName = match['nama']?.toString();
-            } catch (_) {  }
+            } catch (_) {}
           }
         }
 
@@ -449,13 +434,11 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
           });
           try {
             final match = _studentsLookup.firstWhere(
-              (s) =>
-                  s['nim']?.toString().trim().toLowerCase() ==
-                  nim.toLowerCase(),
+              (s) => s['nim']?.toString().trim().toLowerCase() == nim.toLowerCase(),
             );
             resolvedId = match['id']?.toString();
             studentName = match['nama']?.toString();
-          } catch (_) {  }
+          } catch (_) {}
         }
 
         if (resolvedId == null) {
@@ -476,14 +459,13 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => OrmawaAbsensiSuccessScreen(
-                eventId: targetEventId,
-                eventTitle: widget.eventTitle,
-                studentName: studentName ?? 'Mahasiswa',
-                nim: nim,
-                timestamp: DateTime.now(),
-              ),
+          builder: (context) => OrmawaAbsensiSuccessScreen(
+            eventId: targetEventId,
+            eventTitle: widget.eventTitle,
+            studentName: studentName ?? 'Mahasiswa',
+            nim: nim,
+            timestamp: DateTime.now(),
+          ),
         ),
       );
 
@@ -521,23 +503,7 @@ class _OrmawaQrScanScreenState extends State<OrmawaQrScanScreen>
         await Future.delayed(const Duration(seconds: 2));
         if (mounted) context.pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.error_outline_rounded, color: context.appColors.onPrimary),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    'Gagal mencatat presensi: $msg',
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        AppSnackbar.showError(context, 'Gagal mencatat presensi: $msg');
       }
     }
   }

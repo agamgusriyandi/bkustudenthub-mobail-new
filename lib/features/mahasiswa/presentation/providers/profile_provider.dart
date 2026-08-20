@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/repositories/student_repository.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 
@@ -23,26 +25,39 @@ class ProfileProvider extends ChangeNotifier {
   int semester = 0;
   double ipk = 0.0;
   int totalSks = 0;
+  String statusAkademik = 'Aktif';
   String? fotoUrl;
-  
+
   Map<String, dynamic> rawProfileData = {};
 
-  bool emailNotif = true;
-  bool pushNotif = true;
-  bool inAppNotif = true;
+  // Data Akademik Web
+  List<dynamic> krsList = [];
+  List<dynamic> transkripList = [];
+  List<String> uniquePeriodes = [];
+  String? selectedPeriode;
+  String? akademikInfo;
+  bool isAkademikLoading = false;
 
+  // Data Keamanan Web
+  List<Map<String, dynamic>> riwayatLoginList = [];
+  bool isRiwayatLoading = false;
+
+  // Preferensi Notifikasi Web (6 Kategori)
+  Map<String, bool> notifPrefs = {
+    'EmailAchievement': true,
+    'EmailBeasiswa': true,
+    'EmailCounseling': true,
+    'EmailVoice': true,
+    'EmailKencana': true,
+    'EmailNews': true,
+  };
+  bool isNotifLoading = false;
+
+  // Compatibility getters
+  bool get emailNotif => notifPrefs.values.any((v) => v);
+  bool get pushNotif => true;
+  bool get inAppNotif => true;
   bool get hasProfileData => name.isNotEmpty && nim.isNotEmpty;
-
-  void updateNotifPreferences({
-    bool? email,
-    bool? push,
-    bool? inApp,
-  }) {
-    if (email != null) emailNotif = email;
-    if (push != null) pushNotif = push;
-    if (inApp != null) inAppNotif = inApp;
-    notifyListeners();
-  }
 
   dynamic _extractValue(Map<String, dynamic> data, List<String> keys) {
     for (final key in keys) {
@@ -68,10 +83,11 @@ class ProfileProvider extends ChangeNotifier {
     try {
       final profile = await _repository.getProfile();
       rawProfileData = profile;
-      
+
       final m = profile['mahasiswa'] ?? profile['data']?['mahasiswa'] ?? profile;
       name = m['nama']?.toString() ?? m['Nama']?.toString() ?? name;
       nim = m['nim']?.toString() ?? m['NIM']?.toString() ?? nim;
+      statusAkademik = m['StatusAkademik']?.toString() ?? m['status_akademik']?.toString() ?? 'Aktif';
 
       final prodiObj = m['ProgramStudi'] ?? m['program_studi'] ?? m['prodi_detail'] ?? m['ProdiDetail'];
       if (prodiObj != null && prodiObj is Map) {
@@ -99,7 +115,7 @@ class ProfileProvider extends ChangeNotifier {
       phone = _extractValue(profile, ['no_hp', 'NoHP', 'no_wa', 'NoWA', 'telepon', 'Telepon', 'whatsapp', 'WhatsApp', 'phone', 'Phone'])?.toString() ?? phone;
       address = _extractValue(profile, ['alamat_domisili', 'AlamatDomisili', 'alamat', 'Alamat', 'address', 'Address'])?.toString() ?? address;
       gender = _extractValue(profile, ['jenis_kelamin', 'JenisKelamin', 'gender', 'Gender'])?.toString() ?? gender;
-      
+
       final birthPlace = _extractValue(profile, ['tempat_lahir', 'TempatLahir'])?.toString();
       final birthDate = _extractValue(profile, ['tanggal_lahir', 'TanggalLahir'])?.toString();
       if (birthPlace != null && birthDate != null) {
@@ -112,8 +128,8 @@ class ProfileProvider extends ChangeNotifier {
       intakeYear = _extractValue(profile, ['angkatan', 'Angkatan', 'tahun_masuk', 'TahunMasuk'])?.toString() ?? intakeYear;
 
       final p = profile['profile'] ?? profile['data']?['profile'] ?? profile;
-      fotoUrl = p['foto']?.toString() ?? p['Foto']?.toString() ?? fotoUrl;
-      
+      fotoUrl = p['foto']?.toString() ?? p['Foto']?.toString() ?? p['avatar_url']?.toString() ?? m['FotoURL']?.toString() ?? m['foto_url']?.toString() ?? fotoUrl;
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching profile: $e');
@@ -125,19 +141,20 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await fetchProfile();
+      await Future.wait([
+        fetchProfile(),
+        fetchAkademikData(),
+        fetchRiwayatLogin(),
+        fetchPreferensiNotif(),
+      ]);
 
-      // Sync from AuthService as fallback
       final userData = AuthService().userData;
       if (userData != null) {
         final m = userData['mahasiswa'] ?? userData['data']?['mahasiswa'] ?? userData;
         name = m['nama']?.toString() ?? m['Nama']?.toString() ?? name;
         nim = m['nim']?.toString() ?? m['NIM']?.toString() ?? nim;
-        
-        // Similarly extract others to fallback if empty
         if (prodi.isEmpty) prodi = m['prodi_nama']?.toString() ?? prodi;
         if (fakultas.isEmpty) fakultas = m['fakultas']?.toString() ?? fakultas;
-        
         final syncEmail = _extractValue(userData, ['email_kampus', 'email']);
         if (syncEmail != null && syncEmail.toString().trim().isNotEmpty) email = syncEmail.toString().trim();
       }
@@ -145,6 +162,137 @@ class ProfileProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> fetchAkademikData() async {
+    isAkademikLoading = true;
+    notifyListeners();
+    try {
+      final res = await _repository.getAkademikData();
+      debugPrint('[ProfileProvider] AKADEMIK RES: $res');
+      akademikInfo = res['info']?.toString() ?? res['data']?['info']?.toString();
+      final krs = res['krs'] ?? res['data']?['krs'] ?? [];
+      final tr = res['transkrip'] ?? res['data']?['transkrip'] ?? [];
+
+      if (krs is List) krsList = krs;
+      if (tr is List) transkripList = tr;
+
+      final rawIpk = res['ipk'] ?? res['data']?['ipk'];
+      if (rawIpk != null) {
+        ipk = double.tryParse(rawIpk.toString()) ?? ipk;
+      }
+      final rawSks = res['total_sks'] ?? res['data']?['total_sks'];
+      if (rawSks != null) {
+        totalSks = int.tryParse(rawSks.toString()) ?? totalSks;
+      }
+
+      final Set<String> pSet = {};
+      for (final item in krsList) {
+        if (item is Map) {
+          final p = (item['id_periode'] ?? item['periode'] ?? item['IdPeriode'])?.toString().trim();
+          if (p != null && p.isNotEmpty) {
+            pSet.add(p);
+          }
+        }
+      }
+
+      if (pSet.isEmpty) {
+        for (final item in transkripList) {
+          if (item is Map) {
+            final p = (item['id_periode'] ?? item['periode'] ?? item['semester_mahasiswa'] ?? item['IdPeriode'])?.toString().trim();
+            if (p != null && p.isNotEmpty) {
+              pSet.add(p);
+            }
+          }
+        }
+      }
+
+      uniquePeriodes = pSet.toList()..sort((a, b) => b.compareTo(a));
+      if (uniquePeriodes.isNotEmpty) {
+        if (selectedPeriode == null || !uniquePeriodes.contains(selectedPeriode)) {
+          selectedPeriode = uniquePeriodes.first;
+        }
+      } else {
+        selectedPeriode = null;
+      }
+    } catch (e) {
+      debugPrint('[ProfileProvider] Error fetching academic data: $e');
+    } finally {
+      isAkademikLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void setSelectedPeriode(String? periode) {
+    selectedPeriode = periode;
+    notifyListeners();
+  }
+
+  Future<void> fetchRiwayatLogin() async {
+    isRiwayatLoading = true;
+    notifyListeners();
+    try {
+      riwayatLoginList = await _repository.getRiwayatLogin();
+    } catch (e) {
+      debugPrint('Error fetching login history: $e');
+    } finally {
+      isRiwayatLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchPreferensiNotif() async {
+    isNotifLoading = true;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final localJson = prefs.getString('bku_notif_prefs');
+      if (localJson != null && localJson.isNotEmpty) {
+        final Map<String, dynamic> decoded = jsonDecode(localJson);
+        notifPrefs = {
+          'EmailAchievement': decoded['EmailAchievement'] != false,
+          'EmailBeasiswa': decoded['EmailBeasiswa'] != false,
+          'EmailCounseling': decoded['EmailCounseling'] != false,
+          'EmailVoice': decoded['EmailVoice'] != false,
+          'EmailKencana': decoded['EmailKencana'] != false,
+          'EmailNews': decoded['EmailNews'] != false,
+        };
+      } else {
+        final data = await _repository.getPreferensiNotif();
+        notifPrefs = {
+          'EmailAchievement': data['EmailAchievement'] != false,
+          'EmailBeasiswa': data['EmailBeasiswa'] != false,
+          'EmailCounseling': data['EmailCounseling'] != false,
+          'EmailVoice': data['EmailVoice'] != false,
+          'EmailKencana': data['EmailKencana'] != false,
+          'EmailNews': data['EmailNews'] != false,
+        };
+      }
+    } catch (e) {
+      debugPrint('Error fetching notif prefs: $e');
+    } finally {
+      isNotifLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> toggleNotifPreference(String key, bool value) async {
+    notifPrefs[key] = value;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('bku_notif_prefs', jsonEncode(notifPrefs));
+      await _repository.updatePreferensiNotif(notifPrefs);
+    } catch (e) {
+      debugPrint('Error updating notif preference: $e');
+    }
+  }
+
+  void updateNotifPreferences({bool? email, bool? push, bool? inApp}) {
+    if (email != null) {
+      notifPrefs.updateAll((key, value) => email);
+    }
+    notifyListeners();
   }
 
   Future<void> updateProfile(Map<String, dynamic> data) async {
@@ -171,6 +319,7 @@ class ProfileProvider extends ChangeNotifier {
       final newUrl = await _repository.uploadAvatar(filePath);
       fotoUrl = newUrl;
       notifyListeners();
+      await fetchProfile();
       return newUrl;
     } catch (e) {
       debugPrint('Error uploading avatar: $e');

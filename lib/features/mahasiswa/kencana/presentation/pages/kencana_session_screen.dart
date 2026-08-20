@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -195,7 +196,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               isCompleted
                   ? Icons.check_circle_rounded
                   : Icons.menu_book_rounded,
-          iconColor: isCompleted ? const Color(0xFF10B981) : AppColors.info,
+          iconColor: isCompleted ? BkuTheme.emerald : AppColors.info,
           onTap: () async {
             final fileUrlStr = (item['file_url'] ?? item['url'] ?? '')?.toString().trim();
             final linkUrlStr = item['link_url']?.toString().trim();
@@ -244,10 +245,10 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
         Color iconColor = AppColors.neutral600;
         if (isCompleted) {
           iconData = Icons.check_circle_rounded;
-          iconColor = const Color(0xFF10B981);
+          iconColor = BkuTheme.emerald;
         } else if (isActive) {
           iconData = Icons.play_circle_fill_rounded;
-          iconColor = const Color(0xFF7C3AED);
+          iconColor = BkuTheme.indigo;
         }
 
         return _buildCardItem(
@@ -301,7 +302,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               isSubmitted
                   ? Icons.check_circle_rounded
                   : Icons.upload_file_rounded,
-          iconColor: isSubmitted ? const Color(0xFF10B981) : const Color(0xFFD97706),
+          iconColor: isSubmitted ? BkuTheme.emerald : BkuTheme.amber,
           onTap: () async {
             final result = await Navigator.push(
               context,
@@ -313,7 +314,6 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                         title: item['title'] ?? 'Tugas',
                         desc: item['description'] ?? '',
                         type: 'assignment',
-                        isCompleted: isSubmitted,
                       ),
                     ),
               ),
@@ -335,8 +335,8 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
   Widget _buildSection({
     required String title,
     required IconData icon,
-    required List<Map<String, dynamic>> items,
-    required Widget Function(Map<String, dynamic>) itemBuilder,
+    required List<dynamic> items,
+    required Widget Function(dynamic) itemBuilder,
     required String emptyMessage,
   }) {
     return Column(
@@ -344,60 +344,32 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       children: [
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.neutral200,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, size: 16, color: AppColors.neutral900),
-            ),
+            Icon(icon, size: 18, color: BkuTheme.primary),
             const SizedBox(width: 8),
             Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                color: AppColors.neutral900,
-                fontSize: 14.5,
-              ),
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: AppColors.neutral200,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '${items.length}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.neutral600,
-                ),
+              style: BkuTheme.textSectionTitle.copyWith(
+                fontSize: 14,
+                color: BkuTheme.textHeading,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         if (items.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.neutral100,
-              borderRadius: BorderRadius.circular(14),
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r16,
               border: Border.all(
-                color: AppColors.neutral300,
+                color: BkuTheme.border,
               ),
             ),
             child: Text(
               emptyMessage,
-              style: const TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: BkuTheme.textCardSubtitle,
               textAlign: TextAlign.center,
             ),
           )

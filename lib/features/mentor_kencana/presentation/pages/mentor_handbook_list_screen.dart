@@ -121,7 +121,7 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Text(
-                          'PERSETUJUAN HANDBOOK DINONAKTIFKAN',
+                          'Persetujuan Handbook Dinonaktifkan',
                           style: AppTextStyles.titleSm.copyWith(
                             fontWeight: FontWeight.w900,
                             letterSpacing: -0.2,
@@ -384,13 +384,13 @@ class _MentorHandbookListScreenState extends State<MentorHandbookListScreen> {
                                 builder: (context) {
                                   final s = mentee.handbookStatus.toUpperCase();
                                   if (s == 'APPROVED' || s == 'DISETUJUI') {
-                                    return const BkuStatusBadge(status: BkuStatus.success, customText: 'DISETUJUI');
+                                    return const BkuStatusBadge(status: BkuStatus.success, customText: 'Disetujui');
                                   } else if (s == 'SUBMITTED' || s == 'WAITING_REVIEW' || s == 'MENUNGGU REVIEW') {
-                                    return const BkuStatusBadge(status: BkuStatus.pending, customText: 'MENUNGGU REVIEW');
+                                    return const BkuStatusBadge(status: BkuStatus.pending, customText: 'Menunggu Review');
                                   } else if (s == 'REJECTED' || s == 'REVISION' || s == 'DITOLAK') {
-                                    return BkuStatusBadge(status: BkuStatus.error, customText: s == 'REVISION' ? 'REVISI' : 'DITOLAK');
+                                    return BkuStatusBadge(status: BkuStatus.error, customText: s == 'REVISION' ? 'Revisi' : 'Ditolak');
                                   } else {
-                                    return const BkuStatusBadge(status: BkuStatus.inactive, customText: 'BELUM DIKERJAKAN');
+                                    return const BkuStatusBadge(status: BkuStatus.inactive, customText: 'Belum Dikerjakan');
                                   }
                                 }
                               ),

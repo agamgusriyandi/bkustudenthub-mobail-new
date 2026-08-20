@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -67,7 +68,7 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: Consumer<OrmawaProvider>(
         builder: (context, provider, _) {
           final roles = provider.roles.map((r) => r.name).toList();
@@ -93,111 +94,60 @@ class _CreateAnggotaScreenState extends State<CreateAnggotaScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      OrmawaCard(
+                      BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        borderRadius: 18,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            OrmawaTextField(
+                            BkuTextField(
                               label: 'Nomor Induk Mahasiswa (NIM) *',
-                              hintText: 'Masukkan NIM mahasiswa',
+                              hint: 'Masukkan NIM mahasiswa',
                               controller: _nimController,
-                              prefixIcon: Icons.badge_outlined,
-                            ),
-                            SizedBox(height: 14),
-                            OrmawaTextField(
-                              label: 'Nama Lengkap *',
-                              hintText: 'Masukkan nama lengkap',
-                              controller: _namaController,
-                              prefixIcon: Icons.person_outline_rounded,
+                              prefixIcon: const Icon(Icons.badge_outlined, size: 18, color: BkuTheme.textPlaceholder),
                             ),
                             const SizedBox(height: 14),
-                            Text(
-                              'Jabatan / Peran *',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: OrmawaTheme.textHeading,
-                              ),
+                            BkuTextField(
+                              label: 'Nama Lengkap *',
+                              hint: 'Masukkan nama lengkap',
+                              controller: _namaController,
+                              prefixIcon: const Icon(Icons.person_outline_rounded, size: 18, color: BkuTheme.textPlaceholder),
                             ),
-                            SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: OrmawaTheme.border),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _selectedRole,
-                                  isExpanded: true,
-                                  icon: Icon(Icons.keyboard_arrow_down_rounded, color: OrmawaTheme.primary),
-                                  items: roles.map((role) {
-                                    return DropdownMenuItem(
-                                      value: role,
-                                      child: Text(
-                                        role,
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                          color: OrmawaTheme.textHeading,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) => setState(() => _selectedRole = val!),
-                                ),
-                              ),
+                            const SizedBox(height: 14),
+                            BkuDropdown<String>(
+                              label: 'Jabatan / Peran *',
+                              value: _selectedRole,
+                              items: roles.map((role) {
+                                return DropdownMenuItem(
+                                  value: role,
+                                  child: Text(role, style: BkuTheme.textBodyRegular.copyWith(fontWeight: FontWeight.w600)),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) setState(() => _selectedRole = val);
+                              },
                             ),
-                            SizedBox(height: 14),
-                            Text(
-                              'Divisi / Departemen *',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: OrmawaTheme.textHeading,
-                              ),
-                            ),
-                            SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: OrmawaTheme.border),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _selectedDivision,
-                                  isExpanded: true,
-                                  icon: Icon(Icons.keyboard_arrow_down_rounded, color: OrmawaTheme.primary),
-                                  items: divisions.map((div) {
-                                    return DropdownMenuItem(
-                                      value: div,
-                                      child: Text(
-                                        div,
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                          color: OrmawaTheme.textHeading,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) => setState(() => _selectedDivision = val!),
-                                ),
-                              ),
+                            const SizedBox(height: 14),
+                            BkuDropdown<String>(
+                              label: 'Divisi / Departemen *',
+                              value: _selectedDivision,
+                              items: divisions.map((div) {
+                                return DropdownMenuItem(
+                                  value: div,
+                                  child: Text(div, style: BkuTheme.textBodyRegular.copyWith(fontWeight: FontWeight.w600)),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) setState(() => _selectedDivision = val);
+                              },
                             ),
                             const SizedBox(height: 24),
-                            SizedBox(
-                              width: double.infinity,
+                            BkuButton.primary(
+                              text: 'Simpan Data Anggota',
+                              isLoading: _isSubmitting,
+                              onPressed: _isSubmitting ? null : _handleSubmit,
+                              icon: Icons.check_circle_outline_rounded,
                               height: 48,
-                              child: OrmawaButton(
-                                text: 'SIMPAN DATA ANGGOTA',
-                                isLoading: _isSubmitting,
-                                onPressed: _isSubmitting ? null : _handleSubmit,
-                                icon: Icons.check_circle_outline_rounded,
-                              ),
                             ),
                           ],
                         ),

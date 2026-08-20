@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 
 class BkuBottomSheet {
   static Future<T?> show<T>({
@@ -38,13 +35,13 @@ class BkuBottomSheet {
             decoration: BoxDecoration(
               color: theme.surface,
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(AppRadius.xl),
+                top: Radius.circular(24),
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                  color: AppColors.neutral900.withValues(alpha: 0.1),
+                  color: Color(0x1A0F172A),
                   blurRadius: 16,
-                  offset: const Offset(0, -4),
+                  offset: Offset(0, -4),
                 ),
               ],
             ),
@@ -60,8 +57,8 @@ class BkuBottomSheet {
                       height: 4,
                       width: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.neutral300,
-                        borderRadius: AppRadius.br2,
+                        color: BkuTheme.border,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
                   ),
@@ -74,13 +71,13 @@ class BkuBottomSheet {
                       child: Text(
                         title,
                         textAlign: TextAlign.center,
-                        style: AppTextStyles.titleLg.copyWith(
+                        style: BkuTheme.textSectionTitle.copyWith(
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.neutral900,
                         ),
                       ),
                     ),
-                    const Divider(height: 1, color: AppColors.neutral200),
+                    const Divider(height: 1, color: BkuTheme.borderSubtle),
                   ],
                   Flexible(
                     child: Padding(padding: padding, child: child),

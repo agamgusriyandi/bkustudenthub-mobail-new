@@ -3,11 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_absensi_screen.dart';
@@ -28,24 +30,28 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
 
   String _formatDate(DateTime? date) {
     if (date == null) return '—';
-    return DateFormat('EEEE, dd MMMM yyyy', 'id').format(date);
+    try {
+      return DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(date);
+    } catch (_) {
+      return '${date.day}/${date.month}/${date.year}';
+    }
   }
 
   Color _getStatusBgColor(String status) {
     switch (status.toLowerCase()) {
       case 'berlangsung':
       case 'ongoing':
-        return const Color(0xFFFEF3C7);
+        return BkuTheme.amberSoft;
       case 'selesai':
       case 'terlaksana':
       case 'completed':
-        return const Color(0xFFD1FAE5);
+        return BkuTheme.emeraldSoft;
       case 'dibatalkan':
       case 'batal':
       case 'cancelled':
-        return const Color(0xFFFFE4E6);
+        return BkuTheme.roseSoft;
       default:
-        return const Color(0xFFEFF6FF);
+        return BkuTheme.skySoft;
     }
   }
 
@@ -53,17 +59,17 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'berlangsung':
       case 'ongoing':
-        return const Color(0xFFB45309);
+        return BkuTheme.amber;
       case 'selesai':
       case 'terlaksana':
       case 'completed':
-        return const Color(0xFF047857);
+        return BkuTheme.emerald;
       case 'dibatalkan':
       case 'batal':
       case 'cancelled':
-        return const Color(0xFFBE123C);
+        return BkuTheme.rose;
       default:
-        return const Color(0xFF1D4ED8);
+        return BkuTheme.sky;
     }
   }
 
@@ -71,17 +77,17 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'berlangsung':
       case 'ongoing':
-        return const Color(0xFFFDE68A);
+        return BkuTheme.amberBorder;
       case 'selesai':
       case 'terlaksana':
       case 'completed':
-        return const Color(0xFFA7F3D0);
+        return BkuTheme.emeraldBorder;
       case 'dibatalkan':
       case 'batal':
       case 'cancelled':
-        return const Color(0xFFFECDD3);
+        return BkuTheme.roseBorder;
       default:
-        return const Color(0xFFBFDBFE);
+        return BkuTheme.skyBorder;
     }
   }
 
@@ -137,7 +143,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
     final statusBorder = _getStatusBorderColor(agenda.status);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -154,20 +160,9 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF94A3B8).withAlpha(15),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -178,7 +173,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: statusBg,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BkuTheme.r8,
                                 border: Border.all(color: statusBorder),
                               ),
                               child: Text(
@@ -189,36 +184,45 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                             if (agenda.id.isNotEmpty)
                               Text(
                                 'ID #${agenda.id}',
-                                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), fontFamily: 'monospace'),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: BkuTheme.textPlaceholder,
+                                  fontFamily: 'monospace',
+                                ),
                               ),
                           ],
                         ),
                         const SizedBox(height: 12),
                         Text(
                           agenda.title,
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.3),
+                          style: BkuTheme.textCardTitle.copyWith(
+                            fontSize: 16.5,
+                            fontWeight: FontWeight.w900,
+                            height: 1.3,
+                          ),
                         ),
                         if (agenda.pjKegiatan != null && agenda.pjKegiatan!.isNotEmpty) ...[
                           const SizedBox(height: 10),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              color: BkuTheme.borderSubtle,
+                              borderRadius: BkuTheme.r10,
+                              border: Border.all(color: BkuTheme.border),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.person_rounded, size: 14, color: OrmawaTheme.primary),
+                                Icon(Icons.person_rounded, size: 14, color: BkuTheme.primary),
                                 const SizedBox(width: 6),
                                 Text(
                                   'PJ Kegiatan: ',
-                                  style: TextStyle(fontSize: 11, color: OrmawaTheme.textMuted),
+                                  style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
                                 ),
                                 Text(
                                   agenda.pjKegiatan!,
-                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading),
+                                  style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.textHeading),
                                 ),
                               ],
                             ),
@@ -235,14 +239,14 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         'Mulai Pelaksanaan',
                         _formatDate(agenda.date),
                         Icons.calendar_today_rounded,
-                        OrmawaTheme.primary,
+                        BkuTheme.primary,
                       ),
                       const SizedBox(width: 8),
                       _buildMetricCard(
                         'Selesai Pelaksanaan',
                         _formatDate(agenda.endDate),
                         Icons.event_available_rounded,
-                        OrmawaTheme.primary,
+                        BkuTheme.primary,
                       ),
                     ],
                   ),
@@ -253,41 +257,33 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                         'Lokasi Kegiatan',
                         agenda.location.isNotEmpty ? agenda.location : 'Belum ditentukan',
                         Icons.location_on_outlined,
-                        OrmawaTheme.primary,
+                        BkuTheme.primary,
                       ),
                       const SizedBox(width: 8),
                       _buildMetricCard(
                         'Estimasi Dana',
                         _formatRp(agenda.estimasiDana),
                         Icons.payments_outlined,
-                        const Color(0xFF059669),
+                        BkuTheme.emerald,
                       ),
                     ],
                   ),
                   const SizedBox(height: 14),
 
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF94A3B8).withAlpha(15),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.article_outlined, size: 16, color: OrmawaTheme.primary),
+                            Icon(Icons.article_outlined, size: 16, color: BkuTheme.primary),
                             const SizedBox(width: 8),
-                            Text('Informasi Detail Kegiatan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.textHeading)),
+                            Text(
+                              'Informasi Detail Kegiatan',
+                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 14),
@@ -310,31 +306,24 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: OutlinedButton.icon(
+                        child: BkuButton.outline(
                           onPressed: () => _confirmDelete(context, agenda),
-                          icon: const Icon(Icons.delete_outline_rounded, size: 16),
-                          label: const Text('Hapus Agenda', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFFE11D48),
-                            side: const BorderSide(color: Color(0xFFFECDD3)),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
+                          icon: Icons.delete_outline_rounded,
+                          text: 'Hapus Agenda',
+                          height: 44,
+                          fontSize: 11,
+                          customRadius: BkuTheme.r12,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: ElevatedButton.icon(
+                        child: BkuButton.primary(
                           onPressed: () => context.push(AppRoutes.ormawaJadwalEdit, extra: agenda),
-                          icon: const Icon(Icons.edit_rounded, size: 16),
-                          label: const Text('Edit Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: OrmawaTheme.primary,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
+                          icon: Icons.edit_rounded,
+                          text: 'Edit Kegiatan',
+                          height: 44,
+                          fontSize: 11,
+                          customRadius: BkuTheme.r12,
                         ),
                       ),
                     ],
@@ -348,7 +337,7 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                       }
                       return SizedBox(
                         width: double.infinity,
-                        child: OutlinedButton.icon(
+                        child: BkuButton.outline(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -357,15 +346,11 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.qr_code_scanner_rounded, size: 16),
-                          label: const Text('Buka Absensi Kegiatan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: OrmawaTheme.primaryDark,
-                            side: BorderSide(color: OrmawaTheme.primaryBorder),
-                            backgroundColor: OrmawaTheme.primarySoft,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
+                          icon: Icons.qr_code_scanner_rounded,
+                          text: 'Buka Absensi Kegiatan',
+                          height: 44,
+                          fontSize: 11,
+                          customRadius: BkuTheme.r12,
                         ),
                       );
                     },
@@ -383,13 +368,9 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
 
   Widget _buildMetricCard(String label, String value, IconData icon, Color iconColor) {
     return Expanded(
-      child: Container(
+      child: BkuCard(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
+        borderRadius: 14,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -397,7 +378,18 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               children: [
                 Icon(icon, size: 13, color: iconColor),
                 const SizedBox(width: 4),
-                Text(label, style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: BkuTheme.textBadge.copyWith(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      color: BkuTheme.textMuted,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 4),
@@ -406,8 +398,8 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: iconColor == const Color(0xFF059669) ? const Color(0xFF059669) : const Color(0xFF0F172A),
-                fontFamily: iconColor == const Color(0xFF059669) ? 'monospace' : null,
+                color: iconColor == BkuTheme.emerald ? BkuTheme.emerald : BkuTheme.textHeading,
+                fontFamily: iconColor == BkuTheme.emerald ? 'monospace' : null,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -426,24 +418,37 @@ class OrmawaAgendaDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFF1F5F9)),
+          color: BkuTheme.borderSubtle,
+          borderRadius: BkuTheme.r12,
+          border: Border.all(color: BkuTheme.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, size: 12, color: const Color(0xFF64748B)),
+                Icon(icon, size: 12, color: BkuTheme.textMuted),
                 const SizedBox(width: 5),
-                Text(label.toUpperCase(), style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.3)),
+                Text(
+                  label.toUpperCase(),
+                  style: BkuTheme.textBadge.copyWith(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w900,
+                    color: BkuTheme.textMuted,
+                    letterSpacing: 0.3,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 4),
             Text(
               val,
-              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF0F172A), height: 1.4),
+              style: BkuTheme.textBodyRegular.copyWith(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: BkuTheme.textHeading,
+                height: 1.4,
+              ),
             ),
           ],
         ),

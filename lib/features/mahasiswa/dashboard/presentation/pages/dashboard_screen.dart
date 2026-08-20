@@ -1,9 +1,8 @@
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/counseling_provider.dart';
@@ -12,9 +11,7 @@ import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_v
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 
-// Modular Widgets
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/banner_pinned.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/deadline_alert.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/today_schedule_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_service_grid.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/student_status_grid.dart';
@@ -24,12 +21,9 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
-
-
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/absensi/presentation/pages/ormawa_qr_scan_screen.dart';
-import 'package:bkuhub_mobile/core/utils/string_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -64,7 +58,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final navProvider = context.read<NavigationProvider>();
     final name = profile.name;
     final stats = academic.dashboardStats;
-    // Web uses persentase and status
     final statsKencana = stats['kencana'];
     final kencanaPercentage = statsKencana?['persentase'] ?? 0.0;
     final kencanaStatus = statsKencana?['status'] ?? 'Belum Dimulai';
@@ -103,34 +96,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           slivers: [
             BkuAppBar(
-              title: name.toTitleCase(),
+              title: 'Halo, ${name.split(' ').first}!',
               subtitle: 'Selamat Datang Kembali',
-              info: '${profile.nim} • Semester ${profile.semester}',
+              info: profile.prodi.isNotEmpty
+                  ? '${profile.prodi} • Angkatan ${profile.intakeYear}'
+                  : 'Fakultas Farmasi • BKU Student Hub',
               variant: AppBarVariant.student,
               showBackButton: false,
-              expandedHeight: 130,
+              expandedHeight: 165.0,
               showProfileOnCollapse: true,
-              profileImage:
-                  profile.fotoUrl != null && profile.fotoUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                        imageUrl: ApiGate.getImageUrl(profile.fotoUrl!),
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) {
-                          return Icon(
-                            Icons.person_rounded,
-                            color: context.appColors.primary,
-                            size: 28,
-                          );
-                        },
-                        placeholder:
-                            (context, url) =>
-                                Container(color: AppColors.neutral200),
-                      )
-                      : Icon(
+              profileImage: profile.fotoUrl != null && profile.fotoUrl!.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: ApiGate.getImageUrl(profile.fotoUrl!),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      errorWidget: (context, url, error) => const Icon(
                         Icons.person_rounded,
-                        color: context.appColors.primary,
+                        color: Colors.white,
                         size: 28,
                       ),
+                      placeholder: (context, url) => Container(color: BkuTheme.borderSubtle),
+                    )
+                  : const Icon(
+                      Icons.person_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
               showNotification: true,
               actions: [
                 IconButton(
@@ -138,17 +130,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:
-                            (context) => const OrmawaQrScanScreen(
-                              eventId: '',
-                              eventTitle: 'Scan Presensi Mandiri',
-                            ),
+                        builder: (context) => const OrmawaQrScanScreen(
+                          eventId: '',
+                          eventTitle: 'Scan Presensi Mandiri',
+                        ),
                       ),
                     );
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: context.appColors.surface,
+                    color: Colors.white,
+                    size: 24,
                   ),
                   tooltip: 'Scan Presensi',
                 ),
@@ -162,6 +154,97 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               onProfileTap: () => navProvider.setIndex(4),
+              bottomChild: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4.5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(50),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withAlpha(70),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.school_rounded, color: Colors.white, size: 12),
+                          const SizedBox(width: 4),
+                          Text(
+                            profile.prodi.isNotEmpty ? profile.prodi : 'Mahasiswa',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4.5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(40),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withAlpha(60),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.check_circle_rounded, color: Colors.white, size: 12),
+                          const SizedBox(width: 4),
+                          Text(
+                            profile.statusAkademik.isNotEmpty ? '${profile.statusAkademik} • Smt ${profile.semester}' : 'Aktif',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4.5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(40),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withAlpha(60),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.badge_rounded, color: Colors.white, size: 12),
+                          const SizedBox(width: 4),
+                          Text(
+                            'NIM ${profile.nim}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -171,26 +254,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     const SizedBox(height: AppSpacing.xl),
 
-                    // 1. Layanan Cepat
-                    _buildSectionTitle('Layanan Cepat'),
+                    _buildSectionTitle('Layanan Mahasiswa'),
                     const SizedBox(height: AppSpacing.md),
                     const StudentServiceGrid(),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 2. Banner Pinned (matches web BannerPinned.jsx)
                     const BannerPinned(),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 2. Deadline Alert (matches web DeadlineAlert.jsx)
-                    DeadlineAlert(deadlines: _buildDeadlines(scholarship)),
-                    const SizedBox(height: AppSpacing.s20),
-
-                    // 3. Today Schedule (mobile extra)
                     const TodayScheduleCard(),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 4. Status Kamu (matches web PrimaryStatsCard)
-                    _buildSectionTitle('Status Kamu'),
+                    _buildSectionTitle('Statistik Mahasiswa'),
                     const SizedBox(height: AppSpacing.md),
                     StudentStatusGrid(
                       isLoading: profile.isLoading,
@@ -203,15 +278,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
-
-
-                    // 6. Aktivitas Terbaru (matches web ActivityFeed.jsx)
                     _buildSectionTitle('Aktivitas Terbaru'),
                     const SizedBox(height: AppSpacing.md),
                     ActivityFeed(activities: _buildActivities(academic, counseling)),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 7. Beasiswa Tersedia (matches web AvailableScholarships.jsx)
                     _buildSectionTitle('Beasiswa Tersedia'),
                     const SizedBox(height: AppSpacing.md),
                     AvailableScholarships(
@@ -219,23 +290,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 8. Kalender Mini (matches web CalendarMini.jsx)
                     CalendarMini(events: _buildCalendarEvents(academic)),
                     const SizedBox(height: AppSpacing.s20),
 
-
-                    // 10. IPK Chart (mobile extra)
                     IpkChartCard(
                       currentIpk: profile.ipk,
                       currentSemester: profile.semester,
                     ),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 11. Asuransi (mobile extra)
                     InsuranceTrackerCard(claims: health.insuranceClaims),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // 12. Berita Kampus (mobile extra)
                     _buildSectionTitle('Berita Kampus'),
                     const SizedBox(height: AppSpacing.md),
                     const StudentAgendaList(),
@@ -253,30 +319,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppTextStyles.titleMedium.copyWith(
-        fontWeight: FontWeight.w900,
+      style: BkuTheme.textSectionTitle.copyWith(
+        fontSize: 14,
+        color: BkuTheme.textHeading,
       ),
     );
-  }
-
-  List<DeadlineItem> _buildDeadlines(ScholarshipProvider scholarship) {
-    final now = DateTime.now();
-    final items = <DeadlineItem>[];
-    for (final s in scholarship.scholarships) {
-      if (s.applicationStatus == null && s.status == 'Open') {
-        final deadline = DateTime.tryParse(s.deadline);
-        if (deadline != null && deadline.isAfter(now)) {
-          items.add(
-            DeadlineItem(
-              name: s.title,
-              daysLeft: deadline.difference(now).inDays,
-              type: 'beasiswa',
-            ),
-          );
-        }
-      }
-    }
-    return items;
   }
 
   List<ActivityItem> _buildActivities(AcademicProvider academic, MahasiswaCounselingProvider counseling) {
@@ -342,12 +389,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   List<CalendarEvent> _buildCalendarEvents(AcademicProvider academic) {
-    return academic.campusEvents.take(10).map((e) {
-      return CalendarEvent(
-        title: e.judul,
-        date: e.tanggal,
-        category: e.kategori,
-      );
-    }).toList();
+    return academic.campusEvents
+        .where((e) {
+          final isDeadline = e.judul.toLowerCase().startsWith('deadline') ||
+              e.kategori.toLowerCase() == 'beasiswa';
+          return !isDeadline;
+        })
+        .take(10)
+        .map((e) {
+          return CalendarEvent(
+            title: e.judul,
+            date: e.tanggal,
+            category: e.kategori,
+          );
+        })
+        .toList();
   }
 }

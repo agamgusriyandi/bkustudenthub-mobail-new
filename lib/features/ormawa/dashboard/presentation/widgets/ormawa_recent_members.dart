@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_section_header.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -19,15 +19,15 @@ class OrmawaRecentMembers extends StatelessWidget {
     final members = ormawa.members;
 
     if (ormawa.isLoading) {
-      return Column(
+      return const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: BkuSectionHeader(title: 'Anggota Terbaru'),
           ),
-          const SizedBox(height: AppSpacing.sm),
-          const Padding(
+          SizedBox(height: AppSpacing.sm),
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: BkuShimmer(
               width: double.infinity,
@@ -63,11 +63,12 @@ class OrmawaRecentMembers extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: OrmawaCard(
+          child: BkuCard(
             padding: const EdgeInsets.symmetric(
               vertical: AppSpacing.md,
               horizontal: AppSpacing.md,
             ),
+            borderRadius: 16,
             child: SizedBox(
               height: 72,
               child: ListView.separated(
@@ -86,10 +87,10 @@ class OrmawaRecentMembers extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: OrmawaTheme.primarySoft,
+                          color: BkuTheme.primarySoft,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: OrmawaTheme.primaryBorder.withAlpha(50),
+                            color: BkuTheme.primaryBorder.withValues(alpha: 0.5),
                             width: 1.2,
                           ),
                         ),
@@ -105,18 +106,18 @@ class OrmawaRecentMembers extends StatelessWidget {
                                   errorWidget: (context, url, error) => Text(
                                     initial,
                                     style: TextStyle(
-                                      color: OrmawaTheme.primary,
+                                      color: BkuTheme.primary,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                     ),
                                   ),
-                                  placeholder: (context, url) => Container(color: const Color(0xFFF1F5F9)),
+                                  placeholder: (context, url) => Container(color: BkuTheme.borderSubtle),
                                 ),
                               )
                             : Text(
                                 initial,
                                 style: TextStyle(
-                                  color: OrmawaTheme.primary,
+                                  color: BkuTheme.primary,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14,
                                 ),
@@ -127,9 +128,9 @@ class OrmawaRecentMembers extends StatelessWidget {
                         width: 54,
                         child: Text(
                           firstName,
-                          style: TextStyle(
+                          style: BkuTheme.textCardSubtitle.copyWith(
                             fontSize: 10.5,
-                            color: OrmawaTheme.textHeading,
+                            color: BkuTheme.textHeading,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,

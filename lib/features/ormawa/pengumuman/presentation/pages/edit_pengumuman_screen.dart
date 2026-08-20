@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -34,32 +39,32 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
       'label': 'Umum',
       'desc': 'Informasi umum & keorganisasian',
       'icon': Icons.campaign_rounded,
-      'color': const Color(0xFF475569),
-      'bgColor': const Color(0xFFF1F5F9),
+      'color': BkuTheme.textBody,
+      'bgColor': BkuTheme.borderSubtle,
     },
     {
       'id': 'kegiatan',
       'label': 'Info Kegiatan',
       'desc': 'Agenda acara, webinar & workshop',
       'icon': Icons.event_rounded,
-      'color': const Color(0xFF0284C7),
-      'bgColor': const Color(0xFFE0F2FE),
+      'color': BkuTheme.primary,
+      'bgColor': BkuTheme.primarySoft,
     },
     {
       'id': 'penting',
       'label': 'Penting & Urgen',
       'desc': 'Pemberitahuan mendesak & wajib',
       'icon': Icons.priority_high_rounded,
-      'color': const Color(0xFFE11D48),
-      'bgColor': const Color(0xFFFFE4E6),
+      'color': BkuTheme.rose,
+      'bgColor': BkuTheme.roseSoft,
     },
     {
       'id': 'prestasi',
       'label': 'Kabar Prestasi',
       'desc': 'Apresiasi & capaian mahasiswa',
       'icon': Icons.emoji_events_rounded,
-      'color': const Color(0xFFD97706),
-      'bgColor': const Color(0xFFFEF3C7),
+      'color': BkuTheme.amber,
+      'bgColor': BkuTheme.amberSoft,
     },
   ];
 
@@ -118,14 +123,14 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: BkuTheme.textHeading,
             ),
-                        textButtonTheme: TextButtonThemeData(
+            textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: OrmawaTheme.primary,
+                foregroundColor: BkuTheme.primary,
                 textStyle: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -190,17 +195,15 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = OrmawaTheme.primary;
-
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Edit Pengumuman',
         subtitle: 'Siaran Informasi Ormawa',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.s100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -208,16 +211,15 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
               title: 'Kategori & Klasifikasi Siaran',
               subtitle: 'Perbarui kategori dan sasaran penerima pengumuman.',
               icon: Icons.category_rounded,
-              primaryColor: primaryColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'PILIH KATEGORI SIARAN *',
-                    style: TextStyle(
+                    style: BkuTheme.textBadge.copyWith(
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF475569),
+                      color: BkuTheme.textMuted,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -243,10 +245,10 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isSelected ? primaryColor.withAlpha(15) : Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            color: isSelected ? BkuTheme.primarySoft : BkuTheme.cardSurface,
+                            borderRadius: BkuTheme.r16,
                             border: Border.all(
-                              color: isSelected ? primaryColor : const Color(0xFFE2E8F0),
+                              color: isSelected ? BkuTheme.primary : BkuTheme.border,
                               width: isSelected ? 2 : 1,
                             ),
                           ),
@@ -260,8 +262,8 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: isSelected ? primaryColor : cat['bgColor'] as Color,
-                                      borderRadius: BorderRadius.circular(10),
+                                      color: isSelected ? BkuTheme.primary : cat['bgColor'] as Color,
+                                      borderRadius: BkuTheme.r10,
                                     ),
                                     child: Icon(
                                       cat['icon'] as IconData,
@@ -273,8 +275,8 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: primaryColor,
-                                        borderRadius: BorderRadius.circular(8),
+                                        color: BkuTheme.primary,
+                                        borderRadius: BkuTheme.r8,
                                       ),
                                       child: const Text(
                                         'Terpilih',
@@ -288,15 +290,15 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                                 children: [
                                   Text(
                                     cat['label'] as String,
-                                    style: TextStyle(
+                                    style: BkuTheme.textCardTitle.copyWith(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w900,
-                                      color: isSelected ? primaryColor : const Color(0xFF0F172A),
+                                      color: isSelected ? BkuTheme.primaryDark : BkuTheme.textHeading,
                                     ),
                                   ),
                                   Text(
                                     cat['desc'] as String,
-                                    style: const TextStyle(fontSize: 9, color: Color(0xFF64748B), height: 1.2),
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 9, color: BkuTheme.textMuted, height: 1.2),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -329,42 +331,31 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                     ],
                   ),
                   const SizedBox(height: 14),
-                  const Text(
-                    'TARGET AUDIENS',
-                    style: TextStyle(
-                      fontSize: 10,
+                  Text(
+                    'Target Audiens',
+                    style: BkuTheme.textBadge.copyWith(
+                      fontSize: 10.5,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF475569),
-                      letterSpacing: 0.5,
+                      color: BkuTheme.textHeading,
+                      letterSpacing: 0.3,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedTargetAudiens,
-                        isExpanded: true,
-                        icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
-                        items: _audiensOptions.map((opt) {
-                          return DropdownMenuItem(
-                            value: opt,
-                            child: Text(
-                              opt,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          if (val != null) setState(() => _selectedTargetAudiens = val);
-                        },
-                      ),
-                    ),
+                  BkuDropdown<String>(
+                    value: _selectedTargetAudiens,
+                    isExpanded: true,
+                    items: _audiensOptions.map((opt) {
+                      return DropdownMenuItem(
+                        value: opt,
+                        child: Text(
+                          opt,
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w700),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      if (val != null) setState(() => _selectedTargetAudiens = val);
+                    },
                   ),
                 ],
               ),
@@ -372,79 +363,22 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
             const SizedBox(height: 14),
             _buildSectionCard(
               title: 'Konten & Teks Pengumuman',
-              subtitle: 'Ubah judul siaran atau isi pengumuman.',
+              subtitle: 'Perbarui judul siaran dan uraikan pesan secara lengkap.',
               icon: Icons.article_rounded,
-              primaryColor: primaryColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'JUDUL PENGUMUMAN *',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF475569),
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  TextField(
+                  BkuTextField(
                     controller: _judulController,
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                    decoration: InputDecoration(
-                      hintText: 'Masukkan judul pengumuman...',
-                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: primaryColor, width: 1.5),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    ),
+                    label: 'Judul Pengumuman *',
+                    hint: 'Contoh: Pendaftaran Open Recruitment Panitia...',
                   ),
                   const SizedBox(height: 14),
-                  const Text(
-                    'ISI PESAN PENGUMUMAN *',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF475569),
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  TextField(
+                  BkuTextField(
                     controller: _isiController,
+                    label: 'Isi Pesan Pengumuman *',
+                    hint: 'Tuliskan rincian pengumuman, agenda, instruksi, dan narahubung...',
                     maxLines: 7,
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, height: 1.5),
-                    decoration: InputDecoration(
-                      hintText: 'Tuliskan rincian pengumuman, agenda, instruksi, dan narahubung...',
-                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: primaryColor, width: 1.5),
-                      ),
-                      contentPadding: const EdgeInsets.all(14),
-                    ),
                   ),
                 ],
               ),
@@ -454,20 +388,19 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
               title: 'Lampiran & Tautan Pendukung',
               subtitle: 'Lampirkan Google Drive, formulir pendaftaran, atau flyer.',
               icon: Icons.link_rounded,
-              primaryColor: primaryColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'TAUTAN DOKUMEN / DRIVE (OPSIONAL)',
-                        style: TextStyle(
-                          fontSize: 10,
+                      Text(
+                        'Tautan Dokumen / Drive (Opsional)',
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF475569),
-                          letterSpacing: 0.5,
+                          color: BkuTheme.textHeading,
+                          letterSpacing: 0.3,
                         ),
                       ),
                       if (_lampiranController.text.trim().startsWith('http'))
@@ -482,40 +415,21 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                             children: [
                               Text(
                                 'Buka Tautan',
-                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: primaryColor),
+                                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                               ),
                               const SizedBox(width: 2),
-                              Icon(Icons.open_in_new_rounded, size: 12, color: primaryColor),
+                              const Icon(Icons.open_in_new_rounded, size: 12, color: Color(0xFF0F172A)),
                             ],
                           ),
                         ),
                     ],
                   ),
                   const SizedBox(height: 6),
-                  TextField(
+                  BkuTextField(
                     controller: _lampiranController,
                     onChanged: (_) => setState(() {}),
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                    decoration: InputDecoration(
-                      hintText: 'https://drive.google.com/... atau https://forms.gle/...',
-                      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                      prefixIcon: const Icon(Icons.link_rounded, size: 18, color: Color(0xFF94A3B8)),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: primaryColor, width: 1.5),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    ),
+                    hint: 'https://drive.google.com/... atau https://forms.gle/...',
+                    prefixIcon: const Icon(Icons.link_rounded, size: 18, color: BkuTheme.textPlaceholder),
                   ),
                 ],
               ),
@@ -524,57 +438,32 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
         ),
       ),
       bottomSheet: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: const Border(top: BorderSide(color: Color(0xFFE2E8F0))),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF64748B).withAlpha(15),
-              blurRadius: 10,
-              offset: const Offset(0, -4),
-            ),
-          ],
+          color: BkuTheme.cardSurface,
+          border: const Border(top: BorderSide(color: BkuTheme.border)),
+          boxShadow: BkuTheme.cardShadow,
         ),
         child: Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: BkuButton.outline(
                 onPressed: () => Navigator.pop(context),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: const BorderSide(color: Color(0xFFCBD5E1)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text(
-                  'Batal',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF475569)),
-                ),
+                text: 'Batal',
+                height: 46,
+                fontSize: 12,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               flex: 2,
-              child: ElevatedButton.icon(
+              child: BkuButton.primary(
                 onPressed: _isSubmitting ? null : _handleSave,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: _isSubmitting
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.save_rounded, size: 16),
-                label: Text(
-                  _isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-                ),
+                isLoading: _isSubmitting,
+                icon: Icons.save_rounded,
+                text: 'Simpan Perubahan',
+                height: 46,
+                fontSize: 12,
               ),
             ),
           ],
@@ -587,17 +476,11 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
     required String title,
     required String subtitle,
     required IconData icon,
-    required Color primaryColor,
     required Widget child,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      borderRadius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -606,10 +489,10 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: primaryColor.withAlpha(20),
-                  borderRadius: BorderRadius.circular(10),
+                  color: BkuTheme.primarySoft,
+                  borderRadius: BkuTheme.r10,
                 ),
-                child: Icon(icon, color: primaryColor, size: 18),
+                child: Icon(icon, color: BkuTheme.primary, size: 18),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -618,17 +501,16 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: BkuTheme.textCardTitle.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
-                        color: Color(0xFF0F172A),
                       ),
                     ),
                     Text(
                       subtitle,
-                      style: const TextStyle(
+                      style: BkuTheme.textCaption.copyWith(
                         fontSize: 10,
-                        color: Color(0xFF64748B),
+                        color: BkuTheme.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -654,27 +536,27 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
       children: [
         Text(
           label.toUpperCase(),
-          style: const TextStyle(
+          style: BkuTheme.textBadge.copyWith(
             fontSize: 10,
             fontWeight: FontWeight.w900,
-            color: Color(0xFF475569),
+            color: BkuTheme.textMuted,
             letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 6),
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BkuTheme.r12,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
             ),
             child: Row(
               children: [
-                const Icon(Icons.calendar_today_rounded, size: 14, color: Color(0xFF64748B)),
+                const Icon(Icons.calendar_today_rounded, size: 14, color: BkuTheme.textMuted),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -682,7 +564,7 @@ class _EditPengumumanScreenState extends State<EditPengumumanScreen> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: date != null ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
+                      color: date != null ? BkuTheme.textHeading : BkuTheme.textPlaceholder,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

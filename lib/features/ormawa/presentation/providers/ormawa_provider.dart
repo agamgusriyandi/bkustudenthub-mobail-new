@@ -160,6 +160,122 @@ class OrmawaProvider extends ChangeNotifier {
   List<OrmawaOrganisasi> get organisasiList => _organisasiList;
   List<Map<String, dynamic>> get absensiManagementList => _absensiManagementList;
 
+  double get sisaPagu {
+    if (_budgetStatus != null && _budgetStatus!['sisa_pagu'] != null) {
+      return (_budgetStatus!['sisa_pagu'] as num).toDouble();
+    }
+    if (_budgetStatus != null && _budgetStatus!['budget'] != null) {
+      return (_budgetStatus!['budget'] as num).toDouble();
+    }
+    if (_financialSetting != null) {
+      return _financialSetting!.remainingBudget;
+    }
+    return 0;
+  }
+
+  bool get isProdiScope => _ormawaSettings['program_studi_id'] != null || _ormawaSettings['ProgramStudiID'] != null;
+  bool get isFacultyScope => (_ormawaSettings['fakultas_id'] != null || _ormawaSettings['FakultasID'] != null) && !isProdiScope;
+  bool get isUnivScope => !isProdiScope && !isFacultyScope;
+
+  Map<String, int> get pipelineCounts {
+    int diajukan = 0;
+    int prodi = 0;
+    int fakultas = 0;
+    int univ = 0;
+    int lpj = 0;
+
+    for (final p in _proposals) {
+      final s = p.status.toLowerCase().trim();
+      if (s == 'diajukan') {
+        diajukan++;
+      } else if (s == 'disetujui_prodi') {
+        prodi++;
+      } else if (s == 'disetujui_fakultas') {
+        fakultas++;
+      } else if (s == 'disetujui_univ' || s == 'disetujui') {
+        univ++;
+      } else if (s == 'selesai' || s.contains('lpj')) {
+        lpj++;
+      }
+    }
+    return {
+      'diajukan': diajukan,
+      'prodi': prodi,
+      'fakultas': fakultas,
+      'univ': univ,
+      'lpj': lpj,
+    };
+  }
+
+  Map<String, int> get proposalStatusCounts {
+    int disetujui = 0;
+    int diajukan = 0;
+    int revisi = 0;
+    int ditolak = 0;
+
+    for (final p in _proposals) {
+      final s = p.status.toLowerCase().trim();
+      if (s.contains('disetujui') || s == 'selesai') {
+        disetujui++;
+      } else if (s.contains('revisi')) {
+        revisi++;
+      } else if (s.contains('tolak')) {
+        ditolak++;
+      } else {
+        diajukan++;
+      }
+    }
+    return {
+      'Disetujui': disetujui,
+      'Diajukan': diajukan,
+      'Revisi': revisi,
+      'Ditolak': ditolak,
+    };
+  }
+
+  List<Map<String, dynamic>> get cashflowTrend {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+    final now = DateTime.now();
+    final curMonth = now.month - 1;
+    final List<Map<String, dynamic>> list = [];
+
+    for (int i = 5; i >= 0; i--) {
+      final mIdx = (curMonth - i + 12) % 12;
+      final mName = months[mIdx];
+      double masuk = 0;
+      double keluar = 0;
+
+      for (final f in _financeList) {
+        if (f.date.month - 1 == mIdx) {
+          if (f.type == 'pemasukan') {
+            masuk += f.nominal;
+          } else {
+            keluar += f.nominal;
+          }
+        }
+      }
+      list.add({
+        'month': mName,
+        'masuk': masuk,
+        'keluar': keluar,
+      });
+    }
+    return list;
+  }
+
+  List<OrmawaMember> get coreLeaders {
+    return members.where((m) {
+      final r = m.role.toLowerCase().trim();
+      return r.contains('ketua') ||
+          r.contains('sekretaris') ||
+          r.contains('bendahara') ||
+          r.contains('divisi') ||
+          r.contains('wakil') ||
+          r.contains('kadiv') ||
+          r.contains('koordinator');
+    }).take(5).toList();
+  }
+
   bool get isLoading => _isLoading;
 
   String? get ormawaId =>
@@ -374,45 +490,49 @@ class OrmawaProvider extends ChangeNotifier {
 
     try {
       final results = await Future.wait([
-        _repository.getStats(ormawaId),
-        _repository.getGamifikasiSummary(),
-        _repository.getActiveAcademicYear(),
-        _repository.getProposals(ormawaId),
-        _repository.getAgendas(ormawaId),
+        _repository.getStats(ormawaId).catchError((_) => <String, dynamic>{}),
+        _repository.getGamifikasiSummary().catchError((_) => <String, dynamic>{}),
+        _repository.getActiveAcademicYear().catchError((_) => null),
+        _repository.getProposals(ormawaId).catchError((_) => <OrmawaProposal>[]),
+        _repository.getAgendas(ormawaId).catchError((_) => <OrmawaAgenda>[]),
         _repository.getMembersData(
           ormawaId,
           periode: _selectedPeriod,
-        ),
-        _repository.getFinance(ormawaId),
-        _repository.getLPJs(ormawaId),
-        _repository.getAspirations(ormawaId),
-        _repository.getAnnouncements(ormawaId),
-        _repository.getRoles(),
-        _repository.getDivisions(ormawaId: ormawaId),
-        _repository.getNotifications(ormawaId),
-        _repository.getOrmawaSettings(ormawaId),
-        _repository.getGamifikasiHistory(),
-        _repository.getGamifikasiLeaderboard(),
-        _repository.getGamifikasiRules(),
+        ).catchError((_) => <String, dynamic>{'members': <OrmawaMember>[], 'periods': <String>[]}),
+        _repository.getFinance(ormawaId).catchError((_) => <OrmawaFinance>[]),
+        _repository.getLPJs(ormawaId).catchError((_) => <OrmawaLPJ>[]),
+        _repository.getAspirations(ormawaId).catchError((_) => <OrmawaAspiration>[]),
+        _repository.getAnnouncements(ormawaId).catchError((_) => <OrmawaAnnouncement>[]),
+        _repository.getRoles().catchError((_) => <OrmawaRole>[]),
+        _repository.getDivisions(ormawaId: ormawaId).catchError((_) => <OrmawaDivision>[]),
+        _repository.getNotifications(ormawaId).catchError((_) => <OrmawaNotification>[]),
+        _repository.getOrmawaSettings(ormawaId).catchError((_) => <String, dynamic>{}),
+        _repository.getGamifikasiHistory().catchError((_) => <Map<String, dynamic>>[]),
+        _repository.getGamifikasiLeaderboard().catchError((_) => <Map<String, dynamic>>[]),
+        _repository.getGamifikasiRules().catchError((_) => <Map<String, dynamic>>[]),
+        _repository.getBudgetStatus(ormawaId).catchError((_) => <String, dynamic>{}),
       ]);
 
-      final stats = results[0] as Map<String, dynamic>;
-      final gamSummary = results[1] as Map<String, dynamic>;
+      final stats = (results[0] as Map<String, dynamic>?) ?? <String, dynamic>{};
+      final gamSummary = (results[1] as Map<String, dynamic>?) ?? <String, dynamic>{};
       final activeYear = results[2] as String?;
-      final proposals = results[3] as List<OrmawaProposal>;
-      final agendas = results[4] as List<OrmawaAgenda>;
-      final membersData = results[5] as Map<String, dynamic>;
-      final finance = results[6] as List<OrmawaFinance>;
-      final lpjs = results[7] as List<OrmawaLPJ>;
-      final aspirations = results[8] as List<OrmawaAspiration>;
-      final announcements = results[9] as List<OrmawaAnnouncement>;
-      final roles = results[10] as List<OrmawaRole>;
-      final divisions = results[11] as List<OrmawaDivision>;
-      final notifications = results[12] as List<OrmawaNotification>;
-      final ormawaSettings = results[13] as Map<String, dynamic>;
-      final gHistory = results[14] as List<Map<String, dynamic>>;
-      final gLeaderboard = results[15] as List<Map<String, dynamic>>;
-      final gRules = results[16] as List<Map<String, dynamic>>;
+      final proposals = (results[3] as List<OrmawaProposal>?) ?? <OrmawaProposal>[];
+      final agendas = (results[4] as List<OrmawaAgenda>?) ?? <OrmawaAgenda>[];
+      final membersData = (results[5] as Map<String, dynamic>?) ?? <String, dynamic>{};
+      final finance = (results[6] as List<OrmawaFinance>?) ?? <OrmawaFinance>[];
+      final lpjs = (results[7] as List<OrmawaLPJ>?) ?? <OrmawaLPJ>[];
+      final aspirations = (results[8] as List<OrmawaAspiration>?) ?? <OrmawaAspiration>[];
+      final announcements = (results[9] as List<OrmawaAnnouncement>?) ?? <OrmawaAnnouncement>[];
+      final roles = (results[10] as List<OrmawaRole>?) ?? <OrmawaRole>[];
+      final divisions = (results[11] as List<OrmawaDivision>?) ?? <OrmawaDivision>[];
+      final notifications = (results[12] as List<OrmawaNotification>?) ?? <OrmawaNotification>[];
+      final ormawaSettings = (results[13] as Map<String, dynamic>?) ?? <String, dynamic>{};
+      final gHistory = (results[14] as List<Map<String, dynamic>>?) ?? <Map<String, dynamic>>[];
+      final gLeaderboard = (results[15] as List<Map<String, dynamic>>?) ?? <Map<String, dynamic>>[];
+      final gRules = (results[16] as List<Map<String, dynamic>>?) ?? <Map<String, dynamic>>[];
+      final budgetStatus = (results[17] as Map<String, dynamic>?) ?? <String, dynamic>{};
+
+      _budgetStatus = budgetStatus;
 
       _totalMembers = (stats['totalMembers'] as num?)?.toInt() ?? 0;
       _balance = (stats['totalKas'] as num?)?.toDouble() ?? 0;
@@ -432,8 +552,14 @@ class OrmawaProvider extends ChangeNotifier {
 
       _proposals = List<OrmawaProposal>.from(proposals);
       _agendas = List<OrmawaAgenda>.from(agendas);
-      _members = List<OrmawaMember>.from(membersData['members'] as List<OrmawaMember>);
-      _availablePeriods = List<String>.from(membersData['periods'] as List<String>);
+      final rawMembers = membersData['members'];
+      if (rawMembers is List) {
+        _members = List<OrmawaMember>.from(rawMembers);
+      }
+      final rawPeriods = membersData['periods'];
+      if (rawPeriods is List) {
+        _availablePeriods = List<String>.from(rawPeriods);
+      }
       _financeList = List<OrmawaFinance>.from(finance);
       _lpjs = List<OrmawaLPJ>.from(lpjs);
       _aspirations = List<OrmawaAspiration>.from(aspirations);

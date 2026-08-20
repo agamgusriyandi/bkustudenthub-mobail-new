@@ -22,9 +22,15 @@ abstract class StudentRepository {
     String confirmPassword,
   );
   Future<String> uploadAvatar(String filePath);
+  Future<Map<String, dynamic>> getAkademikData();
+  Future<List<Map<String, dynamic>>> getRiwayatLogin();
+  Future<Map<String, dynamic>> getPreferensiNotif();
+  Future<void> updatePreferensiNotif(Map<String, dynamic> data);
   Future<List<FacultyProgress>> getFacultyStatistics();
   Future<List<Achievement>> getAchievements();
   Future<List<Scholarship>> getScholarships();
+  Future<Scholarship> getScholarshipDetail(String id);
+  Future<Scholarship> getPengajuanDetail(String id);
   Future<List<Mission>> getMissions();
   Future<List<CounselingSession>> getCounselingSessions();
   Future<List<Psychologist>> getPsychologists();

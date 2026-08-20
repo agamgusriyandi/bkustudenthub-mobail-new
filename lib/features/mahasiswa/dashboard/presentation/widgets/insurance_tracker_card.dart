@@ -72,7 +72,7 @@ class InsuranceTrackerCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'STATUS KLAIM ASURANSI',
+                    'Status Klaim Asuransi',
                     style: AppTextStyles.eyebrowSmall.copyWith(
                       color: context.appColors.outline,
                     ),

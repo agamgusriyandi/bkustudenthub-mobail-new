@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
@@ -41,7 +44,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     final key = rule['key']?.toString() ?? '';
     final poin = int.tryParse(rule['poin']?.toString() ?? '0') ?? 0;
     final isMinus = poin < 0;
-    final color = isMinus ? AppColors.error : AppColors.serviceEmerald;
+    final color = isMinus ? BkuTheme.rose : BkuTheme.emerald;
+    final softColor = isMinus ? BkuTheme.roseSoft : BkuTheme.emeraldSoft;
+    final borderColor = isMinus ? BkuTheme.roseBorder : BkuTheme.emeraldBorder;
 
     IconData icon;
     if (key.contains('proposal')) {
@@ -76,7 +81,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
+                  color: BkuTheme.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -88,8 +93,8 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: color.withAlpha(20),
-                    borderRadius: BorderRadius.circular(12),
+                    color: softColor,
+                    borderRadius: BkuTheme.r12,
                   ),
                   child: Icon(icon, color: color, size: 24),
                 ),
@@ -100,19 +105,18 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: BkuTheme.textCardTitle.copyWith(
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF0F172A),
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'TRIGGER OTOMATIS: ${key.toUpperCase()}',
-                        style: const TextStyle(
+                        'Trigger Otomatis: $key',
+                        style: BkuTheme.textBadge.copyWith(
                           fontSize: 8.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF64748B),
+                          color: BkuTheme.textMuted,
                           letterSpacing: 0.3,
                         ),
                       ),
@@ -122,9 +126,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: color.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: color.withAlpha(60)),
+                    color: softColor,
+                    borderRadius: BkuTheme.r8,
+                    border: Border.all(color: borderColor),
                   ),
                   child: Text(
                     '${isMinus ? '' : '+'}$poin XP',
@@ -138,13 +142,13 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
               ],
             ),
             const SizedBox(height: 16),
-            const Text(
-              'DESKRIPSI ATURAN',
-              style: TextStyle(
-                fontSize: 9,
+            Text(
+              'Deskripsi Aturan',
+              style: BkuTheme.textBadge.copyWith(
+                fontSize: 9.5,
                 fontWeight: FontWeight.w900,
-                color: Color(0xFF64748B),
-                letterSpacing: 0.3,
+                color: BkuTheme.textHeading,
+                letterSpacing: 0.2,
               ),
             ),
             const SizedBox(height: 6),
@@ -152,15 +156,15 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                color: BkuTheme.borderSubtle,
+                borderRadius: BkuTheme.r12,
+                border: Border.all(color: BkuTheme.border),
               ),
               child: Text(
                 desc,
-                style: const TextStyle(
+                style: BkuTheme.textBodyRegular.copyWith(
                   fontSize: 11.5,
-                  color: Color(0xFF0F172A),
+                  color: BkuTheme.textHeading,
                   height: 1.45,
                 ),
               ),
@@ -168,21 +172,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: BkuButton.primary(
                 onPressed: () => Navigator.pop(ctx),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: OrmawaTheme.primary,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Tutup',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
+                text: 'Tutup',
+                height: 42,
               ),
             ),
           ],
@@ -212,16 +205,16 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             : '—';
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               BkuAppBar(
                 title: 'Gamifikasi & Klasemen',
-                subtitle: 'SISTEM PRESTASI ORMAWA',
+                subtitle: 'Sistem Prestasi Ormawa',
                 info: 'Peringkat #${provider.gamifikasiPeringkat} • ${provider.gamifikasiPoin} XP',
                 variant: AppBarVariant.ormawa,
                 expandedHeight: 140.0,
@@ -284,7 +277,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 value: NumberFormat.decimalPattern('id').format(totalPoints),
                 badgeText: 'Total XP',
                 icon: Icons.workspace_premium_rounded,
-                badgeColor: const Color(0xFFD97706),
+                badgeColor: BkuTheme.amber,
                 subtitle: 'Akumulasi seluruh ormawa',
               ),
             ),
@@ -295,7 +288,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 value: '$avgPoints XP',
                 badgeText: 'Rata-rata',
                 icon: Icons.trending_up_rounded,
-                badgeColor: const Color(0xFF0284C7),
+                badgeColor: BkuTheme.sky,
                 subtitle: 'Per organisasi aktif',
               ),
             ),
@@ -310,7 +303,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 value: topOrmawaName,
                 badgeText: 'Peringkat #1',
                 icon: Icons.military_tech_rounded,
-                badgeColor: OrmawaTheme.primary,
+                badgeColor: BkuTheme.primary,
                 subtitle: 'Peringkat #1 Univ',
               ),
             ),
@@ -321,7 +314,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 value: '$rulesCount Aturan',
                 badgeText: 'Rules',
                 icon: Icons.tune_rounded,
-                badgeColor: const Color(0xFF059669),
+                badgeColor: BkuTheme.emerald,
                 subtitle: 'Trigger poin aktif',
               ),
             ),
@@ -337,19 +330,19 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        borderRadius: BkuTheme.r12,
+        border: Border.all(color: BkuTheme.border),
       ),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: OrmawaTheme.primary,
-          borderRadius: BorderRadius.circular(9),
+          color: BkuTheme.primary,
+          borderRadius: BkuTheme.r8,
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
         labelColor: Colors.white,
-        unselectedLabelColor: const Color(0xFF64748B),
+        unselectedLabelColor: BkuTheme.textMuted,
         labelStyle: const TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w900,
@@ -410,7 +403,14 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     }
 
     if (leaderboard.isEmpty) {
-      return _buildEmptyState('Belum ada data klasemen');
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: BkuEmptyState(
+          title: 'Belum Ada Data Klasemen',
+          message: 'Data perolehan poin dan klasemen organisasi belum tersedia.',
+          icon: Icons.emoji_events_outlined,
+        ),
+      );
     }
 
     final top3 = leaderboard.take(3).toList();
@@ -434,50 +434,29 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           _buildPodiumTop3(context, top3),
           const SizedBox(height: AppSpacing.lg),
         ],
-        TextField(
+        OrmawaSearchBar(
           controller: _searchController,
+          hintText: 'Cari organisasi mahasiswa...',
           onChanged: (val) => setState(() => _searchQuery = val.toLowerCase().trim()),
-          style: const TextStyle(fontSize: 12, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
-          decoration: InputDecoration(
-            hintText: 'Cari organisasi mahasiswa...',
-            hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-            prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(vertical: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
-            ),
-          ),
         ),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Klasemen Lengkap',
-              style: TextStyle(
+              style: BkuTheme.textCardTitle.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w900,
-                color: Color(0xFF0F172A),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: OrmawaTheme.primarySoft,
-                borderRadius: BorderRadius.circular(6),
+                color: BkuTheme.primarySoft,
+                borderRadius: BkuTheme.r8,
                 border: Border.all(
-                  color: OrmawaTheme.primaryBorder,
+                  color: BkuTheme.primaryBorder,
                   width: 0.8,
                 ),
               ),
@@ -486,7 +465,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: OrmawaTheme.primary,
+                  color: BkuTheme.primary,
                 ),
               ),
             ),
@@ -494,18 +473,12 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         ),
         const SizedBox(height: AppSpacing.sm),
         if (filteredLeaderboard.isEmpty)
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
-            child: const Center(
-              child: Text(
-                'Organisasi tidak ditemukan.',
-                style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold),
-              ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: BkuEmptyState(
+              title: 'Organisasi Tidak Ditemukan',
+              message: 'Tidak ada organisasi yang sesuai dengan kata kunci pencarian.',
+              icon: Icons.search_off_rounded,
             ),
           )
         else
@@ -534,38 +507,27 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
 
     return Column(
       children: [
-        Container(
-          width: double.infinity,
+        BkuCard(
           padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFFDE047), width: 1.2),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFD97706).withAlpha(18),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+          borderRadius: 16,
+          borderColor: BkuTheme.amberBorder,
           child: Row(
             children: [
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
+                  color: BkuTheme.amberSoft,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFFF59E0B).withAlpha(80),
+                    color: BkuTheme.amberBorder,
                     width: 1.5,
                   ),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.emoji_events_rounded,
-                    color: Color(0xFFD97706),
+                    color: BkuTheme.amber,
                     size: 26,
                   ),
                 ),
@@ -578,8 +540,8 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B),
-                        borderRadius: BorderRadius.circular(4),
+                        color: BkuTheme.amber,
+                        borderRadius: BkuTheme.r8,
                       ),
                       child: const Text(
                         '#1 JUARA KLASEMEN',
@@ -594,10 +556,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     const SizedBox(height: 3),
                     Text(
                       firstName,
-                      style: const TextStyle(
+                      style: BkuTheme.textCardTitle.copyWith(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w900,
-                        color: Color(0xFF0F172A),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -605,9 +566,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     if (firstShort.isNotEmpty)
                       Text(
                         firstShort,
-                        style: const TextStyle(
+                        style: BkuTheme.textCaption.copyWith(
                           fontSize: 10,
-                          color: Color(0xFF64748B),
+                          color: BkuTheme.textMuted,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -620,8 +581,8 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD97706),
-                  borderRadius: BorderRadius.circular(8),
+                  color: BkuTheme.amber,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -657,10 +618,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                         context,
                         rank: 2,
                         item: second,
-                        borderColor: const Color(0xFFCBD5E1),
-                        badgeColor: const Color(0xFF64748B),
-                        trophyColor: const Color(0xFF475569),
-                        trophyBgColor: const Color(0xFFF1F5F9),
+                        borderColor: BkuTheme.slateBorder,
+                        badgeColor: BkuTheme.slate,
+                        trophyColor: BkuTheme.slate,
+                        trophyBgColor: BkuTheme.slateSoft,
                       )
                     : const SizedBox.shrink(),
               ),
@@ -671,10 +632,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                         context,
                         rank: 3,
                         item: third,
-                        borderColor: const Color(0xFFFED7AA),
-                        badgeColor: const Color(0xFFEA580C),
-                        trophyColor: const Color(0xFFC2410C),
-                        trophyBgColor: const Color(0xFFFFEDD5),
+                        borderColor: BkuTheme.roseBorder,
+                        badgeColor: BkuTheme.rose,
+                        trophyColor: BkuTheme.rose,
+                        trophyBgColor: BkuTheme.roseSoft,
                       )
                     : const SizedBox.shrink(),
               ),
@@ -699,20 +660,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     final displayName = singkatan.isNotEmpty ? singkatan : nama;
     final poin = int.tryParse(item['total_poin']?.toString() ?? item['poin']?.toString() ?? '0') ?? 0;
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor, width: 1.0),
-        boxShadow: [
-          BoxShadow(
-            color: trophyColor.withAlpha(10),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      borderRadius: 14,
+      borderColor: borderColor,
       child: Row(
         children: [
           Container(
@@ -746,7 +697,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                       decoration: BoxDecoration(
                         color: badgeColor,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BkuTheme.r8,
                       ),
                       child: Text(
                         '#$rank',
@@ -771,10 +722,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 const SizedBox(height: 2),
                 Text(
                   displayName,
-                  style: const TextStyle(
+                  style: BkuTheme.textCardTitle.copyWith(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -802,34 +752,29 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     Color rankBg;
     Color rankColor;
     if (rank == 1) {
-      rankBg = const Color(0xFFFEF3C7);
-      rankColor = const Color(0xFFD97706);
+      rankBg = BkuTheme.amberSoft;
+      rankColor = BkuTheme.amber;
     } else if (rank == 2) {
-      rankBg = const Color(0xFFF1F5F9);
-      rankColor = const Color(0xFF64748B);
+      rankBg = BkuTheme.slateSoft;
+      rankColor = BkuTheme.slate;
     } else if (rank == 3) {
-      rankBg = const Color(0xFFFFEDD5);
-      rankColor = const Color(0xFFEA580C);
+      rankBg = BkuTheme.roseSoft;
+      rankColor = BkuTheme.rose;
     } else {
-      rankBg = const Color(0xFFF1F5F9);
-      rankColor = const Color(0xFF475569);
+      rankBg = BkuTheme.borderSubtle;
+      rankColor = BkuTheme.textMuted;
     }
 
     final initial = singkatan.isNotEmpty
         ? (singkatan.length > 4 ? singkatan.substring(0, 4) : singkatan)
         : (nama.length > 2 ? nama.substring(0, 2).toUpperCase() : 'OR');
 
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: isMyOrmawa ? OrmawaTheme.primarySoft : Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isMyOrmawa ? OrmawaTheme.primary : const Color(0xFFE2E8F0),
-          width: isMyOrmawa ? 1.5 : 1,
-        ),
-      ),
+      borderRadius: 14,
+      borderColor: isMyOrmawa ? BkuTheme.primary : BkuTheme.border,
+      backgroundColor: isMyOrmawa ? BkuTheme.primarySoft : Colors.white,
       child: Row(
         children: [
           Container(
@@ -854,10 +799,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: OrmawaTheme.primarySoft,
-              borderRadius: BorderRadius.circular(8),
+              color: BkuTheme.primarySoft,
+              borderRadius: BkuTheme.r8,
               border: Border.all(
-                color: OrmawaTheme.primaryBorder,
+                color: BkuTheme.primaryBorder,
                 width: 0.8,
               ),
             ),
@@ -867,7 +812,7 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w900,
-                  color: OrmawaTheme.primary,
+                  color: BkuTheme.primary,
                 ),
               ),
             ),
@@ -882,10 +827,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     Expanded(
                       child: Text(
                         nama,
-                        style: const TextStyle(
+                        style: BkuTheme.textCardTitle.copyWith(
                           fontSize: 11.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F172A),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -896,8 +840,8 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                         decoration: BoxDecoration(
-                          color: OrmawaTheme.primary,
-                          borderRadius: BorderRadius.circular(4),
+                          color: BkuTheme.primary,
+                          borderRadius: BkuTheme.r8,
                         ),
                         child: const Text(
                           'Ormawa Anda',
@@ -913,9 +857,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 ),
                 Text(
                   singkatan.isNotEmpty ? singkatan : 'Unit Kegiatan Mahasiswa',
-                  style: const TextStyle(
+                  style: BkuTheme.textCaption.copyWith(
                     fontSize: 9.5,
-                    color: Color(0xFF64748B),
+                    color: BkuTheme.textMuted,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -926,10 +870,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
-              borderRadius: BorderRadius.circular(6),
+              color: BkuTheme.amberSoft,
+              borderRadius: BkuTheme.r8,
               border: Border.all(
-                color: const Color(0xFFFDE047),
+                color: BkuTheme.amberBorder,
                 width: 0.8,
               ),
             ),
@@ -939,15 +883,15 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 const Icon(
                   Icons.bolt_rounded,
                   size: 12,
-                  color: Color(0xFFD97706),
+                  color: BkuTheme.amber,
                 ),
                 const SizedBox(width: 2),
                 Text(
                   '$poin XP',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFFB45309),
+                    color: BkuTheme.amber,
                   ),
                 ),
               ],
@@ -971,7 +915,14 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     }
 
     if (history.isEmpty) {
-      return _buildEmptyState('Belum ada riwayat perolehan poin');
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: BkuEmptyState(
+          title: 'Belum Ada Riwayat Poin',
+          message: 'Riwayat perolehan atau pengurangan poin ormawa belum tercatat.',
+          icon: Icons.history_rounded,
+        ),
+      );
     }
 
     return ListView.builder(
@@ -986,7 +937,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         final item = history[index];
         final poin = int.tryParse(item['poin']?.toString() ?? '0') ?? 0;
         final isMinus = poin < 0;
-        final color = isMinus ? AppColors.error : AppColors.success;
+        final color = isMinus ? BkuTheme.rose : BkuTheme.emerald;
+        final softColor = isMinus ? BkuTheme.roseSoft : BkuTheme.emeraldSoft;
+        final borderColor = isMinus ? BkuTheme.roseBorder : BkuTheme.emeraldBorder;
         final deskripsi = item['deskripsi']?.toString() ?? item['aksi']?.toString() ?? 'Aktivitas Ormawa';
         final rawDate = item['created_at']?.toString() ?? item['Tanggal']?.toString() ?? '';
 
@@ -1000,21 +953,17 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           }
         }
 
-        return Container(
+        return BkuCard(
           margin: const EdgeInsets.only(bottom: 6),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
+          borderRadius: 14,
           child: Row(
             children: [
               Container(
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: color.withAlpha(18),
+                  color: softColor,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -1032,10 +981,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                   children: [
                     Text(
                       deskripsi,
-                      style: const TextStyle(
+                      style: BkuTheme.textCardTitle.copyWith(
                         fontSize: 11.5,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -1043,9 +991,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     if (formattedDate.isNotEmpty)
                       Text(
                         formattedDate,
-                        style: const TextStyle(
+                        style: BkuTheme.textCaption.copyWith(
                           fontSize: 9.5,
-                          color: Color(0xFF64748B),
+                          color: BkuTheme.textMuted,
                         ),
                       ),
                   ],
@@ -1054,10 +1002,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
-                  color: color.withAlpha(15),
-                  borderRadius: BorderRadius.circular(6),
+                  color: softColor,
+                  borderRadius: BkuTheme.r8,
                   border: Border.all(
-                    color: color.withAlpha(40),
+                    color: borderColor,
                     width: 0.8,
                   ),
                 ),
@@ -1090,7 +1038,14 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
     }
 
     if (rules.isEmpty) {
-      return _buildEmptyState('Belum ada aturan poin aktif');
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: BkuEmptyState(
+          title: 'Belum Ada Aturan Poin',
+          message: 'Aturan gamifikasi aktif belum dikonfigurasi.',
+          icon: Icons.tune_rounded,
+        ),
+      );
     }
 
     return ListView.builder(
@@ -1105,7 +1060,9 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         final rule = rules[index];
         final poin = int.tryParse(rule['poin']?.toString() ?? '0') ?? 0;
         final isMinus = poin < 0;
-        final color = isMinus ? AppColors.error : AppColors.serviceEmerald;
+        final color = isMinus ? BkuTheme.rose : BkuTheme.emerald;
+        final softColor = isMinus ? BkuTheme.roseSoft : BkuTheme.emeraldSoft;
+        final borderColor = isMinus ? BkuTheme.roseBorder : BkuTheme.emeraldBorder;
         final title = rule['label']?.toString() ?? rule['aksi']?.toString() ?? 'Aturan';
         final desc = rule['deskripsi']?.toString() ?? rule['key']?.toString() ?? 'Trigger Poin Otomatis';
         final key = rule['key']?.toString() ?? '';
@@ -1128,22 +1085,18 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
         return InkWell(
           onTap: () => _showRuleDetailModal(context, rule),
           borderRadius: BorderRadius.circular(14),
-          child: Container(
+          child: BkuCard(
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
+            borderRadius: 14,
             child: Row(
               children: [
                 Container(
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: color.withAlpha(18),
-                    borderRadius: BorderRadius.circular(8),
+                    color: softColor,
+                    borderRadius: BkuTheme.r8,
                   ),
                   child: Icon(icon, color: color, size: 18),
                 ),
@@ -1154,19 +1107,18 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: BkuTheme.textCardTitle.copyWith(
                           fontSize: 11.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F172A),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         desc,
-                        style: const TextStyle(
+                        style: BkuTheme.textCaption.copyWith(
                           fontSize: 9.5,
-                          color: Color(0xFF64748B),
+                          color: BkuTheme.textMuted,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1177,10 +1129,10 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(
-                    color: color.withAlpha(15),
-                    borderRadius: BorderRadius.circular(6),
+                    color: softColor,
+                    borderRadius: BkuTheme.r8,
                     border: Border.all(
-                      color: color.withAlpha(40),
+                      color: borderColor,
                       width: 0.8,
                     ),
                   ),
@@ -1198,30 +1150,6 @@ class _OrmawaGamifikasiScreenState extends State<OrmawaGamifikasiScreen>
           ),
         );
       },
-    );
-  }
-
-  Widget _buildEmptyState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.emoji_events_outlined,
-            color: Color(0xFF94A3B8),
-            size: 48,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            message,
-            style: const TextStyle(
-              color: Color(0xFF64748B),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

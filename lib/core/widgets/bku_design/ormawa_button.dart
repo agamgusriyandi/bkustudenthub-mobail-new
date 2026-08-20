@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 enum OrmawaButtonVariant { primary, secondary, outline, danger }
 
@@ -26,81 +25,31 @@ class OrmawaButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Decoration decoration;
-    Color textColor;
-
+    BkuButtonVariant bkuVariant;
     switch (variant) {
       case OrmawaButtonVariant.primary:
-        decoration = BoxDecoration(
-          color: OrmawaTheme.primary,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: OrmawaTheme.primary.withAlpha(35),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        );
-        textColor = Colors.white;
+        bkuVariant = BkuButtonVariant.primary;
         break;
       case OrmawaButtonVariant.secondary:
-        decoration = BoxDecoration(
-          color: OrmawaTheme.primarySoft,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: OrmawaTheme.primaryBorder.withAlpha(30)),
-        );
-        textColor = OrmawaTheme.primary;
+        bkuVariant = BkuButtonVariant.secondary;
         break;
       case OrmawaButtonVariant.outline:
-        decoration = BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        );
-        textColor = OrmawaTheme.textHeading;
+        bkuVariant = BkuButtonVariant.outline;
         break;
       case OrmawaButtonVariant.danger:
-        decoration = BoxDecoration(
-          color: OrmawaTheme.roseSoft,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: OrmawaTheme.roseBorder),
-        );
-        textColor = OrmawaTheme.rose;
+        bkuVariant = BkuButtonVariant.danger;
         break;
     }
 
-    return BkuBounceButton(
-      onTap: isLoading ? null : onPressed,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: decoration,
-        alignment: Alignment.center,
-        child: isLoading
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.2,
-                  color: textColor,
-                ),
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 18, color: textColor),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    text,
-                    style: OrmawaTheme.textButton.copyWith(color: textColor),
-                  ),
-                ],
-              ),
-      ),
+    return BkuButton(
+      text: text,
+      onPressed: onPressed,
+      variant: bkuVariant,
+      icon: icon,
+      isLoading: isLoading,
+      width: width,
+      height: height,
+      fullWidth: width == null,
     );
   }
 }

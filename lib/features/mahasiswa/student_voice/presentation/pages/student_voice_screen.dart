@@ -1,24 +1,18 @@
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/submit_aspiration_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_detail_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StudentVoiceScreen extends StatefulWidget {
   const StudentVoiceScreen({super.key});
@@ -49,24 +43,20 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
   @override
   Widget build(BuildContext context) {
     final student = context.watch<StudentVoiceProvider>();
-    final filteredAspirations =
-        student.aspirations
-            .where(
-              (a) =>
-                  _selectedFilter == 'Semua' || a.category == _selectedFilter,
-            )
-            .toList();
+    final filteredAspirations = student.aspirations
+        .where((a) => _selectedFilter == 'Semua' || a.category == _selectedFilter)
+        .toList();
 
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
-          BkuAppBar(
+          const BkuAppBar(
             title: 'Aspirasi Mahasiswa',
-            subtitle: 'Suara & Saran',
+            subtitle: 'Suara, Saran & Masukan Kampus',
             variant: AppBarVariant.student,
             expandedHeight: 130,
             showBackButton: true,
@@ -79,58 +69,42 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: AppSpacing.xl),
-                  const FadeInAnimation(delay: 0.2, child: _AspirationBanner()),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const FadeInAnimation(delay: 0.1, child: _AspirationBanner()),
+                  const SizedBox(height: AppSpacing.xl),
                   if (student.isLoading)
                     const BkuShimmer(
                       width: double.infinity,
-                      height: 120,
-                      borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+                      height: 90,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
                     )
                   else
                     FadeInAnimation(
-                      delay: 0.4,
+                      delay: 0.15,
                       child: _buildStatsDashboard(student),
                     ),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.xl),
                   FadeInAnimation(
-                    delay: 0.6,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Riwayat Aspirasimu',
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.neutral800,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => AppSnackbar.showWarning(context, 'Menampilkan seluruh riwayat aspirasi...'),
-                          child: Text(
-                            'Lihat Semua',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                    delay: 0.2,
+                    child: Text(
+                      'Riwayat Aspirasimu',
+                      style: BkuTheme.textSectionTitle.copyWith(
+                        fontSize: 14,
+                        color: BkuTheme.textHeading,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  FadeInAnimation(delay: 0.7, child: _buildCategoryFilter()),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.sm),
+                  FadeInAnimation(delay: 0.25, child: _buildCategoryFilter()),
+                  const SizedBox(height: AppSpacing.md),
                   if (student.isLoading)
                     const BkuShimmerList(itemCount: 2, itemHeight: 120)
                   else if (filteredAspirations.isEmpty)
-                    FadeInAnimation(delay: 0.8, child: _buildEmptyState())
+                    FadeInAnimation(delay: 0.3, child: _buildEmptyState())
                   else
                     ...List.generate(
                       filteredAspirations.length,
                       (index) => FadeInAnimation(
-                        delay: 0.8 + (index * 0.1),
+                        delay: 0.05 + (index * 0.04),
                         child: _buildAspirationCard(filteredAspirations[index]),
                       ),
                     ),
@@ -147,83 +121,91 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
   Widget _buildStatsDashboard(StudentVoiceProvider student) {
     return Row(
       children: [
-        _buildStatCard(
-          'Terkirim',
-          student.totalAspirations.toString(),
-          Icons.send_rounded,
-          AppColors.info,
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Terkirim',
+            value: student.totalAspirations.toString(),
+            icon: Icons.send_rounded,
+            color: BkuTheme.indigo,
+            bgColor: BkuTheme.indigoSoft,
+            borderColor: BkuTheme.indigoBorder,
+          ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        _buildStatCard(
-          'Diproses',
-          student.pendingAspirations.toString(),
-          Icons.sync_rounded,
-          AppColors.warning,
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Diproses',
+            value: student.pendingAspirations.toString(),
+            icon: Icons.sync_rounded,
+            color: BkuTheme.amber,
+            bgColor: BkuTheme.amberSoft,
+            borderColor: BkuTheme.amberBorder,
+          ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        _buildStatCard(
-          'Selesai',
-          student.resolvedAspirations.toString(),
-          Icons.task_alt_rounded,
-          AppColors.success,
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Selesai',
+            value: student.resolvedAspirations.toString(),
+            icon: Icons.task_alt_rounded,
+            color: BkuTheme.emerald,
+            bgColor: BkuTheme.emeraldSoft,
+            borderColor: BkuTheme.emeraldBorder,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+  Widget _buildKpiCard({
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
+    required Color borderColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: borderColor, width: 0.8),
             ),
-          ],
-          border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: AppSpacing.paddingSm,
-              decoration: BoxDecoration(
-                color: color.withAlpha(20),
-                borderRadius: AppRadius.radiusSm,
-              ),
-              child: Icon(icon, color: color, size: 20),
+            child: Icon(icon, color: color, size: 16),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: BkuTheme.textKpiValue.copyWith(
+              fontSize: 20,
+              color: BkuTheme.textHeading,
+              letterSpacing: -0.5,
             ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              value,
-              style: AppTextStyles.titleLg.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: AppColors.neutral900,
-              ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: BkuTheme.textCaption.copyWith(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+              color: BkuTheme.textMuted,
             ),
-            const SizedBox(height: AppSpacing.s2),
-            Text(
-              label,
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral600,
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
@@ -239,52 +221,51 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
     ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
       child: Row(
-        children:
-            categories.map((cat) {
-              bool isSelected = _selectedFilter == cat;
-              return Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.sm),
-                child: ChoiceChip(
-                  label: Text(cat),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) setState(() => _selectedFilter = cat);
-                  },
-                  selectedColor: AppColors.neutral100,
-                  labelStyle: AppTextStyles.labelSm.copyWith(
-                    color:
-                        isSelected
-                            ? AppColors.neutral800
-                            : context.appColors.onSurfaceVariant,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
+        children: categories.map((cat) {
+          final isSelected = _selectedFilter == cat;
+          return Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: InkWell(
+              onTap: () => setState(() => _selectedFilter = cat),
+              borderRadius: BkuTheme.rPill,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+                decoration: BoxDecoration(
+                  color: isSelected ? BkuTheme.primary : BkuTheme.cardSurface,
+                  borderRadius: BkuTheme.rPill,
+                  border: Border.all(
+                    color: isSelected ? BkuTheme.primary : BkuTheme.border,
                   ),
-                  backgroundColor: context.appColors.surface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.radiusLg,
-                    side: BorderSide(
-                      color:
-                          isSelected
-                              ? AppColors.neutral800
-                              : AppColors.neutral200,
-                      width: isSelected ? 1.5 : 1,
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.sm,
+                  boxShadow: isSelected ? BkuTheme.cardShadow : null,
+                ),
+                child: Text(
+                  cat,
+                  style: BkuTheme.textCaption.copyWith(
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    color: isSelected ? Colors.white : BkuTheme.textHeading,
+                    fontSize: 11.5,
                   ),
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 
   Widget _buildAspirationCard(Aspiration asp) {
-    return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -292,34 +273,29 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) => StudentVoiceDetailScreen(aspirationId: asp.id),
+                builder: (context) => StudentVoiceDetailScreen(aspirationId: asp.id),
               ),
             );
           },
-          borderRadius: AppRadius.radiusXl,
+          borderRadius: BkuTheme.r16,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: 6,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.neutral100,
-                        borderRadius: AppRadius.radiusMd,
+                        color: BkuTheme.borderSubtle,
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         asp.category,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral900,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 9,
+                        style: BkuTheme.textBadge.copyWith(
+                          color: BkuTheme.textMuted,
+                          fontSize: 9.5,
                         ),
                       ),
                     ),
@@ -327,7 +303,7 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     _buildStatusBadge(asp.status),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.md),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -337,21 +313,12 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                         children: [
                           Text(
                             asp.title,
-                            style: AppTextStyles.labelMd.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral800,
-                              fontSize: 15,
-                            ),
+                            style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
                           ),
-                          const SizedBox(height: AppSpacing.sm),
+                          const SizedBox(height: 3),
                           Text(
                             asp.description,
-                            style: AppTextStyles.labelSm.copyWith(
-                          color:
-                                   context.appColors.onSurfaceVariant,
-                              height: 1.5,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: BkuTheme.textCaption,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -359,43 +326,36 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                       ),
                     ),
                     if (asp.imageUrl != null && asp.imageUrl!.isNotEmpty) ...[
-                      const SizedBox(width: AppSpacing.lg),
+                      const SizedBox(width: AppSpacing.md),
                       if (asp.imageUrl!.toLowerCase().endsWith('.pdf'))
                         InkWell(
                           onTap: () async {
-                            final url = Uri.parse(
-                              ApiGate.getImageUrl(asp.imageUrl),
-                            );
+                            final url = Uri.parse(ApiGate.getImageUrl(asp.imageUrl));
                             if (await canLaunchUrl(url)) {
-                              await launchUrl(
-                                url,
-                                mode: LaunchMode.inAppBrowserView,
-                              );
+                              await launchUrl(url, mode: LaunchMode.inAppBrowserView);
                             }
                           },
                           child: Container(
-                            width: 60,
-                            height: 60,
+                            width: 52,
+                            height: 52,
                             decoration: BoxDecoration(
-                              color: context.appColors.primary.withAlpha(10),
-                              borderRadius: AppRadius.radiusMd,
-                              border: Border.all(
-                                color: context.appColors.primary.withAlpha(20),
-                              ),
+                              color: BkuTheme.roseSoft,
+                              borderRadius: BkuTheme.r12,
+                              border: Border.all(color: BkuTheme.roseBorder),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.picture_as_pdf_rounded,
-                              color: context.appColors.primary,
-                              size: 28,
+                              color: BkuTheme.rose,
+                              size: 24,
                             ),
                           ),
                         )
                       else if (_isLocalFile(asp.imageUrl))
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 52,
+                          height: 52,
                           decoration: BoxDecoration(
-                            borderRadius: AppRadius.radiusMd,
+                            borderRadius: BkuTheme.r12,
                             image: DecorationImage(
                               image: FileImage(
                                 File(asp.imageUrl!.replaceFirst('file://', '')),
@@ -406,10 +366,10 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                         )
                       else
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 52,
+                          height: 52,
                           decoration: BoxDecoration(
-                            borderRadius: AppRadius.radiusMd,
+                            borderRadius: BkuTheme.r12,
                             image: DecorationImage(
                               image: NetworkImage(
                                 ApiGate.getImageUrl(asp.imageUrl),
@@ -421,48 +381,44 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     ],
                   ],
                 ),
-                if (asp.feedback != null) ...[
-                  const SizedBox(height: AppSpacing.s20),
+                if (asp.feedback != null && asp.feedback!.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withAlpha(10),
-                      borderRadius: AppRadius.radiusLg,
-                      border: Border.all(
-                        color: AppColors.success.withAlpha(20),
-                      ),
+                      color: BkuTheme.statusSuccessBg,
+                      borderRadius: BkuTheme.r12,
+                      border: Border.all(color: BkuTheme.statusSuccessBorder),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.reply_rounded,
-                          size: 18,
-                          color: AppColors.success,
+                          size: 16,
+                          color: BkuTheme.emerald,
                         ),
-                        const SizedBox(width: AppSpacing.md),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'BALASAN KAMPUS:',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 9,
-                                  color: AppColors.success,
+                                'Tanggapan Kampus',
+                                style: BkuTheme.textBadge.copyWith(
+                                  color: BkuTheme.emerald,
+                                  fontSize: 9.5,
                                 ),
                               ),
-                              const SizedBox(height: AppSpacing.xs),
+                              const SizedBox(height: 2),
                               Text(
                                 asp.feedback!,
-                                style: AppTextStyles.labelSm.copyWith(
-                               color:
-                                       context.appColors.onSurfaceVariant,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.4,
+                                style: BkuTheme.textCaption.copyWith(
+                                  color: BkuTheme.textHeading,
                                 ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
@@ -471,22 +427,18 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
                     ),
                   ),
                 ],
-                const SizedBox(height: AppSpacing.s20),
+                const SizedBox(height: AppSpacing.md),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       _formatDate(asp.date),
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: BkuTheme.textCaption.copyWith(fontSize: 10),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.chevron_right_rounded,
-                      color: context.appColors.outline,
-                      size: 20,
+                      color: BkuTheme.textPlaceholder,
+                      size: 18,
                     ),
                   ],
                 ),
@@ -499,49 +451,48 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
   }
 
   Widget _buildStatusBadge(String status) {
-    Color color;
-    String text;
+    Color bg = BkuTheme.statusWarningBg;
+    Color text = BkuTheme.statusWarningText;
+    Color border = BkuTheme.statusWarningBorder;
+    String label = 'MENUNGGU';
+
     switch (status.toLowerCase()) {
-      case 'pending':
-      case 'menunggu':
-        color = AppColors.warning;
-        text = 'MENUNGGU';
-        break;
       case 'in progress':
       case 'diproses':
       case 'proses':
-        color = AppColors.info;
-        text = 'PROSES';
+        bg = BkuTheme.indigoSoft;
+        text = BkuTheme.indigo;
+        border = BkuTheme.indigoBorder;
+        label = 'PROSES';
         break;
       case 'resolved':
       case 'selesai':
-        color = AppColors.success;
-        text = 'SELESAI';
+        bg = BkuTheme.statusSuccessBg;
+        text = BkuTheme.statusSuccessText;
+        border = BkuTheme.statusSuccessBorder;
+        label = 'SELESAI';
         break;
       case 'rejected':
       case 'ditolak':
-        color = AppColors.error;
-        text = 'DITOLAK';
+        bg = BkuTheme.statusDangerBg;
+        text = BkuTheme.statusDangerText;
+        border = BkuTheme.statusDangerBorder;
+        label = 'DITOLAK';
         break;
-      default:
-        color = context.appColors.outline;
-        text = status;
     }
+
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withAlpha(15),
-        borderRadius: AppRadius.radiusMd,
+        color: bg,
+        borderRadius: BkuTheme.rPill,
+        border: Border.all(color: border),
       ),
       child: Text(
-        text,
-        style: AppTextStyles.labelSm.copyWith(
-          color: color,
-          fontWeight: FontWeight.w900,
-          fontSize: 8,
+        label,
+        style: BkuTheme.textBadge.copyWith(
+          color: text,
+          fontSize: 9,
         ),
       ),
     );
@@ -550,30 +501,22 @@ class _StudentVoiceScreenState extends State<StudentVoiceScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m yang lalu';
-    if (diff.inHours < 24) return '${diff.inHours}j yang lalu';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} menit lalu';
+    if (diff.inHours < 24) return '${diff.inHours} jam lalu';
     return '${date.day}/${date.month}/${date.year}';
   }
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        children: [
-          const SizedBox(height: AppSpacing.xxxl),
-          Icon(
-            Icons.inbox_rounded,
-            size: 64,
-            color: context.appColors.outline.withAlpha(50),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            'Belum ada riwayat aspirasi',
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          children: [
+            const Icon(Icons.inbox_rounded, size: 48, color: BkuTheme.textPlaceholder),
+            const SizedBox(height: AppSpacing.md),
+            Text('Belum ada riwayat aspirasi', style: BkuTheme.textCaption),
+          ],
+        ),
       ),
     );
   }
@@ -584,21 +527,13 @@ class _AspirationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(5),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -606,47 +541,41 @@ class _AspirationBanner extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: themeProvider.primary.withAlpha(15),
-                  shape: BoxShape.circle,
+                  color: BkuTheme.indigoSoft,
+                  borderRadius: BkuTheme.r16,
+                  border: Border.all(color: BkuTheme.indigoBorder),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.campaign_rounded,
-                  color: themeProvider.primary,
-                  size: 28,
+                  color: BkuTheme.indigo,
+                  size: 24,
                 ),
               ),
-              const SizedBox(width: AppSpacing.lg),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Suarakan Aspirasimu',
-                      style: AppTextStyles.headlineMd.copyWith(
-                        color: AppColors.neutral900,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: BkuTheme.textPageTitle.copyWith(fontSize: 17),
                     ),
-                    const SizedBox(height: AppSpacing.s2),
+                    const SizedBox(height: 2),
                     Text(
-                      'Setiap suara berharga untuk BKU.',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: themeProvider.outline,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      'Setiap saran berharga untuk kemajuan BKU.',
+                      style: BkuTheme.textCardSubtitle,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             width: double.infinity,
-            height: 54,
             child: BkuButton(
               onPressed: () {
                 Navigator.push(
@@ -656,7 +585,10 @@ class _AspirationBanner extends StatelessWidget {
                   ),
                 );
               },
-              text: 'Tulis Aspirasi Sekarang',
+              text: 'Tulis Aspirasi Baru',
+              icon: Icons.edit_note_rounded,
+              variant: BkuButtonVariant.primary,
+              height: 46,
             ),
           ),
         ],

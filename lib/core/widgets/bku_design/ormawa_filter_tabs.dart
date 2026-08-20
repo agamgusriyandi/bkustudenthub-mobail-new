@@ -65,7 +65,7 @@ class OrmawaFilterTabs extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isActive
                             ? Colors.white.withAlpha(45)
-                            : const Color(0xFFF1F5F9),
+                            : OrmawaTheme.borderSubtle,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(

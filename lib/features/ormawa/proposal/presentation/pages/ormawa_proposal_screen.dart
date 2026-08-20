@@ -3,19 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/proposal_pdf_service.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/edit_proposal_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -62,20 +63,54 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
     }
   }
 
-  OrmawaBadgeVariant _getBadgeVariant(String status) {
+  Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'disetujui':
       case 'selesai':
       case 'disetujui_univ':
       case 'disetujui_fakultas':
       case 'disetujui_prodi':
-        return OrmawaBadgeVariant.success;
+        return BkuTheme.emerald;
       case 'ditolak':
-        return OrmawaBadgeVariant.danger;
+        return BkuTheme.rose;
       case 'revisi':
-        return OrmawaBadgeVariant.warning;
+        return BkuTheme.amber;
       default:
-        return OrmawaBadgeVariant.info;
+        return BkuTheme.sky;
+    }
+  }
+
+  Color _getStatusBg(String status) {
+    switch (status.toLowerCase()) {
+      case 'disetujui':
+      case 'selesai':
+      case 'disetujui_univ':
+      case 'disetujui_fakultas':
+      case 'disetujui_prodi':
+        return BkuTheme.emeraldSoft;
+      case 'ditolak':
+        return BkuTheme.roseSoft;
+      case 'revisi':
+        return BkuTheme.amberSoft;
+      default:
+        return BkuTheme.skySoft;
+    }
+  }
+
+  Color _getStatusBorder(String status) {
+    switch (status.toLowerCase()) {
+      case 'disetujui':
+      case 'selesai':
+      case 'disetujui_univ':
+      case 'disetujui_fakultas':
+      case 'disetujui_prodi':
+        return BkuTheme.emeraldBorder;
+      case 'ditolak':
+        return BkuTheme.roseBorder;
+      case 'revisi':
+        return BkuTheme.amberBorder;
+      default:
+        return BkuTheme.skyBorder;
     }
   }
 
@@ -170,10 +205,10 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
     }
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => _loadData(true),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           slivers: [
@@ -205,38 +240,27 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
 
                       FadeInAnimation(
                         delay: 0.1,
-                        child: Container(
+                        child: BkuCard(
                           padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF94A3B8).withAlpha(20),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
+                          borderRadius: 20,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Manajemen Usulan &',
-                                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                          style: BkuTheme.textBadge.copyWith(fontSize: 11, color: BkuTheme.textMuted),
                                         ),
-                                        SizedBox(height: 2),
+                                        const SizedBox(height: 2),
                                         Text(
                                           'Proposal Kegiatan',
-                                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                          style: BkuTheme.textCardTitle.copyWith(fontSize: 17, fontWeight: FontWeight.w900),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -246,18 +270,18 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
-                                      color: OrmawaTheme.primarySoft,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: OrmawaTheme.primaryBorder),
+                                      color: const Color(0xFFF1F5F9),
+                                      borderRadius: BkuTheme.r8,
+                                      border: Border.all(color: const Color(0xFFE2E8F0)),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.description_rounded, size: 14, color: OrmawaTheme.primary),
-                                        const SizedBox(width: 5),
+                                        Icon(Icons.description_rounded, size: 14, color: Color(0xFF0F172A)),
+                                        SizedBox(width: 5),
                                         Text(
                                           'Proposal Ormawa',
-                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                                         ),
                                       ],
                                     ),
@@ -267,44 +291,28 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 'Pengajuan naskah KAK/TOR, estimasi alokasi dana pagu, dan monitoring verifikasi persetujuan berjenjang.',
-                                style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                                style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted, height: 1.4),
                               ),
                               const SizedBox(height: 14),
                               Row(
                                 children: [
                                   Expanded(
-                                    child: OutlinedButton.icon(
+                                    child: BkuButton.outline(
                                       onPressed: () => _loadData(true),
-                                      icon: _isRefreshing
-                                          ? SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: OrmawaTheme.primary))
-                                          : const Icon(Icons.refresh_rounded, size: 14),
-                                      label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: OrmawaTheme.textHeading,
-                                        side: BorderSide(color: OrmawaTheme.border),
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                      ),
+                                      icon: Icons.refresh_rounded,
+                                      text: 'Refresh',
+                                      height: 36,
+                                      isLoading: _isRefreshing,
                                     ),
                                   ),
                                   if (canCreateProposal) ...[
                                     const SizedBox(width: 8),
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: BkuButton.primary(
                                         onPressed: () => context.push(AppRoutes.ormawaProposalCreate),
-                                        icon: const Icon(Icons.add_rounded, size: 15),
-                                        label: const Text('Tambah Usulan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: OrmawaTheme.primary,
-                                          foregroundColor: Colors.white,
-                                          elevation: 0,
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                          minimumSize: Size.zero,
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                        ),
+                                        icon: Icons.add_rounded,
+                                        text: 'Tambah Usulan',
+                                        height: 36,
                                       ),
                                     ),
                                   ],
@@ -324,7 +332,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               value: '$totalCount',
                               badgeText: 'Semua Usulan',
                               icon: Icons.description_rounded,
-                              badgeColor: OrmawaTheme.primary,
+                              badgeColor: BkuTheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -334,7 +342,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               value: '$diajukanCount',
                               badgeText: 'Antrean Review',
                               icon: Icons.schedule_rounded,
-                              badgeColor: const Color(0xFF0284C7),
+                              badgeColor: BkuTheme.sky,
                             ),
                           ),
                         ],
@@ -348,7 +356,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               value: '$revisiCount',
                               badgeText: 'Perlu Revisi',
                               icon: Icons.error_outline_rounded,
-                              badgeColor: const Color(0xFFD97706),
+                              badgeColor: BkuTheme.amber,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -358,9 +366,9 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                               value: '$disetujuiCount',
                               badgeText: totalCount > 0 ? '${((disetujuiCount / totalCount) * 100).round()}%' : 'ACC Tuntas',
                               icon: Icons.check_circle_rounded,
-                              badgeColor: const Color(0xFF059669),
+                              badgeColor: BkuTheme.emerald,
                               progress: totalCount > 0 ? (disetujuiCount / totalCount) : 0.0,
-                              progressColor: const Color(0xFF059669),
+                              progressColor: BkuTheme.emerald,
                             ),
                           ),
                         ],
@@ -370,23 +378,23 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF0FDF4),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFBBF7D0)),
+                          color: BkuTheme.emeraldSoft,
+                          borderRadius: BkuTheme.r12,
+                          border: Border.all(color: BkuTheme.emeraldBorder),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF16A34A)),
-                                SizedBox(width: 8),
-                                Text('Total Anggaran Usulan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF14532D))),
+                                const Icon(Icons.account_balance_wallet_rounded, size: 16, color: BkuTheme.emerald),
+                                const SizedBox(width: 8),
+                                Text('Total Anggaran Usulan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: BkuTheme.emerald)),
                               ],
                             ),
                             Text(
                               'Rp ${NumberFormat('#,###', 'id_ID').format(totalAnggaran)}',
-                              style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFF16A34A)),
+                              style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: BkuTheme.emerald),
                             ),
                           ],
                         ),
@@ -418,7 +426,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                         children: [
                           Text(
                             'DAFTAR PROPOSAL (${filtered.length})',
-                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF64748B), letterSpacing: 0.5),
+                            style: BkuTheme.textBadge.copyWith(fontSize: 11.5, color: BkuTheme.textMuted, letterSpacing: 0.5),
                           ),
                           if (_activeTab != 'all' || _searchQuery.isNotEmpty)
                             GestureDetector(
@@ -429,27 +437,22 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                                   _searchQuery = '';
                                 });
                               },
-                              child: const Text('Reset Filter', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                              child: const Text('Reset Filter', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
                             ),
                         ],
                       ),
                       const SizedBox(height: 10),
 
                       if (filtered.isEmpty)
-                        OrmawaEmptyCard(
+                        BkuEmptyState(
                           title: 'Belum Ada Usulan Proposal',
-                          description: _searchQuery.isNotEmpty || _activeTab != 'all'
+                          message: _searchQuery.isNotEmpty || _activeTab != 'all'
                               ? 'Tidak ada usulan proposal yang cocok dengan kriteria pencarian atau filter status aktif.'
                               : 'Belum ada data usulan proposal kegiatan yang dibuat untuk organisasi ini.',
-                          icon: Icons.assignment_outlined,
-                          actionLabel: _searchQuery.isNotEmpty || _activeTab != 'all'
+                          buttonText: _searchQuery.isNotEmpty || _activeTab != 'all'
                               ? 'Reset Filter & Cari Ulang'
                               : (canCreateProposal ? '+ Buat Usulan Baru' : null),
-                          actionIcon: _searchQuery.isNotEmpty || _activeTab != 'all'
-                              ? Icons.refresh_rounded
-                              : Icons.add_rounded,
-                          isPrimaryAction: _searchQuery.isEmpty && _activeTab == 'all',
-                          onAction: () {
+                          onButtonPressed: () {
                             if (_searchQuery.isNotEmpty || _activeTab != 'all') {
                               setState(() {
                                 _searchController.clear();
@@ -497,22 +500,13 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
     required bool canDelete,
   }) {
     final statusText = _getStatusText(p.status);
-    final badgeVariant = _getBadgeVariant(p.status);
+    final statusColor = _getStatusColor(p.status);
+    final statusBg = _getStatusBg(p.status);
+    final statusBorder = _getStatusBorder(p.status);
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF94A3B8).withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+      borderRadius: 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -522,17 +516,25 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(6),
+                  color: BkuTheme.borderSubtle,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Text(
                   p.code,
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
                 ),
               ),
-              OrmawaBadge(
-                text: statusText,
-                variant: badgeVariant,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: statusBg,
+                  borderRadius: BkuTheme.r8,
+                  border: Border.all(color: statusBorder),
+                ),
+                child: Text(
+                  statusText,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: statusColor),
+                ),
               ),
             ],
           ),
@@ -540,7 +542,7 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
 
           Text(
             p.title,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w800),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -549,26 +551,26 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFF1F5F9)),
+              color: BkuTheme.borderSubtle,
+              borderRadius: BkuTheme.r8,
+              border: Border.all(color: BkuTheme.border),
             ),
             child: Row(
               children: [
-                const Icon(Icons.payments_rounded, size: 13, color: Color(0xFF16A34A)),
+                const Icon(Icons.payments_rounded, size: 13, color: BkuTheme.emerald),
                 const SizedBox(width: 5),
                 Text(
                   'Rp ${NumberFormat('#,###', 'id_ID').format(p.budget)}',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF16A34A)),
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.emerald),
                 ),
                 if (p.jadwalPelaksanaan != null && p.jadwalPelaksanaan!.isNotEmpty) ...[
                   const SizedBox(width: 10),
-                  const Icon(Icons.event_note_rounded, size: 13, color: Color(0xFF64748B)),
+                  Icon(Icons.event_note_rounded, size: 13, color: BkuTheme.textMuted),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       p.jadwalPelaksanaan!,
-                      style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                      style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontWeight: FontWeight.w600),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -589,19 +591,19 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
               children: [
                 InkWell(
                   onTap: () => context.push(AppRoutes.ormawaProposalDetail, extra: p),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BkuTheme.r8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEFF6FF),
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BkuTheme.r8,
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.visibility_rounded, size: 12, color: Color(0xFF2563EB)),
+                        Icon(Icons.visibility_rounded, size: 12, color: Color(0xFF0F172A)),
                         SizedBox(width: 4),
-                        Text('Detail', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                        Text('Detail', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
                       ],
                     ),
                   ),
@@ -616,19 +618,19 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                         ),
                       );
                     },
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BkuTheme.r8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFEF3C7),
-                        borderRadius: BorderRadius.circular(8),
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BkuTheme.r8,
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.edit_rounded, size: 12, color: Color(0xFFD97706)),
+                          Icon(Icons.edit_rounded, size: 12, color: Color(0xFF0F172A)),
                           SizedBox(width: 4),
-                          Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
+                          Text('Edit', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
                         ],
                       ),
                     ),
@@ -641,28 +643,28 @@ class _OrmawaProposalScreenState extends State<OrmawaProposalScreen> {
                       ormawaName: context.read<OrmawaProvider>().orgName,
                     );
                   },
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BkuTheme.r8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF1F5F9),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      color: BkuTheme.borderSubtle,
+                      borderRadius: BkuTheme.r8,
+                      border: Border.all(color: BkuTheme.border),
                     ),
-                    child: const Icon(Icons.picture_as_pdf_rounded, size: 14, color: Color(0xFFDC2626)),
+                    child: const Icon(Icons.picture_as_pdf_rounded, size: 14, color: BkuTheme.rose),
                   ),
                 ),
                 if (canDelete)
                   InkWell(
                     onTap: () => _confirmDelete(p),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BkuTheme.r8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF1F2),
-                        borderRadius: BorderRadius.circular(8),
+                        color: BkuTheme.roseSoft,
+                        borderRadius: BkuTheme.r8,
                       ),
-                      child: const Icon(Icons.delete_outline_rounded, size: 13, color: Color(0xFFE11D48)),
+                      child: const Icon(Icons.delete_outline_rounded, size: 13, color: BkuTheme.rose),
                     ),
                   ),
               ],

@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,26 +23,30 @@ class DeadlineAlert extends StatelessWidget {
   const DeadlineAlert({super.key, this.deadlines = const []});
 
   IconData _getIcon(String? type) {
-    switch (type) {
+    switch (type?.toLowerCase()) {
       case 'beasiswa':
-        return Icons.menu_book_rounded;
+        return Icons.school_rounded;
       case 'konseling':
         return Icons.support_agent_rounded;
       case 'kampus':
-        return Icons.calendar_today_rounded;
+        return Icons.event_note_rounded;
       case 'kencana':
-        return Icons.info_outline_rounded;
-      case 'organisasi':
-        return Icons.groups_rounded;
+        return Icons.menu_book_rounded;
       default:
-        return Icons.info_outline_rounded;
+        return Icons.notifications_active_rounded;
     }
   }
 
-  Color _getUrgencyColor(BuildContext context, int daysLeft) {
-    if (daysLeft < 3) return context.appColors.error;
-    if (daysLeft < 7) return context.appColors.primary;
-    return context.appColors.onSurfaceVariant;
+  Color _getUrgencyColor(int daysLeft) {
+    if (daysLeft <= 3) return const Color(0xFFE11D48);
+    if (daysLeft <= 7) return const Color(0xFFD97706);
+    return const Color(0xFF2563EB);
+  }
+
+  Color _getUrgencyBg(int daysLeft) {
+    if (daysLeft <= 3) return const Color(0xFFFFF1F2);
+    if (daysLeft <= 7) return const Color(0xFFFEF3C7);
+    return const Color(0xFFEFF6FF);
   }
 
   @override
@@ -58,16 +57,16 @@ class DeadlineAlert extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-        boxShadow: [
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
           BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Color(0x06000000),
+            blurRadius: 12,
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -79,17 +78,25 @@ class DeadlineAlert extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: AppColors.primary,
-                    size: 18,
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.warning_amber_rounded,
+                      color: Color(0xFFD97706),
+                      size: 16,
+                    ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
+                  const Text(
                     'Pengingat Jatuh Tempo',
-                    style: AppTextStyles.titleSm.copyWith(
-                      color: AppColors.neutral900,
-                      fontWeight: FontWeight.w900,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF0F172A),
                     ),
                   ),
                 ],
@@ -103,37 +110,35 @@ class DeadlineAlert extends StatelessWidget {
                     ),
                   );
                 },
-                child: Text(
+                child: const Text(
                   'Lihat Semua',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF2563EB),
                   ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          ...visibleDeadlines.map((item) => _buildDeadlineItem(context, item)),
-          if (deadlines.length > 3) ...[
-            const SizedBox(height: 8),
-            Text(
-              '+${deadlines.length - 3} pengingat lainnya',
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: visibleDeadlines.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (ctx, idx) => _buildDeadlineItem(ctx, visibleDeadlines[idx]),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildDeadlineItem(BuildContext context, DeadlineItem item) {
-    final urgencyColor = _getUrgencyColor(context, item.daysLeft);
+    final urgencyColor = _getUrgencyColor(item.daysLeft);
+    final urgencyBg = _getUrgencyBg(item.daysLeft);
 
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (item.link != null && item.link!.isNotEmpty) {
           context.push(item.link!);
@@ -146,65 +151,61 @@ class DeadlineAlert extends StatelessWidget {
           );
         }
       },
-      child: BkuCard(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        borderOnly: true,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
         child: Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
+                color: urgencyBg,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                ),
               ),
               child: Icon(
                 _getIcon(item.type),
-                color: AppColors.primary,
-                size: 18,
+                color: urgencyColor,
+                size: 16,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.name,
-                    style: AppTextStyles.bodySm.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: urgencyColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: urgencyColor.withValues(alpha: 0.2)),
-                    ),
-                    child: Text(
-                      '${item.daysLeft} Hari Lagi',
-                      style: AppTextStyles.caption.copyWith(
-                        color: urgencyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                item.name,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0F172A),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
-              size: 18,
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+              decoration: BoxDecoration(
+                color: urgencyBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: urgencyColor.withAlpha(60)),
+              ),
+              child: Text(
+                '${item.daysLeft} Hari Lagi',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: urgencyColor,
+                ),
+              ),
             ),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF94A3B8)),
           ],
         ),
       ),

@@ -3,14 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/data/models/ormawa_agenda_model.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_agenda.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -103,17 +102,26 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
 
     final String timeDisplay = '${DateFormat('HH:mm').format(startDate)} - ${DateFormat('HH:mm').format(endDate)} WIB';
 
-    OrmawaBadgeVariant badgeVariant = OrmawaBadgeVariant.info;
+    Color statusColor = BkuTheme.sky;
+    Color statusBg = BkuTheme.skySoft;
+    Color statusBorder = BkuTheme.skyBorder;
+
     if (status == 'selesai' || status == 'terlaksana' || status == 'completed') {
-      badgeVariant = OrmawaBadgeVariant.success;
+      statusColor = BkuTheme.emerald;
+      statusBg = BkuTheme.emeraldSoft;
+      statusBorder = BkuTheme.emeraldBorder;
     } else if (status == 'berlangsung' || status == 'ongoing') {
-      badgeVariant = OrmawaBadgeVariant.warning;
+      statusColor = BkuTheme.amber;
+      statusBg = BkuTheme.amberSoft;
+      statusBorder = BkuTheme.amberBorder;
     } else if (status == 'dibatalkan' || status == 'batal' || status == 'cancelled') {
-      badgeVariant = OrmawaBadgeVariant.danger;
+      statusColor = BkuTheme.rose;
+      statusBg = BkuTheme.roseSoft;
+      statusBorder = BkuTheme.roseBorder;
     }
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -130,7 +138,9 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -141,10 +151,10 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
-                                borderRadius: BorderRadius.circular(12),
+                                color: BkuTheme.primarySoft,
+                                borderRadius: BkuTheme.r12,
                               ),
-                              child: const Icon(Icons.event_available_rounded, color: Color(0xFF2563EB), size: 24),
+                              child: Icon(Icons.event_available_rounded, color: BkuTheme.primary, size: 24),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -153,20 +163,46 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     title,
-                                    style: OrmawaTheme.textCardTitle.copyWith(fontSize: 15),
+                                    style: BkuTheme.textCardTitle.copyWith(fontSize: 15, fontWeight: FontWeight.w900),
                                   ),
                                   const SizedBox(height: 6),
                                   Wrap(
                                     spacing: 6,
                                     runSpacing: 4,
                                     children: [
-                                      OrmawaBadge(
-                                        text: isProposal ? 'PROPOSAL KEGIATAN' : 'KEGIATAN MANDIRI',
-                                        variant: isProposal ? OrmawaBadgeVariant.primary : OrmawaBadgeVariant.info,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: isProposal ? BkuTheme.primarySoft : BkuTheme.skySoft,
+                                          borderRadius: BkuTheme.r8,
+                                          border: Border.all(
+                                            color: isProposal ? BkuTheme.primaryBorder : BkuTheme.skyBorder,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          isProposal ? 'Proposal Kegiatan' : 'Kegiatan Mandiri',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w800,
+                                            color: isProposal ? BkuTheme.primary : BkuTheme.sky,
+                                          ),
+                                        ),
                                       ),
-                                      OrmawaBadge(
-                                        text: status.toUpperCase(),
-                                        variant: badgeVariant,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: statusBg,
+                                          borderRadius: BkuTheme.r8,
+                                          border: Border.all(color: statusBorder),
+                                        ),
+                                        child: Text(
+                                          status.toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w800,
+                                            color: statusColor,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -180,17 +216,17 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              color: BkuTheme.borderSubtle,
+                              borderRadius: BkuTheme.r8,
+                              border: Border.all(color: BkuTheme.border),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.category_rounded, size: 14, color: Color(0xFF7C3AED)),
+                                Icon(Icons.category_rounded, size: 14, color: BkuTheme.purple),
                                 const SizedBox(width: 6),
                                 Text(
                                   'Kategori: $category',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF334155)),
+                                  style: BkuTheme.textBodyRegular.copyWith(fontSize: 11, fontWeight: FontWeight.w700),
                                 ),
                               ],
                             ),
@@ -201,7 +237,9 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -211,19 +249,19 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0FDF4),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.emeraldSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.access_time_rounded, color: Color(0xFF059669), size: 18),
+                              child: Icon(Icons.access_time_rounded, color: BkuTheme.emerald, size: 18),
                             ),
                             const SizedBox(width: 10),
-                            Text('Waktu & Lokasi Pelaksanaan', style: OrmawaTheme.textSectionTitle),
+                            Text('Waktu & Lokasi Pelaksanaan', style: BkuTheme.textSectionTitle),
                           ],
                         ),
                         const SizedBox(height: 14),
                         _buildDetailRow(
                           icon: Icons.calendar_month_rounded,
-                          iconColor: const Color(0xFF059669),
+                          iconColor: BkuTheme.emerald,
                           label: 'Tanggal Pelaksanaan',
                           value: dateDisplay,
                         ),
@@ -231,7 +269,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           _buildDetailRow(
                             icon: Icons.schedule_rounded,
-                            iconColor: const Color(0xFF059669),
+                            iconColor: BkuTheme.emerald,
                             label: 'Waktu Pelaksanaan',
                             value: timeDisplay,
                           ),
@@ -239,7 +277,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                         _buildDetailRow(
                           icon: Icons.location_on_rounded,
-                          iconColor: const Color(0xFFE11D48),
+                          iconColor: BkuTheme.rose,
                           label: 'Lokasi / Venue',
                           value: loc,
                         ),
@@ -248,7 +286,9 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -258,19 +298,19 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF5F3FF),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.purpleSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.people_alt_rounded, color: Color(0xFF7C3AED), size: 18),
+                              child: Icon(Icons.people_alt_rounded, color: BkuTheme.purple, size: 18),
                             ),
                             const SizedBox(width: 10),
-                            Text('Penanggung Jawab & Struktur', style: OrmawaTheme.textSectionTitle),
+                            Text('Penanggung Jawab & Struktur', style: BkuTheme.textSectionTitle),
                           ],
                         ),
                         const SizedBox(height: 14),
                         _buildDetailRow(
                           icon: Icons.person_rounded,
-                          iconColor: const Color(0xFF7C3AED),
+                          iconColor: BkuTheme.purple,
                           label: 'Penanggung Jawab (PJ)',
                           value: pj.isNotEmpty ? pj : '—',
                         ),
@@ -278,7 +318,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           _buildDetailRow(
                             icon: Icons.handshake_rounded,
-                            iconColor: const Color(0xFF0D9488),
+                            iconColor: BkuTheme.primary,
                             label: 'Mitra Kerja Sama',
                             value: mitra,
                           ),
@@ -287,7 +327,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           _buildDetailRow(
                             icon: Icons.groups_rounded,
-                            iconColor: const Color(0xFF0284C7),
+                            iconColor: BkuTheme.sky,
                             label: 'Sasaran Peserta',
                             value: sasaran,
                           ),
@@ -298,7 +338,9 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                   const SizedBox(height: 14),
 
                   if (sumberDana.isNotEmpty || (estimasiDana != null && estimasiDana != 0)) ...[
-                    OrmawaCard(
+                    BkuCard(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      borderRadius: 16,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -308,20 +350,20 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFEF3C7),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: BkuTheme.amberSoft,
+                                  borderRadius: BkuTheme.r8,
                                 ),
-                                child: const Icon(Icons.account_balance_wallet_rounded, color: Color(0xFFD97706), size: 18),
+                                child: Icon(Icons.account_balance_wallet_rounded, color: BkuTheme.amber, size: 18),
                               ),
                               const SizedBox(width: 10),
-                              Text('Anggaran & Pembiayaan', style: OrmawaTheme.textSectionTitle),
+                              Text('Anggaran & Pembiayaan', style: BkuTheme.textSectionTitle),
                             ],
                           ),
                           const SizedBox(height: 14),
                           if (estimasiDana != null && estimasiDana != 0)
                             _buildDetailRow(
                               icon: Icons.payments_rounded,
-                              iconColor: const Color(0xFF059669),
+                              iconColor: BkuTheme.emerald,
                               label: 'Estimasi Anggaran',
                               value: _formatRp(estimasiDana),
                             ),
@@ -329,7 +371,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                             const SizedBox(height: 10),
                             _buildDetailRow(
                               icon: Icons.savings_rounded,
-                              iconColor: const Color(0xFFD97706),
+                              iconColor: BkuTheme.amber,
                               label: 'Sumber Dana',
                               value: sumberDana,
                             ),
@@ -341,7 +383,9 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                   ],
 
                   if (desc.isNotEmpty || tujuan.isNotEmpty || latarBelakang.isNotEmpty || indikator.isNotEmpty) ...[
-                    OrmawaCard(
+                    BkuCard(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      borderRadius: 16,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -351,13 +395,13 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFEFF6FF),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: BkuTheme.primarySoft,
+                                  borderRadius: BkuTheme.r8,
                                 ),
-                                child: const Icon(Icons.description_rounded, color: Color(0xFF2563EB), size: 18),
+                                child: Icon(Icons.description_rounded, color: BkuTheme.primary, size: 18),
                               ),
                               const SizedBox(width: 10),
-                              Text('Rincian & Landasan Strategis', style: OrmawaTheme.textSectionTitle),
+                              Text('Rincian & Landasan Strategis', style: BkuTheme.textSectionTitle),
                             ],
                           ),
                           const SizedBox(height: 14),
@@ -388,8 +432,11 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: BkuBounceButton(
-                          onTap: () async {
+                        child: BkuButton.primary(
+                          text: 'Edit Kegiatan',
+                          icon: Icons.edit_rounded,
+                          height: 46,
+                          onPressed: () async {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -400,49 +447,15 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
                               context.read<OrmawaProvider>().refreshData();
                             }
                           },
-                          child: Container(
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: OrmawaTheme.primary,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.edit_rounded, size: 16, color: Colors.white),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Edit Kegiatan',
-                                  style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: BkuBounceButton(
-                          onTap: () => _confirmDelete(context, eventId, title),
-                          child: Container(
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFF1F2),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFFFECDD3)),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFE11D48)),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Batalkan',
-                                  style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFFE11D48)),
-                                ),
-                              ],
-                            ),
-                          ),
+                        child: BkuButton.outline(
+                          text: 'Batalkan',
+                          icon: Icons.delete_outline_rounded,
+                          height: 46,
+                          onPressed: () => _confirmDelete(context, eventId, title),
                         ),
                       ),
                     ],
@@ -451,29 +464,13 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    height: 46,
-                    child: BkuBounceButton(
-                      onTap: () {
+                    child: BkuButton.outline(
+                      text: 'Presensi Kehadiran Acara',
+                      icon: Icons.qr_code_scanner_rounded,
+                      height: 46,
+                      onPressed: () {
                         context.push(AppRoutes.ormawaAbsensiManagement);
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFCBD5E1)),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.qr_code_scanner_rounded, size: 16, color: Color(0xFF334155)),
-                            SizedBox(width: 6),
-                            Text(
-                              'Presensi Kehadiran Acara',
-                              style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFF334155)),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s100),
@@ -499,7 +496,7 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: iconColor.withAlpha(20),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BkuTheme.r8,
           ),
           child: Icon(icon, size: 15, color: iconColor),
         ),
@@ -510,12 +507,12 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+                style: BkuTheme.textCaption.copyWith(fontSize: 10, fontWeight: FontWeight.w600, color: BkuTheme.textMuted),
               ),
               const SizedBox(height: 1),
               Text(
                 value,
-                style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                style: BkuTheme.textBodyRegular.copyWith(fontSize: 12.5, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -530,12 +527,12 @@ class OrmawaJadwalDetailScreen extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF475569)),
+          style: BkuTheme.textBadge.copyWith(fontSize: 11, fontWeight: FontWeight.w800, color: BkuTheme.textMuted),
         ),
         const SizedBox(height: 3),
         Text(
           content,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF334155), height: 1.4),
+          style: BkuTheme.textBodyRegular.copyWith(fontSize: 12, height: 1.4),
         ),
       ],
     );

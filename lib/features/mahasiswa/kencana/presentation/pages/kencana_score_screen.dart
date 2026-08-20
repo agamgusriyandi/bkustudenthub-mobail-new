@@ -115,19 +115,19 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
         
     final status = score['graduation_status'] ?? dashboard?.graduationStatus ?? 'not_eligible';
 
-    String statusText = 'BELUM MEMENUHI SYARAT';
+    String statusText = 'Belum Memenuhi Syarat';
     Color statusColor = context.appColors.error;
     if (status == 'passed' || status == 'lulus') {
-      statusText = 'LULUS';
+      statusText = 'Lulus';
       statusColor = themeProvider.success;
     } else if (status == 'in_progress' || status == 'ready') {
-      statusText = 'IN PROGRESS';
+      statusText = 'In Progress';
       statusColor = AppColors.warning;
     } else if (status == 'conditional_pass') {
-      statusText = 'LULUS BERSYARAT';
+      statusText = 'Lulus Bersyarat';
       statusColor = AppColors.warning;
     } else {
-      statusText = 'BELUM MEMENUHI SYARAT';
+      statusText = 'Belum Memenuhi Syarat';
       statusColor = context.appColors.error;
     }
 
@@ -246,7 +246,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
   }
 
   Widget _buildSegmentedTab() {
-    final tabs = ['UNIVERSITAS', 'FAKULTAS', 'EVALUASI GABUNGAN'];
+    final tabs = ['Universitas', 'Fakultas', 'Evaluasi Gabungan'];
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -316,15 +316,15 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
 
     final statusUniv = scoreObj['graduation_status_univ'] ?? dashboard?.scoreUniv?['graduation_status'] ?? 'not_eligible';
     final isUnivPassed = statusUniv == 'passed' || statusUniv == 'lulus';
-    final statusUnivText = isUnivPassed ? 'LULUS' : 'BELUM MEMENUHI SYARAT';
+    final statusUnivText = isUnivPassed ? 'Lulus' : 'Belum Memenuhi Syarat';
     final statusUnivColor = isUnivPassed ? AppColors.success : context.appColors.error;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildComponentCard('KOGNITIF UNIV', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
-        _buildComponentCard('PSIKOMOTOR UNIV', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
-        _buildComponentCard('AFEKTIF UNIV', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
+        _buildComponentCard('Kognitif Univ', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
+        _buildComponentCard('Psikomotor Univ', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
+        _buildComponentCard('Afektif Univ', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
         const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -339,7 +339,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('NILAI AKHIR UNIVERSITAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                  Text('Nilai Akhir Universitas', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
                   const SizedBox(height: 4),
                   Text('Status Evaluasi: $statusUnivText', style: AppTextStyles.bodySm.copyWith(color: statusUnivColor, fontWeight: FontWeight.bold)),
                 ],
@@ -378,15 +378,15 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
 
     final statusFak = scoreObj['graduation_status_faculty'] ?? dashboard?.scoreFakultas?['graduation_status'] ?? 'not_eligible';
     final isFakPassed = statusFak == 'passed' || statusFak == 'lulus';
-    final statusFakText = isFakPassed ? 'LULUS' : 'BELUM MEMENUHI SYARAT';
+    final statusFakText = isFakPassed ? 'Lulus' : 'Belum Memenuhi Syarat';
     final statusFakColor = isFakPassed ? AppColors.success : context.appColors.error;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildComponentCard('KOGNITIF FAKULTAS', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
-        _buildComponentCard('PSIKOMOTOR FAKULTAS', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
-        _buildComponentCard('AFEKTIF FAKULTAS', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
+        _buildComponentCard('Kognitif Fakultas', kognitif, cogWeightPercent, kogWeight, Icons.psychology_rounded, AppColors.info),
+        _buildComponentCard('Psikomotor Fakultas', psikomotor, psiWeightPercent, psiWeight, Icons.handyman_rounded, AppColors.warning),
+        _buildComponentCard('Afektif Fakultas', afektif, afekWeightPercent, afekWeight, Icons.favorite_rounded, context.appColors.error),
         const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -401,7 +401,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('NILAI AKHIR FAKULTAS', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                  Text('Nilai Akhir Fakultas', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
                   const SizedBox(height: 4),
                   Text('Status Evaluasi: $statusFakText', style: AppTextStyles.bodySm.copyWith(color: statusFakColor, fontWeight: FontWeight.bold)),
                 ],
@@ -445,11 +445,11 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'KONSOLIDASI NILAI AKHIR',
+                'Konsolidasi Nilai Akhir',
                 style: AppTextStyles.labelSm.copyWith(
                   fontWeight: FontWeight.w900,
                   color: AppColors.primary,
-                  letterSpacing: 0.5,
+                  letterSpacing: 0.2,
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
@@ -602,7 +602,7 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
             onPressed: () {
               context.push(AppRoutes.kencanaBanding);
             },
-            text: 'AJUKAN BANDING',
+            text: 'Ajukan Banding',
             variant: BkuButtonVariant.primary,
           ),
         ),

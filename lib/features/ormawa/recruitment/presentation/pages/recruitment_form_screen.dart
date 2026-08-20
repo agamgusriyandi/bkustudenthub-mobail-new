@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/domain/entities/recruitment_form_field.dart';
 
 class RecruitmentFormScreen extends StatefulWidget {
@@ -96,41 +94,40 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   Future<void> _saveForm() async {
     setState(() => _isLoading = true);
     try {
-      final fieldsData =
-          _fields.map((f) {
-            String dbType = 'text';
-            switch (f.type) {
-              case 'Teks Singkat':
-                dbType = 'text';
-                break;
-              case 'Paragraf':
-                dbType = 'paragraph';
-                break;
-              case 'Dropdown':
-                dbType = 'select';
-                break;
-              case 'Pilihan Ganda':
-                dbType = 'checkbox';
-                break;
-              case 'Upload File':
-                dbType = 'file';
-                break;
-              default:
-                dbType = f.type.toLowerCase();
-            }
-            return {
-              'label': f.label,
-              'type': dbType,
-              'options': f.options,
-              'required': f.required,
-            };
-          }).toList();
+      final fieldsData = _fields.map((f) {
+        String dbType = 'text';
+        switch (f.type) {
+          case 'Teks Singkat':
+            dbType = 'text';
+            break;
+          case 'Paragraf':
+            dbType = 'paragraph';
+            break;
+          case 'Dropdown':
+            dbType = 'select';
+            break;
+          case 'Pilihan Ganda':
+            dbType = 'checkbox';
+            break;
+          case 'Upload File':
+            dbType = 'file';
+            break;
+          default:
+            dbType = f.type.toLowerCase();
+        }
+        return {
+          'label': f.label,
+          'type': dbType,
+          'options': f.options,
+          'required': f.required,
+        };
+      }).toList();
 
       await context.read<OrmawaProvider>().saveRecruitmentFormFields(
         fieldsData,
       );
       if (mounted) {
-        AppSnackbar.showSuccess(context, 'Form berhasil disimpan');
+        AppSnackbar.showSuccess(context, 'Formulir berhasil disimpan');
       }
     } catch (e) {
       if (mounted) {
@@ -146,41 +143,42 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   void _showAddFieldSheet() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.only(bottom: AppSpacing.s20),
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusXs,
+                  color: BkuTheme.border,
+                  borderRadius: BkuTheme.r8,
                 ),
               ),
               Text(
                 'Pilih Jenis Pertanyaan',
-                style: AppTextStyles.titleSm.copyWith(
+                style: BkuTheme.textCardTitle.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.md),
               ..._fieldTypes.map(
                 (type) => ListTile(
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xl,
+                    horizontal: AppSpacing.lg,
                   ),
                   leading: Container(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: OrmawaTheme.primarySoft,
-                      borderRadius: AppRadius.radiusSm,
+                      color: BkuTheme.primarySoft,
+                      borderRadius: BkuTheme.r8,
                     ),
                     child: Icon(
                       type == 'Teks Singkat'
@@ -192,13 +190,13 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                           : type == 'Pilihan Ganda'
                           ? Icons.check_box_rounded
                           : Icons.upload_file_rounded,
-                      color: OrmawaTheme.primary,
+                      color: BkuTheme.primary,
                       size: 20,
                     ),
                   ),
                   title: Text(
                     type,
-                    style: AppTextStyles.bodyMd.copyWith(
+                    style: BkuTheme.textBodyRegular.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -228,7 +226,7 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Form Builder',
         subtitle: 'Kustomisasi Formulir Pendaftaran',
@@ -239,47 +237,18 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
           Expanded(
             child: _fields.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.dynamic_form_rounded,
-                          size: 64,
-                          color: AppColors.neutral300,
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Text(
-                          'Belum Ada Field Formulir',
-                          style: AppTextStyles.bodyMd.copyWith(
-                            color: AppColors.neutral600,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Tambahkan pertanyaan untuk formulir pendaftaran ormawa',
-                          style: AppTextStyles.labelMd.copyWith(
-                            color: AppColors.neutral400,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        ElevatedButton.icon(
-                          onPressed: _showAddFieldSheet,
-                          icon: const Icon(Icons.add_rounded, size: 16),
-                          label: const Text('Tambah Field Baru', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: OrmawaTheme.primary,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: BkuEmptyState(
+                        title: 'Belum Ada Field Formulir',
+                        message: 'Tambahkan pertanyaan khusus untuk calon pendaftar ormawa.',
+                        buttonText: '+ Tambah Field Baru',
+                        onButtonPressed: _showAddFieldSheet,
+                      ),
                     ),
                   )
                 : ReorderableListView.builder(
-                    padding: const EdgeInsets.all(AppSpacing.s20),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     itemCount: _fields.length,
                     onReorderItem: (oldIndex, newIndex) {
                       setState(() {
@@ -303,47 +272,28 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                 color: Colors.white,
                 border: Border(
                   top: BorderSide(
-                    color: OrmawaTheme.border,
+                    color: BkuTheme.border,
                   ),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.appColors.onSurface.withValues(alpha: 0.02),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
               ),
               child: Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: BkuButton.outline(
                       onPressed: _showAddFieldSheet,
-                      icon: const Icon(Icons.add_rounded, size: 16),
-                      label: const Text('Tambah Field', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: OrmawaTheme.textHeading,
-                        side: BorderSide(color: OrmawaTheme.border),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
+                      icon: Icons.add_rounded,
+                      text: 'Tambah Field',
+                      height: 44,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: ElevatedButton.icon(
+                    child: BkuButton.primary(
                       onPressed: _isLoading ? null : _saveForm,
-                      icon: _isLoading
-                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Icon(Icons.save_rounded, size: 16),
-                      label: const Text('Simpan Form', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: OrmawaTheme.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
+                      isLoading: _isLoading,
+                      icon: Icons.save_rounded,
+                      text: 'Simpan Form',
+                      height: 44,
                     ),
                   ),
                 ],
@@ -355,73 +305,63 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
   }
 
   Widget _buildFieldCard(RecruitmentFormField field, int index) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(
-          color: context.appColors.outline.withValues(alpha: 0.5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neutral200.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return BkuCard(
+      padding: EdgeInsets.zero,
+      borderRadius: 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.md,
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
-              color: AppColors.neutral100.withValues(alpha: 0.5),
+              color: BkuTheme.borderSubtle,
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(AppRadius.lg),
+                top: Radius.circular(16),
               ),
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.drag_indicator_rounded,
-                  color: AppColors.neutral500,
+                  color: BkuTheme.textMuted,
                   size: 20,
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.xs),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
+                    horizontal: AppSpacing.sm,
+                    vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: OrmawaTheme.primarySoft,
-                    borderRadius: AppRadius.radiusXs,
+                    color: BkuTheme.primarySoft,
+                    borderRadius: BkuTheme.r8,
                   ),
                   child: Text(
                     'Field ${index + 1}',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: OrmawaTheme.primary,
+                    style: TextStyle(
+                      color: BkuTheme.primary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 11,
                     ),
                   ),
                 ),
                 const Spacer(),
                 InkWell(
                   onTap: () => _removeField(index),
+                  borderRadius: BkuTheme.r8,
                   child: Container(
-                    padding: AppSpacing.padding6,
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: AppColors.error.withValues(alpha: 0.1),
-                      borderRadius: AppRadius.radiusSm,
+                      color: BkuTheme.roseSoft,
+                      borderRadius: BkuTheme.r8,
                     ),
                     child: const Icon(
                       Icons.delete_outline_rounded,
-                      color: AppColors.error,
-                      size: 18,
+                      color: BkuTheme.rose,
+                      size: 16,
                     ),
                   ),
                 ),
@@ -429,62 +369,45 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BkuTextField(
+                  label: 'PERTANYAAN *',
+                  hint: 'Tuliskan pertanyaan...',
                   controller: TextEditingController(text: field.label)
                     ..selection = TextSelection.collapsed(
                       offset: field.label.length,
                     ),
-                  decoration: InputDecoration(
-                    labelText: 'Pertanyaan',
-                    border: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusMd,
-                    ),
-                    contentPadding: const EdgeInsets.all(AppSpacing.md),
-                  ),
                   onChanged: (value) => field.label = value,
                 ),
-                const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: 10),
                 BkuDropdown<String>(
-                  initialValue: field.type,
-                  decoration: InputDecoration(
-                    labelText: 'Tipe Field',
-                    border: OutlineInputBorder(
-                      borderRadius: AppRadius.radiusMd,
-                    ),
-                    contentPadding: const EdgeInsets.all(AppSpacing.md),
-                  ),
-                  items:
-                      _fieldTypes.map((type) {
-                        return DropdownMenuItem(value: type, child: Text(type));
-                      }).toList(),
+                  label: 'Tipe Field',
+                  value: field.type,
+                  items: _fieldTypes.map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
                   onChanged: (value) {
-                    setState(() => field.type = value!);
+                    if (value != null) {
+                      setState(() => field.type = value);
+                    }
                   },
                 ),
-                if (field.type == 'Dropdown' ||
-                    field.type == 'Pilihan Ganda') ...[
-                  const SizedBox(height: AppSpacing.md),
+                if (field.type == 'Dropdown' || field.type == 'Pilihan Ganda') ...[
+                  const SizedBox(height: 10),
                   BkuTextField(
+                    label: 'OPSI PILIHAN (PISAHKAN DENGAN KOMA)',
+                    hint: 'Opsi 1, Opsi 2, Opsi 3',
                     controller: TextEditingController(text: field.options)
                       ..selection = TextSelection.collapsed(
                         offset: field.options.length,
                       ),
-                    decoration: InputDecoration(
-                      labelText: 'Opsi (pisahkan dengan koma)',
-                      hintText: 'Opsi 1, Opsi 2, Opsi 3',
-                      border: OutlineInputBorder(
-                        borderRadius: AppRadius.radiusMd,
-                      ),
-                      contentPadding: const EdgeInsets.all(AppSpacing.md),
-                    ),
                     onChanged: (value) => field.options = value,
                   ),
                 ],
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Switch(
@@ -492,13 +415,15 @@ class _RecruitmentFormScreenState extends State<RecruitmentFormScreen> {
                       onChanged: (val) {
                         setState(() => field.required = val);
                       },
-                      activeThumbColor: OrmawaTheme.primary,
-                      activeTrackColor: OrmawaTheme.primarySoft,
+                      activeThumbColor: Colors.white,
+                      activeTrackColor: BkuTheme.primary,
+                      inactiveThumbColor: BkuTheme.textPlaceholder,
+                      inactiveTrackColor: BkuTheme.borderSubtle,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
-                      'Wajib diisi',
-                      style: AppTextStyles.bodyMd.copyWith(
+                      'Wajib diisi (Required)',
+                      style: BkuTheme.textCaption.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

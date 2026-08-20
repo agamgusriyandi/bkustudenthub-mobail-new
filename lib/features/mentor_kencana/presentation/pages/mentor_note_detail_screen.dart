@@ -163,10 +163,10 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                                 Icon(Icons.add, color: context.appColors.primary, size: 18),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'TAMBAH CATATAN',
+                                  'Tambah Catatan',
                                   style: AppTextStyles.labelSm.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.1,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ],
@@ -181,7 +181,7 @@ class _MentorNoteDetailScreenState extends State<MentorNoteDetailScreen> {
                             SizedBox(
                               width: double.infinity,
                               child: BkuButton(
-                                text: 'SIMPAN CATATAN',
+                                text: 'Simpan Catatan',
                                 icon: Icons.save_outlined,
                                 isLoading: _isSubmitting,
                                 onPressed: _submitNote,

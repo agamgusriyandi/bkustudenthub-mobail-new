@@ -1,21 +1,18 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import '../../../../../core/error/error_handler.dart';
-import 'package:go_router/go_router.dart';
 
 class DaftarOrmawaScreen extends StatefulWidget {
   final String ormawaId;
@@ -39,18 +36,15 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
   bool _isSubmitting = false;
   String? _errorMessage;
 
-  // Default lampiran
   String? _lampiranPath;
   String? _lampiranName;
 
-  // Divisions & Custom fields loaded from API
   List<Map<String, dynamic>> _divisions = [];
   String? _selectedDivisi;
   String? _selectedDivisi2;
 
   List<dynamic> _recruitmentFields = [];
 
-  // Dynamic fields state mapping
   final Map<String, TextEditingController> _textControllers = {};
   final Map<String, String?> _filePaths = {};
   final Map<String, String?> _fileNames = {};
@@ -78,7 +72,6 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
           _divisions = divisionsList;
           _recruitmentFields = fieldsData['data'] ?? [];
 
-          // Initialize state maps for dynamic fields
           for (var field in _recruitmentFields) {
             final idStr = (field['id'] ?? field['ID']).toString();
             final type = field['type']?.toString().toLowerCase() ?? 'text';
@@ -163,7 +156,6 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // Validate dynamic required files
     if (_recruitmentFields.isNotEmpty) {
       for (var field in _recruitmentFields) {
         final idStr = (field['id'] ?? field['ID']).toString();
@@ -189,7 +181,6 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
         cvUrl = await provider.uploadRecruitmentFile(_lampiranPath!);
       }
 
-      // Map dynamic fields
       final Map<String, String> customAnswers = {};
       if (_recruitmentFields.isNotEmpty) {
         for (var field in _recruitmentFields) {
@@ -250,7 +241,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: BkuStaticAppBar(
         title: 'Daftar ${widget.namaOrmawa}',
         variant: AppBarVariant.student,
@@ -275,12 +266,12 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: AppColors.error.withAlpha(20),
+                          color: BkuTheme.roseSoft,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.error_outline_rounded,
-                          color: AppColors.error,
+                          color: BkuTheme.danger,
                           size: 48,
                         ),
                       ),
@@ -288,9 +279,8 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                       Text(
                         _errorMessage!,
                         textAlign: TextAlign.center,
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.neutral800,
+                        style: BkuTheme.textSectionHeader.copyWith(
+                          color: BkuTheme.textPrimary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -312,42 +302,32 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Dynamic divisions block
                       if (_divisions.isNotEmpty) ...[
                         Text(
                           'Pilih Divisi (Prioritas 1)',
-                          style: AppTextStyles.titleLarge.copyWith(
-                            color: context.appColors.onSurface,
+                          style: BkuTheme.textLabelBold.copyWith(
+                            color: BkuTheme.textPrimary,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.sm),
                         BkuDropdown<String>(
                           initialValue: _selectedDivisi,
                           decoration: InputDecoration(
-                            fillColor: AppColors.neutral50,
+                            fillColor: BkuTheme.cardSurface,
                             filled: true,
                             border: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: const BorderSide(
-                                color: AppColors.neutral600,
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(
+                                color: BkuTheme.primary,
                                 width: 1.5,
                               ),
                             ),
@@ -376,41 +356,32 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: AppSpacing.xl),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           'Pilih Divisi (Prioritas 2 - Opsional)',
-                          style: AppTextStyles.titleLarge.copyWith(
-                            color: context.appColors.onSurface,
+                          style: BkuTheme.textLabelBold.copyWith(
+                            color: BkuTheme.textPrimary,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.sm),
                         BkuDropdown<String>(
                           initialValue: _selectedDivisi2,
                           decoration: InputDecoration(
-                            fillColor: AppColors.neutral50,
+                            fillColor: BkuTheme.cardSurface,
                             filled: true,
                             border: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: const BorderSide(
-                                color: AppColors.neutral600,
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(
+                                color: BkuTheme.primary,
                                 width: 1.5,
                               ),
                             ),
@@ -438,18 +409,17 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: AppSpacing.xxl),
+                        const SizedBox(height: AppSpacing.xl),
                       ],
-
-                      // Dynamic form fields / Default form fields
                       if (_recruitmentFields.isEmpty) ...[
                         Text(
                           'Mengapa Anda ingin bergabung dengan ${widget.namaOrmawa}?',
-                          style: AppTextStyles.titleLarge.copyWith(
-                            color: context.appColors.onSurface,
+                          style: BkuTheme.textLabelBold.copyWith(
+                            color: BkuTheme.textPrimary,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.lg),
+                        const SizedBox(height: AppSpacing.sm),
                         BkuTextField(
                           controller: _alasanController,
                           maxLines: 5,
@@ -458,106 +428,97 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                   value!.isEmpty ? 'Alasan wajib diisi' : null,
                           decoration: InputDecoration(
                             hintText: 'Tuliskan motivasi dan alasan Anda...',
-                            hintStyle: AppTextStyles.bodyMd.copyWith(
-                              color: AppColors.neutral400,
+                            hintStyle: BkuTheme.textBodyRegular.copyWith(
+                              color: BkuTheme.textMuted,
                             ),
                             filled: true,
-                            fillColor: AppColors.neutral50,
+                            fillColor: BkuTheme.cardSurface,
                             border: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: BorderSide(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                              ),
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(color: BkuTheme.border),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: AppRadius.radiusLg,
-                              borderSide: const BorderSide(
-                                color: AppColors.neutral600,
+                              borderRadius: BkuTheme.r12,
+                              borderSide: BorderSide(
+                                color: BkuTheme.primary,
                                 width: 1.5,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xl),
+                        const SizedBox(height: AppSpacing.lg),
                         Text(
                           'Lampiran Pendukung (CV/Portofolio)',
-                          style: AppTextStyles.titleLarge.copyWith(
-                            color: context.appColors.onSurface,
+                          style: BkuTheme.textLabelBold.copyWith(
+                            color: BkuTheme.textPrimary,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.lg),
+                        const SizedBox(height: AppSpacing.sm),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(AppSpacing.xl),
                           decoration: BoxDecoration(
-                            color: context.appColors.surface,
-                            borderRadius: AppRadius.radiusXl,
-                            border: Border.all(
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainerHighest,
-                            ),
+                            color: BkuTheme.cardSurface,
+                            borderRadius: BkuTheme.r16,
+                            border: Border.all(color: BkuTheme.border),
+                            boxShadow: BkuTheme.cardShadow,
                           ),
                           child: Column(
                             children: [
-                              Icon(
-                                Icons.file_upload_outlined,
-                                size: 40,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outline.withAlpha(50),
+                              Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: BkuTheme.primarySoft,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.file_upload_outlined,
+                                  size: 28,
+                                  color: BkuTheme.primary,
+                                ),
                               ),
                               const SizedBox(height: AppSpacing.md),
                               Text(
                                 'Maksimal 5MB (PDF/JPG/PNG)',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.outline.withAlpha(50),
-                                  fontSize: 10,
+                                style: BkuTheme.textCaption.copyWith(
+                                  color: BkuTheme.textMuted,
                                 ),
                               ),
                               if (_lampiranName != null) ...[
                                 const SizedBox(height: AppSpacing.md),
                                 Text(
                                   'File terpilih: $_lampiranName',
-                                  style: AppTextStyles.labelSm.copyWith(
-                                    color: AppColors.neutral800,
+                                  style: BkuTheme.textBadge.copyWith(
+                                    color: BkuTheme.textPrimary,
                                   ),
                                 ),
                               ],
                               const SizedBox(height: AppSpacing.lg),
                               InkWell(
                                 onTap: _pickFile,
+                                borderRadius: BkuTheme.r8,
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSpacing.xl,
-                                    vertical: AppSpacing.md,
+                                    vertical: AppSpacing.sm,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.neutral100,
-                                    borderRadius: AppRadius.radiusMd,
+                                    color: BkuTheme.surfaceLight,
+                                    borderRadius: BkuTheme.r8,
+                                    border: Border.all(color: BkuTheme.border),
                                   ),
                                   child: Text(
                                     _lampiranName == null
                                         ? 'Pilih File'
                                         : 'Ganti File',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: AppColors.neutral800,
-                                      fontWeight: FontWeight.bold,
+                                    style: BkuTheme.textBadge.copyWith(
+                                      color: BkuTheme.textPrimary,
                                     ),
                                   ),
                                 ),
@@ -575,7 +536,7 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           final options = field['options']?.toString() ?? '';
 
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+                            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -584,26 +545,23 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                     Expanded(
                                       child: Text(
                                         label,
-                                        style: AppTextStyles.titleLarge
-                                            .copyWith(
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.onSurface,
-                                            ),
+                                        style: BkuTheme.textLabelBold.copyWith(
+                                          color: BkuTheme.textPrimary,
+                                          fontSize: 14,
+                                        ),
                                       ),
                                     ),
                                     if (required)
                                       Text(
                                         ' *',
                                         style: TextStyle(
-                                          color: AppColors.danger,
+                                          color: BkuTheme.danger,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                   ],
                                 ),
-                                const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: AppSpacing.sm),
                                 if (type == 'text')
                                   BkuTextField(
                                     controller: _textControllers[idStr],
@@ -616,29 +574,23 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                     decoration: InputDecoration(
                                       hintText: 'Masukkan jawaban...',
                                       filled: true,
-                                      fillColor: AppColors.neutral50,
+                                      fillColor: BkuTheme.cardSurface,
                                       border: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
-                                        borderSide: const BorderSide(
-                                          color: AppColors.neutral600,
+                                        borderRadius: BkuTheme.r12,
+                                        borderSide: BorderSide(
+                                          color: BkuTheme.primary,
                                           width: 1.5,
                                         ),
                                       ),
@@ -657,29 +609,23 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                     decoration: InputDecoration(
                                       hintText: 'Tuliskan jawaban...',
                                       filled: true,
-                                      fillColor: AppColors.neutral50,
+                                      fillColor: BkuTheme.cardSurface,
                                       border: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
-                                        borderSide: const BorderSide(
-                                          color: AppColors.neutral600,
+                                        borderRadius: BkuTheme.r12,
+                                        borderSide: BorderSide(
+                                          color: BkuTheme.primary,
                                           width: 1.5,
                                         ),
                                       ),
@@ -689,30 +635,24 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                   BkuDropdown<String>(
                                     initialValue: _selectValues[idStr],
                                     decoration: InputDecoration(
-                                      fillColor: AppColors.neutral50,
+                                      fillColor: BkuTheme.cardSurface,
                                       filled: true,
                                       border: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
+                                        borderRadius: BkuTheme.r12,
                                         borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest,
+                                          color: BkuTheme.border,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: AppRadius.radiusLg,
-                                        borderSide: const BorderSide(
-                                          color: AppColors.neutral600,
+                                        borderRadius: BkuTheme.r12,
+                                        borderSide: BorderSide(
+                                          color: BkuTheme.primary,
                                           width: 1.5,
                                         ),
                                       ),
@@ -745,12 +685,12 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                   CheckboxListTile(
                                     title: Text(
                                       'Ya, saya menyetujui / mengonfirmasi',
-                                      style: AppTextStyles.bodyMd,
+                                      style: BkuTheme.textBodyRegular,
                                     ),
                                     value: _checkboxValues[idStr] ?? false,
                                     controlAffinity:
                                         ListTileControlAffinity.leading,
-                                    activeColor: AppColors.neutral800,
+                                    activeColor: BkuTheme.primary,
                                     contentPadding: EdgeInsets.zero,
                                     onChanged: (val) {
                                       setState(() {
@@ -765,65 +705,68 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                       AppSpacing.xl,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: context.appColors.surface,
-                                      borderRadius: AppRadius.radiusXl,
+                                      color: BkuTheme.cardSurface,
+                                      borderRadius: BkuTheme.r16,
                                       border: Border.all(
-                                        color:
-                                            Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest,
+                                        color: BkuTheme.border,
                                       ),
+                                      boxShadow: BkuTheme.cardShadow,
                                     ),
                                     child: Column(
                                       children: [
-                                        Icon(
-                                          Icons.file_upload_outlined,
-                                          size: 36,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.outline.withAlpha(50),
+                                        Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: BkuTheme.primarySoft,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.file_upload_outlined,
+                                            size: 24,
+                                            color: BkuTheme.primary,
+                                          ),
                                         ),
                                         const SizedBox(height: AppSpacing.sm),
                                         Text(
                                           'Maksimal 5MB (PDF/JPG/PNG)',
-                                          style: AppTextStyles.labelSm.copyWith(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.outline.withAlpha(50),
-                                            fontSize: 10,
+                                          style: BkuTheme.textCaption.copyWith(
+                                            color: BkuTheme.textMuted,
                                           ),
                                         ),
                                         if (_fileNames[idStr] != null) ...[
                                           const SizedBox(height: AppSpacing.sm),
                                           Text(
                                             'File terpilih: ${_fileNames[idStr]}',
-                                            style: AppTextStyles.labelSm
-                                                .copyWith(
-                                                  color: AppColors.neutral800,
-                                                ),
+                                            style: BkuTheme.textBadge.copyWith(
+                                              color: BkuTheme.textPrimary,
+                                            ),
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
                                         const SizedBox(height: AppSpacing.md),
                                         InkWell(
                                           onTap: () => _pickDynamicFile(idStr),
+                                          borderRadius: BkuTheme.r8,
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: AppSpacing.lg,
                                               vertical: AppSpacing.sm,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: AppColors.neutral100,
-                                              borderRadius: AppRadius.radiusMd,
+                                              color: BkuTheme.surfaceLight,
+                                              borderRadius: BkuTheme.r8,
+                                              border: Border.all(
+                                                color: BkuTheme.border,
+                                              ),
                                             ),
                                             child: Text(
                                               _fileNames[idStr] == null
                                                   ? 'Pilih File'
                                                   : 'Ganti File',
-                                              style: AppTextStyles.labelSm
+                                              style: BkuTheme.textBadge
                                                   .copyWith(
-                                                    color: AppColors.neutral800,
-                                                    fontWeight: FontWeight.bold,
+                                                    color: BkuTheme.textPrimary,
                                                   ),
                                             ),
                                           ),
@@ -836,14 +779,19 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                           );
                         }),
                       ],
-
-                      const SizedBox(height: AppSpacing.xxxl),
+                      const SizedBox(height: AppSpacing.xxl),
                       SizedBox(
                         width: double.infinity,
-                        height: 58,
+                        height: 52,
                         child: ElevatedButton(
                           onPressed: _isSubmitting ? null : _submitForm,
-
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: BkuTheme.primary,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BkuTheme.r12,
+                            ),
+                          ),
                           child:
                               _isSubmitting
                                   ? SizedBox(
@@ -851,14 +799,13 @@ class _DaftarOrmawaScreenState extends State<DaftarOrmawaScreen> {
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: context.appColors.onPrimary,
+                                      color: Colors.white,
                                     ),
                                   )
                                   : Text(
                                     'Kirim Pendaftaran',
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: context.appColors.onPrimary,
+                                    style: BkuTheme.textButton.copyWith(
+                                      color: Colors.white,
                                     ),
                                   ),
                         ),

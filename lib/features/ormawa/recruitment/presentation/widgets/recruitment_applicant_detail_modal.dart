@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
-
+import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/domain/entities/recruitment_applicant.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_info_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class RecruitmentApplicantDetailModal extends StatelessWidget {
   final RecruitmentApplicant applicant;
@@ -28,6 +25,40 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
     this.onReject,
   });
 
+  BkuStatus _mapStatusToBkuStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'aktif':
+      case 'accepted':
+      case 'diterima':
+        return BkuStatus.success;
+      case 'tidak_aktif':
+      case 'rejected':
+      case 'ditolak':
+        return BkuStatus.error;
+      case 'pending':
+      case 'menunggu':
+      default:
+        return BkuStatus.warning;
+    }
+  }
+
+  String _mapStatusText(String status) {
+    switch (status.toLowerCase()) {
+      case 'aktif':
+      case 'accepted':
+      case 'diterima':
+        return 'Diterima';
+      case 'tidak_aktif':
+      case 'rejected':
+      case 'ditolak':
+        return 'Ditolak';
+      case 'pending':
+      case 'menunggu':
+      default:
+        return 'Menunggu Review';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -40,8 +71,8 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
             applicant.status.toLowerCase() == 'menunggu';
         return Container(
           decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
+            color: BkuTheme.scaffoldBg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Stack(
             children: [
@@ -51,168 +82,128 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.sm),
                         Container(
-                          width: 48,
-                          height: 6,
+                          width: 40,
+                          height: 4,
                           decoration: BoxDecoration(
-                            color: AppColors.neutral300,
-                            borderRadius: AppRadius.radiusXs,
+                            color: BkuTheme.border,
+                            borderRadius: BkuTheme.r8,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xxl),
+                        const SizedBox(height: AppSpacing.lg),
                         Container(
-                          padding: const EdgeInsets.all(AppSpacing.xs),
+                          width: 80,
+                          height: 80,
                           decoration: BoxDecoration(
+                            color: BkuTheme.primarySoft,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: OrmawaTheme.primarySoft,
+                              color: BkuTheme.primaryBorder,
                               width: 2,
                             ),
                           ),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: OrmawaTheme.primary,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: OrmawaTheme.primary.withAlpha(60),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              applicant.name.substring(0, 1),
-                              style: AppTextStyles.displaySmall.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            applicant.name.isNotEmpty ? applicant.name.substring(0, 1).toUpperCase() : 'P',
+                            style: TextStyle(
+                              color: BkuTheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 32,
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.s20),
+                        const SizedBox(height: 12),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xl,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                           child: Text(
                             applicant.name,
-                            style: AppTextStyles.headlineSmall.copyWith(
+                            style: BkuTheme.textCardTitle.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.neutral900,
+                              fontSize: 17,
                             ),
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: 4),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
+                            horizontal: AppSpacing.md,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.neutral100,
-                            borderRadius: AppRadius.radiusXl,
+                            color: BkuTheme.borderSubtle,
+                            borderRadius: BkuTheme.rPill,
+                            border: Border.all(color: BkuTheme.border),
                           ),
                           child: Text(
                             '${applicant.nim} • ${applicant.prodi}',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              color: AppColors.neutral600,
-                              fontWeight: FontWeight.w500,
+                            style: BkuTheme.textCaption.copyWith(
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
-                        _buildStatusBadge(applicant.status),
-                        const SizedBox(height: AppSpacing.s20),
+                        const SizedBox(height: 8),
+                        BkuStatusBadge(
+                          status: _mapStatusToBkuStatus(applicant.status),
+                          customText: _mapStatusText(applicant.status),
+                          showIcon: false,
+                        ),
+                        const SizedBox(height: 16),
 
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xl,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.all(
-                                        AppSpacing.lg,
-                                      ),
+                              BkuCard(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                borderRadius: 16,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
-                                        color: AppColors.warning.withAlpha(20),
-                                        borderRadius: AppRadius.radiusXl,
-                                        border: Border.all(
-                                          color: AppColors.warning.withAlpha(
-                                            50,
-                                          ),
-                                        ),
+                                        color: BkuTheme.amberSoft,
+                                        shape: BoxShape.circle,
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(
-                                              AppSpacing.md,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.warning
-                                                  .withAlpha(40),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.star_rounded,
-                                              color: AppColors.warning,
-                                              size: 24,
-                                            ),
-                                          ),
-                                          const SizedBox(width: AppSpacing.lg),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Indeks Prestasi',
-                                                style: AppTextStyles.labelMd
-                                                    .copyWith(
-                                                      color: AppColors.warning,
-                                                    ),
-                                              ),
-                                              Text(
-                                                applicant.ipk.toStringAsFixed(
-                                                  2,
-                                                ),
-                                                style: AppTextStyles.titleMd
-                                                    .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          AppColors
-                                                              .onWarningContainer,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                      child: const Icon(
+                                        Icons.star_rounded,
+                                        color: BkuTheme.amber,
+                                        size: 24,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: AppSpacing.md),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Indeks Prestasi Kumulatif (IPK)',
+                                          style: BkuTheme.textCaption.copyWith(
+                                            color: BkuTheme.textMuted,
+                                          ),
+                                        ),
+                                        Text(
+                                          applicant.ipk.toStringAsFixed(2),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 18,
+                                            color: BkuTheme.amber,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(height: AppSpacing.xl),
+                              const SizedBox(height: 14),
 
                               if (applicant.customAnswers.isEmpty) ...[
                                 Text(
                                   'Divisi Pilihan',
-                                  style: AppTextStyles.titleSm.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: BkuTheme.textSectionTitle,
                                 ),
-                                const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: 8),
                                 Row(
                                   children: [
                                     Expanded(
@@ -221,7 +212,7 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                         value: applicant.divisi1,
                                       ),
                                     ),
-                                    const SizedBox(width: AppSpacing.md),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: RecruitmentInfoCard(
                                         label: 'Pilihan 2',
@@ -230,41 +221,36 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: AppSpacing.xl),
+                                const SizedBox(height: 14),
                                 Text(
                                   'Alasan & Motivasi',
-                                  style: AppTextStyles.titleSm.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: BkuTheme.textSectionTitle,
                                 ),
-                                const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: 8),
                                 Container(
                                   width: double.infinity,
-                                  padding: const EdgeInsets.all(AppSpacing.xl),
+                                  padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
-                                    color: AppColors.neutral100.withAlpha(100),
-                                    borderRadius: AppRadius.radiusXl,
+                                    color: Colors.white,
+                                    borderRadius: BkuTheme.r16,
                                     border: Border.all(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline.withAlpha(50),
+                                      color: BkuTheme.border,
                                     ),
                                   ),
                                   child: Text(
                                     applicant.alasan,
-                                    style: AppTextStyles.bodyMd.copyWith(
+                                    style: BkuTheme.textBodyRegular.copyWith(
                                       height: 1.5,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: AppSpacing.xl),
+                                const SizedBox(height: 14),
                                 Text(
                                   'Dokumen Pendukung',
-                                  style: AppTextStyles.titleSm.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: BkuTheme.textSectionTitle,
                                 ),
-                                const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: 8),
                                 if (applicant.cvUrl.trim().isNotEmpty)
                                   InkWell(
                                     onTap: () async {
@@ -274,83 +260,64 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                       if (fullUrl.isNotEmpty) {
                                         final uri = Uri.parse(fullUrl);
                                         try {
-                                          if (await canLaunchUrl(uri)) {
-                                            await launchUrl(
-                                              uri,
-                                              mode:
-                                                  LaunchMode
-                                                      .externalApplication,
-                                            );
-                                          } else {
-                                            await launchUrl(
-                                              uri,
-                                              mode:
-                                                  LaunchMode
-                                                      .externalApplication,
-                                            );
-                                          }
-                                        } catch (_) {
-                                        }
+                                          await launchUrl(
+                                            uri,
+                                            mode: LaunchMode.externalApplication,
+                                          );
+                                        } catch (_) {}
                                       }
                                     },
-                                    borderRadius: AppRadius.radiusXl,
+                                    borderRadius: BkuTheme.r16,
                                     child: Container(
-                                      padding: const EdgeInsets.all(
-                                        AppSpacing.lg,
-                                      ),
+                                      padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: OrmawaTheme.primarySoft,
-                                        borderRadius: AppRadius.radiusXl,
+                                        color: BkuTheme.primarySoft,
+                                        borderRadius: BkuTheme.r16,
                                         border: Border.all(
-                                          color: OrmawaTheme.primary.withAlpha(60),
+                                          color: BkuTheme.primaryBorder,
                                         ),
                                       ),
                                       child: Row(
                                         children: [
                                           Container(
-                                            padding: const EdgeInsets.all(
-                                              AppSpacing.md,
-                                            ),
+                                            padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: OrmawaTheme.primary.withAlpha(30),
+                                              color: Colors.white,
                                               shape: BoxShape.circle,
                                             ),
                                             child: Icon(
                                               Icons.description_rounded,
-                                              color: OrmawaTheme.primary,
-                                              size: 24,
+                                              color: BkuTheme.primary,
+                                              size: 20,
                                             ),
                                           ),
-                                          const SizedBox(width: AppSpacing.lg),
+                                          const SizedBox(width: AppSpacing.md),
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   'Lihat CV / Portofolio',
-                                                  style: AppTextStyles.bodyMd
-                                                      .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: OrmawaTheme.primary,
-                                                      ),
+                                                  style: BkuTheme.textCardTitle.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    color: BkuTheme.primary,
+                                                  ),
                                                 ),
                                                 Text(
                                                   'Ketuk untuk membuka dokumen pendaftaran',
-                                                  style: AppTextStyles.labelMd
-                                                      .copyWith(
-                                                        color:
-                                                            OrmawaTheme.textMuted,
-                                                      ),
+                                                  style: BkuTheme.textCaption.copyWith(
+                                                    fontSize: 10,
+                                                    color: BkuTheme.textMuted,
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                           ),
                                           Icon(
                                             Icons.open_in_new_rounded,
-                                            color: OrmawaTheme.primary,
-                                            size: 20,
+                                            color: BkuTheme.primary,
+                                            size: 16,
                                           ),
                                         ],
                                       ),
@@ -359,25 +326,21 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                 else
                                   Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.all(
-                                      AppSpacing.lg,
-                                    ),
+                                    padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: OrmawaTheme.cardSurface,
-                                      borderRadius: AppRadius.radiusXl,
+                                      color: Colors.white,
+                                      borderRadius: BkuTheme.r16,
                                       border: Border.all(
-                                        color: OrmawaTheme.border,
+                                        color: BkuTheme.border,
                                       ),
                                     ),
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: AppSpacing.sm,
-                                        ),
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
                                         child: Text(
                                           'Tidak ada dokumen tambahan.',
-                                          style: AppTextStyles.bodyMd.copyWith(
-                                            color: AppColors.neutral500,
+                                          style: BkuTheme.textCaption.copyWith(
+                                            color: BkuTheme.textPlaceholder,
                                             fontStyle: FontStyle.italic,
                                           ),
                                         ),
@@ -388,11 +351,9 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                               if (applicant.customAnswers.isNotEmpty) ...[
                                 Text(
                                   'Jawaban Tambahan',
-                                  style: AppTextStyles.titleSm.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: BkuTheme.textSectionTitle,
                                 ),
-                                const SizedBox(height: AppSpacing.md),
+                                const SizedBox(height: 8),
                                 ...applicant.customAnswers.entries.map((entry) {
                                   final fieldId = entry.key;
                                   final answer = entry.value;
@@ -404,39 +365,28 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                     orElse: () => <String, dynamic>{},
                                   );
 
-                                  final label =
-                                      field.isNotEmpty
-                                          ? (field['label'] ??
-                                                  field['Label'] ??
-                                                  'Pertanyaan Tambahan')
-                                              .toString()
-                                          : 'Pertanyaan Tambahan';
+                                  final label = field.isNotEmpty
+                                      ? (field['label'] ?? field['Label'] ?? 'Pertanyaan Tambahan').toString()
+                                      : 'Pertanyaan Tambahan';
 
-                                  final type =
-                                      field.isNotEmpty
-                                          ? (field['type'] ??
-                                                  field['Type'] ??
-                                                  'text')
-                                              .toString()
-                                              .toLowerCase()
-                                              : 'text';
+                                  final type = field.isNotEmpty
+                                      ? (field['type'] ?? field['Type'] ?? 'text').toString().toLowerCase()
+                                      : 'text';
 
                                   final isFile = type == 'file';
 
                                   return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         label,
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          color: AppColors.neutral500,
+                                        style: BkuTheme.textCaption.copyWith(
                                           fontWeight: FontWeight.bold,
+                                          color: BkuTheme.textMuted,
                                         ),
                                       ),
-                                      const SizedBox(height: AppSpacing.s6),
-                                      if (isFile &&
-                                          answer.toString().isNotEmpty)
+                                      const SizedBox(height: 4),
+                                      if (isFile && answer.toString().isNotEmpty)
                                         InkWell(
                                           onTap: () async {
                                             final fullUrl = ApiGate.getImageUrl(
@@ -445,45 +395,30 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                             if (fullUrl.isNotEmpty) {
                                               final uri = Uri.parse(fullUrl);
                                               try {
-                                                if (await canLaunchUrl(uri)) {
-                                                  await launchUrl(
-                                                    uri,
-                                                    mode:
-                                                        LaunchMode
-                                                            .externalApplication,
-                                                  );
-                                                } else {
-                                                  await launchUrl(
-                                                    uri,
-                                                    mode:
-                                                        LaunchMode
-                                                            .externalApplication,
-                                                  );
-                                                }
-                                              } catch (_) {
-                                              }
+                                                await launchUrl(
+                                                  uri,
+                                                  mode: LaunchMode.externalApplication,
+                                                );
+                                              } catch (_) {}
                                             }
                                           },
                                           child: Row(
                                             children: [
                                               Icon(
                                                 Icons.open_in_new_rounded,
-                                                color: OrmawaTheme.primary,
-                                                size: 16,
+                                                color: BkuTheme.primary,
+                                                size: 14,
                                               ),
-                                              const SizedBox(width: AppSpacing.sm),
+                                              const SizedBox(width: 6),
                                               Expanded(
                                                 child: Text(
                                                   'Buka Dokumen',
-                                                  style: AppTextStyles.bodyMd
-                                                      .copyWith(
-                                                        color: OrmawaTheme.primary,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .underline,
-                                                      ),
+                                                  style: TextStyle(
+                                                    color: BkuTheme.primary,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    decoration: TextDecoration.underline,
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -493,26 +428,15 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                                         Text(
                                           answer is List
                                               ? (answer).join(', ')
-                                              : (answer
-                                                          ?.toString()
-                                                          .trim()
-                                                          .isEmpty ??
-                                                      true
+                                              : (answer?.toString().trim().isEmpty ?? true
                                                   ? '—'
                                                   : answer.toString()),
-                                          style: AppTextStyles.bodyMd.copyWith(
-                                            color: AppColors.neutral800,
-                                            fontWeight: FontWeight.w500,
+                                          style: BkuTheme.textBodyRegular.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                      const SizedBox(height: AppSpacing.lg),
-                                      if (entry.key !=
-                                          applicant
-                                              .customAnswers
-                                              .keys
-                                              .last) ...[
-                                        const SizedBox(height: AppSpacing.md),
-                                      ],
+                                      const SizedBox(height: 12),
                                     ],
                                   );
                                 }),
@@ -526,32 +450,29 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                   ),
                 ],
               ),
-              if (isPending &&
-                  context.read<OrmawaProvider>().hasPermission(
-                    'manage_recruitment',
-                  ))
+              if (isPending && context.read<OrmawaProvider>().hasPermission('manage_recruitment'))
                 Positioned(
                   bottom: 0,
                   left: 0,
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.xl,
+                      AppSpacing.lg,
+                      AppSpacing.md,
                       AppSpacing.lg,
                       AppSpacing.xl,
-                      AppSpacing.xxl,
                     ),
                     decoration: BoxDecoration(
-                      color: context.appColors.surface,
+                      color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: context.appColors.onSurface.withAlpha(10),
+                          color: Colors.black.withAlpha(10),
                           blurRadius: 20,
                           offset: const Offset(0, -10),
                         ),
                       ],
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(AppRadius.xxl),
+                        top: Radius.circular(24),
                       ),
                     ),
                     child: Row(
@@ -559,15 +480,19 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
                         Expanded(
                           child: BkuButton(
                             variant: BkuButtonVariant.danger,
-                            text: 'Tolak',
+                            text: 'Tolak Berkas',
+                            icon: Icons.cancel_rounded,
+                            height: 44,
                             onPressed: onReject,
                             fullWidth: true,
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.lg),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: BkuButton.success(
-                            text: 'Terima',
+                            text: 'Terima Anggota',
+                            icon: Icons.check_circle_rounded,
+                            height: 44,
                             onPressed: onAccept,
                             fullWidth: true,
                           ),
@@ -580,55 +505,6 @@ class RecruitmentApplicantDetailModal extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildStatusBadge(String status) {
-    final String statusText;
-    final Color badgeColor;
-    final Color textColor;
-
-    switch (status.toLowerCase()) {
-      case 'aktif':
-      case 'accepted':
-      case 'diterima':
-        statusText = 'Diterima';
-        badgeColor = AppColors.success.withAlpha(20);
-        textColor = AppColors.onSuccessContainer;
-        break;
-      case 'tidak_aktif':
-      case 'rejected':
-      case 'ditolak':
-        statusText = 'Ditolak';
-        badgeColor = AppColors.error.withAlpha(20);
-        textColor = AppColors.onDangerContainer;
-        break;
-      case 'pending':
-      case 'menunggu':
-      default:
-        statusText = 'Menunggu';
-        badgeColor = AppColors.warning.withAlpha(20);
-        textColor = AppColors.onWarningContainer;
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: badgeColor,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: textColor.withAlpha(50)),
-      ),
-      child: Text(
-        statusText,
-        style: AppTextStyles.labelMd.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 }

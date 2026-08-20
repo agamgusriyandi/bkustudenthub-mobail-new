@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/domain/entities/recruitment_applicant.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_history_card.dart';
 
@@ -14,7 +14,7 @@ class RecruitmentHistoryScreen extends StatelessWidget {
     final List<RecruitmentApplicant> history = [];
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Riwayat Keputusan',
         subtitle: 'Hasil Seleksi & Keputusan Rekrutmen',
@@ -24,10 +24,9 @@ class RecruitmentHistoryScreen extends StatelessWidget {
           ? const Center(
               child: Padding(
                 padding: EdgeInsets.all(AppSpacing.xl),
-                child: OrmawaEmptyCard(
+                child: BkuEmptyState(
                   title: 'Belum Ada Riwayat',
-                  description: 'Riwayat keputusan seleksi dan kelulusan pendaftar akan tampil di sini.',
-                  icon: Icons.history_rounded,
+                  message: 'Riwayat keputusan seleksi dan kelulusan pendaftar akan tampil di sini.',
                 ),
               ),
             )

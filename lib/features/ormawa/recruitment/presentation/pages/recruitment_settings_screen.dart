@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/recruitment/presentation/widgets/recruitment_date_field.dart';
@@ -80,12 +81,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: BkuTheme.textHeading,
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -149,7 +150,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
+      appBar: const BkuStaticAppBar(
+        title: 'Pengaturan Rekrutmen',
+        subtitle: 'Konfigurasi Pendaftaran Calon Anggota',
+        variant: AppBarVariant.ormawa,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
@@ -158,7 +164,9 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            OrmawaCard(
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              borderRadius: 16,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -170,25 +178,25 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           children: [
                             Text(
                               'Status Open Recruitment',
-                              style: OrmawaTheme.textCardTitle.copyWith(
-                                fontSize: 14,
+                              style: BkuTheme.textCardTitle.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            OrmawaBadge(
-                              text: _isOpenRecruitment ? 'AKTIF' : 'NONAKTIF',
-                              variant: _isOpenRecruitment
-                                  ? OrmawaBadgeVariant.success
-                                  : OrmawaBadgeVariant.neutral,
+                            BkuStatusBadge(
+                              status: _isOpenRecruitment ? BkuStatus.success : BkuStatus.neutral,
+                              customText: _isOpenRecruitment ? 'Aktif' : 'Nonaktif',
+                              showIcon: false,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 2),
                         Text(
                           _isOpenRecruitment
                               ? 'Pendaftaran sedang terbuka untuk mahasiswa'
                               : 'Pendaftaran saat ini sedang ditutup',
-                          style: OrmawaTheme.textCaption,
+                          style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted),
                         ),
                       ],
                     ),
@@ -197,9 +205,9 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                     value: _isOpenRecruitment,
                     onChanged: (value) => setState(() => _isOpenRecruitment = value),
                     activeThumbColor: Colors.white,
-                    activeTrackColor: const Color(0xFF16A34A),
-                    inactiveThumbColor: const Color(0xFF94A3B8),
-                    inactiveTrackColor: const Color(0xFFE2E8F0),
+                    activeTrackColor: BkuTheme.emerald,
+                    inactiveThumbColor: BkuTheme.textPlaceholder,
+                    inactiveTrackColor: BkuTheme.borderSubtle,
                   ),
                 ],
               ),
@@ -207,7 +215,7 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
             const SizedBox(height: 16),
             Text(
               'Periode Pendaftaran',
-              style: OrmawaTheme.textSectionTitle,
+              style: BkuTheme.textSectionTitle,
             ),
             const SizedBox(height: 8),
             Row(
@@ -230,7 +238,9 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            OrmawaCard(
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              borderRadius: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -242,19 +252,19 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: OrmawaTheme.statusWarningBg,
-                              borderRadius: BorderRadius.circular(8),
+                              color: BkuTheme.amberSoft,
+                              borderRadius: BkuTheme.r8,
                             ),
                             child: const Icon(
                               Icons.star_rounded,
-                              color: Color(0xFFD97706),
+                              color: BkuTheme.amber,
                               size: 18,
                             ),
                           ),
                           const SizedBox(width: 10),
                           Text(
                             'Standar IPK Minimal',
-                            style: OrmawaTheme.textCardTitle,
+                            style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -264,15 +274,16 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: OrmawaTheme.primarySoft,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: OrmawaTheme.primaryBorder),
+                          color: BkuTheme.primarySoft,
+                          borderRadius: BkuTheme.r8,
+                          border: Border.all(color: BkuTheme.primaryBorder),
                         ),
                         child: Text(
                           _minIpk.toStringAsFixed(2),
-                          style: OrmawaTheme.textBadge.copyWith(
-                            color: OrmawaTheme.primaryDark,
+                          style: TextStyle(
+                            color: BkuTheme.primary,
                             fontSize: 12,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -281,11 +292,11 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                   const SizedBox(height: 8),
                   SliderTheme(
                     data: SliderThemeData(
-                      activeTrackColor: OrmawaTheme.primary,
-                      inactiveTrackColor: OrmawaTheme.primaryBorder,
-                      thumbColor: OrmawaTheme.primaryDark,
-                      overlayColor: OrmawaTheme.primarySoft,
-                      trackHeight: 5,
+                      activeTrackColor: BkuTheme.primary,
+                      inactiveTrackColor: BkuTheme.borderSubtle,
+                      thumbColor: BkuTheme.primary,
+                      overlayColor: BkuTheme.primarySoft,
+                      trackHeight: 4,
                     ),
                     child: Slider(
                       value: _minIpk,
@@ -299,7 +310,9 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            OrmawaCard(
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              borderRadius: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -308,26 +321,26 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: OrmawaTheme.statusInfoBg,
-                          borderRadius: BorderRadius.circular(8),
+                          color: BkuTheme.skySoft,
+                          borderRadius: BkuTheme.r8,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.assignment_outlined,
-                          color: Color(0xFF0284C7),
+                          color: BkuTheme.sky,
                           size: 18,
                         ),
                       ),
                       const SizedBox(width: 10),
                       Text(
                         'Persyaratan Utama Pendaftaran',
-                        style: OrmawaTheme.textCardTitle,
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  OrmawaTextField(
+                  BkuTextField(
                     label: 'Persyaratan Khusus',
-                    hintText: 'Tuliskan syarat pendaftaran (pisahkan per baris)...',
+                    hint: 'Tuliskan syarat pendaftaran (pisahkan per baris)...',
                     controller: _requirementsController,
                     maxLines: 4,
                   ),
@@ -337,12 +350,12 @@ class _RecruitmentSettingsScreenState extends State<RecruitmentSettingsScreen> {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              height: 48,
-              child: OrmawaButton(
-                text: 'SIMPAN PENGATURAN',
+              child: BkuButton.primary(
+                text: 'Simpan Pengaturan',
                 onPressed: _isLoading ? null : _saveSettings,
                 isLoading: _isLoading,
                 icon: Icons.save_rounded,
+                height: 48,
               ),
             ),
             const SizedBox(height: AppSpacing.s100),

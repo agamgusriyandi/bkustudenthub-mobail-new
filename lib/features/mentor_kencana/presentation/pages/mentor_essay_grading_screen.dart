@@ -106,11 +106,11 @@ class _MentorEssayGradingScreenState extends State<MentorEssayGradingScreen> {
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
-                            'PILIH KUIS EVALUASI',
+                            'Pilih Kuis Evaluasi',
                             style: AppTextStyles.labelSm.copyWith(
                               fontWeight: FontWeight.w900,
                               color: context.appColors.primary,
-                              letterSpacing: 1.1,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ],
@@ -546,12 +546,12 @@ class _EssayGradingCardState extends State<_EssayGradingCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'CATATAN MENTOR',
+                      'Catatan Mentor',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
                         color: AppColors.neutral900,
-                        letterSpacing: 0.3,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     const SizedBox(height: 4),

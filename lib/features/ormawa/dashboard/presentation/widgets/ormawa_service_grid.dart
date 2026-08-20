@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
@@ -53,9 +53,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Proposal',
       icon: Icons.assignment_rounded,
-      color: OrmawaTheme.indigo,
-      bgColor: OrmawaTheme.indigoSoft,
-      borderColor: OrmawaTheme.indigoBorder,
+      color: BkuTheme.indigo,
+      bgColor: BkuTheme.indigoSoft,
+      borderColor: BkuTheme.indigoBorder,
       target: const OrmawaProposalScreen(),
       category: 'Administrasi & Proker',
       isPermitted: provider.hasPermission(
@@ -65,9 +65,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'LPJ',
       icon: Icons.description_rounded,
-      color: OrmawaTheme.rose,
-      bgColor: OrmawaTheme.roseSoft,
-      borderColor: OrmawaTheme.roseBorder,
+      color: BkuTheme.rose,
+      bgColor: BkuTheme.roseSoft,
+      borderColor: BkuTheme.roseBorder,
       target: const OrmawaLpjScreen(),
       category: 'Administrasi & Proker',
       isPermitted: provider.hasPermission(
@@ -77,9 +77,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Kalender',
       icon: Icons.event_rounded,
-      color: OrmawaTheme.amber,
-      bgColor: OrmawaTheme.amberSoft,
-      borderColor: OrmawaTheme.amberBorder,
+      color: BkuTheme.amber,
+      bgColor: BkuTheme.amberSoft,
+      borderColor: BkuTheme.amberBorder,
       target: const OrmawaKalenderScreen(),
       category: 'Administrasi & Proker',
       isPermitted: provider.hasPermission(
@@ -89,9 +89,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Absensi',
       icon: Icons.qr_code_scanner_rounded,
-      color: OrmawaTheme.primary,
-      bgColor: OrmawaTheme.primarySoft,
-      borderColor: OrmawaTheme.primaryBorder,
+      color: BkuTheme.primary,
+      bgColor: BkuTheme.primarySoft,
+      borderColor: BkuTheme.primaryBorder,
       target: const OrmawaAbsensiScreen(),
       category: 'Administrasi & Proker',
       isPermitted: provider.hasPermission(
@@ -101,9 +101,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Keuangan',
       icon: Icons.account_balance_wallet_rounded,
-      color: OrmawaTheme.emerald,
-      bgColor: OrmawaTheme.emeraldSoft,
-      borderColor: OrmawaTheme.emeraldBorder,
+      color: BkuTheme.emerald,
+      bgColor: BkuTheme.emeraldSoft,
+      borderColor: BkuTheme.emeraldBorder,
       target: const OrmawaFinanceScreen(),
       category: 'Keuangan & Pagu',
       isPermitted: provider.hasPermission(
@@ -113,9 +113,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Pagu',
       icon: Icons.savings_rounded,
-      color: OrmawaTheme.teal,
-      bgColor: OrmawaTheme.tealSoft,
-      borderColor: OrmawaTheme.tealBorder,
+      color: BkuTheme.teal,
+      bgColor: BkuTheme.tealSoft,
+      borderColor: BkuTheme.tealBorder,
       target: const OrmawaPaguScreen(),
       category: 'Keuangan & Pagu',
       isPermitted: provider.hasPermission(
@@ -125,9 +125,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Anggota',
       icon: Icons.groups_rounded,
-      color: OrmawaTheme.purple,
-      bgColor: OrmawaTheme.purpleSoft,
-      borderColor: OrmawaTheme.purpleBorder,
+      color: BkuTheme.purple,
+      bgColor: BkuTheme.purpleSoft,
+      borderColor: BkuTheme.purpleBorder,
       target: const OrmawaAnggotaScreen(),
       category: 'Personil & Organisasi',
       isPermitted: provider.hasPermission(
@@ -137,9 +137,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Staf',
       icon: Icons.admin_panel_settings_rounded,
-      color: const Color(0xFF2563EB),
-      bgColor: const Color(0xFFEFF6FF),
-      borderColor: const Color(0xFFBFDBFE),
+      color: BkuTheme.primary,
+      bgColor: BkuTheme.primarySoft,
+      borderColor: BkuTheme.primaryBorder,
       target: const OrmawaStafScreen(),
       category: 'Personil & Organisasi',
       isPermitted: provider.hasPermission(
@@ -149,9 +149,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Struktur',
       icon: Icons.account_tree_rounded,
-      color: const Color(0xFF4F46E5),
-      bgColor: const Color(0xFFEEF2FF),
-      borderColor: const Color(0xFFC7D2FE),
+      color: BkuTheme.indigo,
+      bgColor: BkuTheme.indigoSoft,
+      borderColor: BkuTheme.indigoBorder,
       target: const OrmawaStrukturScreen(),
       category: 'Personil & Organisasi',
       isPermitted: provider.hasPermission(
@@ -161,9 +161,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Rekrutmen',
       icon: Icons.person_add_rounded,
-      color: const Color(0xFF0284C7),
-      bgColor: const Color(0xFFE0F2FE),
-      borderColor: const Color(0xFFBAE6FD),
+      color: BkuTheme.sky,
+      bgColor: BkuTheme.skySoft,
+      borderColor: BkuTheme.skyBorder,
       target: const OrmawaRecruitmentScreen(),
       category: 'Personil & Organisasi',
       isPermitted: provider.hasPermission(
@@ -173,9 +173,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Pengumuman',
       icon: Icons.campaign_rounded,
-      color: const Color(0xFF0EA5E9),
-      bgColor: const Color(0xFFE0F2FE),
-      borderColor: const Color(0xFFBAE6FD),
+      color: BkuTheme.sky,
+      bgColor: BkuTheme.skySoft,
+      borderColor: BkuTheme.skyBorder,
       target: const OrmawaPengumumanScreen(),
       category: 'Komunikasi & Aspirasi',
       isPermitted: provider.hasPermission(
@@ -185,9 +185,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Aspirasi',
       icon: Icons.chat_bubble_outline_rounded,
-      color: const Color(0xFFF43F5E),
-      bgColor: const Color(0xFFFFF1F2),
-      borderColor: const Color(0xFFFFE4E6),
+      color: BkuTheme.rose,
+      bgColor: BkuTheme.roseSoft,
+      borderColor: BkuTheme.roseBorder,
       target: const OrmawaAspirasiScreen(),
       category: 'Komunikasi & Aspirasi',
       isPermitted: provider.hasPermission(
@@ -197,9 +197,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Notifikasi',
       icon: Icons.notifications_rounded,
-      color: OrmawaTheme.amber,
-      bgColor: OrmawaTheme.amberSoft,
-      borderColor: OrmawaTheme.amberBorder,
+      color: BkuTheme.amber,
+      bgColor: BkuTheme.amberSoft,
+      borderColor: BkuTheme.amberBorder,
       target: const OrmawaNotificationsScreen(),
       category: 'Pengaturan & Akun',
       isPermitted: true,
@@ -207,9 +207,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Profil',
       icon: Icons.person_rounded,
-      color: OrmawaTheme.purple,
-      bgColor: OrmawaTheme.purpleSoft,
-      borderColor: OrmawaTheme.purpleBorder,
+      color: BkuTheme.purple,
+      bgColor: BkuTheme.purpleSoft,
+      borderColor: BkuTheme.purpleBorder,
       target: const OrmawaProfileScreen(),
       category: 'Pengaturan & Akun',
       isPermitted: true,
@@ -217,9 +217,9 @@ List<_ServiceItemData> _getAvailableServices(OrmawaProvider provider) {
     _ServiceItemData(
       title: 'Pengaturan',
       icon: Icons.settings_rounded,
-      color: const Color(0xFF475569),
-      bgColor: const Color(0xFFF1F5F9),
-      borderColor: const Color(0xFFCBD5E1),
+      color: BkuTheme.slate,
+      bgColor: BkuTheme.slateSoft,
+      borderColor: BkuTheme.slateBorder,
       target: const OrmawaSettingsScreen(),
       category: 'Pengaturan & Akun',
       isPermitted: provider.hasPermission(
@@ -323,20 +323,20 @@ class OrmawaServiceGridModal extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           decoration: BoxDecoration(
-            color: OrmawaTheme.primary.withValues(alpha: 0.08),
+            color: const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: OrmawaTheme.primary.withValues(alpha: 0.2)),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.shield_rounded, size: 13, color: OrmawaTheme.primary),
+              const Icon(Icons.shield_rounded, size: 13, color: Color(0xFF0F172A)),
               const SizedBox(width: 5),
               Text(
-                'ROLE: ${ormawaProvider.userSubRole.toUpperCase()}',
-                style: OrmawaTheme.textBadge.copyWith(
-                  color: OrmawaTheme.primary,
-                  letterSpacing: 0.5,
+                'Peran: ${ormawaProvider.userSubRole.isNotEmpty ? ormawaProvider.userSubRole[0].toUpperCase() + ormawaProvider.userSubRole.substring(1) : 'Anggota'}',
+                style: BkuTheme.textBadge.copyWith(
+                  color: const Color(0xFF0F172A),
+                  letterSpacing: 0.2,
                 ),
               ),
             ],
@@ -345,12 +345,12 @@ class OrmawaServiceGridModal extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Seluruh Menu & Layanan',
-          style: OrmawaTheme.textPageTitle.copyWith(fontSize: 16),
+          style: BkuTheme.textPageTitle.copyWith(fontSize: 16),
         ),
         const SizedBox(height: 3),
         Text(
           'Akses fitur sesuai hak kelola peran organisasi',
-          style: OrmawaTheme.textCardSubtitle,
+          style: BkuTheme.textCardSubtitle,
         ),
         const SizedBox(height: AppSpacing.md),
         Expanded(
@@ -366,11 +366,11 @@ class OrmawaServiceGridModal extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 2, bottom: 10),
                         child: Text(
-                          entry.key.toUpperCase(),
-                          style: OrmawaTheme.textSectionTitle.copyWith(
-                            fontSize: 11,
-                            color: OrmawaTheme.textMuted,
-                            letterSpacing: 0.6,
+                          entry.key,
+                          style: BkuTheme.textSectionTitle.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF334155),
                           ),
                         ),
                       ),
@@ -405,19 +405,19 @@ class OrmawaServiceGridModal extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF1F2),
+                      color: BkuTheme.roseSoft,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFFFE4E6), width: 1.2),
+                      border: Border.all(color: BkuTheme.roseBorder, width: 1.2),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.logout_rounded, size: 16, color: Color(0xFFE11D48)),
+                        const Icon(Icons.logout_rounded, size: 16, color: BkuTheme.rose),
                         const SizedBox(width: 8),
                         Text(
                           'Keluar Sesi Ormawa',
-                          style: OrmawaTheme.textButton.copyWith(
-                            color: const Color(0xFFE11D48),
+                          style: BkuTheme.textButton.copyWith(
+                            color: BkuTheme.rose,
                             letterSpacing: 0.2,
                           ),
                         ),
@@ -512,10 +512,10 @@ class _ModalServiceIcon extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: OrmawaTheme.textCardSubtitle.copyWith(
+            style: BkuTheme.textCardSubtitle.copyWith(
               fontSize: 10.5,
               fontWeight: FontWeight.w600,
-              color: OrmawaTheme.textHeading,
+              color: BkuTheme.textHeading,
               letterSpacing: -0.1,
             ),
             maxLines: 1,
@@ -588,10 +588,10 @@ class _ServiceIcon extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: OrmawaTheme.textCardSubtitle.copyWith(
+            style: BkuTheme.textCardSubtitle.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: OrmawaTheme.textHeading,
+              color: BkuTheme.textHeading,
               letterSpacing: -0.1,
             ),
             maxLines: 1,

@@ -5,12 +5,17 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_finance.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
@@ -142,13 +147,13 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: BkuTheme.r24),
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            color: BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r24,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -160,30 +165,29 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFA7F3D0)),
+                      color: BkuTheme.emeraldSoft,
+                      borderRadius: BkuTheme.r12,
+                      border: Border.all(color: BkuTheme.emeraldBorder),
                     ),
-                    child: const Icon(Icons.description_rounded, color: Color(0xFF059669), size: 20),
+                    child: const Icon(Icons.description_rounded, color: BkuTheme.emerald, size: 20),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Laporan Keuangan Kas',
-                          style: TextStyle(
+                          style: BkuTheme.textSectionTitle.copyWith(
                             fontSize: 14.5,
                             fontWeight: FontWeight.w900,
-                            color: Color(0xFF0F172A),
                           ),
                         ),
                         Text(
                           'Ringkasan resmi buku kas organisasi',
-                          style: TextStyle(
+                          style: BkuTheme.textCaption.copyWith(
                             fontSize: 10.5,
-                            color: Color(0xFF64748B),
+                            color: BkuTheme.textMuted,
                           ),
                         ),
                       ],
@@ -191,14 +195,14 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                   ),
                   InkWell(
                     onTap: () => Navigator.pop(ctx),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BkuTheme.r8,
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(8),
+                        color: BkuTheme.borderSubtle,
+                        borderRadius: BkuTheme.r8,
                       ),
-                      child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFF64748B)),
+                      child: const Icon(Icons.close_rounded, size: 18, color: BkuTheme.textMuted),
                     ),
                   ),
                 ],
@@ -207,9 +211,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  color: BkuTheme.borderSubtle,
+                  borderRadius: BkuTheme.r16,
+                  border: Border.all(color: BkuTheme.border),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,27 +221,27 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'NOMOR DOKUMEN RESMI',
-                          style: TextStyle(
+                        Text(
+                          'Nomor Dokumen Resmi',
+                          style: BkuTheme.textBadge.copyWith(
                             fontSize: 9.5,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF64748B),
+                            color: BkuTheme.textMuted,
                             letterSpacing: 0.2,
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFECFDF5),
-                            borderRadius: BorderRadius.circular(6),
+                            color: BkuTheme.emeraldSoft,
+                            borderRadius: BkuTheme.r8,
                           ),
-                          child: const Text(
-                            'RESMI',
-                            style: TextStyle(
+                          child: Text(
+                            'Resmi',
+                            style: BkuTheme.textBadge.copyWith(
                               fontSize: 8.5,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF059669),
+                              color: BkuTheme.emerald,
                             ),
                           ),
                         ),
@@ -246,25 +250,23 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     const SizedBox(height: 4),
                     Text(
                       reportNumber,
-                      style: const TextStyle(
+                      style: BkuTheme.textCardTitle.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
-                        color: Color(0xFF0F172A),
                         fontFamily: 'monospace',
                       ),
                     ),
-                    const Divider(height: 16, color: Color(0xFFE2E8F0)),
+                    const Divider(height: 16, color: BkuTheme.border),
                     Row(
                       children: [
-                        const Icon(Icons.apartment_rounded, size: 14, color: Color(0xFF64748B)),
+                        const Icon(Icons.apartment_rounded, size: 14, color: BkuTheme.textMuted),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
                             provider.orgName.isNotEmpty ? provider.orgName : 'Organisasi Mahasiswa',
-                            style: const TextStyle(
+                            style: BkuTheme.textCardTitle.copyWith(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF334155),
                             ),
                           ),
                         ),
@@ -273,14 +275,14 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today_rounded, size: 13, color: Color(0xFF64748B)),
+                        const Icon(Icons.calendar_today_rounded, size: 13, color: BkuTheme.textMuted),
                         const SizedBox(width: 6),
                         Text(
                           'Tanggal Cetak: ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.now())}',
-                          style: const TextStyle(
+                          style: BkuTheme.textCaption.copyWith(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF64748B),
+                            color: BkuTheme.textMuted,
                           ),
                         ),
                       ],
@@ -292,35 +294,34 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  color: BkuTheme.borderSubtle,
+                  borderRadius: BkuTheme.r16,
+                  border: Border.all(color: BkuTheme.border),
                 ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.account_balance_wallet_rounded, size: 14, color: Color(0xFF0F172A)),
-                            SizedBox(width: 6),
+                            const Icon(Icons.account_balance_wallet_rounded, size: 14, color: BkuTheme.textHeading),
+                            const SizedBox(width: 6),
                             Text(
                               'Saldo Kas Mandiri',
-                              style: TextStyle(
+                              style: BkuTheme.textCardTitle.copyWith(
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F172A),
                               ),
                             ),
                           ],
                         ),
                         Text(
                           _formatRp(saldo),
-                          style: const TextStyle(
+                          style: BkuTheme.textCardTitle.copyWith(
                             fontSize: 13,
                             fontWeight: FontWeight.w900,
-                            color: Color(0xFF059669),
+                            color: BkuTheme.emerald,
                             fontFamily: 'monospace',
                           ),
                         ),
@@ -333,28 +334,28 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFECFDF5),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: const Color(0xFFA7F3D0)),
+                              color: BkuTheme.emeraldSoft,
+                              borderRadius: BkuTheme.r10,
+                              border: Border.all(color: BkuTheme.emeraldBorder),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Pemasukan',
-                                  style: TextStyle(
+                                  style: BkuTheme.textBadge.copyWith(
                                     fontSize: 9.5,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF047857),
+                                    color: BkuTheme.emerald,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   _formatRp(totalIn),
-                                  style: const TextStyle(
+                                  style: BkuTheme.textCardTitle.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFF047857),
+                                    color: BkuTheme.emerald,
                                     fontFamily: 'monospace',
                                   ),
                                 ),
@@ -367,28 +368,28 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF1F2),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: const Color(0xFFFFE4E6)),
+                              color: BkuTheme.roseSoft,
+                              borderRadius: BkuTheme.r10,
+                              border: Border.all(color: BkuTheme.roseBorder),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Pengeluaran',
-                                  style: TextStyle(
+                                  style: BkuTheme.textBadge.copyWith(
                                     fontSize: 9.5,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFFE11D48),
+                                    color: BkuTheme.rose,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   _formatRp(totalOut),
-                                  style: const TextStyle(
+                                  style: BkuTheme.textCardTitle.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFFE11D48),
+                                    color: BkuTheme.rose,
                                     fontFamily: 'monospace',
                                   ),
                                 ),
@@ -405,70 +406,28 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: InkWell(
-                      onTap: () => Navigator.pop(ctx),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Tutup',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ),
+                    child: BkuButton.outline(
+                      onPressed: () => Navigator.pop(ctx),
+                      text: 'Tutup',
+                      height: 42,
+                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     flex: 2,
-                    child: InkWell(
-                      onTap: () {
+                    child: BkuButton.primary(
+                      onPressed: () {
                         Clipboard.setData(ClipboardData(
                           text: 'LAPORAN KAS ORMAWA\nNo: $reportNumber\nOrganisasi: ${provider.orgName}\nSaldo: ${_formatRp(saldo)}\nTotal Masuk: ${_formatRp(totalIn)}\nTotal Keluar: ${_formatRp(totalOut)}',
                         ));
                         Navigator.pop(ctx);
                         AppSnackbar.showSuccess(context, 'Ringkasan laporan kas berhasil disalin!');
                       },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: OrmawaTheme.primary,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: OrmawaTheme.primary.withAlpha(40),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.copy_rounded, size: 14, color: Colors.white),
-                            SizedBox(width: 6),
-                            Text(
-                              'Salin Laporan',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      icon: Icons.copy_rounded,
+                      text: 'Salin Laporan',
+                      height: 42,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -486,209 +445,150 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     _iuranTenggatController.clear();
     _iuranDeskripsiController.clear();
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (modalCtx, setModalState) => Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(modalCtx).viewInsets.bottom + 20,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Terbitkan Tagihan Iuran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-                    IconButton(
-                      onPressed: () => Navigator.pop(modalCtx),
-                      icon: const Icon(Icons.close_rounded, size: 20),
-                    ),
-                  ],
-                ),
-                const Text('Kirimkan tagihan iuran kas ke seluruh anggota aktif organisasi.', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-                const SizedBox(height: 14),
+      title: 'Terbitkan Tagihan Iuran',
+      child: StatefulBuilder(
+        builder: (modalCtx, setModalState) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Kirimkan tagihan iuran kas ke seluruh anggota aktif organisasi.',
+                style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted),
+              ),
+              const SizedBox(height: 14),
 
-                const Text('Judul Tagihan *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _iuranJudulController,
-                  decoration: InputDecoration(
-                    hintText: 'Contoh: Iuran Kas Bulan Mei 2026',
-                    hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                    filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              BkuTextField(
+                controller: _iuranJudulController,
+                label: 'Judul Tagihan *',
+                hint: 'Contoh: Iuran Kas Bulan Mei 2026',
+              ),
+              const SizedBox(height: 12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: BkuTextField(
+                      controller: _iuranNominalController,
+                      label: 'Nominal (Rp) *',
+                      hint: '20000',
+                      keyboardType: TextInputType.number,
+                    ),
                   ),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Nominal (Rp) *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                          const SizedBox(height: 5),
-                          TextField(
-                            controller: _iuranNominalController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: '20000',
-                              hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                              filled: true,
-                              fillColor: const Color(0xFFF8FAFC),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                            ),
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Tenggat Waktu', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                          const SizedBox(height: 5),
-                          InkWell(
-                            onTap: () async {
-                              final picked = await showDatePicker(
-                                context: modalCtx,
-                                initialDate: DateTime.now().add(const Duration(days: 7)),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(const Duration(days: 365)),
-                                builder: (context, child) {
-                                  return Theme(
-                                    data: ThemeData.light().copyWith(
-                                      colorScheme: ColorScheme.light(
-                                        primary: OrmawaTheme.primary,
-                                        onPrimary: Colors.white,
-                                        surface: Colors.white,
-                                        onSurface: const Color(0xFF0F172A),
-                                      ),
-                                                                            textButtonTheme: TextButtonThemeData(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: OrmawaTheme.primary,
-                                          textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                        ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tenggat Waktu',
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 11),
+                        ),
+                        const SizedBox(height: 5),
+                        InkWell(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: modalCtx,
+                              initialDate: DateTime.now().add(const Duration(days: 7)),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(const Duration(days: 365)),
+                              builder: (context, child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: BkuTheme.primary,
+                                      onPrimary: Colors.white,
+                                      surface: Colors.white,
+                                      onSurface: BkuTheme.textHeading,
+                                    ),
+                                    textButtonTheme: TextButtonThemeData(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: BkuTheme.primary,
+                                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-                              if (picked != null) {
-                                setModalState(() {
-                                  _iuranTenggatController.text = DateFormat('yyyy-MM-dd').format(picked);
-                                });
-                              }
-                            },
-                            child: Container(
-                              height: 48,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF8FAFC),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                _iuranTenggatController.text.isNotEmpty ? _iuranTenggatController.text : 'Pilih Tanggal',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: _iuranTenggatController.text.isNotEmpty ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
-                                ),
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            );
+                            if (picked != null) {
+                              setModalState(() {
+                                _iuranTenggatController.text = DateFormat('yyyy-MM-dd').format(picked);
+                              });
+                            }
+                          },
+                          child: Container(
+                            height: 48,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: BkuTheme.cardSurface,
+                              borderRadius: BkuTheme.r12,
+                              border: Border.all(color: BkuTheme.border),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _iuranTenggatController.text.isNotEmpty ? _iuranTenggatController.text : 'Pilih Tanggal',
+                              style: BkuTheme.textBodyRegular.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: _iuranTenggatController.text.isNotEmpty ? BkuTheme.textHeading : BkuTheme.textPlaceholder,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                const Text('Deskripsi Singkat', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: _iuranDeskripsiController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    hintText: 'Keterangan peruntukan dana iuran...',
-                    hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                    filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                    contentPadding: const EdgeInsets.all(12),
-                  ),
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 46,
-                  child: ElevatedButton.icon(
-                    onPressed: _isSubmittingIuran
-                        ? null
-                        : () async {
-                            if (_iuranJudulController.text.trim().isEmpty || _iuranNominalController.text.trim().isEmpty) {
-                              AppSnackbar.showWarning(context, 'Judul dan nominal wajib diisi');
-                              return;
-                            }
-                            setModalState(() => _isSubmittingIuran = true);
-                            try {
-                              final nominal = double.tryParse(_iuranNominalController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0;
-                              await context.read<OrmawaProvider>().createIuran({
-                                'judul': _iuranJudulController.text.trim(),
-                                'nominal': nominal,
-                                'tenggat': _iuranTenggatController.text.trim(),
-                                'deskripsi': _iuranDeskripsiController.text.trim(),
-                              });
-                              if (context.mounted) {
-                                Navigator.pop(modalCtx);
-                                AppSnackbar.showSuccess(context, 'Tagihan iuran berhasil diterbitkan!');
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppSnackbar.showError(context, 'Gagal menerbitkan tagihan: $e');
-                              }
-                            } finally {
-                              setModalState(() => _isSubmittingIuran = false);
-                            }
-                          },
-                    icon: _isSubmittingIuran
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Icon(Icons.check_circle_outline_rounded, size: 18),
-                    label: const Text('Terbitkan Tagihan Iuran', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: OrmawaTheme.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              BkuTextField(
+                controller: _iuranDeskripsiController,
+                label: 'Deskripsi Singkat',
+                hint: 'Keterangan peruntukan dana iuran...',
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+
+              BkuButton.primary(
+                isLoading: _isSubmittingIuran,
+                icon: Icons.check_circle_outline_rounded,
+                text: 'Terbitkan Tagihan Iuran',
+                height: 46,
+                onPressed: _isSubmittingIuran
+                    ? null
+                    : () async {
+                        if (_iuranJudulController.text.trim().isEmpty || _iuranNominalController.text.trim().isEmpty) {
+                          AppSnackbar.showWarning(context, 'Judul dan nominal wajib diisi');
+                          return;
+                        }
+                        setModalState(() => _isSubmittingIuran = true);
+                        try {
+                          final nominal = double.tryParse(_iuranNominalController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0;
+                          await context.read<OrmawaProvider>().createIuran({
+                            'judul': _iuranJudulController.text.trim(),
+                            'nominal': nominal,
+                            'tenggat': _iuranTenggatController.text.trim(),
+                            'deskripsi': _iuranDeskripsiController.text.trim(),
+                          });
+                          if (context.mounted) {
+                            Navigator.pop(modalCtx);
+                            AppSnackbar.showSuccess(context, 'Tagihan iuran berhasil diterbitkan!');
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            AppSnackbar.showError(context, 'Gagal menerbitkan tagihan: $e');
+                          }
+                        } finally {
+                          setModalState(() => _isSubmittingIuran = false);
+                        }
+                      },
+              ),
+            ],
           ),
         ),
       ),
@@ -700,7 +600,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BkuTheme.r20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -710,7 +610,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Bukti Pembayaran', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+                  Text(
+                    'Bukti Pembayaran',
+                    style: BkuTheme.textSectionTitle.copyWith(fontSize: 14, fontWeight: FontWeight.w900),
+                  ),
                   IconButton(
                     onPressed: () => Navigator.pop(ctx),
                     icon: const Icon(Icons.close_rounded, size: 18),
@@ -722,7 +625,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
             ),
             Container(
               constraints: const BoxConstraints(maxHeight: 400),
-              color: const Color(0xFF0F172A),
+              color: BkuTheme.textHeading,
               child: Image.network(
                 fullUrl,
                 fit: BoxFit.contain,
@@ -736,9 +639,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(12),
-              child: TextButton(
+              child: BkuButton.outline(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.bold)),
+                text: 'Tutup',
+                height: 40,
               ),
             ),
           ],
@@ -754,170 +658,132 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     final proof = member['bukti_transfer'] ?? member['BuktiTransfer'];
     final detailId = (member['ID'] ?? member['id'] ?? '').toString();
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (modalCtx, setModalState) => Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(modalCtx).viewInsets.bottom + 20,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Verifikasi Pembayaran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-                    IconButton(onPressed: () => Navigator.pop(modalCtx), icon: const Icon(Icons.close_rounded, size: 20)),
-                  ],
-                ),
-                Text(
-                  'Mahasiswa: ${member['nama'] ?? member['Nama'] ?? 'Anggota'} (${member['nim'] ?? member['NIM'] ?? '—'})',
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                ),
-                const SizedBox(height: 14),
+      title: 'Verifikasi Pembayaran',
+      child: StatefulBuilder(
+        builder: (modalCtx, setModalState) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Mahasiswa: ${member['nama'] ?? member['Nama'] ?? 'Anggota'} (${member['nim'] ?? member['NIM'] ?? '—'})',
+                style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted),
+              ),
+              const SizedBox(height: 14),
 
-                if (proof != null && proof.toString().isNotEmpty) ...[
-                  InkWell(
-                    onTap: () => _showProofImageModal(context, proof.toString()),
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEEF2FF),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFC7D2FE)),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.image_rounded, color: Color(0xFF4338CA), size: 20),
-                          const SizedBox(width: 8),
-                          const Expanded(
-                            child: Text('Lihat Foto Bukti Transfer', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF4338CA))),
-                          ),
-                          const Icon(Icons.chevron_right_rounded, color: Color(0xFF4338CA), size: 18),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ] else ...[
-                  Container(
+              if (proof != null && proof.toString().isNotEmpty) ...[
+                InkWell(
+                  onTap: () => _showProofImageModal(context, proof.toString()),
+                  borderRadius: BkuTheme.r12,
+                  child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFFBEB),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFFDE68A)),
+                      color: BkuTheme.indigoSoft,
+                      borderRadius: BkuTheme.r12,
+                      border: Border.all(color: BkuTheme.indigoBorder),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.info_outline_rounded, color: Color(0xFFD97706), size: 16),
-                        SizedBox(width: 8),
+                        const Icon(Icons.image_rounded, color: BkuTheme.indigo, size: 20),
+                        const SizedBox(width: 8),
                         Expanded(
-                          child: Text('Belum ada foto bukti transfer. Anda dapat verifikasi manual jika bayar tunai.', style: TextStyle(fontSize: 10, color: Color(0xFF92400E))),
+                          child: Text(
+                            'Lihat Foto Bukti Transfer',
+                            style: BkuTheme.textCardTitle.copyWith(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                              color: BkuTheme.indigo,
+                            ),
+                          ),
                         ),
+                        const Icon(Icons.chevron_right_rounded, color: BkuTheme.indigo, size: 18),
                       ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-
-                const Text('Status Verifikasi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                const SizedBox(height: 5),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: verifyStatus,
-                      isExpanded: true,
-                      items: const [
-                        DropdownMenuItem(value: 'lunas', child: Text('Setujui Pembayaran (Lunas)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF047857)))),
-                        DropdownMenuItem(value: 'ditolak', child: Text('Tolak Bukti Pembayaran', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFE11D48)))),
-                        DropdownMenuItem(value: 'pending', child: Text('Tetap Menunggu Review', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFD97706)))),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) setModalState(() => verifyStatus = val);
-                      },
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                const Text('Catatan Pengurus', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: notesController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    hintText: 'Catatan untuk anggota (opsional)...',
-                    hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                    filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                    contentPadding: const EdgeInsets.all(12),
+              ] else ...[
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: BkuTheme.amberSoft,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.amberBorder),
                   ),
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 46,
-                  child: ElevatedButton.icon(
-                    onPressed: isVerifying
-                        ? null
-                        : () async {
-                            setModalState(() => isVerifying = true);
-                            try {
-                              await context.read<OrmawaProvider>().verifyIuranPayment(
-                                detailId,
-                                {
-                                  'status': verifyStatus,
-                                  'catatan': notesController.text.trim(),
-                                },
-                                iuranId,
-                              );
-                              if (context.mounted) {
-                                Navigator.pop(modalCtx);
-                                AppSnackbar.showSuccess(context, 'Verifikasi pembayaran berhasil disimpan!');
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppSnackbar.showError(context, 'Gagal memverifikasi: $e');
-                              }
-                            } finally {
-                              setModalState(() => isVerifying = false);
-                            }
-                          },
-                    icon: isVerifying
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Icon(Icons.check_circle_outline_rounded, size: 18),
-                    label: const Text('Simpan Verifikasi', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: OrmawaTheme.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline_rounded, color: BkuTheme.amber, size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Belum ada foto bukti transfer. Anda dapat verifikasi manual jika bayar tunai.',
+                          style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.amber),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(height: 12),
               ],
-            ),
+
+              Text('Status Verifikasi', style: BkuTheme.textCardTitle.copyWith(fontSize: 11)),
+              const SizedBox(height: 5),
+              BkuDropdown<String>(
+                value: verifyStatus,
+                isExpanded: true,
+                items: const [
+                  DropdownMenuItem(value: 'lunas', child: Text('Setujui Pembayaran (Lunas)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: BkuTheme.emerald))),
+                  DropdownMenuItem(value: 'ditolak', child: Text('Tolak Bukti Pembayaran', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: BkuTheme.rose))),
+                  DropdownMenuItem(value: 'pending', child: Text('Tetap Menunggu Review', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: BkuTheme.amber))),
+                ],
+                onChanged: (val) {
+                  if (val != null) setModalState(() => verifyStatus = val);
+                },
+              ),
+              const SizedBox(height: 12),
+
+              BkuTextField(
+                controller: notesController,
+                label: 'Catatan Pengurus',
+                hint: 'Catatan untuk anggota (opsional)...',
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+
+              BkuButton.primary(
+                isLoading: isVerifying,
+                icon: Icons.check_circle_outline_rounded,
+                text: 'Simpan Verifikasi',
+                height: 46,
+                onPressed: isVerifying
+                    ? null
+                    : () async {
+                        setModalState(() => isVerifying = true);
+                        try {
+                          await context.read<OrmawaProvider>().verifyIuranPayment(
+                            detailId,
+                            {
+                              'status': verifyStatus,
+                              'catatan': notesController.text.trim(),
+                            },
+                            iuranId,
+                          );
+                          if (context.mounted) {
+                            Navigator.pop(modalCtx);
+                            AppSnackbar.showSuccess(context, 'Verifikasi pembayaran berhasil disimpan!');
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            AppSnackbar.showError(context, 'Gagal memverifikasi: $e');
+                          }
+                        } finally {
+                          setModalState(() => isVerifying = false);
+                        }
+                      },
+              ),
+            ],
           ),
         ),
       ),
@@ -932,46 +798,32 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
       provider.refreshData();
     }
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Consumer<OrmawaProvider>(
+      title: iuran['Judul'] ?? iuran['judul'] ?? 'Daftar Tagihan Anggota',
+      child: Consumer<OrmawaProvider>(
         builder: (_, prov, __) {
           final members = prov.iuranMembers;
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.75,
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-            ),
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.70,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        iuran['Judul'] ?? iuran['judul'] ?? 'Daftar Tagihan Anggota',
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(onPressed: () => Navigator.pop(ctx), icon: const Icon(Icons.close_rounded, size: 20)),
-                  ],
-                ),
                 Text(
                   'Nominal: ${_formatRp(((iuran['Nominal'] ?? iuran['nominal'] ?? 0) as num).toDouble())} • Tenggat: ${_formatDateIndo(iuran['Tenggat'] ?? iuran['tenggat'])}',
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                  style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted),
                 ),
                 const SizedBox(height: 14),
 
                 Expanded(
                   child: members.isEmpty
-                      ? const Center(child: Text('Belum ada data anggota pada tagihan ini.', style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8))))
+                      ? const Center(
+                          child: BkuEmptyState(
+                            icon: Icons.receipt_long_rounded,
+                            title: 'Belum Ada Anggota',
+                            message: 'Belum ada data anggota pada tagihan ini.',
+                          ),
+                        )
                       : ListView.separated(
                           itemCount: members.length,
                           separatorBuilder: (_, __) => const SizedBox(height: 8),
@@ -1009,31 +861,33 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             final proof = m['bukti_transfer'] ?? m['BuktiTransfer'];
                             final payDate = m['tanggal_bayar'] ?? m['TanggalBayar'];
 
-                            return Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF8FAFC),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                              ),
+                            return BkuCard(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              borderRadius: 14,
                               child: Row(
                                 children: [
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(memberName, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                                        Text(
+                                          memberName,
+                                          style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5, fontWeight: FontWeight.w900),
+                                        ),
                                         const SizedBox(height: 2),
-                                        Text('NIM: $memberNim', style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'monospace')),
+                                        Text(
+                                          'NIM: $memberNim',
+                                          style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontFamily: 'monospace'),
+                                        ),
                                         if (isLunas && payDate != null) ...[
                                           const SizedBox(height: 2),
                                           Row(
                                             children: [
-                                              const Icon(Icons.access_time_rounded, size: 10, color: Color(0xFF059669)),
+                                              const Icon(Icons.access_time_rounded, size: 10, color: BkuTheme.emerald),
                                               const SizedBox(width: 3),
                                               Text(
                                                 'Dibayar: ${_formatDateIndo(payDate)}',
-                                                style: const TextStyle(fontSize: 9.5, color: Color(0xFF059669), fontWeight: FontWeight.w700),
+                                                style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.emerald, fontWeight: FontWeight.w700),
                                               ),
                                             ],
                                           ),
@@ -1044,18 +898,19 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   if (proof != null && proof.toString().isNotEmpty) ...[
                                     InkWell(
                                       onTap: () => _showProofImageModal(context, proof.toString()),
+                                      borderRadius: BkuTheme.r8,
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFEEF2FF),
-                                          borderRadius: BorderRadius.circular(6),
-                                          border: Border.all(color: const Color(0xFFC7D2FE)),
+                                          color: BkuTheme.indigoSoft,
+                                          borderRadius: BkuTheme.r8,
+                                          border: Border.all(color: BkuTheme.indigoBorder),
                                         ),
                                         child: const Row(
                                           children: [
-                                            Icon(Icons.image_rounded, size: 12, color: Color(0xFF4338CA)),
+                                            Icon(Icons.image_rounded, size: 12, color: BkuTheme.indigo),
                                             SizedBox(width: 3),
-                                            Text('Bukti', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF4338CA))),
+                                            Text('Bukti', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: BkuTheme.indigo)),
                                           ],
                                         ),
                                       ),
@@ -1065,36 +920,26 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: isLunas ? const Color(0xFFD1FAE5) : (isPending ? const Color(0xFFFEF3C7) : (isDitolak ? const Color(0xFFFFE4E6) : const Color(0xFFF1F5F9))),
-                                      borderRadius: BorderRadius.circular(6),
+                                      color: isLunas ? BkuTheme.emeraldSoft : (isPending ? BkuTheme.amberSoft : (isDitolak ? BkuTheme.roseSoft : BkuTheme.borderSubtle)),
+                                      borderRadius: BkuTheme.r8,
                                     ),
                                     child: Text(
-                                      isLunas ? 'LUNAS' : (isPending ? 'REVIEW' : (isDitolak ? 'DITOLAK' : 'BELUM')),
+                                      isLunas ? 'Lunas' : (isPending ? 'Review' : (isDitolak ? 'Ditolak' : 'Belum')),
                                       style: TextStyle(
                                         fontSize: 9,
                                         fontWeight: FontWeight.w900,
-                                        color: isLunas ? const Color(0xFF047857) : (isPending ? const Color(0xFFB45309) : (isDitolak ? const Color(0xFFBE123C) : const Color(0xFF475569))),
+                                        color: isLunas ? BkuTheme.emerald : (isPending ? BkuTheme.amber : (isDitolak ? BkuTheme.rose : BkuTheme.textMuted)),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(width: 6),
-                                  InkWell(
-                                    onTap: () => _showVerifyModal(context, m, iuranId),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                      decoration: BoxDecoration(
-                                        color: isLunas ? const Color(0xFFE2E8F0) : OrmawaTheme.primary,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        isLunas ? 'Detail' : 'Verifikasi',
-                                        style: TextStyle(
-                                          fontSize: 9.5,
-                                          fontWeight: FontWeight.w900,
-                                          color: isLunas ? const Color(0xFF334155) : Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                                  BkuButton.primary(
+                                    text: isLunas ? 'Detail' : 'Verifikasi',
+                                    height: 30,
+                                    fontSize: 9.5,
+                                    fullWidth: false,
+                                    customRadius: BkuTheme.r8,
+                                    onPressed: () => _showVerifyModal(context, m, iuranId),
                                   ),
                                 ],
                               ),
@@ -1125,196 +970,181 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
       _selectedProofName = null;
     });
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (modalCtx, setModalState) => Container(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(modalCtx).viewInsets.bottom + 20,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      title: 'Bayar Iuran: ${iuran['Judul'] ?? iuran['judul'] ?? 'Kas Anggota'}',
+      child: StatefulBuilder(
+        builder: (modalCtx, setModalState) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Selesaikan pembayaran tagihan kas ormawa Anda.',
+                style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted),
+              ),
+              const SizedBox(height: 14),
+
+              BkuCard(
+                padding: const EdgeInsets.all(14),
+                borderRadius: 14,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Bayar Iuran: ${iuran['Judul'] ?? iuran['judul'] ?? 'Kas Anggota'}',
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(onPressed: () => Navigator.pop(modalCtx), icon: const Icon(Icons.close_rounded, size: 20)),
-                  ],
-                ),
-                const Text('Selesaikan pembayaran tagihan kas ormawa Anda.', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-                const SizedBox(height: 14),
-
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Besaran Tagihan:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
-                          Text(
-                            _formatRp(((iuran['Nominal'] ?? iuran['nominal'] ?? 0) as num).toDouble()),
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Tenggat Pembayaran:', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-                          Text(_formatDateIndo(iuran['Tenggat'] ?? iuran['tenggat']), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEEF2FF),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFC7D2FE)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('TUJUAN TRANSFER (${bank['nama_bank'] ?? 'Bank'})', style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF4338CA))),
-                          if (bank['no_rekening'] != null && bank['no_rekening'].toString().isNotEmpty)
-                            InkWell(
-                              onTap: () {
-                                Clipboard.setData(ClipboardData(text: bank['no_rekening'].toString()));
-                                AppSnackbar.showSuccess(context, 'Nomor rekening disalin!');
-                              },
-                              child: const Text('Salin No. Rek', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF4338CA), decoration: TextDecoration.underline)),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      Text(bank['no_rekening'] ?? '— Belum diatur bendahara —', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF312E81), fontFamily: 'monospace')),
-                      Text('a.n. ${bank['nama_rekening'] ?? '—'}', style: const TextStyle(fontSize: 11, color: Color(0xFF4338CA))),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-
-                const Text('Unggah Foto Bukti Transfer *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                const SizedBox(height: 6),
-                InkWell(
-                  onTap: () async {
-                    final picker = ImagePicker();
-                    final picked = await picker.pickImage(source: ImageSource.gallery);
-                    if (picked != null) {
-                      setModalState(() {
-                        _selectedProofFile = File(picked.path);
-                        _selectedProofName = picked.name;
-                      });
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFCBD5E1), style: BorderStyle.solid),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(_selectedProofFile != null ? Icons.check_circle_rounded : Icons.upload_file_rounded, color: _selectedProofFile != null ? const Color(0xFF047857) : const Color(0xFF64748B), size: 20),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            _selectedProofName ?? 'Pilih Foto Bukti Transfer (JPG/PNG)',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                              color: _selectedProofFile != null ? const Color(0xFF047857) : const Color(0xFF475569),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          'Besaran Tagihan:',
+                          style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: BkuTheme.textMuted),
+                        ),
+                        Text(
+                          _formatRp(((iuran['Nominal'] ?? iuran['nominal'] ?? 0) as num).toDouble()),
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 15, fontWeight: FontWeight.w900, color: const Color(0xFF0F172A)),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 46,
-                  child: ElevatedButton.icon(
-                    onPressed: _isPayingIuran
-                        ? null
-                        : () async {
-                            if (_selectedProofFile == null) {
-                              AppSnackbar.showWarning(context, 'Silakan pilih foto bukti transfer terlebih dahulu');
-                              return;
-                            }
-                            setModalState(() => _isPayingIuran = true);
-                            try {
-                              final prov = context.read<OrmawaProvider>();
-                              final fileUrl = await prov.uploadFile(_selectedProofFile!.path);
-                              if (fileUrl == null || fileUrl.isEmpty) {
-                                throw Exception('Gagal mengunggah file bukti transfer');
-                              }
-                              await prov.payMyIuran(detailId, fileUrl);
-                              if (context.mounted) {
-                                Navigator.pop(modalCtx);
-                                AppSnackbar.showSuccess(context, 'Bukti pembayaran berhasil dikirim! Menunggu review pengurus.');
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                AppSnackbar.showError(context, 'Gagal memproses pembayaran: $e');
-                              }
-                            } finally {
-                              setModalState(() => _isPayingIuran = false);
-                            }
-                          },
-                    icon: _isPayingIuran
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Icon(Icons.send_rounded, size: 16),
-                    label: const Text('Kirim Bukti Pembayaran', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: OrmawaTheme.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tenggat Pembayaran:',
+                          style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
+                        ),
+                        Text(
+                          _formatDateIndo(iuran['Tenggat'] ?? iuran['tenggat']),
+                          style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.textHeading),
+                        ),
+                      ],
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: BkuTheme.indigoSoft,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.indigoBorder),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'TUJUAN TRANSFER (${bank['nama_bank'] ?? 'Bank'})',
+                          style: BkuTheme.textBadge.copyWith(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.indigo),
+                        ),
+                        if (bank['no_rekening'] != null && bank['no_rekening'].toString().isNotEmpty)
+                          InkWell(
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: bank['no_rekening'].toString()));
+                              AppSnackbar.showSuccess(context, 'Nomor rekening disalin!');
+                            },
+                            child: const Text('Salin No. Rek', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: BkuTheme.indigo, decoration: TextDecoration.underline)),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      bank['no_rekening'] ?? '— Belum diatur bendahara —',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: BkuTheme.indigo, fontFamily: 'monospace'),
+                    ),
+                    Text(
+                      'a.n. ${bank['nama_rekening'] ?? '—'}',
+                      style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.indigo),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              Text('Unggah Foto Bukti Transfer *', style: BkuTheme.textCardTitle.copyWith(fontSize: 11)),
+              const SizedBox(height: 6),
+              InkWell(
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final picked = await picker.pickImage(source: ImageSource.gallery);
+                  if (picked != null) {
+                    setModalState(() {
+                      _selectedProofFile = File(picked.path);
+                      _selectedProofName = picked.name;
+                    });
+                  }
+                },
+                borderRadius: BkuTheme.r12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                  decoration: BoxDecoration(
+                    color: BkuTheme.cardSurface,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.border),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _selectedProofFile != null ? Icons.check_circle_rounded : Icons.upload_file_rounded,
+                        color: _selectedProofFile != null ? BkuTheme.emerald : BkuTheme.textMuted,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          _selectedProofName ?? 'Pilih Foto Bukti Transfer (JPG/PNG)',
+                          style: BkuTheme.textCardTitle.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: _selectedProofFile != null ? BkuTheme.emerald : BkuTheme.textMuted,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+
+              BkuButton.primary(
+                isLoading: _isPayingIuran,
+                icon: Icons.send_rounded,
+                text: 'Kirim Bukti Pembayaran',
+                height: 46,
+                onPressed: _isPayingIuran
+                    ? null
+                    : () async {
+                        if (_selectedProofFile == null) {
+                          AppSnackbar.showWarning(context, 'Silakan pilih foto bukti transfer terlebih dahulu');
+                          return;
+                        }
+                        setModalState(() => _isPayingIuran = true);
+                        try {
+                          final prov = context.read<OrmawaProvider>();
+                          final fileUrl = await prov.uploadFile(_selectedProofFile!.path);
+                          if (fileUrl == null || fileUrl.isEmpty) {
+                            throw Exception('Gagal mengunggah file bukti transfer');
+                          }
+                          await prov.payMyIuran(detailId, fileUrl);
+                          if (context.mounted) {
+                            Navigator.pop(modalCtx);
+                            AppSnackbar.showSuccess(context, 'Bukti pembayaran berhasil dikirim! Menunggu review pengurus.');
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            AppSnackbar.showError(context, 'Gagal memproses pembayaran: $e');
+                          }
+                        } finally {
+                          setModalState(() => _isPayingIuran = false);
+                        }
+                      },
+              ),
+            ],
           ),
         ),
       ),
@@ -1322,173 +1152,27 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
   }
 
   void _showDeleteConfirmDialog(BuildContext context, OrmawaFinance t) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF1F2),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFFFE4E6)),
-                    ),
-                    child: const Icon(Icons.delete_outline_rounded, color: Color(0xFFE11D48), size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Hapus Transaksi Kas?',
-                          style: TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF0F172A),
-                          ),
-                        ),
-                        Text(
-                          'Tindakan ini tidak dapat dibatalkan',
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.pop(ctx),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFF64748B)),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      t.description,
-                      style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _formatRp(t.nominal),
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFFE11D48), fontFamily: 'monospace'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Apakah Anda yakin ingin menghapus data mutasi kas ini? Saldo kas akan disesuaikan kembali secara otomatis.',
-                style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => Navigator.pop(ctx),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Batal',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () async {
-                        Navigator.pop(ctx);
-                        try {
-                          await context.read<OrmawaProvider>().deleteFinance(t.id);
-                          if (context.mounted) {
-                            AppSnackbar.showSuccess(context, 'Transaksi berhasil dihapus');
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            AppSnackbar.showError(context, 'Gagal menghapus transaksi: $e');
-                          }
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE11D48),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFE11D48).withAlpha(40),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Hapus',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      type: BkuDialogType.error,
+      title: 'Hapus Transaksi Kas?',
+      message: 'Hapus "${t.description}" (${_formatRp(t.nominal)})? Saldo kas akan disesuaikan kembali secara otomatis.',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        try {
+          await context.read<OrmawaProvider>().deleteFinance(t.id);
+          if (context.mounted) {
+            AppSnackbar.showSuccess(context, 'Transaksi berhasil dihapus');
+          }
+        } catch (e) {
+          if (context.mounted) {
+            AppSnackbar.showError(context, 'Gagal menghapus transaksi: $e');
+          }
+        }
+      },
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 
@@ -1501,27 +1185,19 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
   }) {
     return InkWell(
       onTap: () => setState(() => _activeSubTab = id),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BkuTheme.r12,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? OrmawaTheme.primary : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isActive ? OrmawaTheme.primary : const Color(0xFFE2E8F0)),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: OrmawaTheme.primary.withAlpha(45),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  )
-                ]
-              : null,
+          color: isActive ? BkuTheme.primary : BkuTheme.cardSurface,
+          borderRadius: BkuTheme.r12,
+          border: Border.all(color: isActive ? BkuTheme.primary : BkuTheme.border),
+          boxShadow: isActive ? BkuTheme.cardShadow : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 13, color: isActive ? Colors.white : const Color(0xFF64748B)),
+            Icon(icon, size: 13, color: isActive ? Colors.white : BkuTheme.textMuted),
             const SizedBox(width: 4),
             Flexible(
               child: Text(
@@ -1529,7 +1205,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w800,
-                  color: isActive ? Colors.white : const Color(0xFF334155),
+                  color: isActive ? Colors.white : BkuTheme.textHeading,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -1539,15 +1215,15 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
-                color: isActive ? Colors.white.withAlpha(45) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(8),
+                color: isActive ? Colors.white.withAlpha(45) : BkuTheme.borderSubtle,
+                borderRadius: BkuTheme.r8,
               ),
               child: Text(
                 count,
                 style: TextStyle(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w900,
-                  color: isActive ? Colors.white : const Color(0xFF64748B),
+                  color: isActive ? Colors.white : BkuTheme.textMuted,
                 ),
               ),
             ),
@@ -1580,20 +1256,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     final latestNet = latestIn - latestOut;
     final isSurplus = latestNet >= 0;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x060F172A),
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      borderRadius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1606,25 +1271,25 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        color: OrmawaTheme.primary.withAlpha(20),
-                        borderRadius: BorderRadius.circular(10),
+                        color: BkuTheme.primarySoft,
+                        borderRadius: BkuTheme.r10,
                       ),
-                      child: Icon(Icons.insights_rounded, size: 16, color: OrmawaTheme.primary),
+                      child: Icon(Icons.insights_rounded, size: 16, color: BkuTheme.primary),
                     ),
                     const SizedBox(width: 9),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Tren Arus Kas',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                            style: BkuTheme.textSectionTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w900),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             'Realisasi keuangan bulanan',
-                            style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                            style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontWeight: FontWeight.w500),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1641,18 +1306,18 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                   Container(
                     width: 7,
                     height: 7,
-                    decoration: const BoxDecoration(color: Color(0xFF059669), shape: BoxShape.circle),
+                    decoration: const BoxDecoration(color: BkuTheme.emerald, shape: BoxShape.circle),
                   ),
                   const SizedBox(width: 3),
-                  const Text('Masuk', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                  const Text('Masuk', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: BkuTheme.emerald)),
                   const SizedBox(width: 8),
                   Container(
                     width: 7,
                     height: 7,
-                    decoration: const BoxDecoration(color: Color(0xFFE11D48), shape: BoxShape.circle),
+                    decoration: const BoxDecoration(color: BkuTheme.rose, shape: BoxShape.circle),
                   ),
                   const SizedBox(width: 3),
-                  const Text('Keluar', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFE11D48))),
+                  const Text('Keluar', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: BkuTheme.rose)),
                 ],
               ),
             ],
@@ -1661,9 +1326,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
           Container(
             padding: const EdgeInsets.only(top: 14, bottom: 8, left: 8, right: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFF1F5F9)),
+              color: BkuTheme.borderSubtle,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
             ),
             child: SizedBox(
               height: 110,
@@ -1693,12 +1358,8 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                               width: 12,
                               height: inBarHeight,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFF34D399), Color(0xFF059669)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
+                                color: BkuTheme.emerald,
+                                borderRadius: BkuTheme.r8,
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -1706,12 +1367,8 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                               width: 12,
                               height: outBarHeight,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFFFB7185), Color(0xFFE11D48)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
+                                color: BkuTheme.rose,
+                                borderRadius: BkuTheme.r8,
                               ),
                             ),
                           ],
@@ -1719,7 +1376,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         const SizedBox(height: 8),
                         Text(
                           monthLabel,
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF64748B)),
+                          style: BkuTheme.textCaption.copyWith(fontSize: 10, fontWeight: FontWeight.w800, color: BkuTheme.textMuted),
                         ),
                       ],
                     ),
@@ -1735,30 +1392,30 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFECFDF5),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFA7F3D0)),
+                    color: BkuTheme.emeraldSoft,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.emeraldBorder),
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF059669).withAlpha(25),
+                          color: BkuTheme.emerald.withAlpha(25),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.arrow_downward_rounded, size: 14, color: Color(0xFF059669)),
+                        child: const Icon(Icons.arrow_downward_rounded, size: 14, color: BkuTheme.emerald),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('TOTAL MASUK', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                            Text('Total Masuk', style: BkuTheme.textBadge.copyWith(fontSize: 8.5, fontWeight: FontWeight.w800, color: BkuTheme.emerald)),
                             const SizedBox(height: 1),
                             Text(
                               _formatRp(latestIn),
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF047857), fontFamily: 'monospace'),
+                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900, color: BkuTheme.emerald, fontFamily: 'monospace'),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1774,30 +1431,30 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFFECDD3)),
+                    color: BkuTheme.roseSoft,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.roseBorder),
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE11D48).withAlpha(25),
+                          color: BkuTheme.rose.withAlpha(25),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.arrow_upward_rounded, size: 14, color: Color(0xFFE11D48)),
+                        child: const Icon(Icons.arrow_upward_rounded, size: 14, color: BkuTheme.rose),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('TOTAL KELUAR', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFFE11D48))),
+                            Text('Total Keluar', style: BkuTheme.textBadge.copyWith(fontSize: 8.5, fontWeight: FontWeight.w800, color: BkuTheme.rose)),
                             const SizedBox(height: 1),
                             Text(
                               _formatRp(latestOut),
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFFBE123C), fontFamily: 'monospace'),
+                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900, color: BkuTheme.rose, fontFamily: 'monospace'),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1814,9 +1471,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isSurplus ? const Color(0xFFF0FDF4) : const Color(0xFFFEF2F2),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: isSurplus ? const Color(0xFFBBF7D0) : const Color(0xFFFECACA)),
+              color: isSurplus ? BkuTheme.emeraldSoft : BkuTheme.roseSoft,
+              borderRadius: BkuTheme.r10,
+              border: Border.all(color: isSurplus ? BkuTheme.emeraldBorder : BkuTheme.roseBorder),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1826,7 +1483,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                     Icon(
                       isSurplus ? Icons.check_circle_rounded : Icons.warning_rounded,
                       size: 14,
-                      color: isSurplus ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+                      color: isSurplus ? BkuTheme.emerald : BkuTheme.rose,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -1834,7 +1491,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w800,
-                        color: isSurplus ? const Color(0xFF166534) : const Color(0xFF991B1B),
+                        color: isSurplus ? BkuTheme.emerald : BkuTheme.rose,
                       ),
                     ),
                   ],
@@ -1844,7 +1501,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
-                    color: isSurplus ? const Color(0xFF166534) : const Color(0xFF991B1B),
+                    color: isSurplus ? BkuTheme.emerald : BkuTheme.rose,
                     fontFamily: 'monospace',
                   ),
                 ),
@@ -1928,10 +1585,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
     }
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: _loadAllData,
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
@@ -1956,29 +1613,33 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
-                            color: OrmawaTheme.primary.withAlpha(18),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: OrmawaTheme.primary.withAlpha(50)),
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BkuTheme.r8,
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Buku Kas Terintegrasi',
-                            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
+                            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                           ),
                         ),
                         InkWell(
                           onTap: _loadAllData,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BkuTheme.r8,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE2E8F0))),
+                            decoration: BoxDecoration(
+                              color: BkuTheme.cardSurface,
+                              borderRadius: BkuTheme.r8,
+                              border: Border.all(color: BkuTheme.border),
+                            ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 _isRefreshing
-                                    ? SizedBox(width: 13, height: 13, child: CircularProgressIndicator(strokeWidth: 2, color: OrmawaTheme.primary))
-                                    : Icon(Icons.refresh_rounded, size: 14, color: OrmawaTheme.primary),
+                                    ? const SizedBox(width: 13, height: 13, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0F172A)))
+                                    : const Icon(Icons.refresh_rounded, size: 14, color: Color(0xFF0F172A)),
                                 const SizedBox(width: 4),
-                                Text('Segarkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: OrmawaTheme.primary)),
+                                const Text('Segarkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
                               ],
                             ),
                           ),
@@ -1992,20 +1653,20 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         Expanded(
                           child: InkWell(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrmawaMutasiScreen())),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BkuTheme.r10,
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                color: BkuTheme.cardSurface,
+                                borderRadius: BkuTheme.r10,
+                                border: Border.all(color: BkuTheme.border),
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.receipt_rounded, size: 14, color: Color(0xFF334155)),
+                                  Icon(Icons.receipt_rounded, size: 14, color: BkuTheme.textHeading),
                                   SizedBox(width: 4),
-                                  Text('Mutasi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
+                                  Text('Mutasi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: BkuTheme.textHeading)),
                                 ],
                               ),
                             ),
@@ -2015,20 +1676,20 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                         Expanded(
                           child: InkWell(
                             onTap: () => _showReportDialog(context, provider, saldo, totalIn, totalOut),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BkuTheme.r10,
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                                color: BkuTheme.cardSurface,
+                                borderRadius: BkuTheme.r10,
+                                border: Border.all(color: BkuTheme.border),
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.description_rounded, size: 14, color: Color(0xFF047857)),
+                                  Icon(Icons.description_rounded, size: 14, color: BkuTheme.emerald),
                                   SizedBox(width: 4),
-                                  Text('Unduh PDF', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF047857))),
+                                  Text('Unduh PDF', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: BkuTheme.emerald)),
                                 ],
                               ),
                             ),
@@ -2039,12 +1700,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                           Expanded(
                             child: InkWell(
                               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateKeuanganScreen())).then((_) => _loadAllData()),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BkuTheme.r10,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: OrmawaTheme.primary,
-                                  borderRadius: BorderRadius.circular(10),
+                                  color: BkuTheme.primary,
+                                  borderRadius: BkuTheme.r10,
                                 ),
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -2071,7 +1732,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             badgeText: 'Kas Internal',
                             subtitle: 'Netto arus kas organisasi',
                             icon: Icons.account_balance_wallet_rounded,
-                            badgeColor: OrmawaTheme.primary,
+                            badgeColor: BkuTheme.primary,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -2082,7 +1743,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             badgeText: 'Arus Masuk',
                             subtitle: 'Iuran, donasi & dana masuk',
                             icon: Icons.trending_up_rounded,
-                            badgeColor: const Color(0xFF059669),
+                            badgeColor: BkuTheme.emerald,
                           ),
                         ),
                       ],
@@ -2097,7 +1758,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             badgeText: 'Arus Keluar',
                             subtitle: 'Kas kecil & operasional',
                             icon: Icons.trending_down_rounded,
-                            badgeColor: const Color(0xFFE11D48),
+                            badgeColor: BkuTheme.rose,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -2108,7 +1769,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             badgeText: budgetLimit > 0 ? 'Pagu: ${_formatRp(budgetLimit)}' : 'Alokasi Kampus',
                             subtitle: usedBudget > 0 ? 'Terpakai: ${_formatRp(usedBudget)}' : 'Dana hibah program kerja',
                             icon: Icons.assured_workload_rounded,
-                            badgeColor: const Color(0xFF0284C7),
+                            badgeColor: BkuTheme.sky,
                           ),
                         ),
                       ],
@@ -2158,70 +1819,56 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              height: 38,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFE2E8F0))),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _filterTipe,
-                                  isExpanded: true,
-                                  items: const [
-                                    DropdownMenuItem(value: 'all', child: Text('Semua Tipe', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
-                                    DropdownMenuItem(value: 'pemasukan', child: Text('Pemasukan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF059669)))),
-                                    DropdownMenuItem(value: 'pengeluaran', child: Text('Pengeluaran', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFE11D48)))),
-                                  ],
-                                  onChanged: (v) {
-                                    if (v != null) setState(() => _filterTipe = v);
-                                  },
-                                ),
-                              ),
+                            child: BkuDropdown<String>(
+                              value: _filterTipe,
+                              isExpanded: true,
+                              items: const [
+                                DropdownMenuItem(value: 'all', child: Text('Semua Tipe', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
+                                DropdownMenuItem(value: 'pemasukan', child: Text('Pemasukan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.emerald))),
+                                DropdownMenuItem(value: 'pengeluaran', child: Text('Pengeluaran', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.rose))),
+                              ],
+                              onChanged: (v) {
+                                if (v != null) setState(() => _filterTipe = v);
+                              },
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Container(
-                              height: 38,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFE2E8F0))),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _filterSumber,
-                                  isExpanded: true,
-                                  items: const [
-                                    DropdownMenuItem(value: 'all', child: Text('Semua Sumber', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
-                                    DropdownMenuItem(value: 'organisasi', child: Text('Kas Mandiri', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF4338CA)))),
-                                    DropdownMenuItem(value: 'kampus', child: Text('Pagu Kampus', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)))),
-                                  ],
-                                  onChanged: (v) {
-                                    if (v != null) setState(() => _filterSumber = v);
-                                  },
-                                ),
-                              ),
+                            child: BkuDropdown<String>(
+                              value: _filterSumber,
+                              isExpanded: true,
+                              items: const [
+                                DropdownMenuItem(value: 'all', child: Text('Semua Sumber', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
+                                DropdownMenuItem(value: 'organisasi', child: Text('Kas Mandiri', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.indigo))),
+                                DropdownMenuItem(value: 'kampus', child: Text('Pagu Kampus', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.sky))),
+                              ],
+                              onChanged: (v) {
+                                if (v != null) setState(() => _filterSumber = v);
+                              },
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
 
-                      OrmawaSearchBar(
+                      BkuTextField(
                         controller: _searchController,
-                        hintText: 'Cari keterangan transaksi kas...',
+                        hint: 'Cari keterangan transaksi kas...',
+                        prefixIcon: const Icon(Icons.search, size: 18, color: BkuTheme.textMuted),
                       ),
                       const SizedBox(height: 12),
 
                       if (filteredTransactions.isEmpty)
-                        OrmawaEmptyCard(
+                        BkuEmptyState(
                           icon: Icons.receipt_long_rounded,
                           title: 'Belum Ada Transaksi',
-                          description: _searchController.text.isNotEmpty || _filterTipe != 'all' || _filterSumber != 'all'
+                          message: _searchController.text.isNotEmpty || _filterTipe != 'all' || _filterSumber != 'all'
                               ? 'Tidak ada catatan transaksi kas yang cocok dengan kriteria filter pencarian aktif.'
                               : 'Belum ada catatan pembukuan transaksi kas masuk atau keluar.',
-                          actionLabel: _searchController.text.isNotEmpty || _filterTipe != 'all' || _filterSumber != 'all'
+                          buttonText: _searchController.text.isNotEmpty || _filterTipe != 'all' || _filterSumber != 'all'
                               ? 'Reset Filter & Cari Ulang'
                               : null,
-                          actionIcon: Icons.refresh_rounded,
-                          onAction: () {
+                          onButtonPressed: () {
                             setState(() {
                               _searchController.clear();
                               _filterTipe = 'all';
@@ -2240,114 +1887,109 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             final isInc = _isPemasukan(t);
                             final isCamp = t.sumber.toLowerCase() == 'kampus';
 
-                            return InkWell(
+                            return BkuCard(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              borderRadius: 16,
                               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => OrmawaKeuanganDetailScreen(transaksi: t))),
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                                              decoration: BoxDecoration(
-                                                color: isCamp ? const Color(0xFFEEF2FF) : const Color(0xFFF1F5F9),
-                                                borderRadius: BorderRadius.circular(6),
-                                                border: Border.all(color: isCamp ? const Color(0xFFC7D2FE) : const Color(0xFFCBD5E1)),
-                                              ),
-                                              child: Text(
-                                                isCamp ? 'PAGU KAMPUS' : 'KAS MANDIRI',
-                                                style: TextStyle(
-                                                  fontSize: 8.5,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: isCamp ? const Color(0xFF4338CA) : const Color(0xFF334155),
-                                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: isCamp ? BkuTheme.indigoSoft : BkuTheme.borderSubtle,
+                                              borderRadius: BkuTheme.r8,
+                                              border: Border.all(color: isCamp ? BkuTheme.indigoBorder : BkuTheme.border),
+                                            ),
+                                            child: Text(
+                                              isCamp ? 'Pagu Kampus' : 'Kas Mandiri',
+                                              style: TextStyle(
+                                                fontSize: 8.5,
+                                                fontWeight: FontWeight.w900,
+                                                color: isCamp ? BkuTheme.indigo : BkuTheme.textBody,
                                               ),
                                             ),
-                                            const SizedBox(width: 6),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                                              decoration: BoxDecoration(
-                                                color: isInc ? const Color(0xFFD1FAE5) : const Color(0xFFFFE4E6),
-                                                borderRadius: BorderRadius.circular(6),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Icon(isInc ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded, size: 10, color: isInc ? const Color(0xFF047857) : const Color(0xFFBE123C)),
-                                                  const SizedBox(width: 2),
-                                                  Text(
-                                                    isInc ? 'MASUK' : 'KELUAR',
-                                                    style: TextStyle(
-                                                      fontSize: 8.5,
-                                                      fontWeight: FontWeight.w900,
-                                                      color: isInc ? const Color(0xFF047857) : const Color(0xFFBE123C),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          _formatDateIndo(t.date),
-                                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                t.description.isNotEmpty ? t.description : 'Transaksi Kas',
-                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.25),
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                'Kategori: ${t.category.isNotEmpty ? t.category : 'Kas Operasional'}',
-                                                style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
-                                              ),
-                                            ],
                                           ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '${isInc ? '+' : '-'}${_formatRp(t.nominal)}',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w900,
-                                            fontFamily: 'monospace',
-                                            color: isInc ? const Color(0xFF047857) : const Color(0xFFBE123C),
-                                          ),
-                                        ),
-                                        if (canDeleteFinance) ...[
                                           const SizedBox(width: 6),
-                                          InkWell(
-                                            onTap: () => _showDeleteConfirmDialog(context, t),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(5),
-                                              decoration: BoxDecoration(color: const Color(0xFFFFE4E6), borderRadius: BorderRadius.circular(6)),
-                                              child: const Icon(Icons.delete_outline_rounded, size: 14, color: Color(0xFFBE123C)),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: isInc ? BkuTheme.emeraldSoft : BkuTheme.roseSoft,
+                                              borderRadius: BkuTheme.r8,
+                                              border: Border.all(color: isInc ? BkuTheme.emerald.withAlpha(100) : BkuTheme.rose.withAlpha(100)),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(isInc ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded, size: 10, color: isInc ? BkuTheme.emerald : BkuTheme.rose),
+                                                const SizedBox(width: 2),
+                                                Text(
+                                                  isInc ? 'Masuk' : 'Keluar',
+                                                  style: TextStyle(
+                                                    fontSize: 8.5,
+                                                    fontWeight: FontWeight.w900,
+                                                    color: isInc ? BkuTheme.emerald : BkuTheme.rose,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
+                                      ),
+                                      Text(
+                                        _formatDateIndo(t.date),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 10, fontWeight: FontWeight.w600, color: BkuTheme.textMuted),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              t.description.isNotEmpty ? t.description : 'Transaksi Kas',
+                                              style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w900, height: 1.25),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              'Kategori: ${t.category.isNotEmpty ? t.category : 'Kas Operasional'}',
+                                              style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textPlaceholder),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '${isInc ? '+' : '-'}${_formatRp(t.nominal)}',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w900,
+                                          fontFamily: 'monospace',
+                                          color: isInc ? BkuTheme.emerald : BkuTheme.rose,
+                                        ),
+                                      ),
+                                      if (canDeleteFinance) ...[
+                                        const SizedBox(width: 6),
+                                        InkWell(
+                                          onTap: () => _showDeleteConfirmDialog(context, t),
+                                          borderRadius: BkuTheme.r8,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(color: BkuTheme.roseSoft, borderRadius: BkuTheme.r8),
+                                            child: const Icon(Icons.delete_outline_rounded, size: 14, color: BkuTheme.rose),
+                                          ),
+                                        ),
                                       ],
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             );
                           },
@@ -2364,38 +2006,25 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                               children: [
                                 Text(
                                   canManageFinance ? 'Tagihan Iuran Kas Anggota' : 'Tagihan Iuran Kas Saya',
-                                  style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                  style: BkuTheme.textSectionTitle.copyWith(fontSize: 13.5, fontWeight: FontWeight.w900),
                                 ),
                                 Text(
                                   canManageFinance ? 'Terbitkan tagihan dan pantau status pembayaran' : 'Daftar tagihan kas ormawa Anda',
-                                  style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
+                                  style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted),
                                 ),
                               ],
                             ),
                           ),
                           if (canCreateFinance) ...[
                             const SizedBox(width: 8),
-                            InkWell(
-                              onTap: () => _showCreateIuranDialog(context),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                                decoration: BoxDecoration(
-                                  color: OrmawaTheme.primary,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.add_rounded, size: 14, color: Colors.white),
-                                    SizedBox(width: 3),
-                                    Text(
-                                      'Terbitkan Tagihan',
-                                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            BkuButton.primary(
+                              onPressed: () => _showCreateIuranDialog(context),
+                              icon: Icons.add_rounded,
+                              text: 'Terbitkan Tagihan',
+                              height: 34,
+                              fontSize: 10.5,
+                              fullWidth: false,
+                              customRadius: BkuTheme.r8,
                             ),
                           ],
                         ],
@@ -2403,10 +2032,10 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                       const SizedBox(height: 12),
 
                       if (iurans.isEmpty)
-                        const OrmawaEmptyCard(
+                        const BkuEmptyState(
                           icon: Icons.receipt_long_rounded,
                           title: 'Belum Ada Tagihan Iuran',
-                          description: 'Belum ada tagihan iuran kas yang diterbitkan oleh bendahara.',
+                          message: 'Belum ada tagihan iuran kas yang diterbitkan oleh bendahara.',
                         )
                       else
                         ListView.separated(
@@ -2424,13 +2053,9 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             final isMyDitolak = myStatus == 'ditolak';
                             final myProof = myInv?['BuktiTransfer'] ?? myInv?['bukti_transfer'];
 
-                            return Container(
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                              ),
+                            return BkuCard(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              borderRadius: 16,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -2440,15 +2065,15 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                       Expanded(
                                         child: Text(
                                           iuran['Judul'] ?? iuran['judul'] ?? 'Iuran Kas',
-                                          style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                          style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5, fontWeight: FontWeight.w900),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                                        decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(6)),
-                                        child: const Text('AKTIF', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF047857))),
+                                        decoration: BoxDecoration(color: BkuTheme.emeraldSoft, borderRadius: BkuTheme.r8),
+                                        child: const Text('Aktif', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: BkuTheme.emerald)),
                                       ),
                                     ],
                                   ),
@@ -2456,15 +2081,15 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   Container(
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                                    decoration: BoxDecoration(color: BkuTheme.borderSubtle, borderRadius: BkuTheme.r10),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text('BESARAN TAGIHAN', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF94A3B8))),
+                                        Text('Besaran Tagihan', style: BkuTheme.textBadge.copyWith(fontSize: 8.5, fontWeight: FontWeight.w800, color: BkuTheme.textPlaceholder)),
                                         const SizedBox(height: 2),
                                         Text(
                                           _formatRp(((iuran['Nominal'] ?? iuran['nominal'] ?? 0) as num).toDouble()),
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: OrmawaTheme.primary, fontFamily: 'monospace'),
+                                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), fontFamily: 'monospace'),
                                         ),
                                       ],
                                     ),
@@ -2472,7 +2097,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   const SizedBox(height: 6),
                                   Text(
                                     iuran['Deskripsi'] ?? iuran['deskripsi'] ?? 'Iuran rutin kas bulanan anggota organisasi.',
-                                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -2483,12 +2108,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                       Expanded(
                                         child: Row(
                                           children: [
-                                            const Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF94A3B8)),
+                                            const Icon(Icons.access_time_rounded, size: 12, color: BkuTheme.textPlaceholder),
                                             const SizedBox(width: 4),
                                             Expanded(
                                               child: Text(
                                                 'Tenggat: ${_formatDateIndo(iuran['Tenggat'] ?? iuran['tenggat'])}',
-                                                style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700),
+                                                style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted, fontWeight: FontWeight.w700),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -2498,30 +2123,23 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       if (canManageFinance)
-                                        InkWell(
-                                          onTap: () => _showIuranMembersModal(context, iuran),
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              color: OrmawaTheme.primary.withAlpha(20),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              'Pantau Pembayaran',
-                                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primary),
-                                            ),
-                                          ),
+                                        BkuButton.outline(
+                                          text: 'Pantau Pembayaran',
+                                          height: 32,
+                                          fontSize: 10.5,
+                                          fullWidth: false,
+                                          customRadius: BkuTheme.r8,
+                                          onPressed: () => _showIuranMembersModal(context, iuran),
                                         )
                                       else if (isMyLunas)
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                          decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(6)),
+                                          decoration: BoxDecoration(color: BkuTheme.emeraldSoft, borderRadius: BkuTheme.r8),
                                           child: const Row(
                                             children: [
-                                              Icon(Icons.check_circle_rounded, size: 12, color: Color(0xFF047857)),
+                                              Icon(Icons.check_circle_rounded, size: 12, color: BkuTheme.emerald),
                                               SizedBox(width: 3),
-                                              Text('Sudah Lunas', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF047857))),
+                                              Text('Sudah Lunas', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: BkuTheme.emerald)),
                                             ],
                                           ),
                                         )
@@ -2531,12 +2149,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                           children: [
                                             Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6)),
+                                              decoration: BoxDecoration(color: BkuTheme.amberSoft, borderRadius: BkuTheme.r8),
                                               child: const Row(
                                                 children: [
-                                                  Icon(Icons.hourglass_top_rounded, size: 11, color: Color(0xFFB45309)),
+                                                  Icon(Icons.hourglass_top_rounded, size: 11, color: BkuTheme.amber),
                                                   SizedBox(width: 3),
-                                                  Text('Menunggu Review', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFFB45309))),
+                                                  Text('Menunggu Review', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.amber)),
                                                 ],
                                               ),
                                             ),
@@ -2544,54 +2162,35 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                               const SizedBox(width: 4),
                                               InkWell(
                                                 onTap: () => _showProofImageModal(context, myProof.toString()),
+                                                borderRadius: BkuTheme.r8,
                                                 child: Container(
                                                   padding: const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(6)),
-                                                  child: const Icon(Icons.image_rounded, size: 13, color: Color(0xFF334155)),
+                                                  decoration: BoxDecoration(color: BkuTheme.borderSubtle, borderRadius: BkuTheme.r8),
+                                                  child: const Icon(Icons.image_rounded, size: 13, color: BkuTheme.textBody),
                                                 ),
                                               ),
                                             ],
                                           ],
                                         )
                                       else if (isMyDitolak)
-                                        InkWell(
-                                          onTap: () => _showPayKasModal(context, iuran),
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFE11D48),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: const Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(Icons.refresh_rounded, size: 12, color: Colors.white),
-                                                SizedBox(width: 3),
-                                                Text('Kirim Ulang', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Colors.white)),
-                                              ],
-                                            ),
-                                          ),
+                                        BkuButton.danger(
+                                          text: 'Kirim Ulang',
+                                          height: 32,
+                                          fontSize: 10.5,
+                                          icon: Icons.refresh_rounded,
+                                          fullWidth: false,
+                                          customRadius: BkuTheme.r8,
+                                          onPressed: () => _showPayKasModal(context, iuran),
                                         )
                                       else
-                                        InkWell(
-                                          onTap: () => _showPayKasModal(context, iuran),
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF047857),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: const Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(Icons.payments_rounded, size: 12, color: Colors.white),
-                                                SizedBox(width: 4),
-                                                Text('Bayar Kas', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Colors.white)),
-                                              ],
-                                            ),
-                                          ),
+                                        BkuButton.success(
+                                          text: 'Bayar Kas',
+                                          height: 32,
+                                          fontSize: 10.5,
+                                          icon: Icons.payments_rounded,
+                                          fullWidth: false,
+                                          customRadius: BkuTheme.r8,
+                                          onPressed: () => _showPayKasModal(context, iuran),
                                         ),
                                     ],
                                   ),
@@ -2604,108 +2203,74 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
 
                     if (_activeSubTab == 'rekening') ...[
                       if (canManageFinance)
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
+                        BkuCard(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          borderRadius: 20,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Pengaturan Rekening Bank Resmi', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                              const Text('Nomor rekening ini akan ditampilkan ke anggota untuk pembayaran iuran kas.', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                              Text(
+                                'Pengaturan Rekening Bank Resmi',
+                                style: BkuTheme.textSectionTitle.copyWith(fontSize: 14, fontWeight: FontWeight.w900),
+                              ),
+                              Text(
+                                'Nomor rekening ini akan ditampilkan ke anggota untuk pembayaran iuran kas.',
+                                style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
+                              ),
                               const SizedBox(height: 14),
 
-                              const Text('Nama Bank *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                              const SizedBox(height: 5),
-                              TextField(
+                              BkuTextField(
                                 controller: _bankNameController,
-                                decoration: InputDecoration(
-                                  hintText: 'Contoh: Bank Mandiri / BCA / BNI',
-                                  hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                                  filled: true,
-                                  fillColor: const Color(0xFFF8FAFC),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                                ),
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                label: 'Nama Bank *',
+                                hint: 'Contoh: Bank Mandiri / BCA / BNI',
                               ),
                               const SizedBox(height: 12),
 
-                              const Text('Nomor Rekening *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                              const SizedBox(height: 5),
-                              TextField(
+                              BkuTextField(
                                 controller: _bankNumberController,
+                                label: 'Nomor Rekening *',
+                                hint: 'Contoh: 1300012345678',
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: 'Contoh: 1300012345678',
-                                  hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                                  filled: true,
-                                  fillColor: const Color(0xFFF8FAFC),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                                ),
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
                               ),
                               const SizedBox(height: 12),
 
-                              const Text('Atas Nama Pemilik Rekening *', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF334155))),
-                              const SizedBox(height: 5),
-                              TextField(
+                              BkuTextField(
                                 controller: _bankOwnerController,
-                                decoration: InputDecoration(
-                                  hintText: 'Contoh: Bendahara BEM BKU',
-                                  hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                                  filled: true,
-                                  fillColor: const Color(0xFFF8FAFC),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                                ),
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                label: 'Atas Nama Pemilik Rekening *',
+                                hint: 'Contoh: Bendahara BEM BKU',
                               ),
                               const SizedBox(height: 16),
 
-                              SizedBox(
-                                width: double.infinity,
+                              BkuButton.primary(
+                                isLoading: _isSavingBank,
+                                icon: Icons.check_circle_outline_rounded,
+                                text: 'Simpan Rekening Bank',
                                 height: 46,
-                                child: ElevatedButton.icon(
-                                  onPressed: _isSavingBank
-                                      ? null
-                                      : () async {
-                                          if (_bankNameController.text.trim().isEmpty || _bankNumberController.text.trim().isEmpty) {
-                                            AppSnackbar.showWarning(context, 'Nama bank dan nomor rekening wajib diisi');
-                                            return;
+                                onPressed: _isSavingBank
+                                    ? null
+                                    : () async {
+                                        if (_bankNameController.text.trim().isEmpty || _bankNumberController.text.trim().isEmpty) {
+                                          AppSnackbar.showWarning(context, 'Nama bank dan nomor rekening wajib diisi');
+                                          return;
+                                        }
+                                        setState(() => _isSavingBank = true);
+                                        try {
+                                          await context.read<OrmawaProvider>().updateBankAccount({
+                                            'nama_bank': _bankNameController.text.trim(),
+                                            'no_rekening': _bankNumberController.text.trim(),
+                                            'nama_rekening': _bankOwnerController.text.trim(),
+                                          });
+                                          if (context.mounted) {
+                                            AppSnackbar.showSuccess(context, 'Rekening bank resmi berhasil diperbarui!');
                                           }
-                                          setState(() => _isSavingBank = true);
-                                          try {
-                                            await context.read<OrmawaProvider>().updateBankAccount({
-                                              'nama_bank': _bankNameController.text.trim(),
-                                              'no_rekening': _bankNumberController.text.trim(),
-                                              'nama_rekening': _bankOwnerController.text.trim(),
-                                            });
-                                            if (context.mounted) {
-                                              AppSnackbar.showSuccess(context, 'Rekening bank resmi berhasil diperbarui!');
-                                            }
-                                          } catch (e) {
-                                            if (context.mounted) {
-                                              AppSnackbar.showError(context, 'Gagal memperbarui rekening: $e');
-                                            }
-                                          } finally {
-                                            if (mounted) setState(() => _isSavingBank = false);
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            AppSnackbar.showError(context, 'Gagal memperbarui rekening: $e');
                                           }
-                                        },
-                                  icon: _isSavingBank
-                                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                      : const Icon(Icons.check_circle_outline_rounded, size: 18),
-                                  label: const Text('Simpan Rekening Bank', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: OrmawaTheme.primary,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
-                                ),
+                                        } finally {
+                                          if (mounted) setState(() => _isSavingBank = false);
+                                        }
+                                      },
                               ),
                             ],
                           ),
@@ -2722,7 +2287,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BkuTheme.r20,
                                 boxShadow: [
                                   BoxShadow(
                                     color: const Color(0xFF0F172A).withAlpha(40),
@@ -2737,23 +2302,29 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('REKENING RESMI ORGANISASI', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF94A3B8), letterSpacing: 1.0)),
+                                      Text(
+                                        'Rekening Resmi Organisasi',
+                                        style: BkuTheme.textBadge.copyWith(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.textPlaceholder, letterSpacing: 0.5),
+                                      ),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF047857).withAlpha(50),
-                                          borderRadius: BorderRadius.circular(6),
-                                          border: Border.all(color: const Color(0xFF10B981).withAlpha(100)),
+                                          color: BkuTheme.emerald.withAlpha(50),
+                                          borderRadius: BkuTheme.r8,
+                                          border: Border.all(color: BkuTheme.emerald.withAlpha(100)),
                                         ),
                                         child: Text(
-                                          bank['nama_bank'] != null && bank['nama_bank'].toString().isNotEmpty ? bank['nama_bank'].toString().toUpperCase() : 'BANK TRANSFER',
+                                          bank['nama_bank'] != null && bank['nama_bank'].toString().isNotEmpty ? bank['nama_bank'].toString() : 'Bank Transfer',
                                           style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF34D399)),
                                         ),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text('NOMOR REKENING', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                  Text(
+                                    'Nomor Rekening',
+                                    style: BkuTheme.textBadge.copyWith(fontSize: 8.5, fontWeight: FontWeight.bold, color: BkuTheme.textMuted),
+                                  ),
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
@@ -2769,12 +2340,12 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                             Clipboard.setData(ClipboardData(text: bank['no_rekening'].toString()));
                                             AppSnackbar.showSuccess(context, 'Nomor rekening disalin!');
                                           },
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BkuTheme.r8,
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                             decoration: BoxDecoration(
                                               color: Colors.white.withAlpha(20),
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius: BkuTheme.r8,
                                               border: Border.all(color: Colors.white.withAlpha(40)),
                                             ),
                                             child: const Row(
@@ -2794,7 +2365,7 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Atas Nama Pemilik:', style: TextStyle(fontSize: 10.5, color: Color(0xFF94A3B8))),
+                                      Text('Atas Nama Pemilik:', style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textPlaceholder)),
                                       Text(bank['nama_rekening'] ?? '—', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
                                     ],
                                   ),
@@ -2805,18 +2376,18 @@ class _OrmawaFinanceScreenState extends State<OrmawaFinanceScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFFBEB),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFFDE68A)),
+                                color: BkuTheme.amberSoft,
+                                borderRadius: BkuTheme.r12,
+                                border: Border.all(color: BkuTheme.amberBorder),
                               ),
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(Icons.info_outline_rounded, size: 16, color: Color(0xFFD97706)),
-                                  SizedBox(width: 8),
+                                  const Icon(Icons.info_outline_rounded, size: 16, color: BkuTheme.amber),
+                                  const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       'Gunakan nomor rekening di atas untuk melakukan transfer pembayaran kas resmi organisasi.',
-                                      style: TextStyle(fontSize: 11, color: Color(0xFF92400E)),
+                                      style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.amber),
                                     ),
                                   ),
                                 ],

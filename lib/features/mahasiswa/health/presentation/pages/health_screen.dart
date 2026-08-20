@@ -1,25 +1,21 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
-
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/health_record.dart';
-import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'report_health_screen.dart';
-import 'klinik_booking_screen.dart';
-import 'medical_referral_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/report_health_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/klinik_booking_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/medical_referral_screen.dart';
 
 class HealthScreen extends StatefulWidget {
   const HealthScreen({super.key});
@@ -34,9 +30,8 @@ class _HealthScreenState extends State<HealthScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
@@ -46,18 +41,17 @@ class _HealthScreenState extends State<HealthScreen> {
             ),
           );
         },
-        elevation: 3,
+        elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.radiusLg,
+          borderRadius: BkuTheme.rPill,
         ),
-        backgroundColor: context.appColors.success,
-        icon: Icon(Icons.calendar_month_rounded, color: context.appColors.onPrimary),
+        backgroundColor: BkuTheme.emerald,
+        icon: const Icon(Icons.calendar_month_rounded, color: Colors.white, size: 20),
         label: Text(
           'Booking Klinik',
-          style: TextStyle(
-            color: context.appColors.onPrimary,
-            fontWeight: FontWeight.w800,
-            fontSize: 13,
+          style: BkuTheme.textBadge.copyWith(
+            color: Colors.white,
+            fontSize: 12.5,
           ),
         ),
       ),
@@ -68,366 +62,311 @@ class _HealthScreenState extends State<HealthScreen> {
             onRefresh: () async {
               await health.refreshHealthData();
             },
-            color: context.appColors.primary,
+            color: BkuTheme.primary,
             child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: ClampingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-          ),
-          slivers: [
-            BkuAppBar(
-              title: 'Layanan Medis',
-              subtitle: 'Pusat Layanan Kesehatan Mahasiswa',
-              variant: AppBarVariant.student,
-              expandedHeight: 130,
-              showBackButton: true,
-              isExpandable: false,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: AppSpacing.xl),
-                    if (student.isLoading) ...[
-                      const BkuShimmer(
-                        width: double.infinity,
-                        height: 140,
-                        borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      const BkuShimmer(
-                        width: double.infinity,
-                        height: 180,
-                        borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      const BkuShimmerList(itemCount: 2, itemHeight: 120),
-                    ] else ...[
-                      // Welcome Banner
-                      FadeInAnimation(
-                        delay: 0.1,
-                        child:
-                            latest == null
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: ClampingScrollPhysics(),
+              ),
+              slivers: [
+                const BkuAppBar(
+                  title: 'Layanan Medis',
+                  subtitle: 'Pusat Layanan Kesehatan Mahasiswa',
+                  variant: AppBarVariant.student,
+                  expandedHeight: 130,
+                  showBackButton: true,
+                  isExpandable: false,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: AppSpacing.xl),
+                        if (student.isLoading) ...[
+                          const BkuShimmer(
+                            width: double.infinity,
+                            height: 140,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          const BkuShimmer(
+                            width: double.infinity,
+                            height: 160,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          const BkuShimmerList(itemCount: 2, itemHeight: 100),
+                        ] else ...[
+                          FadeInAnimation(
+                            delay: 0.1,
+                            child: latest == null
                                 ? _buildEmptyWelcomeBanner(student)
                                 : _buildDynamicWelcomeCard(student, latest),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-
-                      // Medical Referral Nav Card
-                      FadeInAnimation(
-                        delay: 0.15,
-                        child: _buildReferralNavCard(context),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-
-                      // Self Screening Dashboard
-                      if (latest != null) ...[
-                        // Populated Screening Dashboard State
-                        FadeInAnimation(
-                          delay: 0.2,
-                          child: _buildBMIIndicator(latest),
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                        FadeInAnimation(
-                          delay: 0.3,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 4,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral900,
-                                  borderRadius: AppRadius.radiusXs,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.s10),
-                              Text(
-                                'Kondisi Tubuh Saat Ini',
-                                style: AppTextStyles.titleLg.copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.neutral900,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        FadeInAnimation(
-                          delay: 0.4,
-                          child: _buildStatsGrid(latest),
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                        FadeInAnimation(
-                          delay: 0.5,
-                          child: _buildHealthInsights(latest),
-                        ),
-                        const SizedBox(height: AppSpacing.xxl),
-                        if (health.healthRecords.isEmpty) ...[
-                          Text(
-                            'Riwayat Skrining Mandiri',
-                            style: AppTextStyles.titleLg.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral900,
-                            ),
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.xxxl,
-                              ),
-                              child: Text(
-                                'Belum ada riwayat skrining',
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color: AppColors.neutral500,
-                                ),
-                              ),
-                            ),
+                          FadeInAnimation(
+                            delay: 0.15,
+                            child: _buildReferralNavCard(context),
                           ),
-                        ] else ...[
-                          () {
-                            final totalRecords = health.healthRecords.length;
-                            final totalPages = (totalRecords / _screeningPerPage).ceil();
-                            final validPage = _currentScreeningPage.clamp(1, totalPages > 0 ? totalPages : 1);
-                            final startIndex = (validPage - 1) * _screeningPerPage;
-                            final endIndex = (startIndex + _screeningPerPage < totalRecords)
-                                ? startIndex + _screeningPerPage
-                                : totalRecords;
-                            final paginatedRecords = health.healthRecords.sublist(startIndex, endIndex);
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Riwayat Skrining Mandiri',
-                                      style: AppTextStyles.titleLg.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.neutral900,
-                                      ),
-                                    ),
-                                    if (totalPages > 1)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.neutral100,
-                                          borderRadius: AppRadius.br10,
-                                          border: Border.all(
-                                            color: AppColors.neutral400,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            InkWell(
-                                              onTap: validPage > 1
-                                                  ? () => setState(() => _currentScreeningPage = validPage - 1)
-                                                  : null,
-                                              borderRadius: AppRadius.br6,
-                                              child: Padding(
-                                                padding: AppSpacing.paddingXs,
-                                                child: Icon(
-                                                  Icons.chevron_left_rounded,
-                                                  size: 18,
-                                                  color: validPage > 1
-                                                      ? context.appColors.secondary
-                                                      : AppColors.neutral500,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6),
-                                              child: Text(
-                                                '$validPage / $totalPages',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w800,
-                                                  color: context.appColors.secondaryContainer,
-                                                ),
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: validPage < totalPages
-                                                  ? () => setState(() => _currentScreeningPage = validPage + 1)
-                                                  : null,
-                                              borderRadius: AppRadius.br6,
-                                              child: Padding(
-                                                padding: AppSpacing.paddingXs,
-                                                child: Icon(
-                                                  Icons.chevron_right_rounded,
-                                                  size: 18,
-                                                  color: validPage < totalPages
-                                                      ? context.appColors.secondary
-                                                      : AppColors.neutral500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: AppSpacing.md),
-                                ...List.generate(
-                                  paginatedRecords.length,
-                                  (index) => FadeInAnimation(
-                                    delay: 0.05 + (index * 0.03),
-                                    child: _buildHistoryCard(
-                                      context,
-                                      paginatedRecords[index],
+                          const SizedBox(height: AppSpacing.xl),
+                          if (latest != null) ...[
+                            FadeInAnimation(
+                              delay: 0.2,
+                              child: _buildBMIIndicator(latest),
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            FadeInAnimation(
+                              delay: 0.25,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Kondisi Tubuh Saat Ini',
+                                    style: BkuTheme.textSectionTitle.copyWith(
+                                      fontSize: 14,
+                                      color: BkuTheme.textHeading,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: AppSpacing.s80),
-                              ],
-                            );
-                          }(),
-                        ],
-                      ] else ...[
-                        // Empty Screening Dashboard State
-                        FadeInAnimation(
-                          delay: 0.2,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 4,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral900,
-                                  borderRadius: AppRadius.radiusXs,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                'Indikator yang Akan Dipantau',
-                                style: AppTextStyles.titleLg.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.neutral900,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        FadeInAnimation(
-                          delay: 0.3,
-                          child: GridView.count(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 1.15,
-                            children: [
-                              _buildEmptyStatTile(
-                                'Tinggi Badan',
-                                'cm',
-                                Icons.height_rounded,
-                                AppColors.info,
-                              ),
-                              _buildEmptyStatTile(
-                                'Berat Badan',
-                                'kg',
-                                Icons.monitor_weight_rounded,
-                                AppColors.success,
-                              ),
-                              _buildEmptyStatTile(
-                                'Tekanan Darah',
-                                'mmHg',
-                                Icons.favorite_rounded,
-                                AppColors.error,
-                              ),
-                              _buildEmptyStatTile(
-                                'Golongan Darah',
-                                'Tipe',
-                                Icons.bloodtype_rounded,
-                                AppColors.warning,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s28),
-                        FadeInAnimation(
-                          delay: 0.4,
-                          child: Text(
-                            '3 Langkah Mudah Memulai',
-                            style: AppTextStyles.titleLg.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral900,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        FadeInAnimation(
-                          delay: 0.5,
-                          child: Column(
-                            children: [
-                              _buildGuideStep(
-                                1,
-                                'Update Parameter Vital',
-                                'Ukur tekanan darah, detak jantung, suhu, serta berat badanmu.',
-                                Icons.edit_note_rounded,
-                                AppColors.info,
-                                onTap:
-                                    () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                const ReportHealthScreen(),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const ReportHealthScreen(),
+                                        ),
+                                      );
+                                    },
+                                    borderRadius: BkuTheme.rPill,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      child: Text(
+                                        'Update Data',
+                                        style: BkuTheme.textBadge.copyWith(
+                                          color: BkuTheme.primary,
+                                        ),
                                       ),
                                     ),
+                                  ),
+                                ],
                               ),
-                              _buildGuideStep(
-                                2,
-                                'Analisis BMI & Kesehatan',
-                                'Sistem langsung menghitung Indeks Massa Tubuh (BMI) idealmu.',
-                                Icons.calculate_rounded,
-                                AppColors.info,
-                                onTap: () {
-                                  AppSnackbar.showSuccess(
-                                    context,
-                                    'Analisis BMI kamu dapat dilihat di bagian atas halaman ini.',
-                                  );
-                                },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            FadeInAnimation(
+                              delay: 0.3,
+                              child: _buildStatsGrid(latest),
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            FadeInAnimation(
+                              delay: 0.35,
+                              child: _buildHealthInsights(latest),
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            if (health.healthRecords.isEmpty) ...[
+                              Text(
+                                'Riwayat Skrining Mandiri',
+                                style: BkuTheme.textSectionTitle.copyWith(
+                                  fontSize: 14,
+                                  color: BkuTheme.textHeading,
+                                ),
                               ),
-                              const SizedBox(height: AppSpacing.lg),
-                              _buildGuideStep(
-                                3,
-                                'Dapatkan Rekomendasi Medis',
-                                'Sistem akan memberikan saran dan langkah selanjutnya sesuai kondisimu.',
-                                Icons.medical_services_rounded,
-                                AppColors.primary,
-                                onTap: () {
-                                  AppSnackbar.showSuccess(
-                                    context,
-                                    'Rekomendasi medis akan muncul setelah kamu memperbarui data kesehatan.',
-                                  );
-                                },
+                              const SizedBox(height: AppSpacing.md),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 32),
+                                  child: Text(
+                                    'Belum ada riwayat skrining',
+                                    style: BkuTheme.textCaption,
+                                  ),
+                                ),
                               ),
+                            ] else ...[
+                              () {
+                                final totalRecords = health.healthRecords.length;
+                                final totalPages = (totalRecords / _screeningPerPage).ceil();
+                                final validPage = _currentScreeningPage.clamp(1, totalPages > 0 ? totalPages : 1);
+                                final startIndex = (validPage - 1) * _screeningPerPage;
+                                final endIndex = (startIndex + _screeningPerPage < totalRecords)
+                                    ? startIndex + _screeningPerPage
+                                    : totalRecords;
+                                final paginatedRecords = health.healthRecords.sublist(startIndex, endIndex);
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Riwayat Skrining Mandiri',
+                                          style: BkuTheme.textSectionTitle.copyWith(
+                                            fontSize: 14,
+                                            color: BkuTheme.textHeading,
+                                          ),
+                                        ),
+                                        if (totalPages > 1)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: BkuTheme.cardSurface,
+                                              borderRadius: BkuTheme.rPill,
+                                              border: Border.all(color: BkuTheme.border),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                InkWell(
+                                                  onTap: validPage > 1
+                                                      ? () => setState(() => _currentScreeningPage = validPage - 1)
+                                                      : null,
+                                                  borderRadius: BkuTheme.rPill,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(2),
+                                                    child: Icon(
+                                                      Icons.chevron_left_rounded,
+                                                      size: 16,
+                                                      color: validPage > 1 ? BkuTheme.primary : BkuTheme.textPlaceholder,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                                  child: Text(
+                                                    '$validPage / $totalPages',
+                                                    style: BkuTheme.textBadge.copyWith(
+                                                      fontSize: 10,
+                                                      color: BkuTheme.textMuted,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: validPage < totalPages
+                                                      ? () => setState(() => _currentScreeningPage = validPage + 1)
+                                                      : null,
+                                                  borderRadius: BkuTheme.rPill,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(2),
+                                                    child: Icon(
+                                                      Icons.chevron_right_rounded,
+                                                      size: 16,
+                                                      color: validPage < totalPages ? BkuTheme.primary : BkuTheme.textPlaceholder,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: AppSpacing.md),
+                                    ...List.generate(
+                                      paginatedRecords.length,
+                                      (index) => FadeInAnimation(
+                                        delay: 0.05 + (index * 0.04),
+                                        child: _buildHistoryCard(context, paginatedRecords[index]),
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.s80),
+                                  ],
+                                );
+                              }(),
                             ],
-                          ),
-                        ),
+                          ] else ...[
+                            FadeInAnimation(
+                              delay: 0.2,
+                              child: Text(
+                                'Indikator yang Dipantau',
+                                style: BkuTheme.textSectionTitle.copyWith(
+                                  fontSize: 14,
+                                  color: BkuTheme.textHeading,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            FadeInAnimation(
+                              delay: 0.25,
+                              child: GridView.count(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 1.4,
+                                children: [
+                                  _buildEmptyStatTile('Tinggi Badan', 'cm', Icons.height_rounded, BkuTheme.indigo, BkuTheme.indigoSoft),
+                                  _buildEmptyStatTile('Berat Badan', 'kg', Icons.monitor_weight_rounded, BkuTheme.emerald, BkuTheme.emeraldSoft),
+                                  _buildEmptyStatTile('Tekanan Darah', 'mmHg', Icons.favorite_rounded, BkuTheme.rose, BkuTheme.roseSoft),
+                                  _buildEmptyStatTile('Golongan Darah', 'Tipe', Icons.bloodtype_rounded, BkuTheme.amber, BkuTheme.amberSoft),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+                            FadeInAnimation(
+                              delay: 0.3,
+                              child: Text(
+                                'Langkah Menjaga Kesehatan',
+                                style: BkuTheme.textSectionTitle.copyWith(
+                                  fontSize: 14,
+                                  color: BkuTheme.textHeading,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            FadeInAnimation(
+                              delay: 0.35,
+                              child: Column(
+                                children: [
+                                  _buildGuideStep(
+                                    1,
+                                    'Update Parameter Vital',
+                                    'Ukur tekanan darah, detak jantung, suhu, serta berat badanmu.',
+                                    Icons.edit_note_rounded,
+                                    BkuTheme.indigo,
+                                    BkuTheme.indigoSoft,
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const ReportHealthScreen()),
+                                    ),
+                                  ),
+                                  _buildGuideStep(
+                                    2,
+                                    'Analisis BMI & Kesehatan',
+                                    'Sistem langsung menghitung Indeks Massa Tubuh (BMI) idealmu.',
+                                    Icons.calculate_rounded,
+                                    BkuTheme.emerald,
+                                    BkuTheme.emeraldSoft,
+                                    onTap: () {
+                                      AppSnackbar.showSuccess(
+                                        context,
+                                        'Analisis BMI dapat dilihat setelah Anda mengisi skrining awal.',
+                                      );
+                                    },
+                                  ),
+                                  _buildGuideStep(
+                                    3,
+                                    'Rekomendasi Medis Kampus',
+                                    'Dapatkan saran dan langkah selanjutnya sesuai kondisimu.',
+                                    Icons.medical_services_rounded,
+                                    BkuTheme.teal,
+                                    BkuTheme.tealSoft,
+                                    onTap: () {
+                                      AppSnackbar.showSuccess(
+                                        context,
+                                        'Rekomendasi medis akan muncul setelah kamu memperbarui data kesehatan.',
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
+                        const SizedBox(height: AppSpacing.s80),
                       ],
-                    ],
-                  ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
               ],
             ),
           );
@@ -438,22 +377,15 @@ class _HealthScreenState extends State<HealthScreen> {
 
   Widget _buildEmptyWelcomeBanner(ProfileProvider student) {
     final firstName = student.name.split(' ').first;
-    final themeProvider = context.watch<ThemeProvider>();
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(5),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Row(
         children: [
@@ -463,36 +395,29 @@ class _HealthScreenState extends State<HealthScreen> {
               children: [
                 Text(
                   'Halo, $firstName! 👋',
-                  style: AppTextStyles.titleLg.copyWith(
-                    color: AppColors.neutral900,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: BkuTheme.textPageTitle.copyWith(fontSize: 17),
                 ),
-                const SizedBox(height: AppSpacing.s6),
+                const SizedBox(height: 4),
                 Text(
-                  'Jaga kebugaran tubuhmu untuk performa belajar yang optimal. Mulai isi skrining kesehatan pertamamu!',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: themeProvider.outline,
-                    fontSize: 11,
-                    height: 1.4,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  'Jaga kebugaran fisikmu untuk performa belajar optimal. Mulai isi skrining kesehatan pertamamu!',
+                  style: BkuTheme.textCardSubtitle,
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.md),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: themeProvider.primary.withAlpha(15),
-              shape: BoxShape.circle,
+              color: BkuTheme.emeraldSoft,
+              borderRadius: BkuTheme.r16,
+              border: Border.all(color: BkuTheme.emeraldBorder),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.spa_rounded,
-              color: themeProvider.primary,
-              size: 32,
+              color: BkuTheme.emerald,
+              size: 24,
             ),
           ),
         ],
@@ -505,52 +430,53 @@ class _HealthScreenState extends State<HealthScreen> {
     HealthRecord latest,
   ) {
     final firstName = student.name.split(' ').first;
-    final themeProvider = context.watch<ThemeProvider>();
     String statusText;
     String message;
+    Color statusColor;
+    Color statusBg;
 
     switch (latest.bmiStatus) {
       case 'Normal':
-        statusText = 'Sangat Baik & Ideal';
-        message =
-            'Keren! Kondisi fisikmu berada di batas optimal. Pertahankan pola hidup sehatmu!';
+        statusText = 'Optimal & Ideal';
+        message = 'Kondisi fisikmu berada di batas optimal. Pertahankan pola hidup sehatmu!';
+        statusColor = BkuTheme.emerald;
+        statusBg = BkuTheme.emeraldSoft;
         break;
       case 'Underweight':
-        statusText = 'Berat Badan Kurang';
-        message =
-            'Status gizimu underweight. Yuk, perbaiki nutrisi harian dan asupan kalori proteinmu!';
+        statusText = 'Berat Kurang';
+        message = 'Status gizimu underweight. Tingkatkan asupan kalori dan nutrisi harian!';
+        statusColor = BkuTheme.indigo;
+        statusBg = BkuTheme.indigoSoft;
         break;
       case 'Overweight':
-        statusText = 'Kelebihan Berat Badan';
-        message =
-            'Kondisi tubuhmu overweight. Coba batasi makanan manis dan rutin olahraga ringan ya!';
+        statusText = 'Kelebihan Berat';
+        message = 'Kondisi tubuhmu overweight. Batasi konsumsi gula dan rutin olahraga ringan!';
+        statusColor = BkuTheme.amber;
+        statusBg = BkuTheme.amberSoft;
         break;
       case 'Obese':
-        statusText = 'Perhatian Khusus (Obesitas)';
-        message =
-            'Kategori obesitas terdeteksi. Sebaiknya jadwalkan konsultasi dengan klinik kampus.';
+        statusText = 'Perhatian Medis';
+        message = 'Kategori obesitas terdeteksi. Disarankan konsultasi dengan klinik kampus.';
+        statusColor = BkuTheme.rose;
+        statusBg = BkuTheme.roseSoft;
         break;
       default:
         statusText = 'Kondisi Terpantau';
         message = 'Terus pantau kesehatan fisikmu secara berkala di BKUHub.';
+        statusColor = BkuTheme.teal;
+        statusBg = BkuTheme.tealSoft;
     }
 
     final score = _calculateHealthScore(latest);
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: AppColors.neutral200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(5),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Row(
         children: [
@@ -560,40 +486,32 @@ class _HealthScreenState extends State<HealthScreen> {
               children: [
                 Text(
                   'Halo, $firstName! 👋',
-                  style: AppTextStyles.titleLg.copyWith(
-                    color: AppColors.neutral900,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: BkuTheme.textPageTitle.copyWith(fontSize: 17),
                 ),
-                const SizedBox(height: AppSpacing.s6),
+                const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: themeProvider.primary.withAlpha(15),
-                    borderRadius: AppRadius.radiusMd,
+                    color: statusBg,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: statusColor.withValues(alpha: 0.2)),
                   ),
                   child: Text(
-                    'Kondisimu: $statusText',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: themeProvider.primary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
+                    'Kondisi: $statusText',
+                    style: BkuTheme.textBadge.copyWith(
+                      color: statusColor,
+                      fontSize: 9.5,
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.s10),
+                const SizedBox(height: 6),
                 Text(
                   message,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: themeProvider.outline,
-                    fontSize: 11,
-                    height: 1.4,
-                    fontWeight: FontWeight.w500,
+                  style: BkuTheme.textCaption.copyWith(
+                    color: BkuTheme.textMuted,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -603,15 +521,13 @@ class _HealthScreenState extends State<HealthScreen> {
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 60,
-                height: 60,
+                width: 56,
+                height: 56,
                 child: CircularProgressIndicator(
-                  value: score / 100.0,
-                  strokeWidth: 5,
-                  backgroundColor: themeProvider.primary.withAlpha(20),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    themeProvider.primary,
-                  ),
+                  value: (score / 100.0).clamp(0.0, 1.0),
+                  strokeWidth: 4.5,
+                  backgroundColor: BkuTheme.primarySoft,
+                  valueColor: AlwaysStoppedAnimation<Color>(BkuTheme.primary),
                 ),
               ),
               Column(
@@ -619,18 +535,14 @@ class _HealthScreenState extends State<HealthScreen> {
                 children: [
                   Text(
                     '$score',
-                    style: const TextStyle(
-                      color: AppColors.neutral900,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: BkuTheme.textKpiValue.copyWith(fontSize: 16),
                   ),
                   Text(
                     'SKOR',
-                    style: TextStyle(
-                      color: themeProvider.outline,
-                      fontSize: 8,
-                      fontWeight: FontWeight.w900,
+                    style: BkuTheme.textCaption.copyWith(
+                      fontSize: 7.5,
+                      fontWeight: FontWeight.w700,
+                      color: BkuTheme.textMuted,
                     ),
                   ),
                 ],
@@ -643,8 +555,14 @@ class _HealthScreenState extends State<HealthScreen> {
   }
 
   Widget _buildBMIIndicator(HealthRecord latest) {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
       child: Column(
         children: [
           Row(
@@ -653,44 +571,30 @@ class _HealthScreenState extends State<HealthScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Indeks Massa Tubuh (BMI)',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.outline,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
+                  Text('Indeks Massa Tubuh (BMI)', style: BkuTheme.textCardSubtitle),
+                  const SizedBox(height: 2),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         latest.bmi.toStringAsFixed(1),
-                        style: AppTextStyles.headlineMd.copyWith(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.neutral900,
+                        style: BkuTheme.textKpiValue.copyWith(
+                          fontSize: 26,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.md),
+                      const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.xs,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
-                          color: latest.bmiColor.withAlpha(20),
-                          borderRadius: AppRadius.radiusMd,
-                          border: Border.all(
-                            color: latest.bmiColor.withAlpha(50),
-                          ),
+                          color: latest.bmiColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: latest.bmiColor.withValues(alpha: 0.25)),
                         ),
                         child: Text(
                           latest.bmiStatus.capitalizeFirstLetter(),
-                          style: AppTextStyles.labelSm.copyWith(
+                          style: BkuTheme.textBadge.copyWith(
                             color: latest.bmiColor,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 10,
+                            fontSize: 9.5,
                           ),
                         ),
                       ),
@@ -701,21 +605,22 @@ class _HealthScreenState extends State<HealthScreen> {
               _buildHealthBadge(latest.bmiStatus, latest.bmiColor),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
-          _buildBMISlider(latest.bmi),
           const SizedBox(height: AppSpacing.lg),
+          _buildBMISlider(latest.bmi),
+          const SizedBox(height: AppSpacing.md),
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: latest.bmiColor.withAlpha(10),
-              borderRadius: AppRadius.radiusLg,
+              color: latest.bmiColor.withValues(alpha: 0.08),
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: latest.bmiColor.withValues(alpha: 0.16)),
             ),
             child: Text(
               _getBMIMessage(latest.bmiStatus),
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelSm.copyWith(
+              style: BkuTheme.textCaption.copyWith(
                 color: latest.bmiColor,
-                height: 1.4,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -732,64 +637,57 @@ class _HealthScreenState extends State<HealthScreen> {
     return Column(
       children: [
         LayoutBuilder(
-          builder:
-              (context, constraints) => Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    height: 10,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: AppRadius.radiusXs,
-                      gradient: const LinearGradient(
-                        colors: [
-                          AppColors.info,
-                          AppColors.success,
-                          AppColors.warning,
-                          AppColors.error,
-                        ],
-                      ),
-                    ),
+          builder: (context, constraints) => Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                height: 8,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  gradient: const LinearGradient(
+                    colors: [
+                      BkuTheme.indigo,
+                      BkuTheme.emerald,
+                      BkuTheme.amber,
+                      BkuTheme.rose,
+                    ],
                   ),
-                  Positioned(
-                    left: (constraints.maxWidth * progress - 4).clamp(
-                      0.0,
-                      constraints.maxWidth - 8,
-                    ),
-                    top: 1,
-                    child: Container(
-                      height: 8,
-                      width: 8,
-                      decoration: BoxDecoration(
-                        color: context.appColors.surface,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.appColors.onSurface.withAlpha(50),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
+              Positioned(
+                left: (constraints.maxWidth * progress - 4).clamp(
+                  0.0,
+                  constraints.maxWidth - 8,
+                ),
+                top: 0,
+                child: Container(
+                  height: 8,
+                  width: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black26, width: 1.5),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: AppSpacing.s10),
+        const SizedBox(height: 6),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children:
-              ['15', '20', '25', '30', '35']
-                  .map(
-                    (v) => Text(
-                      v,
-                      style: AppTextStyles.labelSm.copyWith(
-                        fontSize: 10,
-                        color: context.appColors.outline,
-                      ),
-                    ),
-                  )
-                  .toList(),
+          children: ['15', '20', '25', '30', '35']
+              .map(
+                (v) => Text(
+                  v,
+                  style: BkuTheme.textCaption.copyWith(
+                    fontSize: 9.5,
+                    color: BkuTheme.textPlaceholder,
+                  ),
+                ),
+              )
+              .toList(),
         ),
       ],
     );
@@ -814,26 +712,16 @@ class _HealthScreenState extends State<HealthScreen> {
         emoji = '✨';
     }
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: color.withAlpha(15),
-            borderRadius: AppRadius.radiusLg,
-          ),
-          child: Text(emoji, style: const TextStyle(fontSize: 32)),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          status == 'Normal' ? 'Baik' : status.capitalizeFirstLetter(),
-          style: AppTextStyles.labelSm.copyWith(
-            color: color,
-            fontSize: 8,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ],
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BkuTheme.r16,
+      ),
+      child: Center(
+        child: Text(emoji, style: const TextStyle(fontSize: 24)),
+      ),
     );
   }
 
@@ -858,7 +746,7 @@ class _HealthScreenState extends State<HealthScreen> {
       if (latest.notes.startsWith('{') && latest.notes.endsWith('}')) {
         data = jsonDecode(latest.notes) as Map<String, dynamic>;
       }
-    } catch (_) { /* Silenced: non-critical parse fallback */ }
+    } catch (_) {}
 
     final jamTidur = data?['jam_tidur'] ?? 8;
     final olahraga = data?['olahraga'] ?? 2;
@@ -870,51 +758,57 @@ class _HealthScreenState extends State<HealthScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
-      childAspectRatio: 1.15,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 1.4,
       children: [
         _buildStatTile(
           'Tinggi Badan',
           latest.height.toStringAsFixed(0),
           'cm',
           Icons.straighten_rounded,
-          AppColors.info,
+          BkuTheme.indigo,
+          BkuTheme.indigoSoft,
         ),
         _buildStatTile(
           'Berat Badan',
           latest.weight.toStringAsFixed(0),
           'kg',
           Icons.monitor_weight_rounded,
-          AppColors.success,
+          BkuTheme.emerald,
+          BkuTheme.emeraldSoft,
         ),
         _buildStatTile(
           'Tidur Harian',
           '$jamTidur',
           'Jam',
           Icons.bedtime_rounded,
-          AppColors.info,
+          BkuTheme.teal,
+          BkuTheme.tealSoft,
         ),
         _buildStatTile(
           'Olahraga',
           '$olahraga',
           'x/Mgg',
           Icons.fitness_center_rounded,
-          AppColors.warning,
+          BkuTheme.amber,
+          BkuTheme.amberSoft,
         ),
         _buildStatTile(
           'Konsumsi Air',
           air.toStringAsFixed(1),
           'L/Hari',
           Icons.water_drop_rounded,
-          AppColors.info,
+          BkuTheme.indigo,
+          BkuTheme.indigoSoft,
         ),
         _buildStatTile(
           'Tingkat Stres',
           '$stres',
           '/10',
           Icons.psychology_rounded,
-          AppColors.secondary,
+          BkuTheme.rose,
+          BkuTheme.roseSoft,
         ),
       ],
     );
@@ -926,83 +820,58 @@ class _HealthScreenState extends State<HealthScreen> {
     String unit,
     IconData icon,
     Color color,
+    Color bg,
   ) {
     return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: color.withAlpha(20), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: color.withAlpha(5),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Icon(icon, color: color, size: 14),
+              ),
+              Text(
+                unit,
+                style: BkuTheme.textCaption.copyWith(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: BkuTheme.textMuted,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            label,
+            style: BkuTheme.textCaption.copyWith(
+              color: BkuTheme.textMuted,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 1),
+          Text(
+            value,
+            style: BkuTheme.textKpiValue.copyWith(
+              fontSize: 18,
+            ),
           ),
         ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: color.withAlpha(15),
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  child: Icon(icon, color: color, size: 18),
-                ),
-                Icon(
-                  Icons.trending_up_rounded,
-                  color: AppColors.success.withAlpha(100),
-                  size: 14,
-                ),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              label,
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.appColors.outline,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.2,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: value,
-                      style: AppTextStyles.labelMd.copyWith(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22,
-                        color: AppColors.neutral900,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' $unit',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1011,41 +880,35 @@ class _HealthScreenState extends State<HealthScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Saran Kesehatan',
-          style: AppTextStyles.titleLg.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: AppColors.neutral900,
-          ),
-        ),
+        Text('Saran & Rekomendasi Medis', style: BkuTheme.textSectionTitle),
         const SizedBox(height: AppSpacing.md),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          physics: const ClampingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
+          physics: const ClampingScrollPhysics(),
           child: Row(
             children: [
               _buildInsightCard(
                 'Nutrisi Harian',
                 latest.bmiStatus == 'Normal'
-                    ? 'Pertahankan asupan serat & proteinmu.'
-                    : 'Atur kalori sesuai kebutuhan tubuhmu.',
+                    ? 'Pertahankan asupan serat dan protein harianmu.'
+                    : 'Sesuaikan kalori dengan aktivitas harianmu.',
                 Icons.restaurant_rounded,
-                AppColors.warning,
+                BkuTheme.amber,
+                BkuTheme.amberSoft,
               ),
               _buildInsightCard(
                 'Aktivitas Fisik',
-                'Jalan santai 30 menit setiap pagi sangat baik.',
+                'Jalan santai atau peregangan 30 menit setiap pagi.',
                 Icons.directions_run_rounded,
-                AppColors.info,
+                BkuTheme.emerald,
+                BkuTheme.emeraldSoft,
               ),
               _buildInsightCard(
                 'Kualitas Tidur',
-                'Pastikan tidur 7-8 jam untuk regenerasi sel.',
+                'Pastikan tidur 7-8 jam per hari untuk metabolisme.',
                 Icons.bedtime_rounded,
-                AppColors.info,
+                BkuTheme.indigo,
+                BkuTheme.indigoSoft,
               ),
             ],
           ),
@@ -1059,40 +922,40 @@ class _HealthScreenState extends State<HealthScreen> {
     String desc,
     IconData icon,
     Color color,
+    Color bg,
   ) {
     return Container(
-      width: 220,
-      margin: const EdgeInsets.only(right: AppSpacing.lg),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      width: 210,
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.withAlpha(20), color.withAlpha(5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(color: color.withAlpha(20)),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 24),
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 18),
+          ),
           const SizedBox(height: AppSpacing.md),
           Text(
             title,
-            style: AppTextStyles.labelMd.copyWith(
-              fontWeight: FontWeight.w900,
-              color: color,
-            ),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: 3),
           Text(
             desc,
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-              height: 1.3,
-              fontWeight: FontWeight.bold,
-            ),
+            style: BkuTheme.textCaption,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -1100,125 +963,85 @@ class _HealthScreenState extends State<HealthScreen> {
   }
 
   Widget _buildHistoryCard(BuildContext context, HealthRecord record) {
-    Color cardBg;
-    Color borderColor;
-    Color iconBgColor;
-    Color iconColor;
-    IconData cardIcon;
-    Color statusTextColor;
-    Color statusBadgeBg;
+    Color statusBg = BkuTheme.statusSuccessBg;
+    Color statusText = BkuTheme.statusSuccessText;
+    Color statusBorder = BkuTheme.statusSuccessBorder;
+    IconData cardIcon = Icons.health_and_safety_rounded;
 
     final statusLower = record.bmiStatus.toLowerCase();
-    if (statusLower.contains('normal') || statusLower.contains('sehat') || statusLower.contains('ideal')) {
-      cardBg = context.appColors.successContainer;
-      borderColor = context.appColors.success;
-      iconBgColor = context.appColors.successContainer;
-      iconColor = context.appColors.success;
-      cardIcon = Icons.health_and_safety_rounded;
-      statusTextColor = context.appColors.success;
-      statusBadgeBg = context.appColors.successContainer;
-    } else if (statusLower.contains('underweight') || statusLower.contains('kurang')) {
-      cardBg = context.appColors.infoContainer;
-      borderColor = context.appColors.info;
-      iconBgColor = context.appColors.infoContainer;
-      iconColor = context.appColors.info;
+    if (statusLower.contains('underweight') || statusLower.contains('kurang')) {
+      statusBg = BkuTheme.indigoSoft;
+      statusText = BkuTheme.indigo;
+      statusBorder = BkuTheme.indigoBorder;
       cardIcon = Icons.monitor_weight_rounded;
-      statusTextColor = context.appColors.primary;
-      statusBadgeBg = context.appColors.infoContainer;
     } else if (statusLower.contains('overweight') || statusLower.contains('kelebihan')) {
-      cardBg = context.appColors.warningContainer;
-      borderColor = context.appColors.warning;
-      iconBgColor = context.appColors.warningContainer;
-      iconColor = context.appColors.warning;
+      statusBg = BkuTheme.statusWarningBg;
+      statusText = BkuTheme.statusWarningText;
+      statusBorder = BkuTheme.statusWarningBorder;
       cardIcon = Icons.warning_amber_rounded;
-      statusTextColor = context.appColors.warning;
-      statusBadgeBg = context.appColors.warningContainer;
-    } else {
-      cardBg = context.appColors.errorContainer;
-      borderColor = context.appColors.error;
-      iconBgColor = context.appColors.errorContainer;
-      iconColor = context.appColors.error;
+    } else if (statusLower.contains('obese') || statusLower.contains('obesitas')) {
+      statusBg = BkuTheme.statusDangerBg;
+      statusText = BkuTheme.statusDangerText;
+      statusBorder = BkuTheme.statusDangerBorder;
       cardIcon = Icons.error_outline_rounded;
-      statusTextColor = context.appColors.error;
-      statusBadgeBg = context.appColors.errorContainer;
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(4),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showHistoryDetail(context, record),
-          borderRadius: AppRadius.radiusLg,
+          borderRadius: BkuTheme.r16,
           child: Padding(
-            padding: AppSpacing.paddingLg,
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
                 Container(
-                  padding: AppSpacing.paddingMd,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
-                    color: iconBgColor,
-                    shape: BoxShape.circle,
+                    color: statusBg,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: statusBorder),
                   ),
-                  child: Icon(
-                    cardIcon,
-                    size: 24,
-                    color: iconColor,
-                  ),
+                  child: Icon(cardIcon, size: 22, color: statusText),
                 ),
-                const SizedBox(width: AppSpacing.s14),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '${record.date.day}/${record.date.month}/${record.date.year}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                          color: context.appColors.secondary,
-                        ),
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
                       ),
-                      const SizedBox(height: AppSpacing.s3),
+                      const SizedBox(height: 2),
                       Text(
-                        'BMI: ${record.bmi.toStringAsFixed(1)} • ${record.weight} kg • ${record.height} cm',
-                        style: const TextStyle(
-                          color: AppColors.neutral600,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
+                        'BMI: ${record.bmi.toStringAsFixed(1)} • ${record.weight.toStringAsFixed(0)} kg • ${record.height.toStringAsFixed(0)} cm',
+                        style: BkuTheme.textCaption,
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: statusBadgeBg,
-                    borderRadius: AppRadius.radiusSm,
-                    border: Border.all(color: borderColor),
+                    color: statusBg,
+                    borderRadius: BkuTheme.rPill,
+                    border: Border.all(color: statusBorder),
                   ),
                   child: Text(
                     record.bmiStatus,
-                    style: TextStyle(
-                      color: statusTextColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
+                    style: BkuTheme.textBadge.copyWith(
+                      color: statusText,
+                      fontSize: 9.5,
                     ),
                   ),
                 ),
@@ -1231,88 +1054,35 @@ class _HealthScreenState extends State<HealthScreen> {
   }
 
   void _showHistoryDetail(BuildContext context, HealthRecord record) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color:
-                            Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                        borderRadius: AppRadius.radiusXs,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'Detail Skrining',
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.neutral900,
-                    ),
-                  ),
-                  Text(
-                    '${record.date.day}/${record.date.month}/${record.date.year}',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.outline,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  _buildDetailRow(
-                    'Tinggi Badan',
-                    '${record.height.toStringAsFixed(0)} cm',
-                    Icons.height_rounded,
-                    AppColors.info,
-                  ),
-                  _buildDetailRow(
-                    'Berat Badan',
-                    '${record.weight.toStringAsFixed(0)} kg',
-                    Icons.monitor_weight_rounded,
-                    AppColors.success,
-                  ),
-                  _buildDetailRow(
-                    'Tekanan Darah',
-                    record.bloodPressure,
-                    Icons.favorite_rounded,
-                    AppColors.error,
-                  ),
-                  _buildDetailRow(
-                    'Golongan Darah',
-                    record.bloodType,
-                    Icons.bloodtype_rounded,
-                    AppColors.warning,
-                  ),
-                  if (record.gulaDarah != null)
-                    _buildDetailRow(
-                      'Gula Darah',
-                      '${record.gulaDarah} mg/dL',
-                      Icons.water_drop_rounded,
-                      context.appColors.error,
-                    ),
-                  _buildNotesSection(record),
-                  const SizedBox(height: AppSpacing.xxl),
-                ],
+      padding: const EdgeInsets.all(AppSpacing.xxl),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Detail Skrining Mandiri', style: BkuTheme.textPageTitle.copyWith(fontSize: 16)),
+            Text('${record.date.day}/${record.date.month}/${record.date.year}', style: BkuTheme.textCardSubtitle),
+            const SizedBox(height: AppSpacing.xl),
+            _buildDetailRow('Tinggi Badan', '${record.height.toStringAsFixed(0)} cm', Icons.height_rounded, BkuTheme.indigo, BkuTheme.indigoSoft),
+            _buildDetailRow('Berat Badan', '${record.weight.toStringAsFixed(0)} kg', Icons.monitor_weight_rounded, BkuTheme.emerald, BkuTheme.emeraldSoft),
+            _buildDetailRow('Tekanan Darah', record.bloodPressure, Icons.favorite_rounded, BkuTheme.rose, BkuTheme.roseSoft),
+            _buildDetailRow('Golongan Darah', record.bloodType, Icons.bloodtype_rounded, BkuTheme.amber, BkuTheme.amberSoft),
+            if (record.gulaDarah != null)
+              _buildDetailRow('Gula Darah', '${record.gulaDarah} mg/dL', Icons.water_drop_rounded, BkuTheme.rose, BkuTheme.roseSoft),
+            _buildNotesSection(record),
+            const SizedBox(height: AppSpacing.xl),
+            SizedBox(
+              width: double.infinity,
+              child: BkuButton(
+                text: 'Tutup',
+                variant: BkuButtonVariant.outline,
+                onPressed: () => Navigator.pop(context),
               ),
             ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1324,38 +1094,24 @@ class _HealthScreenState extends State<HealthScreen> {
       if (record.notes.startsWith('{') && record.notes.endsWith('}')) {
         data = jsonDecode(record.notes) as Map<String, dynamic>;
       }
-    } catch (_) { /* Silenced: non-critical parse fallback */ }
+    } catch (_) {}
 
     if (data == null || data['is_screening_realistis'] != true) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            'Keluhan / Catatan:',
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('Catatan / Keluhan:', style: BkuTheme.textSectionTitle),
           const SizedBox(height: AppSpacing.sm),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusLg,
-              border: Border.all(
-                color: AppThemeColors.surfaceContainerHighest,
-              ),
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
             ),
-            child: Text(
-              record.notes,
-              style: AppTextStyles.labelMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.neutral800,
-              ),
-            ),
+            child: Text(record.notes, style: BkuTheme.textBodyRegular),
           ),
         ],
       );
@@ -1364,163 +1120,33 @@ class _HealthScreenState extends State<HealthScreen> {
     final jamTidur = data['jam_tidur'] ?? 8;
     final olahraga = data['olahraga'] ?? 0;
     final air = data['konsumsi_air'] ?? 2.0;
-    final merokok = data['merokok'] ?? 'Tidak';
     final stres = data['tingkat_stres'] ?? 5;
     final mood = data['mood'] ?? 'Biasa Saja';
-    final motivasi = data['motivasi_belajar'] ?? 'Biasa Saja';
-    final List keluhanList = data['daftar_keluhan'] ?? [];
-    final catatanTambahan = data['catatan_tambahan'] ?? '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.s20),
-        Text(
-          'Gaya Hidup & Mental:',
-          style: AppTextStyles.labelSm.copyWith(
-            color: context.appColors.outline,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const SizedBox(height: AppSpacing.lg),
+        Text('Gaya Hidup & Pola Istirahat', style: BkuTheme.textSectionTitle),
         const SizedBox(height: AppSpacing.sm),
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: AppRadius.radiusXl,
-            border: Border.all(
-              color: AppThemeColors.surfaceContainerHighest,
-            ),
+            color: BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r16,
+            border: Border.all(color: BkuTheme.border),
           ),
           child: Column(
             children: [
-              _buildDetailInfoRow(
-                'Tidur / Hari',
-                '$jamTidur Jam',
-                Icons.bedtime_rounded,
-                AppColors.info,
-              ),
-              _buildDetailInfoRow(
-                'Olahraga / Minggu',
-                '$olahraga Kali',
-                Icons.fitness_center_rounded,
-                AppColors.info,
-              ),
-              _buildDetailInfoRow(
-                'Konsumsi Air',
-                '$air Liter',
-                Icons.water_drop_rounded,
-                AppColors.info,
-              ),
-              _buildDetailInfoRow(
-                'Merokok',
-                merokok,
-                Icons.smoke_free_rounded,
-                AppColors.info,
-              ),
-              Divider(
-                height: 24,
-                thickness: 1,
-                color: AppThemeColors.surfaceContainerHighest,
-              ),
-              _buildDetailInfoRow(
-                'Tingkat Stres',
-                '$stres / 10',
-                Icons.psychology_rounded,
-                AppColors.secondary,
-              ),
-              _buildDetailInfoRow(
-                'Mood',
-                mood,
-                Icons.mood_rounded,
-                AppColors.secondary,
-              ),
-              _buildDetailInfoRow(
-                'Motivasi Belajar',
-                motivasi,
-                Icons.auto_stories_rounded,
-                AppColors.secondary,
-              ),
+              _buildDetailInfoRow('Tidur Harian', '$jamTidur Jam', Icons.bedtime_rounded, BkuTheme.indigo),
+              _buildDetailInfoRow('Olahraga', '$olahraga Kali/Minggu', Icons.fitness_center_rounded, BkuTheme.emerald),
+              _buildDetailInfoRow('Konsumsi Air', '$air Liter/Hari', Icons.water_drop_rounded, BkuTheme.teal),
+              const Divider(height: 16, color: BkuTheme.borderSubtle),
+              _buildDetailInfoRow('Tingkat Stres', '$stres / 10', Icons.psychology_rounded, BkuTheme.amber),
+              _buildDetailInfoRow('Suasana Hati (Mood)', mood, Icons.mood_rounded, BkuTheme.indigo),
             ],
           ),
         ),
-        if (keluhanList.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s20),
-          Text(
-            'Keluhan yang Dirasakan:',
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children:
-                keluhanList.map((k) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.error.withAlpha(20),
-                      borderRadius: AppRadius.radiusMd,
-                      border: Border.all(color: AppColors.error.withAlpha(50)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.warning_amber_rounded,
-                          size: 14,
-                          color: AppColors.error,
-                        ),
-                        const SizedBox(width: AppSpacing.s6),
-                        Text(
-                          k.toString(),
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.error,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-          ),
-        ],
-        if (catatanTambahan.toString().isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s20),
-          Text(
-            'Catatan Tambahan:',
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusLg,
-              border: Border.all(
-                color: AppThemeColors.surfaceContainerHighest,
-              ),
-            ),
-            child: Text(
-              catatanTambahan,
-              style: AppTextStyles.labelMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.appColors.primary,
-              ),
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -1532,27 +1158,16 @@ class _HealthScreenState extends State<HealthScreen> {
     Color color,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
+          Icon(icon, size: 15, color: color),
+          const SizedBox(width: 8),
+          Text(label, style: BkuTheme.textCaption),
           const Spacer(),
           Text(
             value,
-            style: AppTextStyles.labelSm.copyWith(
-              fontWeight: FontWeight.w900,
-              color: AppColors.neutral900,
-              fontSize: 12,
-            ),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
           ),
         ],
       ),
@@ -1564,34 +1179,26 @@ class _HealthScreenState extends State<HealthScreen> {
     String value,
     IconData icon,
     Color color,
+    Color bg,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withAlpha(10),
-              borderRadius: AppRadius.radiusMd,
+              color: bg,
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: color, size: 20),
+            child: Icon(icon, color: color, size: 18),
           ),
-          const SizedBox(width: AppSpacing.lg),
-          Text(
-            label,
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.appColors.outline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          const SizedBox(width: AppSpacing.md),
+          Text(label, style: BkuTheme.textCardSubtitle),
           const Spacer(),
           Text(
             value,
-            style: AppTextStyles.labelMd.copyWith(
-              fontWeight: FontWeight.w900,
-              color: AppColors.neutral900,
-            ),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
           ),
         ],
       ),
@@ -1603,81 +1210,47 @@ class _HealthScreenState extends State<HealthScreen> {
     String unit,
     IconData icon,
     Color color,
+    Color bg,
   ) {
     return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: color.withAlpha(20),
-          width: 1.5,
-          style: BorderStyle.solid,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withAlpha(3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Icon(icon, color: color, size: 14),
+              ),
+              const Icon(Icons.lock_outline_rounded, size: 13, color: BkuTheme.textPlaceholder),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            label,
+            style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 1),
+          Text(
+            '-- $unit',
+            style: BkuTheme.textKpiValue.copyWith(
+              fontSize: 18,
+              color: BkuTheme.textPlaceholder,
+            ),
           ),
         ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: color.withAlpha(10),
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  child: Icon(icon, color: color.withAlpha(120), size: 18),
-                ),
-                Icon(
-                  Icons.lock_outline_rounded,
-                  color: context.appColors.outline.withAlpha(60),
-                  size: 14,
-                ),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              label,
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.appColors.outline.withAlpha(150),
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.s2),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '--',
-                  style: AppTextStyles.labelMd.copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 22,
-                    color: context.appColors.primary.withAlpha(60),
-                  ),
-                ),
-                Text(
-                  ' $unit',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.outline.withAlpha(80),
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1687,156 +1260,63 @@ class _HealthScreenState extends State<HealthScreen> {
     String title,
     String desc,
     IconData icon,
-    Color color, {
+    Color color,
+    Color bg, {
     VoidCallback? onTap,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: context.appColors.outlineVariant.withAlpha(50),
-        ),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: AppRadius.radiusXl,
+          borderRadius: BkuTheme.r16,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
-                    color: color.withAlpha(15),
-                    borderRadius: AppRadius.radiusLg,
+                    color: bg,
+                    borderRadius: BkuTheme.r12,
                   ),
                   child: Icon(icon, color: color, size: 20),
                 ),
-                const SizedBox(width: AppSpacing.s14),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
-                        style: AppTextStyles.labelMd.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.neutral900,
-                          fontSize: 13,
-                        ),
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      const SizedBox(height: 2),
                       Text(
                         desc,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.outline,
-                          height: 1.3,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: BkuTheme.textCaption,
                       ),
                     ],
                   ),
                 ),
                 if (onTap != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.sm, left: AppSpacing.sm),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10, left: 4),
                     child: Icon(
                       Icons.chevron_right_rounded,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withAlpha(100),
+                      color: BkuTheme.textPlaceholder,
+                      size: 20,
                     ),
                   ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildMenuCardLong({
-    required Widget destination,
-    required Color color,
-    required IconData icon,
-    required String title,
-    required String desc,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: context.appColors.outlineVariant.withAlpha(50),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => destination),
-              ),
-          borderRadius: AppRadius.radiusXl,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: color.withAlpha(15),
-                    borderRadius: AppRadius.radiusLg,
-                  ),
-                  child: Icon(icon, color: color, size: 22),
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.labelMd.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.neutral900,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        desc,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.outline,
-                          height: 1.3,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 14,
-                  color: context.appColors.outline.withAlpha(100),
-                ),
               ],
             ),
           ),
@@ -1894,81 +1374,76 @@ class _HealthScreenState extends State<HealthScreen> {
         if (symptoms != null) {
           score -= symptoms.length * 6;
         }
-      } catch (_) { /* Silenced: non-critical parse fallback */ }
+      } catch (_) {}
     }
 
     if (score < 10) score = 10;
     if (score > 100) score = 100;
     return score.toInt();
   }
+
   Widget _buildReferralNavCard(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MedicalReferralScreen(),
+    return Container(
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r18,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MedicalReferralScreen(),
+              ),
+            );
+          },
+          borderRadius: BkuTheme.r18,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: BkuTheme.indigoSoft,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.indigoBorder),
+                  ),
+                  child: const Icon(
+                    Icons.medical_information_rounded,
+                    color: BkuTheme.indigo,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Surat Rujukan Medis',
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Akses & download surat rujukan klinik yang telah disetujui.',
+                        style: BkuTheme.textCaption,
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: BkuTheme.textPlaceholder,
+                ),
+              ],
+            ),
           ),
-        );
-      },
-      borderRadius: AppRadius.radiusXl,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: AppColors.info.withAlpha(20),
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.info.withAlpha(50), width: 1),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.info.withAlpha(30),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.medical_information_rounded,
-                color: AppColors.info,
-                size: 28,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Surat Rujukan Medis',
-                    style: AppTextStyles.titleSm.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.info,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Lihat & download surat rujukan klinik UBK yang telah disetujui.',
-                    style: AppTextStyles.bodySm.copyWith(
-                      color: AppColors.neutral700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.info,
-            ),
-          ],
         ),
       ),
     );

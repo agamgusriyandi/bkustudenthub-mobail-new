@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/proposal/presentation/pages/ormawa_proposal_detail_screen.dart';
@@ -48,16 +47,42 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
     return 'diajukan';
   }
 
-  OrmawaBadgeVariant _getBadgeVariant(String status) {
+  Color _getStatusColor(String status) {
     switch (_normalizeStatus(status)) {
       case 'disetujui':
-        return OrmawaBadgeVariant.success;
+        return BkuTheme.emerald;
       case 'ditolak':
-        return OrmawaBadgeVariant.danger;
+        return BkuTheme.rose;
       case 'revisi':
-        return OrmawaBadgeVariant.warning;
+        return BkuTheme.amber;
       default:
-        return OrmawaBadgeVariant.info;
+        return BkuTheme.sky;
+    }
+  }
+
+  Color _getStatusBg(String status) {
+    switch (_normalizeStatus(status)) {
+      case 'disetujui':
+        return BkuTheme.emeraldSoft;
+      case 'ditolak':
+        return BkuTheme.roseSoft;
+      case 'revisi':
+        return BkuTheme.amberSoft;
+      default:
+        return BkuTheme.skySoft;
+    }
+  }
+
+  Color _getStatusBorder(String status) {
+    switch (_normalizeStatus(status)) {
+      case 'disetujui':
+        return BkuTheme.emeraldBorder;
+      case 'ditolak':
+        return BkuTheme.roseBorder;
+      case 'revisi':
+        return BkuTheme.amberBorder;
+      default:
+        return BkuTheme.skyBorder;
     }
   }
 
@@ -80,10 +105,10 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
     }).toList();
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
-        color: OrmawaTheme.primary,
+        color: BkuTheme.primary,
         backgroundColor: Colors.white,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -114,24 +139,24 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                             value: '$diajukanCount',
                             badgeText: 'Review',
                             icon: Icons.hourglass_top_rounded,
-                            badgeColor: OrmawaTheme.statusInfoText,
+                            badgeColor: BkuTheme.sky,
                             subtitle: 'Tahap telaah',
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: OrmawaKpiCard(
                             title: 'Revisi',
                             value: '$revisiCount',
                             badgeText: 'Perlu Cek',
                             icon: Icons.edit_document,
-                            badgeColor: OrmawaTheme.statusWarningText,
+                            badgeColor: BkuTheme.amber,
                             subtitle: 'Catatan reviewer',
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
@@ -140,18 +165,18 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                             value: '$disetujuiCount',
                             badgeText: 'Acc',
                             icon: Icons.check_circle_rounded,
-                            badgeColor: OrmawaTheme.statusSuccessText,
+                            badgeColor: BkuTheme.emerald,
                             subtitle: 'Siap cair / jalan',
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: OrmawaKpiCard(
                             title: 'Ditolak',
                             value: '$ditolakCount',
                             badgeText: 'Reject',
                             icon: Icons.cancel_rounded,
-                            badgeColor: OrmawaTheme.statusDangerText,
+                            badgeColor: BkuTheme.rose,
                             subtitle: 'Tidak disetujui',
                           ),
                         ),
@@ -180,10 +205,9 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                     if (ormawaProvider.isLoading && allProposals.isEmpty)
                       const BkuShimmerList(itemCount: 3, itemHeight: 90)
                     else if (filteredProposals.isEmpty)
-                      const OrmawaEmptyCard(
+                      const BkuEmptyState(
                         title: 'Tidak Ada Proposal',
-                        description: 'Tidak ada proposal kegiatan pada status ini.',
-                        icon: Icons.assignment_outlined,
+                        message: 'Tidak ada proposal kegiatan pada status ini.',
                       )
                     else
                       ListView.separated(
@@ -194,7 +218,11 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                         separatorBuilder: (_, __) => const SizedBox(height: 10),
                         itemBuilder: (context, index) {
                           final proposal = filteredProposals[index];
-                          return OrmawaCard(
+                          final statusColor = _getStatusColor(proposal.status);
+                          final statusBg = _getStatusBg(proposal.status);
+                          final statusBorder = _getStatusBorder(proposal.status);
+
+                          return BkuCard(
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -203,6 +231,8 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                                 ),
                               );
                             },
+                            padding: const EdgeInsets.all(14),
+                            borderRadius: 16,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -213,55 +243,59 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                                       width: 38,
                                       height: 38,
                                       decoration: BoxDecoration(
-                                        color: OrmawaTheme.primarySoft,
-                                        borderRadius: BorderRadius.circular(10),
+                                        color: BkuTheme.primarySoft,
+                                        borderRadius: BkuTheme.r10,
                                       ),
                                       child: Icon(
                                         Icons.description_outlined,
-                                        color: OrmawaTheme.primary,
+                                        color: BkuTheme.primary,
                                         size: 19,
                                       ),
                                     ),
-                                    SizedBox(width: 12),
+                                    const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             proposal.title,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: OrmawaTheme.textHeading,
-                                            ),
+                                            style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.bold),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          SizedBox(height: 2),
+                                          const SizedBox(height: 2),
                                           Text(
                                             proposal.code,
-                                            style: TextStyle(
+                                            style: BkuTheme.textCaption.copyWith(
                                               fontSize: 11,
-                                              color: OrmawaTheme.textMuted,
+                                              color: BkuTheme.textMuted,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    OrmawaBadge(
-                                      text: proposal.status.toUpperCase(),
-                                      variant: _getBadgeVariant(proposal.status),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: statusBg,
+                                        borderRadius: BkuTheme.r8,
+                                        border: Border.all(color: statusBorder),
+                                      ),
+                                      child: Text(
+                                        proposal.status.toUpperCase(),
+                                        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: statusColor),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Container(
                                   padding: const EdgeInsets.only(top: 8),
                                   decoration: BoxDecoration(
                                     border: Border(
                                       top: BorderSide(
-                                        color: Color(0xFFF1F5F9),
+                                        color: BkuTheme.borderSubtle,
                                         width: 1,
                                       ),
                                     ),
@@ -274,13 +308,12 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                                           Icon(
                                             Icons.payments_outlined,
                                             size: 13,
-                                            color: OrmawaTheme.textMuted,
+                                            color: BkuTheme.textMuted,
                                           ),
-                                          SizedBox(width: 4),
+                                          const SizedBox(width: 4),
                                           Text(
                                             NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(proposal.budget),
-                                            style: TextStyle(
-                                              color: OrmawaTheme.textHeading,
+                                            style: BkuTheme.textBodyRegular.copyWith(
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -291,16 +324,16 @@ class _OrmawaProposalPipelineScreenState extends State<OrmawaProposalPipelineScr
                                         children: [
                                           Text(
                                             DateFormat('dd MMM yyyy', 'id').format(proposal.date),
-                                            style: TextStyle(
-                                              color: OrmawaTheme.textMuted,
+                                            style: BkuTheme.textCaption.copyWith(
+                                              color: BkuTheme.textMuted,
                                               fontSize: 10.5,
                                             ),
                                           ),
-                                          SizedBox(width: 4),
+                                          const SizedBox(width: 4),
                                           Icon(
                                             Icons.arrow_forward_ios_rounded,
                                             size: 9,
-                                            color: OrmawaTheme.primary,
+                                            color: BkuTheme.primary,
                                           ),
                                         ],
                                       ),

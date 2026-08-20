@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -34,21 +33,21 @@ class BkuEmptyState extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.neutral200,
+                color: BkuTheme.borderSubtle,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon ?? Icons.inbox_rounded,
                 size: 48,
-                color: AppColors.neutral500,
+                color: BkuTheme.textMuted,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: AppTextStyles.titleLg.copyWith(
-                fontWeight: FontWeight.w700,
+              style: BkuTheme.textSectionTitle.copyWith(
+                fontSize: 16,
               ),
             ),
             if (message != null) ...[
@@ -56,8 +55,8 @@ class BkuEmptyState extends StatelessWidget {
               Text(
                 message!,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.neutral600,
+                style: BkuTheme.textBodyRegular.copyWith(
+                  color: BkuTheme.textMuted,
                 ),
               ),
             ],

@@ -133,18 +133,18 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: OrmawaTheme.primarySoft,
+                                    color: const Color(0xFFF1F5F9),
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: OrmawaTheme.primaryBorder),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
                                   ),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.assessment_rounded, size: 14, color: OrmawaTheme.primary),
-                                      const SizedBox(width: 5),
+                                      Icon(Icons.assessment_rounded, size: 14, color: Color(0xFF0F172A)),
+                                      SizedBox(width: 5),
                                       Text(
                                         'Laporan Ormawa',
-                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                                       ),
                                     ],
                                   ),
@@ -443,17 +443,17 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
   String _getStatusLabel(String status) {
     switch (status.toLowerCase()) {
       case 'draft':
-        return 'DRAFT';
+        return 'Draft';
       case 'diajukan':
-        return 'DIAJUKAN';
+        return 'Diajukan';
       case 'disetujui':
-        return 'DISETUJUI';
+        return 'Disetujui';
       case 'revisi':
-        return 'BUTUH REVISI';
+        return 'Butuh Revisi';
       case 'ditolak':
-        return 'DITOLAK';
+        return 'Ditolak';
       case 'selesai':
-        return 'SELESAI';
+        return 'Selesai';
       default:
         return status;
     }
@@ -779,7 +779,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ANGGARAN',
+                      'Anggaran',
                       style: AppTextStyles.labelSm.copyWith(
                         color: AppColors.neutral500,
                         fontSize: 9,
@@ -806,7 +806,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'REALISASI',
+                      'Realisasi',
                       style: AppTextStyles.labelSm.copyWith(
                         color: AppColors.neutral500,
                         fontSize: 9,
@@ -920,7 +920,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     Text(
-                      'DETAIL LAPORAN',
+                      'Detail Laporan',
                       style: AppTextStyles.labelSm.copyWith(
                         color: OrmawaTheme.primary,
                         fontWeight: FontWeight.w900,
@@ -982,12 +982,12 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'ANALISIS PENYERAPAN ANGGARAN',
+                            'Analisis Penyerapan Anggaran',
                             style: AppTextStyles.labelSm.copyWith(
                               color: AppColors.neutral600,
                               fontWeight: FontWeight.w900,
-                              fontSize: 9,
-                              letterSpacing: 0.5,
+                              fontSize: 9.5,
+                              letterSpacing: 0.2,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
@@ -1120,7 +1120,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                             color: context.appColors.onPrimary,
                           ),
                           label: Text(
-                            'UNDUH DOKUMEN LPJ',
+                            'Unduh Dokumen LPJ',
                             style: TextStyle(
                               color: context.appColors.onPrimary,
                               fontWeight: FontWeight.bold,
@@ -1148,7 +1148,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                   color: AppColors.warning,
                                 ),
                                 label: const Text(
-                                  'EDIT LPJ',
+                                  'Edit LPJ',
                                   style: TextStyle(
                                     color: AppColors.neutral700,
                                     fontWeight: FontWeight.bold,
@@ -1201,7 +1201,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                                   color: context.appColors.onPrimary,
                                 ),
                                 label: Text(
-                                  'KIRIM LPJ',
+                                  'Kirim LPJ',
                                   style: TextStyle(
                                     color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.bold,
@@ -1228,7 +1228,7 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
                             color: AppColors.warning,
                           ),
                           label: const Text(
-                            'EDIT LAPORAN LPJ',
+                            'Edit Laporan LPJ',
                             style: TextStyle(
                               color: AppColors.neutral700,
                               fontWeight: FontWeight.bold,
@@ -1514,14 +1514,14 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                   ],
                   const SizedBox(height: AppSpacing.xxl),
                   _buildInputField(
-                    'JUDUL LAPORAN LPJ',
+                    'Judul Laporan LPJ',
                     'Misal: LPJ Seminar Kepemimpinan Mahasiswa 2026...',
                     Icons.title_rounded,
                     controller: _judulController,
                   ),
                   const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
-                    'TOTAL ANGGARAN (PLANNED)',
+                    'Total Anggaran (Planned)',
                     'Contoh: 25000000',
                     Icons.account_balance_wallet_rounded,
                     controller: _totalAnggaranController,
@@ -1544,7 +1544,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                   ],
                   const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
-                    'REALISASI ANGGARAN (ACTUAL)',
+                    'Realisasi Anggaran (Actual)',
                     'Contoh: 24500000',
                     Icons.payments_rounded,
                     controller: _realisasiController,
@@ -1567,7 +1567,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                   ],
                   const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
-                    'CATATAN & EVALUASI',
+                    'Catatan & Evaluasi',
                     'Tuliskan evaluasi dan catatan kegiatan...',
                     Icons.rate_review_rounded,
                     controller: _catatanController,
@@ -1591,12 +1591,12 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                                 color: AppColors.neutral600,
                               ),
                               label: const Text(
-                                'SIMPAN DRAFT',
+                                'Simpan Draft',
                                 style: TextStyle(
                                   color: AppColors.neutral700,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
-                                  letterSpacing: 0.5,
+                                  letterSpacing: 0.2,
                                 ),
                               ),
                             ),
@@ -1614,12 +1614,12 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                                 color: context.appColors.onPrimary,
                               ),
                               label: Text(
-                                'KIRIM LAPORAN',
+                                'Kirim Laporan',
                                 style: TextStyle(
                                   color: context.appColors.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
-                                  letterSpacing: 0.5,
+                                  letterSpacing: 0.2,
                                 ),
                               ),
                             ),
@@ -1638,7 +1638,7 @@ class _OrmawaEditLaporanScreenState extends State<OrmawaEditLaporanScreen> {
                           color: context.appColors.onPrimary,
                         ),
                         label: Text(
-                          'SIMPAN PERUBAHAN',
+                          'Simpan Perubahan',
                           style: TextStyle(
                             color: context.appColors.onPrimary,
                             fontWeight: FontWeight.bold,
@@ -1865,7 +1865,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                                 borderRadius: AppRadius.radiusXs,
                               ),
                               child: Text(
-                                'NEW DOCUMENT',
+                                'Dokumen Baru',
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: OrmawaTheme.primary,
                                   fontWeight: FontWeight.w900,
@@ -1874,7 +1874,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                               ),
                             ),
                             Text(
-                              'LAPORAN KEGIATAN',
+                              'Laporan Kegiatan',
                               style: AppTextStyles.titleLg.copyWith(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w900,
@@ -1926,14 +1926,14 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                     ),
                     const SizedBox(height: AppSpacing.s20),
                     _buildInputField(
-                      'JUDUL LAPORAN LPJ',
+                      'Judul Laporan LPJ',
                       'Misal: LPJ Seminar Kepemimpinan Mahasiswa 2026...',
                       Icons.title_rounded,
                       controller: _judulController,
                     ),
                     const SizedBox(height: AppSpacing.s20),
                     _buildInputField(
-                      'TOTAL ANGGARAN (PLANNED)',
+                      'Total Anggaran (Planned)',
                       'Contoh: 25000000',
                       Icons.account_balance_wallet_rounded,
                       controller: _totalAnggaranController,
@@ -1957,7 +1957,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                   ],
                   const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
-                    'REALISASI ANGGARAN (ACTUAL)',
+                    'Realisasi Anggaran (Actual)',
                     'Contoh: 24500000',
                     Icons.payments_rounded,
                     controller: _realisasiController,
@@ -1980,7 +1980,7 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                   ],
                   const SizedBox(height: AppSpacing.s20),
                   _buildInputField(
-                    'CATATAN & EVALUASI',
+                    'Catatan & Evaluasi',
                     'Tuliskan evaluasi dan catatan kegiatan...',
                     Icons.rate_review_rounded,
                     controller: _catatanController,
@@ -2005,12 +2005,12 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                               label: const FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  'SIMPAN DRAFT',
+                                  'Simpan Draft',
                                   style: TextStyle(
                                     color: AppColors.neutral700,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
-                                    letterSpacing: 0.5,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ),
@@ -2030,12 +2030,12 @@ class _OrmawaCreateLaporanScreenState extends State<OrmawaCreateLaporanScreen> {
                               label: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  'KIRIM LAPORAN',
+                                  'Kirim Laporan',
                                   style: TextStyle(
                                     color: context.appColors.onPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
-                                    letterSpacing: 0.5,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ),

@@ -199,14 +199,29 @@ class KencanaProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> fetchInvitations() async {
     try {
-      final response = await _apiClient.client.get(
-        '/kencana-student/invitations',
-      );
-      if (response.data != null && response.data['success'] == true) {
-        return response.data['data'];
+      final response = await _apiClient.client
+          .get('/kencana-student/mentor-invitations')
+          .timeout(const Duration(seconds: 6));
+      if (response.data != null && response.data is Map) {
+        final map = Map<String, dynamic>.from(response.data as Map);
+        if (map['data'] != null && map['data'] is Map) {
+          return Map<String, dynamic>.from(map['data'] as Map);
+        }
+        return map;
       }
-    } catch (e) {
-      // ignore
+    } catch (_) {
+      try {
+        final response = await _apiClient.client
+            .get('/kencana-student/invitations')
+            .timeout(const Duration(seconds: 6));
+        if (response.data != null && response.data is Map) {
+          final map = Map<String, dynamic>.from(response.data as Map);
+          if (map['data'] != null && map['data'] is Map) {
+            return Map<String, dynamic>.from(map['data'] as Map);
+          }
+          return map;
+        }
+      } catch (_) {}
     }
     return {};
   }
@@ -215,11 +230,17 @@ class KencanaProvider extends ChangeNotifier {
     try {
       final url =
           type == 'mentor'
-              ? '/kencana-student/invitations/mentor/$id/respond'
-              : '/kencana-student/invitations/group/$id/respond';
+              ? '/kencana-student/mentor-invitations/$id/respond'
+              : '/kencana-student/group-invitations/$id/respond';
       await _apiClient.client.post(url, data: {'action': action});
-    } catch (e) {
-      // ignore
+    } catch (_) {
+      try {
+        final fallbackUrl =
+            type == 'mentor'
+                ? '/kencana-student/invitations/mentor/$id/respond'
+                : '/kencana-student/invitations/group/$id/respond';
+        await _apiClient.client.post(fallbackUrl, data: {'action': action});
+      } catch (_) {}
     }
   }
 

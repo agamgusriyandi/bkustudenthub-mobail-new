@@ -260,7 +260,6 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
           children: [
             Row(
               children: [
-                // Avatar
                 Stack(
                   children: [
                     Container(
@@ -348,7 +347,6 @@ class _PsychologistListScreenState extends State<PsychologistListScreen> {
                   ],
                 ),
                 const SizedBox(width: AppSpacing.s14),
-                // Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

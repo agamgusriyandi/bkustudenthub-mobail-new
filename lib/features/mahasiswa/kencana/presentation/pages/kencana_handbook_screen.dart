@@ -210,7 +210,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
                         Expanded(
                           child: BkuButton(
                             onPressed: _saveDraft,
-                            text: 'SIMPAN DRAFT',
+                            text: 'Simpan Draft',
                             variant: BkuButtonVariant.outline,
                           ),
                         ),
@@ -218,7 +218,7 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
                         Expanded(
                           child: BkuButton(
                             onPressed: _confirmSubmit,
-                            text: 'KIRIM HANDBOOK',
+                            text: 'Kirim Handbook',
                             variant: BkuButtonVariant.primary,
                           ),
                         ),
@@ -314,12 +314,12 @@ class _KencanaHandbookScreenState extends State<KencanaHandbookScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'STATUS EVALUASI',
+                    'Status Evaluasi',
                     style: AppTextStyles.labelSm.copyWith(
                       color: textColor.withAlpha(200),
                       fontWeight: FontWeight.w900,
-                      fontSize: 9,
-                      letterSpacing: 0.5,
+                      fontSize: 9.5,
+                      letterSpacing: 0.2,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s2),

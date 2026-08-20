@@ -74,7 +74,6 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                         child: BkuShimmerList(itemCount: 3, itemHeight: 120),
                       )
                     else ...[
-                      // SECTION 1: JADWAL KLINIK SAYA
                       FadeInAnimation(
                         delay: 0.1,
                         child: Row(
@@ -179,7 +178,6 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
 
                       const SizedBox(height: AppSpacing.xxl),
 
-                      // SECTION 2: TENAGA KESEHATAN TERSEDIA
                       FadeInAnimation(
                         delay: 0.3,
                         child: Row(
@@ -643,12 +641,12 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   const Divider(color: AppColors.neutral200),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
-                    'TENAGA KESEHATAN',
+                    'Tenaga Kesehatan',
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral500,
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      letterSpacing: 0.5,
+                      fontSize: 10.5,
+                      letterSpacing: 0.2,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
@@ -669,12 +667,12 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
-                    'WAKTU & LOKASI',
+                    'Waktu & Lokasi',
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral500,
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      letterSpacing: 0.5,
+                      fontSize: 10.5,
+                      letterSpacing: 0.2,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -691,12 +689,12 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
-                    'KELUHAN MAHASISWA',
+                    'Keluhan Mahasiswa',
                     style: AppTextStyles.labelSm.copyWith(
                       color: AppColors.neutral500,
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      letterSpacing: 0.5,
+                      fontSize: 10.5,
+                      letterSpacing: 0.2,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
@@ -718,12 +716,12 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
                   if (booking.alasanPenolakan.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.lg),
                     Text(
-                      'CATATAN REVIEW',
+                      'Catatan Review',
                       style: AppTextStyles.labelSm.copyWith(
                         color: AppColors.error,
                         fontWeight: FontWeight.bold,
-                        fontSize: 10,
-                        letterSpacing: 0.5,
+                        fontSize: 10.5,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.s6),
@@ -833,7 +831,7 @@ class _KlinikBookingScreenState extends State<KlinikBookingScreen> {
       onSecondaryPressed: () => Navigator.pop(context),
       primaryButtonText: 'Ya, Batalkan',
       onPrimaryPressed: () async {
-        Navigator.pop(context); // Close confirm dialog
+        Navigator.pop(context);
         BkuLoadingDialog.show(context);
         try {
           await context.read<HealthViewModel>().cancelHealthBooking(booking.id.toString());

@@ -19,6 +19,7 @@ import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/local_notification_service.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -30,10 +31,19 @@ void showLogoutDialog(BuildContext context) {
     type: BkuDialogType.error,
     primaryButtonText: 'Keluar',
     onPrimaryPressed: () async {
-      Navigator.pop(context); // close dialog first
-      await AuthService().logout();
-      if (context.mounted) {
-        context.go(AppRoutes.login);
+      Navigator.pop(context);
+      try {
+        BkuLoadingDialog.show(context);
+        await AuthService().logout();
+        if (context.mounted) {
+          BkuLoadingDialog.hide(context);
+          context.go(AppRoutes.login);
+        }
+      } catch (_) {
+        if (context.mounted) {
+          BkuLoadingDialog.hide(context);
+          context.go(AppRoutes.login);
+        }
       }
     },
     secondaryButtonText: 'Batal',

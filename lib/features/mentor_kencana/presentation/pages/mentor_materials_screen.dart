@@ -367,7 +367,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('JENIS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
+                          Text('Jenis Materi', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10.5)),
                           const SizedBox(height: 4),
                           BkuDropdown<String>(
                             initialValue: jenisMateri,
@@ -395,7 +395,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('KOMPONEN NILAI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
+                          Text('Komponen Nilai', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10.5)),
                           const SizedBox(height: 4),
                           BkuDropdown<String>(
                             initialValue: component,
@@ -618,7 +618,7 @@ class _MentorMaterialsScreenState extends State<MentorMaterialsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('JENIS MATERI', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
+                          Text('Jenis Materi', style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, fontSize: 10.5)),
                           const SizedBox(height: 4),
                           BkuDropdown<String>(
                             initialValue: jenisMateri,

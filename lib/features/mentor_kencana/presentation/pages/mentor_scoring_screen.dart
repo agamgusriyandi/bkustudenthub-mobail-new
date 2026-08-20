@@ -478,19 +478,19 @@ class _MentorScoringScreenState extends State<MentorScoringScreen>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     _buildScoreColumn(
-                                      'KOGNITIF',
+                                      'Kognitif',
                                       cogVal.toStringAsFixed(1),
                                     ),
                                     _buildScoreColumn(
-                                      'PSIKOMOTOR',
+                                      'Psikomotor',
                                       psyVal.toStringAsFixed(1),
                                     ),
                                     _buildScoreColumn(
-                                      'AFEKTIF',
+                                      'Afektif',
                                       affVal.toStringAsFixed(1),
                                     ),
                                     _buildScoreColumn(
-                                      'NILAI AKHIR',
+                                      'Nilai Akhir',
                                       finalVal.toStringAsFixed(1),
                                       isHighlighted: true,
                                     ),

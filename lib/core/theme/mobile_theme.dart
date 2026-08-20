@@ -1,49 +1,36 @@
 import 'package:flutter/material.dart';
 
-/// MobileThemeColors - Dynamic theme colors loaded from API
-///
-/// This class represents the mobile-specific theme colors that can be
-/// configured from the Super Admin panel and loaded at runtime.
 class MobileThemeColors {
-  // Primary Colors
   final Color primary;
   final Color primaryContainer;
 
-  // Secondary Colors
   final Color secondary;
   final Color secondaryContainer;
 
-  // Surface & Background
   final Color background;
   final Color surface;
   final Color onSurface;
   final Color onSurfaceVariant;
 
-  // Outline & Border
   final Color outline;
   final Color outlineVariant;
 
-  // Gradient Colors (Primary)
   final Color gradientStart;
   final Color gradientMiddle;
   final Color gradientEnd;
 
-  // Gradient Colors (Secondary)
   final Color gradientSecondaryStart;
   final Color gradientSecondaryMiddle;
   final Color gradientSecondaryEnd;
 
-  // Semantic Colors
   final Color success;
   final Color warning;
   final Color error;
   final Color info;
 
-  // Branding URLs
   final String? logoUrl;
   final String? splashLogoUrl;
   
-  // Tipografi dari API
   final String? fontHeadline;
   final String? fontBody;
 
@@ -74,25 +61,24 @@ class MobileThemeColors {
     this.fontBody,
   });
 
-  /// Default BKU Student HUB Theme (Fallback)hing new Orange branding
   factory MobileThemeColors.defaults() {
     return const MobileThemeColors(
       primary: Color(0xFFF29130),
-      primaryContainer: Color(0xFFF5BD29), 
-      secondary: Color(0xFFE3B886),
-      secondaryContainer: Color(0xFFF29130), // Updated to match screenshot
-      background: Color(0xFFFFFFFF), // Updated to match screenshot
-      surface: Color(0xFFFFFFFF), // Updated to match screenshot
-      onSurface: Color(0xFF1B1C1C),
-      onSurfaceVariant: Color(0xFF444653),
-      outline: Color(0xFF747684),
-      outlineVariant: Color(0xFFC4C5D5),
-      gradientStart: Color(0xFFF5BD29), // Bright yellowish orange for highlight
-      gradientMiddle: Color(0xFFF29130), // Brand primary orange
-      gradientEnd: Color(0xFFE85D04), // Deep reddish orange for contrast
-      gradientSecondaryStart: Color(0xFFE3B886),
-      gradientSecondaryMiddle: Color(0xFFD3A876),
-      gradientSecondaryEnd: Color(0xFFC39866),
+      primaryContainer: Color(0xFFD97D20),
+      secondary: Color(0xFF1B3A6B),
+      secondaryContainer: Color(0xFF152F58),
+      background: Color(0xFFF8FAFC),
+      surface: Color(0xFFFFFFFF),
+      onSurface: Color(0xFF0F172A),
+      onSurfaceVariant: Color(0xFF475569),
+      outline: Color(0xFFCBD5E1),
+      outlineVariant: Color(0xFFE2E8F0),
+      gradientStart: Color(0xFFF29130),
+      gradientMiddle: Color(0xFFE07E1C),
+      gradientEnd: Color(0xFFC76B0F),
+      gradientSecondaryStart: Color(0xFF1B3A6B),
+      gradientSecondaryMiddle: Color(0xFF152F58),
+      gradientSecondaryEnd: Color(0xFF0D1D38),
       success: Color(0xFF16A34A),
       warning: Color(0xFFD97706),
       error: Color(0xFFDC2626),
@@ -100,8 +86,6 @@ class MobileThemeColors {
     );
   }
 
-
-  /// Parse from API JSON response
   factory MobileThemeColors.fromJson(Map<String, dynamic> json) {
     final parsedPrimary = _hexToColor(json['mobile_color_primary']);
     final parsedSecondary = _hexToColor(json['mobile_color_secondary']);
@@ -117,9 +101,6 @@ class MobileThemeColors {
       onSurfaceVariant: _hexToColor(json['mobile_color_on_surface_variant']),
       outline: _hexToColor(json['mobile_color_outline']),
       outlineVariant: _hexToColor(json['mobile_color_outline_variant']),
-      
-      // Dynamic HSL calculation for beautiful gradients based ONLY on the 6 fields from the API
-      // Since the Web Admin doesn't have gradient inputs, we ALWAYS derive them dynamically.
       gradientStart: HSLColor.fromColor(parsedPrimary)
           .withHue((HSLColor.fromColor(parsedPrimary).hue + 15) % 360)
           .withLightness((HSLColor.fromColor(parsedPrimary).lightness + 0.08).clamp(0.0, 1.0))
@@ -129,7 +110,6 @@ class MobileThemeColors {
           .withHue((HSLColor.fromColor(parsedPrimary).hue - 15) % 360)
           .withLightness((HSLColor.fromColor(parsedPrimary).lightness - 0.08).clamp(0.0, 1.0))
           .toColor(),
-              
       gradientSecondaryStart: HSLColor.fromColor(parsedSecondary)
           .withHue((HSLColor.fromColor(parsedSecondary).hue + 10) % 360)
           .withLightness((HSLColor.fromColor(parsedSecondary).lightness + 0.08).clamp(0.0, 1.0))
@@ -139,7 +119,6 @@ class MobileThemeColors {
           .withHue((HSLColor.fromColor(parsedSecondary).hue - 10) % 360)
           .withLightness((HSLColor.fromColor(parsedSecondary).lightness - 0.08).clamp(0.0, 1.0))
           .toColor(),
-      
       success: _hexToColor(json['color_success']),
       warning: _hexToColor(json['color_warning']),
       error: _hexToColor(json['color_error']),
@@ -151,7 +130,6 @@ class MobileThemeColors {
     );
   }
 
-  /// Convert back to JSON
   Map<String, dynamic> toJson() {
     return {
       'mobile_color_primary': _colorToHex(primary),
@@ -181,21 +159,18 @@ class MobileThemeColors {
     };
   }
 
-  /// Get primary gradient list
   List<Color> get primaryGradient => [
     gradientStart,
     gradientMiddle,
     gradientEnd,
   ];
 
-  /// Get secondary gradient list
   List<Color> get secondaryGradient => [
     gradientSecondaryStart,
     gradientSecondaryMiddle,
     gradientSecondaryEnd,
   ];
 
-  // Dynamic Color Helpers
   Color get onPrimary => _getOnColor(primary);
   Color get onSecondary => _getOnColor(secondary);
 
@@ -213,7 +188,6 @@ class MobileThemeColors {
     return Color.lerp(color, const Color(0xFF1B1C1C), 0.5) ?? color;
   }
 
-  /// Semantic Colors (Dynamically computed from base colors)
   Color get successContainer => _getContainer(success);
   Color get onSuccess => _getOnColor(success);
   Color get onSuccessContainer => _getOnContainer(success);
@@ -235,32 +209,28 @@ class MobileThemeColors {
   Color get onDanger => onError;
   Color get onDangerContainer => onErrorContainer;
 
-  /// Tertiary Colors (Derived from primary and secondary)
   Color get tertiary => Color.lerp(primary, secondary, 0.5) ?? secondary;
   Color get tertiaryContainer => _getContainer(tertiary);
   Color get onTertiaryContainer => _getOnContainer(tertiary);
 
-  // Helper: Parse hex string to Color
   static Color _hexToColor(dynamic hexValue) {
     if (hexValue == null || hexValue.toString().trim().isEmpty) {
-      return const Color(0xFFF29130); // Default fallback to Orange, not Blue!
+      return const Color(0xFFF29130);
     }
     String hex = hexValue.toString().replaceAll('#', '').trim();
     if (hex.length == 3) {
       hex = '${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
     }
     if (hex.length != 6) {
-      return const Color(0xFFF29130); // Default fallback to Orange
+      return const Color(0xFFF29130);
     }
     return Color(int.parse('FF$hex', radix: 16));
   }
 
-  // Helper: Convert Color to hex string
   static String _colorToHex(Color color) {
     return '#${color.toARGB32().toRadixString(16).substring(2)}';
   }
 
-  /// Copy with new values
   MobileThemeColors copyWith({
     Color? primary,
     Color? primaryContainer,

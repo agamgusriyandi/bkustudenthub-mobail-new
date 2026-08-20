@@ -139,7 +139,7 @@ class _StudentNotificationsScreenState
           MaterialPageRoute(builder: (context) => const HealthScreen()),
         );
       } else if (notif.type == 'booking') {
-        context.go('/dashboard?tab=1'); // or wherever health is
+        context.go('/dashboard?tab=1');
       }
     }
   }
@@ -214,7 +214,6 @@ class _StudentNotificationsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header Row: unread badge + aksi
                     Row(
                       children: [
                         if (unreadCount > 0)
@@ -278,11 +277,9 @@ class _StudentNotificationsScreenState
                     ),
                     const SizedBox(height: AppSpacing.md),
 
-                    // Filter chips
                     _buildFilterChips(),
                     const SizedBox(height: AppSpacing.s20),
 
-                    // Content
                     if (_isLoading)
                       const BkuShimmerList(itemCount: 4, itemHeight: 88)
                     else if (_notifications.isEmpty)
@@ -558,7 +555,7 @@ class _StudentNotificationsScreenState
         return AppColors.warning;
       case 'referral':
       case 'rujukan':
-        return context.appColors.info; // Indigo color for referrals
+        return context.appColors.info;
       default:
         return AppColors.neutral700;
     }

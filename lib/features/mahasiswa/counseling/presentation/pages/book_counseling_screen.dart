@@ -118,7 +118,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       if (!mounted) return;
       final student = context.read<ProfileProvider>();
       if (_namaOrtuCtrl.text.isEmpty && student.name.isNotEmpty) {
-        // Auto-fill if possible; rawProfileData may carry parent info
         final raw = student.rawProfileData;
         final namaOrtu = raw['nama_ortu_wali'] ?? raw['nama_ayah'] ?? raw['nama_ibu'];
         final hpOrtu = raw['kontak_darurat'] ?? raw['no_hp_ortu'];
@@ -358,7 +357,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     }
   }
 
-  // ─── STEP 1 ──────────────────────────────────────────────────────────────
   Widget _buildStep1Schedule(StudentCounselingProvider provider) {
     final allSlots = _slotsForCurrentStep(provider);
     final loading = widget.psychologist != null
@@ -708,7 +706,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     );
   }
 
-  // ─── STEP 2 ──────────────────────────────────────────────────────────────
   Widget _buildStep2Identity() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -796,7 +793,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     );
   }
 
-  // ─── STEP 3 ──────────────────────────────────────────────────────────────
   Widget _buildStep3Checklist() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -926,7 +922,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     );
   }
 
-  // ─── STEP 4 ──────────────────────────────────────────────────────────────
   Widget _buildStep4Keluhan(StudentCounselingProvider provider) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -1043,7 +1038,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     );
   }
 
-  // ─── Helpers ────────────────────────────────────────────────────────────
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -1254,7 +1248,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
     );
   }
 
-  // ─── Submit ──────────────────────────────────────────────────────────────
   Future<void> _submit() async {
     if (_selectedSlot == null) return;
     if (_keluhanCtrl.text.trim().length < 10) {
@@ -1326,7 +1319,6 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
       BkuLoadingDialog.hide(context);
       AppSnackbar.showError(context, ErrorHandler.getMessage(e));
     } finally {
-      // Nothing needed here since dialog is hidden
     }
   }
 

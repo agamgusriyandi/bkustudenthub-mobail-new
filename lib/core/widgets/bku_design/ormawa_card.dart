@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class OrmawaCard extends StatelessWidget {
   final Widget child;
@@ -21,29 +22,13 @@ class OrmawaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBorderRadius = borderRadius ?? OrmawaTheme.r20;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: color ?? OrmawaTheme.cardSurface,
-        borderRadius: effectiveBorderRadius,
-        border: border ?? Border.all(color: const Color(0xFFF1F5F9), width: 1.0),
-        boxShadow: OrmawaTheme.cardShadow,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: effectiveBorderRadius,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: effectiveBorderRadius,
-          splashColor: OrmawaTheme.primary.withAlpha(12),
-          highlightColor: OrmawaTheme.primary.withAlpha(6),
-          child: Padding(
-            padding: padding,
-            child: child,
-          ),
-        ),
-      ),
+    return BkuCard(
+      padding: padding,
+      onTap: onTap,
+      backgroundColor: color ?? BkuTheme.cardSurface,
+      borderRadius: borderRadius?.topLeft.x ?? 20.0,
+      borderColor: border?.top.color ?? BkuTheme.borderSubtle,
+      child: child,
     );
   }
 }

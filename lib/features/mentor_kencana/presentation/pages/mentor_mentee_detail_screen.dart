@@ -210,11 +210,11 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'STATUS KELULUSAN',
+                      'Status Kelulusan',
                       style: AppTextStyles.labelSm.copyWith(
                         color: Colors.white70,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -225,10 +225,10 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                         borderRadius: AppRadius.radiusSm,
                       ),
                       child: Text(
-                        graduationStatusStr == 'PASSED' ? 'LULUS' :
-                        graduationStatusStr == 'CONDITIONAL_PASS' || graduationStatusStr == 'CONDITIONAL' ? 'LULUS BERSYARAT' :
-                        graduationStatusStr == 'REMEDIAL' ? 'REMEDIAL' :
-                        'BELUM EVALUASI',
+                        graduationStatusStr == 'PASSED' ? 'Lulus' :
+                        graduationStatusStr == 'CONDITIONAL_PASS' || graduationStatusStr == 'CONDITIONAL' ? 'Lulus Bersyarat' :
+                        graduationStatusStr == 'REMEDIAL' ? 'Remedial' :
+                        'Belum Evaluasi',
                         style: AppTextStyles.labelMd.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -246,11 +246,11 @@ class _MentorMenteeDetailScreenState extends State<MentorMenteeDetailScreen>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'NILAI AKHIR',
+                        'Nilai Akhir',
                         style: AppTextStyles.labelSm.copyWith(
                           color: Colors.white70,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
+                          letterSpacing: 0.2,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -1545,12 +1545,12 @@ class _MenteeEssayCardState extends State<_MenteeEssayCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'CATATAN MENTOR',
+                      'Catatan Mentor',
                       style: AppTextStyles.labelSm.copyWith(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
                         color: AppColors.neutral900,
-                        letterSpacing: 0.3,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     const SizedBox(height: 4),

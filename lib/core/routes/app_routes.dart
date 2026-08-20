@@ -148,8 +148,8 @@ import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/c
 import 'package:bkuhub_mobile/features/mahasiswa/counseling/presentation/pages/medical_record_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/health/presentation/pages/self_screening_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/berita/presentation/pages/berita_detail_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/create_achievement_screen.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/edit_achievement_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/report_achievement_screen.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/achievement.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_program_detail_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/student_voice/presentation/pages/student_voice_detail_screen.dart';
@@ -296,6 +296,7 @@ class AppRoutes {
   static const String ormawaAgenda = '/ormawa/agenda';
   static const String ormawaPengumuman = '/ormawa/pengumuman';
   static const String ormawaStrukturManage = '/ormawa/struktur/manage';
+  static const String ormawaAnggota = '/ormawa/anggota';
   static const String ormawaAnggotaDetail = '/ormawa/anggota-detail';
   static const String ormawaRecruitmentHistory = '/ormawa/recruitment/history';
   static const String ormawaRecruitmentForm = '/ormawa/recruitment/form';
@@ -713,8 +714,21 @@ class AppRoutes {
         path: scholarshipDetail,
         builder: (context, state) {
           final scholarship = state.extra as Scholarship?;
-          if (scholarship == null) return const Scaffold(body: Center(child: Text('Invalid scholarship')));
-          return ScholarshipApplicationDetailScreen(scholarship: scholarship);
+          final id = state.pathParameters['id'] ?? '';
+          if (scholarship != null) {
+            return ScholarshipApplicationDetailScreen(scholarship: scholarship);
+          }
+          return ScholarshipApplicationDetailScreen(
+            scholarship: Scholarship(
+              id: id,
+              title: 'Pengajuan Beasiswa',
+              provider: 'Universitas Bhakti Kencana',
+              category: 'Beasiswa',
+              deadline: '',
+              coverAmount: '0',
+              description: '',
+            ),
+          );
         },
       ),
       GoRoute(
@@ -726,19 +740,18 @@ class AppRoutes {
       ),
       GoRoute(
         path: createAchievement,
-        builder: (context, state) => const CreateAchievementScreen(),
+        builder: (context, state) => const ReportAchievementScreen(),
       ),
       GoRoute(
-        path: '/achievement/edit',
+        path: editAchievement,
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>?;
-          return EditAchievementScreen(
-            achievementId: extra?['id'] ?? 0,
-            namaPrestasi: extra?['namaPrestasi'] ?? '',
-            tingkat: extra?['tingkat'] ?? 'Lokal',
-            tanggal: extra?['tanggal'] ?? DateTime.now(),
-            deskripsi: extra?['deskripsi'] ?? '',
-          );
+          final extra = state.extra;
+          if (extra is Achievement) {
+            return ReportAchievementScreen(achievement: extra);
+          } else if (extra is Map<String, dynamic> && extra['achievement'] is Achievement) {
+            return ReportAchievementScreen(achievement: extra['achievement'] as Achievement);
+          }
+          return const ReportAchievementScreen();
         },
       ),
       GoRoute(
@@ -1049,6 +1062,10 @@ class AppRoutes {
       GoRoute(
         path: ormawaStrukturManage,
         builder: (context, state) => const ManageStrukturScreen(),
+      ),
+      GoRoute(
+        path: ormawaAnggota,
+        builder: (context, state) => const OrmawaAnggotaScreen(),
       ),
       GoRoute(
         path: ormawaAnggotaDetail,

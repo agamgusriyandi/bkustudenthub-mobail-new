@@ -152,7 +152,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                       Icon(Icons.menu_book_rounded, color: context.appColors.onSurface, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'ISIAN HANDBOOK',
+                        'Isian Handbook',
                         style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ],
@@ -242,7 +242,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'STATUS PENGIRIMAN',
+                                        'Status Pengiriman',
                                         style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
                                       ),
                                       const SizedBox(height: 2),
@@ -257,7 +257,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'TANGGAL SUBMIT',
+                                          'Tanggal Submit',
                                           style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
                                         ),
                                         const SizedBox(height: 2),
@@ -272,7 +272,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                             ),
                             const SizedBox(height: AppSpacing.lg),
                             Text(
-                              'ISI RINGKASAN HANDBOOK:',
+                              'Isi Ringkasan Handbook:',
                               style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: AppSpacing.sm),
@@ -317,7 +317,7 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                       Icon(Icons.fact_check_outlined, color: context.appColors.onSurface, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'KEPUTUSAN EVALUASI',
+                        'Keputusan Evaluasi',
                         style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ],
@@ -356,8 +356,8 @@ class _MentorHandbookReviewScreenState extends State<MentorHandbookReviewScreen>
                   ],
 
                   Text(
-                    'STATUS PERSETUJUAN',
-                    style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10),
+                    'Status Persetujuan',
+                    style: AppTextStyles.labelSm.copyWith(fontWeight: FontWeight.bold, color: context.appColors.outline, fontSize: 10.5),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   BkuDropdown<String>(

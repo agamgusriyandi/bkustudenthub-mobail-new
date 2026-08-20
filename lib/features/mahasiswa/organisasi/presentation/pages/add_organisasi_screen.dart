@@ -1,19 +1,17 @@
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
-import '../../../../../core/error/error_handler.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:go_router/go_router.dart';
-import "package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart";
 
 class AddOrganisasiScreen extends StatefulWidget {
   final OrganizationHistory? organization;
@@ -157,19 +155,19 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: BkuTheme.textBadge.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.neutral700,
+                  color: BkuTheme.textPrimary,
                 ),
               ),
               if (isRequired)
-    Text(
+                Text(
                   ' *',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: context.appColors.error,
+                    color: BkuTheme.danger,
                   ),
                 ),
             ],
@@ -181,7 +179,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             validator: validator,
             keyboardType: keyboardType,
             hint: hint,
-            prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
+            prefixIcon: Icon(icon, size: 19, color: BkuTheme.textMuted),
           ),
         ],
       ),
@@ -205,19 +203,19 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: BkuTheme.textBadge.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.neutral700,
+                  color: BkuTheme.textPrimary,
                 ),
               ),
               if (isRequired)
-    Text(
+                Text(
                   ' *',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: context.appColors.error,
+                    color: BkuTheme.danger,
                   ),
                 ),
             ],
@@ -232,10 +230,9 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                         value: e,
                         child: Text(
                           e,
-                          style: const TextStyle(
+                          style: BkuTheme.textBodyRegular.copyWith(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.neutral900,
                           ),
                         ),
                       ),
@@ -244,25 +241,25 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
             onChanged: onChanged,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.neutral100,
+              fillColor: BkuTheme.surfaceLight,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
-              prefixIcon: Icon(icon, size: 19, color: AppColors.neutral600),
+              prefixIcon: Icon(icon, size: 19, color: BkuTheme.textMuted),
               border: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
+                borderRadius: BkuTheme.r12,
+                borderSide: BorderSide(color: BkuTheme.border),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: BorderSide.none,
+                borderRadius: BkuTheme.r12,
+                borderSide: BorderSide(color: BkuTheme.border),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: AppRadius.br14,
-                borderSide: const BorderSide(
-                  color: AppColors.neutral700,
-                  width: 1.8,
+                borderRadius: BkuTheme.r12,
+                borderSide: BorderSide(
+                  color: BkuTheme.primary,
+                  width: 1.5,
                 ),
               ),
             ),
@@ -279,18 +276,13 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
     List<Widget> children,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.s18),
-      padding: AppSpacing.padding18,
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.br22,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(10),
-            blurRadius: 18,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,26 +290,22 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
           Row(
             children: [
               Container(
-                padding: AppSpacing.paddingSm,
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: accentColor.withAlpha(18),
-                  borderRadius: AppRadius.radiusMd,
+                  color: accentColor.withAlpha(20),
+                  borderRadius: BkuTheme.r10,
+                  border: Border.all(color: accentColor.withAlpha(40)),
                 ),
                 child: Icon(sectionIcon, size: 18, color: accentColor),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.neutral900,
-                  letterSpacing: -0.2,
-                ),
+                style: BkuTheme.textCardTitle.copyWith(fontSize: 15),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s18),
+          const SizedBox(height: AppSpacing.lg),
           ...children,
         ],
       ),
@@ -327,7 +315,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.neutral100,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Laporkan Keaktifan Organisasi',
         variant: AppBarVariant.student,
@@ -343,7 +331,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Informasi Organisasi',
                 Icons.business_rounded,
-                context.appColors.info,
+                BkuTheme.indigo,
                 [
                   _buildField(
                     controller: _namaController,
@@ -387,7 +375,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Periode Jabatan',
                 Icons.date_range_rounded,
-                context.appColors.info,
+                BkuTheme.primary,
                 [
                   Row(
                     children: [
@@ -438,7 +426,7 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
               _buildSectionCard(
                 'Detail Kegiatan',
                 Icons.assignment_outlined,
-                context.appColors.error,
+                BkuTheme.amber,
                 [
                   _buildField(
                     controller: _deskripsiController,
@@ -457,8 +445,8 @@ class _AddOrganisasiScreenState extends State<AddOrganisasiScreen> {
                   ),
                 ],
               ),
-    SizedBox(height: AppSpacing.sm),
-              BkuButton.success(
+              const SizedBox(height: AppSpacing.sm),
+              BkuButton(
                 isLoading: _isSubmitting,
                 onPressed: _isSubmitting ? null : _submitForm,
                 text: 'Simpan',

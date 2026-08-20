@@ -61,9 +61,12 @@ class TodayScheduleCard extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    // Filter events for today or future
     final upcomingEvents =
         events.where((e) {
+          final isDeadline = e.judul.toLowerCase().startsWith('deadline') ||
+              e.kategori.toLowerCase() == 'beasiswa';
+          if (isDeadline) return false;
+
           final evDate = DateTime(
             e.tanggal.year,
             e.tanggal.month,
@@ -285,10 +288,10 @@ class TodayScheduleCard extends StatelessWidget {
                               borderRadius: AppRadius.radiusSm,
                             ),
                               child: Text(
-                                'SEDANG BERJALAN',
+                                'Sedang Berjalan',
                                 style: AppTextStyles.labelSm.copyWith(
                                   color: context.appColors.onPrimary,
-                                fontSize: 8,
+                                fontSize: 8.5,
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
@@ -370,66 +373,75 @@ class TodayScheduleCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: const BoxDecoration(
-                        color: AppColors.neutral100,
-                        borderRadius: AppRadius.radiusLg,
-                      ),
-                      child: const Icon(
-                        Icons.event_note_rounded,
-                        color: AppColors.neutral600,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.lg),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Detail Kegiatan',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.outline,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              decoration: const BoxDecoration(
+                                color: AppColors.neutral100,
+                                borderRadius: AppRadius.radiusLg,
+                              ),
+                              child: const Icon(
+                                Icons.event_note_rounded,
+                                color: AppColors.neutral600,
+                              ),
                             ),
-                          ),
-                          Text(
-                            event.judul,
-                            style: AppTextStyles.titleLarge.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral800,
+                            const SizedBox(width: AppSpacing.lg),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Detail Kegiatan',
+                                    style: AppTextStyles.labelSm.copyWith(
+                                      color: context.appColors.outline,
+                                    ),
+                                  ),
+                                  Text(
+                                    event.judul,
+                                    style: AppTextStyles.titleLarge.copyWith(
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.neutral800,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        _buildDetailInfo(
+                          Icons.category_rounded,
+                          'Kategori',
+                          event.kategori,
+                        ),
+                        _buildDetailInfo(
+                          Icons.timer_rounded,
+                          'Waktu Pelaksanaan',
+                          _formatDate(event.tanggal),
+                        ),
+                        if (event.lokasi.isNotEmpty)
+                          _buildDetailInfo(
+                            Icons.location_on_rounded,
+                            'Lokasi',
+                            event.lokasi,
                           ),
-                        ],
-                      ),
+                        if (event.deskripsi.isNotEmpty)
+                          _buildDetailInfo(
+                            Icons.description_rounded,
+                            'Deskripsi',
+                            event.deskripsi,
+                          ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                _buildDetailInfo(
-                  Icons.category_rounded,
-                  'Kategori',
-                  event.kategori,
-                ),
-                _buildDetailInfo(
-                  Icons.timer_rounded,
-                  'Waktu Pelaksanaan',
-                  _formatDate(event.tanggal),
-                ),
-                if (event.lokasi.isNotEmpty)
-                  _buildDetailInfo(
-                    Icons.location_on_rounded,
-                    'Lokasi',
-                    event.lokasi,
                   ),
-                if (event.deskripsi.isNotEmpty)
-                  _buildDetailInfo(
-                    Icons.description_rounded,
-                    'Deskripsi',
-                    event.deskripsi,
-                  ),
-                const Spacer(),
+                ),
+                const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   width: double.infinity,
                   height: 56,

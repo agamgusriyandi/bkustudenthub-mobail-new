@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 
 class DataDiriTabWidget extends StatefulWidget {
   const DataDiriTabWidget({super.key});
@@ -18,358 +11,281 @@ class DataDiriTabWidget extends StatefulWidget {
 }
 
 class _DataDiriTabWidgetState extends State<DataDiriTabWidget> {
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  Map<String, dynamic> _buildValues(Map<String, dynamic> raw) {
+    final m = raw['mahasiswa'] ?? raw['data']?['mahasiswa'] ?? raw;
+    final p = raw['profile'] ?? raw['data']?['profile'] ?? raw;
 
-  late Map<String, dynamic> _formData;
-  final Map<String, TextEditingController> _controllers = {};
+    return {
+      'nik': m['nik'] ?? m['NIK'] ?? '',
+      'nomor_kk': m['nomor_kk'] ?? m['NomorKK'] ?? '',
+      'nim': m['nim'] ?? m['NIM'] ?? '',
+      'nisn': m['nisn'] ?? m['NISN'] ?? '',
+      'nomor_kps': m['nomor_kps'] ?? m['NomorKPS'] ?? '',
+      'tempat_lahir': m['tempat_lahir'] ?? m['TempatLahir'] ?? '',
+      'tanggal_lahir': m['tanggal_lahir'] ?? m['TanggalLahir'] ?? '',
+      'jenis_kelamin': m['jenis_kelamin'] ?? m['JenisKelamin'] ?? '',
+      'agama': m['agama'] ?? m['Agama'] ?? '',
+      'golongan_darah': m['golongan_darah'] ?? m['GolonganDarah'] ?? '',
+      'kewarganegaraan': m['kewarganegaraan'] ?? m['Kewarganegaraan'] ?? 'WNI',
+      'status_pernikahan': m['status_pernikahan'] ?? m['StatusPernikahan'] ?? 'Belum Kawin',
+      'jenis_tinggal': m['jenis_tinggal'] ?? m['JenisTinggal'] ?? '',
+      'is_disabilitas': m['is_disabilitas'] ?? m['IsDisabilitas'] ?? 'Tidak',
 
+      'nupn': m['nupn'] ?? m['NUPN'] ?? '',
+      'npsn': m['npsn'] ?? m['NPSN'] ?? '',
+      'nirm': m['nirm'] ?? m['NIRM'] ?? '',
+      'nirl': m['nirl'] ?? m['NIRL'] ?? '',
 
-  @override
-  void dispose() {
-    for (var controller in _controllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
+      'email_personal': m['email_personal'] ?? m['EmailPersonal'] ?? p['email'] ?? '',
+      'email_kampus': m['email_kampus'] ?? m['EmailKampus'] ?? '',
+      'no_hp': m['no_hp'] ?? m['NoHP'] ?? '',
+      'telepon': m['telepon'] ?? m['Telepon'] ?? '',
+      'alamat': m['alamat'] ?? m['Alamat'] ?? '',
+      'rt': m['rt'] ?? m['RT'] ?? '',
+      'rw': m['rw'] ?? m['RW'] ?? '',
+      'desa': m['desa'] ?? m['Desa'] ?? m['kelurahan'] ?? '',
+      'kecamatan': m['kecamatan'] ?? m['Kecamatan'] ?? '',
+      'kota': m['kota'] ?? m['Kota'] ?? '',
+      'provinsi': m['provinsi'] ?? m['Provinsi'] ?? '',
+      'kode_pos': m['kode_pos'] ?? m['KodePos'] ?? '',
+
+      'alamat_domisili': m['alamat_domisili'] ?? m['AlamatDomisili'] ?? '',
+      'rt_domisili': m['rt_domisili'] ?? m['RTDomisili'] ?? '',
+      'rw_domisili': m['rw_domisili'] ?? m['RWDomisili'] ?? '',
+      'desa_domisili': m['desa_domisili'] ?? m['DesaDomisili'] ?? '',
+      'kecamatan_domisili': m['kecamatan_domisili'] ?? m['KecamatanDomisili'] ?? '',
+      'kota_domisili': m['kota_domisili'] ?? m['KotaDomisili'] ?? '',
+      'provinsi_domisili': m['provinsi_domisili'] ?? m['ProvinsiDomisili'] ?? '',
+      'kode_pos_domisili': m['kode_pos_domisili'] ?? m['KodePosDomisili'] ?? '',
+
+      'kontak_darurat': m['kontak_darurat'] ?? m['KontakDarurat'] ?? '',
+      'telepon_darurat': m['telepon_darurat'] ?? m['TeleponDarurat'] ?? '',
+
+      'nama_ayah': m['nama_ayah'] ?? m['NamaAyah'] ?? '',
+      'pekerjaan_ayah': m['pekerjaan_ayah'] ?? m['PekerjaanAyah'] ?? '',
+      'nama_ibu_kandung': m['nama_ibu_kandung'] ?? m['NamaIbuKandung'] ?? '',
+      'pekerjaan_ibu': m['pekerjaan_ibu'] ?? m['PekerjaanIbu'] ?? '',
+      'nama_wali': m['nama_wali'] ?? m['NamaWali'] ?? '',
+      'pekerjaan_wali': m['pekerjaan_wali'] ?? m['PekerjaanWali'] ?? '',
+      'penghasilan_ortu': m['penghasilan_ortu'] ?? m['PenghasilanOrtu'] ?? '',
+      'pekerjaan': m['pekerjaan'] ?? m['Pekerjaan'] ?? '',
+
+      'asal_sekolah': m['asal_sekolah'] ?? m['AsalSekolah'] ?? '',
+      'no_ijazah_sma': m['no_ijazah_sma'] ?? m['NoIjazahSMA'] ?? '',
+    };
   }
 
   @override
-  void initState() {
-    super.initState();
-    _initFormData();
-  }
-
-  String _cleanDateString(String? val) {
-    if (val == null || val.isEmpty || val.contains('0001-01-01')) return '';
-    try {
-      final parsed = DateTime.tryParse(val);
-      if (parsed != null) {
-        return DateFormat('yyyy-MM-dd').format(parsed.toLocal());
-      }
-    } catch (_) {}
-    if (val.contains('T')) {
-      return val.split('T')[0];
-    }
-    if (val.contains(' ')) {
-      return val.split(' ')[0];
-    }
-    return val;
-  }
-
-  bool _hasLoadedData = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  Widget build(BuildContext context) {
     final profile = context.watch<ProfileProvider>();
-    if (!_hasLoadedData && profile.rawProfileData.isNotEmpty) {
-      _initFormData();
-      _hasLoadedData = true;
-    }
-  }
+    final data = _buildValues(profile.rawProfileData);
 
-  void _initFormData() {
-    final profile = context.read<ProfileProvider>();
-    final raw = profile.rawProfileData;
-    final m = raw['mahasiswa'] ?? raw;
-    _formData = {
-      'nik': m['nik']?.toString() ?? m['NIK']?.toString() ?? '',
-      'nisn': m['nisn']?.toString() ?? m['NISN']?.toString() ?? '',
-      'birth_place':
-          m['tempat_lahir']?.toString() ?? m['TempatLahir']?.toString() ?? '',
-      'birth_date': _cleanDateString(
-        m['tanggal_lahir']?.toString() ?? m['TanggalLahir']?.toString(),
-      ),
-      'gender':
-          m['jenis_kelamin']?.toString() ?? m['JenisKelamin']?.toString() ?? '',
-      'religion': m['agama']?.toString() ?? m['Agama']?.toString() ?? '',
-      'email_personal':
-          m['email_personal']?.toString() ??
-          m['EmailPersonal']?.toString() ??
-          '',
-      'phone': m['no_hp']?.toString() ?? m['NoHP']?.toString() ?? '',
-      'address':
-          m['alamat_domisili']?.toString() ??
-          m['AlamatDomisili']?.toString() ??
-          m['Alamat']?.toString() ??
-          '',
-      'nama_ibu_kandung':
-          m['nama_ibu_kandung']?.toString() ??
-          m['NamaIbuKandung']?.toString() ??
-          '',
-      'nama_ayah': m['nama_ayah']?.toString() ?? m['NamaAyah']?.toString() ?? '',
-    };
-    
-    // Update controllers
-    _formData.forEach((key, value) {
-      if (!_controllers.containsKey(key)) {
-        _controllers[key] = TextEditingController(text: value?.toString() ?? '');
-      } else {
-        // Only update if it's different to preserve cursor position during typing
-        if (_controllers[key]!.text != value?.toString()) {
-          _controllers[key]!.text = value?.toString() ?? '';
-        }
-      }
-    });
-  }
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+      physics: const BouncingScrollPhysics(),
+      children: [
+        _buildSectionCard(
+          title: 'Data Pribadi',
+          subtitle: 'Identitas dasar yang terdaftar dalam sistem akademik.',
+          icon: Icons.person_rounded,
+          children: [
+            _buildField('NIK KTP (16 Digit)', data['nik'].toString()),
+            _buildField('Nomor Kartu Keluarga (KK)', data['nomor_kk'].toString()),
+            _buildField('NPM / NIM', data['nim'].toString()),
+            _buildField('NISN', data['nisn'].toString()),
+            _buildField('Nomor KPS / PKH', data['nomor_kps'].toString()),
+            _buildField('Tempat Lahir', data['tempat_lahir'].toString()),
+            _buildField('Tanggal Lahir', data['tanggal_lahir'].toString().split('T')[0]),
+            _buildField('Jenis Kelamin', data['jenis_kelamin'].toString()),
+            _buildField('Agama', data['agama'].toString()),
+            _buildField('Golongan Darah', data['golongan_darah'].toString()),
+            _buildField('Kewarganegaraan', data['kewarganegaraan'].toString()),
+            _buildField('Status Pernikahan', data['status_pernikahan'].toString()),
+            _buildField('Jenis Tinggal', data['jenis_tinggal'].toString()),
+            _buildField('Status Disabilitas', data['is_disabilitas'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-  Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
-    _formKey.currentState!.save();
+        _buildSectionCard(
+          title: 'Identitas Kemendikbud',
+          subtitle: 'Nomor induk integrasi pangkalan data pendidikan tinggi.',
+          icon: Icons.account_balance_rounded,
+          children: [
+            _buildField('NUPN', data['nupn'].toString()),
+            _buildField('NPSN', data['npsn'].toString()),
+            _buildField('NIRM', data['nirm'].toString()),
+            _buildField('NIRL', data['nirl'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-    final backendPayload = {
-      'nik': _formData['nik'] ?? '',
-      'nisn': _formData['nisn'] ?? '',
-      'tempat_lahir': _formData['birth_place'] ?? _formData['tempat_lahir'] ?? '',
-      'tanggal_lahir': _formData['birth_date'] ?? _formData['tanggal_lahir'] ?? '',
-      'jenis_kelamin': _formData['gender'] ?? _formData['jenis_kelamin'] ?? '',
-      'agama': _formData['religion'] ?? _formData['agama'] ?? '',
-      'email_personal': _formData['email_personal'] ?? '',
-      'no_hp': _formData['phone'] ?? _formData['no_hp'] ?? '',
-      'alamat_domisili': _formData['address'] ?? _formData['alamat_domisili'] ?? '',
-      'nama_ibu_kandung': _formData['nama_ibu_kandung'] ?? '',
-      'nama_ayah': _formData['nama_ayah'] ?? '',
-    };
+        _buildSectionCard(
+          title: 'Kontak & Alamat KTP',
+          subtitle: 'Informasi komunikasi resmi dan alamat identitas KTP.',
+          icon: Icons.contact_mail_rounded,
+          children: [
+            _buildField('Email Personal', data['email_personal'].toString()),
+            _buildField('Email Kampus', data['email_kampus'].toString()),
+            _buildField('No. HP / WhatsApp', data['no_hp'].toString()),
+            _buildField('Telepon Rumah', data['telepon'].toString()),
+            _buildField('Alamat Lengkap (KTP)', data['alamat'].toString()),
+            _buildField('RT / RW', '${data['rt']} / ${data['rw']}'),
+            _buildField('Desa / Kelurahan', data['desa'].toString()),
+            _buildField('Kecamatan', data['kecamatan'].toString()),
+            _buildField('Kota / Kabupaten', data['kota'].toString()),
+            _buildField('Provinsi', data['provinsi'].toString()),
+            _buildField('Kode Pos', data['kode_pos'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-    setState(() => _isLoading = true);
-    try {
-      final profile = context.read<ProfileProvider>();
-      await profile.updateProfile(backendPayload);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle_rounded, color: context.appColors.surface, size: 20),
-                SizedBox(width: AppSpacing.s10),
-                Text(
-                  'Profil berhasil diperbarui',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            backgroundColor: context.appColors.success,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.radiusMd,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.error_outline_rounded, color: context.appColors.surface, size: 20),
-                const SizedBox(width: AppSpacing.s10),
-                Expanded(
-                  child: Text(
-                    e.toString().replaceAll('Exception: ', '').replaceAll('FormatException: ', ''),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: context.appColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.radiusMd,
-            ),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
+        _buildSectionCard(
+          title: 'Alamat Domisili (Beda KTP)',
+          subtitle: 'Alamat tempat tinggal saat ini jika berbeda dengan KTP.',
+          icon: Icons.home_work_rounded,
+          children: [
+            _buildField('Alamat Domisili', data['alamat_domisili'].toString()),
+            _buildField('RT / RW Domisili', '${data['rt_domisili']} / ${data['rw_domisili']}'),
+            _buildField('Desa Domisili', data['desa_domisili'].toString()),
+            _buildField('Kecamatan Domisili', data['kecamatan_domisili'].toString()),
+            _buildField('Kota Domisili', data['kota_domisili'].toString()),
+            _buildField('Provinsi Domisili', data['provinsi_domisili'].toString()),
+            _buildField('Kode Pos Domisili', data['kode_pos_domisili'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-  Widget _buildField(
-    String label,
-    String key, {
-    bool required = false,
-    IconData? prefixIcon,
-    bool isDate = false,
-  }) {
-    final controller = _controllers[key] ??= TextEditingController(text: _formData[key]?.toString() ?? '');
+        _buildSectionCard(
+          title: 'Kontak Darurat',
+          subtitle: 'Orang yang dapat dihubungi saat situasi darurat kampus.',
+          icon: Icons.emergency_rounded,
+          children: [
+            _buildField('Nama Kontak Darurat', data['kontak_darurat'].toString()),
+            _buildField('No. HP Kontak Darurat', data['telepon_darurat'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.neutral900,
-                ),
-              ),
-              if (required)
-    Text(
-                  ' *',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: context.appColors.error,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s6),
-          BkuTextField(
-            controller: controller,
-            readOnly: isDate,
-            onTap: isDate
-                ? () async {
-                    DateTime initial = DateTime.tryParse(controller.text) ?? DateTime(2004, 1, 1);
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: initial,
-                      firstDate: DateTime(1970),
-                      lastDate: DateTime.now(),
-                    );
-                    if (picked != null) {
-                      final formatted = DateFormat('yyyy-MM-dd').format(picked);
-                      setState(() {
-                        controller.text = formatted;
-                        _formData[key] = formatted;
-                      });
-                    }
-                  }
-                : null,
-            prefixIcon: prefixIcon != null
-                  ? Icon(
-                      prefixIcon,
-                      size: 19,
-                      color: AppColors.neutral600,
-                    )
-                  : null,
-            onSaved: (val) => _formData[key] = val,
-            validator: (val) {
-              if (required && (val == null || val.trim().isEmpty)) {
-                return 'Field ini wajib diisi';
-              }
-              return null;
-            },
-          ),
-        ],
-      ),
+        _buildSectionCard(
+          title: 'Data Keluarga & Pendidikan',
+          subtitle: 'Informasi orang tua / wali dan riwayat asal sekolah menengah.',
+          icon: Icons.family_restroom_rounded,
+          children: [
+            _buildField('Nama Lengkap Ayah', data['nama_ayah'].toString()),
+            _buildField('Pekerjaan Ayah', data['pekerjaan_ayah'].toString()),
+            _buildField('Nama Lengkap Ibu Kandung', data['nama_ibu_kandung'].toString()),
+            _buildField('Pekerjaan Ibu', data['pekerjaan_ibu'].toString()),
+            _buildField('Nama Wali', data['nama_wali'].toString()),
+            _buildField('Pekerjaan Wali', data['pekerjaan_wali'].toString()),
+            _buildField('Penghasilan Ortu (Rp/Bulan)', data['penghasilan_ortu'].toString()),
+            _buildField('Pekerjaan Mahasiswa', data['pekerjaan'].toString()),
+            _buildField('Asal Sekolah (SMA/SMK)', data['asal_sekolah'].toString()),
+            _buildField('No. Ijazah SMA / SMK', data['no_ijazah_sma'].toString()),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.s80),
+      ],
     );
   }
 
-  Widget _buildSectionCard(
-    String title,
-    IconData sectionIcon,
-    Color accentColor,
-    List<Widget> fields,
-  ) {
-    return BkuCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.s18),
-      padding: AppSpacing.padding18,
-      borderRadius: 22,
+  Widget _buildSectionCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 12,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: AppSpacing.paddingSm,
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: accentColor.withAlpha(18),
-                  borderRadius: AppRadius.radiusMd,
+                  color: const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
-                  sectionIcon,
-                  size: 18,
-                  color: accentColor,
-                ),
+                child: Icon(icon, color: const Color(0xFF2563EB), size: 18),
               ),
-              const SizedBox(width: AppSpacing.md),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.neutral900,
-                  letterSpacing: -0.2,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s18),
-          ...fields,
+          const Divider(height: 24, color: Color(0xFFF1F5F9)),
+          ...children,
         ],
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final profile = context.watch<ProfileProvider>();
-    
-    // Show loading spinner if data hasn't loaded yet
-    if (profile.isLoading && !_hasLoadedData) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.neutral900),
-      );
-    }
-    
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+  Widget _buildField(String label, String value) {
+    final displayVal = value.trim().isEmpty || value.trim() == '/' || value.trim() == 'null' ? '-' : value;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionCard(
-            'Data Pribadi Mahasiswa',
-            Icons.person_rounded,
-            context.appColors.info,
-            [
-              _buildField('NIK', 'nik', required: true, prefixIcon: Icons.badge_outlined),
-              _buildField('NISN', 'nisn', prefixIcon: Icons.subtitles_outlined),
-              _buildField('Tempat Lahir', 'birth_place', required: true, prefixIcon: Icons.location_city_rounded),
-              _buildField(
-                'Tanggal Lahir (YYYY-MM-DD)',
-                'birth_date',
-                required: true,
-                prefixIcon: Icons.calendar_today_rounded,
-                isDate: true,
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF64748B),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Text(
+              displayVal,
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF0F172A),
               ),
-              _buildField('Jenis Kelamin (L/P)', 'gender', required: true, prefixIcon: Icons.wc_rounded),
-              _buildField('Agama', 'religion', required: true, prefixIcon: Icons.auto_awesome_rounded),
-            ],
+            ),
           ),
-          _buildSectionCard(
-            'Kontak & Domisili',
-            Icons.contact_phone_rounded,
-            context.appColors.info,
-            [
-              _buildField('Email Personal', 'email_personal', prefixIcon: Icons.mail_outline_rounded),
-              _buildField('Nomor HP/WA', 'phone', required: true, prefixIcon: Icons.phone_android_rounded),
-              _buildField('Alamat Domisili', 'address', prefixIcon: Icons.home_outlined),
-            ],
-          ),
-          _buildSectionCard(
-            'Keluarga',
-            Icons.family_restroom_rounded,
-            context.appColors.error,
-            [
-              _buildField('Nama Ibu Kandung', 'nama_ibu_kandung', required: true, prefixIcon: Icons.woman_rounded),
-              _buildField('Nama Ayah', 'nama_ayah', prefixIcon: Icons.man_rounded),
-            ],
-          ),
-    SizedBox(height: AppSpacing.sm),
-          BkuButton.primary(
-            text: 'Simpan Perubahan',
-            icon: Icons.save_rounded,
-            isLoading: _isLoading,
-            onPressed: _isLoading ? null : _save,
-          ),
-          const SizedBox(height: AppSpacing.s120),
         ],
       ),
     );

@@ -183,7 +183,7 @@ class _KencanaBandingScreenState extends State<KencanaBandingScreen> {
                 const SizedBox(height: AppSpacing.lg),
                 BkuButton(
                   onPressed: _submitBanding,
-                  text: 'KIRIM BANDING',
+                  text: 'Kirim Banding',
                   isLoading: _isSubmitting,
                   variant: BkuButtonVariant.primary,
                 ),

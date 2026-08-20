@@ -186,7 +186,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
       statusLabel = 'Menunggu Verifikasi';
       statusColor = context.watch<ThemeProvider>().colors.warning;
     } else if (currentStatus.isNotEmpty) {
-      statusLabel = claim.status.replaceAll('_', ' '); // Clean fallback
+      statusLabel = claim.status.replaceAll('_', ' ');
     }
 
     return Container(
@@ -373,7 +373,7 @@ class _InsuranceClaimScreenState extends State<InsuranceClaimScreen> {
             child: Text(
               text,
               style: AppTextStyles.labelSm.copyWith(
-                color: context.appColors.onSurface, // requested by user
+                color: context.appColors.onSurface,
                 fontWeight: FontWeight.bold,
                 height: 1.3,
               ),

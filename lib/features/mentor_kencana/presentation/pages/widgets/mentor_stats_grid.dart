@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/domain/entities/mentor_models.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
@@ -28,20 +23,20 @@ class MentorStatsGrid extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
           childAspectRatio: aspectRatio,
           children: [
             _buildStatCard(
               context,
               title: 'Total Bimbingan',
-              value: '${dashboard.totalMentees} Mahasiswa',
+              value: '${dashboard.totalMentees}',
+              unit: 'Mahasiswa',
               icon: Icons.school_rounded,
-              color: context.appColors.primary,
+              color: BkuTheme.primary,
               badgeText: 'Aktif',
               onTap: () {
-                final state =
-                    context.findAncestorStateOfType<MentorMainScreenState>();
+                final state = context.findAncestorStateOfType<MentorMainScreenState>();
                 if (state != null) {
                   state.setSelectedIndex(1);
                 } else {
@@ -52,22 +47,23 @@ class MentorStatsGrid extends StatelessWidget {
             _buildStatCard(
               context,
               title: 'Review Handbook',
-              value: '${dashboard.pendingHandbooks} Berkas',
+              value: '${dashboard.pendingHandbooks}',
+              unit: 'Berkas',
               icon: Icons.menu_book_rounded,
-              color: context.appColors.warning,
+              color: BkuTheme.amber,
               badgeText: dashboard.pendingHandbooks > 0 ? 'Butuh ACC' : null,
               onTap: () => context.push(AppRoutes.mentorHandbookList),
             ),
             _buildStatCard(
               context,
               title: 'Mahasiswa Lulus',
-              value: '${dashboard.passedStudents} Mahasiswa',
+              value: '${dashboard.passedStudents}',
+              unit: 'Mahasiswa',
               icon: Icons.verified_rounded,
-              color: context.appColors.success,
+              color: BkuTheme.emerald,
               badgeText: 'Lengkap',
               onTap: () {
-                final state =
-                    context.findAncestorStateOfType<MentorMainScreenState>();
+                final state = context.findAncestorStateOfType<MentorMainScreenState>();
                 if (state != null) {
                   state.setSelectedIndex(3);
                 } else {
@@ -78,13 +74,13 @@ class MentorStatsGrid extends StatelessWidget {
             _buildStatCard(
               context,
               title: 'Perlu Perbaikan',
-              value: '${dashboard.remedialStudents} Mahasiswa',
+              value: '${dashboard.remedialStudents}',
+              unit: 'Mahasiswa',
               icon: Icons.error_outline_rounded,
-              color: context.appColors.error,
+              color: BkuTheme.rose,
               badgeText: 'Evaluasi',
               onTap: () {
-                final state =
-                    context.findAncestorStateOfType<MentorMainScreenState>();
+                final state = context.findAncestorStateOfType<MentorMainScreenState>();
                 if (state != null) {
                   state.setSelectedIndex(3);
                 } else {
@@ -102,83 +98,94 @@ class MentorStatsGrid extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String value,
+    required String unit,
     required IconData icon,
     required Color color,
     String? badgeText,
     required VoidCallback onTap,
   }) {
-    return BkuCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: AppColors.neutral500,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(20),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Expanded(
-                child: Text(
-                  value,
-                  style: AppTextStyles.titleMd.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (badgeText != null)
-                Container(
-                  margin: const EdgeInsets.only(left: 4),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    badgeText,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: Colors.white,
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BkuTheme.r16,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BkuTheme.r16,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: BkuTheme.textBadge.copyWith(
+                          color: BkuTheme.textMuted,
+                          fontSize: 9.5,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: color.withAlpha(20),
+                        borderRadius: BkuTheme.r8,
+                      ),
+                      child: Icon(icon, color: color, size: 16),
+                    ),
+                  ],
                 ),
-            ],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      value,
+                      style: BkuTheme.textMetricValue.copyWith(fontSize: 22),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      unit,
+                      style: BkuTheme.textBadge.copyWith(
+                        color: BkuTheme.textMuted,
+                        fontSize: 9.5,
+                      ),
+                    ),
+                  ],
+                ),
+                if (badgeText != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: color.withAlpha(15),
+                      borderRadius: BkuTheme.rPill,
+                    ),
+                    child: Text(
+                      badgeText,
+                      style: BkuTheme.textBadge.copyWith(
+                        color: color,
+                        fontSize: 8.5,
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox(height: 12),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

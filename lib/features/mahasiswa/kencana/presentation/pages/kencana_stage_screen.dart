@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -166,21 +167,21 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
 
   Widget _buildStageHeader(KencanaStageDetail detail) {
     final status = detail.status.toLowerCase();
-    Color statusBg = const Color(0xFFEFF6FF);
-    Color statusTextColor = const Color(0xFF1D4ED8);
+    Color statusBg = BkuTheme.indigoSoft;
+    Color statusTextColor = BkuTheme.indigo;
     String statusLabel = 'Berlangsung';
 
     if (status == 'completed' || status == 'selesai') {
-      statusBg = const Color(0xFFECFDF5);
-      statusTextColor = const Color(0xFF047857);
+      statusBg = BkuTheme.statusSuccessBg;
+      statusTextColor = BkuTheme.statusSuccessText;
       statusLabel = 'Selesai';
     } else if (status == 'active' || status == 'aktif') {
-      statusBg = const Color(0xFFEFF6FF);
-      statusTextColor = const Color(0xFF1D4ED8);
+      statusBg = BkuTheme.indigoSoft;
+      statusTextColor = BkuTheme.indigo;
       statusLabel = 'Berlangsung';
     } else {
-      statusBg = AppColors.neutral200;
-      statusTextColor = AppColors.neutral600;
+      statusBg = BkuTheme.slateSoft;
+      statusTextColor = BkuTheme.textMuted;
       statusLabel = 'Belum Mulai';
     }
 
@@ -361,12 +362,12 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
     IconData iconData = Icons.menu_book_rounded;
 
     if (isCompleted) {
-      iconBg = const Color(0xFFECFDF5);
-      iconColor = const Color(0xFF10B981);
+      iconBg = BkuTheme.emeraldSoft;
+      iconColor = BkuTheme.emerald;
       iconData = Icons.check_circle_rounded;
     } else if (isActive) {
-      iconBg = const Color(0xFFEFF6FF);
-      iconColor = const Color(0xFF3B82F6);
+      iconBg = BkuTheme.indigoSoft;
+      iconColor = BkuTheme.indigo;
       iconData = Icons.play_circle_fill_rounded;
     }
 
@@ -376,7 +377,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
         color: context.appColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isActive ? const Color(0xFF3B82F6) : AppColors.neutral300,
+          color: isActive ? BkuTheme.indigo : BkuTheme.border,
           width: isActive ? 1.5 : 1,
         ),
         boxShadow: [
@@ -448,13 +449,13 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                           _buildCountBadge(
                             Icons.quiz_rounded,
                             session.quizCount,
-                            const Color(0xFF7C3AED),
+                            BkuTheme.indigo,
                           ),
                           const SizedBox(width: 8),
                           _buildCountBadge(
                             Icons.assignment_rounded,
                             session.assignmentCount,
-                            const Color(0xFFD97706),
+                            BkuTheme.amber,
                           ),
                         ],
                       ),

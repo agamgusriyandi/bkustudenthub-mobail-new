@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_financial_setting.dart';
@@ -55,11 +59,10 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
   }
 
   void _openConfigModal(BuildContext context, OrmawaFinancialSetting setting) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _PaguConfigSheet(setting: setting),
+      title: 'Konfigurasi Pagu Anggaran',
+      child: _PaguConfigSheet(setting: setting),
     );
   }
 
@@ -92,12 +95,15 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
         final orgName = setting?.name.isNotEmpty == true ? setting!.name : provider.orgName;
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF8FAFC),
+          backgroundColor: BkuTheme.scaffoldBg,
           body: RefreshIndicator(
             onRefresh: () => provider.fetchFinancialSettings(),
+            color: BkuTheme.primary,
+            backgroundColor: Colors.white,
             child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
               slivers: [
-                BkuAppBar(
+                const BkuAppBar(
                   variant: AppBarVariant.ormawa,
                   title: 'Pagu Anggaran',
                   subtitle: 'Sentralisasi Plafon Dana Kampus',
@@ -123,6 +129,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
 
                         if (provider.allFinancialSettings.length > 1) ...[
                           _buildOrmawaSelector(context, provider, setting),
+                          const SizedBox(height: 14),
                         ],
 
                         _buildStatsGrid(context, setting, limit, used, pending, remaining, usedPct, pendingPct, remainingPct),
@@ -151,96 +158,80 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
     OrmawaProvider provider,
     OrmawaFinancialSetting? current,
   ) {
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
+      borderRadius: 16,
+      onTap: () => _openOrmawaPicker(context, provider),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: BkuTheme.primarySoft,
+              borderRadius: BkuTheme.r10,
+            ),
+            child: Icon(Icons.swap_horiz_rounded, size: 20, color: BkuTheme.primary),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pilih Organisasi Mahasiswa',
+                  style: BkuTheme.textBadge.copyWith(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    color: BkuTheme.textHeading,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  current?.name ?? 'Pilih ORMAWA',
+                  style: BkuTheme.textCardTitle.copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: BkuTheme.borderSubtle,
+              borderRadius: BkuTheme.r8,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Ganti',
+                  style: BkuTheme.textCaption.copyWith(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: BkuTheme.textBody,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: BkuTheme.textMuted),
+              ],
+            ),
           ),
         ],
-      ),
-      child: InkWell(
-        onTap: () => _openOrmawaPicker(context, provider),
-        borderRadius: BorderRadius.circular(12),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: OrmawaTheme.primarySoft,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(Icons.swap_horiz_rounded, size: 20, color: OrmawaTheme.primary),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'PILIH ORGANISASI MAHASISWA',
-                    style: TextStyle(
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF64748B),
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    current?.name ?? 'Pilih ORMAWA',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0F172A),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Ganti',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF475569),
-                    ),
-                  ),
-                  SizedBox(width: 2),
-                  Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: Color(0xFF64748B)),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
   void _openOrmawaPicker(BuildContext context, OrmawaProvider provider) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _OrmawaPickerSheet(provider: provider),
+      title: 'Daftar Organisasi Mahasiswa',
+      child: _OrmawaPickerSheet(provider: provider),
     );
   }
 
@@ -251,20 +242,9 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
     bool canManageFinance,
     OrmawaProvider provider,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      borderRadius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -274,17 +254,17 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                    color: BkuTheme.borderSubtle,
+                    borderRadius: BkuTheme.r8,
+                    border: Border.all(color: BkuTheme.border),
                   ),
-                  child: const Text(
-                    'SENTRALISASI PAGU ANGGARAN',
-                    style: TextStyle(
+                  child: Text(
+                    'Sentralisasi Pagu Anggaran',
+                    style: BkuTheme.textBadge.copyWith(
                       fontSize: 9,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF475569),
-                      letterSpacing: 0.4,
+                      color: BkuTheme.textHeading,
+                      letterSpacing: 0.2,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -296,25 +276,20 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (canManageFinance && setting != null) ...[
-                    ElevatedButton.icon(
+                    BkuButton.primary(
                       onPressed: () => _openConfigModal(context, setting),
-                      icon: const Icon(Icons.tune_rounded, size: 13),
-                      label: const Text('Konfigurasi', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: OrmawaTheme.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
+                      icon: Icons.tune_rounded,
+                      text: 'Konfigurasi',
+                      height: 28,
+                      fontSize: 10.5,
+                      fullWidth: false,
+                      customRadius: BkuTheme.r8,
                     ),
                     const SizedBox(width: 6),
                   ],
                   IconButton(
                     onPressed: () => provider.fetchFinancialSettings(),
-                    icon: const Icon(Icons.refresh_rounded, size: 16, color: Color(0xFF64748B)),
+                    icon: const Icon(Icons.refresh_rounded, size: 16, color: BkuTheme.textMuted),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(),
                     tooltip: 'Perbarui Data',
@@ -332,11 +307,11 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: OrmawaTheme.primarySoft,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: OrmawaTheme.primaryBorder),
+                  color: BkuTheme.primarySoft,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.primaryBorder),
                 ),
-                child: Icon(Icons.account_balance_wallet_rounded, size: 20, color: OrmawaTheme.primary),
+                child: Icon(Icons.account_balance_wallet_rounded, size: 20, color: BkuTheme.primary),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -348,19 +323,19 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         children: [
                           TextSpan(
                             text: '${_getGreeting()}, ',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: BkuTheme.textMuted),
                           ),
                           TextSpan(
                             text: orgName,
-                            style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                            style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: BkuTheme.textHeading),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 3),
-                    const Text(
+                    Text(
                       'Pusat kendali pagu anggaran resmi. Pantau alokasi plafon tahunan, serapan dana proposal, dan kuota tersedia secara real-time.',
-                      style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B), height: 1.35),
+                      style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted, height: 1.35),
                     ),
                   ],
                 ),
@@ -395,7 +370,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 title: 'Total Pagu Anggaran',
                 value: _formatCurrency(limit),
                 icon: Icons.account_balance_wallet_rounded,
-                badgeColor: const Color(0xFF0284C7),
+                badgeColor: BkuTheme.sky,
                 subtitle: 'Periode Tahun $year',
                 badgeText: isActive ? 'Pagu Aktif' : 'Nonaktif',
               ),
@@ -406,7 +381,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 title: 'Dana Terpakai',
                 value: _formatCurrency(used),
                 icon: Icons.trending_up_rounded,
-                badgeColor: const Color(0xFFE11D48),
+                badgeColor: BkuTheme.rose,
                 subtitle: 'Proposal & kegiatan disetujui',
                 badgeText: '${usedPct.round()}% Serapan',
               ),
@@ -421,7 +396,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 title: 'Dalam Pengajuan',
                 value: _formatCurrency(pending),
                 icon: Icons.hourglass_top_rounded,
-                badgeColor: const Color(0xFFD97706),
+                badgeColor: BkuTheme.amber,
                 subtitle: 'Menunggu review/approval',
                 badgeText: '${pendingPct.round()}% Kuota',
               ),
@@ -432,7 +407,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 title: 'Sisa Pagu Tersedia',
                 value: _formatCurrency(remaining),
                 icon: Icons.savings_rounded,
-                badgeColor: const Color(0xFF059669),
+                badgeColor: BkuTheme.emerald,
                 subtitle: 'Dapat diajukan proposal baru',
                 badgeText: '${remainingPct.round()}% Tersedia',
               ),
@@ -460,47 +435,39 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
 
     final totalProcessedPct = (usedPct + pendingPct).round();
 
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
+      borderRadius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.analytics_rounded, size: 18, color: Color(0xFF475569)),
+              const Icon(Icons.analytics_rounded, size: 18, color: BkuTheme.textBody),
               const SizedBox(width: 8),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'STATUS PENYERAPAN DANA',
-                  style: TextStyle(
-                    fontSize: 11,
+                  'Status Penyerapan Dana',
+                  style: BkuTheme.textSectionTitle.copyWith(
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF0F172A),
-                    letterSpacing: 0.3,
+                    letterSpacing: 0.2,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isActive ? const Color(0xFFECFDF5) : const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(6),
+                  color: isActive ? BkuTheme.emeraldSoft : BkuTheme.borderSubtle,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Text(
                   isActive ? 'Pagu Aktif' : 'Nonaktif',
-                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: isActive ? const Color(0xFF047857) : const Color(0xFF64748B)),
+                  style: TextStyle(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.bold,
+                    color: isActive ? BkuTheme.emerald : BkuTheme.textMuted,
+                  ),
                 ),
               ),
               if (enforce) ...[
@@ -508,12 +475,16 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(6),
+                    color: BkuTheme.indigoSoft,
+                    borderRadius: BkuTheme.r8,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Enforced',
-                    style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8)),
+                    style: TextStyle(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                      color: BkuTheme.indigo,
+                    ),
                   ),
                 ),
               ],
@@ -522,20 +493,20 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
           const SizedBox(height: 3),
           Text(
             'Rincian alokasi kuota anggaran dan realisasi pengajuan proposal tahun fiskal $year.',
-            style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+            style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
           ),
           const SizedBox(height: 12),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Tingkat Penyerapan Anggaran',
-                style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                style: BkuTheme.textCaption.copyWith(fontSize: 10.5, fontWeight: FontWeight.bold, color: BkuTheme.textBody),
               ),
               Text(
                 '$totalProcessedPct% Terpakai & Diproses',
-                style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                style: BkuTheme.textCardTitle.copyWith(fontSize: 10.5, fontWeight: FontWeight.w900),
               ),
             ],
           ),
@@ -546,9 +517,9 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               height: 10,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                color: BkuTheme.borderSubtle,
+                borderRadius: BkuTheme.r8,
+                border: Border.all(color: BkuTheme.border),
               ),
               clipBehavior: Clip.antiAlias,
               child: Row(
@@ -556,17 +527,17 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                   if (usedPct > 0)
                     Flexible(
                       flex: (usedPct * 10).toInt(),
-                      child: Container(color: const Color(0xFFEF4444)),
+                      child: Container(color: BkuTheme.rose),
                     ),
                   if (pendingPct > 0)
                     Flexible(
                       flex: (pendingPct * 10).toInt(),
-                      child: Container(color: const Color(0xFFF59E0B)),
+                      child: Container(color: BkuTheme.amber),
                     ),
                   if (remainingPct > 0)
                     Flexible(
                       flex: (remainingPct * 10).toInt(),
-                      child: Container(color: const Color(0xFF10B981)),
+                      child: Container(color: BkuTheme.emerald),
                     ),
                 ],
               ),
@@ -575,18 +546,18 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFEF3C7),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFFDE68A)),
+                color: BkuTheme.amberSoft,
+                borderRadius: BkuTheme.r10,
+                border: Border.all(color: BkuTheme.amberBorder),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 16, color: Color(0xFFB45309)),
-                  SizedBox(width: 8),
+                  const Icon(Icons.info_outline_rounded, size: 16, color: BkuTheme.amber),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Pagu anggaran belum dialokasikan oleh bagian Kemahasiswaan untuk organisasi ini.',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF92400E), fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 10, color: BkuTheme.amber, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -600,19 +571,19 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F2),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFFECDD3)),
+                    color: BkuTheme.roseSoft,
+                    borderRadius: BkuTheme.r10,
+                    border: Border.all(color: BkuTheme.roseBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'DANA TERPAKAI',
-                        style: TextStyle(
-                          fontSize: 8,
+                      Text(
+                        'Dana Terpakai',
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 8.5,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFFBE123C),
+                          color: BkuTheme.rose,
                           letterSpacing: 0.2,
                         ),
                         maxLines: 1,
@@ -624,13 +595,13 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(used),
-                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 11.5, fontWeight: FontWeight.w900),
                         ),
                       ),
                       const SizedBox(height: 1),
-                      const Text(
+                      Text(
                         'Disetujui',
-                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
+                        style: BkuTheme.textCaption.copyWith(fontSize: 8, color: BkuTheme.textMuted),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -643,19 +614,19 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFBEB),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFFDE68A)),
+                    color: BkuTheme.amberSoft,
+                    borderRadius: BkuTheme.r10,
+                    border: Border.all(color: BkuTheme.amberBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'PENGAJUAN',
-                        style: TextStyle(
-                          fontSize: 8,
+                      Text(
+                        'Pengajuan',
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 8.5,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFFB45309),
+                          color: BkuTheme.amber,
                           letterSpacing: 0.2,
                         ),
                         maxLines: 1,
@@ -667,13 +638,13 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(pending),
-                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 11.5, fontWeight: FontWeight.w900),
                         ),
                       ),
                       const SizedBox(height: 1),
-                      const Text(
+                      Text(
                         'Review',
-                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
+                        style: BkuTheme.textCaption.copyWith(fontSize: 8, color: BkuTheme.textMuted),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -686,19 +657,19 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFECFDF5),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFA7F3D0)),
+                    color: BkuTheme.emeraldSoft,
+                    borderRadius: BkuTheme.r10,
+                    border: Border.all(color: BkuTheme.emeraldBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'SISA KUOTA',
-                        style: TextStyle(
-                          fontSize: 8,
+                      Text(
+                        'Sisa Kuota',
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 8.5,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF047857),
+                          color: BkuTheme.emerald,
                           letterSpacing: 0.2,
                         ),
                         maxLines: 1,
@@ -710,13 +681,13 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _formatCurrency(remaining),
-                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: BkuTheme.textCardTitle.copyWith(fontSize: 11.5, fontWeight: FontWeight.w900),
                         ),
                       ),
                       const SizedBox(height: 1),
-                      const Text(
+                      Text(
                         'Tersedia',
-                        style: TextStyle(fontSize: 8, color: Color(0xFF64748B)),
+                        style: BkuTheme.textCaption.copyWith(fontSize: 8, color: BkuTheme.textMuted),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -732,55 +703,43 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
   }
 
   Widget _buildAuditLogsCard(BuildContext context, List<OrmawaFinancialAuditLog> auditLogs) {
-    return Container(
+    return BkuCard(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
+      borderRadius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.history_rounded, size: 18, color: Color(0xFF475569)),
+              const Icon(Icons.history_rounded, size: 18, color: BkuTheme.textBody),
               const SizedBox(width: 8),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'RIWAYAT PENYESUAIAN PAGU',
-                  style: TextStyle(
-                    fontSize: 11,
+                  'Riwayat Penyesuaian Pagu',
+                  style: BkuTheme.textSectionTitle.copyWith(
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF0F172A),
-                    letterSpacing: 0.3,
+                    letterSpacing: 0.2,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(6),
+                  color: BkuTheme.borderSubtle,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Text(
                   '${auditLogs.length} Riwayat',
-                  style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 8.5, fontWeight: FontWeight.bold, color: BkuTheme.textBody),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 3),
-          const Text(
+          Text(
             'Log catatan resmi seluruh alokasi dan penyesuaian nominal pagu anggaran.',
-            style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+            style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
           ),
           const SizedBox(height: 12),
 
@@ -789,17 +748,17 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                color: BkuTheme.borderSubtle,
+                borderRadius: BkuTheme.r12,
+                border: Border.all(color: BkuTheme.border),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Icon(Icons.receipt_long_rounded, size: 28, color: Color(0xFF94A3B8)),
-                  SizedBox(height: 6),
+                  const Icon(Icons.receipt_long_rounded, size: 28, color: BkuTheme.textPlaceholder),
+                  const SizedBox(height: 6),
                   Text(
                     'Belum ada catatan riwayat perubahan pagu',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                    style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.textMuted),
                   ),
                 ],
               ),
@@ -815,9 +774,9 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    color: BkuTheme.borderSubtle,
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.border),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -826,19 +785,24 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                             decoration: BoxDecoration(
-                              color: OrmawaTheme.primarySoft,
-                              borderRadius: BorderRadius.circular(4),
+                              color: BkuTheme.skySoft,
+                              borderRadius: BkuTheme.r8,
+                              border: Border.all(color: BkuTheme.skyBorder, width: 0.8),
                             ),
                             child: Text(
                               'Tahun ${log.periode}',
-                              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: OrmawaTheme.primaryDark),
+                              style: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF0284C7),
+                              ),
                             ),
                           ),
                           Text(
                             _formatDateTime(log.createdAt),
-                            style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                            style: BkuTheme.textCaption.copyWith(fontSize: 9, color: BkuTheme.textPlaceholder, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -846,25 +810,25 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Alokasi Pagu Baru:',
-                            style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                            style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, fontWeight: FontWeight.w600),
                           ),
                           Text(
                             _formatCurrency(log.newValue),
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                            style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900),
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.person_outline_rounded, size: 12, color: Color(0xFF64748B)),
+                          const Icon(Icons.person_outline_rounded, size: 12, color: BkuTheme.textMuted),
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
                               log.user,
-                              style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                              style: BkuTheme.textCaption.copyWith(fontSize: 9.5, fontWeight: FontWeight.bold, color: BkuTheme.textBody),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -874,7 +838,7 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
                             Expanded(
                               child: Text(
                                 '• ${log.reason}',
-                                style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
+                                style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.textMuted),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -896,9 +860,9 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r18,
+        border: Border.all(color: BkuTheme.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -907,25 +871,25 @@ class _OrmawaPaguScreenState extends State<OrmawaPaguScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: OrmawaTheme.primarySoft,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: OrmawaTheme.primaryBorder),
+              color: BkuTheme.primarySoft,
+              borderRadius: BkuTheme.r10,
+              border: Border.all(color: BkuTheme.primaryBorder),
             ),
-            child: Icon(Icons.info_outline_rounded, size: 18, color: OrmawaTheme.primary),
+            child: Icon(Icons.info_outline_rounded, size: 18, color: BkuTheme.primary),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Ketentuan & SOP Pagu Anggaran ORMAWA',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: BkuTheme.textSectionTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   'Pagu anggaran adalah batas maksimal plafon dana kampus yang dapat diajukan oleh organisasi mahasiswa dalam satu periode tahun anggaran. Pengajuan proposal kegiatan dengan sumber dana Pagu Kampus akan otomatis memotong kuota pagu setelah disetujui. Apabila memerlukan penambahan pagu atau penyesuaian kegiatan strategis, silakan mengajukan permohonan resmi kepada Bagian Kemahasiswaan Universitas.',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF64748B), height: 1.4),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted, height: 1.4),
                 ),
               ],
             ),
@@ -1045,293 +1009,161 @@ class _PaguConfigSheetState extends State<_PaguConfigSheet> {
     final simulatedRemaining = (_currentLimit - used - pending).clamp(0.0, double.infinity);
     final isYearLocked = widget.setting.budgetLimit > 0;
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Center(
-              child: Container(
-                width: 40,
-                height: 4.5,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BkuTextField(
+            controller: _budgetController,
+            label: 'Total Pagu Anggaran (IDR)',
+            keyboardType: TextInputType.number,
+            onChanged: _onBudgetChanged,
+            prefixIcon: Container(
+              width: 36,
+              alignment: Alignment.center,
+              child: const Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
             ),
-            const SizedBox(height: 14),
+          ),
+          const SizedBox(height: 10),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: OrmawaTheme.primarySoft,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(Icons.tune_rounded, size: 20, color: OrmawaTheme.primary),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Konfigurasi Pagu Anggaran',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                        ),
-                        Text(
-                          'PENYESUAIAN KUOTA PLAFON DANA KAMPUS',
-                          style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 0.3),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFF1F5F9),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFF64748B)),
-                    ),
-                  ),
-                ],
-              ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: BkuTheme.borderSubtle,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
             ),
-            const SizedBox(height: 14),
-
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Total Pagu Anggaran (IDR)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                    const SizedBox(height: 4),
-                    TextField(
-                      controller: _budgetController,
-                      keyboardType: TextInputType.number,
-                      onChanged: _onBudgetChanged,
-                      style: const TextStyle(fontSize: 13, color: Color(0xFF0F172A), fontWeight: FontWeight.bold),
-                      decoration: InputDecoration(
-                        prefixIcon: Container(
-                          width: 36,
-                          alignment: Alignment.center,
-                          child: Text('Rp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: OrmawaTheme.primary)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: OrmawaTheme.border),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: OrmawaTheme.border),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Alokasi Pagu Baru:', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                              Text(_formatCurrency(_currentLimit), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Realisasi Terpakai (Disetujui):', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                              Text(_formatCurrency(used), style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFFE11D48))),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Antrean Menunggu Review:', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                              Text(_formatCurrency(pending), style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFFD97706))),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Sisa Kuota Tersedia:', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: OrmawaTheme.textHeading)),
-                              Text(_formatCurrency(simulatedRemaining), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF059669))),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    const Text('Periode Tahun (Fiscal Year)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                    const SizedBox(height: 4),
-                    TextField(
-                      controller: _yearController,
-                      enabled: !isYearLocked,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isYearLocked ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.calendar_today_rounded,
-                          size: 16,
-                          color: isYearLocked ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                        ),
-                        filled: true,
-                        fillColor: isYearLocked ? const Color(0xFFF1F5F9) : Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      ),
-                    ),
-                    if (isYearLocked) ...[
-                      const SizedBox(height: 4),
-                      const Row(
-                        children: [
-                          Icon(Icons.lock_outline_rounded, size: 12, color: Color(0xFF64748B)),
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              'Tahun fiskal terkunci untuk konsistensi data anggaran tahun berjalan.',
-                              style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    const SizedBox(height: 14),
-
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Pagu Aktif', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                              Text('Izinkan pengajuan proposal berbasis pagu', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
-                            ],
-                          ),
-                          Switch(
-                            value: _active,
-                            onChanged: (val) => setState(() => _active = val),
-                            activeThumbColor: Colors.white,
-                            activeTrackColor: OrmawaTheme.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Tegakkan Batas (Enforce)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
-                              Text('Tolak otomatis proposal melebihi sisa pagu', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
-                            ],
-                          ),
-                          Switch(
-                            value: _enforceLimit,
-                            onChanged: (val) => setState(() => _enforceLimit = val),
-                            activeThumbColor: Colors.white,
-                            activeTrackColor: OrmawaTheme.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _isSubmitting ? null : _handleSubmit,
-                        icon: _isSubmitting
-                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                            : const Icon(Icons.save_rounded, size: 16),
-                        label: const Text('Simpan Perubahan Pagu', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: OrmawaTheme.primary,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
+                    Text('Alokasi Pagu Baru:', style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted)),
+                    Text(_formatCurrency(_currentLimit), style: BkuTheme.textCardTitle.copyWith(fontSize: 11, fontWeight: FontWeight.w900)),
                   ],
                 ),
-              ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Realisasi Terpakai (Disetujui):', style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted)),
+                    Text(_formatCurrency(used), style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: BkuTheme.rose)),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Antrean Menunggu Review:', style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted)),
+                    Text(_formatCurrency(pending), style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: BkuTheme.amber)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Sisa Kuota Tersedia:', style: BkuTheme.textCardTitle.copyWith(fontSize: 10.5, fontWeight: FontWeight.bold)),
+                    Text(_formatCurrency(simulatedRemaining), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: BkuTheme.emerald)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          BkuTextField(
+            controller: _yearController,
+            label: 'Periode Tahun (Fiscal Year)',
+            readOnly: isYearLocked,
+            keyboardType: TextInputType.number,
+            prefixIcon: Icon(
+              Icons.calendar_today_rounded,
+              size: 16,
+              color: isYearLocked ? BkuTheme.textPlaceholder : BkuTheme.textMuted,
+            ),
+          ),
+          if (isYearLocked) ...[
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                const Icon(Icons.lock_outline_rounded, size: 12, color: BkuTheme.textMuted),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    'Tahun fiskal terkunci untuk konsistensi data anggaran tahun berjalan.',
+                    style: BkuTheme.textCaption.copyWith(fontSize: 9.5, color: BkuTheme.textMuted),
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
+          const SizedBox(height: 14),
+
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Pagu Aktif', style: BkuTheme.textCardTitle.copyWith(fontSize: 11, fontWeight: FontWeight.bold)),
+                    Text('Izinkan pengajuan proposal berbasis pagu', style: BkuTheme.textCaption.copyWith(fontSize: 9, color: BkuTheme.textMuted)),
+                  ],
+                ),
+                Switch(
+                  value: _active,
+                  onChanged: (val) => setState(() => _active = val),
+                  activeThumbColor: Colors.white,
+                  activeTrackColor: BkuTheme.primary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.border),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Tegakkan Batas (Enforce)', style: BkuTheme.textCardTitle.copyWith(fontSize: 11, fontWeight: FontWeight.bold)),
+                    Text('Tolak otomatis proposal melebihi sisa pagu', style: BkuTheme.textCaption.copyWith(fontSize: 9, color: BkuTheme.textMuted)),
+                  ],
+                ),
+                Switch(
+                  value: _enforceLimit,
+                  onChanged: (val) => setState(() => _enforceLimit = val),
+                  activeThumbColor: Colors.white,
+                  activeTrackColor: BkuTheme.primary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          BkuButton.primary(
+            onPressed: _isSubmitting ? null : _handleSubmit,
+            isLoading: _isSubmitting,
+            icon: Icons.save_rounded,
+            text: 'Simpan Perubahan Pagu',
+            height: 46,
+          ),
+        ],
       ),
     );
   }
@@ -1369,108 +1201,30 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
       return n.contains(q) || c.contains(q);
     }).toList();
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.75,
-      ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.70,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 8),
-            width: 36,
-            height: 4,
-            decoration: BoxDecoration(
-              color: const Color(0xFFCBD5E1),
-              borderRadius: BorderRadius.circular(2),
-            ),
+          BkuTextField(
+            controller: _searchController,
+            hint: 'Cari nama atau kode ORMAWA...',
+            prefixIcon: const Icon(Icons.search_rounded, size: 18, color: BkuTheme.textPlaceholder),
+            onChanged: (val) => setState(() => _searchTerm = val),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: OrmawaTheme.primarySoft,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(Icons.groups_rounded, size: 18, color: OrmawaTheme.primary),
-                  ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Daftar Organisasi Mahasiswa',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F172A),
-                        ),
-                      ),
-                      Text(
-                        '${filtered.length} / ${all.length} Organisasi',
-                        style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close_rounded, size: 20, color: Color(0xFF64748B)),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (val) => setState(() => _searchTerm = val),
-              style: const TextStyle(fontSize: 12),
-              decoration: InputDecoration(
-                hintText: 'Cari nama atau kode ORMAWA...',
-                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF94A3B8)),
-                filled: true,
-                fillColor: const Color(0xFFF8FAFC),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: OrmawaTheme.primary, width: 1.5),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Flexible(
+          const SizedBox(height: 10),
+          Expanded(
             child: filtered.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 36),
-                    child: Center(
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 36),
                       child: Text(
                         'Tidak ada organisasi mahasiswa yang cocok.',
-                        style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                        style: TextStyle(fontSize: 12, color: BkuTheme.textPlaceholder),
                       ),
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
                     itemCount: filtered.length,
                     separatorBuilder: (ctx, i) => const SizedBox(height: 8),
                     itemBuilder: (ctx, i) {
@@ -1491,14 +1245,14 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                           widget.provider.selectFinancialOrmawa(item);
                           Navigator.pop(context);
                         },
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BkuTheme.r12,
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isSelected ? OrmawaTheme.primarySoft : const Color(0xFFF8FAFC),
-                            borderRadius: BorderRadius.circular(14),
+                            color: isSelected ? BkuTheme.primarySoft : BkuTheme.cardSurface,
+                            borderRadius: BkuTheme.r12,
                             border: Border.all(
-                              color: isSelected ? OrmawaTheme.primary : OrmawaTheme.border,
+                              color: isSelected ? BkuTheme.primary : BkuTheme.border,
                               width: isSelected ? 1.5 : 1,
                             ),
                           ),
@@ -1511,8 +1265,8 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                     width: 32,
                                     height: 32,
                                     decoration: BoxDecoration(
-                                      color: isSelected ? OrmawaTheme.primary : OrmawaTheme.border,
-                                      borderRadius: BorderRadius.circular(8),
+                                      color: isSelected ? BkuTheme.primary : BkuTheme.borderSubtle,
+                                      borderRadius: BkuTheme.r8,
                                     ),
                                     child: Center(
                                       child: Text(
@@ -1522,7 +1276,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w900,
-                                          color: isSelected ? Colors.white : const Color(0xFF475569),
+                                          color: isSelected ? Colors.white : BkuTheme.textBody,
                                         ),
                                       ),
                                     ),
@@ -1534,17 +1288,17 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                       children: [
                                         Text(
                                           item.name,
-                                          style: TextStyle(
+                                          style: BkuTheme.textCardTitle.copyWith(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
-                                            color: isSelected ? OrmawaTheme.primaryDark : OrmawaTheme.textHeading,
+                                            color: isSelected ? BkuTheme.primaryDark : BkuTheme.textHeading,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
                                           'Kode: ${item.code.isNotEmpty ? item.code : '-'}',
-                                          style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                          style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                         ),
                                       ],
                                     ),
@@ -1554,9 +1308,9 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                     children: [
                                       Text(
                                         _formatCurrency(limit),
-                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                        style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900),
                                       ),
-                                      const Text('Pagu Tahunan', style: TextStyle(fontSize: 8.5, color: Color(0xFF94A3B8))),
+                                      Text('Pagu Tahunan', style: BkuTheme.textCaption.copyWith(fontSize: 8.5, color: BkuTheme.textPlaceholder)),
                                     ],
                                   ),
                                 ],
@@ -1566,8 +1320,8 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                 Container(
                                   height: 6,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFE2E8F0),
-                                    borderRadius: BorderRadius.circular(3),
+                                    color: BkuTheme.borderSubtle,
+                                    borderRadius: BkuTheme.r8,
                                   ),
                                   child: Row(
                                     children: [
@@ -1576,7 +1330,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                           flex: (usedPct * 10).toInt(),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFFF43F5E),
+                                              color: BkuTheme.rose,
                                               borderRadius: BorderRadius.horizontal(
                                                 left: const Radius.circular(3),
                                                 right: (pendingPct == 0 && remPct == 0) ? const Radius.circular(3) : Radius.zero,
@@ -1589,9 +1343,9 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                           flex: (pendingPct * 10).toInt(),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFFF59E0B),
+                                              color: BkuTheme.amber,
                                               borderRadius: (usedPct == 0 && remPct == 0)
-                                                  ? BorderRadius.circular(3)
+                                                  ? const BorderRadius.all(Radius.circular(3))
                                                   : BorderRadius.zero,
                                             ),
                                           ),
@@ -1601,7 +1355,7 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                           flex: (remPct * 10).toInt(),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFF10B981),
+                                              color: BkuTheme.emerald,
                                               borderRadius: BorderRadius.horizontal(
                                                 left: (usedPct == 0 && pendingPct == 0) ? const Radius.circular(3) : Radius.zero,
                                                 right: const Radius.circular(3),
@@ -1616,9 +1370,9 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Pakai: ${_formatCurrency(used)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFFE11D48), fontWeight: FontWeight.bold)),
-                                    Text('Review: ${_formatCurrency(pending)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFFD97706), fontWeight: FontWeight.bold)),
-                                    Text('Sisa: ${_formatCurrency(rem)}', style: const TextStyle(fontSize: 8.5, color: Color(0xFF059669), fontWeight: FontWeight.bold)),
+                                    Text('Pakai: ${_formatCurrency(used)}', style: TextStyle(fontSize: 8.5, color: BkuTheme.rose, fontWeight: FontWeight.bold)),
+                                    Text('Review: ${_formatCurrency(pending)}', style: TextStyle(fontSize: 8.5, color: BkuTheme.amber, fontWeight: FontWeight.bold)),
+                                    Text('Sisa: ${_formatCurrency(rem)}', style: TextStyle(fontSize: 8.5, color: BkuTheme.emerald, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                               ],
@@ -1632,13 +1386,5 @@ class _OrmawaPickerSheetState extends State<_OrmawaPickerSheet> {
         ],
       ),
     );
-  }
-
-  String _formatCurrency(double amount) {
-    return NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp ',
-      decimalDigits: 0,
-    ).format(amount);
   }
 }

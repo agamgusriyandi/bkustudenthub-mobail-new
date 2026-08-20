@@ -1,31 +1,25 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/organization_history.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/add_organisasi_screen.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/daftar_ormawa_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import '../../utils/portfolio_pdf_generator.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:go_router/go_router.dart';
 
 class OrganisasiScreen extends StatefulWidget {
   const OrganisasiScreen({super.key});
@@ -72,12 +66,15 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     final orgHistory = student.organizationHistory;
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           try {
             BkuLoadingDialog.show(context);
-            await PortfolioPdfGenerator.generateAndPrintPortfolio(context.read<ProfileProvider>(), student);
+            await PortfolioPdfGenerator.generateAndPrintPortfolio(
+              context.read<ProfileProvider>(),
+              student,
+            );
             if (context.mounted) context.pop();
           } catch (e) {
             if (context.mounted) context.pop();
@@ -93,16 +90,13 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
             }
           }
         },
-        backgroundColor: context.appColors.error,
-        foregroundColor: context.appColors.onPrimary,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
-        icon: Icon(Icons.picture_as_pdf_rounded, color: context.appColors.onPrimary),
+        backgroundColor: BkuTheme.primary,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BkuTheme.rPill),
+        icon: const Icon(Icons.picture_as_pdf_rounded, color: Colors.white, size: 18),
         label: Text(
-          'Export Portfolio',
-          style: AppTextStyles.labelMd.copyWith(
-            color: context.appColors.onPrimary,
-            fontWeight: FontWeight.w900,
-          ),
+          'Export Portofolio',
+          style: BkuTheme.textButton.copyWith(color: Colors.white, fontSize: 12.5),
         ),
       ),
       body: CustomScrollView(
@@ -112,7 +106,7 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         slivers: [
           const BkuAppBar(
             title: 'Organisasi & Komunitas',
-            subtitle: 'Kampus Bhakti Kencana',
+            subtitle: 'Jejak Kontribusi & Kepemimpinan Mahasiswa',
             variant: AppBarVariant.student,
             expandedHeight: 130,
             showBackButton: true,
@@ -126,65 +120,50 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                 children: [
                   const SizedBox(height: AppSpacing.xl),
                   const FadeInAnimation(
-                    delay: 0.2,
+                    delay: 0.1,
                     child: _OrganizationBanner(),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
                   FadeInAnimation(
-                    delay: 0.3,
+                    delay: 0.15,
                     child: _buildPortfolioStats(orgHistory),
                   ),
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: AppSpacing.lg),
                   FadeInAnimation(
-                    delay: 0.4,
+                    delay: 0.2,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
                           _buildTabPill(
                             0,
-                            'Keanggotaan & Riwayat (${orgHistory.length})',
+                            'Keanggotaan (${orgHistory.length})',
                           ),
-                          const SizedBox(width: AppSpacing.sm),
+                          const SizedBox(width: 8),
                           _buildTabPill(1, 'Daftar Ormawa Baru'),
-                          const SizedBox(width: AppSpacing.sm),
+                          const SizedBox(width: 8),
                           _buildTabPill(
                             2,
-                            'Tagihan Iuran Kas (${student.iuranList.where((i) => i['status'] != 'lunas').length})',
+                            'Tagihan Iuran (${student.iuranList.where((i) => i['status'] != 'lunas').length})',
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
                   if (_activeTab == 0) ...[
                     if (student.isLoading)
                       const BkuShimmerList(itemCount: 2, itemHeight: 120)
                     else if (orgHistory.isEmpty)
                       FadeInAnimation(
-                        delay: 0.5,
+                        delay: 0.25,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.xxxl,
-                            horizontal: AppSpacing.xl,
-                          ),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral100,
-                            borderRadius: AppRadius.radiusXl,
-                            border: Border.all(
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainerHighest,
-                            ),
-                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 40),
                           alignment: Alignment.center,
                           child: Text(
                             'Belum ada riwayat organisasi yang sinkron.',
-                            style: AppTextStyles.labelMd.copyWith(
-                              color: context.appColors.outline,
-                            ),
+                            style: BkuTheme.textCaption,
                           ),
                         ),
                       )
@@ -194,25 +173,16 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
                         final org = entry.value;
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: FadeInAnimation(
-                            delay: 0.5 + (index * 0.1),
-                            child: _buildOrgCard(
-                              context,
-                              org,
-                              index % 2 == 0
-                                  ? Icons.groups_rounded
-                                  : Icons.diversity_3_rounded,
-                              index % 2 == 0
-                                  ? context.appColors.info
-                                  : context.appColors.info,
-                            ),
+                            delay: 0.05 + (index * 0.04),
+                            child: _buildOrgCard(context, org),
                           ),
                         );
                       }),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.sm),
                     FadeInAnimation(
-                      delay: 0.7,
+                      delay: 0.3,
                       child: _buildAddButton(context),
                     ),
                   ] else if (_activeTab == 1) ...[
@@ -230,229 +200,208 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     );
   }
 
-  Widget _buildOrgCard(
-    BuildContext context,
-    OrganizationHistory org,
-    IconData icon,
-    Color iconColor,
-  ) {
-    final name = org.namaOrganisasi;
+  Widget _buildOrgCard(BuildContext context, OrganizationHistory org) {
+    final rawName = org.namaOrganisasi;
+    final name = rawName.toUpperCase() == rawName
+        ? rawName.split(' ').map((w) => w.length > 3 ? '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}' : w).join(' ')
+        : rawName;
     final type = org.tipe;
     final role = org.jabatan;
     final achievements = org.achievements;
-    final period =
-        org.periodeSelesai != null
-            ? '${org.periodeMulai} - ${org.periodeSelesai}'
-            : '${org.periodeMulai} - Sekarang';
+    final period = org.periodeSelesai != null
+        ? '${org.periodeMulai} – ${org.periodeSelesai}'
+        : '${org.periodeMulai} – Sekarang';
     final statusVerifikasi = org.statusVerifikasi;
     final isVerified = statusVerifikasi.toLowerCase() == 'terverifikasi';
-    final isPending = statusVerifikasi.toLowerCase() == 'pending';
+    final isPending = statusVerifikasi.toLowerCase() == 'pending' ||
+        statusVerifikasi.toLowerCase() == 'menunggu';
 
-    Color statusBgColor = AppColors.neutral500.withAlpha(20);
-    Color statusTextColor = context.appColors.outline;
+    Color statusBg = const Color(0xFFFEF3C7);
+    Color statusText = const Color(0xFFD97706);
+    Color statusBorder = const Color(0xFFFDE68A);
+    IconData statusIcon = Icons.hourglass_top_rounded;
 
     if (isVerified) {
-      statusBgColor = AppColors.success.withAlpha(20);
-      statusTextColor = AppColors.success;
-    } else if (isPending) {
-      statusBgColor = AppColors.warning.withAlpha(20);
-      statusTextColor = AppColors.warning;
-    } else if (statusVerifikasi.toLowerCase() == 'ditolak') {
-      statusBgColor = AppColors.error.withAlpha(20);
-      statusTextColor = AppColors.error;
+      statusBg = const Color(0xFFECFDF5);
+      statusText = const Color(0xFF059669);
+      statusBorder = const Color(0xFFA7F3D0);
+      statusIcon = Icons.check_circle_rounded;
+    } else if (!isPending) {
+      statusBg = const Color(0xFFFFF1F2);
+      statusText = const Color(0xFFE11D48);
+      statusBorder = const Color(0xFFFFE4E6);
+      statusIcon = Icons.cancel_rounded;
     }
 
-    return BkuCard(
-      child: InkWell(
-        onTap: () => _showOrgDetail(context, org, icon, iconColor),
-        borderRadius: AppRadius.radiusXl,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: iconColor.withAlpha(10),
-                      borderRadius: AppRadius.radiusLg,
-                    ),
-                    child: Icon(icon, color: iconColor, size: 30),
-                  ),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s2),
-                        Text(
-                          type,
-                          style: AppTextStyles.labelMd.copyWith(
-                            color:
-                                context.appColors.onSurfaceVariant,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusBgColor,
-                      borderRadius: AppRadius.radiusMd,
-                    ),
-                    child: Text(
-                      statusVerifikasi,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: statusTextColor,
-                        fontSize: 8,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: AppColors.neutral100,
-                borderRadius: AppRadius.radiusXl,
-                border: Border.all(color: AppColors.neutral300),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'JABATAN',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: context.appColors.outline,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s2),
-                        Text(
-                          role,
-                          style: AppTextStyles.labelMd.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.neutral800,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 1.5,
-                    height: 25,
-                    color: AppColors.neutral300,
-                  ),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'PERIODE',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: context.appColors.outline,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s2),
-                        Text(
-                          period,
-                          style: AppTextStyles.labelMd.copyWith(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (achievements.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.s20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _showOrgDetail(context, org),
+          borderRadius: BkuTheme.r16,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      'Pencapaian Utama:',
-                      style: AppTextStyles.labelMd.copyWith(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 12,
-                        color: AppColors.neutral800,
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: BkuTheme.indigoSoft,
+                        borderRadius: BkuTheme.r12,
+                        border: Border.all(color: BkuTheme.indigoBorder),
+                      ),
+                      child: const Icon(Icons.groups_rounded, color: BkuTheme.indigo, size: 22),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: BkuTheme.textCardTitle.copyWith(fontSize: 14),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            type,
+                            style: BkuTheme.textCaption.copyWith(fontSize: 11),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-                    ...achievements.map(
-                      (a) => Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.s10),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: AppSpacing.padding2,
-                              decoration: BoxDecoration(
-                                color: iconColor.withAlpha(15),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.check_rounded,
-                                size: 10,
-                                color: iconColor,
-                              ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                      decoration: BoxDecoration(
+                        color: statusBg,
+                        borderRadius: BkuTheme.rPill,
+                        border: Border.all(color: statusBorder),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(statusIcon, color: statusText, size: 11),
+                          const SizedBox(width: 3.5),
+                          Text(
+                            statusVerifikasi,
+                            style: BkuTheme.textBadge.copyWith(
+                              color: statusText,
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
                             ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: Text(
-                                a,
-                                style: AppTextStyles.labelMd.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-            const SizedBox(height: AppSpacing.s20),
-          ],
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'JABATAN',
+                              style: BkuTheme.textBadge.copyWith(
+                                color: const Color(0xFF64748B),
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              role,
+                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(width: 1, height: 24, color: const Color(0xFFCBD5E1)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'PERIODE',
+                              style: BkuTheme.textBadge.copyWith(
+                                color: const Color(0xFF64748B),
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              period,
+                              style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (achievements.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: achievements.take(2).map((a) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                        decoration: BoxDecoration(
+                          color: BkuTheme.amberSoft,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: BkuTheme.amberBorder),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.emoji_events_rounded, color: BkuTheme.amber, size: 10),
+                            const SizedBox(width: 3),
+                            Text(
+                              a,
+                              style: BkuTheme.textBadge.copyWith(
+                                color: BkuTheme.amber,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -460,118 +409,126 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
 
   Widget _buildPortfolioStats(List<OrganizationHistory> orgHistory) {
     final totalOrg = orgHistory.length.toString();
-    final verifiedOrg =
-        orgHistory
-            .where(
-              (org) => org.statusVerifikasi.toLowerCase() == 'terverifikasi',
-            )
-            .length
-            .toString();
+    final verifiedOrg = orgHistory
+        .where((org) => org.statusVerifikasi.toLowerCase() == 'terverifikasi')
+        .length
+        .toString();
     final totalAchievements =
-        orgHistory
-            .fold<int>(0, (sum, org) => sum + org.achievements.length)
-            .toString();
+        orgHistory.fold<int>(0, (sum, org) => sum + org.achievements.length).toString();
 
     return Row(
       children: [
-        _buildStatItem(
-          totalOrg,
-          'Total Organisasi',
-          Icons.bolt_rounded,
-          AppColors.warning,
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Total Organisasi',
+            value: totalOrg,
+            icon: Icons.groups_rounded,
+            color: BkuTheme.indigo,
+            bgColor: BkuTheme.indigoSoft,
+            borderColor: BkuTheme.indigoBorder,
+          ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        _buildStatItem(
-          verifiedOrg,
-          'Terverifikasi',
-          Icons.verified_user_rounded,
-          AppColors.info,
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Terverifikasi',
+            value: verifiedOrg,
+            icon: Icons.verified_rounded,
+            color: BkuTheme.emerald,
+            bgColor: BkuTheme.emeraldSoft,
+            borderColor: BkuTheme.emeraldBorder,
+          ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        _buildStatItem(
-          totalAchievements,
-          'Pencapaian',
-          Icons.emoji_events_rounded,
-          AppColors.success,
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildKpiCard(
+            label: 'Pencapaian',
+            value: totalAchievements,
+            icon: Icons.emoji_events_rounded,
+            color: BkuTheme.amber,
+            bgColor: BkuTheme.amberSoft,
+            borderColor: BkuTheme.amberBorder,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatItem(
-    String count,
-    String label,
-    IconData icon,
-    Color color,
-  ) {
-    return Expanded(
-      child: BkuCard(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              count,
-              style: AppTextStyles.labelMd.copyWith(
-                fontWeight: FontWeight.w900,
-                fontSize: 18,
-                color: AppColors.neutral800,
-              ),
+  Widget _buildKpiCard({
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
+    required Color borderColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: borderColor, width: 0.8),
             ),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.labelSm.copyWith(
-                color: context.appColors.outline,
-                fontSize: 8,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Icon(icon, color: color, size: 16),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: BkuTheme.textKpiValue.copyWith(
+              fontSize: 20,
+              color: BkuTheme.textHeading,
+              letterSpacing: -0.5,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: BkuTheme.textCaption.copyWith(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+              color: BkuTheme.textMuted,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
 
-  static const List<Color> _tabPillColors = [
-    AppColors.info,
-    AppColors.success,
-    AppColors.info,
-  ];
-
   Widget _buildTabPill(int index, String label) {
     final isActive = _activeTab == index;
-    final activeColor = _tabPillColors[index % _tabPillColors.length];
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _activeTab = index;
-        });
-      },
+    return InkWell(
+      onTap: () => setState(() => _activeTab = index),
+      borderRadius: BkuTheme.rPill,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
         decoration: BoxDecoration(
-          color: isActive ? activeColor : AppColors.neutral200,
-          borderRadius: AppRadius.br20,
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: activeColor.withAlpha(70),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
+          color: isActive ? BkuTheme.primary : BkuTheme.cardSurface,
+          borderRadius: BkuTheme.rPill,
+          border: Border.all(
+            color: isActive ? BkuTheme.primary : BkuTheme.border,
+          ),
+          boxShadow: isActive ? BkuTheme.cardShadow : null,
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: isActive ? context.appColors.surface : AppColors.neutral600,
-            fontWeight: FontWeight.w700,
-            fontSize: 12,
+          style: BkuTheme.textCaption.copyWith(
+            fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+            color: isActive ? Colors.white : BkuTheme.textHeading,
+            fontSize: 11.5,
           ),
         ),
       ),
@@ -579,38 +536,31 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   }
 
   Widget _buildDaftarOrmawaTab() {
-    final openOrmawas =
-        _exploreOrmawaList.where((o) {
-          if (o['open_recruitment'] != true) return false;
+    final openOrmawas = _exploreOrmawaList.where((o) {
+      if (o['open_recruitment'] != true) return false;
 
-          final startStr = o['recruitment_start'];
-          final endStr = o['recruitment_end'];
-          final now = DateTime.now();
+      final startStr = o['recruitment_start'];
+      final endStr = o['recruitment_end'];
+      final now = DateTime.now();
 
-          if (startStr != null && startStr.toString().isNotEmpty) {
-            try {
-              final start = DateTime.parse(startStr.toString());
-              if (now.isBefore(start)) return false;
-            } catch (_) {}
-          }
+      if (startStr != null && startStr.toString().isNotEmpty) {
+        try {
+          final start = DateTime.parse(startStr.toString());
+          if (now.isBefore(start)) return false;
+        } catch (_) {}
+      }
 
-          if (endStr != null && endStr.toString().isNotEmpty) {
-            try {
-              final end = DateTime.parse(endStr.toString());
-              final endOfDay = DateTime(
-                end.year,
-                end.month,
-                end.day,
-                23,
-                59,
-                59,
-              );
-              if (now.isAfter(endOfDay)) return false;
-            } catch (_) {}
-          }
+      if (endStr != null && endStr.toString().isNotEmpty) {
+        try {
+          final end = DateTime.parse(endStr.toString());
+          final endOfDay = DateTime(end.year, end.month, end.day, 23, 59, 59);
+          if (now.isAfter(endOfDay)) return false;
+        } catch (_) {}
+      }
 
-          return true;
-        }).toList();
+      return true;
+    }).toList();
+
     if (_isExploreLoading) {
       return const BkuShimmerList(itemCount: 2, itemHeight: 90);
     }
@@ -620,102 +570,93 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         alignment: Alignment.center,
         child: Text(
           'Tidak ada pendaftaran ormawa saat ini.',
-          style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
+          style: BkuTheme.textCaption,
         ),
       );
     }
     return Column(
-      children:
-          openOrmawas.map((ormawa) {
-            final name = ormawa['Nama'] ?? ormawa['nama'] ?? 'Unknown';
-            final kategoriDetail =
-                ormawa['kategori_detail'] ?? ormawa['KategoriDetail'];
-            final category =
-                (kategoriDetail != null && kategoriDetail is Map)
-                    ? (kategoriDetail['nama'] ??
-                        kategoriDetail['Nama'] ??
-                        'Organisasi')
-                    : (ormawa['Kategori'] ??
-                        ormawa['kategori'] ??
-                        'Organisasi');
-            final logoUrl = ormawa['LogoURL'] ?? ormawa['logo_url'] ?? '';
-            final id =
-                ormawa['id']?.toString() ?? ormawa['ID']?.toString() ?? '';
-            final imageUrl = ApiGate.getImageUrl(logoUrl);
+      children: openOrmawas.map((ormawa) {
+        final name = ormawa['Nama'] ?? ormawa['nama'] ?? 'Unknown';
+        final kategoriDetail = ormawa['kategori_detail'] ?? ormawa['KategoriDetail'];
+        final category = (kategoriDetail != null && kategoriDetail is Map)
+            ? (kategoriDetail['nama'] ?? kategoriDetail['Nama'] ?? 'Organisasi')
+            : (ormawa['Kategori'] ?? ormawa['kategori'] ?? 'Organisasi');
+        final logoUrl = ormawa['LogoURL'] ?? ormawa['logo_url'] ?? '';
+        final id = ormawa['id']?.toString() ?? ormawa['ID']?.toString() ?? '';
+        final imageUrl = ApiGate.getImageUrl(logoUrl);
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: AppSpacing.md),
-              padding: AppSpacing.paddingLg,
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(color: AppColors.neutral300),
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r16,
+            border: Border.all(color: BkuTheme.border),
+            boxShadow: BkuTheme.cardShadow,
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BkuTheme.r12,
+                child: logoUrl.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        width: 44,
+                        height: 44,
+                        fit: BoxFit.cover,
+                        errorWidget: (_, url, error) => _buildDefaultLogo(),
+                        placeholder: (context, url) => Container(color: BkuTheme.borderSubtle),
+                      )
+                    : _buildDefaultLogo(),
               ),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: AppRadius.radiusSm,
-                    child: logoUrl.isNotEmpty
-                            ? CachedNetworkImage(imageUrl: 
-                              imageUrl,
-                              width: 48,
-                              height: 48,
-                              fit: BoxFit.cover,
-                              errorWidget: (_, url, error) => _buildDefaultLogo(),
-                              placeholder: (context, url) => Container(color: AppColors.neutral200),
-                            )
-                            : _buildDefaultLogo(),
-                  ),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: AppTextStyles.titleMd.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          category,
-                          style: AppTextStyles.bodySm.copyWith(
-                            color: AppColors.neutral500,
-                          ),
-                        ),
-                      ],
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
                     ),
-                  ),
-                  BkuButton.primary(
-                    fullWidth: false,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => DaftarOrmawaScreen(
-                                ormawaId: id,
-                                namaOrmawa: name,
-                              ),
-                        ),
-                      );
-                    },
-                    text: 'Daftar',
-                  ),
-                ],
+                    const SizedBox(height: 1),
+                    Text(
+                      category,
+                      style: BkuTheme.textCaption,
+                    ),
+                  ],
+                ),
               ),
-            );
-          }).toList(),
+              BkuButton(
+                text: 'Daftar',
+                height: 36,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DaftarOrmawaScreen(
+                        ormawaId: id,
+                        namaOrmawa: name,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
   Widget _buildDefaultLogo() {
     return Container(
-      width: 48,
-      height: 48,
-      color: AppColors.neutral200,
-      child: const Icon(Icons.groups_rounded, color: AppColors.neutral500),
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: BkuTheme.indigoSoft,
+        borderRadius: BkuTheme.r12,
+      ),
+      child: const Icon(Icons.groups_rounded, color: BkuTheme.indigo, size: 22),
     );
   }
 
@@ -730,157 +671,130 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
         alignment: Alignment.center,
         child: Text(
           'Tidak ada tagihan iuran aktif.',
-          style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500),
+          style: BkuTheme.textCaption,
         ),
       );
     }
     return Column(
-      children:
-          list.map((item) {
-            final id = item['id']?.toString() ?? item['ID']?.toString() ?? '';
-            final status = item['status'] ?? 'belum_bayar';
-            final catatan = item['catatan'] ?? '';
+      children: list.map((item) {
+        final id = item['id']?.toString() ?? item['ID']?.toString() ?? '';
+        final status = item['status'] ?? 'belum_bayar';
+        final catatan = item['catatan'] ?? '';
 
-            final iuran = item['iuran'] ?? {};
-            final ormawa = iuran['ormawa'] ?? {};
-            final ormawaName = ormawa['Nama'] ?? ormawa['nama'] ?? 'Ormawa';
-            final judul = iuran['judul'] ?? 'Iuran Kas';
-            final nominal = iuran['nominal'] ?? 0.0;
-            final tenggatStr = iuran['tenggat'] ?? '';
+        final iuran = item['iuran'] ?? {};
+        final ormawa = iuran['ormawa'] ?? {};
+        final ormawaName = ormawa['Nama'] ?? ormawa['nama'] ?? 'Ormawa';
+        final judul = iuran['judul'] ?? 'Iuran Kas';
+        final nominal = iuran['nominal'] ?? 0.0;
+        final tenggatStr = iuran['tenggat'] ?? '';
 
-            String formattedDate = '';
-            if (tenggatStr.isNotEmpty) {
-              try {
-                final date = DateTime.parse(tenggatStr);
-                formattedDate = '${date.day}/${date.month}/${date.year}';
-              } catch (_) {
-                formattedDate = tenggatStr;
-              }
-            }
+        String formattedDate = '';
+        if (tenggatStr.isNotEmpty) {
+          try {
+            final date = DateTime.parse(tenggatStr);
+            formattedDate = '${date.day}/${date.month}/${date.year}';
+          } catch (_) {
+            formattedDate = tenggatStr;
+          }
+        }
 
-            Color statusColor;
-            String statusLabel;
-            if (status == 'lunas') {
-              statusColor = AppColors.success;
-              statusLabel = 'Lunas';
-            } else if (status == 'pending') {
-              statusColor = AppColors.warning;
-              statusLabel = 'Menunggu Verifikasi';
-            } else if (status == 'ditolak') {
-              statusColor = AppColors.error;
-              statusLabel = 'Ditolak';
-            } else {
-              statusColor = AppColors.neutral500;
-              statusLabel = 'Belum Bayar';
-            }
+        Color statusBg = BkuTheme.statusWarningBg;
+        Color statusText = BkuTheme.statusWarningText;
+        Color statusBorder = BkuTheme.statusWarningBorder;
+        String statusLabel = 'Belum Bayar';
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: AppSpacing.md),
-              padding: AppSpacing.paddingLg,
-              decoration: BoxDecoration(
-                color: context.appColors.surface,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(color: AppColors.neutral300),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        if (status == 'lunas') {
+          statusBg = BkuTheme.statusSuccessBg;
+          statusText = BkuTheme.statusSuccessText;
+          statusBorder = BkuTheme.statusSuccessBorder;
+          statusLabel = 'Lunas';
+        } else if (status == 'pending') {
+          statusBg = BkuTheme.amberSoft;
+          statusText = BkuTheme.amber;
+          statusBorder = BkuTheme.amberBorder;
+          statusLabel = 'Verifikasi';
+        } else if (status == 'ditolak') {
+          statusBg = BkuTheme.statusDangerBg;
+          statusText = BkuTheme.statusDangerText;
+          statusBorder = BkuTheme.statusDangerBorder;
+          statusLabel = 'Ditolak';
+        }
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r16,
+            border: Border.all(color: BkuTheme.border),
+            boxShadow: BkuTheme.cardShadow,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        ormawaName,
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral600,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withAlpha(20),
-                          borderRadius: AppRadius.radiusSm,
-                        ),
-                        child: Text(
-                          statusLabel,
-                          style: AppTextStyles.bodySm.copyWith(
-                            color: statusColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    judul,
-                    style: AppTextStyles.titleMd.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Text(ormawaName, style: BkuTheme.textCaption.copyWith(fontWeight: FontWeight.w700)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                    decoration: BoxDecoration(
+                      color: statusBg,
+                      borderRadius: BkuTheme.rPill,
+                      border: Border.all(color: statusBorder),
+                    ),
+                    child: Text(
+                      statusLabel,
+                      style: BkuTheme.textBadge.copyWith(color: statusText, fontSize: 9),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Nominal:',
-                        style: AppTextStyles.bodySm.copyWith(
-                          color: AppColors.neutral500,
-                        ),
-                      ),
-                      Text(
-                        'Rp ${_formatNominal(nominal)}',
-                        style: AppTextStyles.titleMd.copyWith(
-                          color: context.appColors.error,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (formattedDate.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xs),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Tenggat Pembayaran:',
-                          style: AppTextStyles.bodySm.copyWith(
-                            color: AppColors.neutral500,
-                          ),
-                        ),
-                        Text(
-                          formattedDate,
-                          style: AppTextStyles.bodySm.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  if (catatan.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Catatan: $catatan',
-                      style: AppTextStyles.bodySm.copyWith(
-                        color: AppColors.error,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                  if (status == 'belum_bayar' || status == 'ditolak') ...[
-                    const SizedBox(height: AppSpacing.md),
-                    BkuButton.primary(
-                      onPressed: () => _showPaymentSheet(context, id, iuran),
-                      text: 'Bayar Sekarang',
-                    ),
-                  ],
                 ],
               ),
-            );
-          }).toList(),
+              const SizedBox(height: 4),
+              Text(judul, style: BkuTheme.textCardTitle.copyWith(fontSize: 14)),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Nominal:', style: BkuTheme.textCaption),
+                  Text(
+                    'Rp ${_formatNominal(nominal)}',
+                    style: BkuTheme.textKpiValue.copyWith(fontSize: 14, color: BkuTheme.rose),
+                  ),
+                ],
+              ),
+              if (formattedDate.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Tenggat:', style: BkuTheme.textCaption),
+                    Text(formattedDate, style: BkuTheme.textCaption.copyWith(fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ],
+              if (catatan.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Catatan: $catatan',
+                  style: BkuTheme.textCaption.copyWith(color: BkuTheme.rose, fontStyle: FontStyle.italic),
+                ),
+              ],
+              if (status == 'belum_bayar' || status == 'ditolak') ...[
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  width: double.infinity,
+                  child: BkuButton(
+                    onPressed: () => _showPaymentSheet(context, id, iuran),
+                    text: 'Bayar Sekarang',
+                    height: 38,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -897,110 +811,96 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return StatefulBuilder(
-          builder: (sheetCtx, setSheetState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: AppSpacing.xl,
-                right: AppSpacing.xl,
-                top: AppSpacing.xl,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.xxl,
+        return Container(
+          padding: EdgeInsets.only(
+            left: AppSpacing.xl,
+            right: AppSpacing.xl,
+            top: AppSpacing.xl,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.xxl,
+          ),
+          decoration: BoxDecoration(
+            color: BkuTheme.cardSurface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: BkuTheme.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral300,
-                        borderRadius: AppRadius.br2,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'Detail Pembayaran Transfer',
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Container(
-                    padding: AppSpacing.paddingLg,
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral100,
-                      borderRadius: AppRadius.radiusLg,
-                    ),
-                    child: Column(
-                      children: [
-                        _buildIuranDetailRow('Bank Tujuan', bankName),
-                        const Divider(height: 24),
-                        _buildIuranDetailRow('Nomor Rekening', noRekening),
-                        const Divider(height: 24),
-                        _buildIuranDetailRow(
-                          'Nama Pemilik Rekening',
-                          namaRekening,
-                        ),
-                        const Divider(height: 24),
-                        _buildIuranDetailRow(
-                          'Nominal Transfer',
-                          'Rp ${_formatNominal(nominal)}',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  BkuButton.primary(
-                    onPressed: () async {
-                      final provider = context.read<OrganizationProvider>();
-                      final navigator = Navigator.of(context);
-                      final picker = ImagePicker();
-                      final image = await picker.pickImage(
-                        source: ImageSource.gallery,
-                      );
-                      if (image != null) {
-                        if (!ctx.mounted) return;
-                        Navigator.pop(ctx);
-                        if (!context.mounted) return;
-                        BkuLoadingDialog.show(context);
-                        final success = await provider.payIuran(
-                          invoiceId,
-                          image.path,
-                        );
-                        navigator.pop();
+              const SizedBox(height: AppSpacing.lg),
+              Text('Detail Transfer Iuran', style: BkuTheme.textPageTitle.copyWith(fontSize: 16)),
+              const SizedBox(height: AppSpacing.md),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: BkuTheme.scaffoldBg,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.borderSubtle),
+                ),
+                child: Column(
+                  children: [
+                    _buildIuranDetailRow('Bank Tujuan', bankName),
+                    const Divider(height: 16),
+                    _buildIuranDetailRow('Nomor Rekening', noRekening),
+                    const Divider(height: 16),
+                    _buildIuranDetailRow('Nama Pemilik', namaRekening),
+                    const Divider(height: 16),
+                    _buildIuranDetailRow('Nominal', 'Rp ${_formatNominal(nominal)}'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              SizedBox(
+                width: double.infinity,
+                child: BkuButton(
+                  onPressed: () async {
+                    final provider = context.read<OrganizationProvider>();
+                    final navigator = Navigator.of(context);
+                    final picker = ImagePicker();
+                    final image = await picker.pickImage(source: ImageSource.gallery);
+                    if (image != null) {
+                      if (!ctx.mounted) return;
+                      Navigator.pop(ctx);
+                      if (!context.mounted) return;
+                      BkuLoadingDialog.show(context);
+                      final success = await provider.payIuran(invoiceId, image.path);
+                      navigator.pop();
 
-                        if (!context.mounted) return;
-                        BkuDialog.show(
-                          context: context,
-                          type: success ? BkuDialogType.success : BkuDialogType.error,
-                          title: success ? 'Sukses' : 'Gagal',
-                          message: success
-                              ? 'Bukti pembayaran berhasil diunggah! Menunggu konfirmasi bendahara.'
-                              : 'Gagal mengunggah bukti pembayaran.',
-                          primaryButtonText: 'OK',
-                          onPrimaryPressed: () {
-                            Navigator.pop(context);
-                            if (success) {
-                              provider.loadOrganizationData();
-                            }
-                          },
-                        );
-                      }
-                    },
-                    icon: Icons.upload_file_rounded,
-                    text: 'Pilih Bukti Pembayaran & Kirim',
-                  ),
-                ],
+                      if (!context.mounted) return;
+                      BkuDialog.show(
+                        context: context,
+                        type: success ? BkuDialogType.success : BkuDialogType.error,
+                        title: success ? 'Sukses' : 'Gagal',
+                        message: success
+                            ? 'Bukti pembayaran berhasil diunggah! Menunggu konfirmasi bendahara.'
+                            : 'Gagal mengunggah bukti pembayaran.',
+                        primaryButtonText: 'OK',
+                        onPrimaryPressed: () {
+                          Navigator.pop(context);
+                          if (success) {
+                            provider.loadOrganizationData();
+                          }
+                        },
+                      );
+                    }
+                  },
+                  icon: Icons.upload_file_rounded,
+                  text: 'Upload Bukti Pembayaran',
+                ),
               ),
-            );
-          },
+            ],
+          ),
         );
       },
     );
@@ -1010,14 +910,8 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: AppTextStyles.bodySm.copyWith(color: AppColors.neutral500),
-        ),
-        Text(
-          value,
-          style: AppTextStyles.bodySm.copyWith(fontWeight: FontWeight.bold),
-        ),
+        Text(label, style: BkuTheme.textCaption),
+        Text(value, style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5)),
       ],
     );
   }
@@ -1036,37 +930,112 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
   }
 
   Widget _buildAddButton(BuildContext context) {
-    const accentColor = AppColors.neutral800;
-    return InkWell(
-      onTap: () {
+    return BkuButton(
+      onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const AddOrganisasiScreen()),
         );
       },
-      borderRadius: AppRadius.br20,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
+      icon: Icons.add_circle_outline_rounded,
+      text: 'Tambah Riwayat Organisasi',
+      variant: BkuButtonVariant.outline,
+      height: 46,
+    );
+  }
+
+  void _showOrgDetail(BuildContext context, OrganizationHistory org) {
+    final name = org.namaOrganisasi;
+    final type = org.tipe;
+    final role = org.jabatan;
+    final period = org.periodeSelesai != null
+        ? '${org.periodeMulai} - ${org.periodeSelesai}'
+        : '${org.periodeMulai} - Sekarang';
+    final achievements = org.achievements;
+    final statusVerifikasi = org.statusVerifikasi;
+    final description = org.deskripsiKegiatan;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.85,
         decoration: BoxDecoration(
-          color: AppColors.neutral200,
-          borderRadius: AppRadius.br20,
+          color: BkuTheme.cardSurface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: const Column(
+        child: Column(
           children: [
-            Icon(
-              Icons.add_circle_outline_rounded,
-              color: accentColor,
-              size: 26,
+            const SizedBox(height: 12),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: BkuTheme.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Tambah Riwayat Organisasi',
-              style: TextStyle(
-                color: accentColor,
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
-                letterSpacing: 0.2,
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                children: [
+                  Text(name, style: BkuTheme.textPageTitle.copyWith(fontSize: 18)),
+                  Text('$type • $role', style: BkuTheme.textCardSubtitle),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildDetailRow('Periode', period),
+                  _buildDetailRow('Status', statusVerifikasi),
+                  if (description.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Text('Deskripsi Kontribusi', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+                    const SizedBox(height: 2),
+                    Text(description, style: BkuTheme.textCaption),
+                  ],
+                  if (achievements.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    Text('Pencapaian', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+                    const SizedBox(height: 4),
+                    ...achievements.map((a) => Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle_rounded, size: 14, color: BkuTheme.emerald),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(a, style: BkuTheme.textCaption)),
+                        ],
+                      ),
+                    )),
+                  ],
+                  const SizedBox(height: AppSpacing.xl),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: BkuButton(
+                          onPressed: () {
+                            context.pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddOrganisasiScreen(organization: org),
+                              ),
+                            );
+                          },
+                          icon: Icons.edit_rounded,
+                          text: 'Edit Riwayat',
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: BkuButton(
+                          onPressed: () => _confirmDeleteOrg(context, org.id),
+                          icon: Icons.delete_outline_rounded,
+                          text: 'Hapus',
+                          variant: BkuButtonVariant.danger,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -1075,499 +1044,50 @@ class _OrganisasiScreenState extends State<OrganisasiScreen> {
     );
   }
 
-  void _showOrgDetail(
-    BuildContext context,
-    OrganizationHistory org,
-    IconData icon,
-    Color iconColor,
-  ) {
-    final name = org.namaOrganisasi;
-    final type = org.tipe;
-    final role = org.jabatan;
-    final period =
-        org.periodeSelesai != null
-            ? '${org.periodeMulai} - ${org.periodeSelesai}'
-            : '${org.periodeMulai} - Sekarang';
-    final achievements = org.achievements;
-    final statusVerifikasi = org.statusVerifikasi;
-    final description = org.deskripsiKegiatan;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.85,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: AppSpacing.md),
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color:
-                        AppThemeColors.surfaceContainerHighest,
-                    borderRadius: AppRadius.radiusXs,
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color: iconColor.withAlpha(15),
-                              borderRadius: AppRadius.radiusXl,
-                            ),
-                            child: Icon(icon, color: iconColor, size: 32),
-                          ),
-                          const SizedBox(width: AppSpacing.lg),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  name,
-                                  style: AppTextStyles.titleLg.copyWith(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: AppColors.neutral800,
-                                  ),
-                                ),
-                                Text(
-                                  type,
-                                  style: AppTextStyles.labelMd.copyWith(
-                                    color:
-                                        Theme.of(
-                                          context,
-                                        ).colorScheme.onSurfaceVariant,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-                      _buildDetailSection('Detail Posisi', [
-                        _buildDetailRow(Icons.badge_rounded, 'Jabatan', role),
-                        _buildDetailRow(
-                          Icons.calendar_today_rounded,
-                          'Periode',
-                          period,
-                        ),
-                        _buildDetailRow(
-                          Icons.info_outline_rounded,
-                          'Status Verifikasi',
-                          statusVerifikasi,
-                        ),
-                      ]),
-                      const SizedBox(height: AppSpacing.xxl),
-                      Text(
-                        'Deskripsi Kontribusi',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.neutral800,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        description.isNotEmpty
-                            ? description
-                            : 'Tidak ada deskripsi kontribusi.',
-                        style: AppTextStyles.labelMd.copyWith(
-                          color: context.appColors.onSurfaceVariant,
-                          height: 1.5,
-                        ),
-                      ),
-                      if (achievements.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.xxl),
-                        Text(
-                          'Pencapaian & Impact',
-                          style: AppTextStyles.titleLg.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.neutral800,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        ...achievements.map(
-                          (a) => Container(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHighest
-                                  .withAlpha(30),
-                              borderRadius: AppRadius.radiusLg,
-                              border: Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainerHighest
-                                    .withAlpha(50),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.stars_rounded,
-                                  color: AppColors.warning,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Text(
-                                    a,
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: AppSpacing.xxl),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Dokumentasi',
-                            style: AppTextStyles.titleLg.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.neutral800,
-                            ),
-                          ),
-                          TextButton.icon(
-                            onPressed: () async {
-                              final picker = ImagePicker();
-                              final pickedFile = await picker.pickImage(
-                                source: ImageSource.gallery,
-                              );
-                              if (pickedFile != null && context.mounted) {
-                                try {
-                                  BkuLoadingDialog.show(context);
-                                  await context
-                                      .read<OrganizationProvider>()
-                                      .uploadOrganizationDokumentasi(
-                                        org.id,
-                                        pickedFile.path,
-                                      );
-                                  if (!context.mounted) return;
-                                  BkuLoadingDialog.hide(context);
-                                  context.pop();
-                                  AppSnackbar.showSuccess(
-                                    context,
-                                    'Dokumentasi berhasil diunggah',
-                                  );
-                                } catch (e) {
-                                  if (!context.mounted) return;
-                                  BkuLoadingDialog.hide(context);
-                                  AppSnackbar.showError(
-                                    context,
-                                    ErrorHandler.getMessage(e),
-                                  );
-                                }
-                              }
-                            },
-                            icon: const Icon(Icons.upload_rounded, size: 16),
-                            label: Text(
-                              org.dokumentasi != null &&
-                                      org.dokumentasi!.isNotEmpty
-                                  ? 'Ganti'
-                                  : 'Upload',
-                            ),
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.onSurface,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: AppSpacing.sm,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      if (org.dokumentasi != null &&
-                          org.dokumentasi!.isNotEmpty)
-                        org.dokumentasi!.toLowerCase().endsWith('.pdf')
-                            ? InkWell(
-                              onTap: () async {
-                                final urlStr = org.dokumentasi!;
-                                final uri = Uri.parse(
-                                  urlStr.startsWith('http')
-                                      ? urlStr
-                                      : '${ApiGate.baseUrl.replaceAll('/api', '')}$urlStr',
-                                );
-                                if (await canLaunchUrl(uri)) {
-                                  await launchUrl(
-                                    uri,
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                }
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(AppSpacing.lg),
-                                decoration: BoxDecoration(
-                                  color: AppColors.neutral100,
-                                  borderRadius: AppRadius.radiusLg,
-                                  border: Border.all(
-                                    color: AppColors.neutral200,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.picture_as_pdf_rounded,
-                                      color: AppColors.error,
-                                      size: 32,
-                                    ),
-                                    const SizedBox(width: AppSpacing.md),
-                                    Expanded(
-                                      child: Text(
-                                        'Dokumen PDF',
-                                        style: AppTextStyles.labelMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.open_in_new_rounded,
-                                      size: 18,
-                                      color: AppColors.neutral600,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                            : ClipRRect(
-                              borderRadius: AppRadius.radiusLg,
-                              child: CachedNetworkImage(imageUrl: 
-                                org.dokumentasi!.startsWith('http')
-                                    ? org.dokumentasi!
-                                    : '${ApiGate.baseUrl.replaceAll('/api', '')}${org.dokumentasi}',
-                                fit: BoxFit.cover,
-                                height: 180,
-                                width: double.infinity,
-                                errorWidget:
-                                    (ctx, err, stack) => Container(
-                                      height: 100,
-                                      color: AppColors.neutral100,
-                                      child: const Center(
-                                        child: Icon(Icons.broken_image_rounded),
-                                      ),
-                                    ),
-                                placeholder: (context, url) => Container(color: AppColors.neutral200),
-                              ),
-                            )
-                      else
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral50,
-                            borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: AppColors.neutral200),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.photo_library_rounded,
-                                size: 40,
-                                color: AppColors.neutral300,
-                              ),
-                              const SizedBox(height: AppSpacing.md),
-                              Text(
-                                'Belum ada dokumentasi',
-                                style: TextStyle(
-                                  color: AppColors.neutral500,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (statusVerifikasi.toLowerCase() == 'menunggu' ||
-                          statusVerifikasi.toLowerCase() == 'pending') ...[
-                        const SizedBox(height: AppSpacing.xl),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 50,
-                                child: BkuButton(
-                                  onPressed: () {
-                                    context.pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => AddOrganisasiScreen(
-                                              organization: org,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  icon: Icons.edit_rounded,
-                                  text: 'Edit Riwayat',
-                                  variant: BkuButtonVariant.primary,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: SizedBox(
-                                height: 50,
-                                child: BkuButton(
-                                  onPressed:
-                                      () => _confirmDeleteOrg(context, org.id),
-                                  icon: Icons.delete_outline_rounded,
-                                  text: 'Hapus',
-                                  variant: BkuButtonVariant.danger,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: BkuButton(
-                            onPressed: () => context.pop(),
-                            icon: Icons.close_rounded,
-                            text: 'Tutup',
-                            variant: BkuButtonVariant.outline,
-                          ),
-                        ),
-                      ] else ...[
-                        const SizedBox(height: AppSpacing.xl),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: BkuButton(
-                            onPressed: () => context.pop(),
-                            icon: Icons.close_rounded,
-                            text: 'Tutup',
-                            variant: BkuButtonVariant.outline,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: AppSpacing.xxxl),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-    );
-  }
-
   void _confirmDeleteOrg(BuildContext context, String id) {
     BkuDialog.show(
       context: context,
       type: BkuDialogType.warning,
       title: 'Hapus Riwayat Organisasi?',
-      message: 'Apakah Anda yakin ingin menghapus riwayat organisasi ini? Tindakan ini tidak dapat dibatalkan.',
+      message: 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
       secondaryButtonText: 'Batal',
       onSecondaryPressed: () => Navigator.pop(context),
       primaryButtonText: 'Ya, Hapus',
       onPrimaryPressed: () async {
         Navigator.pop(context);
-
-              try {
-                BkuLoadingDialog.show(context);
-                await context
-                    .read<OrganizationProvider>()
-                    .deleteOrganizationHistory(id);
-                if (context.mounted) {
-                  BkuLoadingDialog.hide(context);
-                  context.pop();
-                  AppSnackbar.showSuccess(
-                    context,
-                    'Riwayat organisasi berhasil dihapus',
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  BkuLoadingDialog.hide(context);
-                  BkuDialog.show(
-                    context: context,
-                    type: BkuDialogType.error,
-                    title: 'Gagal Menghapus Data',
-                    message: ErrorHandler.getMessage(e),
-                    primaryButtonText: 'Tutup',
-                    onPrimaryPressed: () => Navigator.pop(context),
-                  );
-                }
-              }
+        try {
+          BkuLoadingDialog.show(context);
+          await context.read<OrganizationProvider>().deleteOrganizationHistory(id);
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            context.pop();
+            AppSnackbar.showSuccess(context, 'Riwayat organisasi berhasil dihapus');
+          }
+        } catch (e) {
+          if (context.mounted) {
+            BkuLoadingDialog.hide(context);
+            BkuDialog.show(
+              context: context,
+              type: BkuDialogType.error,
+              title: 'Gagal',
+              message: ErrorHandler.getMessage(e),
+              primaryButtonText: 'Tutup',
+              onPrimaryPressed: () => Navigator.pop(context),
+            );
+          }
+        }
       },
     );
   }
 
-  Widget _buildDetailSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: AppTextStyles.titleLg.copyWith(
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            color: AppColors.neutral800,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        BkuCard(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(children: children),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String label, String value) {
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, size: 18, color: AppColors.neutral600),
-          const SizedBox(width: AppSpacing.md),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.labelSm.copyWith(
-                  color: context.appColors.outline,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                value,
-                style: AppTextStyles.labelMd.copyWith(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 13,
-                  color: AppColors.neutral800,
-                ),
-              ),
-            ],
-          ),
+          Text(label, style: BkuTheme.textCaption),
+          Text(value, style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5)),
         ],
       ),
     );
@@ -1579,46 +1099,61 @@ class _OrganizationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Row(
         children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: BkuTheme.indigoSoft,
+                    borderRadius: BkuTheme.rPill,
+                    border: Border.all(color: BkuTheme.indigoBorder),
+                  ),
+                  child: Text(
+                    'Leadership Portfolio',
+                    style: BkuTheme.textBadge.copyWith(
+                      color: BkuTheme.indigo,
+                      fontSize: 9.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Jejak Kontribusi & Kepemimpinan',
+                  style: BkuTheme.textPageTitle.copyWith(fontSize: 16),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Catat setiap pengalaman organisasimu untuk masa depan.',
+                  style: BkuTheme.textCardSubtitle,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: AppColors.neutral100,
-              borderRadius: AppRadius.radiusSm,
+              color: BkuTheme.indigoSoft,
+              borderRadius: BkuTheme.r16,
+              border: Border.all(color: BkuTheme.indigoBorder),
             ),
-            child: Text(
-              'LEADERSHIP PORTFOLIO',
-              style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.neutral800,
-                fontSize: 9,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            'Jejak Kontribusi\n& Kepemimpinan',
-            style: AppTextStyles.headlineMd.copyWith(
-              color: AppColors.neutral800,
-              fontSize: 22,
-              height: 1.2,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Catat setiap pengalaman organisasimu untuk masa depan.',
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.w500,
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: BkuTheme.indigo,
+              size: 24,
             ),
           ),
         ],

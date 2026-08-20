@@ -1,3 +1,4 @@
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -124,29 +125,29 @@ class ModuleDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           padding: AppSpacing.paddingLg,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF0F9FF),
-                            borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: const Color(0xFFBAE6FD), width: 1.2),
+                            color: BkuTheme.indigoSoft,
+                            borderRadius: BkuTheme.r16,
+                            border: Border.all(color: BkuTheme.indigoBorder, width: 1.2),
                           ),
                           child: Row(
                             children: [
                               Container(
-                                padding: AppSpacing.padding10,
-                                decoration: const BoxDecoration(color: Color(0xFF0284C7), shape: BoxShape.circle),
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(color: BkuTheme.indigo, shape: BoxShape.circle),
                                 child: const Icon(Icons.link_rounded, color: Colors.white, size: 22),
                               ),
-                              const SizedBox(width: AppSpacing.s14),
+                              const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('Tautan Web Eksternal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0369A1))),
-                                    const SizedBox(height: AppSpacing.s3),
-                                    Text(mission.linkUrl!, style: const TextStyle(color: Color(0xFF0284C7), fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                    Text('Tautan Web Eksternal', style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5, color: BkuTheme.indigo)),
+                                    const SizedBox(height: 2),
+                                    Text(mission.linkUrl!, style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
                                   ],
                                 ),
                               ),
-                              const Icon(Icons.chevron_right_rounded, color: Color(0xFF0284C7), size: 22),
+                              Icon(Icons.chevron_right_rounded, color: BkuTheme.indigo, size: 22),
                             ],
                           ),
                         ),

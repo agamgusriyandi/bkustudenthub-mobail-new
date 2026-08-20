@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class EditAbsensiScreen extends StatefulWidget {
@@ -157,7 +161,7 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
     }
   }
 
-  Future<void> _pickDate(Color primaryColor) async {
+  Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
@@ -166,13 +170,13 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: primaryColor,
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF0F766E),
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: Color(0xFF0F172A),
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -180,20 +184,20 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
     if (picked != null) setState(() => _selectedDate = picked);
   }
 
-  Future<void> _pickTime({required bool isStart, required Color primaryColor}) async {
+  Future<void> _pickTime({required bool isStart}) async {
     final picked = await showTimePicker(
       context: context,
       initialTime: isStart ? _selectedStartTime : _selectedEndTime,
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: primaryColor,
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF0F766E),
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: Color(0xFF0F172A),
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -209,67 +213,17 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
     }
   }
 
-  Color _getStatusBg(String status, Color primary) {
-    switch (status) {
-      case 'berlangsung':
-        return const Color(0xFFFEF3C7);
-      case 'selesai':
-        return const Color(0xFFD1FAE5);
-      case 'dibatalkan':
-        return const Color(0xFFFFE4E6);
-      default:
-        return primary.withAlpha(25);
-    }
-  }
-
-  Color _getStatusColor(String status, Color primary) {
-    switch (status) {
-      case 'berlangsung':
-        return const Color(0xFFB45309);
-      case 'selesai':
-        return const Color(0xFF047857);
-      case 'dibatalkan':
-        return const Color(0xFFBE123C);
-      default:
-        return primary;
-    }
-  }
-
-  Widget _buildInputField(TextEditingController controller, String hint, {int maxLines = 1}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8), fontWeight: FontWeight.normal),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-          border: InputBorder.none,
-          isDense: true,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final primaryColor = OrmawaTheme.primary;
-
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
             title: 'Edit Sesi Presensi',
             subtitle: 'Event Management',
             variant: AppBarVariant.ormawa,
-            expandedHeight: 130.0,
+            expandedHeight: 125.0,
             showBackButton: true,
             isExpandable: false,
           ),
@@ -279,47 +233,42 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF94A3B8).withAlpha(15),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    borderRadius: 18,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('NAMA SESI KEGIATAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
-                        const SizedBox(height: 6),
-                        _buildInputField(_namaController, 'Nama kegiatan...'),
+                        BkuTextField(
+                          label: 'NAMA SESI KEGIATAN *',
+                          hint: 'Nama kegiatan...',
+                          controller: _namaController,
+                          prefixIcon: const Icon(Icons.event_note_rounded, size: 18, color: BkuTheme.textPlaceholder),
+                        ),
                         const SizedBox(height: 14),
 
-                        const Text('TANGGAL PELAKSANAAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
+                        Text(
+                          'TANGGAL PELAKSANAAN *',
+                          style: BkuTheme.textBadge.copyWith(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.textMuted, letterSpacing: 0.5),
+                        ),
                         const SizedBox(height: 6),
                         InkWell(
-                          onTap: () => _pickDate(primaryColor),
-                          borderRadius: BorderRadius.circular(12),
+                          onTap: _pickDate,
+                          borderRadius: BkuTheme.r12,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              color: BkuTheme.borderSubtle,
+                              borderRadius: BkuTheme.r12,
+                              border: Border.all(color: BkuTheme.border),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today_rounded, size: 15, color: primaryColor),
+                                Icon(Icons.calendar_today_rounded, size: 16, color: BkuTheme.primary),
                                 const SizedBox(width: 8),
                                 Text(
                                   DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDate),
-                                  style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                  style: BkuTheme.textBodyRegular.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -333,25 +282,28 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('MULAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
+                                  Text(
+                                    'MULAI *',
+                                    style: BkuTheme.textBadge.copyWith(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.textMuted),
+                                  ),
                                   const SizedBox(height: 6),
                                   InkWell(
-                                    onTap: () => _pickTime(isStart: true, primaryColor: primaryColor),
-                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () => _pickTime(isStart: true),
+                                    borderRadius: BkuTheme.r12,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF8FAFC),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        color: BkuTheme.borderSubtle,
+                                        borderRadius: BkuTheme.r12,
+                                        border: Border.all(color: BkuTheme.border),
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.schedule_rounded, size: 15, color: primaryColor),
+                                          Icon(Icons.schedule_rounded, size: 16, color: BkuTheme.primary),
                                           const SizedBox(width: 6),
                                           Text(
                                             '${_selectedStartTime.hour.toString().padLeft(2, '0')}:${_selectedStartTime.minute.toString().padLeft(2, '0')} WIB',
-                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                            style: BkuTheme.textBodyRegular.copyWith(fontSize: 11.5, fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
@@ -365,25 +317,28 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('SELESAI *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B))),
+                                  Text(
+                                    'SELESAI *',
+                                    style: BkuTheme.textBadge.copyWith(fontSize: 9.5, fontWeight: FontWeight.w900, color: BkuTheme.textMuted),
+                                  ),
                                   const SizedBox(height: 6),
                                   InkWell(
-                                    onTap: () => _pickTime(isStart: false, primaryColor: primaryColor),
-                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () => _pickTime(isStart: false),
+                                    borderRadius: BkuTheme.r12,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF8FAFC),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                                        color: BkuTheme.borderSubtle,
+                                        borderRadius: BkuTheme.r12,
+                                        border: Border.all(color: BkuTheme.border),
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.event_available_rounded, size: 15, color: primaryColor),
+                                          Icon(Icons.event_available_rounded, size: 16, color: BkuTheme.primary),
                                           const SizedBox(width: 6),
                                           Text(
                                             '${_selectedEndTime.hour.toString().padLeft(2, '0')}:${_selectedEndTime.minute.toString().padLeft(2, '0')} WIB',
-                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                            style: BkuTheme.textBodyRegular.copyWith(fontSize: 11.5, fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
@@ -396,82 +351,38 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        const Text('STATUS SESI KEGIATAN *', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF8FAFC),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedStatus,
-                              isExpanded: true,
-                              icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Color(0xFF64748B)),
-                              selectedItemBuilder: (context) {
-                                return _statusOptions.map((opt) {
-                                  final val = opt['value']!;
-                                  final lbl = opt['label']!;
-                                  final bg = _getStatusBg(val, primaryColor);
-                                  final fg = _getStatusColor(val, primaryColor);
-                                  return Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: bg,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        lbl,
-                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fg),
-                                      ),
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                              items: _statusOptions.map((opt) {
-                                final val = opt['value']!;
-                                final lbl = opt['label']!;
-                                final bg = _getStatusBg(val, primaryColor);
-                                final fg = _getStatusColor(val, primaryColor);
-                                return DropdownMenuItem<String>(
-                                  value: val,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: bg,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          lbl,
-                                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: fg),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                if (val != null) setState(() => _selectedStatus = val);
-                              },
-                            ),
-                          ),
+                        BkuDropdown<String>(
+                          label: 'STATUS SESI KEGIATAN *',
+                          value: _selectedStatus,
+                          items: _statusOptions.map((opt) {
+                            return DropdownMenuItem<String>(
+                              value: opt['value']!,
+                              child: Text(
+                                opt['label']!,
+                                style: BkuTheme.textBodyRegular.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            if (val != null) setState(() => _selectedStatus = val);
+                          },
                         ),
                         const SizedBox(height: 14),
 
-                        const Text('LOKASI / RUANGAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
-                        const SizedBox(height: 6),
-                        _buildInputField(_lokasiController, 'Contoh: Ruang Auditorium BKU...'),
+                        BkuTextField(
+                          label: 'Lokasi / Ruangan',
+                          hint: 'Contoh: Ruang Auditorium BKU...',
+                          controller: _lokasiController,
+                          prefixIcon: const Icon(Icons.location_on_outlined, size: 18, color: BkuTheme.textPlaceholder),
+                        ),
                         const SizedBox(height: 14),
 
-                        const Text('KETERANGAN & DESKRIPSI', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B), letterSpacing: 0.5)),
-                        const SizedBox(height: 6),
-                        _buildInputField(_deskripsiController, 'Keterangan agenda kegiatan...', maxLines: 3),
+                        BkuTextField(
+                          label: 'Keterangan & Deskripsi',
+                          hint: 'Keterangan agenda kegiatan...',
+                          controller: _deskripsiController,
+                          maxLines: 3,
+                        ),
                       ],
                     ),
                   ),
@@ -480,37 +391,26 @@ class _EditAbsensiScreenState extends State<EditAbsensiScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: OutlinedButton(
+                        child: BkuButton.outline(
                           onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF334155),
-                            side: const BorderSide(color: Color(0xFFCBD5E1)),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: const Text('Batalkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                          text: 'Batalkan',
+                          height: 46,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 10),
                       Expanded(
-                        child: ElevatedButton.icon(
+                        child: BkuButton.primary(
                           onPressed: _isSubmitting ? null : _handleSubmit,
-                          icon: _isSubmitting
-                              ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                              : const Icon(Icons.check_circle_rounded, size: 16),
-                          label: const Text('Simpan Perubahan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
+                          isLoading: _isSubmitting,
+                          icon: Icons.save_rounded,
+                          text: 'Simpan Perubahan',
+                          height: 46,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
+
+                  const SizedBox(height: AppSpacing.s140),
                 ],
               ),
             ),

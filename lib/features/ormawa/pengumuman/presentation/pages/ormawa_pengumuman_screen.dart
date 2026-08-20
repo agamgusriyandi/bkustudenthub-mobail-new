@@ -3,18 +3,22 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_filter_tabs.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_search_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_empty_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/create_pengumuman_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/edit_pengumuman_screen.dart';
+import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/ormawa_pengumuman_detail_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 
 class OrmawaPengumumanScreen extends StatefulWidget {
@@ -51,30 +55,30 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
   Color _getCategoryColor(String cat) {
     switch (cat.toLowerCase()) {
       case 'umum':
-        return const Color(0xFF475569);
+        return BkuTheme.textBody;
       case 'kegiatan':
-        return OrmawaTheme.primary;
+        return BkuTheme.primary;
       case 'penting':
-        return const Color(0xFFE11D48);
+        return BkuTheme.rose;
       case 'prestasi':
-        return const Color(0xFFD97706);
+        return BkuTheme.amber;
       default:
-        return const Color(0xFF475569);
+        return BkuTheme.textBody;
     }
   }
 
   Color _getCategoryBgColor(String cat) {
     switch (cat.toLowerCase()) {
       case 'umum':
-        return const Color(0xFFF1F5F9);
+        return BkuTheme.borderSubtle;
       case 'kegiatan':
-        return OrmawaTheme.primarySoft;
+        return BkuTheme.primarySoft;
       case 'penting':
-        return const Color(0xFFFFE4E6);
+        return BkuTheme.roseSoft;
       case 'prestasi':
-        return const Color(0xFFFEF3C7);
+        return BkuTheme.amberSoft;
       default:
-        return const Color(0xFFF1F5F9);
+        return BkuTheme.borderSubtle;
     }
   }
 
@@ -98,330 +102,189 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     final catBg = _getCategoryBgColor(item.kategori);
     final displayDate = item.tanggalMulai ?? item.createdAt;
 
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(ctx).size.height * 0.85,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                child: Row(
+      title: 'Detail Siaran Pengumuman',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BkuCard(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            borderRadius: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: OrmawaTheme.primary.withAlpha(25),
-                        shape: BoxShape.circle,
+                        color: catBg,
+                        borderRadius: BkuTheme.r20,
+                        border: Border.all(color: catColor.withAlpha(60)),
                       ),
-                      child: Icon(
-                        Icons.campaign_rounded,
-                        color: OrmawaTheme.primary,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            'Detail Siaran Pengumuman',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: catColor,
+                              shape: BoxShape.circle,
                             ),
                           ),
+                          const SizedBox(width: 6),
                           Text(
-                            'Pusat Informasi Ormawa',
+                            _getCategoryLabel(item.kategori),
                             style: TextStyle(
                               fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF64748B),
+                              fontWeight: FontWeight.w900,
+                              color: catColor,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Color(0xFF64748B)),
-                      onPressed: () => Navigator.pop(ctx),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: catBg,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: catColor.withAlpha(60)),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        width: 6,
-                                        height: 6,
-                                        decoration: BoxDecoration(
-                                          color: catColor,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        _getCategoryLabel(item.kategori),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w900,
-                                          color: catColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (displayDate != null)
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_rounded,
-                                        size: 12,
-                                        color: Color(0xFF64748B),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        DateFormat('dd MMM yyyy', 'id').format(displayDate),
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xFF64748B),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              item.judul,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF0F172A),
-                                height: 1.3,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              item.isi,
-                              style: const TextStyle(
-                                fontSize: 12.5,
-                                color: Color(0xFF334155),
-                                height: 1.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (item.lampiranUrl != null && item.lampiranUrl!.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        InkWell(
-                          onTap: () async {
-                            final uri = Uri.parse(item.lampiranUrl!);
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri, mode: LaunchMode.externalApplication);
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: OrmawaTheme.primarySoft,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: OrmawaTheme.primary.withAlpha(40)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.attach_file_rounded, color: OrmawaTheme.primary, size: 18),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Buka Berkas Lampiran',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: OrmawaTheme.primary,
-                                    ),
-                                  ),
-                                ),
-                                Icon(Icons.open_in_new_rounded, color: OrmawaTheme.primary, size: 16),
-                              ],
+                    if (displayDate != null)
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today_rounded,
+                            size: 12,
+                            color: BkuTheme.textPlaceholder,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            DateFormat('dd MMM yyyy', 'id').format(displayDate),
+                            style: BkuTheme.textCaption.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: BkuTheme.textMuted,
                             ),
                           ),
-                        ),
-                      ],
-                    ],
+                        ],
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  item.judul,
+                  style: BkuTheme.textSectionTitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    height: 1.3,
                   ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.all(16),
+                const SizedBox(height: 8),
+                Text(
+                  item.isi,
+                  style: BkuTheme.textBodyRegular.copyWith(
+                    fontSize: 12.5,
+                    color: BkuTheme.textBody,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (item.lampiranUrl != null && item.lampiranUrl!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () async {
+                final uri = Uri.parse(item.lampiranUrl!);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              borderRadius: BkuTheme.r12,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: BkuTheme.primarySoft,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.primaryBorder),
+                ),
                 child: Row(
                   children: [
+                    Icon(Icons.attach_file_rounded, color: BkuTheme.primary, size: 18),
+                    const SizedBox(width: 8),
                     Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          side: const BorderSide(color: Color(0xFFCBD5E1)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: const Text(
-                          'Tutup',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF475569),
-                          ),
+                      child: Text(
+                        'Buka Berkas Lampiran',
+                        style: BkuTheme.textCardTitle.copyWith(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: BkuTheme.primary,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => EditPengumumanScreen(announcement: item),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: OrmawaTheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        icon: const Icon(Icons.edit_rounded, size: 16),
-                        label: const Text(
-                          'Edit Siaran',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                    ),
+                    Icon(Icons.open_in_new_rounded, color: BkuTheme.primary, size: 16),
                   ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: BkuButton.outline(
+                  onPressed: () => Navigator.pop(context),
+                  text: 'Tutup',
+                  height: 42,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: BkuButton.primary(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditPengumumanScreen(announcement: item),
+                      ),
+                    );
+                  },
+                  icon: Icons.edit_rounded,
+                  text: 'Edit Siaran',
+                  height: 42,
+                  fontSize: 12,
                 ),
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
   void _confirmDelete(BuildContext context, OrmawaAnnouncement item) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFE4E6),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.delete_forever_rounded, color: Color(0xFFE11D48), size: 20),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text(
-                  'Hapus Pengumuman?',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            'Apakah Anda yakin ingin menghapus siaran "${item.judul}"? Tindakan ini bersifat permanen.',
-            style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(ctx);
-                try {
-                  await context.read<OrmawaProvider>().deleteAnnouncement(item.id);
-                  if (context.mounted) {
-                    AppSnackbar.showSuccess(context, 'Pengumuman berhasil dihapus');
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    AppSnackbar.showError(context, 'Gagal menghapus pengumuman: $e');
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE11D48),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                elevation: 0,
-              ),
-              child: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w800)),
-            ),
-          ],
-        );
+      type: BkuDialogType.error,
+      title: 'Hapus Pengumuman?',
+      message: 'Apakah Anda yakin ingin menghapus siaran "${item.judul}"? Tindakan ini bersifat permanen.',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        try {
+          await context.read<OrmawaProvider>().deleteAnnouncement(item.id);
+          if (context.mounted) {
+            AppSnackbar.showSuccess(context, 'Pengumuman berhasil dihapus');
+          }
+        } catch (e) {
+          if (context.mounted) {
+            AppSnackbar.showError(context, 'Gagal menghapus pengumuman: $e');
+          }
+        }
       },
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 
@@ -451,11 +314,13 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
     final canDelete = ormawaProvider.hasPermission('ormawa.announcements.delete, delete_announcements, delete_announcement');
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
+        color: BkuTheme.primary,
+        backgroundColor: Colors.white,
         child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
           slivers: [
             BkuAppBar(
               variant: AppBarVariant.ormawa,
@@ -476,38 +341,27 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                   children: [
                     FadeInAnimation(
                       delay: 0.1,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF94A3B8).withAlpha(20),
-                              blurRadius: 16,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
+                      child: BkuCard(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        borderRadius: 20,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Pusat Publikasi &',
-                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                        style: BkuTheme.textCaption.copyWith(fontSize: 11, fontWeight: FontWeight.bold, color: BkuTheme.textMuted),
                                       ),
-                                      SizedBox(height: 2),
+                                      const SizedBox(height: 2),
                                       Text(
                                         'Siaran Pengumuman',
-                                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                        style: BkuTheme.textSectionTitle.copyWith(fontSize: 17, fontWeight: FontWeight.w900),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -517,18 +371,18 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: OrmawaTheme.primarySoft,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: OrmawaTheme.primaryBorder),
+                                    color: const Color(0xFFF1F5F9),
+                                    borderRadius: BkuTheme.r10,
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
                                   ),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.campaign_rounded, size: 14, color: OrmawaTheme.primary),
-                                      const SizedBox(width: 5),
+                                      Icon(Icons.campaign_rounded, size: 14, color: Color(0xFF0F172A)),
+                                      SizedBox(width: 5),
                                       Text(
                                         'Warta Ormawa',
-                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: OrmawaTheme.primaryDark),
+                                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                                       ),
                                     ],
                                   ),
@@ -538,47 +392,36 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             const SizedBox(height: 10),
                             Text(
                               'Penyampaian maklumat resmi, surat edaran, dan kabar penting ke seluruh anggota dan mahasiswa.',
-                              style: TextStyle(fontSize: 10.5, color: OrmawaTheme.textMuted, height: 1.4),
+                              style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted, height: 1.4),
                             ),
                             const SizedBox(height: 14),
                             Row(
                               children: [
                                 Expanded(
-                                  child: OutlinedButton.icon(
+                                  child: BkuButton.outline(
                                     onPressed: _handleRefresh,
-                                    icon: const Icon(Icons.refresh_rounded, size: 14),
-                                    label: const Text('Refresh', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: OrmawaTheme.textHeading,
-                                      side: BorderSide(color: OrmawaTheme.border),
-                                      padding: const EdgeInsets.symmetric(vertical: 8),
-                                      minimumSize: Size.zero,
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    ),
+                                    icon: Icons.refresh_rounded,
+                                    text: 'Refresh',
+                                    height: 38,
+                                    fontSize: 11,
+                                    customRadius: BkuTheme.r12,
                                   ),
                                 ),
                                 if (canCreate) ...[
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: ElevatedButton.icon(
+                                    child: BkuButton.primary(
                                       onPressed: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (_) => const CreatePengumumanScreen()),
                                         );
                                       },
-                                      icon: const Icon(Icons.add_rounded, size: 15),
-                                      label: const Text('Buat Pengumuman', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: OrmawaTheme.primary,
-                                        foregroundColor: Colors.white,
-                                        elevation: 0,
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                      ),
+                                      icon: Icons.add_rounded,
+                                      text: 'Buat Siaran',
+                                      height: 38,
+                                      fontSize: 11,
+                                      customRadius: BkuTheme.r12,
                                     ),
                                   ),
                                 ],
@@ -597,7 +440,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             value: '$totalSiaran',
                             badgeText: 'Semua Terbit',
                             icon: Icons.campaign_rounded,
-                            badgeColor: OrmawaTheme.primary,
+                            badgeColor: BkuTheme.primary,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -607,7 +450,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             value: '$totalPenting',
                             badgeText: 'Prioritas',
                             icon: Icons.priority_high_rounded,
-                            badgeColor: const Color(0xFFE11D48),
+                            badgeColor: BkuTheme.rose,
                           ),
                         ),
                       ],
@@ -621,7 +464,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             value: '$totalKegiatan',
                             badgeText: 'Agenda Proker',
                             icon: Icons.event_rounded,
-                            badgeColor: const Color(0xFF0284C7),
+                            badgeColor: BkuTheme.sky,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -631,7 +474,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                             value: '$totalPrestasi',
                             badgeText: 'Apresiasi',
                             icon: Icons.emoji_events_rounded,
-                            badgeColor: const Color(0xFFD97706),
+                            badgeColor: BkuTheme.amber,
                           ),
                         ),
                       ],
@@ -657,25 +500,21 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                     ),
                     const SizedBox(height: 14),
                     if (filteredList.isEmpty)
-                      OrmawaEmptyCard(
-                        title: 'Belum ada pengumuman',
-                        description: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                      BkuEmptyState(
+                        title: 'Belum Ada Pengumuman',
+                        message: _searchQuery.isNotEmpty || _activeTab != 'all'
                             ? 'Tidak ada siaran atau pengumuman yang sesuai kriteria pencarian atau filter aktif.'
                             : 'Belum ada siaran pengumuman yang dipublikasikan untuk organisasi ini.',
                         icon: Icons.campaign_outlined,
-                        actionLabel: _searchQuery.isNotEmpty || _activeTab != 'semua'
+                        buttonText: _searchQuery.isNotEmpty || _activeTab != 'all'
                             ? 'Reset Filter & Cari Ulang'
-                            : (canCreate ? '+ Buat Pengumuman Baru' : null),
-                        actionIcon: _searchQuery.isNotEmpty || _activeTab != 'semua'
-                            ? Icons.refresh_rounded
-                            : Icons.add_rounded,
-                        isPrimaryAction: _searchQuery.isEmpty && _activeTab == 'semua',
-                        onAction: () async {
-                          if (_searchQuery.isNotEmpty || _activeTab != 'semua') {
+                            : (canCreate ? 'Buat Pengumuman Baru' : null),
+                        onButtonPressed: () async {
+                          if (_searchQuery.isNotEmpty || _activeTab != 'all') {
                             setState(() {
                               _searchController.clear();
                               _searchQuery = '';
-                              _activeTab = 'semua';
+                              _activeTab = 'all';
                             });
                           } else if (canCreate) {
                             final prov = context.read<OrmawaProvider>();
@@ -701,14 +540,20 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                           final catBg = _getCategoryBgColor(item.kategori);
                           final displayDate = item.tanggalMulai ?? item.createdAt;
 
-                          return OrmawaCard(
-                            onTap: () => _openDetailModal(context, item),
+                          return BkuCard(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            borderRadius: 16,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => OrmawaPengumumanDetailScreen(announcement: item),
+                              ),
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -717,7 +562,7 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: catBg,
-                                        borderRadius: BorderRadius.circular(6),
+                                        borderRadius: BkuTheme.r8,
                                       ),
                                       child: Text(
                                         _getCategoryLabel(item.kategori),
@@ -730,58 +575,55 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                     ),
                                     if (displayDate != null)
                                       Text(
-                                        DateFormat('dd MMM yyyy', 'id')
-                                            .format(displayDate),
-                                        style: TextStyle(
+                                        DateFormat('dd MMM yyyy', 'id').format(displayDate),
+                                        style: BkuTheme.textCaption.copyWith(
                                           fontSize: 9.5,
                                           fontWeight: FontWeight.w600,
-                                          color: OrmawaTheme.textMuted,
+                                          color: BkuTheme.textMuted,
                                         ),
                                       ),
                                   ],
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Text(
                                   item.judul,
-                                  style: TextStyle(
+                                  style: BkuTheme.textCardTitle.copyWith(
                                     fontSize: 13.5,
                                     fontWeight: FontWeight.w900,
-                                    color: OrmawaTheme.textHeading,
                                     height: 1.3,
                                   ),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   item.isi,
-                                  style: TextStyle(
+                                  style: BkuTheme.textCaption.copyWith(
                                     fontSize: 11.5,
-                                    color: OrmawaTheme.textBody,
+                                    color: BkuTheme.textBody,
                                     height: 1.4,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 12),
+                                const SizedBox(height: 12),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.account_circle_outlined,
                                           size: 13,
-                                          color: OrmawaTheme.textMuted,
+                                          color: BkuTheme.textPlaceholder,
                                         ),
-                                        SizedBox(width: 4),
+                                        const SizedBox(width: 4),
                                         Text(
                                           item.targetAudiens.isNotEmpty
                                               ? item.targetAudiens
                                               : 'Publik Kampus',
-                                          style: TextStyle(
+                                          style: BkuTheme.textCaption.copyWith(
                                             fontSize: 10,
                                             fontWeight: FontWeight.w600,
-                                            color: OrmawaTheme.textMuted,
+                                            color: BkuTheme.textMuted,
                                           ),
                                         ),
                                       ],
@@ -789,27 +631,24 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                     Row(
                                       children: [
                                         InkWell(
-                                          onTap: () =>
-                                              _openDetailModal(context, item),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
+                                          onTap: () => _openDetailModal(context, item),
+                                          borderRadius: BkuTheme.r8,
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 8,
                                               vertical: 6,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFFF8FAFC),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              color: BkuTheme.borderSubtle,
+                                              borderRadius: BkuTheme.r8,
                                               border: Border.all(
-                                                color: OrmawaTheme.border,
+                                                color: BkuTheme.border,
                                               ),
                                             ),
                                             child: const Icon(
                                               Icons.visibility_outlined,
                                               size: 15,
-                                              color: Color(0xFF0284C7),
+                                              color: BkuTheme.sky,
                                             ),
                                           ),
                                         ),
@@ -820,32 +659,29 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      EditPengumumanScreen(
+                                                  builder: (_) => EditPengumumanScreen(
                                                     announcement: item,
                                                   ),
                                                 ),
                                               );
                                             },
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BkuTheme.r8,
                                             child: Container(
                                               padding: const EdgeInsets.symmetric(
                                                 horizontal: 8,
                                                 vertical: 6,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFFF8FAFC),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
+                                                color: BkuTheme.borderSubtle,
+                                                borderRadius: BkuTheme.r8,
                                                 border: Border.all(
-                                                  color: OrmawaTheme.border,
+                                                  color: BkuTheme.border,
                                                 ),
                                               ),
                                               child: Icon(
                                                 Icons.edit_outlined,
                                                 size: 15,
-                                                color: OrmawaTheme.primary,
+                                                color: BkuTheme.primary,
                                               ),
                                             ),
                                           ),
@@ -853,27 +689,24 @@ class _OrmawaPengumumanScreenState extends State<OrmawaPengumumanScreen> {
                                         if (canDelete) ...[
                                           const SizedBox(width: 6),
                                           InkWell(
-                                            onTap: () =>
-                                                _confirmDelete(context, item),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            onTap: () => _confirmDelete(context, item),
+                                            borderRadius: BkuTheme.r8,
                                             child: Container(
                                               padding: const EdgeInsets.symmetric(
                                                 horizontal: 8,
                                                 vertical: 6,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFFF8FAFC),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
+                                                color: BkuTheme.roseSoft,
+                                                borderRadius: BkuTheme.r8,
                                                 border: Border.all(
-                                                  color: OrmawaTheme.border,
+                                                  color: BkuTheme.roseBorder,
                                                 ),
                                               ),
                                               child: const Icon(
                                                 Icons.delete_outline_rounded,
                                                 size: 15,
-                                                color: Color(0xFFE11D48),
+                                                color: BkuTheme.rose,
                                               ),
                                             ),
                                           ),

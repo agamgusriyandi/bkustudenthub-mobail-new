@@ -58,10 +58,10 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
+  await initializeDateFormatting('id', null);
   Intl.defaultLocale = 'id_ID';
   await LocalNotificationService.initialize();
 
-  // Initialize Core Networking & Repositories
   final apiClient = ApiClient();
   final studentRepository = StudentRepositoryImpl(apiClient: apiClient);
   final ormawaRepository = OrmawaRepositoryImpl(
@@ -70,7 +70,6 @@ void main() async {
   final counselingRepository = CounselingRepositoryImpl(apiClient: apiClient);
   final tkRepository = TkRepositoryImpl(apiClient: apiClient);
 
-  // Initialize Global Notification Navigation using GoRouter
   BkuAppBar.defaultOnNotificationTap = (context, variant) {
     if (variant == AppBarVariant.ormawa) {
       context.push(AppRoutes.ormawaNotifications);
@@ -118,7 +117,7 @@ void main() async {
           create: (_) => StudentCounselingProvider(apiClient: apiClient),
         ),
         ChangeNotifierProvider(create: (_) => OrmawaProvider(ormawaRepository)),
-        // TK (Tenaga Kesehatan) Providers
+        
         ChangeNotifierProvider(
           create: (_) => TkDashboardProvider(repository: tkRepository),
         ),
@@ -185,11 +184,16 @@ class MyApp extends StatelessWidget {
           secondary: themeProvider.secondary,
           onSecondary: themeProvider.onSecondary,
           surface: themeProvider.surface,
-          onSurface: themeProvider.secondary,
-          onSurfaceVariant: themeProvider.secondary.withValues(alpha: 0.8),
-          outline: themeProvider.secondary.withValues(alpha: 0.6),
-          outlineVariant: themeProvider.secondary.withValues(alpha: 0.4),
+          onSurface: const Color(0xFF0F172A),
+          onSurfaceVariant: const Color(0xFF475569),
+          outline: const Color(0xFFCBD5E1),
+          outlineVariant: const Color(0xFFE2E8F0),
           error: themeProvider.colorError,
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: themeProvider.primary,
+          selectionColor: themeProvider.primary.withValues(alpha: 0.25),
+          selectionHandleColor: themeProvider.primary,
         ),
         dialogTheme: DialogThemeData(
           shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusXl),
@@ -263,7 +267,7 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: GoogleFonts.plusJakartaSansTextTheme(),
         scaffoldBackgroundColor: themeProvider.background,
-        // Override AppBar theme with dynamic primary color
+        
         appBarTheme: AppBarTheme(
           backgroundColor: themeProvider.primary,
           foregroundColor: themeProvider.onPrimary,

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_announcement.dart';
 import 'package:bkuhub_mobile/features/ormawa/pengumuman/presentation/pages/edit_pengumuman_screen.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -19,139 +23,81 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
     if (lower.contains('prestasi')) {
       return {
         'label': 'Kabar Prestasi',
-        'color': const Color(0xFFD97706),
-        'bg': const Color(0xFFFEF3C7),
+        'color': BkuTheme.amber,
+        'bg': BkuTheme.amberSoft,
         'icon': Icons.emoji_events_rounded,
       };
     } else if (lower.contains('penting') || lower.contains('urgen')) {
       return {
         'label': 'Penting & Urgen',
-        'color': const Color(0xFFE11D48),
-        'bg': const Color(0xFFFFE4E6),
+        'color': BkuTheme.rose,
+        'bg': BkuTheme.roseSoft,
         'icon': Icons.priority_high_rounded,
       };
     } else if (lower.contains('kegiatan') || lower.contains('event')) {
       return {
         'label': 'Info Kegiatan',
-        'color': const Color(0xFF0284C7),
-        'bg': const Color(0xFFE0F2FE),
+        'color': BkuTheme.primary,
+        'bg': BkuTheme.primarySoft,
         'icon': Icons.event_rounded,
       };
     }
     return {
       'label': 'Umum',
-      'color': const Color(0xFF475569),
-      'bg': const Color(0xFFF1F5F9),
+      'color': BkuTheme.textBody,
+      'bg': BkuTheme.borderSubtle,
       'icon': Icons.campaign_rounded,
     };
   }
 
   void _confirmDelete(BuildContext context) {
-    showDialog(
+    BkuDialog.show(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFE4E6),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.delete_outline_rounded, color: Color(0xFFE11D48), size: 22),
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                'Hapus Pengumuman?',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-              ),
-            ),
-          ],
-        ),
-        content: Text(
-          'Apakah Anda yakin ingin menghapus siaran "${announcement.judul}"? Tindakan ini tidak dapat dibatalkan.',
-          style: const TextStyle(fontSize: 13, color: Color(0xFF64748B), height: 1.4),
-        ),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(dialogCtx),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Navigator.pop(dialogCtx);
-                    try {
-                      await context.read<OrmawaProvider>().deleteAnnouncement(announcement.id);
-                      if (context.mounted) {
-                        AppSnackbar.showSuccess(context, 'Pengumuman berhasil dihapus');
-                        Navigator.pop(context);
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        AppSnackbar.showError(context, 'Gagal menghapus pengumuman: $e');
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE11D48),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('Ya, Hapus', style: TextStyle(fontWeight: FontWeight.w900)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      type: BkuDialogType.error,
+      title: 'Hapus Pengumuman?',
+      message: 'Apakah Anda yakin ingin menghapus siaran "${announcement.judul}"? Tindakan ini bersifat permanen.',
+      primaryButtonText: 'Hapus',
+      secondaryButtonText: 'Batal',
+      onPrimaryPressed: () async {
+        Navigator.pop(context);
+        try {
+          await context.read<OrmawaProvider>().deleteAnnouncement(announcement.id);
+          if (context.mounted) {
+            AppSnackbar.showSuccess(context, 'Pengumuman berhasil dihapus');
+            Navigator.pop(context);
+          }
+        } catch (e) {
+          if (context.mounted) {
+            AppSnackbar.showError(context, 'Gagal menghapus pengumuman: $e');
+          }
+        }
+      },
+      onSecondaryPressed: () => Navigator.pop(context),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = OrmawaTheme.primary;
     final meta = _getCategoryMeta(announcement.kategori);
     final catColor = meta['color'] as Color;
     final catBg = meta['bg'] as Color;
     final displayDate = announcement.tanggalMulai ?? announcement.createdAt;
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Detail Pengumuman',
         subtitle: 'Informasi Siaran Ormawa',
         variant: AppBarVariant.ormawa,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.s100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-              ),
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              borderRadius: 20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -161,7 +107,7 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
                           color: catBg,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BkuTheme.r8,
                           border: Border.all(color: catColor.withAlpha(40)),
                         ),
                         child: Row(
@@ -188,22 +134,22 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(8),
+                          color: BkuTheme.borderSubtle,
+                          borderRadius: BkuTheme.r8,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.people_alt_rounded, size: 12, color: Color(0xFF64748B)),
+                            const Icon(Icons.people_alt_rounded, size: 12, color: BkuTheme.textMuted),
                             const SizedBox(width: 4),
                             Text(
                               announcement.targetAudiens.isNotEmpty
                                   ? announcement.targetAudiens
                                   : 'Semua Mahasiswa',
-                              style: const TextStyle(
+                              style: BkuTheme.textCaption.copyWith(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF475569),
+                                color: BkuTheme.textBody,
                               ),
                             ),
                           ],
@@ -214,40 +160,39 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     announcement.judul,
-                    style: const TextStyle(
+                    style: BkuTheme.textSectionTitle.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF0F172A),
                       height: 1.3,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.access_time_rounded, size: 13, color: Color(0xFF94A3B8)),
+                      const Icon(Icons.access_time_rounded, size: 13, color: BkuTheme.textPlaceholder),
                       const SizedBox(width: 5),
                       Text(
                         displayDate != null
                             ? DateFormat('dd MMMM yyyy, HH:mm', 'id').format(displayDate)
                             : 'Tanggal tidak tertera',
-                        style: const TextStyle(
+                        style: BkuTheme.textCaption.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF64748B),
+                          color: BkuTheme.textMuted,
                         ),
                       ),
                       if (announcement.tanggalSelesai != null) ...[
                         const SizedBox(width: 8),
-                        const Text('•', style: TextStyle(color: Color(0xFFCBD5E1))),
+                        const Text('•', style: TextStyle(color: BkuTheme.border)),
                         const SizedBox(width: 8),
-                        const Icon(Icons.event_busy_rounded, size: 13, color: Color(0xFF94A3B8)),
+                        const Icon(Icons.event_busy_rounded, size: 13, color: BkuTheme.textPlaceholder),
                         const SizedBox(width: 5),
                         Text(
                           'Berakhir: ${DateFormat('dd MMM yyyy', 'id').format(announcement.tanggalSelesai!)}',
-                          style: const TextStyle(
+                          style: BkuTheme.textCaption.copyWith(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF64748B),
+                            color: BkuTheme.textMuted,
                           ),
                         ),
                       ],
@@ -257,24 +202,19 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-              ),
+            BkuCard(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              borderRadius: 20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'ISI PENGUMUMAN',
-                    style: TextStyle(
-                      fontSize: 10,
+                  Text(
+                    'Isi Pengumuman',
+                    style: BkuTheme.textBadge.copyWith(
+                      fontSize: 10.5,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF94A3B8),
-                      letterSpacing: 1,
+                      color: BkuTheme.textHeading,
+                      letterSpacing: 0.3,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -282,10 +222,10 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                     announcement.isi.isEmpty
                         ? 'Tidak ada rincian konten pengumuman yang disertakan.'
                         : announcement.isi,
-                    style: const TextStyle(
+                    style: BkuTheme.textBodyRegular.copyWith(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF334155),
+                      color: BkuTheme.textHeading,
                       height: 1.7,
                     ),
                   ),
@@ -296,19 +236,19 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
               const SizedBox(height: 14),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: OrmawaTheme.primarySoft,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: OrmawaTheme.primaryBorder),
+                  color: BkuTheme.primarySoft,
+                  borderRadius: BkuTheme.r18,
+                  border: Border.all(color: BkuTheme.primaryBorder),
                 ),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: OrmawaTheme.primary,
-                        borderRadius: BorderRadius.circular(12),
+                        color: BkuTheme.primary,
+                        borderRadius: BkuTheme.r12,
                       ),
                       child: const Icon(Icons.attachment_rounded, size: 20, color: Colors.white),
                     ),
@@ -319,17 +259,17 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Tautan Dokumen / Lampiran',
-                            style: TextStyle(
+                            style: BkuTheme.textCardTitle.copyWith(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: OrmawaTheme.primaryDark,
+                              color: BkuTheme.primaryDark,
                             ),
                           ),
                           Text(
                             announcement.lampiranUrl!.trim(),
                             style: TextStyle(
                               fontSize: 11,
-                              color: OrmawaTheme.primary,
+                              color: BkuTheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 1,
@@ -339,22 +279,19 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton.icon(
+                    BkuButton.primary(
                       onPressed: () async {
                         final uri = Uri.tryParse(announcement.lampiranUrl!.trim());
                         if (uri != null && await canLaunchUrl(uri)) {
                           await launchUrl(uri, mode: LaunchMode.externalApplication);
                         }
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: OrmawaTheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      icon: const Icon(Icons.open_in_new_rounded, size: 14),
-                      label: const Text('Buka', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                      icon: Icons.open_in_new_rounded,
+                      text: 'Buka',
+                      height: 36,
+                      fontSize: 11,
+                      fullWidth: false,
+                      customRadius: BkuTheme.r10,
                     ),
                   ],
                 ),
@@ -364,40 +301,27 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
         ),
       ),
       bottomSheet: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: const Border(top: BorderSide(color: Color(0xFFE2E8F0))),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF64748B).withAlpha(15),
-              blurRadius: 10,
-              offset: const Offset(0, -4),
-            ),
-          ],
+          color: BkuTheme.cardSurface,
+          border: const Border(top: BorderSide(color: BkuTheme.border)),
+          boxShadow: BkuTheme.cardShadow,
         ),
         child: Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: BkuButton.dangerOutline(
                 onPressed: () => _confirmDelete(context),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: const BorderSide(color: Color(0xFFFECDD3)),
-                  backgroundColor: const Color(0xFFFFF1F2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFE11D48)),
-                label: const Text(
-                  'Hapus',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFFE11D48)),
-                ),
+                icon: Icons.delete_outline_rounded,
+                text: 'Hapus',
+                height: 46,
+                fontSize: 12,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               flex: 2,
-              child: ElevatedButton.icon(
+              child: BkuButton.primary(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -406,18 +330,10 @@ class OrmawaPengumumanDetailScreen extends StatelessWidget {
                     ),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: const Icon(Icons.edit_rounded, size: 16),
-                label: const Text(
-                  'Edit Pengumuman',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-                ),
+                icon: Icons.edit_rounded,
+                text: 'Edit Pengumuman',
+                height: 46,
+                fontSize: 12,
               ),
             ),
           ],

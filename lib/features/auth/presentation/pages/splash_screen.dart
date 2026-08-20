@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/services/auth_service.dart';
-
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _scaleAnimation = Tween<double>(
-      begin: 0.8,
+      begin: 0.85,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
@@ -46,7 +46,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
-
     _checkSessionAndNavigate();
   }
 
@@ -77,14 +76,14 @@ class _SplashScreenState extends State<SplashScreen>
                 final url = Uri.parse('https://play.google.com/store/apps/details?id=com.bkustudenthub.app');
                 try {
                   await launchUrl(url, mode: LaunchMode.externalApplication);
-                } catch (e) {
+                } catch (_) {
                   upgrader.sendUserToAppStore();
                 }
               },
             ),
           ),
         );
-        return; 
+        return;
       }
     } catch (e) {
       debugPrint('Update check error: $e');
@@ -97,7 +96,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (authService.token != null &&
         authService.currentRole != UserRole.guest) {
-      // Session exists, go to correct main screen
       if (authService.currentRole == UserRole.ormawa) {
         context.go(AppRoutes.ormawaMain);
       } else if (authService.currentRole == UserRole.psychologist) {
@@ -110,7 +108,6 @@ class _SplashScreenState extends State<SplashScreen>
         context.go(AppRoutes.studentMain);
       }
     } else {
-      // No session, go to login
       context.go(AppRoutes.login);
     }
   }
@@ -124,13 +121,14 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
-    final Color activeColor = themeProvider.colors.primary;
+    final themeColors = themeProvider.colors;
+    final splashLogo = themeColors.splashLogoUrl ?? themeColors.logoUrl;
+    final primaryColor = themeProvider.primary;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: primaryColor,
       body: Stack(
         children: [
-          // Background Image
           Positioned.fill(
             child: Semantics(
               excludeSemantics: true,
@@ -142,19 +140,9 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
           ),
-          // Gradient Overlay
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    activeColor.withAlpha(140),
-                    activeColor.withAlpha(217),
-                  ],
-                ),
-              ),
+            child: ColoredBox(
+              color: primaryColor.withValues(alpha: 0.85),
             ),
           ),
           Center(
@@ -173,26 +161,39 @@ class _SplashScreenState extends State<SplashScreen>
                     );
                   },
                   child: Container(
-                    padding: AppSpacing.paddingXl,
+                    padding: const EdgeInsets.all(AppSpacing.xl),
                     decoration: BoxDecoration(
-                      color: context.appColors.surface,
-                      borderRadius: BorderRadius.circular(AppRadius.xxl + 8),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: context.appColors.onSurface.withValues(alpha: 0.2),
-                          blurRadius: 40,
-                          offset: const Offset(0, 20),
+                          color: Colors.black.withValues(alpha: 0.25),
+                          blurRadius: 36,
+                          offset: const Offset(0, 16),
                         ),
                       ],
                     ),
                     child: Semantics(
                       excludeSemantics: true,
-                      child: Image.asset(
-                        'assets/images/icons.png',
-                        width: 160,
-                        height: 160,
-                        fit: BoxFit.contain,
-                      ),
+                      child: splashLogo != null && splashLogo.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: ApiGate.getImageUrl(splashLogo),
+                              width: 130,
+                              height: 130,
+                              fit: BoxFit.contain,
+                              errorWidget: (_, __, ___) => Image.asset(
+                                'assets/images/icons.png',
+                                width: 130,
+                                height: 130,
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          : Image.asset(
+                              'assets/images/icons.png',
+                              width: 130,
+                              height: 130,
+                              fit: BoxFit.contain,
+                            ),
                     ),
                   ),
                 ),
@@ -209,33 +210,28 @@ class _SplashScreenState extends State<SplashScreen>
                     children: [
                       Text(
                         'BKU Student HUB',
-                        style: AppTextStyles.displayMedium.copyWith(
-                          color: context.appColors.onPrimary,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.5,
+                        style: BkuTheme.textPageTitle.copyWith(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
                           shadows: [
                             Shadow(
-                              color: context.appColors.onSurface.withValues(alpha: 0.3),
-                              blurRadius: 8,
+                              color: Colors.black.withValues(alpha: 0.35),
+                              blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: 6),
                       Text(
                         'Smart Campus Ecosystem',
-                        style: AppTextStyles.labelLarge.copyWith(
-                          color: context.appColors.onPrimary.withValues(alpha: 0.9),
+                        style: BkuTheme.textCardSubtitle.copyWith(
+                          color: Colors.white.withValues(alpha: 0.92),
+                          letterSpacing: 0.8,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 1,
-                          shadows: [
-                            Shadow(
-                              color: context.appColors.onSurface.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                       ),
                     ],
@@ -244,23 +240,27 @@ class _SplashScreenState extends State<SplashScreen>
               ],
             ),
           ),
-          // Bottom Version or Info
           Positioned(
-            bottom: 50,
+            bottom: 48,
             left: 0,
             right: 0,
             child: Center(
               child: Column(
                 children: [
-                  CircularProgressIndicator(
-                    strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(context.appColors.onPrimary),
+                  const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'Version 1.0.5',
-                    style: AppTextStyles.labelSm.copyWith(
-                          color: context.appColors.onPrimary.withValues(alpha: 0.8),
+                    style: BkuTheme.textCaption.copyWith(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

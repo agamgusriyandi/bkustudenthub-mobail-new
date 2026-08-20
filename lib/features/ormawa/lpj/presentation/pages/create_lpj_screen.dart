@@ -1,19 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_proposal.dart';
@@ -211,7 +210,7 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
     final absorptionPct = paguNum > 0 ? ((realisasiNum / paguNum) * 100).toStringAsFixed(1) : '0.0';
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
@@ -237,7 +236,7 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                           value: _formatRp(paguNum),
                           badgeText: _selectedProposalId != null ? 'Terkait' : 'Pagu',
                           icon: Icons.account_balance_wallet_rounded,
-                          badgeColor: OrmawaTheme.primary,
+                          badgeColor: BkuTheme.primary,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -247,7 +246,7 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                           value: _formatRp(realisasiNum),
                           badgeText: 'Pengeluaran',
                           icon: Icons.payments_rounded,
-                          badgeColor: const Color(0xFF0284C7),
+                          badgeColor: BkuTheme.sky,
                         ),
                       ),
                     ],
@@ -257,28 +256,30 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                     children: [
                       Expanded(
                         child: OrmawaKpiCard(
-                          title: selisih >= 0 ? 'Sisa Efisiensi' : 'Defisit Anggaran',
+                          title: selisih >= 0 ? 'Sisa Saldo Efisiensi' : 'Defisit Anggaran',
                           value: _formatRp(selisih.abs()),
                           badgeText: selisih >= 0 ? 'Hemat' : 'Over',
                           icon: selisih >= 0 ? Icons.savings_rounded : Icons.trending_down_rounded,
-                          badgeColor: selisih >= 0 ? const Color(0xFF10B981) : const Color(0xFFE11D48),
+                          badgeColor: selisih >= 0 ? BkuTheme.emerald : BkuTheme.rose,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: OrmawaKpiCard(
-                          title: 'Tingkat Serapan',
+                          title: 'Persentase Serapan',
                           value: '$absorptionPct%',
                           badgeText: (double.tryParse(absorptionPct) ?? 0.0) <= 100.0 ? 'Optimal' : 'Over',
                           icon: Icons.check_circle_rounded,
-                          badgeColor: (double.tryParse(absorptionPct) ?? 0.0) <= 100.0 ? const Color(0xFF7C3AED) : const Color(0xFFE11D48),
+                          badgeColor: (double.tryParse(absorptionPct) ?? 0.0) <= 100.0 ? BkuTheme.purple : BkuTheme.rose,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -288,20 +289,20 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.primarySoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.assignment_turned_in_rounded, color: Color(0xFF2563EB), size: 18),
+                              child: Icon(Icons.corporate_fare_rounded, color: BkuTheme.primary, size: 18),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Informasi Proposal & Kegiatan', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Pilih proposal kegiatan yang telah selesai dilaksanakan.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  Text('Informasi Usulan Terkait', style: BkuTheme.textSectionTitle),
+                                  Text(
+                                    'Pilih proposal kegiatan yang telah disetujui sebelumnya.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                   ),
                                 ],
                               ),
@@ -310,85 +311,52 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'TAUTKAN PROPOSAL TERKAIT *',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF334155),
-                                letterSpacing: 0.2,
-                              ),
+                        BkuDropdown<String>(
+                          label: 'PROPOSAL KEGIATAN YANG TELAH DISETUJUI *',
+                          value: _selectedProposalId,
+                          items: [
+                            const DropdownMenuItem<String>(
+                              value: null,
+                              child: Text('— Pilih Proposal Terkait —'),
                             ),
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFE2E8F0)),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _selectedProposalId,
-                                  isExpanded: true,
-                                  hint: Text(
-                                    proposals.isEmpty
-                                        ? 'Tidak ada proposal disetujui'
-                                        : '-- Pilih Proposal Kegiatan --',
-                                    style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                                  ),
-                                  items: proposals.map((p) {
-                                    return DropdownMenuItem<String>(
-                                      value: p.id.toString(),
-                                      child: Text(
-                                        '${p.title} (${_formatRp(p.budget)})',
-                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) => _onProposalChanged(val, proposals),
+                            ...proposals.map((p) {
+                              return DropdownMenuItem<String>(
+                                value: p.id.toString(),
+                                child: Text(
+                                  '[#PROP-${p.id}] ${p.title}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: BkuTheme.textBodyRegular.copyWith(fontSize: 12.5),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'Memilih proposal akan otomatis mengisi pagu dana yang telah disetujui.',
-                              style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
-                            ),
+                              );
+                            }),
                           ],
+                          onChanged: (val) => _onProposalChanged(val, proposals),
                         ),
                         const SizedBox(height: 12),
 
-                        OrmawaTextField(
-                          label: 'NAMA / JUDUL LPJ *',
+                        BkuTextField(
+                          label: 'JUDUL LAPORAN PERTANGGUNGJAWABAN (LPJ) *',
+                          hint: 'e.g. LPJ - Latihan Keterampilan Manajemen Mahasiswa',
                           controller: _judulController,
-                          hintText: 'Contoh: LPJ Kegiatan Latihan Kepemimpinan Mahasiswa 2025',
-                          prefixIcon: Icons.title_rounded,
+                          prefixIcon: Icon(Icons.description_rounded, size: 16, color: BkuTheme.primary),
                         ),
                         const SizedBox(height: 12),
 
                         Row(
                           children: [
                             Expanded(
-                              child: OrmawaTextField(
-                                label: 'JENIS DOKUMEN',
+                              child: BkuTextField(
+                                label: 'Jenis Laporan',
                                 controller: _jenisController,
                                 readOnly: true,
-                                prefixIcon: Icons.description_rounded,
                               ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: OrmawaTextField(
-                                label: 'PERIODE KEPENGURUSAN',
+                              child: BkuTextField(
+                                label: 'Periode Kepengurusan',
                                 controller: _periodeController,
-                                hintText: '2024/2025',
-                                prefixIcon: Icons.calendar_today_rounded,
                               ),
                             ),
                           ],
@@ -398,7 +366,9 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -408,20 +378,20 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0FDF4),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.emeraldSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.account_balance_wallet_rounded, color: Color(0xFF16A34A), size: 18),
+                              child: const Icon(Icons.calculate_rounded, color: BkuTheme.emerald, size: 18),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Alokasi & Realisasi Anggaran', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Bandingkan pagu dana disetujui dengan pengeluaran riil.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  Text('Rincian Anggaran & Realisasi', style: BkuTheme.textSectionTitle),
+                                  Text(
+                                    'Perbandingan alokasi dana pagu usulan dan serapan aktual.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                   ),
                                 ],
                               ),
@@ -430,104 +400,85 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OrmawaTextField(
-                                label: 'PAGU DISETUJUI (RP)',
-                                controller: _paguController,
-                                hintText: '0',
-                                keyboardType: TextInputType.number,
-                                prefixIcon: Icons.account_balance_rounded,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                onChanged: (_) => setState(() {}),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: OrmawaTextField(
-                                label: 'REALISASI TERPAKAI (RP) *',
-                                controller: _realisasiController,
-                                hintText: '0',
-                                keyboardType: TextInputType.number,
-                                prefixIcon: Icons.payments_rounded,
-                                prefixIconColor: const Color(0xFF16A34A),
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                onChanged: (_) => setState(() {}),
-                              ),
-                            ),
-                          ],
+                        BkuTextField(
+                          label: 'PAGU ANGGARAN DISETUJUI (RP) *',
+                          hint: 'e.g. 10.000.000',
+                          controller: _paguController,
+                          keyboardType: TextInputType.number,
+                          prefixIcon: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: BkuTheme.emerald),
+                          onChanged: (_) => setState(() {}),
                         ),
                         const SizedBox(height: 12),
 
-                        if (paguNum > 0)
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: selisih >= 0 ? const Color(0xFFF0FDF4) : const Color(0xFFFFF1F2),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: selisih >= 0 ? const Color(0xFFBBF7D0) : const Color(0xFFFECDD3),
+                        BkuTextField(
+                          label: 'TOTAL REALISASI PENGELUARAN (RP) *',
+                          hint: 'e.g. 9.500.000',
+                          controller: _realisasiController,
+                          keyboardType: TextInputType.number,
+                          prefixIcon: const Icon(Icons.payments_rounded, size: 16, color: BkuTheme.emerald),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        const SizedBox(height: 12),
+
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: selisih >= 0 ? BkuTheme.emeraldSoft : BkuTheme.roseSoft,
+                            borderRadius: BkuTheme.r12,
+                            border: Border.all(color: selisih >= 0 ? BkuTheme.emeraldBorder : BkuTheme.roseBorder),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    selisih >= 0 ? 'Sisa Saldo Efisiensi (Hemat)' : 'Defisit Anggaran (Over)',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: selisih >= 0 ? BkuTheme.emerald : BkuTheme.rose,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${selisih >= 0 ? '+' : '-'}${_formatRp(selisih.abs())}',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w900,
+                                      color: selisih >= 0 ? BkuTheme.emerald : BkuTheme.rose,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: selisih >= 0 ? const Color(0xFFDCFCE7) : const Color(0xFFFFE4E6),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    selisih >= 0 ? Icons.savings_rounded : Icons.trending_down_rounded,
-                                    color: selisih >= 0 ? const Color(0xFF16A34A) : const Color(0xFFE11D48),
-                                    size: 18,
-                                  ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BkuTheme.r8,
+                                  border: Border.all(color: selisih >= 0 ? BkuTheme.emeraldBorder : BkuTheme.roseBorder),
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        selisih >= 0 ? 'Efisiensi Anggaran Berhasil Tercatat' : 'Peringatan Defisit / Over Budget',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w800,
-                                          color: selisih >= 0 ? const Color(0xFF14532D) : const Color(0xFF881337),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        selisih >= 0
-                                            ? 'Hemat ${_formatRp(selisih)} (${(100.0 - (double.tryParse(absorptionPct) ?? 0.0)).toStringAsFixed(1)}% dari pagu).'
-                                            : 'Realisasi melebihi pagu sebesar ${_formatRp(selisih.abs())}.',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: selisih >= 0 ? const Color(0xFF166534) : const Color(0xFF9F1239),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  '$absorptionPct%',
+                                child: Text(
+                                  'Serapan $absorptionPct%',
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w900,
-                                    color: selisih >= 0 ? const Color(0xFF16A34A) : const Color(0xFFE11D48),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    color: selisih >= 0 ? BkuTheme.emerald : BkuTheme.rose,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -537,20 +488,20 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF5F3FF),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.purpleSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.fact_check_rounded, color: Color(0xFF7C3AED), size: 18),
+                              child: const Icon(Icons.folder_zip_rounded, color: BkuTheme.purple, size: 18),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Capaian, Evaluasi & Berkas Dokumen', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Uraikan pencapaian acara dan unggah berkas dokumen LPJ.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  Text('Dokumen & Berkas Pendukung', style: BkuTheme.textSectionTitle),
+                                  Text(
+                                    'Unggah naskah LPJ resmi (PDF/Word/Zip) atau cantumkan Google Drive.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                   ),
                                 ],
                               ),
@@ -559,138 +510,137 @@ class _CreateLpjScreenState extends State<CreateLpjScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        OrmawaTextField(
-                          label: 'RINGKASAN HASIL KEGIATAN',
-                          controller: _deskripsiController,
-                          hintText: 'Jelaskan ringkasan jalannya kegiatan, output, dan hasil capaian acara...',
-                          maxLines: 3,
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: BkuTheme.borderSubtle,
+                            borderRadius: BkuTheme.r12,
+                            border: Border.all(color: BkuTheme.border),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    _uploadedFileUrl != null ? Icons.check_circle_rounded : Icons.cloud_upload_outlined,
+                                    color: _uploadedFileUrl != null ? BkuTheme.emerald : BkuTheme.textPlaceholder,
+                                    size: 24,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          _uploadedFileName ?? 'Unggah Berkas Dokumen LPJ (PDF / DOCX / ZIP)',
+                                          style: BkuTheme.textCardTitle.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: _uploadedFileName != null ? BkuTheme.textHeading : BkuTheme.textMuted,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          _uploadedFileSize != null
+                                              ? '${(_uploadedFileSize! / (1024 * 1024)).toStringAsFixed(2)} MB • Berkas Terpilih'
+                                              : 'Maksimal ukuran berkas 10 MB',
+                                          style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  BkuButton.outline(
+                                    text: _uploadedFileUrl != null ? 'Ganti' : 'Pilih File',
+                                    height: 32,
+                                    isLoading: _isUploading,
+                                    onPressed: _isUploading ? null : _pickAndUploadFile,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 12),
 
-                        OrmawaTextField(
-                          label: 'KENDALA & SARAN REKOMENDASI',
-                          controller: _kendalaController,
-                          hintText: 'Uraikan kendala operasional yang dihadapi serta evaluasi perbaikan...',
-                          maxLines: 3,
+                        BkuTextField(
+                          label: 'Tautan Google Drive (Opsional / Cadangan)',
+                          hint: 'https://drive.google.com/...',
+                          controller: _driveUrlController,
+                          prefixIcon: Icon(Icons.link_rounded, size: 16, color: BkuTheme.primary),
                         ),
-                        const SizedBox(height: 14),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
 
-                        const Text(
-                          'DOKUMEN BERKAS UTAMA LPJ (PDF/DOCX) *',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF334155),
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-
-                        if (_uploadedFileUrl != null) ...[
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF0FDF4),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFFBBF7D0)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFF16A34A), size: 28),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        _uploadedFileName ?? 'Berkas Dokumen LPJ Terunggah',
-                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      if (_uploadedFileSize != null)
-                                        Text(
-                                          '${(_uploadedFileSize! / (1024 * 1024)).toStringAsFixed(2)} MB',
-                                          style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _uploadedFileUrl = null;
-                                      _uploadedFileName = null;
-                                      _uploadedFileSize = null;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFE11D48), size: 20),
-                                  tooltip: 'Hapus Berkas',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ] else ...[
-                          BkuBounceButton(
-                            onTap: _isUploading ? null : _pickAndUploadFile,
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF8FAFC),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFCBD5E1), style: BorderStyle.solid),
+                                color: BkuTheme.amberSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
+                              child: const Icon(Icons.note_alt_rounded, color: BkuTheme.amber, size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (_isUploading) ...[
-                                    const SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(strokeWidth: 2.5),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text('Mengunggah berkas...', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                                  ] else ...[
-                                    Icon(Icons.cloud_upload_outlined, size: 32, color: OrmawaTheme.primary),
-                                    const SizedBox(height: 6),
-                                    const Text(
-                                      'Pilih & Unggah Berkas Dokumen LPJ',
-                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    const Text(
-                                      'Format PDF, DOCX, ZIP (Maksimal 10 MB)',
-                                      style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
-                                    ),
-                                  ],
+                                  Text('Evaluasi, Kendala & Catatan', style: BkuTheme.textSectionTitle),
+                                  Text(
+                                    'Uraikan ringkasan pencapaian dan kendala pelaksanaan.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
+                                  ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        BkuTextField(
+                          label: 'Deskripsi Hasil / Ringkasan Kegiatan',
+                          hint: 'Tuliskan gambaran umum ketercapaian kegiatan...',
+                          controller: _deskripsiController,
+                          maxLines: 3,
+                        ),
                         const SizedBox(height: 12),
 
-                        OrmawaTextField(
-                          label: 'TAUTAN GOOGLE DRIVE CADANGAN / FOTO (OPSIONAL)',
-                          controller: _driveUrlController,
-                          hintText: 'https://drive.google.com/...',
-                          prefixIcon: Icons.link_rounded,
+                        BkuTextField(
+                          label: 'Kendala, Evaluasi & Rekomendasi',
+                          hint: 'Uraikan kendala operasional yang dihadapi...',
+                          controller: _kendalaController,
+                          maxLines: 3,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  OrmawaButton(
-                    text: 'Ajukan Berkas LPJ',
-                    icon: Icons.send_rounded,
-                    isLoading: _isSubmitting,
-                    onPressed: _handleSubmit,
+                  SizedBox(
                     width: double.infinity,
+                    child: BkuButton.primary(
+                      text: 'Ajukan Laporan Pertanggungjawaban (LPJ)',
+                      isLoading: _isSubmitting,
+                      onPressed: _isSubmitting ? null : _handleSubmit,
+                      icon: Icons.send_rounded,
+                      height: 48,
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.s140),
+                  const SizedBox(height: AppSpacing.s100),
                 ],
               ),
             ),

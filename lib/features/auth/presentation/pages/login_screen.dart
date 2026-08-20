@@ -1,21 +1,16 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/services/biometric_service.dart';
-import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/health_view_model.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
@@ -49,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (enabled && creds != null) {
       if (mounted) {
         setState(() => _isBiometricEnabled = true);
-        // Automatically prompt for fingerprint
         _handleBiometricLogin();
       }
     }
@@ -109,14 +103,13 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => _RoleSelectionSheet(
-            tempToken: tempToken,
-            roles: roles,
-            email: _usernameController.text,
-            authService: _authService,
-            onSuccess: _navigateToDashboard,
-          ),
+      builder: (context) => _RoleSelectionSheet(
+        tempToken: tempToken,
+        roles: roles,
+        email: _usernameController.text,
+        authService: _authService,
+        onSuccess: _navigateToDashboard,
+      ),
     );
   }
 
@@ -132,8 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    String errorMessage =
-        'Login gagal. Periksa kembali NIM/Email dan Password Anda.';
+    String errorMessage = 'Login gagal. Periksa kembali NIM/Email dan Password Anda.';
 
     try {
       final result = await _authService.login(
@@ -145,7 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = false);
 
       if (result.success) {
-        // Save credentials if biometric is enabled (to keep them updated)
         final bioService = BiometricService();
         if (await bioService.isBiometricEnabled()) {
           await bioService.saveCredentials(
@@ -191,10 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: Stack(
         children: [
-          // 1. Full Screen Background Image
           Positioned.fill(
             child: Semantics(
               excludeSemantics: true,
@@ -206,7 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          // 2. Background Gradient Overlay
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -214,15 +203,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    context.appColors.primary.withAlpha(140),
-                    context.appColors.primary.withAlpha(217),
+                    BkuTheme.primary.withValues(alpha: 0.82),
+                    BkuTheme.primaryDark.withValues(alpha: 0.94),
                   ],
                 ),
               ),
             ),
           ),
-
-          // 4. Main Content Fixed Architecture
           SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -237,28 +224,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Column(
                           children: [
-                            SizedBox(
-                              height: constraints.maxHeight * 0.12,
-                            ),
-                            // LOGO SECTION (Centered & Fixed)
+                            SizedBox(height: constraints.maxHeight * 0.1),
                             _buildCenteredLogo(),
                           ],
                         ),
                         const SizedBox(height: AppSpacing.xl),
-                        // BOTTOM CARD
                         Center(
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 480),
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: context.appColors.surface,
+                                color: BkuTheme.cardSurface,
                                 borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(AppRadius.xxl),
+                                  top: Radius.circular(28),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: context.appColors.onSurface.withValues(alpha: 0.15),
+                                    color: Colors.black.withAlpha(30),
                                     blurRadius: 32,
                                     offset: const Offset(0, -12),
                                   ),
@@ -266,54 +249,43 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  const SizedBox(height: AppSpacing.s20),
-                                  // Elegant accent line at top of card
+                                  const SizedBox(height: 14),
                                   Center(
                                     child: Container(
-                                      width: 48,
-                                      height: 5,
+                                      width: 40,
+                                      height: 4,
                                       decoration: BoxDecoration(
-                                        color: AppColors.neutral300,
-                                        borderRadius: AppRadius.radiusMd,
+                                        color: BkuTheme.border,
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: AppSpacing.lg),
-                                  // Form Content
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: AppSpacing.xxl,
-                                      right: AppSpacing.xxl,
-                                      top: 0,
-                                      bottom: AppSpacing.xl,
-                                    ),
+                                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         FadeInAnimation(
-                                          delay: 0.5,
+                                          delay: 0.2,
                                           child: Text(
                                             'Selamat Datang',
-                                            style: AppTextStyles.headlineLarge.copyWith(
-                                              color: AppColors.neutral800,
-                                              letterSpacing: -0.5,
+                                            style: BkuTheme.textPageTitle.copyWith(
+                                              fontSize: 22,
+                                              letterSpacing: -0.3,
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: AppSpacing.sm),
+                                        const SizedBox(height: 3),
                                         FadeInAnimation(
-                                          delay: 0.6,
+                                          delay: 0.25,
                                           child: Text(
                                             'Silakan masuk ke akun Anda',
-                                            style: AppTextStyles.bodyMedium.copyWith(
-                                              color: AppColors.neutral500,
-                                            ),
+                                            style: BkuTheme.textCardSubtitle,
                                           ),
                                         ),
-                                        const SizedBox(height: AppSpacing.xxl),
+                                        const SizedBox(height: AppSpacing.xl),
                                         FadeInAnimation(
-                                          delay: 0.7,
+                                          delay: 0.3,
                                           child: _buildTextField(
                                             label: 'NIM / Email',
                                             placeholder: 'Masukkan NIM atau email',
@@ -321,9 +293,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                             controller: _usernameController,
                                           ),
                                         ),
-                                        const SizedBox(height: AppSpacing.xl),
+                                        const SizedBox(height: AppSpacing.md),
                                         FadeInAnimation(
-                                          delay: 0.8,
+                                          delay: 0.35,
                                           child: _buildTextField(
                                             label: 'Kata Sandi',
                                             placeholder: 'Masukkan kata sandi',
@@ -332,34 +304,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                             controller: _passwordController,
                                           ),
                                         ),
-                                        const SizedBox(height: AppSpacing.md),
+                                        const SizedBox(height: 6),
                                         FadeInAnimation(
-                                          delay: 0.9,
+                                          delay: 0.4,
                                           child: Align(
                                             alignment: Alignment.centerRight,
                                             child: TextButton(
-                                              onPressed:
-                                                  () => context.push(
-                                                    AppRoutes.forgotPassword,
-                                                  ),
+                                              onPressed: () => context.push(AppRoutes.forgotPassword),
                                               style: TextButton.styleFrom(
-                                                foregroundColor: context.appColors.primary,
-                                                padding: const EdgeInsets
-                                                    .symmetric(
-                                                  horizontal: AppSpacing.sm,
-                                                  vertical: AppSpacing.xs,
-                                                ),
+                                                foregroundColor: BkuTheme.primary,
+                                                padding: EdgeInsets.zero,
                                                 minimumSize: Size.zero,
-                                                tapTargetSize:
-                                                    MaterialTapTargetSize
-                                                        .shrinkWrap,
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                               ),
                                               child: Text(
                                                 'Lupa Sandi?',
-                                                style: AppTextStyles.labelMd
-                                                    .copyWith(
-                                                  color: AppColors.neutral800,
-                                                  fontWeight: FontWeight.w700,
+                                                style: BkuTheme.textButton.copyWith(
+                                                  color: BkuTheme.primary,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ),
@@ -367,10 +329,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         const SizedBox(height: AppSpacing.lg),
                                         FadeInAnimation(
-                                          delay: 1.0,
+                                          delay: 0.45,
                                           child: _buildLoginButton(),
                                         ),
-                                        const SizedBox(height: AppSpacing.xxl),
+                                        const SizedBox(height: AppSpacing.lg),
                                       ],
                                     ),
                                   ),
@@ -393,7 +355,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildCenteredLogo() {
     return FadeInAnimation(
-      delay: 0.2,
+      delay: 0.15,
       child: Column(
         children: [
           Container(
@@ -401,10 +363,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(25),
               borderRadius: BorderRadius.circular(26),
-              border: Border.all(
-                color: Colors.white.withAlpha(50),
-                width: 0.8,
-              ),
+              border: Border.all(color: Colors.white.withAlpha(50), width: 0.8),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(20),
@@ -416,30 +375,30 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: context.appColors.surface,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(22),
               ),
               child: ClipRRect(
-                borderRadius: AppRadius.radiusMd,
+                borderRadius: BorderRadius.circular(12),
                 child: Semantics(
                   excludeSemantics: true,
                   child: Image.asset(
                     'assets/images/icons.png',
-                    width: 62,
-                    height: 62,
+                    width: 56,
+                    height: 56,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.s18),
+          const SizedBox(height: 14),
           Text(
             'BKU Student HUB',
-            style: AppTextStyles.headlineMedium.copyWith(
-              color: context.appColors.onPrimary,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 1.5,
+            style: BkuTheme.textPageTitle.copyWith(
+              color: Colors.white,
+              fontSize: 22,
+              letterSpacing: 1.2,
               shadows: [
                 Shadow(
                   color: Colors.black.withAlpha(60),
@@ -449,21 +408,19 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(30),
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(
-                color: Colors.white.withAlpha(50),
-                width: 0.5,
-              ),
+              borderRadius: BkuTheme.rPill,
+              border: Border.all(color: Colors.white.withAlpha(50), width: 0.5),
             ),
             child: Text(
               'SMART CAMPUS ECOSYSTEM',
-              style: AppTextStyles.eyebrowSmall.copyWith(
-                color: context.appColors.onPrimary,
+              style: BkuTheme.textBadge.copyWith(
+                color: Colors.white,
+                fontSize: 9.5,
               ),
             ),
           ),
@@ -476,7 +433,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       children: [
         Expanded(
-          child: BkuButton.pill(
+          child: BkuButton(
             text: 'Masuk ke Portal',
             onPressed: _isLoading ? null : _handleLogin,
             isLoading: _isLoading,
@@ -486,33 +443,24 @@ class _LoginScreenState extends State<LoginScreen> {
         if (_isBiometricEnabled) ...[
           const SizedBox(width: AppSpacing.md),
           Container(
-            height: 52,
-            width: 52,
+            height: 48,
+            width: 48,
             decoration: BoxDecoration(
-              color: context.appColors.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: context.appColors.outlineVariant.withAlpha(60),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(8),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: BkuTheme.cardSurface,
+              borderRadius: BkuTheme.r16,
+              border: Border.all(color: BkuTheme.border),
+              boxShadow: BkuTheme.cardShadow,
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: _isLoading ? null : _handleBiometricLogin,
-                customBorder: const CircleBorder(),
+                borderRadius: BkuTheme.r16,
                 child: Center(
                   child: Icon(
                     Icons.fingerprint_rounded,
-                    size: 26,
-                    color: context.appColors.primary,
+                    size: 24,
+                    color: BkuTheme.primary,
                   ),
                 ),
               ),
@@ -535,72 +483,79 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelMedium.copyWith(
-            color: AppColors.neutral800,
-            fontWeight: FontWeight.w700,
-          ),
+          style: BkuTheme.textSectionTitle.copyWith(fontSize: 12.5),
         ),
-        const SizedBox(height: AppSpacing.s10),
+        const SizedBox(height: 6),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !_isPasswordVisible,
-          style: AppTextStyles.bodyLarge.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.neutral900,
-          ),
+          style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
           decoration: InputDecoration(
             hintText: placeholder,
-            hintStyle: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.neutral400,
-            ),
-            prefixIcon: Icon(icon, color: AppColors.neutral400, size: 22),
-            suffixIcon:
-                isPassword
-                    ? IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_rounded
-                            : Icons.visibility_off_rounded,
-                        color: AppColors.neutral400,
-                        size: 22,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    )
-                    : null,
+            hintStyle: BkuTheme.textCaption.copyWith(color: BkuTheme.textPlaceholder),
+            prefixIcon: Icon(icon, color: BkuTheme.textPlaceholder, size: 20),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_rounded,
+                      color: BkuTheme.textPlaceholder,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  )
+                : null,
             filled: true,
-            fillColor: AppColors.neutral50, // White background
+            fillColor: BkuTheme.scaffoldBg,
             border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral300, width: 1.0),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral300, width: 1.0),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(
-                color: context.appColors.primary,
-                width: 1.5,
-              ),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: context.appColors.error, width: 1.5),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.rose, width: 1.5),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.lg, // Adjusted to match mockup
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ],
     );
   }
+}
+
+class _RoleItemData {
+  final String roleCode;
+  final String title;
+  final String subtitle;
+  final String badge;
+  final IconData icon;
+  final Color primaryColor;
+  final Color softBgColor;
+  final Color borderColor;
+
+  _RoleItemData({
+    required this.roleCode,
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.icon,
+    required this.primaryColor,
+    required this.softBgColor,
+    required this.borderColor,
+  });
 }
 
 class _RoleSelectionSheet extends StatefulWidget {
@@ -624,47 +579,149 @@ class _RoleSelectionSheet extends StatefulWidget {
 
 class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
   bool _isLoading = false;
+  String? _selectedRoleCode;
   String? _errorMessage;
 
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'shield':
-        return Icons.shield_rounded;
-      case 'building-2':
-        return Icons.domain_rounded;
-      case 'brain':
-        return Icons.psychology_rounded;
-      case 'heart-pulse':
-        return Icons.medical_services_rounded;
-      case 'users':
-        return Icons.people_alt_rounded;
-      case 'graduation-cap':
-        return Icons.school_rounded;
-      case 'book-open':
-        return Icons.menu_book_rounded;
-      case 'sparkles':
-        return Icons.auto_awesome_rounded;
-      case 'hand-helping':
-        return Icons.handshake_rounded;
-      default:
-        return Icons.person_rounded;
-    }
-  }
+  _RoleItemData _parseRole(dynamic roleObj) {
+    String roleCode = '';
+    String rawName = '';
+    String rawDesc = '';
+    String rawNim = '';
 
-  Color _getColor(String? hexColor) {
-    if (hexColor == null || !hexColor.startsWith('#')) {
-      return context.appColors.primary;
+    if (roleObj is Map) {
+      roleCode = roleObj['role']?.toString() ?? roleObj['id']?.toString() ?? '';
+      rawName = roleObj['name']?.toString() ?? roleObj['label']?.toString() ?? '';
+      rawDesc = roleObj['description']?.toString() ?? roleObj['desc']?.toString() ?? '';
+      rawNim = roleObj['nim']?.toString() ?? roleObj['NIM']?.toString() ?? '';
+    } else if (roleObj != null) {
+      roleCode = roleObj.toString();
+      rawName = roleCode;
     }
-    try {
-      return Color(int.parse(hexColor.replaceFirst('#', '0xFF')));
-    } catch (_) {
-      return context.appColors.primary;
+
+    final codeLower = roleCode.toLowerCase();
+    final nameLower = rawName.toLowerCase();
+
+    if (codeLower.contains('-')) {
+      final parts = codeLower.split('-');
+      if (rawNim.isEmpty && parts.length > 1) {
+        rawNim = parts[1];
+      }
+    }
+
+    if (codeLower.contains('mentor') ||
+        codeLower.contains('kencana') ||
+        nameLower.contains('kencana') ||
+        nameLower.contains('mentor')) {
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: 'Mentor Program Kencana',
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Bimbingan mahasiswa, evaluasi tugas & buku saku Kencana',
+        badge: 'Mentor',
+        icon: Icons.supervisor_account_rounded,
+        primaryColor: BkuTheme.emerald,
+        softBgColor: BkuTheme.emeraldSoft,
+        borderColor: BkuTheme.emeraldBorder,
+      );
+    } else if (codeLower.contains('tenaga_kesehatan') ||
+        codeLower.contains('tenagakes') ||
+        codeLower.contains('nakes') ||
+        codeLower.contains('kesehatan') ||
+        codeLower.contains('health') ||
+        codeLower.contains('klinik') ||
+        nameLower.contains('nakes') ||
+        nameLower.contains('kesehatan')) {
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: 'Tenaga Kesehatan',
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Pemeriksaan kesehatan, rekam medis & screening klinis',
+        badge: 'Nakes',
+        icon: Icons.medical_services_rounded,
+        primaryColor: BkuTheme.rose,
+        softBgColor: BkuTheme.roseSoft,
+        borderColor: BkuTheme.roseBorder,
+      );
+    } else if (codeLower.contains('psychologist') ||
+        codeLower.contains('psikolog') ||
+        codeLower.contains('konsel') ||
+        nameLower.contains('psikolog') ||
+        nameLower.contains('konselor')) {
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: 'Psikolog / Konselor',
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Layanan konseling & pendampingan psikologi mahasiswa',
+        badge: 'Konselor',
+        icon: Icons.psychology_rounded,
+        primaryColor: BkuTheme.purple,
+        softBgColor: BkuTheme.purpleSoft,
+        borderColor: BkuTheme.purpleBorder,
+      );
+    } else if (codeLower.contains('ormawa') ||
+        codeLower.contains('organisasi') ||
+        nameLower.contains('ormawa')) {
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: 'Pengurus Ormawa',
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Manajemen kegiatan, proposal & program kerja organisasi',
+        badge: 'Ormawa',
+        icon: Icons.domain_rounded,
+        primaryColor: BkuTheme.amber,
+        softBgColor: BkuTheme.amberSoft,
+        borderColor: BkuTheme.amberBorder,
+      );
+    } else if (codeLower.contains('student') ||
+        codeLower.contains('mahasiswa') ||
+        nameLower.contains('student') ||
+        nameLower.contains('mahasiswa') ||
+        RegExp(r'^\d+$').hasMatch(codeLower)) {
+      final nimText = rawNim.isNotEmpty ? ' ($rawNim)' : '';
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: 'Mahasiswa$nimText',
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Akses portal akademik, beasiswa, prestasi & layanan kampus',
+        badge: 'Mahasiswa',
+        icon: Icons.school_rounded,
+        primaryColor: BkuTheme.indigo,
+        softBgColor: BkuTheme.indigoSoft,
+        borderColor: BkuTheme.indigoBorder,
+      );
+    } else {
+      String cleanTitle = rawName.isNotEmpty ? rawName : roleCode;
+      cleanTitle = cleanTitle.replaceAll('role_', '').replaceAll('_', ' ');
+      cleanTitle = cleanTitle
+          .split(' ')
+          .map((w) => w.isNotEmpty
+              ? '${w[0].toUpperCase()}${w.substring(1)}'
+              : '')
+          .join(' ');
+      return _RoleItemData(
+        roleCode: roleCode,
+        title: cleanTitle,
+        subtitle: rawDesc.isNotEmpty
+            ? rawDesc
+            : 'Masuk dan akses dashboard peran ini',
+        badge: 'Peran',
+        icon: Icons.person_rounded,
+        primaryColor: BkuTheme.sky,
+        softBgColor: BkuTheme.skySoft,
+        borderColor: BkuTheme.skyBorder,
+      );
     }
   }
 
   Future<void> _selectRole(String role) async {
     setState(() {
       _isLoading = true;
+      _selectedRoleCode = role;
       _errorMessage = null;
     });
 
@@ -677,7 +734,7 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
 
       setState(() => _isLoading = false);
       if (success) {
-        context.pop(); // Close bottom sheet
+        context.pop();
         widget.onSuccess();
       } else {
         setState(() {
@@ -698,16 +755,17 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
     return Container(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.xl,
-        AppSpacing.lg,
+        AppSpacing.md,
         AppSpacing.xl,
         AppSpacing.xxl,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.neutral50,
-        borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(AppRadius.radius28),
-                                  topRight: Radius.circular(AppRadius.radius28),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(28),
+          topRight: Radius.circular(28),
         ),
+        boxShadow: BkuTheme.glowShadow,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -716,206 +774,202 @@ class _RoleSelectionSheetState extends State<_RoleSelectionSheet> {
           children: [
             Center(
               child: Container(
-                width: 40,
+                width: 42,
                 height: 5,
+                margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusMd,
+                  color: BkuTheme.border,
+                  borderRadius: BorderRadius.circular(999),
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Pilih Peran Anda',
-              style: AppTextStyles.titleLarge.copyWith(
-                fontWeight: FontWeight.w900,
-                color: AppColors.neutral800,
-                fontSize: 26,
-              ),
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: BkuTheme.primarySoft,
+                    borderRadius: BkuTheme.r10,
+                  ),
+                  child: Icon(
+                    Icons.badge_rounded,
+                    color: BkuTheme.primary,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pilih Peran Akses',
+                        style: BkuTheme.textPageTitle.copyWith(fontSize: 18),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Akun Anda memiliki beberapa peran terdaftar.',
+                        style: BkuTheme.textCardSubtitle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            RichText(
-              text: TextSpan(
-                text: 'Halo, ',
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.neutral600,
-                  fontSize: 15,
-                ),
-                children: [
-                  TextSpan(
-                    text: widget.email,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.neutral800,
-                    ),
-                  ),
-                  const TextSpan(text: '! 👋'),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Akun Anda memiliki beberapa peran. Silakan pilih salah satu untuk melanjutkan.',
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.neutral500,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
             if (_errorMessage != null) ...[
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.md,
-                ),
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: context.watch<ThemeProvider>().colors.errorContainer,
-                  borderRadius: AppRadius.radiusMd,
+                  color: BkuTheme.statusDangerBg,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.statusDangerBorder),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.error_outline_rounded,
-                      color: context.watch<ThemeProvider>().colors.error,
+                      color: BkuTheme.statusDangerText,
+                      size: 18,
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _errorMessage!,
-                        style: AppTextStyles.bodySm.copyWith(
-                          color: AppColors.onErrorContainer,
-                          fontWeight: FontWeight.w500,
+                        style: BkuTheme.textCaption.copyWith(
+                          color: BkuTheme.statusDangerText,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
             ],
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.roles.length,
-              separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
-              itemBuilder: (context, index) {
-                final roleItem = widget.roles[index] as Map<String, dynamic>;
-                final roleKey = roleItem['role'] as String;
-                final label = roleItem['label'] as String? ?? roleKey;
-                final desc = roleItem['description'] as String? ?? '';
-                final iconName = roleItem['icon'] as String? ?? 'user';
-                final colorStr = roleItem['color'] as String?;
+            ...widget.roles.map((roleObj) {
+              final item = _parseRole(roleObj);
+              final isCurrentSelecting = _isLoading && _selectedRoleCode == item.roleCode;
 
-                final roleColor = _getColor(colorStr);
-
-                return Material(
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: BkuTheme.cardSurface,
+                  borderRadius: BkuTheme.r16,
+                  border: Border.all(
+                    color: isCurrentSelecting ? item.primaryColor : BkuTheme.border,
+                    width: isCurrentSelecting ? 1.5 : 1,
+                  ),
+                  boxShadow: BkuTheme.cardShadow,
+                ),
+                child: Material(
                   color: Colors.transparent,
+                  borderRadius: BkuTheme.r16,
                   child: InkWell(
-                    onTap: _isLoading ? null : () => _selectRole(roleKey),
-                    borderRadius: AppRadius.radiusLg,
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color: context.appColors.surface,
-                        border: Border.all(
-                          color: AppColors.neutral200,
-                          width: 1.5,
-                        ),
-                        borderRadius: AppRadius.radiusLg,
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.appColors.onSurface.withValues(alpha: 0.02),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Stack(
+                    onTap: _isLoading ? null : () => _selectRole(item.roleCode),
+                    borderRadius: BkuTheme.r16,
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Row(
                         children: [
-                          // Watermark Icon
-                          if (iconName == 'graduation-cap')
-                            Positioned(
-                              right: -10,
-                              top: -10,
-                              bottom: -10,
-                              child: Opacity(
-                                opacity: 0.03,
-                                child: Icon(Icons.school_rounded, size: 120),
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: item.softBgColor,
+                              borderRadius: BkuTheme.r12,
+                              border: Border.all(
+                                color: item.borderColor.withAlpha(120),
                               ),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            child: Row(
+                            child: Icon(
+                              item.icon,
+                              color: item.primaryColor,
+                              size: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(AppSpacing.md),
-                                  decoration: BoxDecoration(
-                                    color: roleColor.withAlpha(15),
-                                    borderRadius: AppRadius.radiusLg,
-                                    border: Border.all(
-                                      color: roleColor.withAlpha(30),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    _getIconData(iconName),
-                                    color: roleColor,
-                                    size: 26,
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.lg),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        label,
-                                        style: AppTextStyles.titleMd.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.neutral800,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item.title,
+                                        style: BkuTheme.textCardTitle.copyWith(
+                                          fontSize: 14.5,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                      if (desc.isNotEmpty) ...[
-                                        const SizedBox(height: AppSpacing.xs),
-                                        Text(
-                                          desc,
-                                          style: AppTextStyles.bodySm.copyWith(
-                                            color: AppColors.neutral500,
-                                            height: 1.4,
-                                          ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: item.softBgColor,
+                                        borderRadius: BkuTheme.rPill,
+                                        border: Border.all(
+                                          color: item.borderColor,
                                         ),
-                                      ],
-                                    ],
+                                      ),
+                                      child: Text(
+                                        item.badge,
+                                        style: BkuTheme.textBadge.copyWith(
+                                          color: item.primaryColor,
+                                          fontSize: 9.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  item.subtitle,
+                                  style: BkuTheme.textCardSubtitle.copyWith(
+                                    fontSize: 11.5,
+                                    height: 1.35,
                                   ),
                                 ),
-                                const SizedBox(width: AppSpacing.md),
-                                if (_isLoading)
-                                  SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    ),
-                                  )
-                                else
-                                  Icon(
-                                    Icons.chevron_right_rounded,
-                                    size: 20,
-                                    color: AppColors.neutral400,
-                                  ),
                               ],
                             ),
                           ),
+                          const SizedBox(width: 10),
+                          if (isCurrentSelecting)
+                            SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                color: item.primaryColor,
+                              ),
+                            )
+                          else
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: BkuTheme.slateSoft,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.chevron_right_rounded,
+                                color: BkuTheme.textMuted,
+                                size: 18,
+                              ),
+                            ),
                         ],
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            }),
           ],
         ),
       ),

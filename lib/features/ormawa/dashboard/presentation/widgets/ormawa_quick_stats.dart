@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -25,34 +25,22 @@ class OrmawaQuickStats extends StatelessWidget {
     if (ormawa.isLoading) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-        child: GridView.count(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.6,
-          children: const [
-            BkuShimmer(
-              width: double.infinity,
-              height: 80,
-              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+        child: Column(
+          children: [
+            Row(
+              children: const [
+                Expanded(child: BkuShimmer(width: double.infinity, height: 90, borderRadius: BorderRadius.all(Radius.circular(16)))),
+                SizedBox(width: 8),
+                Expanded(child: BkuShimmer(width: double.infinity, height: 90, borderRadius: BorderRadius.all(Radius.circular(16)))),
+              ],
             ),
-            BkuShimmer(
-              width: double.infinity,
-              height: 80,
-              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-            ),
-            BkuShimmer(
-              width: double.infinity,
-              height: 80,
-              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-            ),
-            BkuShimmer(
-              width: double.infinity,
-              height: 80,
-              borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
+            const SizedBox(height: 8),
+            Row(
+              children: const [
+                Expanded(child: BkuShimmer(width: double.infinity, height: 90, borderRadius: BorderRadius.all(Radius.circular(16)))),
+                SizedBox(width: 8),
+                Expanded(child: BkuShimmer(width: double.infinity, height: 90, borderRadius: BorderRadius.all(Radius.circular(16)))),
+              ],
             ),
           ],
         ),
@@ -79,7 +67,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: formattedKas,
         badgeText: 'Saldo',
         icon: Icons.account_balance_wallet_rounded,
-        badgeColor: const Color(0xFF059669),
+        badgeColor: BkuTheme.emerald,
         subtitle: 'Saldo kas bersih',
         onTap: () => Navigator.push(
           context,
@@ -92,7 +80,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: ormawa.financialSetting != null ? 'Rp ${NumberFormat.compact(locale: "id_ID").format(ormawa.financialSetting!.budgetLimit)}' : 'Aktif',
         badgeText: 'Pagu',
         icon: Icons.savings_rounded,
-        badgeColor: const Color(0xFF0284C7),
+        badgeColor: BkuTheme.sky,
         subtitle: 'Alokasi dana',
         onTap: () => Navigator.push(
           context,
@@ -105,7 +93,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.lpjs.length}',
         badgeText: 'Laporan',
         icon: Icons.description_rounded,
-        badgeColor: const Color(0xFFE11D48),
+        badgeColor: BkuTheme.rose,
         subtitle: 'Pertanggungjawaban',
         onTap: () => Navigator.push(
           context,
@@ -118,7 +106,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.upcomingAgendasCount}',
         badgeText: 'Jadwal',
         icon: Icons.event_rounded,
-        badgeColor: const Color(0xFF6366F1),
+        badgeColor: BkuTheme.indigo,
         subtitle: 'Kegiatan proker',
         onTap: () => Navigator.push(
           context,
@@ -131,7 +119,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.activeProposalsCount}',
         badgeText: '${ormawa.approvalRate}% Acc',
         icon: Icons.description_rounded,
-        badgeColor: const Color(0xFF0284C7),
+        badgeColor: BkuTheme.sky,
         subtitle: 'Pengajuan aktif',
         onTap: () => Navigator.push(
           context,
@@ -144,7 +132,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.lpjs.length}',
         badgeText: 'Laporan',
         icon: Icons.assignment_turned_in_rounded,
-        badgeColor: const Color(0xFFE11D48),
+        badgeColor: BkuTheme.rose,
         subtitle: 'Pertanggungjawaban',
         onTap: () => Navigator.push(
           context,
@@ -157,7 +145,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.totalMembers}',
         badgeText: 'Anggota',
         icon: Icons.groups_rounded,
-        badgeColor: const Color(0xFF9333EA),
+        badgeColor: BkuTheme.purple,
         subtitle: 'Terverifikasi',
         onTap: () => Navigator.push(
           context,
@@ -170,7 +158,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.upcomingAgendasCount}',
         badgeText: 'Jadwal',
         icon: Icons.event_rounded,
-        badgeColor: const Color(0xFF6366F1),
+        badgeColor: BkuTheme.indigo,
         subtitle: 'Agenda terdekat',
         onTap: () => Navigator.push(
           context,
@@ -183,7 +171,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.activeProposalsCount}',
         badgeText: '${ormawa.approvalRate}% Acc',
         icon: Icons.description_rounded,
-        badgeColor: const Color(0xFF0284C7),
+        badgeColor: BkuTheme.sky,
         subtitle: 'Pengajuan aktif',
         onTap: () => Navigator.push(
           context,
@@ -196,7 +184,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: formattedKas,
         badgeText: 'Saldo',
         icon: Icons.account_balance_wallet_rounded,
-        badgeColor: const Color(0xFF059669),
+        badgeColor: BkuTheme.emerald,
         subtitle: 'Saldo kas bersih',
         onTap: () => Navigator.push(
           context,
@@ -209,7 +197,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.totalMembers}',
         badgeText: 'Anggota',
         icon: Icons.groups_rounded,
-        badgeColor: const Color(0xFF9333EA),
+        badgeColor: BkuTheme.purple,
         subtitle: 'Terverifikasi',
         onTap: () => Navigator.push(
           context,
@@ -222,7 +210,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.upcomingAgendasCount}',
         badgeText: 'Jadwal',
         icon: Icons.event_rounded,
-        badgeColor: const Color(0xFF6366F1),
+        badgeColor: BkuTheme.indigo,
         subtitle: 'Agenda terdekat',
         onTap: () => Navigator.push(
           context,
@@ -235,7 +223,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.absensiManagementList.length}',
         badgeText: 'QR Code',
         icon: Icons.qr_code_scanner_rounded,
-        badgeColor: const Color(0xFF0D9488),
+        badgeColor: BkuTheme.teal,
         subtitle: 'Presensi kegiatan',
         onTap: () => Navigator.push(
           context,
@@ -248,7 +236,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.upcomingAgendasCount}',
         badgeText: 'Jadwal',
         icon: Icons.event_rounded,
-        badgeColor: const Color(0xFF6366F1),
+        badgeColor: BkuTheme.indigo,
         subtitle: 'Agenda terdekat',
         onTap: () => Navigator.push(
           context,
@@ -261,7 +249,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.aspirations.length}',
         badgeText: 'Suara',
         icon: Icons.chat_bubble_outline_rounded,
-        badgeColor: const Color(0xFFF43F5E),
+        badgeColor: BkuTheme.rose,
         subtitle: 'Kotak aspirasi',
         onTap: () => Navigator.push(
           context,
@@ -274,7 +262,7 @@ class OrmawaQuickStats extends StatelessWidget {
         value: '${ormawa.gamifikasiPoin}',
         badgeText: 'Poin',
         icon: Icons.emoji_events_rounded,
-        badgeColor: const Color(0xFF7C3AED),
+        badgeColor: BkuTheme.purple,
         subtitle: 'Peringkat #${ormawa.gamifikasiPeringkat}',
       );
     }

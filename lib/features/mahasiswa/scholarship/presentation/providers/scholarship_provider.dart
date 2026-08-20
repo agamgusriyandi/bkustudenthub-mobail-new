@@ -13,18 +13,38 @@ class ScholarshipProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  String _selectedCategory = 'Internal';
+  String _selectedCategory = 'Semua';
   String get selectedCategory => _selectedCategory;
+
+  String _selectedSort = 'deadline_asc';
+  String get selectedSort => _selectedSort;
 
   List<Scholarship> _scholarships = [];
   List<Scholarship> get scholarships => _scholarships;
 
-  List<Scholarship> get filteredScholarships {
-    return _scholarships.where((s) => s.category.toLowerCase() == _selectedCategory.toLowerCase()).toList();
+  List<Scholarship> get availableScholarships {
+    return _scholarships.where((s) {
+      if (_selectedCategory != 'Semua' &&
+          s.category.toLowerCase() != _selectedCategory.toLowerCase()) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
+  List<Scholarship> get appliedScholarships {
+    return _scholarships.where((s) {
+      return s.status.toLowerCase() == 'applied' || s.applicationStatus != null;
+    }).toList();
   }
 
   void setCategory(String category) {
     _selectedCategory = category;
+    notifyListeners();
+  }
+
+  void setSort(String sort) {
+    _selectedSort = sort;
     notifyListeners();
   }
 
@@ -43,18 +63,24 @@ class ScholarshipProvider extends ChangeNotifier {
           for (int i = 0; i < fetchedScholarships.length; i++) {
             if (appliedList.contains(fetchedScholarships[i].id)) {
               final s = fetchedScholarships[i];
-              fetchedScholarships[i] = ScholarshipModel(
-                id: s.id,
-                title: s.title,
-                provider: s.provider,
-                deadline: s.deadline,
-                coverAmount: s.coverAmount,
-                category: s.category,
-                description: s.description,
-                status: s.status,
-                applicationStatus: 'Menunggu',
-                persyaratan: s.persyaratan,
-              );
+              if (s.applicationStatus == null) {
+                fetchedScholarships[i] = ScholarshipModel(
+                  id: s.id,
+                  title: s.title,
+                  provider: s.provider,
+                  deadline: s.deadline,
+                  coverAmount: s.coverAmount,
+                  category: s.category,
+                  description: s.description,
+                  status: 'Applied',
+                  applicationStatus: 'Menunggu',
+                  persyaratan: s.persyaratan,
+                  kuota: s.kuota,
+                  minIpk: s.minIpk,
+                  minSemester: s.minSemester,
+                  skema: s.skema,
+                );
+              }
             }
           }
         }
@@ -67,6 +93,14 @@ class ScholarshipProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<Scholarship> getScholarshipDetail(String id) async {
+    return await _repository.getScholarshipDetail(id);
+  }
+
+  Future<Scholarship> getPengajuanDetail(String id) async {
+    return await _repository.getPengajuanDetail(id);
   }
 
   Future<void> applyForScholarship(
@@ -90,19 +124,25 @@ class ScholarshipProvider extends ChangeNotifier {
       );
 
       final index = _scholarships.indexWhere((s) => s.id == id);
-      final s = _scholarships[index];
-      _scholarships[index] = ScholarshipModel(
-        id: s.id,
-        title: s.title,
-        provider: s.provider,
-        deadline: s.deadline,
-        coverAmount: s.coverAmount,
-        category: s.category,
-        description: s.description,
-        status: s.status,
-        applicationStatus: 'Menunggu',
-        persyaratan: s.persyaratan,
-      );
+      if (index != -1) {
+        final s = _scholarships[index];
+        _scholarships[index] = ScholarshipModel(
+          id: s.id,
+          title: s.title,
+          provider: s.provider,
+          deadline: s.deadline,
+          coverAmount: s.coverAmount,
+          category: s.category,
+          description: s.description,
+          status: 'Applied',
+          applicationStatus: 'Menunggu',
+          persyaratan: s.persyaratan,
+          kuota: s.kuota,
+          minIpk: s.minIpk,
+          minSemester: s.minSemester,
+          skema: s.skema,
+        );
+      }
       
       notifyListeners();
 
@@ -144,9 +184,13 @@ class ScholarshipProvider extends ChangeNotifier {
         coverAmount: s.coverAmount,
         category: s.category,
         description: s.description,
-        status: s.status,
+        status: 'Open',
         applicationStatus: null,
         persyaratan: s.persyaratan,
+        kuota: s.kuota,
+        minIpk: s.minIpk,
+        minSemester: s.minSemester,
+        skema: s.skema,
       );
       
       notifyListeners();

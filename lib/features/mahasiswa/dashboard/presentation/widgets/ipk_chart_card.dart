@@ -54,7 +54,7 @@ class IpkChartCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'PERKEMBANGAN AKADEMIK',
+                    'Perkembangan Akademik',
                     style: AppTextStyles.eyebrowSmall.copyWith(
                       color: context.appColors.outline,
                     ),

@@ -10,6 +10,7 @@ class Scholarship {
   final String? applicationStatus;
   final String? kuota;
   final String? minIpk;
+  final String? minSemester;
   final String? motivasi;
   final String? ktmKtpUrl;
   final String? sertifikatUrl;
@@ -20,7 +21,16 @@ class Scholarship {
   final String fileSertifikat;
   final dynamic customFieldsRaw;
   final dynamic customAnswersRaw;
+  final dynamic rubrikSchemaRaw;
+  final dynamic rubrikAnswersRaw;
   final String? skema;
+  final String? nomorPendaftaran;
+  final String? tanggalPengajuan;
+  final String? catatanVerifikator;
+  final List<dynamic>? logs;
+  final String? tingkat;
+  final String? fakultasNama;
+  final String? prodiNama;
 
   Scholarship({
     required this.id,
@@ -34,6 +44,7 @@ class Scholarship {
     this.applicationStatus,
     this.kuota,
     this.minIpk,
+    this.minSemester,
     this.motivasi,
     this.ktmKtpUrl,
     this.sertifikatUrl,
@@ -44,6 +55,15 @@ class Scholarship {
     this.fileSertifikat = 'opsional',
     this.customFieldsRaw,
     this.customAnswersRaw,
+    this.rubrikSchemaRaw,
+    this.rubrikAnswersRaw,
     this.skema,
+    this.nomorPendaftaran,
+    this.tanggalPengajuan,
+    this.catatanVerifikator,
+    this.logs,
+    this.tingkat,
+    this.fakultasNama,
+    this.prodiNama,
   });
 }

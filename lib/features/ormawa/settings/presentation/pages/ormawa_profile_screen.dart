@@ -5,10 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
@@ -51,7 +51,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           uiSettings: [
             AndroidUiSettings(
               toolbarTitle: 'Potong Foto Profil',
-              toolbarColor: OrmawaTheme.primaryDark,
+              toolbarColor: BkuTheme.primaryDark,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.square,
               lockAspectRatio: true,
@@ -107,7 +107,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: Consumer<OrmawaProvider>(
         builder: (context, provider, child) {
           final member = provider.currentMember;
@@ -147,7 +147,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          OrmawaCard(
+          BkuCard(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            borderRadius: 16,
             child: Row(
               children: [
                 Stack(
@@ -157,9 +159,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                       height: 64,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: OrmawaTheme.primarySoft,
+                        color: BkuTheme.primarySoft,
                         border: Border.all(
-                          color: OrmawaTheme.primaryBorder,
+                          color: BkuTheme.primaryBorder,
                           width: 2,
                         ),
                       ),
@@ -174,16 +176,16 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                                   return Icon(
                                     Icons.person_rounded,
                                     size: 36,
-                                    color: OrmawaTheme.primary,
+                                    color: BkuTheme.primary,
                                   );
                                 },
                                 placeholder: (context, url) =>
-                                    Container(color: const Color(0xFFF1F5F9)),
+                                    Container(color: BkuTheme.borderSubtle),
                               )
                             : Icon(
                                 Icons.person_rounded,
                                 size: 36,
-                                color: OrmawaTheme.primary,
+                                color: BkuTheme.primary,
                               ),
                       ),
                     ),
@@ -196,10 +198,9 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: OrmawaTheme.primary,
+                              color: BkuTheme.primary,
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 1.5),
-                              boxShadow: OrmawaTheme.cardShadow,
                             ),
                             child: const Icon(
                               Icons.camera_alt_rounded,
@@ -213,7 +214,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                       const Positioned.fill(
                         child: Padding(
                           padding: EdgeInsets.all(12),
-                          child: BkuShimmerList(),
+                          child: BkuShimmerList(itemCount: 1),
                         ),
                       ),
                   ],
@@ -225,14 +226,14 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                     children: [
                       Text(
                         member.name,
-                        style: OrmawaTheme.textCardTitle.copyWith(fontSize: 15),
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 15),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       Text(
                         '${member.role} • ${provider.orgName}',
-                        style: OrmawaTheme.textCardSubtitle,
+                        style: BkuTheme.textCardSubtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -241,17 +242,17 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                         spacing: 6,
                         runSpacing: 4,
                         children: [
-                          OrmawaBadge(
-                            text: 'NIM: ${member.nim}',
-                            variant: OrmawaBadgeVariant.neutral,
-                            icon: Icons.badge_outlined,
+                          BkuStatusBadge(
+                            status: BkuStatus.neutral,
+                            customText: 'NIM: ${member.nim}',
+                            showIcon: false,
                           ),
-                          OrmawaBadge(
-                            text: member.status.toUpperCase(),
-                            variant: member.status.toLowerCase() == 'aktif'
-                                ? OrmawaBadgeVariant.success
-                                : OrmawaBadgeVariant.warning,
-                            icon: Icons.check_circle_outline_rounded,
+                          BkuStatusBadge(
+                            status: member.status.toLowerCase() == 'aktif'
+                                ? BkuStatus.success
+                                : BkuStatus.warning,
+                            customText: member.status.toUpperCase(),
+                            showIcon: false,
                           ),
                         ],
                       ),
@@ -269,26 +270,26 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'Jabatan / Peran',
                 member.role,
                 Icons.badge_rounded,
-                OrmawaTheme.primary,
+                BkuTheme.primary,
               ),
               _buildMenuItem(
                 'Divisi / Departemen',
                 member.division.isEmpty ? 'Umum' : member.division,
                 Icons.group_work_rounded,
-                const Color(0xFF0284C7),
+                BkuTheme.sky,
               ),
               _buildMenuItem(
                 'Organisasi',
                 provider.orgName,
                 Icons.account_balance_rounded,
-                const Color(0xFF7C3AED),
+                BkuTheme.purple,
               ),
               if (member.periode != null && member.periode!.isNotEmpty)
                 _buildMenuItem(
                   'Periode Kepengurusan',
                   member.periode!,
                   Icons.date_range_rounded,
-                  const Color(0xFF059669),
+                  BkuTheme.emerald,
                 ),
             ],
           ),
@@ -306,7 +307,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'No Handphone / WhatsApp',
                 member.phone?.isNotEmpty == true ? member.phone! : 'Belum diatur',
                 Icons.phone_outlined,
-                const Color(0xFF16A34A),
+                BkuTheme.emerald,
               ),
             ],
           ),
@@ -318,7 +319,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'Pengaturan Organisasi',
                 'Edit profil ormawa, visi, misi, dan rekening',
                 Icons.tune_rounded,
-                OrmawaTheme.primary,
+                BkuTheme.primary,
                 () {
                   Navigator.push(
                     context,
@@ -332,7 +333,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'Keamanan & Sandi',
                 'Ganti kata sandi akun administrasi',
                 Icons.lock_reset_rounded,
-                const Color(0xFF2563EB),
+                BkuTheme.primary,
                 () {
                   Navigator.push(
                     context,
@@ -346,7 +347,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 'Keluar Akun',
                 'Akhiri sesi portal Ormawa',
                 Icons.logout_rounded,
-                const Color(0xFFDC2626),
+                BkuTheme.rose,
                 () => _showLogoutDialog(context),
                 isDestructive: true,
               ),
@@ -366,11 +367,12 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title,
-            style: OrmawaTheme.textSectionTitle,
+            style: BkuTheme.textSectionTitle,
           ),
         ),
-        OrmawaCard(
+        BkuCard(
           padding: const EdgeInsets.symmetric(vertical: 6),
+          borderRadius: 16,
           child: Column(
             children: items,
           ),
@@ -392,7 +394,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withAlpha(20),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 18),
@@ -404,14 +406,14 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
               children: [
                 Text(
                   title,
-                  style: OrmawaTheme.textCaption.copyWith(
-                    color: OrmawaTheme.textMuted,
+                  style: BkuTheme.textCaption.copyWith(
+                    color: BkuTheme.textMuted,
                   ),
                 ),
                 const SizedBox(height: 1),
                 Text(
                   subtitle,
-                  style: OrmawaTheme.textCardTitle.copyWith(fontSize: 12.5),
+                  style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
                 ),
               ],
             ),
@@ -439,7 +441,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withAlpha(20),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: color, size: 18),
@@ -451,18 +453,18 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
                 children: [
                   Text(
                     title,
-                    style: OrmawaTheme.textCardTitle.copyWith(
+                    style: BkuTheme.textCardTitle.copyWith(
                       fontSize: 13,
-                      color: isDestructive ? const Color(0xFFDC2626) : OrmawaTheme.textHeading,
+                      color: isDestructive ? BkuTheme.rose : BkuTheme.textHeading,
                     ),
                   ),
                   const SizedBox(height: 1),
                   Text(
                     subtitle,
-                    style: OrmawaTheme.textCaption.copyWith(
+                    style: BkuTheme.textCaption.copyWith(
                       color: isDestructive
-                          ? const Color(0xFFDC2626).withAlpha(180)
-                          : OrmawaTheme.textMuted,
+                          ? BkuTheme.rose.withValues(alpha: 0.8)
+                          : BkuTheme.textMuted,
                     ),
                   ),
                 ],
@@ -471,7 +473,7 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
             Icon(
               Icons.chevron_right_rounded,
               size: 20,
-              color: isDestructive ? const Color(0xFFDC2626) : OrmawaTheme.textPlaceholder,
+              color: isDestructive ? BkuTheme.rose : BkuTheme.textPlaceholder,
             ),
           ],
         ),
@@ -489,18 +491,18 @@ class _OrmawaProfileScreenState extends State<OrmawaProfileScreen> {
           Icon(
             Icons.person_off_rounded,
             size: 64,
-            color: OrmawaTheme.textPlaceholder,
+            color: BkuTheme.textPlaceholder,
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Data Profil Tidak Ditemukan',
-            style: OrmawaTheme.textCardTitle.copyWith(fontSize: 16),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 16),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Gagal memuat informasi pribadi Anda. Pastikan Anda sudah terdaftar sebagai pengurus aktif.',
             textAlign: TextAlign.center,
-            style: OrmawaTheme.textBodyRegular.copyWith(color: OrmawaTheme.textMuted),
+            style: BkuTheme.textBodyRegular.copyWith(color: BkuTheme.textMuted),
           ),
         ],
       ),

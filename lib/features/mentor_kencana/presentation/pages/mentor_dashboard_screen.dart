@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_error_state.dart';
-import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/features/mentor_kencana/presentation/providers/mentor_kencana_provider.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_service_menu.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_stats_grid.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_handbook_chart.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_group_period_card.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/widgets/mentor_announcements.dart';
-import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class MentorDashboardScreen extends StatefulWidget {
   const MentorDashboardScreen({super.key});
@@ -92,11 +89,11 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
     }
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => provider.fetchDashboard(),
-        color: context.appColors.primary,
-        backgroundColor: context.appColors.surface,
+        color: BkuTheme.primary,
+        backgroundColor: BkuTheme.cardSurface,
         child: CustomScrollView(
           physics: const ClampingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics(),
@@ -110,32 +107,33 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
               showBackButton: false,
               expandedHeight: 130,
               showProfileOnCollapse: true,
-              profileImage:
-                  fotoUrl.isNotEmpty
-                      ? CachedNetworkImage(
-                        imageUrl: ApiGate.getImageUrl(fotoUrl),
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) {
-                          return Icon(
-                            Icons.person_rounded,
-                            color: context.appColors.primary,
-                            size: 28,
-                          );
-                        },
-                        placeholder:
-                            (context, url) => Container(
-                              color: context.appColors.primary.withAlpha(20),
-                            ),
-                      )
-                      : Icon(
-                        Icons.person_rounded,
-                        color: context.appColors.primary,
-                        size: 28,
+              profileImage: fotoUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: ApiGate.getImageUrl(fotoUrl),
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) {
+                        return Icon(
+                          Icons.person_rounded,
+                          color: BkuTheme.primary,
+                          size: 28,
+                        );
+                      },
+                      placeholder: (context, url) => Container(
+                        color: BkuTheme.indigoSoft,
                       ),
+                    )
+                  : Icon(
+                      Icons.person_rounded,
+                      color: BkuTheme.primary,
+                      size: 28,
+                    ),
             ),
             if (provider.isLoading && dashboard == null)
               const SliverFillRemaining(
-                child: Padding(padding: EdgeInsets.all(20), child: BkuShimmerList()),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: BkuShimmerList(),
+                ),
               )
             else if (provider.errorMessage != null && dashboard == null)
               SliverFillRemaining(
@@ -156,49 +154,48 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                       const SizedBox(height: AppSpacing.xl),
                       Text(
                         'Layanan Cepat',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: context.appColors.onSurface,
-                          letterSpacing: -0.5,
-                        ),
+                        style: BkuTheme.textSectionTitle,
                       ),
                       const SizedBox(height: AppSpacing.md),
                       const FadeInAnimation(
                         delay: 0.1,
                         child: MentorServiceMenu(),
                       ),
-                      const SizedBox(height: AppSpacing.s20),
+                      const SizedBox(height: AppSpacing.lg),
                       if (name == 'Fasilitator' ||
                           (userData['phone'] ?? fullUserData['phone'] ?? '')
                               .toString()
                               .isEmpty)
                         FadeInAnimation(
                           delay: 0.1,
-                          child: BkuCard(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.s20),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            backgroundColor: context.appColors.warning,
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: BkuTheme.amberSoft,
+                              borderRadius: BkuTheme.r16,
+                              border: Border.all(color: BkuTheme.amberBorder),
+                            ),
                             child: Row(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: context.appColors.surface.withAlpha(51),
-                                    borderRadius: AppRadius.radiusMd,
+                                    color: BkuTheme.amber.withAlpha(30),
+                                    borderRadius: BkuTheme.r8,
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.warning_amber_rounded,
-                                    color: context.appColors.surface,
-                                    size: 20,
+                                    color: BkuTheme.amber,
+                                    size: 18,
                                   ),
                                 ),
                                 const SizedBox(width: AppSpacing.md),
                                 Expanded(
                                   child: Text(
                                     'Profil Anda belum lengkap. Silakan lengkapi profil di halaman web.',
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      color: context.appColors.surface,
+                                    style: BkuTheme.textBadge.copyWith(
+                                      color: BkuTheme.amber,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -209,14 +206,9 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                         ),
                       Text(
                         'Statistik Fasilitasi',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: context.appColors.onSurface,
-                          letterSpacing: -0.5,
-                        ),
+                        style: BkuTheme.textSectionTitle,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.md),
                       FadeInAnimation(
                         delay: 0.1,
                         child: MentorStatsGrid(dashboard: dashboard),
@@ -234,14 +226,9 @@ class _MentorDashboardScreenState extends State<MentorDashboardScreen> {
                       const SizedBox(height: AppSpacing.xxl),
                       Text(
                         'Pengumuman',
-                        style: AppTextStyles.titleLg.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: context.appColors.onSurface,
-                          letterSpacing: -0.5,
-                        ),
+                        style: BkuTheme.textSectionTitle,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.md),
                       FadeInAnimation(
                         delay: 0.2,
                         child: MentorAnnouncements(provider: provider),

@@ -1,16 +1,15 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
 import 'package:bkuhub_mobile/features/ormawa/domain/entities/ormawa_member.dart';
 
@@ -113,9 +112,10 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         ormawaProvider.hasPermission('ormawa.structure.manage, ormawa.structure.update, ormawa.organisasi.manage, ormawa.members.update');
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: () => context.read<OrmawaProvider>().refreshData(),
+        color: BkuTheme.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
@@ -147,9 +147,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl,
                   AppSpacing.lg,
-                  AppSpacing.xl,
+                  AppSpacing.md,
+                  AppSpacing.lg,
                   AppSpacing.xxl,
                 ),
                 child: Column(
@@ -169,14 +169,14 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
 
                     if (_viewMode == 'tree') ...[
                       if (pembina.isNotEmpty) ...[
-                        _buildSectionTitle('PEMBINA & PENASIHAT', Icons.school_rounded, const Color(0xFF4F46E5)),
+                        _buildSectionTitle('Pembina & Penasihat', Icons.school_rounded, BkuTheme.indigo),
                         const SizedBox(height: AppSpacing.sm),
                         ...pembina.map((m) => _buildMemberCard(context, m, customRoleBadge: 'Pembina')),
                         const SizedBox(height: AppSpacing.lg),
                       ],
 
                       if (ketua != null || wakil != null) ...[
-                        _buildSectionTitle('PIMPINAN UTAMA', Icons.military_tech_rounded, const Color(0xFFD97706)),
+                        _buildSectionTitle('Pimpinan Utama', Icons.military_tech_rounded, BkuTheme.amber),
                         const SizedBox(height: AppSpacing.sm),
                         if (ketua != null)
                           _buildHeroLeaderCard(context, ketua, isPrimary: true),
@@ -188,7 +188,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       ],
 
                       if (sekretaris.isNotEmpty || bendahara.isNotEmpty || bphInti.isNotEmpty) ...[
-                        _buildSectionTitle('BADAN PENGURUS HARIAN (BPH)', Icons.shield_rounded, const Color(0xFF0284C7)),
+                        _buildSectionTitle('Badan Pengurus Harian (BPH)', Icons.shield_rounded, BkuTheme.sky),
                         const SizedBox(height: AppSpacing.sm),
                         ...sekretaris.map((m) => _buildMemberCard(context, m)),
                         ...bendahara.map((m) => _buildMemberCard(context, m)),
@@ -197,7 +197,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       ],
 
                       if (allDivNames.isNotEmpty) ...[
-                        _buildSectionTitle('DIVISI & DEPARTEMEN', Icons.category_rounded, const Color(0xFF8B5CF6)),
+                        _buildSectionTitle('Divisi & Departemen', Icons.category_rounded, BkuTheme.purple),
                         const SizedBox(height: AppSpacing.sm),
                         ...allDivNames.map((divName) {
                           final divMembers = members.where((m) => m.division == divName && !pembinaIds.contains(m.id)).toList();
@@ -230,7 +230,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildSectionTitle('ANGGOTA ORGANISASI', Icons.groups_rounded, const Color(0xFF059669)),
+                              _buildSectionTitle('Anggota Organisasi', Icons.groups_rounded, BkuTheme.emerald),
                               const SizedBox(height: AppSpacing.sm),
                               ...generalMembers.map((m) => _buildMemberCard(context, m)),
                             ],
@@ -255,7 +255,14 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     ],
 
                     if (members.isEmpty && !ormawaProvider.isLoading)
-                      _buildEmptyState('Belum ada data pengurus atau anggota'),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: BkuEmptyState(
+                          title: 'Belum Ada Data Pengurus',
+                          message: 'Data pengurus atau anggota organisasi belum ditambahkan.',
+                          icon: Icons.account_tree_outlined,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -270,21 +277,21 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: OrmawaTheme.border),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r12,
+        border: Border.all(color: BkuTheme.border),
       ),
       child: Row(
         children: [
           Expanded(
             child: InkWell(
               onTap: () => setState(() => _viewMode = 'tree'),
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BkuTheme.r8,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: _viewMode == 'tree' ? OrmawaTheme.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(9),
+                  color: _viewMode == 'tree' ? BkuTheme.primary : Colors.transparent,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -292,7 +299,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     Icon(
                       Icons.account_tree_rounded,
                       size: 16,
-                      color: _viewMode == 'tree' ? Colors.white : const Color(0xFF64748B),
+                      color: _viewMode == 'tree' ? Colors.white : BkuTheme.textMuted,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -300,7 +307,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: _viewMode == 'tree' ? Colors.white : const Color(0xFF64748B),
+                        color: _viewMode == 'tree' ? Colors.white : BkuTheme.textMuted,
                       ),
                     ),
                   ],
@@ -312,12 +319,12 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
           Expanded(
             child: InkWell(
               onTap: () => setState(() => _viewMode = 'grid'),
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BkuTheme.r8,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: _viewMode == 'grid' ? OrmawaTheme.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(9),
+                  color: _viewMode == 'grid' ? BkuTheme.primary : Colors.transparent,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -325,7 +332,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     Icon(
                       Icons.grid_view_rounded,
                       size: 16,
-                      color: _viewMode == 'grid' ? Colors.white : const Color(0xFF64748B),
+                      color: _viewMode == 'grid' ? Colors.white : BkuTheme.textMuted,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -333,7 +340,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: _viewMode == 'grid' ? Colors.white : const Color(0xFF64748B),
+                        color: _viewMode == 'grid' ? Colors.white : BkuTheme.textMuted,
                       ),
                     ),
                   ],
@@ -371,7 +378,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('PIMPINAN & BPH ($totalBph)', Icons.shield_rounded, const Color(0xFF0284C7)),
+        _buildSectionTitle('Pimpinan & BPH ($totalBph)', Icons.shield_rounded, BkuTheme.sky),
         const SizedBox(height: AppSpacing.sm),
         GridView.builder(
           shrinkWrap: true,
@@ -391,7 +398,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         const SizedBox(height: AppSpacing.lg),
 
         if (pembina.isNotEmpty) ...[
-          _buildSectionTitle('PEMBINA (${pembina.length})', Icons.school_rounded, const Color(0xFF4F46E5)),
+          _buildSectionTitle('Pembina (${pembina.length})', Icons.school_rounded, BkuTheme.indigo),
           const SizedBox(height: AppSpacing.sm),
           GridView.builder(
             shrinkWrap: true,
@@ -412,18 +419,14 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         ],
 
         if (divisions.isNotEmpty) ...[
-          _buildSectionTitle('DEPARTEMEN & DIVISI (${divisions.length})', Icons.category_rounded, const Color(0xFF8B5CF6)),
+          _buildSectionTitle('Departemen & Divisi (${divisions.length})', Icons.category_rounded, BkuTheme.purple),
           const SizedBox(height: AppSpacing.sm),
           ...divisions.map((divName) {
             final divMembers = members.where((m) => m.division == divName && !pembinaIds.contains(m.id)).toList();
-            return Container(
+            return BkuCard(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: OrmawaTheme.border),
-              ),
+              borderRadius: 14,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -436,27 +439,27 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8B5CF6).withAlpha(20),
-                              borderRadius: BorderRadius.circular(8),
+                              color: BkuTheme.purpleSoft,
+                              borderRadius: BkuTheme.r8,
                             ),
-                            child: const Icon(Icons.folder_shared_rounded, size: 15, color: Color(0xFF8B5CF6)),
+                            child: const Icon(Icons.folder_shared_rounded, size: 15, color: BkuTheme.purple),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             divName,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                            style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.w900),
                           ),
                         ],
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(6),
+                          color: BkuTheme.borderSubtle,
+                          borderRadius: BkuTheme.r8,
                         ),
                         child: Text(
                           '${divMembers.length} Anggota',
-                          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: BkuTheme.textMuted),
                         ),
                       ),
                     ],
@@ -494,9 +497,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: BkuTheme.borderSubtle,
+        borderRadius: BkuTheme.r10,
+        border: Border.all(color: BkuTheme.border),
       ),
       child: Row(
         children: [
@@ -509,7 +512,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               children: [
                 Text(
                   member.name,
-                  style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  style: BkuTheme.textCardTitle.copyWith(fontSize: 10.5, fontWeight: FontWeight.bold),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -545,7 +548,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 value: '$totalMembers',
                 badgeText: 'Anggota',
                 icon: Icons.groups_rounded,
-                badgeColor: const Color(0xFF4F46E5),
+                badgeColor: BkuTheme.indigo,
                 subtitle: 'Pengurus & anggota aktif',
               ),
             ),
@@ -556,7 +559,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 value: '$totalBph',
                 badgeText: 'BPH',
                 icon: Icons.shield_rounded,
-                badgeColor: const Color(0xFF0284C7),
+                badgeColor: BkuTheme.sky,
                 subtitle: 'Pimpinan & harian',
               ),
             ),
@@ -571,7 +574,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 value: '$totalDivisions',
                 badgeText: 'Divisi',
                 icon: Icons.category_rounded,
-                badgeColor: const Color(0xFFD97706),
+                badgeColor: BkuTheme.amber,
                 subtitle: 'Bidang operasional',
               ),
             ),
@@ -582,7 +585,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 value: '$totalPembina',
                 badgeText: 'Dosen',
                 icon: Icons.school_rounded,
-                badgeColor: const Color(0xFF059669),
+                badgeColor: BkuTheme.emerald,
                 subtitle: 'Dosen penasihat',
               ),
             ),
@@ -599,7 +602,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
         const SizedBox(width: 6),
         Text(
           title,
-          style: OrmawaTheme.textSectionTitle,
+          style: BkuTheme.textSectionTitle,
         ),
       ],
     );
@@ -610,29 +613,18 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     OrmawaMember member, {
     required bool isPrimary,
   }) {
-    final badgeColor = isPrimary ? const Color(0xFFD97706) : const Color(0xFFEA580C);
-    final roleText = isPrimary ? 'KETUA UMUM' : 'WAKIL KETUA';
+    final badgeColor = isPrimary ? BkuTheme.amber : BkuTheme.rose;
+    final roleText = isPrimary ? 'Ketua Umum' : 'Wakil Ketua';
 
     final subText = [
       if (member.nim.isNotEmpty && member.nim != '-') member.nim,
       if (member.prodi != null && member.prodi!.isNotEmpty) member.prodi!,
     ].join(' • ');
 
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: OrmawaTheme.border, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: badgeColor.withAlpha(12),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      borderRadius: 14,
       child: Row(
         children: [
           _buildAvatar(member.name, member.fotoUrl, size: 42),
@@ -647,7 +639,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                       decoration: BoxDecoration(
                         color: badgeColor,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BkuTheme.r8,
                       ),
                       child: Text(
                         roleText,
@@ -667,13 +659,13 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: const Color(0xFFE2E8F0), width: 0.8),
+                          color: BkuTheme.borderSubtle,
+                          borderRadius: BkuTheme.r8,
+                          border: Border.all(color: BkuTheme.border, width: 0.8),
                         ),
                         child: Text(
                           member.division,
-                          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
+                          style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700, color: BkuTheme.textMuted),
                         ),
                       ),
                     ],
@@ -682,10 +674,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 const SizedBox(height: 3),
                 Text(
                   member.name,
-                  style: TextStyle(
+                  style: BkuTheme.textCardTitle.copyWith(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w900,
-                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -693,9 +684,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 if (subText.isNotEmpty)
                   Text(
                     subText,
-                    style: TextStyle(
+                    style: BkuTheme.textCaption.copyWith(
                       fontSize: 9.5,
-                      color: OrmawaTheme.textMuted,
+                      color: BkuTheme.textMuted,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -725,7 +716,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
     return BkuCard(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      borderRadius: AppRadius.md,
+      borderRadius: 12,
       child: Row(
         children: [
           _buildAvatar(member.name, member.fotoUrl, size: 34),
@@ -736,10 +727,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
               children: [
                 Text(
                   member.name,
-                  style: TextStyle(
+                  style: BkuTheme.textCardTitle.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: OrmawaTheme.textHeading,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -747,9 +737,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 if (subText.isNotEmpty)
                   Text(
                     subText,
-                    style: TextStyle(
+                    style: BkuTheme.textCaption.copyWith(
                       fontSize: 9,
-                      color: OrmawaTheme.textMuted,
+                      color: BkuTheme.textMuted,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -764,7 +754,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: roleStyle.bgColor,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BkuTheme.r8,
                   border: Border.all(
                     color: roleStyle.borderColor,
                     width: 0.8,
@@ -787,19 +777,19 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(4),
+                    color: BkuTheme.borderSubtle,
+                    borderRadius: BkuTheme.r8,
                     border: Border.all(
-                      color: const Color(0xFFE2E8F0),
+                      color: BkuTheme.border,
                       width: 0.8,
                     ),
                   ),
                   child: Text(
                     member.division,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF64748B),
+                      color: BkuTheme.textMuted,
                     ),
                   ),
                 ),
@@ -819,24 +809,21 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
   }) {
     final totalMembers = kadivList.length + stafList.length;
 
-    return Container(
+    return BkuCard(
       margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: OrmawaTheme.border, width: 1.0),
-      ),
+      padding: EdgeInsets.zero,
+      borderRadius: 14,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.servicePurple.withAlpha(12),
+              color: BkuTheme.purpleSoft,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(13)),
               border: Border(
                 bottom: BorderSide(
-                  color: AppColors.servicePurple.withAlpha(30),
+                  color: BkuTheme.purple.withAlpha(30),
                   width: 0.8,
                 ),
               ),
@@ -849,7 +836,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     const Icon(
                       Icons.folder_shared_rounded,
                       size: 15,
-                      color: AppColors.servicePurple,
+                      color: BkuTheme.purple,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -857,7 +844,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.servicePurple,
+                        color: BkuTheme.purple,
                       ),
                     ),
                   ],
@@ -866,9 +853,9 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BkuTheme.r8,
                     border: Border.all(
-                      color: AppColors.servicePurple.withAlpha(40),
+                      color: BkuTheme.purple.withAlpha(40),
                       width: 0.8,
                     ),
                   ),
@@ -877,7 +864,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     style: const TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.servicePurple,
+                      color: BkuTheme.purple,
                     ),
                   ),
                 ),
@@ -891,12 +878,12 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                 ...kadivList.map((m) => _buildMemberCard(context, m, customRoleBadge: 'Kadiv')),
                 ...stafList.map((m) => _buildMemberCard(context, m, customRoleBadge: 'Staf')),
                 if (kadivList.isEmpty && stafList.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.all(12),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
                     child: Center(
                       child: Text(
                         'Belum ada anggota terdaftar di divisi ini',
-                        style: TextStyle(fontSize: 10, color: AppColors.neutral500),
+                        style: TextStyle(fontSize: 10, color: BkuTheme.textPlaceholder),
                       ),
                     ),
                   ),
@@ -932,10 +919,10 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
+        color: BkuTheme.borderSubtle,
         borderRadius: BorderRadius.circular(size * 0.25),
         border: Border.all(
-          color: const Color(0xFFE2E8F0),
+          color: BkuTheme.border,
           width: 0.8,
         ),
       ),
@@ -953,7 +940,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     style: TextStyle(
                       fontSize: size * 0.32,
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF475569),
+                      color: BkuTheme.textMuted,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -964,7 +951,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                     style: TextStyle(
                       fontSize: size * 0.32,
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF475569),
+                      color: BkuTheme.textMuted,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -976,7 +963,7 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
                   style: TextStyle(
                     fontSize: size * 0.32,
                     fontWeight: FontWeight.w900,
-                    color: const Color(0xFF475569),
+                    color: BkuTheme.textMuted,
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -988,70 +975,44 @@ class _OrmawaStrukturScreenState extends State<OrmawaStrukturScreen> {
   _RoleBadgeStyle _getRoleBadgeStyle(String role) {
     final r = role.toLowerCase();
     if (r.contains('ketua umum') || (r.contains('ketua') && !r.contains('wakil') && !r.contains('divisi'))) {
-      return _RoleBadgeStyle(
-        bgColor: const Color(0xFFFEF3C7),
-        borderColor: const Color(0xFFFDE047),
-        textColor: const Color(0xFFB45309),
+      return const _RoleBadgeStyle(
+        bgColor: Color(0xFFFEF3C7),
+        borderColor: Color(0xFFFDE68A),
+        textColor: BkuTheme.textHeading,
       );
     }
     if (r.contains('wakil')) {
-      return _RoleBadgeStyle(
-        bgColor: const Color(0xFFFFEDD5),
-        borderColor: const Color(0xFFFED7AA),
-        textColor: const Color(0xFFC2410C),
+      return const _RoleBadgeStyle(
+        bgColor: Color(0xFFFFE4E6),
+        borderColor: Color(0xFFFECDD3),
+        textColor: BkuTheme.textHeading,
       );
     }
     if (r.contains('pembina') || r.contains('penasihat') || r.contains('dosen')) {
-      return _RoleBadgeStyle(
-        bgColor: const Color(0xFFE0E7FF),
-        borderColor: const Color(0xFFC7D2FE),
-        textColor: const Color(0xFF4338CA),
+      return const _RoleBadgeStyle(
+        bgColor: Color(0xFFEEF2FF),
+        borderColor: Color(0xFFC7D2FE),
+        textColor: BkuTheme.textHeading,
       );
     }
     if (r.contains('sekretaris') || r.contains('bendahara') || r.contains('bph')) {
-      return _RoleBadgeStyle(
-        bgColor: const Color(0xFFE0F2FE),
-        borderColor: const Color(0xFFBAE6FD),
-        textColor: const Color(0xFF0369A1),
+      return const _RoleBadgeStyle(
+        bgColor: Color(0xFFE0F2FE),
+        borderColor: Color(0xFFBAE6FD),
+        textColor: BkuTheme.textHeading,
       );
     }
     if (r.contains('kepala') || r.contains('kadiv') || r.contains('koordinator')) {
-      return _RoleBadgeStyle(
-        bgColor: const Color(0xFFF3E8FF),
-        borderColor: const Color(0xFFE9D5FF),
-        textColor: const Color(0xFF7E22CE),
+      return const _RoleBadgeStyle(
+        bgColor: Color(0xFFF3E8FF),
+        borderColor: Color(0xFFDDD6FE),
+        textColor: BkuTheme.textHeading,
       );
     }
-    return _RoleBadgeStyle(
-      bgColor: const Color(0xFFD1FAE5),
-      borderColor: const Color(0xFFA7F3D0),
-      textColor: const Color(0xFF047857),
-    );
-  }
-
-  Widget _buildEmptyState(String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          children: [
-            const Icon(
-              Icons.account_tree_outlined,
-              color: AppColors.neutral400,
-              size: 48,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              message,
-              style: const TextStyle(
-                color: AppColors.neutral500,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return const _RoleBadgeStyle(
+      bgColor: Color(0xFFF1F5F9),
+      borderColor: Color(0xFFE2E8F0),
+      textColor: BkuTheme.textHeading,
     );
   }
 }
@@ -1061,7 +1022,7 @@ class _RoleBadgeStyle {
   final Color borderColor;
   final Color textColor;
 
-  _RoleBadgeStyle({
+  const _RoleBadgeStyle({
     required this.bgColor,
     required this.borderColor,
     required this.textColor,

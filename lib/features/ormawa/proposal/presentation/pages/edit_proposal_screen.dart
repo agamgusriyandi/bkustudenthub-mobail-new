@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
@@ -195,12 +195,12 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: BkuTheme.textHeading,
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -227,12 +227,12 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: BkuTheme.textHeading,
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -255,12 +255,12 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: const Color(0xFF0F172A),
+              onSurface: BkuTheme.textHeading,
             ),
-                      ),
+          ),
           child: child!,
         );
       },
@@ -284,9 +284,9 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: OrmawaTheme.primary,
+              primary: BkuTheme.primary,
               onPrimary: Colors.white,
-              onSurface: OrmawaTheme.textHeading,
+              onSurface: BkuTheme.textHeading,
             ),
           ),
           child: child!,
@@ -319,12 +319,7 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
           children: [
             Text(
               label.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
-                color: Color(0xFF1E293B),
-              ),
+              style: BkuTheme.textBadge.copyWith(fontSize: 10, fontWeight: FontWeight.w900, color: BkuTheme.textMuted),
             ),
             const SizedBox(width: 4),
             const Text(
@@ -332,7 +327,7 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFF43F5E),
+                color: BkuTheme.rose,
               ),
             ),
           ],
@@ -348,25 +343,21 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.border),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
                           dateFormatted,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF0F172A),
-                          ),
+                          style: BkuTheme.textBodyRegular.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.calendar_today_outlined,
                         size: 16,
-                        color: Color(0xFF0F172A),
+                        color: BkuTheme.textHeading,
                       ),
                     ],
                   ),
@@ -382,25 +373,21 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    borderRadius: BkuTheme.r12,
+                    border: Border.all(color: BkuTheme.border),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
                           timeDisplay,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF0F172A),
-                          ),
+                          style: BkuTheme.textBodyRegular.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.access_time_rounded,
                         size: 18,
-                        color: Color(0xFF0F172A),
+                        color: BkuTheme.textHeading,
                       ),
                     ],
                   ),
@@ -420,14 +407,9 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
       children: [
         Row(
           children: [
-            const Text(
-              'PENANGGUNG JAWAB (ANGGOTA ORMAWA)',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
-                color: Color(0xFF1E293B),
-              ),
+            Text(
+              'Penanggung Jawab (Anggota Ormawa)',
+              style: BkuTheme.textBadge.copyWith(fontSize: 10.5, fontWeight: FontWeight.w900, color: BkuTheme.textHeading),
             ),
             const SizedBox(width: 4),
             const Text(
@@ -435,7 +417,7 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFF43F5E),
+                color: BkuTheme.rose,
               ),
             ),
           ],
@@ -443,34 +425,18 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
         const SizedBox(height: 6),
         if (hasPJ)
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              color: BkuTheme.primarySoft,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.primaryBorder),
             ),
             child: Row(
               children: [
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFBFDBFE)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _pjController.text.trim().isNotEmpty
-                          ? _pjController.text.trim()[0].toUpperCase()
-                          : 'P',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF2563EB),
-                      ),
-                    ),
-                  ),
+                CircleAvatar(
+                  radius: 16,
+                  backgroundColor: BkuTheme.primary,
+                  child: const Icon(Icons.person, size: 18, color: Colors.white),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -479,18 +445,14 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                     children: [
                       Text(
                         _pjController.text.trim(),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF0F172A),
-                        ),
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
-                      const Text(
+                      Text(
                         'Penanggung Jawab Usulan',
-                        style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                        style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                       ),
                     ],
                   ),
@@ -501,15 +463,15 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                      borderRadius: BkuTheme.r8,
+                      border: Border.all(color: BkuTheme.border),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Ganti',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF2563EB),
+                        color: BkuTheme.primary,
                       ),
                     ),
                   ),
@@ -520,11 +482,11 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFEF2F2),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFFECACA)),
+                      color: BkuTheme.roseSoft,
+                      borderRadius: BkuTheme.r8,
+                      border: Border.all(color: BkuTheme.roseBorder),
                     ),
-                    child: const Icon(Icons.close_rounded, size: 16, color: Color(0xFFE11D48)),
+                    child: const Icon(Icons.close_rounded, size: 16, color: BkuTheme.rose),
                   ),
                 ),
               ],
@@ -538,24 +500,23 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                borderRadius: BkuTheme.r12,
+                border: Border.all(color: BkuTheme.border),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.person_search_rounded, size: 18, color: Color(0xFF64748B)),
-                  SizedBox(width: 10),
+                  Icon(Icons.person_search_rounded, size: 18, color: BkuTheme.textMuted),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Pilih Penanggung Jawab dari Anggota Ormawa...',
-                      style: TextStyle(
+                      style: BkuTheme.textBodyRegular.copyWith(
                         fontSize: 12,
-                        color: Color(0xFF94A3B8),
-                        fontWeight: FontWeight.w500,
+                        color: BkuTheme.textPlaceholder,
                       ),
                     ),
                   ),
-                  Icon(Icons.chevron_right_rounded, size: 18, color: Color(0xFF94A3B8)),
+                  Icon(Icons.chevron_right_rounded, size: 18, color: BkuTheme.textPlaceholder),
                 ],
               ),
             ),
@@ -603,84 +564,65 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFCBD5E1),
-                            borderRadius: BorderRadius.circular(2),
+                            color: BkuTheme.border,
+                            borderRadius: BkuTheme.r8,
                           ),
                         ),
                       ),
                       const SizedBox(height: 14),
-                      const Text(
+                      Text(
                         'Pilih Penanggung Jawab Usulan',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F172A),
-                        ),
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 15, fontWeight: FontWeight.w900),
                       ),
-                      const Text(
+                      Text(
                         'Pilih dari daftar anggota aktif organisasi mahasiswa.',
-                        style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                        style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
                       ),
                       const SizedBox(height: 12),
-                      TextField(
+                      BkuTextField(
+                        hint: 'Cari nama, NIM, atau jabatan...',
+                        prefixIcon: Icon(Icons.search_rounded, size: 18, color: BkuTheme.textPlaceholder),
                         onChanged: (val) => setModalState(() => query = val),
-                        decoration: InputDecoration(
-                          hintText: 'Cari nama, NIM, atau jabatan...',
-                          hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                          prefixIcon: const Icon(Icons.search_rounded, size: 18, color: Color(0xFF64748B)),
-                          filled: true,
-                          fillColor: const Color(0xFFF8FAFC),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                          ),
-                        ),
                       ),
                       const SizedBox(height: 12),
                       Expanded(
                         child: filtered.isEmpty
-                            ? const Center(
+                            ? Center(
                                 child: Text(
                                   'Anggota tidak ditemukan',
-                                  style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                                  style: TextStyle(fontSize: 12, color: BkuTheme.textPlaceholder),
                                 ),
                               )
                             : ListView.separated(
                                 controller: scrollController,
                                 itemCount: filtered.length,
-                                separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                                separatorBuilder: (_, __) => Divider(height: 1, color: BkuTheme.borderSubtle),
                                 itemBuilder: (context, idx) {
                                   final m = filtered[idx];
                                   return ListTile(
                                     contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                                     leading: CircleAvatar(
                                       radius: 18,
-                                      backgroundColor: const Color(0xFFEFF6FF),
+                                      backgroundColor: BkuTheme.primarySoft,
                                       child: Text(
                                         m.name.isNotEmpty ? m.name[0].toUpperCase() : 'A',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 13,
-                                          color: Color(0xFF2563EB),
+                                          color: BkuTheme.primary,
                                         ),
                                       ),
                                     ),
                                     title: Text(
                                       m.name,
-                                      style: const TextStyle(
+                                      style: BkuTheme.textCardTitle.copyWith(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
-                                        color: Color(0xFF0F172A),
                                       ),
                                     ),
                                     subtitle: Text(
                                       '${m.nim} • ${m.role}',
-                                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                      style: BkuTheme.textCaption.copyWith(fontSize: 11, color: BkuTheme.textMuted),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -861,34 +803,21 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
       if (mounted) {
         BkuLoadingDialog.hide(context);
         setState(() => _isSubmitting = false);
-        var msg = 'Gagal memperbarui proposal: $e';
-        if (e is DioException && e.response?.data != null) {
-          final data = e.response!.data;
-          if (data is Map && data['message'] != null) {
-            msg = data['message'].toString();
-          }
-        }
-        AppSnackbar.showError(context, msg);
+        AppSnackbar.showError(context, 'Gagal memperbarui proposal: $e');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isRevisi = widget.proposal.status.toLowerCase() == 'revisi';
-    final effectiveOptions = List<String>.from(_sumberDanaOptions);
-    if (_selectedSumberDana.isNotEmpty && !effectiveOptions.contains(_selectedSumberDana)) {
-      effectiveOptions.insert(0, _selectedSumberDana);
-    }
-
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
-          BkuAppBar(
+          const BkuAppBar(
             variant: AppBarVariant.ormawa,
-            title: 'Edit Usulan Proposal',
-            subtitle: 'Pembaruan Data & Naskah Kegiatan',
+            title: 'Edit Proposal Usulan',
+            subtitle: 'Pembaruan Data KAK & Rincian Anggaran',
             expandedHeight: 130.0,
             showBackButton: true,
             isExpandable: false,
@@ -899,44 +828,9 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (isRevisi) ...[
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBEB),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFFDE68A)),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.error_outline_rounded, color: Color(0xFFD97706), size: 20),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Status: Butuh Revisi Pengajuan',
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFFB45309)),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  widget.proposal.catatan != null && widget.proposal.catatan!.isNotEmpty
-                                      ? 'Catatan Reviewer: "${widget.proposal.catatan}"'
-                                      : 'Silakan lakukan penyesuaian naskah, anggaran, atau berkas sesuai arahan reviewer, lalu ajukan kembali.',
-                                  style: const TextStyle(fontSize: 11, color: Color(0xFF78350F), height: 1.3),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                  ],
-
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -946,20 +840,23 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEFF6FF),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.primarySoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.description_rounded, color: Color(0xFF2563EB), size: 18),
+                              child: Icon(Icons.event_note_rounded, color: BkuTheme.primary, size: 18),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Informasi Utama Usulan', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Nama kegiatan, bentuk program kerja, sasaran, dan mitra.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  Text(
+                                    'Informasi Dasar Usulan',
+                                    style: BkuTheme.textSectionTitle,
+                                  ),
+                                  Text(
+                                    'Judul proposal, bentuk kegiatan, dan target sasaran.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                   ),
                                 ],
                               ),
@@ -967,41 +864,37 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        OrmawaTextField(
+                        BkuTextField(
                           label: 'Nama / Judul Kegiatan Usulan *',
-                          hintText: 'Contoh: Samudra Leadership / LKMM Dasar...',
+                          hint: 'e.g. LKMM Tingkat Dasar Ormawa 2026',
                           controller: _judulController,
-                          prefixIcon: Icons.title_rounded,
-                          prefixIconColor: const Color(0xFF2563EB),
+                          prefixIcon: Icon(Icons.description_rounded, size: 16, color: BkuTheme.primary),
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
+                        BkuTextField(
                           label: 'Bentuk / Kategori Kegiatan',
-                          hintText: 'Contoh: LKMM Dasar, Seminar Nasional, Workshop...',
+                          hint: 'e.g. Pelatihan & Kaderisasi Mahasiswa',
                           controller: _bentukController,
-                          prefixIcon: Icons.category_rounded,
-                          prefixIconColor: const Color(0xFF7C3AED),
+                          prefixIcon: Icon(Icons.category_rounded, size: 16, color: BkuTheme.purple),
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Sasaran Kegiatan & Peserta',
-                          hintText: 'Contoh: Mahasiswa Baru & Pengurus Ormawa...',
+                        BkuTextField(
+                          label: 'Sasaran Peserta Kegiatan',
+                          hint: 'e.g. Mahasiswa Baru & Calon Pengurus Ormawa',
                           controller: _sasaranController,
-                          prefixIcon: Icons.groups_rounded,
-                          prefixIconColor: const Color(0xFF0284C7),
+                          prefixIcon: Icon(Icons.groups_rounded, size: 16, color: BkuTheme.sky),
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Mitra / Instansi Kolaborasi',
-                          hintText: 'Contoh: BEM Fakultas, UKM Musik, Pihak Eksternal...',
+                        BkuTextField(
+                          label: 'Mitra Kerja Sama / Kolaborator',
+                          hint: 'e.g. BEM Universitas, HMJ, Pihak Eksternal',
                           controller: _mitraController,
-                          prefixIcon: Icons.handshake_rounded,
-                          prefixIconColor: const Color(0xFF0D9488),
+                          prefixIcon: Icon(Icons.handshake_rounded, size: 16, color: BkuTheme.primary),
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Deskripsi Ringkas Usulan',
-                          hintText: 'Tuliskan gambaran umum konsep pelaksanaan dan target output kegiatan...',
+                        BkuTextField(
+                          label: 'Deskripsi Lengkap Usulan',
+                          hint: 'Tuliskan gambaran umum dan ringkasan eksekutif kegiatan...',
                           controller: _deskripsiController,
                           maxLines: 3,
                         ),
@@ -1010,7 +903,9 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  OrmawaCard(
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1020,20 +915,23 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF5F3FF),
-                                borderRadius: BorderRadius.circular(8),
+                                color: BkuTheme.emeraldSoft,
+                                borderRadius: BkuTheme.r8,
                               ),
-                              child: const Icon(Icons.payments_rounded, color: Color(0xFF7C3AED), size: 18),
+                              child: const Icon(Icons.access_time_rounded, color: BkuTheme.emerald, size: 18),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Penanggung Jawab & Anggaran', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'PIC anggota ormawa, jadwal, sumber alokasi dana, dan biaya.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                  Text(
+                                    'Waktu & Lokasi Pelaksanaan',
+                                    style: BkuTheme.textSectionTitle,
+                                  ),
+                                  Text(
+                                    'Jadwal tanggal mulai, selesai, jam WIB, dan venue kegiatan.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
                                   ),
                                 ],
                               ),
@@ -1041,10 +939,8 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        _buildMemberPicker(),
-                        const SizedBox(height: 12),
                         _buildDateTimeRow(
-                          label: 'Tanggal Pelaksanaan',
+                          label: 'Tanggal & Jam Mulai',
                           date: _tanggalMulai,
                           timeStr: _waktuMulaiController.text,
                           onDateTap: _pickTanggalMulai,
@@ -1052,19 +948,18 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                         ),
                         const SizedBox(height: 12),
                         _buildDateTimeRow(
-                          label: 'Selesai Pelaksanaan',
+                          label: 'Tanggal & Jam Selesai',
                           date: _tanggalSelesai,
                           timeStr: _waktuSelesaiController.text,
                           onDateTap: _pickTanggalSelesai,
                           onTimeTap: _pickWaktuSelesai,
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Lokasi / Venue Kegiatan *',
-                          hintText: 'Contoh: Auditorium Utama UBK',
+                        BkuTextField(
+                          label: 'LOKASI / VENUE KEGIATAN *',
+                          hint: 'e.g. Auditorium Utama UBK',
                           controller: _lokasiController,
-                          prefixIcon: Icons.location_on_rounded,
-                          prefixIconColor: const Color(0xFFE11D48),
+                          prefixIcon: Icon(Icons.location_on_rounded, size: 16, color: BkuTheme.rose),
                         ),
                         const SizedBox(height: 8),
                         Wrap(
@@ -1076,221 +971,211 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F5F9),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  color: BkuTheme.borderSubtle,
+                                  borderRadius: BkuTheme.r8,
+                                  border: Border.all(color: BkuTheme.border),
                                 ),
                                 child: Text(
                                   v,
-                                  style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: BkuTheme.textMuted),
                                 ),
                               ),
                             );
                           }).toList(),
                         ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: BkuTheme.purpleSoft,
+                                borderRadius: BkuTheme.r8,
+                              ),
+                              child: Icon(Icons.people_alt_rounded, color: BkuTheme.purple, size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Penanggung Jawab Usulan',
+                                    style: BkuTheme.textSectionTitle,
+                                  ),
+                                  Text(
+                                    'Pilih penanggung jawab dari daftar anggota resmi.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        _buildMemberPicker(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  BkuCard(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    borderRadius: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: BkuTheme.amberSoft,
+                                borderRadius: BkuTheme.r8,
+                              ),
+                              child: Icon(Icons.account_balance_wallet_rounded, color: BkuTheme.amber, size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Anggaran & Dokumen KAK',
+                                    style: BkuTheme.textSectionTitle,
+                                  ),
+                                  Text(
+                                    'Estimasi biaya, sumber pendanaan, dan lampiran berkas.',
+                                    style: BkuTheme.textCaption.copyWith(fontSize: 10, color: BkuTheme.textMuted),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        BkuTextField(
+                          label: 'Estimasi Anggaran Biaya (Rp)',
+                          hint: 'e.g. 12500000',
+                          controller: _anggaranController,
+                          prefixIcon: const Icon(Icons.payments_rounded, size: 16, color: BkuTheme.emerald),
+                          keyboardType: TextInputType.number,
+                        ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Sumber Alokasi Dana',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                        BkuDropdown<String>(
+                          label: 'Sumber Alokasi Dana',
+                          value: _selectedSumberDana,
+                          items: _sumberDanaOptions.map((s) {
+                            return DropdownMenuItem<String>(
+                              value: s,
+                              child: Text(
+                                s,
+                                style: BkuTheme.textBodyRegular.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            if (val != null) setState(() => _selectedSumberDana = val);
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Dokumen Lampiran KAK / TOR (Maks 10MB)',
+                          style: BkuTheme.textBadge.copyWith(fontSize: 10.5, fontWeight: FontWeight.w900, color: BkuTheme.textHeading),
                         ),
                         const SizedBox(height: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: OrmawaTheme.border),
+                            color: BkuTheme.borderSubtle,
+                            borderRadius: BkuTheme.r12,
+                            border: Border.all(color: BkuTheme.border),
                           ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedSumberDana,
-                              isExpanded: true,
-                              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
-                              items: effectiveOptions.map((opt) {
-                                return DropdownMenuItem<String>(
-                                  value: opt,
-                                  child: Text(
-                                    opt,
-                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F172A)),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _selectedFile != null || (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty)
+                                    ? Icons.insert_drive_file_rounded
+                                    : Icons.cloud_upload_outlined,
+                                size: 24,
+                                color: _selectedFile != null || (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty)
+                                    ? BkuTheme.primary
+                                    : BkuTheme.textPlaceholder,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  _selectedFile != null
+                                      ? '${_selectedFile!.name} (${(_selectedFile!.size / 1024).round()} KB)'
+                                      : (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty
+                                          ? 'Dokumen KAK Terlampir'
+                                          : 'Pilih file KAK (PDF, Word, Excel, atau Gambar)...'),
+                                  style: BkuTheme.textCaption.copyWith(
+                                    fontSize: 11,
+                                    color: _selectedFile != null || (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty)
+                                        ? BkuTheme.textHeading
+                                        : BkuTheme.textPlaceholder,
+                                    fontWeight: _selectedFile != null ? FontWeight.bold : FontWeight.normal,
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                if (val != null) setState(() => _selectedSumberDana = val);
-                              },
-                            ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              BkuButton.outline(
+                                text: _selectedFile != null ? 'Ganti' : 'Pilih File',
+                                height: 32,
+                                onPressed: _pickFile,
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Estimasi Total Anggaran (Rp) *',
-                          hintText: 'Contoh: 12500000',
-                          controller: _anggaranController,
-                          prefixIcon: Icons.monetization_on_rounded,
-                          prefixIconColor: const Color(0xFF059669),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-
-                  OrmawaCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF0FDF4),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Icons.article_rounded, color: Color(0xFF059669), size: 18),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Naskah Kerangka Acuan Kerja (KAK / TOR)', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Latar belakang, tujuan, landasan, dan indikator keberhasilan.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        OrmawaTextField(
+                        BkuTextField(
                           label: 'Latar Belakang Kegiatan',
-                          hintText: 'Uraikan urgensi dan alasan strategis diadakannya kegiatan...',
+                          hint: 'Uraikan urgensi dan dasar pemikiran kegiatan...',
                           controller: _latarBelakangController,
-                          maxLines: 4,
+                          maxLines: 3,
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
+                        BkuTextField(
                           label: 'Tujuan & Manfaat Kegiatan',
-                          hintText: 'Tuliskan tujuan spesifik dan output yang diharapkan...',
+                          hint: 'Uraikan tujuan strategis dan output yang diharapkan...',
                           controller: _tujuanController,
-                          maxLines: 4,
+                          maxLines: 3,
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
+                        BkuTextField(
                           label: 'Landasan Hukum & Kebijakan',
-                          hintText: 'Contoh: AD/ART Organisasi, SK Rektor, atau Program Kerja Tahunan...',
+                          hint: 'Landasan yuridis / AD-ART / SK Kepengurusan...',
                           controller: _landasanController,
-                          maxLines: 3,
+                          maxLines: 2,
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Indikator Keberhasilan (Output & Outcome)',
-                          hintText: 'Tuliskan poin tolok ukur keberhasilan kegiatan...',
+                        BkuTextField(
+                          label: 'Indikator Keberhasilan',
+                          hint: 'Target kuantitatif & kualitatif pelaksanaan...',
                           controller: _indikatorController,
-                          maxLines: 4,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-
-                  OrmawaCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFEF3C7),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Icons.attach_file_rounded, color: Color(0xFFD97706), size: 18),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Berkas Lampiran & Catatan', style: OrmawaTheme.textSectionTitle),
-                                  const Text(
-                                    'Unggah naskah dokumen proposal dan catatan pengantar.',
-                                    style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        const Text(
-                          'Dokumen Proposal & Lampiran',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
-                        ),
-                        const SizedBox(height: 6),
-                        BkuBounceButton(
-                          onTap: _pickFile,
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFEFF6FF),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(Icons.cloud_upload_rounded, color: Color(0xFF2563EB), size: 20),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        _selectedFile != null
-                                            ? _selectedFile!.name
-                                            : (widget.proposal.fileUrl != null && widget.proposal.fileUrl!.isNotEmpty
-                                                ? 'Dokumen lampiran tersimpan'
-                                                : 'Pilih file dokumen lampiran baru'),
-                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        _selectedFile != null
-                                            ? '${(_selectedFile!.size / (1024 * 1024)).toStringAsFixed(2)} MB'
-                                            : 'PDF, DOCX, XLSX (Maks. 10MB)',
-                                        style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  _selectedFile != null ? 'Ganti' : 'Pilih File',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF2563EB)),
-                                ),
-                              ],
-                            ),
-                          ),
+                          maxLines: 3,
                         ),
                         const SizedBox(height: 12),
-                        OrmawaTextField(
-                          label: 'Catatan Tambahan Pengajuan',
-                          hintText: 'Pesan atau catatan khusus untuk verifikator prodi / fakultas / universitas...',
+                        BkuTextField(
+                          label: 'Catatan Tambahan untuk Reviewer',
+                          hint: 'Catatan pengantar usulan bila diperlukan...',
                           controller: _catatanController,
-                          maxLines: 3,
+                          maxLines: 2,
                         ),
                       ],
                     ),
@@ -1299,12 +1184,12 @@ class _EditProposalScreenState extends State<EditProposalScreen> {
 
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
-                    child: OrmawaButton(
-                      text: 'SIMPAN PERUBAHAN PROPOSAL',
+                    child: BkuButton.primary(
+                      text: 'Simpan Perubahan Proposal',
                       isLoading: _isSubmitting,
                       onPressed: _isSubmitting ? null : _handleSubmit,
                       icon: Icons.save_rounded,
+                      height: 48,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s100),

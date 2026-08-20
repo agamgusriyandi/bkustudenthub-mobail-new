@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_button.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class OrmawaAbsensiSuccessScreen extends StatefulWidget {
   final String eventId;
@@ -65,7 +65,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
     final dateFormat = DateFormat('dd MMMM yyyy, HH:mm', 'id_ID');
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
@@ -77,21 +77,21 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                 scale: _scaleAnimation,
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.xl),
-                  decoration: BoxDecoration(
-                    color: OrmawaTheme.statusSuccessBg,
+                  decoration: const BoxDecoration(
+                    color: BkuTheme.emeraldSoft,
                     shape: BoxShape.circle,
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     decoration: BoxDecoration(
-                      color: OrmawaTheme.statusSuccessText,
+                      color: BkuTheme.emerald,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF047857),
+                          color: BkuTheme.emerald.withAlpha(80),
                           blurRadius: 24,
                           spreadRadius: 2,
-                          offset: Offset(0, 8),
+                          offset: const Offset(0, 8),
                         ),
                       ],
                     ),
@@ -103,49 +103,49 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                   ),
                 ),
               ),
-              SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: AppSpacing.xxl),
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Column(
                   children: [
                     Text(
                       'Presensi Berhasil!',
-                      style: TextStyle(
+                      style: BkuTheme.textPageTitle.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
-                        color: OrmawaTheme.textHeading,
                         letterSpacing: -0.3,
                       ),
                     ),
-                    SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Kehadiran telah berhasil tercatat di sistem',
-                      style: TextStyle(
+                      style: BkuTheme.textCaption.copyWith(
                         fontSize: 12.5,
-                        color: OrmawaTheme.textMuted,
+                        color: BkuTheme.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 28),
-                    OrmawaCard(
+                    BkuCard(
                       padding: const EdgeInsets.all(18),
+                      borderRadius: 18,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildDetailRow('Nama Mahasiswa', widget.studentName, Icons.person_outline_rounded),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Divider(color: Color(0xFFF1F5F9), height: 1),
+                            child: Divider(color: BkuTheme.borderSubtle, height: 1),
                           ),
                           _buildDetailRow('NIM', widget.nim, Icons.badge_outlined),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Divider(color: Color(0xFFF1F5F9), height: 1),
+                            child: Divider(color: BkuTheme.borderSubtle, height: 1),
                           ),
                           _buildDetailRow('Kegiatan', widget.eventTitle, Icons.event_note_outlined),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Divider(color: Color(0xFFF1F5F9), height: 1),
+                            child: Divider(color: BkuTheme.borderSubtle, height: 1),
                           ),
                           _buildDetailRow('Waktu Presensi', dateFormat.format(widget.timestamp), Icons.access_time_rounded),
                         ],
@@ -159,8 +159,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                 opacity: _fadeAnimation,
                 child: SizedBox(
                   width: double.infinity,
-                  height: 50,
-                  child: OrmawaButton(
+                  child: BkuButton.primary(
                     onPressed: () {
                       int count = 0;
                       Navigator.popUntil(context, (route) {
@@ -169,6 +168,7 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
                     },
                     icon: Icons.check_circle_outline_rounded,
                     text: 'Selesai & Kembali',
+                    height: 50,
                   ),
                 ),
               ),
@@ -184,34 +184,34 @@ class _OrmawaAbsensiSuccessScreenState extends State<OrmawaAbsensiSuccessScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           decoration: BoxDecoration(
-            color: OrmawaTheme.primarySoft,
-            borderRadius: BorderRadius.circular(8),
+            color: BkuTheme.primarySoft,
+            borderRadius: BkuTheme.r8,
+            border: Border.all(color: BkuTheme.primaryBorder),
           ),
-          child: Icon(icon, size: 16, color: OrmawaTheme.primary),
+          child: Icon(icon, size: 16, color: BkuTheme.primary),
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: BkuTheme.textCaption.copyWith(
                   fontSize: 10.5,
-                  color: OrmawaTheme.textMuted,
+                  color: BkuTheme.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 value,
-                style: TextStyle(
+                style: BkuTheme.textCardTitle.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: OrmawaTheme.textHeading,
                 ),
               ),
             ],

@@ -218,12 +218,12 @@ class _OrmawaAspirasiScreenState extends State<OrmawaAspirasiScreen> {
                           ] else if (context.read<OrmawaProvider>().hasPermission('ormawa.aspiration.update, ormawa.aspirations.update, respond_aspirations, ormawa.organisasi.manage')) ...[
                             const SizedBox(height: 12),
                             const Text(
-                              'KEPUTUSAN STATUS',
+                              'Keputusan Status',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 10.5,
                                 fontWeight: FontWeight.w900,
                                 color: Color(0xFF475569),
-                                letterSpacing: 0.5,
+                                letterSpacing: 0.2,
                               ),
                             ),
                             const SizedBox(height: 6),

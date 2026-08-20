@@ -25,6 +25,7 @@ import '../models/insurance_claim_model.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:dio/dio.dart';
 import 'dart:developer';
+import 'dart:convert';
 
 class StudentRepositoryImpl implements StudentRepository {
   final ApiClient apiClient;
@@ -86,6 +87,39 @@ class StudentRepositoryImpl implements StudentRepository {
     }
   }
 
+  @override
+  Future<Scholarship> getScholarshipDetail(String id) async {
+    try {
+      final actualId = id.contains('-') ? id.split('-').last : id;
+      final response = await apiClient.client.get('/scholarship/$actualId');
+      final data = response.data['data'] ?? response.data;
+      return ScholarshipModel.fromJson(Map<String, dynamic>.from(data));
+    } catch (e) {
+      log('Error getting scholarship detail: $e');
+      throw Exception('Gagal memuat rincian beasiswa');
+    }
+  }
+
+  @override
+  Future<Scholarship> getPengajuanDetail(String id) async {
+    try {
+      final actualId = id.contains('-') ? id.split('-').last : id;
+      final response = await apiClient.client.get('/scholarship/pengajuan/$actualId');
+      final data = response.data['data'] ?? response.data;
+      if (data is Map<String, dynamic>) {
+        final pengajuan = data['pengajuan'] ?? data;
+        final logs = data['logs'];
+        final Map<String, dynamic> merged = Map<String, dynamic>.from(pengajuan);
+        if (logs != null) merged['logs'] = logs;
+        return _parseBeasiswaPendaftaran(merged);
+      }
+      return _parseBeasiswaPendaftaran(Map<String, dynamic>.from(data));
+    } catch (e) {
+      log('Error getting pengajuan detail: $e');
+      throw Exception('Gagal memuat rincian pengajuan beasiswa');
+    }
+  }
+
   ScholarshipModel _parseBeasiswaPendaftaran(Map<String, dynamic> json) {
     final beasiswaJson = json['Beasiswa'] ?? json['beasiswa'] ?? {};
     final id =
@@ -102,6 +136,17 @@ class StudentRepositoryImpl implements StudentRepository {
             '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
       } catch (_) {
         deadlineStr = beasiswaJson['deadline'].toString();
+      }
+    }
+
+    String tanggalPengajuanStr = '';
+    if (json['created_at'] != null || json['CreatedAt'] != null) {
+      try {
+        final dt = DateTime.parse((json['created_at'] ?? json['CreatedAt']).toString());
+        tanggalPengajuanStr =
+            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+      } catch (_) {
+        tanggalPengajuanStr = (json['created_at'] ?? json['CreatedAt']).toString();
       }
     }
 
@@ -125,11 +170,16 @@ class StudentRepositoryImpl implements StudentRepository {
           beasiswaJson['Kuota']?.toString(),
       minIpk:
           beasiswaJson['ipk_min']?.toString() ??
-          beasiswaJson['IPKMin']?.toString(),
+          beasiswaJson['IPKMin']?.toString() ??
+          beasiswaJson['syarat_ipk_min']?.toString(),
+      minSemester:
+          beasiswaJson['semester_min']?.toString() ??
+          beasiswaJson['SemesterMin']?.toString() ??
+          beasiswaJson['syarat_semester_min']?.toString(),
       motivasi: json['motivasi'] ?? json['Motivasi'],
-      ktmKtpUrl: json['ktm_ktp_url'] ?? json['KtmKtpURL'],
-      sertifikatUrl: json['sertifikat_url'] ?? json['SertifikatURL'],
-      transkripUrl: json['transkrip_url'] ?? json['TranskripURL'],
+      ktmKtpUrl: json['ktm_ktp_url'] ?? json['KtmKtpURL'] ?? json['ktm_ktp'],
+      sertifikatUrl: json['sertifikat_url'] ?? json['SertifikatURL'] ?? json['sertifikat'],
+      transkripUrl: json['transkrip_url'] ?? json['TranskripURL'] ?? json['transkrip'],
       persyaratan: beasiswaJson['persyaratan'] ?? beasiswaJson['Persyaratan'],
       fileKtm:
           beasiswaJson['file_ktm']?.toString() ??
@@ -146,9 +196,19 @@ class StudentRepositoryImpl implements StudentRepository {
       customFieldsRaw:
           beasiswaJson['custom_fields'] ?? beasiswaJson['CustomFields'],
       customAnswersRaw: json['custom_answers'] ?? json['CustomAnswers'],
+      rubrikSchemaRaw:
+          beasiswaJson['rubrik_schema'] ?? beasiswaJson['RubrikSchema'],
+      rubrikAnswersRaw: json['rubrik_answers'] ?? json['RubrikAnswers'],
       skema:
           beasiswaJson['skema']?.toString() ??
           beasiswaJson['Skema']?.toString(),
+      nomorPendaftaran: json['nomor_pendaftaran'] ?? json['NomorPendaftaran'] ?? json['no_pendaftaran'],
+      tanggalPengajuan: tanggalPengajuanStr,
+      catatanVerifikator: json['catatan_verifikator'] ?? json['CatatanVerifikator'] ?? json['alasan_penolakan'] ?? json['catatan'],
+      logs: json['logs'] != null && json['logs'] is List ? List<dynamic>.from(json['logs']) : null,
+      tingkat: beasiswaJson['tingkat']?.toString() ?? beasiswaJson['Tingkat']?.toString() ?? 'universitas',
+      fakultasNama: beasiswaJson['fakultas'] != null && beasiswaJson['fakultas'] is Map ? (beasiswaJson['fakultas']['nama'] ?? beasiswaJson['fakultas']['Nama'])?.toString() : null,
+      prodiNama: beasiswaJson['program_studi'] != null && beasiswaJson['program_studi'] is Map ? (beasiswaJson['program_studi']['nama'] ?? beasiswaJson['program_studi']['Nama'])?.toString() : null,
     );
   }
 
@@ -389,6 +449,7 @@ class StudentRepositoryImpl implements StudentRepository {
         status: achievement.status,
         certificateUrl: achievement.certificateUrl,
         filePath: achievement.filePath,
+        suratTugasPath: achievement.suratTugasPath,
         kategori: achievement.kategori,
         tipe: achievement.tipe,
         danaDiajukan: achievement.danaDiajukan,
@@ -400,20 +461,52 @@ class StudentRepositoryImpl implements StudentRepository {
         urlFotoUpp: achievement.urlFotoUpp,
         urlDokumenUndangan: achievement.urlDokumenUndangan,
         jenisRekognisi: achievement.jenisRekognisi,
+        keterangan: achievement.keterangan,
       );
 
-      if (achievement.filePath != null && achievement.filePath!.isNotEmpty) {
-        final formData = FormData.fromMap({
+      final hasFile = (achievement.filePath != null && achievement.filePath!.isNotEmpty) ||
+          (achievement.suratTugasPath != null && achievement.suratTugasPath!.isNotEmpty);
+
+      if (hasFile) {
+        final Map<String, dynamic> formMap = {
           ...model.toJson().map((k, v) => MapEntry(k, v?.toString() ?? '')),
-          'bukti': await MultipartFile.fromFile(
+        };
+
+        if (achievement.filePath != null && achievement.filePath!.isNotEmpty) {
+          formMap['bukti'] = await MultipartFile.fromFile(
             achievement.filePath!,
-            filename:
-                achievement.filePath!.replaceAll('\\', '/').split('/').last,
-          ),
-        });
+            filename: achievement.filePath!.replaceAll('\\', '/').split('/').last,
+          );
+        }
+
+        if (achievement.suratTugasPath != null && achievement.suratTugasPath!.isNotEmpty) {
+          formMap['surat_tugas'] = await MultipartFile.fromFile(
+            achievement.suratTugasPath!,
+            filename: achievement.suratTugasPath!.replaceAll('\\', '/').split('/').last,
+          );
+        }
+
+        if (achievement.pembimbingDosen != null && achievement.pembimbingDosen!.isNotEmpty) {
+          formMap['pembimbing_dosen'] = jsonEncode(achievement.pembimbingDosen);
+        }
+
+        if (achievement.anggotaMahasiswa != null && achievement.anggotaMahasiswa!.isNotEmpty) {
+          formMap['anggota_mahasiswa'] = jsonEncode(achievement.anggotaMahasiswa);
+        }
+
+        final formData = FormData.fromMap(formMap);
         await apiClient.client.post('/achievement/', data: formData);
       } else {
-        await apiClient.client.post('/achievement/', data: model.toJson());
+        final Map<String, dynamic> jsonPayload = {
+          ...model.toJson(),
+        };
+        if (achievement.pembimbingDosen != null && achievement.pembimbingDosen!.isNotEmpty) {
+          jsonPayload['pembimbing_dosen'] = jsonEncode(achievement.pembimbingDosen);
+        }
+        if (achievement.anggotaMahasiswa != null && achievement.anggotaMahasiswa!.isNotEmpty) {
+          jsonPayload['anggota_mahasiswa'] = jsonEncode(achievement.anggotaMahasiswa);
+        }
+        await apiClient.client.post('/achievement/', data: jsonPayload);
       }
     } catch (e) {
       log('Error adding achievement: $e');
@@ -453,6 +546,7 @@ class StudentRepositoryImpl implements StudentRepository {
         status: achievement.status,
         certificateUrl: achievement.certificateUrl,
         filePath: achievement.filePath,
+        suratTugasPath: achievement.suratTugasPath,
         kategori: achievement.kategori,
         tipe: achievement.tipe,
         danaDiajukan: achievement.danaDiajukan,
@@ -464,20 +558,52 @@ class StudentRepositoryImpl implements StudentRepository {
         urlFotoUpp: achievement.urlFotoUpp,
         urlDokumenUndangan: achievement.urlDokumenUndangan,
         jenisRekognisi: achievement.jenisRekognisi,
+        keterangan: achievement.keterangan,
       );
 
-      if (achievement.filePath != null && achievement.filePath!.isNotEmpty) {
-        final formData = FormData.fromMap({
+      final hasFile = (achievement.filePath != null && achievement.filePath!.isNotEmpty) ||
+          (achievement.suratTugasPath != null && achievement.suratTugasPath!.isNotEmpty);
+
+      if (hasFile) {
+        final Map<String, dynamic> formMap = {
           ...model.toJson().map((k, v) => MapEntry(k, v?.toString() ?? '')),
-          'bukti': await MultipartFile.fromFile(
+        };
+
+        if (achievement.filePath != null && achievement.filePath!.isNotEmpty) {
+          formMap['bukti'] = await MultipartFile.fromFile(
             achievement.filePath!,
-            filename:
-                achievement.filePath!.replaceAll('\\', '/').split('/').last,
-          ),
-        });
+            filename: achievement.filePath!.replaceAll('\\', '/').split('/').last,
+          );
+        }
+
+        if (achievement.suratTugasPath != null && achievement.suratTugasPath!.isNotEmpty) {
+          formMap['surat_tugas'] = await MultipartFile.fromFile(
+            achievement.suratTugasPath!,
+            filename: achievement.suratTugasPath!.replaceAll('\\', '/').split('/').last,
+          );
+        }
+
+        if (achievement.pembimbingDosen != null && achievement.pembimbingDosen!.isNotEmpty) {
+          formMap['pembimbing_dosen'] = jsonEncode(achievement.pembimbingDosen);
+        }
+
+        if (achievement.anggotaMahasiswa != null && achievement.anggotaMahasiswa!.isNotEmpty) {
+          formMap['anggota_mahasiswa'] = jsonEncode(achievement.anggotaMahasiswa);
+        }
+
+        final formData = FormData.fromMap(formMap);
         await apiClient.client.put('/achievement/$id', data: formData);
       } else {
-        await apiClient.client.put('/achievement/$id', data: model.toJson());
+        final Map<String, dynamic> jsonPayload = {
+          ...model.toJson(),
+        };
+        if (achievement.pembimbingDosen != null && achievement.pembimbingDosen!.isNotEmpty) {
+          jsonPayload['pembimbing_dosen'] = jsonEncode(achievement.pembimbingDosen);
+        }
+        if (achievement.anggotaMahasiswa != null && achievement.anggotaMahasiswa!.isNotEmpty) {
+          jsonPayload['anggota_mahasiswa'] = jsonEncode(achievement.anggotaMahasiswa);
+        }
+        await apiClient.client.put('/achievement/$id', data: jsonPayload);
       }
     } catch (e) {
       log('Error updating achievement: $e');
@@ -1031,6 +1157,87 @@ class StudentRepositoryImpl implements StudentRepository {
     } catch (e) {
       log('Error uploading avatar: $e');
       throw _parseError(e, 'Gagal mengunggah foto');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAkademikData() async {
+    try {
+      log('[AkademikRepo] Requesting /mahasiswa/akademik...');
+      final response = await apiClient.client.get('/mahasiswa/akademik');
+      log('[AkademikRepo] HTTP Status: ${response.statusCode}');
+      dynamic data = response.data;
+      if (data is String) {
+        try {
+          data = jsonDecode(data);
+        } catch (_) {}
+      }
+      if (data is Map) {
+        final innerData = data['data'];
+        if (innerData is Map) {
+          log('[AkademikRepo] Parsed innerData keys: ${innerData.keys}');
+          return Map<String, dynamic>.from(innerData);
+        }
+        log('[AkademikRepo] Parsed data keys: ${data.keys}');
+        return Map<String, dynamic>.from(data);
+      }
+      return <String, dynamic>{};
+    } catch (e, stack) {
+      log('[AkademikRepo] Error getting akademik data: $e\n$stack');
+      return <String, dynamic>{};
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getRiwayatLogin() async {
+    try {
+      final response = await apiClient.client.get('/profil/riwayat-login');
+      final data = response.data['data'];
+      if (data is List) {
+        return data.whereType<Map<String, dynamic>>().toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error getting riwayat login: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPreferensiNotif() async {
+    try {
+      final response = await apiClient.client.get('/profil/preferensi-notif');
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        return data;
+      }
+      return {
+        'EmailAchievement': true,
+        'EmailBeasiswa': true,
+        'EmailCounseling': true,
+        'EmailVoice': true,
+        'EmailKencana': true,
+        'EmailNews': true,
+      };
+    } catch (e) {
+      log('Error getting preferensi notif: $e');
+      return {
+        'EmailAchievement': true,
+        'EmailBeasiswa': true,
+        'EmailCounseling': true,
+        'EmailVoice': true,
+        'EmailKencana': true,
+        'EmailNews': true,
+      };
+    }
+  }
+
+  @override
+  Future<void> updatePreferensiNotif(Map<String, dynamic> data) async {
+    try {
+      await apiClient.client.put('/profil/preferensi-notif', data: data);
+    } catch (e) {
+      log('Error updating preferensi notif: $e');
     }
   }
 

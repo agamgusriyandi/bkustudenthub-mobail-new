@@ -3,6 +3,7 @@ import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'dart:io';
@@ -91,9 +92,9 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFDCFCE7),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFF86EFAC)),
+                          color: BkuTheme.emeraldSoft,
+                          borderRadius: BkuTheme.r8,
+                          border: Border.all(color: BkuTheme.emeraldBorder),
                         ),
                         child: Text(
                           'Sesi: $sessionTitle',
@@ -634,10 +635,10 @@ class _KencanaAttendanceScreenState extends State<KencanaAttendanceScreen> {
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFDCFCE7),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: BkuTheme.emeraldSoft,
+                                  borderRadius: BkuTheme.r8,
                                   border: Border.all(
-                                    color: const Color(0xFF86EFAC),
+                                    color: BkuTheme.emeraldBorder,
                                   ),
                                 ),
                                 child: Row(

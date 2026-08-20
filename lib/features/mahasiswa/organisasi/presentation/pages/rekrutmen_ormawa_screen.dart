@@ -1,18 +1,14 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:provider/provider.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/organisasi/presentation/pages/daftar_ormawa_screen.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
 class RekrutmenOrmawaScreen extends StatefulWidget {
   const RekrutmenOrmawaScreen({super.key});
@@ -54,7 +50,7 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
     final organization = context.watch<OrganizationProvider>();
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Rekrutmen Ormawa',
         variant: AppBarVariant.student,
@@ -71,11 +67,30 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
               )
               : _ormawaList.isEmpty
               ? Center(
-                child: Text(
-                  'Tidak ada pendaftaran ormawa saat ini.',
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: AppColors.neutral400,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: BkuTheme.surfaceLight,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.groups_outlined,
+                        size: 32,
+                        color: BkuTheme.textMuted,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Tidak ada pendaftaran ormawa saat ini.',
+                      style: BkuTheme.textBodyRegular.copyWith(
+                        color: BkuTheme.textMuted,
+                      ),
+                    ),
+                  ],
                 ),
               )
               : ListView.builder(
@@ -145,85 +160,135 @@ class _RekrutmenOrmawaScreenState extends State<RekrutmenOrmawaScreen> {
                 ),
           ),
         ).then((_) {
-          // Refresh list when returning
           _loadData();
         });
       };
     }
 
-    return BkuCard(
+    return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: AppColors.neutral100,
-                    borderRadius: AppRadius.radiusMd,
-                  ),
-                  child: const Icon(
-                    Icons.diversity_3_rounded,
-                    color: AppColors.neutral600,
-                    size: 28,
-                  ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: BkuTheme.primarySoft,
+                  borderRadius: BkuTheme.r12,
+                  border: Border.all(color: BkuTheme.primaryBorder),
                 ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ormawa['Nama'] ?? ormawa['nama'] ?? 'Unknown',
-                        style: AppTextStyles.titleLg.copyWith(fontSize: 16),
+                child: Icon(
+                  Icons.diversity_3_rounded,
+                  color: BkuTheme.primary,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ormawa['Nama'] ?? ormawa['nama'] ?? 'Unknown',
+                      style: BkuTheme.textCardTitle.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 2),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
                       ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
+                      decoration: BoxDecoration(
+                        color: BkuTheme.surfaceLight,
+                        borderRadius: BkuTheme.rPill,
+                        border: Border.all(color: BkuTheme.border),
+                      ),
+                      child: Text(
                         ormawa['Kategori'] ?? ormawa['kategori'] ?? 'Kategori',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: AppColors.neutral600,
+                        style: BkuTheme.textBadge.copyWith(
+                          color: BkuTheme.textMuted,
+                          fontSize: 10,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            ormawa['deskripsi'] ?? 'Tidak ada deskripsi',
+            style: BkuTheme.textCaption.copyWith(
+              color: BkuTheme.textMuted,
+              height: 1.4,
             ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              ormawa['deskripsi'] ?? 'Tidak ada deskripsi',
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.neutral600),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            if (minIpk > 0) ...[
-              Row(
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          if (minIpk > 0) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color:
+                    profile.ipk < minIpk && !isNewStudent
+                        ? BkuTheme.roseSoft
+                        : BkuTheme.emeraldSoft,
+                borderRadius: BkuTheme.r8,
+                border: Border.all(
+                  color:
+                      profile.ipk < minIpk && !isNewStudent
+                          ? BkuTheme.roseBorder
+                          : BkuTheme.emeraldBorder,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.star_rounded, size: 16, color: AppColors.warning),
-                  const SizedBox(width: AppSpacing.xs),
+                  Icon(
+                    Icons.star_rounded,
+                    size: 14,
+                    color:
+                        profile.ipk < minIpk && !isNewStudent
+                            ? BkuTheme.danger
+                            : BkuTheme.success,
+                  ),
+                  const SizedBox(width: 4),
                   Text(
                     'Syarat IPK: ${minIpk.toStringAsFixed(2)}',
-                    style: AppTextStyles.labelSm.copyWith(
+                    style: BkuTheme.textBadge.copyWith(
                       color:
                           profile.ipk < minIpk && !isNewStudent
-                              ? AppColors.danger
-                              : AppColors.success,
-                      fontWeight: FontWeight.bold,
+                              ? BkuTheme.danger
+                              : BkuTheme.success,
+                      fontSize: 11,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
-            BkuButton(text: btnText, onPressed: action),
+            ),
+            const SizedBox(height: AppSpacing.md),
           ],
-        ),
+          SizedBox(
+            width: double.infinity,
+            child: BkuButton(
+              text: btnText,
+              onPressed: action,
+              height: 42,
+            ),
+          ),
+        ],
       ),
     );
   }

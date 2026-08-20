@@ -1,18 +1,15 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_empty_state.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class OrmawaProposalReviewScreen extends StatefulWidget {
   const OrmawaProposalReviewScreen({super.key});
@@ -92,19 +89,6 @@ class _OrmawaProposalReviewScreenState
     return BkuStatus.info;
   }
 
-  Color _getStatusColor(String status) {
-    switch (_normalizeStatus(status)) {
-      case 'Disetujui':
-        return AppColors.success;
-      case 'Ditolak':
-        return AppColors.error;
-      case 'Diproses':
-        return AppColors.warning;
-      default:
-        return AppColors.info;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final filtered = _proposals.where((p) {
@@ -119,13 +103,14 @@ class _OrmawaProposalReviewScreenState
     }).toList();
 
     return Scaffold(
-      backgroundColor: OrmawaTheme.scaffoldBg,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: RefreshIndicator(
         onRefresh: _loadProposals,
+        color: BkuTheme.primary,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
           slivers: [
-            BkuAppBar(
+            const BkuAppBar(
               title: 'Review Proposal',
               subtitle: 'Antrian Review Proposal',
               variant: AppBarVariant.ormawa,
@@ -137,9 +122,9 @@ class _OrmawaProposalReviewScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.md),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                     child: OrmawaListHeader(
                       title: 'ANTRIAN PROPOSAL (${filtered.length})',
                       searchHint: 'Cari proposal...',
@@ -149,21 +134,13 @@ class _OrmawaProposalReviewScreenState
                       onChanged: (value) => setState(() => _searchQuery = value),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.md),
                   if (!_isLoading && filtered.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxl),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(Icons.inbox_outlined, size: 60, color: AppColors.neutral400.withAlpha(80)),
-                            const SizedBox(height: AppSpacing.lg),
-                            Text(
-                              'Tidak ada proposal untuk direview',
-                              style: AppTextStyles.bodyMd.copyWith(color: context.appColors.outline),
-                            ),
-                          ],
-                        ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                      child: BkuEmptyState(
+                        title: 'Tidak Ada Proposal',
+                        message: 'Tidak ada proposal yang menunggu antrian review saat ini.',
                       ),
                     ),
                 ],
@@ -175,7 +152,7 @@ class _OrmawaProposalReviewScreenState
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) => _buildProposalCard(filtered[index]),
@@ -191,7 +168,6 @@ class _OrmawaProposalReviewScreenState
   }
 
   Widget _buildProposalCard(Map<String, dynamic> proposal) {
-    final statusColor = _getStatusColor(proposal['status'] ?? '');
     final normalizedStatus = _normalizeStatus(proposal['status'] ?? '');
     final title = proposal['title'] ?? '-';
     final code = proposal['code'] ?? '';
@@ -200,7 +176,8 @@ class _OrmawaProposalReviewScreenState
       onTap: () => context.push(AppRoutes.ormawaProposalDetail, extra: proposal),
       child: BkuCard(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        borderRadius: 16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -208,22 +185,22 @@ class _OrmawaProposalReviewScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: statusColor.withAlpha(15),
-                    borderRadius: AppRadius.radiusLg,
+                    color: BkuTheme.primarySoft,
+                    borderRadius: BkuTheme.r10,
                   ),
-                  child: Icon(Icons.send_rounded, color: statusColor, size: 22),
+                  child: Icon(Icons.send_rounded, color: BkuTheme.primary, size: 20),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w900)),
+                      Text(title, style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w900)),
                       if (code.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(code, style: AppTextStyles.labelSm.copyWith(color: AppColors.neutral500)),
+                        const SizedBox(height: 2),
+                        Text(code, style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted)),
                       ],
                     ],
                   ),
@@ -232,7 +209,7 @@ class _OrmawaProposalReviewScreenState
                   status: _mapStatusToBkuStatus(proposal['status'] ?? ''),
                   customText: normalizedStatus,
                   showIcon: false,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                 ),
               ],
             ),
@@ -243,18 +220,18 @@ class _OrmawaProposalReviewScreenState
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                   decoration: BoxDecoration(
-                    color: OrmawaTheme.primarySoft,
-                    borderRadius: AppRadius.radiusSm,
+                    color: BkuTheme.primarySoft,
+                    borderRadius: BkuTheme.r8,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.arrow_forward_ios_rounded, size: 10, color: OrmawaTheme.primary),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 10, color: BkuTheme.primary),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         'Review',
-                        style: AppTextStyles.labelSm.copyWith(
-                          color: OrmawaTheme.primary,
+                        style: TextStyle(
+                          color: BkuTheme.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                         ),
@@ -273,12 +250,11 @@ class _OrmawaProposalReviewScreenState
   void _showFilterSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-        ),
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -289,14 +265,14 @@ class _OrmawaProposalReviewScreenState
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.neutral300,
-                  borderRadius: AppRadius.radiusXs,
+                  color: BkuTheme.border,
+                  borderRadius: BkuTheme.r8,
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-            Text('Filter Status', style: AppTextStyles.titleLg.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: AppSpacing.lg),
+            Text('Filter Status', style: BkuTheme.textCardTitle.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -310,14 +286,15 @@ class _OrmawaProposalReviewScreenState
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: isSelected ? OrmawaTheme.primary : OrmawaTheme.primarySoft,
-                      borderRadius: AppRadius.radiusXl,
+                      color: isSelected ? BkuTheme.primary : BkuTheme.primarySoft,
+                      borderRadius: BkuTheme.rPill,
                     ),
                     child: Text(
                       status,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: isSelected ? Colors.white : OrmawaTheme.primary,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : BkuTheme.primary,
                         fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
                   ),

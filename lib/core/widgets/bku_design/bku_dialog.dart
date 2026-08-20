@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:go_router/go_router.dart';
 
@@ -46,17 +44,16 @@ class BkuDialog extends StatelessWidget {
     return showDialog<T>(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => BkuDialog(
-            title: title,
-            message: message,
-            type: type,
-            primaryButtonText: primaryButtonText,
-            onPrimaryPressed: onPrimaryPressed,
-            secondaryButtonText: secondaryButtonText,
-            onSecondaryPressed: onSecondaryPressed,
-            customImageAsset: customImageAsset,
-          ),
+      builder: (context) => BkuDialog(
+        title: title,
+        message: message,
+        type: type,
+        primaryButtonText: primaryButtonText,
+        onPrimaryPressed: onPrimaryPressed,
+        secondaryButtonText: secondaryButtonText,
+        onSecondaryPressed: onSecondaryPressed,
+        customImageAsset: customImageAsset,
+      ),
     );
   }
 
@@ -71,42 +68,42 @@ class BkuDialog extends StatelessWidget {
     switch (type) {
       case BkuDialogType.success:
         iconData = Icons.check_circle_rounded;
-        iconColor = AppColors.success;
-        iconBgColor = AppColors.successContainer;
+        iconColor = BkuTheme.emerald;
+        iconBgColor = BkuTheme.emeraldSoft;
         break;
       case BkuDialogType.error:
         iconData = Icons.error_rounded;
-        iconColor = theme.colorError;
-        iconBgColor = theme.colorError.withValues(alpha: 0.1);
+        iconColor = BkuTheme.rose;
+        iconBgColor = BkuTheme.roseSoft;
         break;
       case BkuDialogType.warning:
         iconData = Icons.warning_rounded;
-        iconColor = AppColors.warning;
-        iconBgColor = AppColors.warningContainer;
+        iconColor = BkuTheme.amber;
+        iconBgColor = BkuTheme.amberSoft;
         break;
       case BkuDialogType.info:
         iconData = Icons.info_rounded;
         iconColor = theme.primary;
-        iconBgColor = theme.primary.withValues(alpha: 0.1);
+        iconBgColor = BkuTheme.primarySoft;
         break;
     }
 
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.radiusXl,
-      ), // 24px radius
+        borderRadius: BkuTheme.r24,
+      ),
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: theme.surface,
-          borderRadius: AppRadius.radiusXl,
-          boxShadow: [
+          color: BkuTheme.cardSurface,
+          borderRadius: BkuTheme.r24,
+          boxShadow: const [
             BoxShadow(
-              color: AppColors.neutral900.withValues(alpha: 0.1),
+              color: Color(0x1A0F172A),
               blurRadius: 32,
-              offset: const Offset(0, 8),
+              offset: Offset(0, 8),
             ),
           ],
         ),
@@ -143,17 +140,16 @@ class BkuDialog extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: AppTextStyles.titleSm.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppColors.neutral900,
+              style: BkuTheme.textSectionTitle.copyWith(
+                fontSize: 16,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.neutral600,
+              style: BkuTheme.textBodyRegular.copyWith(
+                color: BkuTheme.textMuted,
                 height: 1.5,
               ),
             ),
@@ -167,17 +163,15 @@ class BkuDialog extends StatelessWidget {
                       text: secondaryButtonText!,
                       height: 40,
                       fontSize: 11,
-                      onPressed:
-                          onSecondaryPressed ??
-                          () => context.pop(),
+                      onPressed: onSecondaryPressed ?? () => context.pop(),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                 ],
                 Expanded(
                   child: BkuButton(
-                    variant: type == BkuDialogType.error 
-                        ? BkuButtonVariant.danger 
+                    variant: type == BkuDialogType.error
+                        ? BkuButtonVariant.danger
                         : BkuButtonVariant.primary,
                     text: primaryButtonText,
                     height: 40,

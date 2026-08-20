@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
@@ -155,6 +154,8 @@ class BkuButton extends StatelessWidget {
     IconData? icon,
     IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
     BorderRadiusGeometry? customRadius,
   }) => BkuButton(
@@ -166,6 +167,8 @@ class BkuButton extends StatelessWidget {
     icon: icon,
     trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
     customRadius: customRadius,
   );
@@ -178,6 +181,8 @@ class BkuButton extends StatelessWidget {
     IconData? icon,
     IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
     BorderRadiusGeometry? customRadius,
     Color? customFgColor,
@@ -190,6 +195,8 @@ class BkuButton extends StatelessWidget {
     icon: icon,
     trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
     customRadius: customRadius,
     customFgColor: customFgColor,
@@ -203,6 +210,8 @@ class BkuButton extends StatelessWidget {
     IconData? icon,
     IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
     BorderRadiusGeometry? customRadius,
   }) => BkuButton(
@@ -214,6 +223,8 @@ class BkuButton extends StatelessWidget {
     icon: icon,
     trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
     customRadius: customRadius,
   );
@@ -226,6 +237,8 @@ class BkuButton extends StatelessWidget {
     IconData? icon,
     IconData? trailingIcon,
     double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
     BorderRadiusGeometry? customRadius,
   }) => BkuButton(
@@ -237,6 +250,8 @@ class BkuButton extends StatelessWidget {
     icon: icon,
     trailingIcon: trailingIcon,
     width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
     customRadius: customRadius,
   );
@@ -247,7 +262,12 @@ class BkuButton extends StatelessWidget {
     VoidCallback? onPressed,
     bool isLoading = false,
     IconData? icon,
+    IconData? trailingIcon,
+    double? width,
+    double height = 48,
+    double? fontSize,
     bool fullWidth = true,
+    BorderRadiusGeometry? customRadius,
   }) => BkuButton(
     key: key,
     text: text,
@@ -255,7 +275,12 @@ class BkuButton extends StatelessWidget {
     variant: BkuButtonVariant.dangerOutline,
     isLoading: isLoading,
     icon: icon,
+    trailingIcon: trailingIcon,
+    width: width,
+    height: height,
+    fontSize: fontSize,
     fullWidth: fullWidth,
+    customRadius: customRadius,
   );
 
   @override
@@ -318,9 +343,9 @@ class BkuButton extends StatelessWidget {
     if (customBgColor != null) bg = customBgColor!;
     if (customFgColor != null) fg = customFgColor!;
 
-    final resolvedRadius = customRadius ?? (variant == BkuButtonVariant.pill ? BorderRadius.circular(999) : AppRadius.radiusMd);
+    final resolvedRadius = customRadius ?? (variant == BkuButtonVariant.pill ? BorderRadius.circular(999) : BorderRadius.circular(16));
 
-    final textWidget = Text(
+    final textContent = Text(
       text,
       style: AppTextStyles.labelLg.copyWith(
         fontWeight: FontWeight.w700,
@@ -328,6 +353,9 @@ class BkuButton extends StatelessWidget {
         letterSpacing: 0.4,
         fontSize: fontSize,
       ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
     );
 
     Widget content;
@@ -338,21 +366,21 @@ class BkuButton extends StatelessWidget {
         children: [
           if (isLoading) ...[
             SizedBox(
-              width: 18,
-              height: 18,
+              width: height < 44 ? 14 : 18,
+              height: height < 44 ? 14 : 18,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(fg),
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            SizedBox(width: height < 44 ? 4 : AppSpacing.sm),
           ] else if (icon != null) ...[
-            Icon(icon, size: 18, color: fg),
-            const SizedBox(width: AppSpacing.sm),
+            Icon(icon, size: height < 44 ? 15 : 18, color: fg),
+            SizedBox(width: height < 44 ? 4 : AppSpacing.sm),
           ],
-          textWidget,
+          Flexible(child: textContent),
           if (!isLoading && trailingIcon != null) ...[
-            const SizedBox(width: AppSpacing.sm),
+            SizedBox(width: height < 44 ? 4 : AppSpacing.sm),
             if (isButtonInButton)
               Container(
                 width: 28,
@@ -366,12 +394,12 @@ class BkuButton extends StatelessWidget {
                 ),
               )
             else
-              Icon(trailingIcon, size: 18, color: fg),
+              Icon(trailingIcon, size: height < 44 ? 15 : 18, color: fg),
           ],
         ],
       );
     } else {
-      content = textWidget;
+      content = textContent;
     }
 
     if (gradient != null && variant != BkuButtonVariant.text) {
@@ -408,8 +436,8 @@ class BkuButton extends StatelessWidget {
       elevation: elevation,
       shadowColor: bg.withValues(alpha: 0.3),
       padding: EdgeInsets.symmetric(
-        horizontal: isButtonInButton ? AppSpacing.md : AppSpacing.lg,
-        vertical: variant == BkuButtonVariant.text ? 8 : (height < 44 ? 6 : 12),
+        horizontal: isButtonInButton ? AppSpacing.md : (height < 44 ? AppSpacing.sm : AppSpacing.md),
+        vertical: variant == BkuButtonVariant.text ? 8 : (height < 44 ? 4 : 12),
       ),
       shape: RoundedRectangleBorder(
         borderRadius: resolvedRadius,

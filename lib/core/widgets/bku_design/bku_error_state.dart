@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 
@@ -29,30 +28,30 @@ class BkuErrorState extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: const BoxDecoration(
-                color: AppColors.dangerContainer,
+              decoration: BoxDecoration(
+                color: BkuTheme.roseSoft,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.error_outline_rounded,
                 size: 48,
-                color: AppColors.danger,
+                color: BkuTheme.rose,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: AppTextStyles.titleLg.copyWith(
-                fontWeight: FontWeight.w700,
+              style: BkuTheme.textSectionTitle.copyWith(
+                fontSize: 16,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.neutral600,
+              style: BkuTheme.textBodyRegular.copyWith(
+                color: BkuTheme.textMuted,
               ),
             ),
             if (onRetry != null) ...[

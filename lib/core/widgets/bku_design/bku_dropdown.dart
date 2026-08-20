@@ -57,7 +57,7 @@ class BkuDropdown<T> extends StatelessWidget {
     final resolvedStyle = style ?? AppTextStyles.bodyLg.copyWith(color: AppColors.neutral900);
 
     final border = OutlineInputBorder(
-      borderRadius: AppRadius.radiusMd, // 12px radius
+      borderRadius: AppRadius.radiusMd,
       borderSide: const BorderSide(color: AppColors.neutral200),
     );
 

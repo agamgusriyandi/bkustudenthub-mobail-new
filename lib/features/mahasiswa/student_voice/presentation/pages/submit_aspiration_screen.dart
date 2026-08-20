@@ -1,26 +1,22 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
-
-import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import '../../../../../core/error/error_handler.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
+import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/core/network/api_client.dart';
-import 'package:go_router/go_router.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
+import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/student_voice_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/aspiration.dart';
 
 class SubmitAspirationScreen extends StatefulWidget {
   const SubmitAspirationScreen({super.key});
@@ -47,6 +43,13 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     _fetchSystemSettings();
   }
 
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchSystemSettings() async {
     try {
       final response = await ApiClient().client.get('/public/system-settings');
@@ -57,7 +60,6 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
           if (mounted) {
             setState(() {
               _isAnonimEnabled = isEnabled;
-
               if (!isEnabled) {
                 _isAnonim = false;
               }
@@ -69,17 +71,12 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     } catch (e) {
       debugPrint('Failed to fetch system settings: $e');
     }
-    if (mounted) {
-      setState(() {
-
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       appBar: const BkuStaticAppBar(
         title: 'Sampaikan Aspirasi',
         variant: AppBarVariant.student,
@@ -92,137 +89,182 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLabel('Tujuan Aspirasi'),
-              _buildTujuanSelector(),
-              const SizedBox(height: AppSpacing.s20),
-              _buildSectionTitle('Pilih Kategori'),
-              const SizedBox(height: AppSpacing.md),
-              _buildCategorySelector(),
-              const SizedBox(height: AppSpacing.xxl),
-              _buildSectionTitle('Apa yang ingin kamu sampaikan?'),
-              const SizedBox(height: AppSpacing.md),
-              _buildLabel('Judul Aspirasi'),
-              _buildTextField(
-                _titleController,
-                'Contoh: Kerusakan Kursi di Kantin',
+              FadeInAnimation(
+                delay: 0.05,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel('Tujuan Aspirasi'),
+                    _buildTujuanSelector(),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.s20),
-              _buildLabel('Detail Aspirasi'),
-              _buildTextArea(
-                _descController,
-                'Ceritakan lebih detail mengenai saran atau keluhanmu...',
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-              _buildSectionTitle('Lampirkan Bukti (Opsional)'),
-              const SizedBox(height: AppSpacing.md),
-              _buildUploadSection(),
-              const SizedBox(height: AppSpacing.s20),
-              if (_isAnonimEnabled) _buildAnonimSwitch(),
-
-              const SizedBox(height: AppSpacing.s48),
-              _buildSubmitButton(),
               const SizedBox(height: AppSpacing.xl),
+              FadeInAnimation(
+                delay: 0.1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel('Pilih Kategori'),
+                    _buildCategorySelector(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              FadeInAnimation(
+                delay: 0.15,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel('Judul Aspirasi'),
+                    BkuTextField(
+                      controller: _titleController,
+                      style: BkuTheme.textBodyRegular,
+                      decoration: InputDecoration(
+                        hintText: 'Contoh: Perbaikan AC Ruang Kuliah 302',
+                        hintStyle: BkuTheme.textCaption.copyWith(color: BkuTheme.textPlaceholder),
+                        filled: true,
+                        fillColor: BkuTheme.cardSurface,
+                        border: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: const BorderSide(color: BkuTheme.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: const BorderSide(color: BkuTheme.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: BorderSide(color: BkuTheme.primary, width: 1.5),
+                        ),
+                      ),
+                      validator: (val) => val == null || val.trim().isEmpty ? 'Mohon masukkan judul aspirasi' : null,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              FadeInAnimation(
+                delay: 0.2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel('Detail Aspirasi'),
+                    BkuTextField(
+                      controller: _descController,
+                      maxLines: 5,
+                      style: BkuTheme.textBodyRegular,
+                      decoration: InputDecoration(
+                        hintText: 'Ceritakan detail kendala, saran, atau masukan yang ingin disampaikan...',
+                        hintStyle: BkuTheme.textCaption.copyWith(color: BkuTheme.textPlaceholder),
+                        filled: true,
+                        fillColor: BkuTheme.cardSurface,
+                        border: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: const BorderSide(color: BkuTheme.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: const BorderSide(color: BkuTheme.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BkuTheme.r12,
+                          borderSide: BorderSide(color: BkuTheme.primary, width: 1.5),
+                        ),
+                      ),
+                      validator: (val) => val == null || val.trim().isEmpty ? 'Mohon masukkan detail aspirasi' : null,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              FadeInAnimation(
+                delay: 0.25,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel('Lampiran Bukti (Opsional)'),
+                    _buildUploadSection(),
+                  ],
+                ),
+              ),
+              if (_isAnonimEnabled) ...[
+                const SizedBox(height: AppSpacing.lg),
+                FadeInAnimation(
+                  delay: 0.3,
+                  child: _buildAnonimSwitch(),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.xxl),
+              FadeInAnimation(
+                delay: 0.35,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: BkuButton(
+                    onPressed: _isSubmitting ? null : _submitForm,
+                    text: 'Kirim Aspirasi',
+                    isLoading: _isSubmitting,
+                    icon: Icons.send_rounded,
+                    variant: BkuButtonVariant.primary,
+                    height: 46,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs, left: 2),
+      child: Text(
+        text,
+        style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
       ),
     );
   }
 
   Widget _buildTujuanSelector() {
-    return BkuCard(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+    return Container(
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r12,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: DropdownButtonHideUnderline(
         child: BkuDropdown<String>(
           value: _selectedTujuan,
           isExpanded: true,
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_drop_down_rounded,
-            color: context.appColors.outline,
+            color: BkuTheme.textMuted,
           ),
-          items:
-              [
-                'Fakultas',
-                'Universitas',
-                'Program Studi (Prodi)',
-                'Biro Kemahasiswaan / BAAK',
-                'Sarana & Prasarana',
-                'Organisasi Mahasiswa (Ormawa)',
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value, style: AppTextStyles.labelMd),
-                );
-              }).toList(),
+          items: [
+            'Fakultas',
+            'Universitas',
+            'Program Studi (Prodi)',
+            'Biro Kemahasiswaan / BAAK',
+            'Sarana & Prasarana',
+            'Organisasi Mahasiswa (Ormawa)',
+          ].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value, style: BkuTheme.textBodyRegular),
+            );
+          }).toList(),
           onChanged: (newValue) {
-            setState(() {
-              _selectedTujuan = newValue!;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnonimSwitch() {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.security_rounded,
-                color: AppColors.neutral600,
-                size: 24,
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Kirim Anonim',
-                    style: AppTextStyles.labelMd.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Identitasmu akan disembunyikan',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.outline,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Switch(
-            value: _isAnonim,
-            onChanged: (val) {
+            if (newValue != null) {
               setState(() {
-                _isAnonim = val;
+                _selectedTujuan = newValue;
               });
-            },
-            activeThumbColor: AppColors.neutral800,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(title, style: AppTextStyles.titleLg.copyWith(fontSize: 18));
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: AppSpacing.xs),
-      child: Text(
-        text,
-        style: AppTextStyles.labelSm.copyWith(
-          color: context.appColors.outline,
-          fontWeight: FontWeight.bold,
+            }
+          },
         ),
       ),
     );
@@ -238,140 +280,106 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     ];
     return Wrap(
       spacing: 8,
-      children:
-          categories.map((cat) {
-            bool isSelected = _selectedCategory == cat;
-            return ChoiceChip(
-              label: Text(cat),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) setState(() => _selectedCategory = cat);
-              },
-              selectedColor: AppColors.neutral100,
-              labelStyle: AppTextStyles.labelSm.copyWith(
-                color:
-                    isSelected
-                        ? AppColors.neutral800
-                        : context.appColors.onSurfaceVariant,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      runSpacing: 8,
+      children: categories.map((cat) {
+        final isSelected = _selectedCategory == cat;
+        return InkWell(
+          onTap: () => setState(() => _selectedCategory = cat),
+          borderRadius: BkuTheme.rPill,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+            decoration: BoxDecoration(
+              color: isSelected ? BkuTheme.primary : BkuTheme.cardSurface,
+              borderRadius: BkuTheme.rPill,
+              border: Border.all(
+                color: isSelected ? BkuTheme.primary : BkuTheme.border,
               ),
-              backgroundColor: context.appColors.surface,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.radiusMd,
-                side: BorderSide(
-                  color:
-                      isSelected ? AppColors.neutral800 : AppColors.neutral200,
-                  width: isSelected ? 1.5 : 1,
-                ),
+              boxShadow: isSelected ? BkuTheme.cardShadow : null,
+            ),
+            child: Text(
+              cat,
+              style: BkuTheme.textBadge.copyWith(
+                color: isSelected ? Colors.white : BkuTheme.textHeading,
+                fontSize: 11.5,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               ),
-            );
-          }).toList(),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, String hint) {
-    return BkuTextField(
-      controller: controller,
-      style: AppTextStyles.labelMd,
-      decoration: InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: AppColors.neutral50,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: const BorderSide(color: AppColors.neutral200),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: const BorderSide(color: AppColors.neutral200),
-        ),
-      ),
-      validator: (val) => val == null || val.isEmpty ? 'Mohon isi judul' : null,
-    );
-  }
-
-  Widget _buildTextArea(TextEditingController controller, String hint) {
-    return BkuTextField(
-      controller: controller,
-      maxLines: 6,
-      style: AppTextStyles.labelMd,
-      decoration: InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: AppColors.neutral50,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: const BorderSide(color: AppColors.neutral200),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadius.radiusLg,
-          borderSide: const BorderSide(color: AppColors.neutral200),
-        ),
-      ),
-      validator:
-          (val) =>
-              val == null || val.isEmpty ? 'Mohon isi detail aspirasi' : null,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
   Widget _buildUploadSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.neutral50,
-        borderRadius: AppRadius.radiusXl,
-        border: Border.all(
-          color: AppColors.neutral200,
-          style: BorderStyle.solid,
-          width: 1.5,
-        ),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.add_a_photo_rounded,
-            size: 40,
-            color: context.appColors.outline.withAlpha(50),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: BkuTheme.indigoSoft,
+              borderRadius: BkuTheme.r12,
+              border: Border.all(color: BkuTheme.indigoBorder),
+            ),
+            child: const Icon(Icons.add_photo_alternate_rounded, color: BkuTheme.indigo, size: 24),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'Klik untuk unggah Foto atau Dokumen',
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Maksimal 10MB',
-            style: AppTextStyles.labelSm.copyWith(
-              color: context.appColors.outline.withAlpha(50),
-              fontSize: 10,
-            ),
-          ),
+          Text('Unggah Foto atau Dokumen Pendukung', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+          const SizedBox(height: 2),
+          Text('Format PDF, JPG, PNG (Maksimal 10MB)', style: BkuTheme.textCaption.copyWith(fontSize: 10.5)),
           if (_attachmentName != null) ...[
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'File terpilih: $_attachmentName',
-              style: AppTextStyles.labelSm.copyWith(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: BkuTheme.emeraldSoft,
+                borderRadius: BkuTheme.r8,
+                border: Border.all(color: BkuTheme.emeraldBorder),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.attach_file_rounded, size: 14, color: BkuTheme.emerald),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      _attachmentName!,
+                      style: BkuTheme.textBadge.copyWith(color: BkuTheme.emerald, fontSize: 10.5),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.md),
           InkWell(
             onTap: _pickFile,
+            borderRadius: BkuTheme.rPill,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl,
-                vertical: AppSpacing.md,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7.5),
               decoration: BoxDecoration(
-                color: AppColors.neutral100,
-                borderRadius: AppRadius.radiusMd,
+                color: BkuTheme.primarySoft,
+                borderRadius: BkuTheme.rPill,
+                border: Border.all(color: BkuTheme.primaryBorder),
               ),
               child: Text(
                 _attachmentName == null ? 'Pilih File' : 'Ganti File',
-                style: AppTextStyles.labelSm.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: BkuTheme.textBadge.copyWith(
+                  color: BkuTheme.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
                 ),
               ),
             ),
@@ -381,13 +389,61 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     );
   }
 
-  Widget _buildSubmitButton() {
-    return BkuButton(
-      onPressed: _isSubmitting ? null : () => _submitForm(),
-      text: 'Kirim Aspirasi',
-      isLoading: _isSubmitting,
-      icon: Icons.send_rounded,
-      variant: BkuButtonVariant.primary,
+  Widget _buildAnonimSwitch() {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: BkuTheme.indigoSoft,
+                  borderRadius: BkuTheme.r10,
+                  border: Border.all(color: BkuTheme.indigoBorder),
+                ),
+                child: const Icon(
+                  Icons.security_rounded,
+                  color: BkuTheme.indigo,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Kirim Sebagai Anonim',
+                    style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
+                  ),
+                  Text(
+                    'Identitas nama dan NIM tidak ditampilkan',
+                    style: BkuTheme.textCaption.copyWith(fontSize: 10),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Switch(
+            value: _isAnonim,
+            onChanged: (val) {
+              setState(() {
+                _isAnonim = val;
+              });
+            },
+            activeThumbColor: BkuTheme.primary,
+          ),
+        ],
+      ),
     );
   }
 
@@ -395,7 +451,7 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.radius20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext sheetContext) {
         return SafeArea(
@@ -403,14 +459,12 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt_rounded),
-                title: const Text('Kamera'),
+                leading: Icon(Icons.camera_alt_rounded, color: BkuTheme.primary),
+                title: Text('Kamera', style: BkuTheme.textBodyRegular),
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   final picker = ImagePicker();
-                  final pickedFile = await picker.pickImage(
-                    source: ImageSource.camera,
-                  );
+                  final pickedFile = await picker.pickImage(source: ImageSource.camera);
                   if (pickedFile != null) {
                     setState(() {
                       _attachmentPath = pickedFile.path;
@@ -420,14 +474,12 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.photo_library_rounded),
-                title: const Text('Galeri'),
+                leading: Icon(Icons.photo_library_rounded, color: BkuTheme.primary),
+                title: Text('Galeri Foto', style: BkuTheme.textBodyRegular),
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   final picker = ImagePicker();
-                  final pickedFile = await picker.pickImage(
-                    source: ImageSource.gallery,
-                  );
+                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
                   if (pickedFile != null) {
                     setState(() {
                       _attachmentPath = pickedFile.path;
@@ -437,12 +489,12 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.folder_rounded),
-                title: const Text('File Explorer'),
+                leading: Icon(Icons.folder_rounded, color: BkuTheme.primary),
+                title: Text('File Dokumen (PDF)', style: BkuTheme.textBodyRegular),
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   try {
-                    FilePickerResult? result = await FilePicker.pickFiles(
+                    final result = await FilePicker.pickFiles(
                       type: FileType.custom,
                       allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
                     );
@@ -475,8 +527,8 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       final newAsp = Aspiration(
         id: 'ASP${DateTime.now().millisecondsSinceEpoch}',
         category: _selectedCategory,
-        title: _titleController.text,
-        description: _descController.text,
+        title: _titleController.text.trim(),
+        description: _descController.text.trim(),
         date: DateTime.now(),
         status: 'Pending',
         attachmentPath: _attachmentPath,
@@ -485,11 +537,11 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
       );
       await context.read<StudentVoiceProvider>().addAspiration(newAsp);
       if (!mounted) return;
-      BkuLoadingDialog.hide(context); 
+      BkuLoadingDialog.hide(context);
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
-      BkuLoadingDialog.hide(context); 
+      BkuLoadingDialog.hide(context);
       AppSnackbar.showError(context, ErrorHandler.getMessage(e));
     }
   }
@@ -498,12 +550,12 @@ class _SubmitAspirationScreenState extends State<SubmitAspirationScreen> {
     BkuDialog.show(
       context: context,
       type: BkuDialogType.success,
-      title: 'Berhasil',
-      message: 'Aspirasi Anda berhasil dikirimkan.',
+      title: 'Aspirasi Terkirim',
+      message: 'Aspirasi Anda berhasil dikirimkan ke pihak kampus dan akan segera ditindaklanjuti.',
       primaryButtonText: 'Kembali',
       onPrimaryPressed: () {
-        Navigator.pop(context); 
-        context.pop(); 
+        Navigator.pop(context);
+        context.pop();
       },
     );
   }

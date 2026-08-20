@@ -107,28 +107,28 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
                   ),
                   const SizedBox(height: 14),
                   OrmawaTextField(
-                    label: 'NAMA ORGANISASI *',
+                    label: 'Nama Organisasi *',
                     controller: _namaController,
                     hintText: 'Contoh: BEM Fakultas Ilmu Komputer',
                     prefixIcon: Icons.business_rounded,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'DESKRIPSI',
+                    label: 'Deskripsi',
                     controller: _deskripsiController,
                     hintText: 'Deskripsi singkat organisasi...',
                     maxLines: 3,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'VISI',
+                    label: 'Visi',
                     controller: _visiController,
                     hintText: 'Visi organisasi...',
                     maxLines: 2,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'MISI',
+                    label: 'Misi',
                     controller: _misiController,
                     hintText: 'Misi organisasi...',
                     maxLines: 3,
@@ -151,14 +151,14 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
                   ),
                   const SizedBox(height: 14),
                   OrmawaTextField(
-                    label: 'ALAMAT SEKRETARIAT',
+                    label: 'Alamat Sekretariat',
                     controller: _alamatController,
                     hintText: 'Gedung / Ruang sekretariat...',
                     prefixIcon: Icons.location_on_outlined,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'EMAIL',
+                    label: 'Email',
                     controller: _emailController,
                     hintText: 'email@organisasi.ac.id',
                     keyboardType: TextInputType.emailAddress,
@@ -166,21 +166,21 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'WEBSITE',
+                    label: 'Website',
                     controller: _websiteController,
                     hintText: 'https://organisasi.ac.id',
                     prefixIcon: Icons.language_rounded,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'INSTAGRAM',
+                    label: 'Instagram',
                     controller: _instagramController,
                     hintText: '@organisasi',
                     prefixIcon: Icons.camera_alt_outlined,
                   ),
                   const SizedBox(height: 12),
                   OrmawaTextField(
-                    label: 'TAHUN BERDIRI',
+                    label: 'Tahun Berdiri',
                     controller: _tahunBerdiriController,
                     hintText: '2020',
                     keyboardType: TextInputType.number,
@@ -192,7 +192,7 @@ class _CreateOrganisasiScreenState extends State<CreateOrganisasiScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'STATUS ORGANISASI',
+                        'Status Organisasi',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,

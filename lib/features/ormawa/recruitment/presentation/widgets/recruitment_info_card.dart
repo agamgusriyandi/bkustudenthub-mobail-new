@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/ormawa_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 
 class RecruitmentInfoCard extends StatelessWidget {
   final String label;
@@ -15,12 +15,12 @@ class RecruitmentInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: OrmawaTheme.primarySoft,
-        borderRadius: BorderRadius.circular(14),
+        color: BkuTheme.primarySoft,
+        borderRadius: BkuTheme.r12,
         border: Border.all(
-          color: OrmawaTheme.primary.withAlpha(40),
+          color: BkuTheme.primaryBorder,
         ),
       ),
       child: Column(
@@ -31,17 +31,16 @@ class RecruitmentInfoCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w800,
-              color: OrmawaTheme.primaryDark,
+              color: BkuTheme.primary,
               letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             value,
-            style: TextStyle(
+            style: BkuTheme.textCardTitle.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: OrmawaTheme.textHeading,
             ),
           ),
         ],

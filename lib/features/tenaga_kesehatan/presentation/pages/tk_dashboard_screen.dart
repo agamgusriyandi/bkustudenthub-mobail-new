@@ -1,26 +1,21 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import "package:bkuhub_mobile/core/providers/theme_provider.dart";
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_status_badge.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_dashboard_provider.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/pages/tk_main_screen.dart';
 import 'package:bkuhub_mobile/features/tenaga_kesehatan/presentation/providers/tk_patient_provider.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/widgets/dashboard/availability_toggle.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class TkDashboardScreen extends StatefulWidget {
   const TkDashboardScreen({super.key});
@@ -40,9 +35,6 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
-
     return Consumer<TkDashboardProvider>(
       builder: (context, provider, child) {
         final name = provider.profile?.nama ?? 'Tenaga Kesehatan';
@@ -50,11 +42,10 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
         final initials = provider.profile?.initials ?? 'TK';
 
         return Scaffold(
-          backgroundColor: AppColors.neutral100,
+          backgroundColor: BkuTheme.scaffoldBg,
           body: RefreshIndicator(
-            onRefresh:
-                () => context.read<TkDashboardProvider>().loadDashboard(),
-            color: primaryColor,
+            onRefresh: () => context.read<TkDashboardProvider>().loadDashboard(),
+            color: BkuTheme.primary,
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
@@ -67,63 +58,45 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   showProfileOnCollapse: true,
                   showBackButton: false,
                   showNotification: true,
-                  onNotificationTap:
-                      (context, variant) => context.push('/notifications/tk'),
-                  profileImage:
-                      imageUrl.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: (() {
-                                final url = ApiGate.getImageUrl(imageUrl);
-                                final timestamp = DateTime.now().millisecondsSinceEpoch;
-                                return url.contains('?') ? '$url&v=$timestamp' : '$url?v=$timestamp';
-                              })(),
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => _buildInitialsAvatar(initials),
-                            errorWidget:
-                                (_, url, error) => _buildInitialsAvatar(initials),
-                            
-                          )
-                          : _buildInitialsAvatar(initials),
+                  onNotificationTap: (context, variant) => context.push('/notifications/tk'),
+                  profileImage: imageUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: (() {
+                            final url = ApiGate.getImageUrl(imageUrl);
+                            final timestamp = DateTime.now().millisecondsSinceEpoch;
+                            return url.contains('?') ? '$url&v=$timestamp' : '$url?v=$timestamp';
+                          })(),
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => _buildInitialsAvatar(initials),
+                          errorWidget: (_, url, error) => _buildInitialsAvatar(initials),
+                        )
+                      : _buildInitialsAvatar(initials),
                   bottomChild: _buildHeaderQuickChips(provider),
                   child: _buildAvailabilityToggle(provider),
                 ),
-
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.xl,
+                      vertical: AppSpacing.lg,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ── LAYANAN UTAMA ──
-                        const Text(
+                        Text(
                           'Layanan Utama',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.neutral800,
-                          ),
+                          style: BkuTheme.textSectionTitle,
                         ),
                         const SizedBox(height: AppSpacing.md),
                         _buildServiceGrid(context),
                         const SizedBox(height: AppSpacing.xl),
-
-                        // ── HERO CARD (Ringkasan Hari Ini) ──
                         _buildHeroCard(provider),
                         const SizedBox(height: AppSpacing.xl),
-
-                        // ── JADWAL MENDATANG ──
                         _buildSectionRow(
                           'Jadwal Mendatang',
                           _formatTodayDateLabel(),
                           onTap: () {
-                            final mainState =
-                                context
-                                    .findAncestorStateOfType<
-                                      TkMainScreenState
-                                    >();
+                            final mainState = context.findAncestorStateOfType<TkMainScreenState>();
                             if (mainState != null) {
                               mainState.setSelectedIndex(1);
                             } else {
@@ -134,45 +107,32 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                         const SizedBox(height: AppSpacing.md),
                         _buildBookingHorizontalScroll(provider),
                         const SizedBox(height: AppSpacing.xl),
-
-                        // ── MAHASISWA PERLU PERHATIAN ──
-                        if (provider.isLoading ||
-                            provider.alerts.isNotEmpty) ...[
+                        if (provider.isLoading || provider.alerts.isNotEmpty) ...[
                           _buildSectionRow('Perlu Perhatian', null),
                           const SizedBox(height: AppSpacing.md),
                           _buildAlertList(provider),
                           const SizedBox(height: AppSpacing.xl),
                         ],
-
-                        // ── GRAFIK ANALITIK ──
                         if (provider.isLoading ||
                             provider.chartKondisi.isNotEmpty ||
                             provider.chartFakultas.isNotEmpty ||
                             provider.chartTren.isNotEmpty) ...[
-                          const Text(
+                          Text(
                             'Analitik Kesehatan',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.neutral800,
-                            ),
+                            style: BkuTheme.textSectionTitle,
                           ),
                           const SizedBox(height: AppSpacing.md),
                           if (provider.isLoading) ...[
                             const BkuShimmer(
                               width: double.infinity,
                               height: 200,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(AppRadius.radius20),
-                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
                             ),
                             const SizedBox(height: AppSpacing.md),
                             const BkuShimmer(
                               width: double.infinity,
                               height: 200,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(AppRadius.radius20),
-                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
                             ),
                           ] else ...[
                             if (provider.chartKondisi.isNotEmpty) ...[
@@ -201,7 +161,6 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                             ],
                           ],
                         ],
-
                         const SizedBox(height: AppSpacing.s100),
                       ],
                     ),
@@ -215,28 +174,25 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // HERO CARD
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildHeroCard(TkDashboardProvider provider) {
     if (provider.isLoading) {
       return const BkuShimmer(
         width: double.infinity,
         height: 180,
-        borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       );
     }
 
-    final today =
-        DateFormat(
-          'EEEE, dd MMM yyyy',
-          'id_ID',
-        ).format(DateTime.now());
+    final today = DateFormat('EEEE, dd MMM yyyy', 'id_ID').format(DateTime.now());
 
-    final primaryColor = context.read<ThemeProvider>().primary;
-
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
       child: Column(
         children: [
           Row(
@@ -247,66 +203,51 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      today,
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: AppColors.neutral500,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 9,
-                        letterSpacing: 1.2,
+                      today.toUpperCase(),
+                      style: BkuTheme.textBadge.copyWith(
+                        color: BkuTheme.textMuted,
+                        fontSize: 9.5,
+                        letterSpacing: 0.8,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.s2),
+                    const SizedBox(height: 2),
                     Text(
                       'Booking Hari Ini & Mendatang',
-                      style: AppTextStyles.labelMd.copyWith(
-                        color: AppColors.neutral900,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
+                      style: BkuTheme.textCardTitle.copyWith(fontSize: 14),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: 6),
                     Text(
                       '${provider.bookingHariIniCount}',
-                      style: AppTextStyles.titleLg.copyWith(
-                        color: context.appColors.secondary,
-                        fontSize: 44,
-                        fontWeight: FontWeight.w900,
-                        height: 1,
+                      style: BkuTheme.textMetricValue.copyWith(
+                        color: BkuTheme.primary,
+                        fontSize: 36,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.s2),
+                    const SizedBox(height: 2),
                     Text(
-                      'sesi booking hari ini',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: AppColors.neutral500,
-                        fontSize: 10,
-                      ),
+                      'sesi booking aktif',
+                      style: BkuTheme.textCaption,
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: primaryColor.withAlpha(10),
-                  shape: BoxShape.circle,
+                  color: BkuTheme.indigoSoft,
+                  borderRadius: BkuTheme.r16,
+                  border: Border.all(color: BkuTheme.indigoBorder),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withAlpha(20),
-                    borderRadius: AppRadius.radiusLg,
-                  ),
-                  child: Icon(
-                    Icons.event_available_rounded,
-                    color: primaryColor,
-                    size: 28,
-                  ),
+                child: const Icon(
+                  Icons.event_available_rounded,
+                  color: BkuTheme.indigo,
+                  size: 26,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,26 +255,30 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               _buildSummaryItem(
                 Icons.check_circle_outline_rounded,
                 '${provider.totalDiperiksaHariIni}',
-                'Selesai\nHari Ini',
-                context.appColors.success,
+                'Selesai',
+                BkuTheme.emerald,
+                BkuTheme.emeraldSoft,
               ),
               _buildSummaryItem(
                 Icons.pending_actions_rounded,
                 '${provider.belumScreening}',
                 'Menunggu',
-                context.appColors.warning,
+                BkuTheme.amber,
+                BkuTheme.amberSoft,
               ),
               _buildSummaryItem(
                 Icons.notifications_active_rounded,
                 '${provider.perluPerhatian}',
-                'Baru\nHari Ini',
-                context.appColors.error,
+                'Perhatian',
+                BkuTheme.rose,
+                BkuTheme.roseSoft,
               ),
               _buildSummaryItem(
                 Icons.event_available_rounded,
                 '${provider.bookingHariIniCount}',
-                'Booking\nAktif',
-                context.appColors.info,
+                'Booking',
+                BkuTheme.cyan,
+                BkuTheme.cyanSoft,
               ),
             ],
           ),
@@ -347,34 +292,30 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     String value,
     String label,
     Color iconColor,
+    Color bgColor,
   ) {
     return Expanded(
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: iconColor.withAlpha(20),
-              borderRadius: AppRadius.radiusLg,
+              color: bgColor,
+              borderRadius: BkuTheme.r12,
             ),
-            child: Icon(icon, color: iconColor, size: 24),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            value,
-            style: AppTextStyles.titleMd.copyWith(
-              color: AppColors.neutral900,
-              fontWeight: FontWeight.w900,
-              fontSize: 14,
-            ),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
+            value,
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 15),
+          ),
+          const SizedBox(height: 1),
+          Text(
             label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: AppColors.neutral500,
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
+            style: BkuTheme.textBadge.copyWith(
+              color: BkuTheme.textMuted,
+              fontSize: 9.5,
             ),
             textAlign: TextAlign.center,
           ),
@@ -383,17 +324,13 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // SERVICE GRID (Squircle Style)
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildServiceGrid(BuildContext context) {
-    final primary = context.read<ThemeProvider>().primary;
     final services = [
       _ServiceItem(
         icon: Icons.calendar_month_rounded,
         label: 'Jadwal',
-        bg: primary.withAlpha(25),
-        iconColor: primary,
+        bg: BkuTheme.indigoSoft,
+        iconColor: BkuTheme.indigo,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
           s != null ? s.setSelectedIndex(1) : context.go('/tenagakes?tab=1');
@@ -402,8 +339,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.assignment_turned_in_rounded,
         label: 'Booking',
-        bg: context.appColors.success.withAlpha(15),
-        iconColor: context.appColors.success,
+        bg: BkuTheme.emeraldSoft,
+        iconColor: BkuTheme.emerald,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
           s != null ? s.setSelectedIndex(2) : context.go('/tenagakes?tab=2');
@@ -412,8 +349,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.people_alt_rounded,
         label: 'Pasien',
-        bg: context.appColors.info.withAlpha(15),
-        iconColor: context.appColors.info,
+        bg: BkuTheme.cyanSoft,
+        iconColor: BkuTheme.cyan,
         onTap: () {
           final s = context.findAncestorStateOfType<TkMainScreenState>();
           s != null ? s.setSelectedIndex(3) : context.go('/tenagakes?tab=3');
@@ -422,45 +359,45 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
       _ServiceItem(
         icon: Icons.send_rounded,
         label: 'Rujukan',
-        bg: context.appColors.warning.withAlpha(15),
-        iconColor: context.appColors.warning,
+        bg: BkuTheme.amberSoft,
+        iconColor: BkuTheme.amber,
         onTap: () => context.push(AppRoutes.tkReferralManagement),
       ),
       _ServiceItem(
         icon: Icons.qr_code_scanner_rounded,
         label: 'Scan QR',
-        bg: primary.withAlpha(25),
-        iconColor: primary,
+        bg: BkuTheme.indigoSoft,
+        iconColor: BkuTheme.indigo,
         onTap: () => context.push('/tk/qr-scan'),
       ),
       _ServiceItem(
         icon: Icons.shield_rounded,
         label: 'Asuransi',
-        bg: context.appColors.success.withAlpha(15),
-        iconColor: context.appColors.success,
+        bg: BkuTheme.emeraldSoft,
+        iconColor: BkuTheme.emerald,
         onTap: () => context.push('/tk/insurance-claims'),
       ),
       _ServiceItem(
         icon: Icons.article_rounded,
-        label: 'Bap',
-        bg: context.appColors.warning.withAlpha(15),
-        iconColor: context.appColors.warning,
+        label: 'BAP',
+        bg: BkuTheme.amberSoft,
+        iconColor: BkuTheme.amber,
         onTap: () => context.push('/tk/bap'),
       ),
       _ServiceItem(
         icon: Icons.bar_chart_rounded,
         label: 'Lap. Klinis',
-        bg: context.appColors.info.withAlpha(15),
-        iconColor: context.appColors.info,
+        bg: BkuTheme.cyanSoft,
+        iconColor: BkuTheme.cyan,
         onTap: () => context.push('/tk/reports'),
       ),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTablet = constraints.maxWidth >= 600;
-        final crossAxisCount = isTablet ? 8 : 4;
-        final aspectRatio = isTablet ? 1.0 : 0.68;
+        final crossAxisCount = (constraints.maxWidth / 80).floor().clamp(4, 8);
+        final itemWidth = (constraints.maxWidth - (6 * (crossAxisCount - 1))) / crossAxisCount;
+        final aspectRatio = itemWidth / 96;
 
         return GridView.builder(
           shrinkWrap: true,
@@ -469,8 +406,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           itemCount: services.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 8,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 6,
             childAspectRatio: aspectRatio,
           ),
           itemBuilder: (context, i) {
@@ -483,89 +420,83 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
   }
 
   Widget _buildServiceItem(_ServiceItem s) {
-    return BkuCard(
+    return GestureDetector(
       onTap: s.onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.xs,
-        vertical: AppSpacing.sm,
-      ),
+      behavior: HitTestBehavior.opaque,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
               color: s.bg,
-              borderRadius: AppRadius.radiusLg,
+              borderRadius: BkuTheme.r16,
+              border: Border.all(color: s.iconColor.withAlpha(40)),
             ),
-            child: Icon(s.icon, color: s.iconColor, size: 22),
+            child: Center(
+              child: Icon(s.icon, color: s.iconColor, size: 24),
+            ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            s.label,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelSm.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
+          const SizedBox(height: 6),
+          Expanded(
+            child: Text(
+              s.label,
+              textAlign: TextAlign.center,
+              style: BkuTheme.textBadge.copyWith(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: BkuTheme.textPrimary,
+                height: 1.1,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // BOOKING HORIZONTAL SCROLL
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildBookingHorizontalScroll(TkDashboardProvider provider) {
     if (provider.isLoading) {
       return SizedBox(
-        height: 195,
+        height: 180,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(right: AppSpacing.xs),
           itemCount: 3,
           separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
-          itemBuilder:
-              (context, index) => const BkuShimmer(
-                width: 195,
-                height: 195,
-                borderRadius: BorderRadius.all(Radius.circular(AppRadius.radius20)),
-              ),
+          itemBuilder: (context, index) => const BkuShimmer(
+            width: 175,
+            height: 180,
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
         ),
       );
     }
 
     if (provider.bookings.isEmpty) {
       return Container(
-        height: 120,
+        height: 110,
         decoration: BoxDecoration(
-          color: context.appColors.surface,
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: BkuTheme.cardSurface,
+          borderRadius: BkuTheme.r16,
+          border: Border.all(color: BkuTheme.border),
+          boxShadow: BkuTheme.cardShadow,
         ),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.event_busy_rounded,
-                size: 36,
-                color: AppColors.neutral300,
+                size: 32,
+                color: BkuTheme.textPlaceholder,
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 'Tidak ada jadwal hari ini',
-                style: TextStyle(color: AppColors.neutral400, fontSize: 13),
+                style: BkuTheme.textCaption,
               ),
             ],
           ),
@@ -574,142 +505,117 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     }
 
     return SizedBox(
-      height: 195,
+      height: 180,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(right: AppSpacing.xs),
         itemCount: provider.bookings.length,
         separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
-        itemBuilder:
-            (context, index) => _buildBookingCard(provider.bookings[index]),
+        itemBuilder: (context, index) => _buildBookingCard(provider.bookings[index]),
       ),
     );
   }
 
   Widget _buildBookingCard(Map<String, dynamic> booking) {
-    final primary = context.read<ThemeProvider>().primary;
     final name = booking['name']?.toString() ?? '-';
     final nim = booking['nim']?.toString() ?? '-';
     final time = booking['time']?.toString() ?? '-';
     final status = booking['status']?.toString() ?? '-';
-    final tipeLayanan =
-        booking['tipe_layanan']?.toString() ?? 'Pemeriksaan Umum';
+    final tipeLayanan = booking['tipe_layanan']?.toString() ?? 'Pemeriksaan Umum';
     final mahasiswaId = booking['mahasiswa_id'];
 
-    final fotoUrl =
-        booking['avatar_url']?.toString() ??
+    final fotoUrl = booking['avatar_url']?.toString() ??
         booking['foto_url']?.toString() ??
         booking['foto']?.toString() ??
         booking['avatar']?.toString() ??
         booking['FotoURL']?.toString();
 
     final parts = name.trim().split(' ');
-    final avatarText =
-        parts.length >= 2
-            ? '${parts[0][0]}${parts[1][0]}'
-            : name.isNotEmpty
+    final avatarText = parts.length >= 2
+        ? '${parts[0][0]}${parts[1][0]}'
+        : name.isNotEmpty
             ? name[0]
             : '?';
 
     final bool isConfirmed = status == 'Dikonfirmasi';
 
-    return BkuCard(
-      onTap: () {
-        if (mahasiswaId != null) {
-          context.read<TkPatientProvider>().clearSelection();
-          context.push('/tk/patient/$mahasiswaId');
-        }
-      },
-      width: 170,
-      margin: const EdgeInsets.only(right: AppSpacing.md),
+    return Container(
+      width: 175,
       padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: avatar + status badge
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CircleAvatar(
-                radius: 20,
-                backgroundColor: primary.withAlpha(25),
-                backgroundImage:
-                    (fotoUrl != null && fotoUrl.isNotEmpty && fotoUrl != '-')
-                        ? NetworkImage(ApiGate.getImageUrl(fotoUrl))
-                        : null,
-                child:
-                    (fotoUrl != null && fotoUrl.isNotEmpty && fotoUrl != '-')
-                        ? null
-                        : Text(
-                          avatarText,
-                          style: TextStyle(
-                            color: primary,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 13,
-                          ),
+                radius: 18,
+                backgroundColor: BkuTheme.indigoSoft,
+                backgroundImage: (fotoUrl != null && fotoUrl.isNotEmpty && fotoUrl != '-')
+                    ? NetworkImage(ApiGate.getImageUrl(fotoUrl))
+                    : null,
+                child: (fotoUrl != null && fotoUrl.isNotEmpty && fotoUrl != '-')
+                    ? null
+                    : Text(
+                        avatarText,
+                        style: const TextStyle(
+                          color: BkuTheme.indigo,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
                         ),
+                      ),
               ),
               BkuStatusBadge(
-                status: isConfirmed ? BkuStatus.success : (status == 'Menunggu Konfirmasi' ? BkuStatus.pending : BkuStatus.info),
+                status: isConfirmed
+                    ? BkuStatus.success
+                    : (status == 'Menunggu Konfirmasi' ? BkuStatus.pending : BkuStatus.info),
                 customText: status == 'Menunggu Konfirmasi' ? 'Menunggu' : status,
                 showIcon: false,
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s10),
-          // Name
+          const SizedBox(height: 8),
           Text(
             name,
-            style: TextStyle(fontWeight: FontWeight.w800,
-              fontSize: 13,
-              color: AppColors.neutral800,
-            ),
+            style: BkuTheme.textCardTitle.copyWith(fontSize: 12.5),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
-          const SizedBox(height: AppSpacing.s2),
           Text(
             nim,
-            style: TextStyle(fontSize: 11, color: AppColors.neutral500),
+            style: BkuTheme.textCaption.copyWith(fontSize: 10.5),
           ),
-          const SizedBox(height: AppSpacing.sm),
-          // Time row
+          const SizedBox(height: 6),
           Row(
             children: [
-              const Icon(Icons.access_time_rounded, size: 12, color: AppColors.neutral800),
-              const SizedBox(width: AppSpacing.xs),
+              Icon(Icons.access_time_rounded, size: 11, color: BkuTheme.textHeading),
+              const SizedBox(width: 4),
               Text(
                 time,
-                style: TextStyle(fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.neutral800,
-                ),
+                style: BkuTheme.textCardTitle.copyWith(fontSize: 11),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xs),
-          // Tipe layanan
+          const SizedBox(height: 2),
           Row(
             children: [
-              const Icon(
-                Icons.medical_services_outlined,
-                size: 12,
-                color: AppColors.neutral500,
-              ),
-              const SizedBox(width: AppSpacing.xs),
+              const Icon(Icons.medical_services_outlined, size: 11, color: BkuTheme.textPlaceholder),
+              const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   tipeLayanan,
-                  style: TextStyle(fontSize: 11,
-                    color: AppColors.neutral600,
-                  ),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 10),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
           const Spacer(),
-          // Action button
           BkuButton(
             onPressed: () {
               if (mahasiswaId != null) {
@@ -720,17 +626,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             variant: isConfirmed ? BkuButtonVariant.success : BkuButtonVariant.secondary,
             text: isConfirmed ? 'Periksa' : 'Detail',
             trailingIcon: Icons.arrow_forward_rounded,
-            height: 32,
-            fontSize: 11,
+            height: 28,
+            fontSize: 10.5,
           ),
         ],
       ),
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // ALERT LIST
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildAlertList(TkDashboardProvider provider) {
     if (provider.isLoading) {
       return const BkuShimmerList(itemCount: 2, itemHeight: 80);
@@ -751,93 +654,90 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     final event = alert['event']?.toString() ?? '-';
     final mahasiswaId = alert['mahasiswa_id'];
 
-    return GestureDetector(
-      onTap: () {
-        if (mahasiswaId != null) {
-          context.read<TkPatientProvider>().clearSelection();
-          context.push('/tk/patient/$mahasiswaId');
-        }
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.s10),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.error.withAlpha(15),
-          borderRadius: AppRadius.radiusXl,
-          border: Border.all(color: context.appColors.error.withAlpha(20)),
-          boxShadow: [
-            BoxShadow(
-              color: context.appColors.onSurface.withAlpha(12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: context.appColors.error.withAlpha(20),
-                borderRadius: AppRadius.radiusMd,
-              ),
-              child: Icon(
-                Icons.warning_amber_rounded,
-                color: context.appColors.error,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                      color: AppColors.neutral800,
-                    ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: BkuTheme.roseSoft,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.roseBorder),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BkuTheme.r16,
+        child: InkWell(
+          onTap: () {
+            if (mahasiswaId != null) {
+              context.read<TkPatientProvider>().clearSelection();
+              context.push('/tk/patient/$mahasiswaId');
+            }
+          },
+          borderRadius: BkuTheme.r16,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: BkuTheme.rose.withAlpha(25),
+                    borderRadius: BkuTheme.r10,
                   ),
-                  const SizedBox(height: AppSpacing.s2),
-                  Text(
-                    'NIM: $nim',
-                    style: TextStyle(fontSize: 11,
-                      color: AppColors.neutral500,
-                    ),
+                  child: const Icon(
+                    Icons.warning_amber_rounded,
+                    color: BkuTheme.rose,
+                    size: 20,
                   ),
-                  const SizedBox(height: AppSpacing.s2),
-                  Text(
-                    event,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.appColors.error,
-                    ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
+                      ),
+                      Text(
+                        'NIM: $nim',
+                        style: BkuTheme.textCaption,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        event,
+                        style: BkuTheme.textBadge.copyWith(
+                          color: BkuTheme.rose,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: BkuTheme.rose,
+                  size: 20,
+                ),
+              ],
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: context.appColors.error,
-              size: 22,
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // CHARTS
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildChartCard({
     required String title,
     required IconData icon,
     required Widget child,
   }) {
-    return BkuCard(
-      padding: AppSpacing.padding18,
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -846,22 +746,19 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: context.read<ThemeProvider>().primary.withAlpha(25),
-                  borderRadius: AppRadius.radiusMd,
+                  color: BkuTheme.indigoSoft,
+                  borderRadius: BkuTheme.r8,
                 ),
                 child: Icon(
                   icon,
-                  color: context.read<ThemeProvider>().primary,
+                  color: BkuTheme.indigo,
                   size: 18,
                 ),
               ),
               const SizedBox(width: AppSpacing.s10),
               Text(
                 title,
-                style: TextStyle(fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.neutral800,
-                ),
+                style: BkuTheme.textSectionTitle.copyWith(fontSize: 14),
               ),
             ],
           ),
@@ -880,48 +777,48 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     if (total == 0) return const SizedBox.shrink();
 
     final colors = [
-      context.appColors.info, // Blue
-      context.appColors.success, // Emerald
-      context.appColors.error, // Rose
-      context.appColors.warning, // Amber
-      context.appColors.info, // Purple
-      context.appColors.info, // Cyan
+      BkuTheme.cyan,
+      BkuTheme.emerald,
+      BkuTheme.rose,
+      BkuTheme.amber,
+      BkuTheme.indigo,
+      BkuTheme.violet,
     ];
 
     int colorIdx = 0;
-    final sections =
-        provider.chartKondisi.map((item) {
-          final v = double.tryParse(item['value']?.toString() ?? '0') ?? 0.0;
-          final c = colors[colorIdx % colors.length];
-          colorIdx++;
-          return PieChartSectionData(
-            color: c,
-            value: v,
-            title: '${(v / total * 100).toStringAsFixed(0)}%',
-            radius: 55,
-            titleStyle: TextStyle(fontSize: 11,
-              fontWeight: FontWeight.w800,
-              color: context.appColors.surface,
-            ),
-          );
-        }).toList();
+    final sections = provider.chartKondisi.map((item) {
+      final v = double.tryParse(item['value']?.toString() ?? '0') ?? 0.0;
+      final c = colors[colorIdx % colors.length];
+      colorIdx++;
+      return PieChartSectionData(
+        color: c,
+        value: v,
+        title: '${(v / total * 100).toStringAsFixed(0)}%',
+        radius: 50,
+        titleStyle: const TextStyle(
+          fontSize: 10.5,
+          fontWeight: FontWeight.w800,
+          color: Colors.white,
+        ),
+      );
+    }).toList();
 
     return Column(
       children: [
         SizedBox(
-          height: 180,
+          height: 170,
           child: PieChart(
             PieChartData(
-              sectionsSpace: 3,
-              centerSpaceRadius: 36,
+              sectionsSpace: 2,
+              centerSpaceRadius: 32,
               sections: sections,
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.s14),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 14,
-          runSpacing: 8,
+          spacing: 12,
+          runSpacing: 6,
           alignment: WrapAlignment.center,
           children: List.generate(provider.chartKondisi.length, (i) {
             final item = provider.chartKondisi[i];
@@ -929,19 +826,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 10,
-                  height: 10,
+                  width: 8,
+                  height: 8,
                   decoration: BoxDecoration(
                     color: colors[i % colors.length],
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.s6),
+                const SizedBox(width: 4),
                 Text(
                   '${item['name']} (${item['value']})',
-                  style: TextStyle(fontSize: 11,
-                    color: AppColors.neutral600,
-                  ),
+                  style: BkuTheme.textCaption.copyWith(fontSize: 10.5),
                 ),
               ],
             );
@@ -959,7 +854,7 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     if (maxCount == 0) maxCount = 1;
 
     return SizedBox(
-      height: 200,
+      height: 190,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
@@ -967,13 +862,11 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                final name =
-                    provider.chartFakultas[groupIndex]['name']?.toString() ??
-                    '';
+                final name = provider.chartFakultas[groupIndex]['name']?.toString() ?? '';
                 return BarTooltipItem(
                   '$name\n${rod.toY.toInt()}',
-                  TextStyle(
-                    color: context.appColors.surface,
+                  const TextStyle(
+                    color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -989,21 +882,16 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 getTitlesWidget: (value, meta) {
                   final i = value.toInt();
                   if (i >= 0 && i < provider.chartFakultas.length) {
-                    final full =
-                        provider.chartFakultas[i]['name']?.toString() ?? '';
+                    final full = provider.chartFakultas[i]['name']?.toString() ?? '';
                     final words = full.split(' ');
-                    final abbr =
-                        words
-                            .map((w) => w.isNotEmpty ? w[0] : '')
-                            .join()
-                            ;
+                    final abbr = words.map((w) => w.isNotEmpty ? w[0] : '').join();
                     return Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.sm),
+                      padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         abbr.length > 4 ? abbr.substring(0, 4) : abbr,
-                        style: TextStyle(fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.neutral500,
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 9.5,
+                          color: BkuTheme.textMuted,
                         ),
                       ),
                     );
@@ -1012,72 +900,27 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 },
               ),
             ),
-            leftTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
+            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           gridData: FlGridData(
             show: true,
             drawVerticalLine: false,
             horizontalInterval: maxCount / 4,
-            getDrawingHorizontalLine:
-                (v) => FlLine(color: AppColors.neutral300, strokeWidth: 1),
+            getDrawingHorizontalLine: (v) => FlLine(color: BkuTheme.border, strokeWidth: 1),
           ),
           borderData: FlBorderData(show: false),
           barGroups: List.generate(provider.chartFakultas.length, (i) {
-            final val =
-                double.tryParse(
-                  provider.chartFakultas[i]['value']?.toString() ?? '0',
-                ) ??
-                0.0;
-            final barGradients = [
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.info, context.appColors.info],
-              ),
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.success.withAlpha(30), context.appColors.success],
-              ),
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.warning.withAlpha(30), context.appColors.warning],
-              ),
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.info.withAlpha(30), context.appColors.info],
-              ),
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.error.withAlpha(30), context.appColors.error],
-              ),
-              LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.appColors.info.withAlpha(30), context.appColors.info],
-              ),
-            ];
+            final val = double.tryParse(provider.chartFakultas[i]['value']?.toString() ?? '0') ?? 0.0;
             return BarChartGroupData(
               x: i,
               barRods: [
                 BarChartRodData(
                   toY: val,
-                  gradient: barGradients[i % barGradients.length],
-                  width: 20,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppRadius.radius6),
-                  ),
+                  color: BkuTheme.indigo,
+                  width: 18,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                 ),
               ],
             );
@@ -1095,22 +938,19 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     if (maxCount == 0) maxCount = 1;
 
     final spots = List.generate(provider.chartTren.length, (i) {
-      final v =
-          double.tryParse(provider.chartTren[i]['value']?.toString() ?? '0') ??
-          0.0;
+      final v = double.tryParse(provider.chartTren[i]['value']?.toString() ?? '0') ?? 0.0;
       return FlSpot(i.toDouble(), v);
     });
 
     return SizedBox(
-      height: 200,
+      height: 190,
       child: LineChart(
         LineChartData(
           gridData: FlGridData(
             show: true,
             drawVerticalLine: false,
             horizontalInterval: maxCount / 4 > 0 ? maxCount / 4 : 1,
-            getDrawingHorizontalLine:
-                (v) => FlLine(color: AppColors.neutral300, strokeWidth: 1),
+            getDrawingHorizontalLine: (v) => FlLine(color: BkuTheme.border, strokeWidth: 1),
           ),
           titlesData: FlTitlesData(
             show: true,
@@ -1121,15 +961,14 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 getTitlesWidget: (value, meta) {
                   final i = value.toInt();
                   if (i >= 0 && i < provider.chartTren.length) {
-                    final dateStr =
-                        provider.chartTren[i]['name']?.toString() ?? '';
+                    final dateStr = provider.chartTren[i]['name']?.toString() ?? '';
                     return Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.sm),
+                      padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         dateStr,
-                        style: TextStyle(fontSize: 9,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.neutral500,
+                        style: BkuTheme.textBadge.copyWith(
+                          fontSize: 9,
+                          color: BkuTheme.textMuted,
                         ),
                       ),
                     );
@@ -1138,15 +977,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                 },
               ),
             ),
-            leftTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
+            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(show: false),
           minX: 0,
@@ -1158,20 +991,17 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
               spots: spots,
               isCurved: true,
               curveSmoothness: 0.3,
-              gradient: LinearGradient(
-                colors: [context.appColors.info, context.appColors.info],
-              ),
+              color: BkuTheme.cyan,
               barWidth: 3,
               isStrokeCapRound: true,
               dotData: FlDotData(
                 show: true,
-                getDotPainter:
-                    (spot, percent, bar, index) => FlDotCirclePainter(
-                      radius: 4,
-                      color: context.appColors.surface,
-                      strokeWidth: 2,
-                      strokeColor: context.appColors.info,
-                    ),
+                getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+                  radius: 3.5,
+                  color: Colors.white,
+                  strokeWidth: 2,
+                  strokeColor: BkuTheme.cyan,
+                ),
               ),
               belowBarData: BarAreaData(
                 show: true,
@@ -1179,8 +1009,8 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    context.appColors.info.withAlpha(40),
-                    context.appColors.info.withAlpha(0),
+                    BkuTheme.cyan.withAlpha(40),
+                    BkuTheme.cyan.withAlpha(0),
                   ],
                 ),
               ),
@@ -1191,19 +1021,15 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // HELPERS
-  // ─────────────────────────────────────────────────────────────────────────
   Widget _buildInitialsAvatar(String initials) {
-    final primary = context.read<ThemeProvider>().primary;
     return Container(
-      color: primary,
+      color: BkuTheme.indigo,
       child: Center(
-          child: Text(
+        child: Text(
           initials,
-          style: TextStyle(
-            color: context.appColors.onPrimary,
-            fontSize: 28,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 26,
             fontWeight: FontWeight.w900,
             letterSpacing: 1,
           ),
@@ -1258,31 +1084,23 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
     required String label,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: context.appColors.surface.withAlpha(35),
-        borderRadius: AppRadius.br20,
-        border: Border.all(color: context.appColors.surface.withAlpha(60), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: Colors.white.withAlpha(35),
+        borderRadius: BkuTheme.rPill,
+        border: Border.all(color: Colors.white.withAlpha(60), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: context.appColors.onPrimary),
-          const SizedBox(width: AppSpacing.s6),
+          Icon(icon, size: 12, color: Colors.white),
+          const SizedBox(width: 5),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
+            style: BkuTheme.textBadge.copyWith(
+              fontSize: 10.5,
               fontWeight: FontWeight.w800,
-              color: context.appColors.onPrimary,
-              letterSpacing: 0.2,
+              color: Colors.white,
             ),
           ),
         ],
@@ -1311,17 +1129,12 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 17,
-                fontWeight: FontWeight.w800,
-                color: AppColors.neutral800,
-              ),
+              style: BkuTheme.textSectionTitle,
             ),
             if (subtitle != null)
               Text(
                 subtitle,
-                style: TextStyle(fontSize: 12,
-                  color: AppColors.neutral500,
-                ),
+                style: BkuTheme.textCaption,
               ),
           ],
         ),
@@ -1330,9 +1143,9 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
             onTap: onTap,
             child: Text(
               'Lihat Semua',
-              style: TextStyle(fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: AppColors.neutral800,
+              style: BkuTheme.textButton.copyWith(
+                color: BkuTheme.primary,
+                fontSize: 12,
               ),
             ),
           ),
@@ -1345,7 +1158,6 @@ class _TkDashboardScreenState extends State<TkDashboardScreen> {
   }
 }
 
-// ─── Helper Model ───────────────────────────────────────────────────────────
 class _ServiceItem {
   final IconData icon;
   final String label;

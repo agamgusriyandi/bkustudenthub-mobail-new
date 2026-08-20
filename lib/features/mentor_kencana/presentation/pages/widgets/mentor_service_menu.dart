@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bounce_button.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/features/mentor_kencana/presentation/pages/mentor_main_screen.dart';
@@ -17,22 +14,21 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Handbook',
         'icon': Icons.menu_book_rounded,
-        'color': AppColors.serviceViolet,
+        'color': BkuTheme.violet,
         'onTap': () => context.push(AppRoutes.mentorHandbookList),
       },
       {
-        'title': 'Materi\n& Tugas',
+        'title': 'Materi & Tugas',
         'icon': Icons.auto_stories_rounded,
-        'color': AppColors.serviceTeal,
+        'color': BkuTheme.cyan,
         'onTap': () => context.push(AppRoutes.mentorMaterials),
       },
       {
         'title': 'Skoring',
         'icon': Icons.star_rounded,
-        'color': AppColors.serviceIndigo,
+        'color': BkuTheme.indigo,
         'onTap': () {
-          final state =
-              context.findAncestorStateOfType<MentorMainScreenState>();
+          final state = context.findAncestorStateOfType<MentorMainScreenState>();
           if (state != null) {
             state.setSelectedIndex(3);
           } else {
@@ -41,36 +37,35 @@ class MentorServiceMenu extends StatelessWidget {
         },
       },
       {
-        'title': 'Nilai\nEssay',
+        'title': 'Nilai Essay',
         'icon': Icons.rate_review_rounded,
-        'color': AppColors.serviceCyan,
+        'color': BkuTheme.cyan,
         'onTap': () => context.push(AppRoutes.mentorEssayGrading),
       },
       {
-        'title': 'Izin\nPresensi',
+        'title': 'Izin Presensi',
         'icon': Icons.edit_note_rounded,
-        'color': AppColors.serviceRose,
+        'color': BkuTheme.rose,
         'onTap': () => context.push(AppRoutes.mentorAbsenceRequests),
       },
       {
-        'title': 'Kelompok\nSaya',
+        'title': 'Kelompok Saya',
         'icon': Icons.diversity_3_rounded,
-        'color': AppColors.primary,
+        'color': BkuTheme.primary,
         'onTap': () => context.push(AppRoutes.mentorGroups),
       },
       {
-        'title': 'Catatan\nBimbingan',
+        'title': 'Catatan Bimbingan',
         'icon': Icons.speaker_notes_rounded,
-        'color': AppColors.serviceAmber,
+        'color': BkuTheme.amber,
         'onTap': () => context.push(AppRoutes.mentorNotes),
       },
       {
-        'title': 'Input\nKehadiran',
+        'title': 'Input Presensi',
         'icon': Icons.how_to_reg_rounded,
-        'color': AppColors.serviceEmerald,
+        'color': BkuTheme.emerald,
         'onTap': () {
-          final state =
-              context.findAncestorStateOfType<MentorMainScreenState>();
+          final state = context.findAncestorStateOfType<MentorMainScreenState>();
           if (state != null) {
             state.setSelectedIndex(2);
           } else {
@@ -81,10 +76,9 @@ class MentorServiceMenu extends StatelessWidget {
       {
         'title': 'Pengaturan',
         'icon': Icons.settings_rounded,
-        'color': AppColors.serviceSlate,
+        'color': BkuTheme.slate,
         'onTap': () {
-          final state =
-              context.findAncestorStateOfType<MentorMainScreenState>();
+          final state = context.findAncestorStateOfType<MentorMainScreenState>();
           if (state != null) {
             state.setSelectedIndex(4);
           } else {
@@ -96,15 +90,8 @@ class MentorServiceMenu extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Menghitung jumlah kolom optimal (min 4, max 8) berdasarkan lebar yang tersedia
         final crossAxisCount = (constraints.maxWidth / 80).floor().clamp(4, 8);
-
-        // Menghitung lebar tiap item
-        final itemWidth =
-            (constraints.maxWidth - (6 * (crossAxisCount - 1))) /
-            crossAxisCount;
-
-        // Tinggi fix yang dibutuhkan: Container(56) + SizedBox(8) + Text(max ~32) = ~96
+        final itemWidth = (constraints.maxWidth - (6 * (crossAxisCount - 1))) / crossAxisCount;
         final aspectRatio = itemWidth / 96;
 
         return GridView.count(
@@ -115,15 +102,14 @@ class MentorServiceMenu extends StatelessWidget {
           mainAxisSpacing: 10,
           crossAxisSpacing: 6,
           childAspectRatio: aspectRatio,
-          children:
-              actions.map((action) {
-                return _ServiceIcon(
-                  label: action['title'] as String,
-                  icon: action['icon'] as IconData,
-                  color: action['color'] as Color,
-                  onTap: action['onTap'] as VoidCallback,
-                );
-              }).toList(),
+          children: actions.map((action) {
+            return _ServiceIcon(
+              label: action['title'] as String,
+              icon: action['icon'] as IconData,
+              color: action['color'] as Color,
+              onTap: action['onTap'] as VoidCallback,
+            );
+          }).toList(),
         );
       },
     );
@@ -152,22 +138,30 @@ class _ServiceIcon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: color.withAlpha(30),
-              borderRadius: AppRadius.radiusXl,
+              color: color.withAlpha(20),
+              borderRadius: BkuTheme.r16,
+              border: Border.all(color: color.withAlpha(40)),
             ),
-            child: Center(child: Icon(icon, color: color, size: 28)),
+            child: Center(
+              child: Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 6),
           Expanded(
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelSm.copyWith(
-                fontSize: 11,
+              style: BkuTheme.textBadge.copyWith(
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
+                color: BkuTheme.textPrimary,
                 height: 1.1,
               ),
               maxLines: 2,

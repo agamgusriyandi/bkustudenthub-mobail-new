@@ -35,7 +35,7 @@ class OrmawaKpiCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: OrmawaTheme.cardSurface,
         borderRadius: OrmawaTheme.r20,
-        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.0),
+        border: Border.all(color: OrmawaTheme.borderSubtle, width: 1.0),
         boxShadow: OrmawaTheme.cardShadow,
       ),
       child: Column(
