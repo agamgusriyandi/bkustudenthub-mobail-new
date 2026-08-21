@@ -14,6 +14,8 @@ import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/presentation/providers/kencana_remedial_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/kencana/data/models/remedial_model.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_kpi_card.dart';
 import 'package:intl/intl.dart';
 
 class KencanaRemedialScreen extends StatefulWidget {
@@ -244,74 +246,38 @@ class _KencanaRemedialScreenState extends State<KencanaRemedialScreen> {
     final submitted = items.where((i) => i.isSubmitted).length;
     final graded = items.where((i) => i.isGraded).length;
 
-    return GridView.count(
-      padding: EdgeInsets.zero,
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.2,
+    return Row(
       children: [
-        _buildStatItem(
-          'Menunggu',
-          '$pending',
-          Icons.pending_actions_rounded,
-          AppColors.warning,
+        Expanded(
+          child: BkuKpiCard(
+            title: 'Menunggu',
+            value: '$pending',
+            subtitle: 'Perlu dikerjakan',
+            icon: Icons.pending_actions_rounded,
+            badgeColor: BkuTheme.amber,
+          ),
         ),
-        _buildStatItem(
-          'Dikumpulkan',
-          '$submitted',
-          Icons.upload_rounded,
-          AppColors.info,
+        const SizedBox(width: 8),
+        Expanded(
+          child: BkuKpiCard(
+            title: 'Dikumpulkan',
+            value: '$submitted',
+            subtitle: 'Telah diunggah',
+            icon: Icons.upload_rounded,
+            badgeColor: BkuTheme.sky,
+          ),
         ),
-        _buildStatItem(
-          'Dinilai',
-          '$graded',
-          Icons.grading_rounded,
-          AppColors.success,
+        const SizedBox(width: 8),
+        Expanded(
+          child: BkuKpiCard(
+            title: 'Dinilai',
+            value: '$graded',
+            subtitle: 'Sudah dievaluasi',
+            icon: Icons.grading_rounded,
+            badgeColor: BkuTheme.emerald,
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildStatItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            value,
-            style: AppTextStyles.titleLg.copyWith(
-              fontWeight: FontWeight.w900,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              fontSize: 9,
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 

@@ -214,13 +214,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: AppSpacing.lg, top: AppSpacing.lg),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back_ios_new_rounded,
-                                  color: context.appColors.onPrimary,
-                                ),
-                                onPressed: () {
+                              padding: const EdgeInsets.only(left: 16, top: 12),
+                              child: InkWell(
+                                onTap: () {
                                   if (_currentStep == ForgotPasswordStep.otp) {
                                     setState(
                                       () =>
@@ -237,12 +233,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     context.pop();
                                   }
                                 },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(40),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.white.withAlpha(70), width: 0.8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
 
-                          const SizedBox(height: AppSpacing.xl),
+                          const SizedBox(height: 10),
                           _buildCenteredLogo(),
+                          const SizedBox(height: AppSpacing.lg),
                           const Spacer(),
 
                           // The Card
@@ -319,58 +330,79 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Widget _buildCenteredLogo() {
     return FadeInAnimation(
-      delay: 0.2,
+      delay: 0.15,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: AppRadius.radiusXl,
+              color: Colors.white.withAlpha(28),
+              borderRadius: BorderRadius.circular(26),
+              border: Border.all(color: Colors.white.withAlpha(60), width: 1.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(25),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
-            child: ClipRRect(
-              borderRadius: AppRadius.radiusMd,
-              child: Semantics(
-                excludeSemantics: true,
-                child: Image.asset(
-                  'assets/images/icons.png',
-                  width: 65,
-                  height: 65,
-                  fit: BoxFit.contain,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: Image.asset(
+                    'assets/images/icons.png',
+                    width: 58,
+                    height: 58,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.s18),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
             'BKU Student HUB',
-            style: AppTextStyles.headlineMedium.copyWith(
-              color: context.appColors.onPrimary,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2.0,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
               shadows: [
                 Shadow(
-                  color: context.appColors.onSurface.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+                  color: Color(0x66000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Smart Campus Ecosystem',
-            style: AppTextStyles.bodySm.copyWith(
-              color: context.appColors.onPrimary.withValues(alpha: 0.9),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
-              shadows: [
-                Shadow(
-                  color: context.appColors.onSurface.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+          const SizedBox(height: 5),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 3.5),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(35),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: Colors.white.withAlpha(65), width: 0.8),
+            ),
+            child: const Text(
+              'SMART CAMPUS ECOSYSTEM',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.1,
+              ),
             ),
           ),
         ],
@@ -402,21 +434,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           height: 36,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-                color:
-                    isActive ? Theme.of(context).colorScheme.primary : context.appColors.surface,
-                border: Border.all(
-                  color:
-                      isActive
-                          ? Theme.of(context).colorScheme.primary
-                          : AppColors.neutral200,
-                  width: 2,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  stepNum.toString(),
-                  style: TextStyle(
-                    color: isActive ? context.appColors.onPrimary : AppColors.neutral400,
+            color: isActive ? context.appColors.primary : context.appColors.surface,
+            border: Border.all(
+              color: isActive ? context.appColors.primary : AppColors.neutral200,
+              width: 2,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              stepNum.toString(),
+              style: TextStyle(
+                color: isActive ? context.appColors.onPrimary : AppColors.neutral400,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -427,10 +455,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         Text(
           label,
           style: TextStyle(
-            color:
-                isActive
-                    ? Theme.of(context).colorScheme.primary
-                    : AppColors.neutral400,
+            color: isActive ? context.appColors.primary : AppColors.neutral400,
             fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
             fontSize: 12,
           ),
@@ -444,10 +469,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       width: 40,
       height: 2,
       margin: const EdgeInsets.only(bottom: AppSpacing.xl, left: AppSpacing.sm, right: AppSpacing.sm),
-      color:
-          isActive
-              ? context.appColors.primary
-              : AppColors.neutral200,
+      color: isActive ? context.appColors.primary : AppColors.neutral200,
     );
   }
 

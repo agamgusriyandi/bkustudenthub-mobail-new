@@ -1,17 +1,17 @@
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/organization_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/campus_event_schedule.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/pages/student_calendar_screen.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
-import 'package:go_router/go_router.dart';
 
 class TodayScheduleCard extends StatelessWidget {
   const TodayScheduleCard({super.key});
@@ -53,135 +53,196 @@ class TodayScheduleCard extends StatelessWidget {
     );
   }
 
+  Color _getCategoryColor(String kategori) {
+    switch (kategori.toLowerCase()) {
+      case 'kencana':
+      case 'pkkmb':
+        return AppColors.primary;
+      case 'beasiswa':
+        return AppColors.success;
+      case 'konseling':
+        return Colors.indigo;
+      case 'organisasi':
+        return Colors.amber.shade800;
+      case 'kesehatan':
+        return const Color(0xFFE11D48);
+      default:
+        return AppColors.primary;
+    }
+  }
+
+  String _getCategoryLabel(String kategori) {
+    switch (kategori.toLowerCase()) {
+      case 'kencana':
+      case 'pkkmb':
+        return 'PKKMB';
+      case 'beasiswa':
+        return 'Beasiswa';
+      case 'konseling':
+        return 'Konseling';
+      case 'organisasi':
+        return 'Organisasi';
+      case 'kesehatan':
+        return 'Kesehatan';
+      default:
+        return kategori.toUpperCase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final academic = context.watch<AcademicProvider>();
+    final orgProvider = context.watch<OrganizationProvider>();
     final events = academic.campusEvents;
+
+    final Set<String> myOrgNames = orgProvider.organizationHistory
+        .where((o) {
+          final s = o.statusVerifikasi.toLowerCase();
+          return s.contains('setuju') ||
+              s.contains('valid') ||
+              s.contains('aktif') ||
+              s == 'approved';
+        })
+        .map((o) => o.namaOrganisasi.toLowerCase().trim())
+        .where((name) => name.isNotEmpty)
+        .toSet();
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    final upcomingEvents =
-        events.where((e) {
-          final isDeadline = e.judul.toLowerCase().startsWith('deadline') ||
-              e.kategori.toLowerCase() == 'beasiswa';
-          if (isDeadline) return false;
+    final upcomingEvents = events.where((e) {
+      final isDeadline = e.judul.toLowerCase().startsWith('deadline') ||
+          e.kategori.toLowerCase() == 'beasiswa';
+      if (isDeadline) return false;
 
-          final evDate = DateTime(
-            e.tanggal.year,
-            e.tanggal.month,
-            e.tanggal.day,
-          );
-          return evDate.isAfter(today) || evDate.isAtSameMomentAs(today);
-        }).toList();
+      if (e.kategori.toLowerCase() == 'organisasi') {
+        if (myOrgNames.isEmpty) return false;
+        final eventTitle = e.judul.toLowerCase();
+        final eventDesc = e.deskripsi.toLowerCase();
+        final eventLocation = e.lokasi.toLowerCase();
+        final matchesMyOrg = myOrgNames.any((String orgName) =>
+            eventTitle.contains(orgName) ||
+            eventDesc.contains(orgName) ||
+            eventLocation.contains(orgName));
+        if (!matchesMyOrg) return false;
+      }
 
-    return BkuCard.doubleBezel(
-      padding: EdgeInsets.zero,
-      borderRadius: 24,
+      final evDate = DateTime(
+        e.tanggal.year,
+        e.tanggal.month,
+        e.tanggal.day,
+      );
+      return evDate.isAfter(today) || evDate.isAtSameMomentAs(today);
+    }).toList();
+
+    return BkuCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      borderOnly: true,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Kalender Kegiatan',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: context.appColors.outline,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      _formatDate(now),
-                      style: AppTextStyles.titleMedium.copyWith(
-                        color: AppColors.neutral800,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () => _navigateToCalendar(context),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral200,
-                      borderRadius: AppRadius.radiusXl,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_today_rounded,
-                          color: AppColors.neutral800,
-                          size: 16,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          'Lihat Jadwal',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral800,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          if (academic.isLoading && upcomingEvents.isEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BkuShimmer.text(
-                    width: double.infinity,
-                    height: 60,
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                  Text(
+                    'Kalender Kegiatan',
+                    style: AppTextStyles.caption.copyWith(
+                      color: context.appColors.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  BkuShimmer.text(width: double.infinity, height: 60),
+                  const SizedBox(height: 2),
+                  Text(
+                    _formatDate(now),
+                    style: AppTextStyles.titleSm.copyWith(
+                      color: AppColors.neutral900,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ],
               ),
+              GestureDetector(
+                onTap: () => _navigateToCalendar(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: const Color(0xFFE2E8F0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        size: 13,
+                        color: AppColors.neutral800,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Lihat Jadwal',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.neutral800,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (academic.isLoading && upcomingEvents.isEmpty) ...[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BkuShimmer.text(
+                  width: double.infinity,
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                ),
+                BkuShimmer.text(width: double.infinity, height: 50),
+              ],
             ),
           ] else if (upcomingEvents.isEmpty) ...[
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.event_available_rounded,
-                    size: 48,
-                    color: context.appColors.outline.withAlpha(100),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'Tidak ada kegiatan terdekat',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: context.appColors.outline,
-                      fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.event_available_rounded,
+                      size: 36,
+                      color: context.appColors.outline.withValues(alpha: 0.5),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Semua agenda saat ini sudah terlaksana dengan baik.',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withAlpha(180),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Tidak ada kegiatan terdekat',
+                      style: AppTextStyles.bodySm.copyWith(
+                        color: context.appColors.onSurfaceVariant,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                    const SizedBox(height: 2),
+                    Text(
+                      'Semua agenda saat ini sudah terlaksana dengan baik.',
+                      style: AppTextStyles.caption.copyWith(
+                        color: context.appColors.onSurfaceVariant.withValues(alpha: 0.7),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ] else ...[
@@ -193,7 +254,6 @@ class TodayScheduleCard extends StatelessWidget {
               return _buildScheduleItem(context, event, isOngoing: isToday);
             }),
           ],
-          const SizedBox(height: AppSpacing.md),
         ],
       ),
     );
@@ -204,255 +264,191 @@ class TodayScheduleCard extends StatelessWidget {
     CampusEventSchedule event, {
     bool isOngoing = false,
   }) {
-    final statusColor =
-        isOngoing ? AppColors.success : context.appColors.outline;
+    final categoryColor = _getCategoryColor(event.kategori);
+    final categoryLabel = _getCategoryLabel(event.kategori);
     String timeStr =
         '${event.tanggal.hour.toString().padLeft(2, '0')}:${event.tanggal.minute.toString().padLeft(2, '0')}';
     if (timeStr == '00:00') {
-      timeStr = 'Full Day';
+      timeStr = '';
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.xl,
-        vertical: AppSpacing.sm,
-      ),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isOngoing ? statusColor.withAlpha(8) : context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
+        color: context.appColors.surface,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color:
-              isOngoing
-                  ? statusColor.withAlpha(40)
-                  : AppColors.neutral200.withAlpha(150),
-          width: 1.0,
+          color: isOngoing
+              ? AppColors.primary.withValues(alpha: 0.35)
+              : const Color(0xFFE2E8F0),
         ),
-        boxShadow: [
-          BoxShadow(
-            color:
-                isOngoing
-                    ? statusColor.withAlpha(10)
-                    : context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: InkWell(
         onTap: () => _showEventDetail(context, event),
-        borderRadius: AppRadius.radiusXl,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
-            children: [
-              Container(
-                width: 5,
-                height: 40,
-                decoration: BoxDecoration(
-                  color:
-                      isOngoing
-                          ? statusColor
-                          : context.appColors.outline.withAlpha(50),
-                  borderRadius: AppRadius.radiusMd,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: categoryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    categoryLabel,
+                    style: AppTextStyles.caption.copyWith(
+                      color: categoryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          isOngoing
-                              ? 'HARI INI • $timeStr'
-                              : _formatDate(event.tanggal),
-                          style: AppTextStyles.labelSm.copyWith(
-                            color:
-                                isOngoing
-                                    ? statusColor
-                                    : context.appColors.outline,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                          ),
-                        ),
-                        if (isOngoing) ...[
-                          const SizedBox(width: AppSpacing.sm),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor,
-                              borderRadius: AppRadius.radiusSm,
-                            ),
-                              child: Text(
-                                'Sedang Berjalan',
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: context.appColors.onPrimary,
-                                fontSize: 8.5,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.s6),
-                    Text(
-                      event.judul,
-                      style: AppTextStyles.labelMd.copyWith(
-                        color: context.appColors.onSurface,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          size: 12,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.outline.withAlpha(150),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Expanded(
-                          child: Text(
-                            event.kategori,
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: context.appColors.outline,
-                              fontSize: 11,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                Text(
+                  isOngoing
+                      ? (timeStr.isNotEmpty ? 'Hari Ini • $timeStr' : 'Hari Ini')
+                      : _formatDate(event.tanggal),
+                  style: AppTextStyles.caption.copyWith(
+                    color: isOngoing
+                        ? AppColors.primary
+                        : context.appColors.onSurfaceVariant,
+                    fontWeight: isOngoing ? FontWeight.bold : FontWeight.w600,
+                    fontSize: 11,
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: context.appColors.outline.withAlpha(100),
-                size: 20,
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    event.judul,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: AppColors.neutral900,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: context.appColors.outline.withValues(alpha: 0.5),
+                  size: 18,
+                ),
+              ],
+            ),
+            if (event.lokasi.isNotEmpty || event.deskripsi.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                event.lokasi.isNotEmpty ? event.lokasi : event.deskripsi,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.appColors.onSurfaceVariant,
+                  fontSize: 11,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
-          ),
+          ],
         ),
       ),
     );
   }
 
   void _showEventDetail(BuildContext context, CampusEventSchedule event) {
-    showModalBottomSheet(
+    BkuBottomSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                    color: AppColors.neutral300,
-                    borderRadius: AppRadius.radiusXs,
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: const Icon(
+                    Icons.event_note_rounded,
+                    color: Color(0xFF475569),
+                    size: 22,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              decoration: const BoxDecoration(
-                                color: AppColors.neutral100,
-                                borderRadius: AppRadius.radiusLg,
-                              ),
-                              child: const Icon(
-                                Icons.event_note_rounded,
-                                color: AppColors.neutral600,
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.lg),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Detail Kegiatan',
-                                    style: AppTextStyles.labelSm.copyWith(
-                                      color: context.appColors.outline,
-                                    ),
-                                  ),
-                                  Text(
-                                    event.judul,
-                                    style: AppTextStyles.titleLarge.copyWith(
-                                      fontWeight: FontWeight.w900,
-                                      color: AppColors.neutral800,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Detail Kegiatan',
+                        style: AppTextStyles.caption.copyWith(
+                          color: const Color(0xFF64748B),
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-                        _buildDetailInfo(
-                          Icons.category_rounded,
-                          'Kategori',
-                          event.kategori,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        event.judul,
+                        style: AppTextStyles.titleSm.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF0F172A),
                         ),
-                        _buildDetailInfo(
-                          Icons.timer_rounded,
-                          'Waktu Pelaksanaan',
-                          _formatDate(event.tanggal),
-                        ),
-                        if (event.lokasi.isNotEmpty)
-                          _buildDetailInfo(
-                            Icons.location_on_rounded,
-                            'Lokasi',
-                            event.lokasi,
-                          ),
-                        if (event.deskripsi.isNotEmpty)
-                          _buildDetailInfo(
-                            Icons.description_rounded,
-                            'Deskripsi',
-                            event.deskripsi,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: BkuButton(
-                    onPressed: () => context.pop(),
-                    text: 'Tutup',
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: AppSpacing.lg),
+            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+            const SizedBox(height: AppSpacing.lg),
+            _buildDetailInfo(
+              Icons.category_outlined,
+              'Kategori',
+              event.kategori.toUpperCase(),
+            ),
+            _buildDetailInfo(
+              Icons.access_time_rounded,
+              'Waktu Pelaksanaan',
+              _formatDate(event.tanggal),
+            ),
+            if (event.lokasi.isNotEmpty)
+              _buildDetailInfo(
+                Icons.location_on_outlined,
+                'Lokasi',
+                event.lokasi,
+              ),
+            if (event.deskripsi.isNotEmpty)
+              _buildDetailInfo(
+                Icons.notes_rounded,
+                'Deskripsi',
+                event.deskripsi,
+              ),
+            const SizedBox(height: AppSpacing.lg),
+            SizedBox(
+              width: double.infinity,
+              height: 42,
+              child: BkuButton(
+                onPressed: () => Navigator.pop(context),
+                text: 'Tutup',
+                variant: BkuButtonVariant.secondary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

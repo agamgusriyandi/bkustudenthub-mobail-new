@@ -8,6 +8,25 @@ class ScreeningRepository {
   ScreeningRepository({ApiClient? apiClient})
       : _apiClient = apiClient ?? ApiClient();
 
+  Future<List<SelfScreeningIntake>> getMyScreenings() async {
+    try {
+      final response = await _apiClient.client.get(
+        '/mahasiswa/self-screening',
+      );
+
+      final data = response.data['data'];
+      if (data is List) {
+        return data
+            .map((item) => SelfScreeningIntake.fromJson(item as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      log('Error fetching my screenings: $e');
+      throw Exception('Gagal memuat riwayat screening');
+    }
+  }
+
   Future<ScreeningResult?> getLatestScreening() async {
     try {
       final response = await _apiClient.client.get(
@@ -16,6 +35,10 @@ class ScreeningRepository {
 
       final data = response.data['data'];
       if (data == null) return null;
+      if (data is List) {
+        if (data.isEmpty) return null;
+        return ScreeningResult.fromJson(data.first as Map<String, dynamic>);
+      }
 
       return ScreeningResult.fromJson(data as Map<String, dynamic>);
     } catch (e) {
@@ -24,17 +47,45 @@ class ScreeningRepository {
     }
   }
 
+  Future<SelfScreeningIntake> createClinicalScreening({
+    required String keluhanUtama,
+    required int skalaNyeri,
+    String alergiObat = '',
+    String konsumsiObat = '',
+    int? bookingId,
+  }) async {
+    try {
+      final response = await _apiClient.client.post(
+        '/mahasiswa/self-screening',
+        data: {
+          if (bookingId != null) 'booking_id': bookingId,
+          'keluhan_utama': keluhanUtama,
+          'skala_nyeri': skalaNyeri,
+          'alergi_obat': alergiObat,
+          'konsumsi_obat': konsumsiObat,
+        },
+      );
+
+      final data = response.data['data'];
+      return SelfScreeningIntake.fromJson(data as Map<String, dynamic>);
+    } catch (e) {
+      log('Error creating clinical screening: $e');
+      throw Exception('Gagal mengirim data screening');
+    }
+  }
+
   Future<ScreeningResult> submitScreening({
     required List<bool> answers,
   }) async {
     try {
+      final yesCount = answers.where((a) => a == true).length;
       final response = await _apiClient.client.post(
-        '/mahasiswa/self-screening/submit',
+        '/mahasiswa/self-screening',
         data: {
-          'answers': answers.asMap().entries.map((entry) => {
-            'question_id': entry.key + 1,
-            'answer': entry.value ? 'yes' : 'no',
-          }).toList(),
+          'keluhan_utama': 'Self-screening Mandiri ($yesCount/20 gejala terdeteksi)',
+          'skala_nyeri': (yesCount / 2).round().clamp(0, 10),
+          'alergi_obat': '-',
+          'konsumsi_obat': '-',
         },
       );
 

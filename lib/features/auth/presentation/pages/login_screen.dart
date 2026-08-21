@@ -203,14 +203,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    BkuTheme.primary.withValues(alpha: 0.82),
-                    BkuTheme.primaryDark.withValues(alpha: 0.94),
+                    BkuTheme.primary.withAlpha(140),
+                    BkuTheme.primary.withAlpha(217),
                   ],
                 ),
               ),
             ),
           ),
           SafeArea(
+            bottom: false,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
@@ -219,129 +220,128 @@ class _LoginScreenState extends State<LoginScreen> {
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(height: constraints.maxHeight * 0.1),
-                            _buildCenteredLogo(),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 480),
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: BkuTheme.cardSurface,
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(28),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(30),
-                                    blurRadius: 32,
-                                    offset: const Offset(0, -12),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: AppSpacing.lg),
+                          _buildCenteredLogo(),
+                          const SizedBox(height: AppSpacing.lg),
+                          const Spacer(),
+                          Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 480),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: BkuTheme.cardSurface,
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(28),
                                   ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 14),
-                                  Center(
-                                    child: Container(
-                                      width: 40,
-                                      height: 4,
-                                      decoration: BoxDecoration(
-                                        color: BkuTheme.border,
-                                        borderRadius: BorderRadius.circular(2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(30),
+                                      blurRadius: 32,
+                                      offset: const Offset(0, -12),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 12),
+                                    Center(
+                                      child: Container(
+                                        width: 40,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: BkuTheme.border,
+                                          borderRadius: BorderRadius.circular(2),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        FadeInAnimation(
-                                          delay: 0.2,
-                                          child: Text(
-                                            'Selamat Datang',
-                                            style: BkuTheme.textPageTitle.copyWith(
-                                              fontSize: 22,
-                                              letterSpacing: -0.3,
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          FadeInAnimation(
+                                            delay: 0.2,
+                                            child: Text(
+                                              'Selamat Datang',
+                                              style: BkuTheme.textPageTitle.copyWith(
+                                                fontSize: 21,
+                                                letterSpacing: -0.3,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        FadeInAnimation(
-                                          delay: 0.25,
-                                          child: Text(
-                                            'Silakan masuk ke akun Anda',
-                                            style: BkuTheme.textCardSubtitle,
+                                          const SizedBox(height: 2),
+                                          FadeInAnimation(
+                                            delay: 0.25,
+                                            child: Text(
+                                              'Silakan masuk ke akun Anda',
+                                              style: BkuTheme.textCardSubtitle,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: AppSpacing.xl),
-                                        FadeInAnimation(
-                                          delay: 0.3,
-                                          child: _buildTextField(
-                                            label: 'NIM / Email',
-                                            placeholder: 'Masukkan NIM atau email',
-                                            icon: Icons.person_outline_rounded,
-                                            controller: _usernameController,
+                                          const SizedBox(height: AppSpacing.lg),
+                                          FadeInAnimation(
+                                            delay: 0.3,
+                                            child: _buildTextField(
+                                              label: 'NIM / Email',
+                                              placeholder: 'Masukkan NIM atau email',
+                                              icon: Icons.person_outline_rounded,
+                                              controller: _usernameController,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: AppSpacing.md),
-                                        FadeInAnimation(
-                                          delay: 0.35,
-                                          child: _buildTextField(
-                                            label: 'Kata Sandi',
-                                            placeholder: 'Masukkan kata sandi',
-                                            icon: Icons.lock_outline_rounded,
-                                            isPassword: true,
-                                            controller: _passwordController,
+                                          const SizedBox(height: AppSpacing.md),
+                                          FadeInAnimation(
+                                            delay: 0.35,
+                                            child: _buildTextField(
+                                              label: 'Kata Sandi',
+                                              placeholder: 'Masukkan kata sandi',
+                                              icon: Icons.lock_outline_rounded,
+                                              isPassword: true,
+                                              controller: _passwordController,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        FadeInAnimation(
-                                          delay: 0.4,
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: TextButton(
-                                              onPressed: () => context.push(AppRoutes.forgotPassword),
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: BkuTheme.primary,
-                                                padding: EdgeInsets.zero,
-                                                minimumSize: Size.zero,
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              ),
-                                              child: Text(
-                                                'Lupa Sandi?',
-                                                style: BkuTheme.textButton.copyWith(
-                                                  color: BkuTheme.primary,
-                                                  fontSize: 12,
+                                          const SizedBox(height: 6),
+                                          FadeInAnimation(
+                                            delay: 0.4,
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: TextButton(
+                                                onPressed: () => context.push(AppRoutes.forgotPassword),
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor: const Color(0xFF475569),
+                                                  padding: EdgeInsets.zero,
+                                                  minimumSize: Size.zero,
+                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                ),
+                                                child: Text(
+                                                  'Lupa Sandi?',
+                                                  style: BkuTheme.textButton.copyWith(
+                                                    color: const Color(0xFF475569),
+                                                    fontSize: 12.5,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: AppSpacing.lg),
-                                        FadeInAnimation(
-                                          delay: 0.45,
-                                          child: _buildLoginButton(),
-                                        ),
-                                        const SizedBox(height: AppSpacing.lg),
-                                      ],
+                                          const SizedBox(height: AppSpacing.lg),
+                                          FadeInAnimation(
+                                            delay: 0.45,
+                                            child: _buildLoginButton(),
+                                          ),
+                                          const SizedBox(height: AppSpacing.lg),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -357,70 +357,76 @@ class _LoginScreenState extends State<LoginScreen> {
     return FadeInAnimation(
       delay: 0.15,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(25),
+              color: Colors.white.withAlpha(28),
               borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: Colors.white.withAlpha(50), width: 0.8),
+              border: Border.all(color: Colors.white.withAlpha(60), width: 1.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(20),
+                  color: Colors.black.withAlpha(25),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
               ],
             ),
             child: Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(22),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 child: Semantics(
                   excludeSemantics: true,
                   child: Image.asset(
                     'assets/images/icons.png',
-                    width: 56,
-                    height: 56,
+                    width: 58,
+                    height: 58,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 14),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
             'BKU Student HUB',
-            style: BkuTheme.textPageTitle.copyWith(
+            textAlign: TextAlign.center,
+            style: TextStyle(
               color: Colors.white,
               fontSize: 22,
-              letterSpacing: 1.2,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
               shadows: [
                 Shadow(
-                  color: Colors.black.withAlpha(60),
+                  color: Color(0x66000000),
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 5),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 3.5),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(30),
-              borderRadius: BkuTheme.rPill,
-              border: Border.all(color: Colors.white.withAlpha(50), width: 0.5),
+              color: Colors.white.withAlpha(35),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: Colors.white.withAlpha(65), width: 0.8),
             ),
-            child: Text(
+            child: const Text(
               'SMART CAMPUS ECOSYSTEM',
-              style: BkuTheme.textBadge.copyWith(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 9.5,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.1,
               ),
             ),
           ),

@@ -253,7 +253,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 title: 'Tipe & Informasi Utama Pengajuan',
                 subtitle: 'Pilih kategori laporan prestasi dan isi nama kegiatan yang diikuti',
                 children: [
-                  _buildUppercaseLabel('TIPE PENGAJUAN', required: true),
+                  _buildUppercaseLabel('Tipe Pengajuan', required: true),
                   _buildDropdown(
                     items: _tipeLabels.keys.toList(),
                     itemLabels: _tipeLabels,
@@ -264,16 +264,16 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
 
-                  _buildUppercaseLabel('TERKAIT ORGANISASI MAHASISWA (OPSIONAL)'),
+                  _buildUppercaseLabel('Terkait Organisasi Mahasiswa (Opsional)'),
                   _buildOrgDropdown(),
                   const SizedBox(height: AppSpacing.md),
 
                   _buildUppercaseLabel(
                     _selectedTipe == 'Sertifikasi'
-                        ? 'NAMA SERTIFIKASI'
+                        ? 'Nama Sertifikasi'
                         : _selectedTipe == 'Rekognisi'
-                            ? 'NAMA REKOGNISI'
-                            : 'NAMA LOMBA / KEGIATAN',
+                            ? 'Nama Rekognisi'
+                            : 'Nama Lomba / Kegiatan',
                     required: true,
                   ),
                   BkuTextField(
@@ -286,7 +286,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   const SizedBox(height: AppSpacing.md),
 
                   if (_selectedTipe == 'Prestasi Mandiri') ...[
-                    _buildUppercaseLabel('KATEGORI PRESTASI', required: true),
+                    _buildUppercaseLabel('Kategori Prestasi', required: true),
                     _buildDropdown(
                       items: _kategoriLabels.keys.toList(),
                       itemLabels: _kategoriLabels,
@@ -296,7 +296,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       },
                     ),
                   ] else if (_selectedTipe == 'Rekognisi') ...[
-                    _buildUppercaseLabel('JENIS REKOGNISI', required: true),
+                    _buildUppercaseLabel('Jenis Rekognisi', required: true),
                     _buildDropdown(
                       items: _rekognisiLabels.keys.toList(),
                       itemLabels: _rekognisiLabels,
@@ -315,7 +315,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 title: 'Tingkat & Hasil Capaian',
                 subtitle: 'Skop pelaksanaan kejuaraan, instansi penyelenggara, dan hasil yang diraih',
                 children: [
-                  _buildUppercaseLabel('TINGKAT PELAKSANAAN', required: true),
+                  _buildUppercaseLabel('Tingkat Pelaksanaan', required: true),
                   _buildDropdown(
                     items: _tingkatLabels.keys.toList(),
                     itemLabels: _tingkatLabels,
@@ -326,7 +326,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
 
-                  _buildUppercaseLabel('PENYELENGGARA', required: true),
+                  _buildUppercaseLabel('Penyelenggara', required: true),
                   BkuTextField(
                     controller: _organizerController,
                     hint: 'Contoh: Kemendikbudristek / Pusprestnas / Universitas X',
@@ -334,12 +334,12 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
 
-                  _buildUppercaseLabel('TANGGAL PELAKSANAAN', required: true),
+                  _buildUppercaseLabel('Tanggal Pelaksanaan', required: true),
                   _buildDatePicker(),
                   const SizedBox(height: AppSpacing.md),
 
                   if (_selectedTipe == 'Prestasi Mandiri') ...[
-                    _buildUppercaseLabel('PERINGKAT DIRAIH', required: true),
+                    _buildUppercaseLabel('Peringkat Diraih', required: true),
                     _buildDropdown(
                       items: _peringkatLabels.keys.toList(),
                       itemLabels: _peringkatLabels,
@@ -349,7 +349,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       },
                     ),
                   ] else if (_selectedTipe == 'Pengajuan Dana') ...[
-                    _buildUppercaseLabel('DANA YANG DIAJUKAN (RP)', required: true),
+                    _buildUppercaseLabel('Dana yang Diajukan (Rp)', required: true),
                     BkuTextField(
                       controller: _danaDiajukanController,
                       hint: 'Contoh: 1500000',
@@ -362,7 +362,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    _buildUppercaseLabel('KETERANGAN KEBUTUHAN DANA'),
+                    _buildUppercaseLabel('Keterangan Kebutuhan Dana'),
                     BkuTextField(
                       controller: _keteranganController,
                       hint: 'Jelaskan estimasi rincian biaya pendaftaran, akomodasi, dll.',
@@ -460,7 +460,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
 
-                    _buildUppercaseLabel('DOSEN PEMBIMBING LOMBA / KEGIATAN', optionalText: '(PILIH DARI DIREKTORI AKADEMIK)'),
+                    _buildUppercaseLabel('Dosen Pembimbing Lomba / Kegiatan', optionalText: '(Pilih dari direktori akademik)'),
                     _buildDosenInlineSelector(),
                   ],
                 ),
@@ -473,7 +473,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                 subtitle: 'Unggah berkas bukti keabsahan prestasi dalam format PDF, JPG, atau PNG (Maks. 5MB)',
                 children: [
                   _buildUppercaseLabel(
-                    _selectedTipe == 'Pengajuan Dana' ? 'UPLOAD PROPOSAL / DOKUMEN PENDUKUNG' : 'UPLOAD SERTIFIKAT / BUKTI PRESTASI',
+                    _selectedTipe == 'Pengajuan Dana' ? 'Upload Proposal / Dokumen Pendukung' : 'Upload Sertifikat / Bukti Prestasi',
                     required: !isEditing,
                   ),
                   _buildUploadBox(
@@ -488,8 +488,8 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                   const SizedBox(height: AppSpacing.md),
 
                   _buildUppercaseLabel(
-                    'UPLOAD SURAT TUGAS DOSEN PEMBIMBING',
-                    optionalText: '(SK / SURAT TUGAS)',
+                    'Upload Surat Tugas Dosen Pembimbing',
+                    optionalText: '(SK / Surat Tugas)',
                   ),
                   _buildUploadBox(
                     fileName: _selectedSuratTugasName,
@@ -597,22 +597,21 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
       child: RichText(
         text: TextSpan(
           text: text,
-          style: BkuTheme.textCardSubtitle.copyWith(
-            fontWeight: FontWeight.w800,
-            color: BkuTheme.textHeading,
-            fontSize: 11,
-            letterSpacing: 0.5,
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF0F172A),
+            fontSize: 12,
           ),
           children: [
             if (required)
               const TextSpan(
                 text: ' *',
-                style: TextStyle(color: BkuTheme.rose, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
               ),
             if (optionalText != null)
               TextSpan(
                 text: ' $optionalText',
-                style: const TextStyle(color: BkuTheme.textMuted, fontWeight: FontWeight.normal, fontSize: 10),
+                style: const TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.normal, fontSize: 11),
               ),
           ],
         ),
@@ -792,6 +791,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                       final name = d['nama_dosen'] ?? d['nama'] ?? d['Nama'] ?? '';
                       final nidn = d['nidn'] ?? d['NIDN'] ?? '';
                       return Container(
+                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 70),
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: BkuTheme.amberSoft,
@@ -801,11 +801,15 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              name,
-                              style: BkuTheme.textBadge.copyWith(
-                                color: BkuTheme.amber,
-                                fontSize: 11,
+                            Flexible(
+                              child: Text(
+                                name,
+                                style: BkuTheme.textBadge.copyWith(
+                                  color: BkuTheme.amber,
+                                  fontSize: 11,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             if (nidn.isNotEmpty) ...[
@@ -833,7 +837,7 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             onTap: () => setState(() => _isDosenListOpen = !_isDosenListOpen),
             borderRadius: BkuTheme.r12,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: BkuTheme.scaffoldBg,
                 borderRadius: BkuTheme.r12,
@@ -841,24 +845,34 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.person_search_rounded, color: BkuTheme.amber, size: 18),
+                  Icon(Icons.person_search_rounded, color: BkuTheme.primary, size: 18),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    _isDosenListOpen ? 'Sembunyikan Daftar Dosen' : 'Tampilkan / Cari Daftar Dosen Pembimbing',
-                    style: BkuTheme.textCardTitle.copyWith(fontSize: 12),
+                  Expanded(
+                    child: Text(
+                      _isDosenListOpen ? 'Sembunyikan Daftar Dosen' : 'Tampilkan / Cari Daftar Dosen',
+                      style: BkuTheme.textCardTitle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: AppSpacing.xs),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
                       color: BkuTheme.cardSurface,
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: BkuTheme.borderSubtle),
                     ),
                     child: Text(
-                      '${_dosenOptions.length} DOSEN TERSEDIA',
+                      '${_dosenOptions.length} Dosen',
                       style: BkuTheme.textCaption.copyWith(fontSize: 9.5, fontWeight: FontWeight.w800),
                     ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    _isDosenListOpen ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: BkuTheme.textMuted,
                   ),
                 ],
               ),
@@ -962,15 +976,15 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BkuTheme.r16,
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
         decoration: BoxDecoration(
-          color: hasAnyFile ? (isBlue ? BkuTheme.primarySoft : BkuTheme.emeraldSoft) : BkuTheme.scaffoldBg,
-          borderRadius: BkuTheme.r16,
+          color: hasAnyFile ? const Color(0xFFF0FDF4) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: hasAnyFile ? (isBlue ? BkuTheme.primaryBorder : BkuTheme.emeraldBorder) : BkuTheme.border,
+            color: hasAnyFile ? const Color(0xFFBBF7D0) : const Color(0xFFE2E8F0),
             width: 1.5,
           ),
         ),
@@ -979,29 +993,31 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isBlue ? Colors.blue.withAlpha(30) : BkuTheme.primarySoft,
+                color: hasAnyFile ? const Color(0xFFDCFCE7) : const Color(0xFFF1F5F9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                hasAnyFile ? Icons.check_circle_rounded : (isBlue ? Icons.description_rounded : Icons.cloud_upload_rounded),
+                hasAnyFile
+                    ? Icons.check_circle_rounded
+                    : (isBlue ? Icons.description_rounded : Icons.cloud_upload_rounded),
                 size: 26,
-                color: hasAnyFile ? (isBlue ? BkuTheme.primary : BkuTheme.emerald) : (isBlue ? Colors.blue : BkuTheme.primary),
+                color: hasAnyFile ? const Color(0xFF16A34A) : const Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               fileName ?? (hasExistingFile ? 'Berkas sudah terunggah di server' : hint),
-              style: BkuTheme.textCardTitle.copyWith(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: hasAnyFile ? (isBlue ? BkuTheme.primaryDark : BkuTheme.emerald) : BkuTheme.textHeading,
+                color: hasAnyFile ? const Color(0xFF16A34A) : const Color(0xFF0F172A),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               hasAnyFile ? 'Ketuk untuk mengganti berkas lampiran' : subHint,
-              style: BkuTheme.textCaption.copyWith(fontSize: 10.5, color: BkuTheme.textMuted),
+              style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
               textAlign: TextAlign.center,
             ),
             if (hasExistingFile && !hasNewFile && existingUrl != null && existingUrl.isNotEmpty) ...[
@@ -1013,10 +1029,10 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   }
                 },
-                child: Text(
+                child: const Text(
                   'Lihat Berkas Server Saat Ini',
                   style: TextStyle(
-                    color: BkuTheme.primary,
+                    color: Color(0xFF0284C7),
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     decoration: TextDecoration.underline,
@@ -1035,22 +1051,45 @@ class _ReportAchievementScreenState extends State<ReportAchievementScreen> {
 
     BkuBottomSheet.show(
       context: context,
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: isSuratTugas ? 'Pilih Surat Tugas Pembimbing' : 'Pilih Sertifikat / Bukti Prestasi',
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 4),
           ListTile(
-            leading: Icon(Icons.camera_alt_rounded, color: BkuTheme.primary),
-            title: Text('Ambil Foto Kamera', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.camera_alt_rounded, color: Color(0xFF475569), size: 20),
+            ),
+            title: const Text(
+              'Ambil Foto Kamera',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+            ),
             onTap: () {
               Navigator.pop(context);
               _pickCamera(isSuratTugas: isSuratTugas);
             },
           ),
           ListTile(
-            leading: Icon(Icons.folder_rounded, color: BkuTheme.primary),
-            title: Text('Pilih Berkas / PDF / Gambar', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.folder_rounded, color: Color(0xFF475569), size: 20),
+            ),
+            title: const Text(
+              'Pilih Berkas / PDF / Gambar',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+            ),
             onTap: () {
               Navigator.pop(context);
               _pickFiles(isSuratTugas: isSuratTugas);

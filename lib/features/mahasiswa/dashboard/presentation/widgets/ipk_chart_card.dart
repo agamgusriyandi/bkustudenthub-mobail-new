@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
@@ -41,9 +39,10 @@ class IpkChartCard extends StatelessWidget {
       spots.add(FlSpot(semester.toDouble(), ipk));
     }
 
-    return BkuCard.doubleBezel(
+    return BkuCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
-      borderRadius: 24,
+      borderRadius: 20,
+      borderOnly: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -55,16 +54,17 @@ class IpkChartCard extends StatelessWidget {
                 children: [
                   Text(
                     'Perkembangan Akademik',
-                    style: AppTextStyles.eyebrowSmall.copyWith(
-                      color: context.appColors.outline,
+                    style: AppTextStyles.caption.copyWith(
+                      color: const Color(0xFF64748B),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: 4),
                   Text(
                     'IPK Terkini: ${ipk.toStringAsFixed(2)}',
-                    style: AppTextStyles.titleLarge.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: context.appColors.onSurface,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF0F172A),
                     ),
                   ),
                 ],
@@ -75,24 +75,24 @@ class IpkChartCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: context.appColors.primary.withAlpha(20),
+                  color: const Color(0xFFEFF6FF),
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: context.appColors.primary.withAlpha(40),
-                    width: 0.8,
+                    color: const Color(0xFFDBEAFE),
+                    width: 1,
                   ),
                 ),
                 child: Text(
                   'Semester $semester',
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.primary,
-                    fontWeight: FontWeight.w700,
+                  style: AppTextStyles.caption.copyWith(
+                    color: const Color(0xFF1D4ED8),
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             height: 150,
             child: LineChart(
@@ -101,15 +101,15 @@ class IpkChartCard extends StatelessWidget {
                 borderData: FlBorderData(show: false),
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (spot) => context.appColors.onSurface.withValues(alpha: 0.9),
+                    getTooltipColor: (spot) => const Color(0xFF1E293B),
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((touchedSpot) {
                         return LineTooltipItem(
-                          touchedSpot.y.toStringAsFixed(2),
-                          TextStyle(
-                            color: context.appColors.surface,
+                          'IPK ${touchedSpot.y.toStringAsFixed(2)}',
+                          const TextStyle(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                         );
                       }).toList();
@@ -122,14 +122,14 @@ class IpkChartCard extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 32,
+                      reservedSize: 28,
                       getTitlesWidget: (value, meta) {
                         if (value == 4.0 || value == 3.0 || value == 2.0 || value == 1.0) {
                           return Text(
                             value.toStringAsFixed(1),
-                            style: AppTextStyles.labelSm.copyWith(
-                              fontSize: 9,
-                              color: AppColors.neutral500,
+                            style: AppTextStyles.caption.copyWith(
+                              fontSize: 10,
+                              color: const Color(0xFF94A3B8),
                               fontWeight: FontWeight.bold,
                             ),
                           );
@@ -146,9 +146,9 @@ class IpkChartCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             'Sem ${value.toInt()}',
-                            style: AppTextStyles.labelSm.copyWith(
-                              fontSize: 9,
-                              color: AppColors.neutral600,
+                            style: AppTextStyles.caption.copyWith(
+                              fontSize: 10,
+                              color: const Color(0xFF64748B),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -165,12 +165,29 @@ class IpkChartCard extends StatelessWidget {
                     spots: spots,
                     isCurved: true,
                     curveSmoothness: 0.35,
-                    barWidth: 3,
-                    color: context.appColors.primary,
-                    dotData: const FlDotData(show: true),
+                    barWidth: 2.8,
+                    color: const Color(0xFF2563EB),
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 3.5,
+                          color: Colors.white,
+                          strokeWidth: 2,
+                          strokeColor: const Color(0xFF2563EB),
+                        );
+                      },
+                    ),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: context.appColors.primary.withValues(alpha: 0.1),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          const Color(0xFF3B82F6).withValues(alpha: 0.22),
+                          const Color(0xFF3B82F6).withValues(alpha: 0.0),
+                        ],
+                      ),
                     ),
                   ),
                 ],

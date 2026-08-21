@@ -41,17 +41,55 @@ class SelfScreeningProvider extends ChangeNotifier {
   ScreeningLevel get calculatedLevel =>
       ScreeningResult.calculateLevel(calculatedScore);
 
+  List<SelfScreeningIntake> _myScreenings = [];
+  List<SelfScreeningIntake> get myScreenings => _myScreenings;
+
   Future<void> loadLatestScreening() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _latestResult = await _repository.getLatestScreening();
+      final results = await Future.wait([
+        _repository.getLatestScreening().catchError((_) => null),
+        _repository.getMyScreenings().catchError((_) => <SelfScreeningIntake>[]),
+      ]);
+      _latestResult = results[0] as ScreeningResult?;
+      _myScreenings = results[1] as List<SelfScreeningIntake>;
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> submitClinicalScreening({
+    required String keluhanUtama,
+    required int skalaNyeri,
+    String alergiObat = '',
+    String konsumsiObat = '',
+    int? bookingId,
+  }) async {
+    _isSubmitting = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final created = await _repository.createClinicalScreening(
+        keluhanUtama: keluhanUtama,
+        skalaNyeri: skalaNyeri,
+        alergiObat: alergiObat,
+        konsumsiObat: konsumsiObat,
+        bookingId: bookingId,
+      );
+      _myScreenings.insert(0, created);
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
+      _isSubmitting = false;
       notifyListeners();
     }
   }

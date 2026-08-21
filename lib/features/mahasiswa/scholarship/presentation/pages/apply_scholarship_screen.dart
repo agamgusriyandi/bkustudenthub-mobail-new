@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dropdown.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
@@ -18,6 +17,7 @@ import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/pages/scholarship_application_detail_screen.dart';
 
 class ApplyScholarshipScreen extends StatefulWidget {
   final Scholarship scholarship;
@@ -44,6 +44,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
   final Map<String, String> _rubrikAnswers = {};
   final Map<String, dynamic> _customAnswers = {};
   final Map<String, TextEditingController> _customTextControllers = {};
+  final Map<String, String> _customFilePaths = {};
+  final Map<String, String> _customFileNames = {};
 
   List<dynamic> _customFields = [];
   List<dynamic> _rubrikComponents = [];
@@ -118,16 +120,16 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
 
   List<Map<String, dynamic>> get _stagesList {
     final list = <Map<String, dynamic>>[
-      {'index': 1, 'label': '1. Motivasi & Esai'},
-      {'index': 2, 'label': '2. Berkas Wajib'},
+      {'index': 1, 'label': '1. MOTIVASI'},
+      {'index': 2, 'label': '2. UPLOAD BERKAS'},
     ];
     if (_hasRubrik) {
-      list.add({'index': list.length + 1, 'label': '${list.length + 1}. Kriteria Rubrik'});
+      list.add({'index': list.length + 1, 'label': '${list.length + 1}. KRITERIA RUBRIK'});
     }
     if (_hasCustomFields) {
-      list.add({'index': list.length + 1, 'label': '${list.length + 1}. Syarat Khusus'});
+      list.add({'index': list.length + 1, 'label': '${list.length + 1}. SYARAT KHUSUS ADMIN'});
     }
-    list.add({'index': list.length + 1, 'label': '${list.length + 1}. Konfirmasi'});
+    list.add({'index': list.length + 1, 'label': '${list.length + 1}. KONFIRMASI & KIRIM'});
     return list;
   }
 
@@ -192,39 +194,93 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
 
   Widget _buildStageHeader() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: BkuTheme.cardSurface,
-        borderRadius: BkuTheme.r16,
-        border: Border.all(color: BkuTheme.border),
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 12,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Langkah $_currentStep dari $_totalSteps',
-                style: BkuTheme.textCardTitle.copyWith(fontSize: 13, fontWeight: FontWeight.w800),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        const Text(
+                          'Formulir Pendaftaran Beasiswa',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF0F172A),
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                          ),
+                          child: const Text(
+                            'Draft Otomatis Tersimpan',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF475569),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    const Text(
+                      'Lengkapi langkah berikut untuk mengajukan pendaftaran resmi.',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                '${((_currentStep / _totalSteps) * 100).toInt()}% Selesai',
-                style: BkuTheme.textCaption.copyWith(color: BkuTheme.primary, fontWeight: FontWeight.w700),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Text(
+                  'Langkah $_currentStep dari $_totalSteps',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF334155),
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: _currentStep / _totalSteps,
-              backgroundColor: BkuTheme.borderSubtle,
-              valueColor: AlwaysStoppedAnimation<Color>(BkuTheme.primary),
-              minHeight: 6,
-            ),
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -235,26 +291,27 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     decoration: BoxDecoration(
                       color: isCurrent
-                          ? BkuTheme.primarySoft
-                          : (isDone ? BkuTheme.emeraldSoft : BkuTheme.scaffoldBg),
-                      borderRadius: BorderRadius.circular(8),
+                          ? const Color(0xFF0F172A)
+                          : (isDone ? const Color(0xFFECFDF5) : const Color(0xFFF8FAFC)),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isCurrent
-                            ? BkuTheme.primaryBorder
-                            : (isDone ? BkuTheme.emeraldBorder : BkuTheme.borderSubtle),
+                            ? const Color(0xFF0F172A)
+                            : (isDone ? const Color(0xFFA7F3D0) : const Color(0xFFE2E8F0)),
                       ),
                     ),
                     child: Text(
                       stage['label'],
                       style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: isCurrent || isDone ? FontWeight.w700 : FontWeight.w500,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.2,
                         color: isCurrent
-                            ? BkuTheme.primary
-                            : (isDone ? BkuTheme.emerald : BkuTheme.textMuted),
+                            ? Colors.white
+                            : (isDone ? const Color(0xFF059669) : const Color(0xFF94A3B8)),
                       ),
                     ),
                   ),
@@ -450,45 +507,175 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
   }
 
   Widget _buildStep4CustomFields() {
-    return _buildCardWrapper(
-      stepNumber: _hasRubrik ? '4' : '3',
-      title: 'Syarat Khusus Penyelenggara',
-      subtitle: 'Lengkapi informasi tambahan yang diminta secara khusus oleh pengelola program.',
-      children: [
-        ..._customFields.map((field) {
-          if (field is! Map) return const SizedBox.shrink();
-          final label = (field['label'] ?? field['name'] ?? 'Pertanyaan').toString();
-          final isReq = field['required'] == true || field['wajib'] == true;
-          final type = (field['type'] ?? 'text').toString().toLowerCase();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r20,
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x06000000),
+            blurRadius: 12,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.assignment_outlined, size: 18, color: Color(0xFF0F172A)),
+              SizedBox(width: 8),
+              Text(
+                'PERSYARATAN & ISIAN KHUSUS ADMIN',
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ..._customFields.map((field) {
+            if (field is! Map) return const SizedBox.shrink();
+            final label = (field['label'] ?? field['name'] ?? 'Pertanyaan').toString();
+            final isReq = field['required'] == true || field['wajib'] == true;
+            final type = (field['type'] ?? 'text').toString().toLowerCase();
 
-          return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildLabel(label, required: isReq),
-                if (type == 'dropdown' || type == 'select') ...[
-                  _buildDropdown(
-                    items: (field['options'] as List?)?.map((e) => e.toString()).toList() ?? ['Ya', 'Tidak'],
-                    itemLabels: {for (var o in (field['options'] as List? ?? ['Ya', 'Tidak'])) o.toString(): o.toString()},
-                    value: _customAnswers[label] ?? ((field['options'] as List?)?.first.toString() ?? 'Ya'),
-                    onChanged: (val) {
-                      if (val != null) setState(() => _customAnswers[label] = val);
-                    },
-                  ),
-                ] else ...[
-                  BkuTextField(
-                    controller: _customTextControllers[label],
-                    hint: 'Jawaban Anda...',
-                    keyboardType: type == 'number' ? TextInputType.number : TextInputType.text,
-                    onChanged: (val) => _customAnswers[label] = val,
-                  ),
-                ],
-              ],
-            ),
-          );
-        }),
-      ],
+            final bool isFileField = type == 'file' ||
+                type == 'upload' ||
+                type == 'document' ||
+                label.toLowerCase().contains('cv') ||
+                label.toLowerCase().contains('berkas') ||
+                label.toLowerCase().contains('dokumen') ||
+                label.toLowerCase().contains('file') ||
+                label.toLowerCase().contains('portofolio') ||
+                label.toLowerCase().contains('surat') ||
+                label.toLowerCase().contains('sertifikat') ||
+                label.toLowerCase().contains('sktm') ||
+                label.toLowerCase().contains('ktp') ||
+                label.toLowerCase().contains('kk') ||
+                label.toLowerCase().contains('sk');
+
+            final String? uploadedFile = _customFileNames[label] ??
+                (_customAnswers[label] is String && (_customAnswers[label] as String).isNotEmpty
+                    ? (_customAnswers[label] as String).split('/').last
+                    : null);
+            final bool hasFile = uploadedFile != null && uploadedFile.isNotEmpty;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel(label, required: isReq),
+                    const SizedBox(height: 6),
+                    if (isFileField) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () => _pickCustomFile(label),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: hasFile ? const Color(0xFFECFDF5) : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: hasFile ? const Color(0xFFA7F3D0) : const Color(0xFFCBD5E1),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      hasFile ? Icons.check_circle_rounded : Icons.upload_file_rounded,
+                                      size: 16,
+                                      color: hasFile ? const Color(0xFF059669) : const Color(0xFF475569),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        hasFile ? uploadedFile : 'Upload Berkas...',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: hasFile ? const Color(0xFF065F46) : const Color(0xFF334155),
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (hasFile) ...[
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Terunggah',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF059669),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _customFileNames.remove(label);
+                                  _customFilePaths.remove(label);
+                                  _customAnswers.remove(label);
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Icon(Icons.close_rounded, size: 16, color: Color(0xFF94A3B8)),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ] else if (type == 'dropdown' || type == 'select') ...[
+                      _buildDropdown(
+                        items: (field['options'] as List?)?.map((e) => e.toString()).toList() ?? ['Ya', 'Tidak'],
+                        itemLabels: {for (var o in (field['options'] as List? ?? ['Ya', 'Tidak'])) o.toString(): o.toString()},
+                        value: _customAnswers[label] ?? ((field['options'] as List?)?.first.toString() ?? 'Ya'),
+                        onChanged: (val) {
+                          if (val != null) setState(() => _customAnswers[label] = val);
+                        },
+                      ),
+                    ] else ...[
+                      BkuTextField(
+                        controller: _customTextControllers[label],
+                        hint: 'Jawaban Anda...',
+                        keyboardType: type == 'number' ? TextInputType.number : TextInputType.text,
+                        onChanged: (val) => _customAnswers[label] = val,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 
@@ -605,14 +792,15 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: badgeBg ?? BkuTheme.primarySoft,
+                  color: badgeBg ?? const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
                 child: Center(
                   child: Text(
                     stepNumber,
                     style: TextStyle(
-                      color: badgeColor ?? BkuTheme.primary,
+                      color: badgeColor ?? const Color(0xFF0F172A),
                       fontSize: 15,
                       fontWeight: FontWeight.w800,
                     ),
@@ -704,10 +892,10 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
         decoration: BoxDecoration(
-          color: hasFile ? BkuTheme.emeraldSoft : BkuTheme.scaffoldBg,
+          color: hasFile ? const Color(0xFFECFDF5) : const Color(0xFFF8FAFC),
           borderRadius: BkuTheme.r16,
           border: Border.all(
-            color: hasFile ? BkuTheme.emeraldBorder : BkuTheme.border,
+            color: hasFile ? const Color(0xFFA7F3D0) : const Color(0xFFE2E8F0),
           ),
         ),
         child: Row(
@@ -715,13 +903,13 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: hasFile ? BkuTheme.emeraldSoft : BkuTheme.cardSurface,
+                color: hasFile ? const Color(0xFFD1FAE5) : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 hasFile ? Icons.check_circle_rounded : Icons.cloud_upload_rounded,
                 size: 22,
-                color: hasFile ? BkuTheme.emerald : BkuTheme.primary,
+                color: hasFile ? const Color(0xFF059669) : const Color(0xFF64748B),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -733,7 +921,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                     fileName ?? hint,
                     style: BkuTheme.textCardTitle.copyWith(
                       fontSize: 12.5,
-                      color: hasFile ? BkuTheme.emerald : BkuTheme.textHeading,
+                      color: hasFile ? const Color(0xFF065F46) : const Color(0xFF0F172A),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -763,7 +951,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: Icon(Icons.camera_alt_rounded, color: BkuTheme.primary),
+            leading: const Icon(Icons.camera_alt_rounded, color: Color(0xFF475569)),
             title: Text('Ambil Foto Kamera', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
             onTap: () {
               Navigator.pop(context);
@@ -771,7 +959,7 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.folder_rounded, color: BkuTheme.primary),
+            leading: const Icon(Icons.folder_rounded, color: Color(0xFF475569)),
             title: Text('Pilih Berkas / PDF / Gambar', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
             onTap: () {
               Navigator.pop(context);
@@ -832,6 +1020,66 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
     }
   }
 
+  Future<void> _pickCustomFile(String label) async {
+    FocusScope.of(context).unfocus();
+    BkuBottomSheet.show(
+      context: context,
+      padding: EdgeInsets.zero,
+      title: 'Pilih Berkas $label',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.camera_alt_rounded, color: Color(0xFF475569)),
+            title: Text('Ambil Foto Kamera', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+            onTap: () async {
+              Navigator.pop(context);
+              final picker = ImagePicker();
+              final image = await picker.pickImage(source: ImageSource.camera);
+              if (image != null) {
+                _uploadCustomPickedFile(label, image.path, image.name);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.folder_rounded, color: Color(0xFF475569)),
+            title: Text('Pilih Berkas / PDF / Gambar', style: BkuTheme.textCardTitle.copyWith(fontSize: 13)),
+            onTap: () async {
+              Navigator.pop(context);
+              final result = await FilePicker.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
+              );
+              if (result != null && result.files.single.path != null) {
+                _uploadCustomPickedFile(label, result.files.single.path!, result.files.single.name);
+              }
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _uploadCustomPickedFile(String label, String path, String name) async {
+    setState(() {
+      _customFilePaths[label] = path;
+      _customFileNames[label] = name;
+      _customAnswers[label] = path;
+    });
+
+    try {
+      final fileUrl = await context.read<ScholarshipProvider>().uploadCustomFile(path);
+      if (mounted) {
+        setState(() {
+          _customAnswers[label] = fileUrl;
+        });
+      }
+    } catch (_) {
+      // Keep local path
+    }
+  }
+
   Widget _buildBottomNav() {
     final isValid = _isStepValid(_currentStep);
 
@@ -839,8 +1087,14 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: BkuTheme.cardSurface,
-        border: const Border(top: BorderSide(color: BkuTheme.border)),
-        boxShadow: BkuTheme.cardShadow,
+        border: const Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x08000000),
+            blurRadius: 16,
+            offset: Offset(0, -4),
+          ),
+        ],
       ),
       child: SafeArea(
         child: Row(
@@ -849,14 +1103,22 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
               Expanded(
                 flex: 1,
                 child: SizedBox(
-                  height: 48,
+                  height: 46,
                   child: OutlinedButton(
                     onPressed: () => setState(() => _currentStep--),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: BkuTheme.border),
-                      shape: RoundedRectangleBorder(borderRadius: BkuTheme.r12),
+                      side: const BorderSide(color: Color(0xFFCBD5E1)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      backgroundColor: Colors.white,
                     ),
-                    child: Text('Kembali', style: BkuTheme.textButton.copyWith(color: BkuTheme.textMuted, fontSize: 13)),
+                    child: const Text(
+                      'Kembali',
+                      style: TextStyle(
+                        color: Color(0xFF334155),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -865,11 +1127,8 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
             Expanded(
               flex: 2,
               child: SizedBox(
-                height: 48,
-                child: BkuButton(
-                  text: _currentStep == _confirmStepIndex ? 'Kirim Pendaftaran Beasiswa' : 'Lanjut',
-                  icon: _currentStep == _confirmStepIndex ? Icons.send_rounded : Icons.arrow_forward_rounded,
-                  variant: BkuButtonVariant.primary,
+                height: 46,
+                child: ElevatedButton(
                   onPressed: isValid
                       ? () {
                           if (_currentStep < _confirmStepIndex) {
@@ -879,6 +1138,20 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
                           }
                         }
                       : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: BkuTheme.primary,
+                    disabledBackgroundColor: BkuTheme.primary.withAlpha(90),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    _currentStep == _confirmStepIndex ? 'Kirim Pendaftaran Beasiswa' : 'Langkah Berikutnya',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -902,15 +1175,18 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         rubrikAnswersJson = json.encode(_rubrikAnswers);
       }
 
-      await context.read<ScholarshipProvider>().applyForScholarship(
-            widget.scholarship.id,
-            _motivasiController.text.trim(),
-            ktmKtpPath: _ktmKtpPath,
-            transkripPath: _transkripPath,
-            sertifikatPath: _sertifikatPath,
-            customAnswers: customAnswersJson,
-            rubrikAnswers: rubrikAnswersJson,
-          );
+      final scholarshipProvider = context.read<ScholarshipProvider>();
+      await scholarshipProvider.applyForScholarship(
+        widget.scholarship.id,
+        _motivasiController.text.trim(),
+        ktmKtpPath: _ktmKtpPath,
+        transkripPath: _transkripPath,
+        sertifikatPath: _sertifikatPath,
+        customAnswers: customAnswersJson,
+        rubrikAnswers: rubrikAnswersJson,
+      );
+
+      await scholarshipProvider.loadScholarships();
 
       if (mounted) BkuLoadingDialog.hide(context);
       if (!mounted) return;
@@ -920,10 +1196,20 @@ class _ApplyScholarshipScreenState extends State<ApplyScholarshipScreen> {
         type: BkuDialogType.success,
         title: 'Pendaftaran Berhasil Dikirim',
         message: 'Pengajuan beasiswa Anda berhasil dikirim dan sedang dalam tahap peninjauan berkas oleh admin.',
-        primaryButtonText: 'Kembali ke Beasiswa',
+        primaryButtonText: 'Lihat Progress Pengajuan',
         onPrimaryPressed: () {
-          context.pop();
-          context.pop();
+          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => ScholarshipApplicationDetailScreen(
+                scholarship: widget.scholarship.copyWith(
+                  status: 'Applied',
+                  applicationStatus: 'Menunggu Verifikasi Berkas',
+                  tanggalPengajuan: DateTime.now().toString().split(' ').first,
+                ),
+              ),
+            ),
+          );
         },
       );
     } catch (e) {

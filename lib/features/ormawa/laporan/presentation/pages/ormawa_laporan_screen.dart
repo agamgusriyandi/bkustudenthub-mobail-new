@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/ormawa_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/widgets/ormawa_list_header.dart';
 import 'package:bkuhub_mobile/features/ormawa/presentation/providers/ormawa_provider.dart';
@@ -249,175 +250,67 @@ class _OrmawaLaporanScreenState extends State<OrmawaLaporanScreen> {
 
         return Column(
           children: [
-            Row(
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1.18,
               children: [
-                Expanded(
-                  child: _buildStatCard(
-                    'Total Laporan',
-                    totalLPJ.toString(),
-                    Icons.description_rounded,
-                    AppColors.info,
-                  ),
+                OrmawaKpiCard(
+                  title: 'Total Laporan',
+                  value: totalLPJ.toString(),
+                  subtitle: 'Semua berkas LPJ',
+                  icon: Icons.description_rounded,
+                  badgeColor: OrmawaTheme.indigo,
+                  badgeText: '$totalLPJ Berkas',
                 ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: _buildStatCard(
-                    'LPJ Disetujui',
-                    approvedLPJ.toString(),
-                    Icons.verified_rounded,
-                    context.appColors.info,
-                  ),
+                OrmawaKpiCard(
+                  title: 'LPJ Disetujui',
+                  value: approvedLPJ.toString(),
+                  subtitle: 'Telah divalidasi',
+                  icon: Icons.verified_rounded,
+                  badgeColor: OrmawaTheme.emerald,
+                  badgeText: 'Disetujui',
+                ),
+                OrmawaKpiCard(
+                  title: 'Diajukan & Revisi',
+                  value: pendingLPJ.toString(),
+                  subtitle: 'Perlu tindak lanjut',
+                  icon: Icons.pending_actions_rounded,
+                  badgeColor: OrmawaTheme.amber,
+                  badgeText: pendingLPJ > 0 ? '$pendingLPJ Pending' : 'Aman',
+                ),
+                OrmawaKpiCard(
+                  title: 'Realisasi Anggaran',
+                  value: NumberFormat.compactCurrency(
+                    locale: 'id',
+                    symbol: 'Rp ',
+                  ).format(totalRealisasi),
+                  subtitle: 'Total dana terserap',
+                  icon: Icons.payments_rounded,
+                  badgeColor: OrmawaTheme.sky,
+                  badgeText: 'Terserap',
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatCard(
-                    'Diajukan & Revisi',
-                    pendingLPJ.toString(),
-                    Icons.pending_actions_rounded,
-                    AppColors.warning,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: _buildStatCard(
-                    'Realisasi Anggaran',
-                    NumberFormat.compactCurrency(
-                      locale: 'id',
-                      symbol: 'Rp ',
-                    ).format(totalRealisasi),
-                    Icons.payments_rounded,
-                    context.appColors.info,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildStatCard(
-              'Sisa Saldo Efisiensi',
-              NumberFormat.compactCurrency(
+            const SizedBox(height: 10),
+            OrmawaKpiCard(
+              title: 'Sisa Saldo Efisiensi',
+              value: NumberFormat.compactCurrency(
                 locale: 'id',
                 symbol: 'Rp ',
               ).format(totalSavings),
-              Icons.savings_rounded,
-              AppColors.success,
-              isFullWidth: true,
+              subtitle: 'Penghematan anggaran dari total rencana LPJ',
+              icon: Icons.savings_rounded,
+              badgeColor: OrmawaTheme.emerald,
+              badgeText: 'Efisiensi',
             ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color, {
-    bool isFullWidth = false,
-  }) {
-    return Container(
-      width: isFullWidth ? double.infinity : null,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
-      ),
-      child: Row(
-        mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
-        children: [
-          if (isFullWidth) ...[
-            Container(
-              padding: AppSpacing.paddingMd,
-              decoration: BoxDecoration(
-                color: color.withAlpha(20),
-                borderRadius: AppRadius.radiusSm,
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    label,
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.neutral600,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    value,
-                    style: AppTextStyles.titleLg.copyWith(
-                      color: AppColors.neutral900,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ] else ...[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: AppSpacing.padding6,
-                        decoration: BoxDecoration(
-                          color: color.withAlpha(20),
-                          borderRadius: AppRadius.radiusSm,
-                        ),
-                        child: Icon(icon, color: color, size: 16),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          label,
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: AppColors.neutral600,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    value,
-                    style: AppTextStyles.titleLg.copyWith(
-                      color: AppColors.neutral900,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 

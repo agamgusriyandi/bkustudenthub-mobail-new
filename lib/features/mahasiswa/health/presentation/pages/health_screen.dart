@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/extensions/string_extensions.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_bottom_sheet.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
@@ -760,119 +761,57 @@ class _HealthScreenState extends State<HealthScreen> {
       crossAxisCount: 2,
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 1.4,
+      childAspectRatio: 1.18,
       children: [
-        _buildStatTile(
-          'Tinggi Badan',
-          latest.height.toStringAsFixed(0),
-          'cm',
-          Icons.straighten_rounded,
-          BkuTheme.indigo,
-          BkuTheme.indigoSoft,
+        BkuKpiCard(
+          title: 'Tinggi Badan',
+          value: latest.height.toStringAsFixed(0),
+          subtitle: 'cm (Sentimeter)',
+          icon: Icons.straighten_rounded,
+          badgeColor: BkuTheme.indigo,
+          badgeText: 'cm',
         ),
-        _buildStatTile(
-          'Berat Badan',
-          latest.weight.toStringAsFixed(0),
-          'kg',
-          Icons.monitor_weight_rounded,
-          BkuTheme.emerald,
-          BkuTheme.emeraldSoft,
+        BkuKpiCard(
+          title: 'Berat Badan',
+          value: latest.weight.toStringAsFixed(0),
+          subtitle: 'kg (Kilogram)',
+          icon: Icons.monitor_weight_rounded,
+          badgeColor: BkuTheme.emerald,
+          badgeText: 'kg',
         ),
-        _buildStatTile(
-          'Tidur Harian',
-          '$jamTidur',
-          'Jam',
-          Icons.bedtime_rounded,
-          BkuTheme.teal,
-          BkuTheme.tealSoft,
+        BkuKpiCard(
+          title: 'Tidur Harian',
+          value: '$jamTidur',
+          subtitle: 'Jam per hari',
+          icon: Icons.bedtime_rounded,
+          badgeColor: BkuTheme.teal,
+          badgeText: 'Jam',
         ),
-        _buildStatTile(
-          'Olahraga',
-          '$olahraga',
-          'x/Mgg',
-          Icons.fitness_center_rounded,
-          BkuTheme.amber,
-          BkuTheme.amberSoft,
+        BkuKpiCard(
+          title: 'Olahraga',
+          value: '$olahraga',
+          subtitle: 'Sesi per minggu',
+          icon: Icons.fitness_center_rounded,
+          badgeColor: BkuTheme.amber,
+          badgeText: 'x/Mgg',
         ),
-        _buildStatTile(
-          'Konsumsi Air',
-          air.toStringAsFixed(1),
-          'L/Hari',
-          Icons.water_drop_rounded,
-          BkuTheme.indigo,
-          BkuTheme.indigoSoft,
+        BkuKpiCard(
+          title: 'Konsumsi Air',
+          value: air.toStringAsFixed(1),
+          subtitle: 'Liter per hari',
+          icon: Icons.water_drop_rounded,
+          badgeColor: BkuTheme.indigo,
+          badgeText: 'L/Hari',
         ),
-        _buildStatTile(
-          'Tingkat Stres',
-          '$stres',
-          '/10',
-          Icons.psychology_rounded,
-          BkuTheme.rose,
-          BkuTheme.roseSoft,
+        BkuKpiCard(
+          title: 'Tingkat Stres',
+          value: '$stres',
+          subtitle: 'Skala evaluasi',
+          icon: Icons.psychology_rounded,
+          badgeColor: BkuTheme.rose,
+          badgeText: '/10',
         ),
       ],
-    );
-  }
-
-  Widget _buildStatTile(
-    String label,
-    String value,
-    String unit,
-    IconData icon,
-    Color color,
-    Color bg,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: BkuTheme.cardSurface,
-        borderRadius: BkuTheme.r16,
-        border: Border.all(color: BkuTheme.border),
-        boxShadow: BkuTheme.cardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Icon(icon, color: color, size: 14),
-              ),
-              Text(
-                unit,
-                style: BkuTheme.textCaption.copyWith(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: BkuTheme.textMuted,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            label,
-            style: BkuTheme.textCaption.copyWith(
-              color: BkuTheme.textMuted,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 1),
-          Text(
-            value,
-            style: BkuTheme.textKpiValue.copyWith(
-              fontSize: 18,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

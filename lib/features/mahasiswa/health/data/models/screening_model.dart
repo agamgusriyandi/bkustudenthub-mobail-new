@@ -7,6 +7,66 @@ class ScreeningQuestion {
   const ScreeningQuestion({required this.id, required this.question});
 }
 
+class SelfScreeningIntake {
+  final int id;
+  final int mahasiswaId;
+  final int? bookingId;
+  final int? tkId;
+  final String keluhanUtama;
+  final int skalaNyeri;
+  final String alergiObat;
+  final String konsumsiObat;
+  final bool isCompletedTk;
+  final DateTime createdAt;
+  final DateTime? screenedAt;
+  final bool hasRujukan;
+  final int? rujukanId;
+
+  const SelfScreeningIntake({
+    required this.id,
+    required this.mahasiswaId,
+    this.bookingId,
+    this.tkId,
+    required this.keluhanUtama,
+    required this.skalaNyeri,
+    required this.alergiObat,
+    required this.konsumsiObat,
+    required this.isCompletedTk,
+    required this.createdAt,
+    this.screenedAt,
+    this.hasRujukan = false,
+    this.rujukanId,
+  });
+
+  factory SelfScreeningIntake.fromJson(Map<String, dynamic> json) {
+    return SelfScreeningIntake(
+      id: int.tryParse(json['id']?.toString() ?? json['ID']?.toString() ?? '0') ?? 0,
+      mahasiswaId: int.tryParse(json['mahasiswa_id']?.toString() ?? json['MahasiswaID']?.toString() ?? '0') ?? 0,
+      bookingId: json['booking_id'] != null ? int.tryParse(json['booking_id'].toString()) : null,
+      tkId: json['tk_id'] != null ? int.tryParse(json['tk_id'].toString()) : null,
+      keluhanUtama: json['keluhan_utama']?.toString() ?? '',
+      skalaNyeri: int.tryParse(json['skala_nyeri']?.toString() ?? '0') ?? 0,
+      alergiObat: json['alergi_obat']?.toString() ?? '',
+      konsumsiObat: json['konsumsi_obat']?.toString() ?? '',
+      isCompletedTk: json['is_completed_tk'] == true,
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? json['CreatedAt']?.toString() ?? '') ?? DateTime.now(),
+      screenedAt: json['screened_at'] != null ? DateTime.tryParse(json['screened_at'].toString()) : null,
+      hasRujukan: json['has_rujukan'] == true,
+      rujukanId: json['rujukan_id'] != null ? int.tryParse(json['rujukan_id'].toString()) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (bookingId != null) 'booking_id': bookingId,
+      'keluhan_utama': keluhanUtama,
+      'skala_nyeri': skalaNyeri,
+      'alergi_obat': alergiObat,
+      'konsumsi_obat': konsumsiObat,
+    };
+  }
+}
+
 class ScreeningResult {
   final int score;
   final ScreeningLevel level;
@@ -22,10 +82,10 @@ class ScreeningResult {
 
   factory ScreeningResult.fromJson(Map<String, dynamic> json) {
     return ScreeningResult(
-      score: json['score'] ?? 0,
+      score: json['score'] ?? json['skala_nyeri'] ?? 0,
       level: _parseLevel(json['level']),
-      description: json['description'] ?? '',
-      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
+      description: json['description'] ?? json['keluhan_utama'] ?? '',
+      createdAt: DateTime.tryParse(json['created_at'] ?? json['CreatedAt'] ?? '') ?? DateTime.now(),
     );
   }
 

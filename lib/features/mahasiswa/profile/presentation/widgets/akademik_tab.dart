@@ -4,6 +4,7 @@ import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
+import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 
 class AkademikTabWidget extends StatefulWidget {
   const AkademikTabWidget({super.key});
@@ -79,6 +80,12 @@ class _AkademikTabWidgetState extends State<AkademikTabWidget> {
             mkKrs: '${filteredKrs.length}',
             totalTranskrip: '${profile.transkripList.length}',
             info: profile.akademikInfo,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+
+          IpkChartCard(
+            currentIpk: profile.ipk,
+            currentSemester: profile.semester,
           ),
           const SizedBox(height: AppSpacing.lg),
 

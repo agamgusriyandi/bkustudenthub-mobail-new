@@ -8,6 +8,7 @@ import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_kpi_card.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_provider.dart';
@@ -414,6 +415,11 @@ class _KencanaScreenState extends State<KencanaScreen> {
   }
 
   Widget _buildStatsGrid(KencanaDashboardData dashboard) {
+    final bool isRemedialNeeded = (dashboard.status == 'published' ||
+            dashboard.status == 'completed' ||
+            dashboard.activeStage['type'] == 'pasca_kencana') &&
+        dashboard.needsRemedial;
+
     return GridView.count(
       padding: EdgeInsets.zero,
       crossAxisCount: 2,
@@ -421,106 +427,43 @@ class _KencanaScreenState extends State<KencanaScreen> {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 1.5,
+      childAspectRatio: 1.18,
       children: [
-        _buildStatCard(
-          'Periode',
-          dashboard.period.year.toString(),
-          Icons.calendar_month_rounded,
-          BkuTheme.indigo,
-          BkuTheme.indigoSoft,
+        BkuKpiCard(
+          title: 'Periode Orientasi',
+          value: dashboard.period.year.toString(),
+          subtitle: 'Tahun akademik berjalan',
+          icon: Icons.calendar_month_rounded,
+          badgeColor: BkuTheme.indigo,
+          badgeText: 'Angkatan',
         ),
-        _buildStatCard(
-          'Progress',
-          '${dashboard.progressTotal.toInt()}%',
-          Icons.trending_up_rounded,
-          BkuTheme.emerald,
-          BkuTheme.emeraldSoft,
+        BkuKpiCard(
+          title: 'Progres Kegiatan',
+          value: '${dashboard.progressTotal.toInt()}%',
+          subtitle: 'Tahapan diselesaikan',
+          icon: Icons.trending_up_rounded,
+          badgeColor: BkuTheme.emerald,
+          badgeText: '${dashboard.progressTotal.toInt()}%',
+          progress: (dashboard.progressTotal / 100).clamp(0.0, 1.0),
+          progressColor: BkuTheme.emerald,
         ),
-        _buildStatCard(
-          'Remedial',
-          (dashboard.status == 'published' ||
-                      dashboard.status == 'completed' ||
-                      dashboard.activeStage['type'] == 'pasca_kencana') &&
-                  dashboard.needsRemedial
-              ? 'Perlu'
-              : 'Tidak',
-          Icons.rule_rounded,
-          (dashboard.status == 'published' ||
-                      dashboard.status == 'completed' ||
-                      dashboard.activeStage['type'] == 'pasca_kencana') &&
-                  dashboard.needsRemedial
-              ? BkuTheme.rose
-              : BkuTheme.emerald,
-          (dashboard.status == 'published' ||
-                      dashboard.status == 'completed' ||
-                      dashboard.activeStage['type'] == 'pasca_kencana') &&
-                  dashboard.needsRemedial
-              ? BkuTheme.roseSoft
-              : BkuTheme.emeraldSoft,
+        BkuKpiCard(
+          title: 'Status Remedial',
+          value: isRemedialNeeded ? 'Perlu' : 'Tidak',
+          subtitle: isRemedialNeeded ? 'Ada tugas perbaikan' : 'Semua tugas aman',
+          icon: Icons.rule_rounded,
+          badgeColor: isRemedialNeeded ? BkuTheme.rose : BkuTheme.emerald,
+          badgeText: isRemedialNeeded ? 'Perbaikan' : 'Aman',
         ),
-        _buildStatCard(
-          'Kelulusan',
-          dashboard.graduationStatus == 'passed' ? 'Lulus' : 'Berjalan',
-          Icons.workspace_premium_rounded,
-          BkuTheme.primary,
-          BkuTheme.primarySoft,
+        BkuKpiCard(
+          title: 'Status Kelulusan',
+          value: dashboard.graduationStatus == 'passed' ? 'Lulus' : 'Berjalan',
+          subtitle: dashboard.graduationStatus == 'passed' ? 'Tuntas orientasi' : 'Sedang berlangsung',
+          icon: Icons.workspace_premium_rounded,
+          badgeColor: dashboard.graduationStatus == 'passed' ? BkuTheme.emerald : BkuTheme.primary,
+          badgeText: dashboard.graduationStatus == 'passed' ? 'Lulus' : 'Aktif',
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-    Color bg,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: BkuTheme.cardSurface,
-        borderRadius: BkuTheme.r16,
-        border: Border.all(color: BkuTheme.border),
-        boxShadow: BkuTheme.cardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Icon(icon, color: color, size: 14),
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  title,
-                  style: BkuTheme.textCaption.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: BkuTheme.textKpiValue.copyWith(
-              fontSize: 18,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -26,6 +26,8 @@ class ProfileProvider extends ChangeNotifier {
   double ipk = 0.0;
   int totalSks = 0;
   String statusAkademik = 'Aktif';
+  String dosenPa = '';
+  String dosenPaPhone = '';
   String? fotoUrl;
 
   Map<String, dynamic> rawProfileData = {};
@@ -126,6 +128,8 @@ class ProfileProvider extends ChangeNotifier {
       ipk = double.tryParse(_extractValue(profile, ['ipk', 'IPK'])?.toString() ?? '') ?? ipk;
       totalSks = int.tryParse(_extractValue(profile, ['total_sks', 'TotalSKS', 'sks_lulus', 'SKSLulus'])?.toString() ?? '') ?? totalSks;
       intakeYear = _extractValue(profile, ['angkatan', 'Angkatan', 'tahun_masuk', 'TahunMasuk'])?.toString() ?? intakeYear;
+      dosenPa = _extractValue(profile, ['dosen_pa', 'dosen_wali', 'DosenPA', 'DosenWali', 'nama_dosen_pa', 'dosen_pembimbing'])?.toString() ?? dosenPa;
+      dosenPaPhone = _extractValue(profile, ['no_hp_dosen_pa', 'no_hp_dosen_wali', 'no_wa_dosen_pa'])?.toString() ?? dosenPaPhone;
 
       final p = profile['profile'] ?? profile['data']?['profile'] ?? profile;
       fotoUrl = p['foto']?.toString() ?? p['Foto']?.toString() ?? p['avatar_url']?.toString() ?? m['FotoURL']?.toString() ?? m['foto_url']?.toString() ?? fotoUrl;

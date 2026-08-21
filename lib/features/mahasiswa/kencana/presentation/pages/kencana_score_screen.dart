@@ -13,7 +13,9 @@ import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_kpi_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/kencana_models.dart';
 
 class KencanaScoreScreen extends StatefulWidget {
@@ -145,103 +147,45 @@ class _KencanaScoreScreenState extends State<KencanaScoreScreen> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
-      childAspectRatio: 1.25,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 1.18,
       children: [
-        _buildStatGridItem(
-          'Nilai Akhir',
-          finalScore.toStringAsFixed(1),
-          Icons.military_tech_rounded,
-          themeProvider.primary,
+        BkuKpiCard(
+          title: 'Nilai Akhir',
+          value: finalScore.toStringAsFixed(1),
+          subtitle: 'Akumulasi total skor',
+          icon: Icons.military_tech_rounded,
+          badgeColor: BkuTheme.primary,
+          badgeText: 'Skor Akhir',
         ),
-        _buildStatGridItem(
-          'Status',
-          statusText,
-          statusText == 'LULUS'
+        BkuKpiCard(
+          title: 'Status Kelulusan',
+          value: statusText,
+          subtitle: statusText == 'LULUS' || statusText == 'Lulus' ? 'Tuntas orientasi' : 'Perlu evaluasi',
+          icon: statusText == 'LULUS' || statusText == 'Lulus'
               ? Icons.verified_rounded
               : Icons.pending_actions_rounded,
-          statusText == 'LULUS' ? themeProvider.success : statusColor,
+          badgeColor: statusColor,
+          badgeText: statusText,
         ),
-        _buildStatGridItem(
-          'Nilai Univ',
-          scoreUnivVal.toStringAsFixed(1),
-          Icons.account_balance_rounded,
-          themeProvider.primary,
+        BkuKpiCard(
+          title: 'Nilai Universitas',
+          value: scoreUnivVal.toStringAsFixed(1),
+          subtitle: 'Komponen Univ',
+          icon: Icons.account_balance_rounded,
+          badgeColor: BkuTheme.indigo,
+          badgeText: 'Univ',
         ),
-        _buildStatGridItem(
-          'Nilai Fakultas',
-          scoreFakVal.toStringAsFixed(1),
-          Icons.domain_rounded,
-          themeProvider.success,
+        BkuKpiCard(
+          title: 'Nilai Fakultas',
+          value: scoreFakVal.toStringAsFixed(1),
+          subtitle: 'Komponen Fakultas',
+          icon: Icons.domain_rounded,
+          badgeColor: BkuTheme.teal,
+          badgeText: 'Fakultas',
         ),
       ],
-    );
-  }
-
-  Widget _buildStatGridItem(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusXl,
-        boxShadow: [
-          BoxShadow(
-            color: context.appColors.onSurface.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: context.appColors.outlineVariant.withAlpha(50),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: AppSpacing.padding6,
-                decoration: BoxDecoration(
-                  color: color.withAlpha(20),
-                  borderRadius: AppRadius.radiusSm,
-                ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTextStyles.labelSm.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: AppTextStyles.titleLg.copyWith(
-              color: context.appColors.onSurface,
-              fontWeight: FontWeight.w900,
-              fontSize: value.length > 8 ? 16 : 24,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 

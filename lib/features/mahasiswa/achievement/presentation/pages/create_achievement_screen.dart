@@ -251,25 +251,25 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: BoxDecoration(
-          color: hasFile ? context.appColors.success.withAlpha(30) : context.appColors.background,
-          borderRadius: AppRadius.radiusLg,
+          color: hasFile ? const Color(0xFFF0FDF4) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: hasFile ? context.appColors.success.withAlpha(80) : AppColors.neutral200,
+            color: hasFile ? const Color(0xFFBBF7D0) : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
         ),
         child: Column(
           children: [
             Container(
-              padding: AppSpacing.padding14,
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: hasFile ? context.appColors.success.withAlpha(50) : context.appColors.primary.withAlpha(30),
+                color: hasFile ? const Color(0xFFDCFCE7) : const Color(0xFFF1F5F9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 hasFile ? Icons.task_rounded : Icons.cloud_upload_rounded,
-                size: 28,
-                color: hasFile ? context.appColors.success : context.appColors.primary,
+                size: 26,
+                color: hasFile ? const Color(0xFF16A34A) : const Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -277,15 +277,15 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
               _selectedFileName ?? 'Klik untuk Upload File',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: hasFile ? context.appColors.success : context.appColors.secondary,
+                color: hasFile ? const Color(0xFF16A34A) : const Color(0xFF0F172A),
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               hasFile ? 'Klik untuk mengganti file' : 'Maks 5MB (PDF, JPG, PNG)',
-              style: const TextStyle(color: AppColors.neutral600, fontSize: 12),
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 11),
             ),
           ],
         ),
@@ -297,14 +297,23 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
     FocusScope.of(context).unfocus();
     BkuBottomSheet.show(
       context: context,
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: 'Pilih Sumber Dokumen',
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 4),
           ListTile(
-            leading: const Icon(Icons.camera_alt_rounded, color: AppColors.neutral600),
-            title: Text('Kamera', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.camera_alt_rounded, color: Color(0xFF475569), size: 20),
+            ),
+            title: const Text('Kamera', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
             onTap: () async {
               context.pop();
               final picker = ImagePicker();
@@ -318,8 +327,16 @@ class _CreateAchievementScreenState extends State<CreateAchievementScreen> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.folder_rounded, color: AppColors.neutral600),
-            title: Text('Galeri / File (PDF)', style: AppTextStyles.labelMd.copyWith(fontWeight: FontWeight.w600)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.folder_rounded, color: Color(0xFF475569), size: 20),
+            ),
+            title: const Text('Galeri / File (PDF)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
             onTap: () async {
               context.pop();
               final result = await FilePicker.pickFiles(

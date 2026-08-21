@@ -12,6 +12,7 @@ class BkuBottomSheet {
     bool isScrollControlled = true,
     bool isDismissible = true,
     bool useRootNavigator = true,
+    bool showDivider = false,
     EdgeInsets padding = const EdgeInsets.all(AppSpacing.lg),
   }) {
     return showModalBottomSheet<T>(
@@ -62,23 +63,26 @@ class BkuBottomSheet {
                       ),
                     ),
                   ),
-                  if (title != null) ...[
+                  if (title != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.lg,
+                        AppSpacing.sm,
+                        AppSpacing.lg,
+                        AppSpacing.xs,
                       ),
                       child: Text(
                         title,
                         textAlign: TextAlign.center,
                         style: BkuTheme.textSectionTitle.copyWith(
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF0F172A),
                         ),
                       ),
                     ),
+                  if (showDivider)
                     const Divider(height: 1, color: BkuTheme.borderSubtle),
-                  ],
                   Flexible(
                     child: Padding(padding: padding, child: child),
                   ),

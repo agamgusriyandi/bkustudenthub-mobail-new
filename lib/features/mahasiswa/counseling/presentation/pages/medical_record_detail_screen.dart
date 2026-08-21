@@ -1,13 +1,16 @@
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:printing/printing.dart';
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:bkuhub_mobile/core/services/auth_service.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/network/api_client.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 
 class MedicalRecordDetailScreen extends StatelessWidget {
   final Map<String, dynamic> record;
@@ -201,18 +204,22 @@ class MedicalRecordDetailScreen extends StatelessWidget {
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
-            OutlinedButton.icon(
-              onPressed: () => _openPdf(context),
-              icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),
-              label: const Text(
-                'Unduh Laporan (PDF)',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: context.appColors.primary,
-                side: BorderSide(color: context.appColors.primary),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: AppRadius.radiusMd),
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: ElevatedButton.icon(
+                onPressed: () => _openPdf(context),
+                icon: const Icon(Icons.picture_as_pdf_rounded, size: 16, color: Colors.white),
+                label: const Text(
+                  'Unduh Laporan Rekam Medis (PDF)',
+                  style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: BkuTheme.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.xxl),
@@ -286,13 +293,26 @@ class MedicalRecordDetailScreen extends StatelessWidget {
   }
 
   Future<void> _openPdf(BuildContext context) async {
-    final id = _val(['booking_id', 'id']);
+    final id = _val(['id', 'booking_id']);
     if (id.isEmpty || id == '-') return;
-    final token = AuthService().token;
-    final url = '${ApiGate.baseUrl}/counseling/psychologist-bookings/$id/export-pdf?token=$token';
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+
+    try {
+      AppSnackbar.showInfo(context, 'Menyiapkan berkas rekam medis...');
+      final response = await ApiClient().client.get<List<int>>(
+        '/counseling/session-notes/$id/export-pdf',
+        options: Options(responseType: ResponseType.bytes),
+      );
+      if (response.data != null && response.data!.isNotEmpty) {
+        final bytes = Uint8List.fromList(response.data!);
+        await Printing.layoutPdf(
+          name: 'Rekam_Medis_Sesi_#$id.pdf',
+          onLayout: (format) async => bytes,
+        );
+      } else {
+        if (context.mounted) AppSnackbar.showError(context, 'Berkas rekam medis kosong atau tidak dapat diunduh.');
+      }
+    } catch (_) {
+      if (context.mounted) AppSnackbar.showError(context, 'Gagal mengunduh berkas rekam medis');
     }
   }
 }

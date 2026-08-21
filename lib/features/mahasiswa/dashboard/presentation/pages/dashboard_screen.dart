@@ -19,7 +19,6 @@ import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/activity_feed.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/available_scholarships.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/calendar_mini.dart';
-import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/ipk_chart_card.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/dashboard/presentation/widgets/insurance_tracker_card.dart';
 import 'package:bkuhub_mobile/core/providers/navigation_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/notifications/presentation/pages/notifications_screen.dart';
@@ -291,12 +290,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: AppSpacing.s20),
 
                     CalendarMini(events: _buildCalendarEvents(academic)),
-                    const SizedBox(height: AppSpacing.s20),
-
-                    IpkChartCard(
-                      currentIpk: profile.ipk,
-                      currentSemester: profile.semester,
-                    ),
                     const SizedBox(height: AppSpacing.s20),
 
                     InsuranceTrackerCard(claims: health.insuranceClaims),

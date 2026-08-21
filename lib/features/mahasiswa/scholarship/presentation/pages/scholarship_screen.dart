@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_shimmer.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/scholarship.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/scholarship/presentation/providers/scholarship_provider.dart';
@@ -323,11 +321,11 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFFBFDBFE)),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
-                child: const Icon(Icons.analytics_rounded, color: Color(0xFF1D4ED8), size: 20),
+                child: const Icon(Icons.analytics_rounded, color: Color(0xFF475569), size: 20),
               ),
               const SizedBox(width: 10),
               Column(
@@ -358,7 +356,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
           Row(
             children: [
               Expanded(
-                child: _buildStatItem('Tersedia', '$totalTersedia', const Color(0xFF2563EB), const Color(0xFFEFF6FF)),
+                child: _buildStatItem('Tersedia', '$totalTersedia', const Color(0xFF0F172A), const Color(0xFFF1F5F9)),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -452,17 +450,11 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? BkuTheme.primary : Colors.transparent,
+          color: isSelected ? const Color(0xFFF1F5F9) : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: isSelected
-              ? const [
-                  BoxShadow(
-                    color: Color(0x20000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  )
-                ]
-              : null,
+          border: Border.all(
+            color: isSelected ? const Color(0xFFCBD5E1) : Colors.transparent,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -471,7 +463,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             Icon(
               icon,
               size: 13.5,
-              color: isSelected ? Colors.white : const Color(0xFF64748B),
+              color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
             ),
             const SizedBox(width: 5),
             Flexible(
@@ -480,7 +472,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color: isSelected ? Colors.white : const Color(0xFF334155),
+                  color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -490,15 +482,16 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.white.withAlpha(40) : const Color(0xFFF1F5F9),
+                color: isSelected ? Colors.white : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(8),
+                border: isSelected ? Border.all(color: const Color(0xFFE2E8F0)) : null,
               ),
               child: Text(
                 '$badgeCount',
                 style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w800,
-                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
                 ),
               ),
             ),
@@ -617,10 +610,11 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF1E293B) : Colors.white,
+                  color: isSelected ? const Color(0xFFF1F5F9) : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isSelected ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
+                    color: isSelected ? const Color(0xFF94A3B8) : const Color(0xFFE2E8F0),
+                    width: isSelected ? 1.2 : 1.0,
                   ),
                 ),
                 child: Row(
@@ -629,7 +623,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                     Icon(
                       t['icon'] as IconData,
                       size: 13,
-                      color: isSelected ? Colors.white : const Color(0xFF64748B),
+                      color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -637,7 +631,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                        color: isSelected ? Colors.white : const Color(0xFF334155),
+                        color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
                       ),
                     ),
                   ],
@@ -666,10 +660,11 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4.5),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFF1F5F9),
+                  color: isSelected ? const Color(0xFFE2E8F0) : const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                    color: isSelected ? const Color(0xFF94A3B8) : const Color(0xFFE2E8F0),
+                    width: isSelected ? 1.2 : 1.0,
                   ),
                 ),
                 child: Text(
@@ -677,7 +672,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                   style: TextStyle(
                     fontSize: 10.5,
                     fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                    color: isSelected ? Colors.white : const Color(0xFF475569),
+                    color: isSelected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
                   ),
                 ),
               ),
@@ -691,6 +686,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
   Widget _buildKatalogCard(Scholarship scholarship) {
     final daysDiff = _getDaysDiff(scholarship.deadline);
     final isClosed = daysDiff < 0;
+    final isApplied = scholarship.status.toLowerCase() == 'applied' || scholarship.applicationStatus != null;
 
     final catStyle = _getCategoryStyle(scholarship.category, scholarship.skema);
     final tingkatStyle = _getTingkatStyle(scholarship.tingkat);
@@ -766,6 +762,30 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                         ],
                       ),
                     ),
+                    if (isApplied)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEFF6FF),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: const Color(0xFFBFDBFE)),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.check_circle_rounded, size: 10, color: Color(0xFF2563EB)),
+                            SizedBox(width: 3),
+                            Text(
+                              'Terdaftar',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF1D4ED8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -835,7 +855,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               ),
             ],
           ),
-          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
 
           Row(
             children: [
@@ -867,32 +887,55 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
             height: 34,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ScholarshipProgramDetailScreen(
-                      programId: int.tryParse(scholarship.id) ?? 0,
+                if (isApplied) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ScholarshipApplicationDetailScreen(
+                        scholarship: scholarship,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ScholarshipProgramDetailScreen(
+                        programId: int.tryParse(scholarship.id) ?? 0,
+                      ),
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: BkuTheme.primary,
-                foregroundColor: Colors.white,
+                backgroundColor: isApplied ? const Color(0xFFEFF6FF) : const Color(0xFFF1F5F9),
+                foregroundColor: isApplied ? const Color(0xFF1D4ED8) : const Color(0xFF1E293B),
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                 minimumSize: const Size(0, 32),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(color: isApplied ? const Color(0xFFBFDBFE) : const Color(0xFFE2E8F0)),
+                ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Detail & Daftar',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-                  ),
-                  SizedBox(width: 6),
-                  Icon(Icons.arrow_forward_rounded, size: 14),
+                  if (isApplied) ...[
+                    const Icon(Icons.timeline_rounded, size: 14),
+                    const SizedBox(width: 6),
+                    const Text(
+                      'Lihat Progress Pengajuan',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                    ),
+                  ] else ...[
+                    const Text(
+                      'Detail & Daftar',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(Icons.arrow_forward_rounded, size: 14),
+                  ],
                 ],
               ),
             ),
@@ -1014,7 +1057,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
               ),
             ],
           ),
-          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1039,7 +1082,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                   const SizedBox(height: 2),
                   Text(
                     _formatCurrency(scholarship.coverAmount),
-                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF2563EB)),
+                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
                   ),
                 ],
               ),
@@ -1049,8 +1092,8 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
 
           SizedBox(
             width: double.infinity,
-            height: 40,
-            child: OutlinedButton(
+            height: 34,
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -1061,19 +1104,26 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                   ),
                 );
               },
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFFE2E8F0)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFEFF6FF),
+                foregroundColor: const Color(0xFF1D4ED8),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                minimumSize: const Size(0, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: Color(0xFFBFDBFE)),
+                ),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Icon(Icons.timeline_rounded, size: 14),
+                  SizedBox(width: 6),
                   Text(
-                    'Lihat Detail Status',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF1E293B)),
+                    'Lihat Progress Pengajuan',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
                   ),
-                  SizedBox(width: 4),
-                  Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF1E293B)),
                 ],
               ),
             ),
@@ -1086,7 +1136,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
   Widget _buildEmptyState(String message, {String? actionText, VoidCallback? onAction}) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -1095,25 +1145,47 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Color(0xFFF1F5F9),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.school_outlined, size: 32, color: Color(0xFF2563EB)),
+            child: const Icon(Icons.school_outlined, size: 24, color: Color(0xFF475569)),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.4),
           ),
           if (actionText != null && onAction != null) ...[
-            const SizedBox(height: AppSpacing.lg),
-            BkuButton(
-              text: actionText,
-              variant: BkuButtonVariant.primary,
-              onPressed: onAction,
+            const SizedBox(height: AppSpacing.md),
+            InkWell(
+              onTap: onAction,
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.grid_view_rounded, size: 14, color: Color(0xFF0F172A)),
+                    const SizedBox(width: 6),
+                    Text(
+                      actionText,
+                      style: const TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ],
@@ -1154,10 +1226,10 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF0F172A),
+                      color: const Color(0xFF0F172A),
                     ),
                   ),
-                  trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2563EB)) : null,
+                  trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF0F172A)) : null,
                   onTap: () {
                     setState(() => _selectedSort = e.key);
                     Navigator.pop(ctx);

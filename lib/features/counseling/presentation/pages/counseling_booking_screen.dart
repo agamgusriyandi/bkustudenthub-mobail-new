@@ -1,22 +1,57 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
-import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/providers/theme_provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
+import 'package:bkuhub_mobile/core/services/api_gate.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/features/counseling/presentation/providers/student_counseling_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/profile_provider.dart';
-import 'package:bkuhub_mobile/core/services/api_gate.dart';
-import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:go_router/go_router.dart';
+
+const List<String> kSubAkademikOptions = [
+  'Kesulitan mengatur waktu belajar',
+  'Kesulitan merencanakan studi',
+  'Kesulitan dalam menyusun makalah, laporan, dan tugas akhir',
+  'Kesulitan mempelajari referensi pembelajaran',
+  'Kurang motivasi atau semangat belajar',
+  'Kurangnya minat terhadap profesi',
+];
+
+const List<String> kSubNonAkademikOptions = [
+  'Kesulitan menyesuaikan diri dengan teman mahasiswa / konflik dengan teman',
+  'Kesulitan karena masalah-masalah keluarga',
+  'Cemas / Depresi / Stres',
+  'Masalah kepercayaan diri',
+  'Home sickness (ingat rumah)',
+  'Putus asa',
+  'Manajemen keuangan',
+  'Konflik dengan pasangan (pacar/istri/suami)',
+  'Kesepian',
+];
+
+const List<String> kStatusPernikahanOpts = [
+  'Belum menikah',
+  'Menikah',
+  'Pernah menikah (Cerai)',
+];
+
+const List<String> kPekerjaanOrtuOpts = [
+  'Pegawai Swasta',
+  'ASN / PNS',
+  'Wiraswasta / Pengusaha',
+  'TNI / Polri',
+  'Buruh / Pekerja Lepas',
+  'Tidak Bekerja',
+  'Lainnya',
+];
+
+const List<String> kTopikOptions = [
+  'Psikologi',
+  'Akademik',
+  'Karir',
+  'Personal',
+];
 
 class CounselingBookingScreen extends StatefulWidget {
   final String? psikologId;
@@ -33,39 +68,43 @@ class CounselingBookingScreen extends StatefulWidget {
   });
 
   @override
-  State<CounselingBookingScreen> createState() =>
-      _CounselingBookingScreenState();
+  State<CounselingBookingScreen> createState() => _CounselingBookingScreenState();
 }
 
 class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   Map<String, dynamic>? _selectedSlot;
   final _complaintCtrl = TextEditingController();
-  String? _attachmentPath;
-  bool _isSubmitting = false;
+  final _harapanCtrl = TextEditingController();
   String _selectedMode = 'Tatap Muka';
-  String _selectedKategori = 'Stres Akademik';
+  String _selectedTopik = 'Psikologi';
 
-  static const List<String> _kategoriList = [
-    'Stres Akademik',
-    'Kecemasan',
-    'Masalah Keluarga',
-    'Karir & Masa Depan',
-    'Hubungan Sosial',
-    'Kesehatan Mental',
-    'Lainnya',
-  ];
+  String _statusPernikahan = 'Belum menikah';
+  int _anakKe = 1;
+  int _jumlahBersaudara = 1;
+  bool _pernahSakitKeras = false;
+  final _detailSakitKerasCtrl = TextEditingController();
+  final _namaOrtuCtrl = TextEditingController();
+  final _noHpOrtuCtrl = TextEditingController();
+  String _pekerjaanOrtu = 'Pegawai Swasta';
+  final _noHpDosenPaCtrl = TextEditingController();
+  bool _pernahKonseling = false;
+
+  final Set<String> _selectedAkademik = {};
+  final Set<String> _selectedNonAkademik = {};
+  final _subLainnyaCtrl = TextEditingController();
+
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialCategory != null &&
-        _kategoriList.contains(widget.initialCategory)) {
-      _selectedKategori = widget.initialCategory!;
+    if (widget.initialCategory != null && kTopikOptions.contains(widget.initialCategory)) {
+      _selectedTopik = widget.initialCategory!;
     }
-    if (widget.initialComplaint != null &&
-        widget.initialComplaint!.isNotEmpty) {
+    if (widget.initialComplaint != null && widget.initialComplaint!.isNotEmpty) {
       _complaintCtrl.text = widget.initialComplaint!;
     }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final p = context.read<StudentCounselingProvider>();
       if (widget.psikologId != null && widget.psikologId!.isNotEmpty) {
@@ -73,30 +112,67 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       } else {
         p.loadAvailableSchedules();
       }
+
+      final student = context.read<ProfileProvider>();
+      if (_noHpDosenPaCtrl.text.isEmpty && student.dosenPa.isNotEmpty) {
+        // Pre-fill if available
+      }
     });
   }
 
   @override
   void dispose() {
     _complaintCtrl.dispose();
+    _harapanCtrl.dispose();
+    _detailSakitKerasCtrl.dispose();
+    _namaOrtuCtrl.dispose();
+    _noHpOrtuCtrl.dispose();
+    _noHpDosenPaCtrl.dispose();
+    _subLainnyaCtrl.dispose();
     super.dispose();
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+      filled: true,
+      fillColor: const Color(0xFFF8FAFC),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF0F172A), width: 1.5),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<StudentCounselingProvider>(
       builder: (context, provider, _) {
-        final slots =
-            widget.psikologId != null
-                ? provider.psychologistSlots
-                : provider.availableSchedules;
-        final psikologDetail =
-            widget.psikologId != null
-                ? provider.psychologistDetail
-                : <String, dynamic>{};
+        final slots = widget.psikologId != null
+            ? provider.psychologistSlots
+            : provider.availableSchedules;
+        final psikologDetail = widget.psikologId != null
+            ? provider.psychologistDetail
+            : <String, dynamic>{};
 
         return Scaffold(
-          backgroundColor: context.appColors.surface,
+          backgroundColor: BkuTheme.scaffoldBg,
+          appBar: BkuStaticAppBar(
+            title: widget.rescheduleBookingId != null ? 'Reschedule Konseling' : 'Pendaftaran Konseling Baru',
+            subtitle: 'Standar SPMI: 02.01.00/FRM-4/KKA-SPMI',
+            variant: AppBarVariant.student,
+            showBackButton: true,
+          ),
           body: RefreshIndicator(
             onRefresh: () async {
               if (widget.psikologId != null && widget.psikologId!.isNotEmpty) {
@@ -105,123 +181,370 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                 await provider.loadAvailableSchedules();
               }
             },
-            color: context.watch<ThemeProvider>().primary,
-            child: CustomScrollView(
-              slivers: [
-                const SliverToBoxAdapter(
-                  child: BkuStaticAppBar(
-                    title: 'Booking Konseling',
-                    variant: AppBarVariant.student,
-                    showBackButton: true,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(AppSpacing.xl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.rescheduleBookingId != null)
-                          Container(
-                            padding: EdgeInsets.all(AppSpacing.lg),
-                            margin: EdgeInsets.only(bottom: AppSpacing.xl),
-                            decoration: BoxDecoration(
-                              color: context
-                                  .watch<ThemeProvider>()
-                                  .warning
-                                  .withAlpha(20),
-                              borderRadius: AppRadius.radiusLg,
-                              border: Border.all(
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .warning
-                                    .withAlpha(50),
+            color: BkuTheme.primary,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.rescheduleBookingId != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF3C7),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFFFDE68A)),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.info_outline_rounded, color: Color(0xFFD97706), size: 20),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Anda sedang melakukan penjadwalan ulang (Reschedule) untuk sesi konseling.',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF92400E)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
+
+                  if (psikologDetail.isNotEmpty) ...[
+                    _buildPsychologistBrief(psikologDetail),
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
+
+                  _buildSectionCard(
+                    title: '1. Pilih Slot Jadwal Konseling',
+                    icon: Icons.calendar_month_rounded,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEFF6FF),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFBFDBFE)),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.info_outline_rounded, size: 15, color: Color(0xFF1D4ED8)),
+                            SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                'Pilih waktu yang sesuai. Slot abu-abu berarti kuota telah penuh.',
+                                style: TextStyle(fontSize: 11, color: Color(0xFF1E40AF), fontWeight: FontWeight.w600),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildSlotList(slots),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  _buildSectionCard(
+                    title: '2. Mode & Topik Konseling',
+                    icon: Icons.chat_bubble_outline_rounded,
+                    children: [
+                      const Text('Metode Pertemuan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _modeOptionTile(
+                              'Tatap Muka',
+                              'Ruang Konseling',
+                              Icons.location_on_outlined,
+                              _selectedMode == 'Tatap Muka',
+                              () => setState(() => _selectedMode = 'Tatap Muka'),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: _modeOptionTile(
+                              'Online',
+                              'Google Meet',
+                              Icons.videocam_outlined,
+                              _selectedMode == 'Online' || _selectedMode == 'Daring',
+                              () => setState(() => _selectedMode = 'Online'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Topik Utama Konseling', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        initialValue: _selectedTopik,
+                        items: kTopikOptions.map((t) => DropdownMenuItem(value: t, child: Text(t, style: const TextStyle(fontSize: 12.5)))).toList(),
+                        onChanged: (v) => setState(() => _selectedTopik = v ?? 'Psikologi'),
+                        decoration: _inputDecoration(''),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  _buildSectionCard(
+                    title: '3. Uraian Keluhan & Harapan',
+                    icon: Icons.edit_note_rounded,
+                    children: [
+                      const Text('Ceritakan Keluhan Utama Anda * (Min. 10 Karakter)', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _complaintCtrl,
+                        maxLines: 4,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('Ceritakan situasi, masalah, atau beban pikiran yang Anda rasakan...'),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Harapan Setelah Mengikuti Konseling', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _harapanCtrl,
+                        maxLines: 2,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('Tuliskan harapan atau target yang ingin Anda capai...'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  _buildSectionCard(
+                    title: '4. Sub-Kategori Masalah (SPMI)',
+                    icon: Icons.checklist_rounded,
+                    children: [
+                      const Text('Isu Akademik', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      ...kSubAkademikOptions.map((opt) {
+                        final isChecked = _selectedAkademik.contains(opt);
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (isChecked) {
+                                _selectedAkademik.remove(opt);
+                              } else {
+                                _selectedAkademik.add(opt);
+                              }
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.info_outline_rounded,
-                                  color: context.watch<ThemeProvider>().warning,
+                                  isChecked ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+                                  size: 18,
+                                  color: isChecked ? const Color(0xFF2563EB) : const Color(0xFF94A3B8),
                                 ),
-                                SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Text(
-                                    'Kamu sedang melakukan penjadwalan ulang (Reschedule) untuk sesi konseling.',
-                                    style: AppTextStyles.labelMd.copyWith(
-                                      color:
-                                          context
-                                              .watch<ThemeProvider>()
-                                              .warning,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                const SizedBox(width: 8),
+                                Expanded(child: Text(opt, style: const TextStyle(fontSize: 11.5, color: Color(0xFF334155)))),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Isu Non-Akademik / Personal', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      ...kSubNonAkademikOptions.map((opt) {
+                        final isChecked = _selectedNonAkademik.contains(opt);
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (isChecked) {
+                                _selectedNonAkademik.remove(opt);
+                              } else {
+                                _selectedNonAkademik.add(opt);
+                              }
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  isChecked ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
+                                  size: 18,
+                                  color: isChecked ? const Color(0xFFD97706) : const Color(0xFF94A3B8),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(child: Text(opt, style: const TextStyle(fontSize: 11.5, color: Color(0xFF334155)))),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Sub-Kategori Lainnya', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _subLainnyaCtrl,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('Tuliskan kendala lain jika tidak tertera di atas...'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  _buildSectionCard(
+                    title: '5. Data Demografi & Keluarga (SPMI)',
+                    icon: Icons.family_restroom_rounded,
+                    children: [
+                      const Text('Status Pernikahan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        initialValue: _statusPernikahan,
+                        items: kStatusPernikahanOpts.map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 12.5)))).toList(),
+                        onChanged: (v) => setState(() => _statusPernikahan = v ?? 'Belum menikah'),
+                        decoration: _inputDecoration(''),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Anak Ke-', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                const SizedBox(height: 6),
+                                TextFormField(
+                                  initialValue: _anakKe.toString(),
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                                  decoration: _inputDecoration('1'),
+                                  onChanged: (v) => _anakKe = int.tryParse(v) ?? 1,
                                 ),
                               ],
                             ),
                           ),
-                        if (psikologDetail.isNotEmpty)
-                          _buildPsychologistBrief(psikologDetail),
-                        if (psikologDetail.isNotEmpty) SizedBox(height: AppSpacing.xxl),
-                        _buildSectionHeader('Pilih Slot Jadwal'),
-                        SizedBox(height: AppSpacing.sm),
-                        // Info kuota
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm,
-                          ),
-                          margin: EdgeInsets.only(bottom: AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            color: AppColors.info.withAlpha(15),
-                            borderRadius: AppRadius.radiusMd,
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.info_outline_rounded,
-                                size: 16,
-                                color: AppColors.info,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              const Expanded(
-                                child: Text(
-                                  'Slot abu-abu = penuh atau sudah kamu booking. Tarik ke bawah untuk refresh.',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: AppColors.neutral700,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Dari Bersaudara', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                const SizedBox(height: 6),
+                                TextFormField(
+                                  initialValue: _jumlahBersaudara.toString(),
+                                  keyboardType: TextInputType.number,
+                                  style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                                  decoration: _inputDecoration('1'),
+                                  onChanged: (v) => _jumlahBersaudara = int.tryParse(v) ?? 1,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Nama Orang Tua / Wali', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _namaOrtuCtrl,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('Nama lengkap orang tua / wali'),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('No. HP Orang Tua / Wali', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _noHpOrtuCtrl,
+                        keyboardType: TextInputType.phone,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('08xxxxxxxxxx'),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('Pekerjaan Orang Tua / Wali', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        initialValue: _pekerjaanOrtu,
+                        items: kPekerjaanOrtuOpts.map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 12.5)))).toList(),
+                        onChanged: (v) => setState(() => _pekerjaanOrtu = v ?? 'Pegawai Swasta'),
+                        decoration: _inputDecoration(''),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Text('No. HP Dosen Pembimbing Akademik (Dosen PA)', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: _noHpDosenPaCtrl,
+                        keyboardType: TextInputType.phone,
+                        style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                        decoration: _inputDecoration('08xxxxxxxxxx'),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _pernahSakitKeras,
+                            activeColor: const Color(0xFF0F172A),
+                            onChanged: (v) => setState(() => _pernahSakitKeras = v ?? false),
+                          ),
+                          const Expanded(
+                            child: Text(
+                              'Pernah Mengalami Sakit Keras / Riwayat Medis Khusus',
+                              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_pernahSakitKeras) ...[
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: _detailSakitKerasCtrl,
+                          style: const TextStyle(fontSize: 12.5, color: Color(0xFF0F172A)),
+                          decoration: _inputDecoration('Jelaskan jenis penyakit dan tahun kejadian...'),
                         ),
-                        SizedBox(height: AppSpacing.lg),
-                        SizedBox(height: AppSpacing.lg),
-                        _buildSlotList(slots),
-                        SizedBox(height: AppSpacing.xl),
-                        _buildSectionHeader('Topik / Kategori Konseling'),
-                        SizedBox(height: AppSpacing.lg),
-                        _buildKategoriSelector(),
-                        SizedBox(height: AppSpacing.xl),
-                        _buildSectionHeader('Mode Konseling'),
-                        SizedBox(height: AppSpacing.lg),
-                        _buildModeSelector(),
-                        SizedBox(height: AppSpacing.xl),
-                        _buildSectionHeader('Keluhan Singkat'),
-                        SizedBox(height: AppSpacing.lg),
-                        _buildComplaintField(),
-                        SizedBox(height: AppSpacing.xl),
-                        _buildAttachmentField(),
-                        SizedBox(height: AppSpacing.xxl),
-                        _buildConfirmButton(provider),
-                        SizedBox(height: AppSpacing.s48),
                       ],
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _pernahKonseling,
+                            activeColor: const Color(0xFF0F172A),
+                            onChanged: (v) => setState(() => _pernahKonseling = v ?? false),
+                          ),
+                          const Expanded(
+                            child: Text(
+                              'Pernah Mengikuti Sesi Konseling Sebelumnya',
+                              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: _selectedSlot == null || _isSubmitting ? null : () => _submit(provider),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: BkuTheme.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                            )
+                          : Text(
+                              widget.rescheduleBookingId != null ? 'Konfirmasi Reschedule' : 'Lanjutkan Pendaftaran',
+                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                            ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.s48),
+                ],
+              ),
             ),
           ),
         );
@@ -232,685 +555,295 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   Widget _buildPsychologistBrief(Map<String, dynamic> p) {
     final name = p['name']?.toString() ?? '-';
     final spec = p['specialization']?.toString() ?? '-';
-
-    final rawPhoto = () {
-      final possibleKeys = [
-        'foto_url',
-        'photo_url',
-        'photoUrl',
-        'FotoURL',
-        'foto',
-        'Foto',
-        'avatar_url',
-        'avatar',
-      ];
-      for (final key in possibleKeys) {
-        if (p[key] != null && p[key].toString().trim().isNotEmpty) {
-          return p[key].toString().trim();
-        }
-      }
-      final user = p['user'] ?? p['User'] ?? p['Pengguna'] ?? p['pengguna'];
-      if (user is Map) {
-        for (final key in possibleKeys) {
-          if (user[key] != null && user[key].toString().trim().isNotEmpty) {
-            return user[key].toString().trim();
-          }
-        }
-      }
-      return '';
-    }();
+    final rawPhoto = p['photo_url']?.toString() ?? p['foto_url']?.toString() ?? '';
     final photoUrl = rawPhoto.isNotEmpty ? ApiGate.getImageUrl(rawPhoto) : '';
-    debugPrint('AVATAR_DEBUG booking_screen: $photoUrl');
 
-    return BkuCard(
-      backgroundColor: AppColors.neutral100,
-      padding: EdgeInsets.all(AppSpacing.lg),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: AppColors.neutral200,
+          Container(
+            width: 52,
+            height: 52,
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipOval(
-              child:
-                  photoUrl.isNotEmpty
-                      ? CachedNetworkImage(imageUrl: 
-                        photoUrl,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                        errorWidget:
-                            (context, url, error) => const Icon(
-                              Icons.person_rounded,
-                              color: AppColors.neutral700,
-                              size: 30,
-                            ),
-                        placeholder: (context, url) => Container(color: AppColors.neutral200),
-                      )
-                      : const Icon(
-                        Icons.person_rounded,
-                        color: AppColors.neutral700,
-                        size: 30,
-                      ),
+              child: photoUrl.isNotEmpty
+                  ? CachedNetworkImage(imageUrl: photoUrl, fit: BoxFit.cover)
+                  : Container(
+                      color: const Color(0xFFF1F5F9),
+                      child: const Icon(Icons.person_rounded, color: Color(0xFF475569), size: 28),
+                    ),
             ),
           ),
-          SizedBox(width: AppSpacing.lg),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   name,
-                  style: AppTextStyles.bodyLg.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   spec,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: context.watch<ThemeProvider>().outline,
-                  ),
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: AppTextStyles.bodyLg.copyWith(
-        fontWeight: FontWeight.bold,
-        color: AppColors.neutral900,
       ),
     );
   }
 
   Widget _buildSlotList(List<Map<String, dynamic>> slots) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final primaryColor = themeProvider.primary;
-    final outlineColor = themeProvider.outline;
-    final infoColor = themeProvider.info;
-    final errorColor = themeProvider.colorError;
+    if (slots.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: const Center(
+          child: Text(
+            'Belum ada jadwal slot yang tersedia untuk psikolog ini.',
+            style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+          ),
+        ),
+      );
+    }
 
     return Column(
-      children:
-          slots.map((slot) {
-            final isSelected = _selectedSlot?['id'] == slot['id'];
-            final hari =
-                slot['hari']?.toString() ?? slot['day']?.toString() ?? '-';
-            final start =
-                slot['jam_mulai']?.toString() ??
-                slot['start']?.toString() ??
-                '-';
-            final end =
-                slot['jam_selesai']?.toString() ??
-                slot['end']?.toString() ??
-                '-';
-            final lokasi =
-                slot['lokasi']?.toString() ??
-                slot['location']?.toString() ??
-                '';
-            final kategori =
-                slot['kategori']?.toString() ??
-                slot['category']?.toString() ??
-                '';
-            // Parse aman — Dio return num bukan int dari JSON
-            final sisaKuotaRaw = slot['sisa_kuota'] ?? slot['quota'];
-            final sisaKuota =
-                sisaKuotaRaw != null ? (sisaKuotaRaw as num).toInt() : 1;
-            final kuotaRaw = slot['kuota'] ?? slot['quota'];
-            final kuota = kuotaRaw != null ? (kuotaRaw as num).toInt() : 1;
-            final displayDate = slot['display_date']?.toString() ?? '';
-            // Penuh = sisa kuota 0 (sudah ada booking sebanyak kuota)
-            final isFull = sisaKuota <= 0;
-            // Mahasiswa ini sendiri sudah booking slot ini
-            final alreadyBooked = slot['already_booked'] == true;
-            // Disabled = penuh ATAU sudah dibooking mahasiswa ini
-            final isDisabled = isFull || alreadyBooked;
+      children: slots.map((slot) {
+        final isSelected = _selectedSlot?['id'] == slot['id'];
+        final hari = slot['hari']?.toString() ?? slot['day']?.toString() ?? '-';
+        final start = slot['jam_mulai']?.toString() ?? slot['start']?.toString() ?? '-';
+        final end = slot['jam_selesai']?.toString() ?? slot['end']?.toString() ?? '-';
+        final sisaKuotaRaw = slot['sisa_kuota'] ?? slot['quota'];
+        final sisaKuota = sisaKuotaRaw != null ? (sisaKuotaRaw as num).toInt() : 1;
+        final displayDate = slot['display_date']?.toString() ?? slot['date']?.toString() ?? '';
+        final isFull = sisaKuota <= 0;
+        final alreadyBooked = slot['already_booked'] == true;
+        final isDisabled = isFull || alreadyBooked;
 
-            // Psikolog info (untuk available schedules)
-            final psikolog = slot['psychologist'] as Map<String, dynamic>?;
-            final psikologName = psikolog?['name']?.toString() ?? '';
+        final psikolog = slot['psychologist'] as Map<String, dynamic>?;
+        final psikologName = psikolog?['name']?.toString() ?? '';
 
-            return GestureDetector(
-              onTap:
-                  isDisabled
-                      ? null
-                      : () => setState(
-                        () => _selectedSlot = isSelected ? null : slot,
-                      ),
-              child: BkuCard(
-                backgroundColor: isSelected ? primaryColor : context.appColors.surface,
-                margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color:
-                            isDisabled
-                                ? AppColors.neutral200.withAlpha(20)
-                                : isSelected
-                                ? context.appColors.onPrimary.withAlpha(30)
-                                : AppColors.neutral100,
-                        borderRadius: AppRadius.radiusMd,
-                      ),
-                      child: Icon(
-                        alreadyBooked
-                            ? Icons.check_circle_outline_rounded
-                            : isFull
-                            ? Icons.block_rounded
-                            : Icons.schedule_rounded,
-                        color:
-                            isDisabled
-                                ? AppColors.neutral500
-                                : isSelected
-                                ? context.appColors.onPrimary
-                                : AppColors.neutral700,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.lg),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$hari, $start - $end',
-                            style: AppTextStyles.bodyMd.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color:
-                                   isDisabled
-                                       ? AppColors.neutral500
-                                       : isSelected
-                                       ? context.appColors.onPrimary
-                                       : AppColors.neutral900,
-                            ),
-                          ),
-                          if (displayDate.isNotEmpty)
-                            Text(
-                              displayDate,
-                              style: AppTextStyles.labelSm.copyWith(
-                                color:
-                                    isDisabled
-                                        ? AppColors.neutral500
-                                      : isSelected
-                                        ? context.appColors.onPrimary
-                                      : outlineColor,
-                              ),
-                            ),
-                            if (psikologName.isNotEmpty)
-                              Text(
-                                psikologName,
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color:
-                                      isDisabled
-                                          ? AppColors.neutral500
-                                        : isSelected
-                                      ? context.appColors.onPrimary
-                                        : primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: [
-                              if (kategori.isNotEmpty)
-                                _buildChip(
-                                  kategori,
-                                  isSelected
-                                      ? context.appColors.onPrimary
-                                      : AppColors.neutral700,
-                                  isSelected,
-                                  isDisabled,
-                                ),
-                              if (lokasi.isNotEmpty)
-                                _buildChip(
-                                  lokasi,
-                                  isSelected ? context.appColors.onPrimary : context.appColors.info,
-                                  isSelected,
-                                  isDisabled,
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (alreadyBooked)
-                          _buildBadge('Sudah\nDibooking', infoColor)
-                        else if (isFull)
-                          _buildBadge('Penuh', errorColor)
-                        else ...[
-                          Text(
-                            'Sisa $sisaKuota/$kuota',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: isSelected ? context.appColors.onPrimary : outlineColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-    );
-  }
-
-  Widget _buildChip(
-    String label,
-    Color color,
-    bool isSelected,
-    bool isDisabled,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(top: AppSpacing.xs),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color:
-            isDisabled
-                ? AppColors.neutral500.withAlpha(15)
-                : isSelected
-                ? context.appColors.onPrimary.withAlpha(30)
-                : color.withAlpha(15),
-        borderRadius: AppRadius.radiusXs,
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelSm.copyWith(
-          color:
-            isDisabled
-                ? AppColors.neutral500
-                : isSelected
-                ? context.appColors.onPrimary
-                : color,
-            fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBadge(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: color.withAlpha(15),
-        borderRadius: AppRadius.radiusSm,
-        border: Border.all(color: color.withAlpha(40)),
-      ),
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        style: AppTextStyles.labelSm.copyWith(
-          fontSize: 10,
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildKategoriSelector() {
-    return BkuCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Pilih kategori yang paling sesuai dengan keluhan Anda',
-            style: AppTextStyles.labelMd.copyWith(
-              color: context.watch<ThemeProvider>().outline,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children:
-                _kategoriList.map((kategori) {
-                  final isSelected = _selectedKategori == kategori;
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedKategori = kategori),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: AppSpacing.sm,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected
-                                ? AppColors.neutral900
-                                : context.watch<ThemeProvider>().background,
-                        borderRadius: AppRadius.radiusXl,
-                        border: Border.all(
-                          color:
-                              isSelected
-                                  ? AppColors.neutral900
-                                  : context
-                                      .watch<ThemeProvider>()
-                                      .outlineVariant,
-                        ),
-                      ),
-                      child: Text(
-                        kategori,
-                        style: AppTextStyles.labelMd.copyWith(
-                          color:
-                              isSelected
-                                  ? context.appColors.onPrimary
-                                  : context.watch<ThemeProvider>().onSurface,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildModeSelector() {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _selectedMode = 'Tatap Muka'),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                color:
-                    _selectedMode == 'Tatap Muka' ? AppColors.success : context.appColors.surface,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(
-                    color:
-                      _selectedMode == 'Tatap Muka'
-                          ? AppColors.success
-                          : AppColors.neutral300,
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.location_on_rounded,
-                    color: AppColors.neutral500,
-                    size: 28,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Tatap Muka',
-                    style: TextStyle(
-                      color:
-                          _selectedMode == 'Tatap Muka'
-                              ? context.appColors.onPrimary
-                              : AppColors.neutral800,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.lg),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _selectedMode = 'Daring'),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                color:
-                    _selectedMode == 'Daring'
-                        ? AppColors.success
-                        : context.appColors.surface,
-                borderRadius: AppRadius.radiusLg,
-                border: Border.all(
-                  color:
-                      _selectedMode == 'Daring'
-                          ? AppColors.success
-                          : AppColors.neutral300,
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.video_camera_front_rounded,
-                    color: _selectedMode == 'Daring' ? context.appColors.onPrimary : AppColors.neutral500,
-                    size: 28,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Daring',
-                    style: TextStyle(
-                      color:
-                          _selectedMode == 'Daring'
-                              ? context.appColors.onPrimary
-                              : AppColors.neutral800,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildComplaintField() {
-    return BkuTextField(
-      controller: _complaintCtrl,
-      maxLines: 4,
-      style: AppTextStyles.bodyMd,
-      decoration: InputDecoration(
-        hintText: 'Ceritakan keluhan atau topik yang ingin kamu diskusikan...',
-        hintStyle: AppTextStyles.labelMd.copyWith(
-          color: context.watch<ThemeProvider>().outline.withAlpha(100),
-        ),
-        filled: true,
-        fillColor: context.watch<ThemeProvider>().background,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.radiusXl,
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: EdgeInsets.all(AppSpacing.xl),
-      ),
-    );
-  }
-
-  Widget _buildAttachmentField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('Lampiran (Opsional)'),
-        SizedBox(height: AppSpacing.md),
-        InkWell(
-          onTap: _pickFile,
-          borderRadius: AppRadius.radiusLg,
+        return GestureDetector(
+          onTap: isDisabled
+              ? null
+              : () => setState(() => _selectedSlot = isSelected ? null : slot),
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().background,
-              borderRadius: AppRadius.radiusLg,
+              color: isSelected
+                  ? const Color(0xFFEFF6FF)
+                  : (isDisabled ? const Color(0xFFF8FAFC) : Colors.white),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color:
-                    _attachmentPath != null
-                        ? context.watch<ThemeProvider>().primary
-                        : Colors.transparent,
+                color: isSelected
+                    ? const Color(0xFF2563EB)
+                    : (isDisabled ? const Color(0xFFE2E8F0) : const Color(0xFFCBD5E1)),
+                width: isSelected ? 1.5 : 1,
               ),
             ),
             child: Row(
               children: [
                 Icon(
-                  _attachmentPath != null
-                      ? Icons.check_circle_rounded
-                      : Icons.attach_file_rounded,
-                  color:
-                      _attachmentPath != null
-                          ? context.watch<ThemeProvider>().primary
-                          : context.watch<ThemeProvider>().outline.withAlpha(
-                            150,
-                          ),
+                  alreadyBooked
+                      ? Icons.check_circle_outline_rounded
+                      : (isFull ? Icons.block_rounded : Icons.schedule_rounded),
+                  color: isSelected
+                      ? const Color(0xFF2563EB)
+                      : (isDisabled ? const Color(0xFF94A3B8) : const Color(0xFF0F172A)),
+                  size: 20,
                 ),
-                SizedBox(width: AppSpacing.md),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    _attachmentPath != null
-                        ? _attachmentPath!.split('/').last
-                        : 'Unggah file (PDF/Gambar)',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color:
-                          _attachmentPath != null
-                              ? context.watch<ThemeProvider>().onSurface
-                              : context
-                                  .watch<ThemeProvider>()
-                                  .outline
-                                  .withAlpha(150),
-                      fontWeight:
-                          _attachmentPath != null
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$hari, $start - $end',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w800,
+                          color: isDisabled ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
+                        ),
+                      ),
+                      if (displayDate.isNotEmpty || psikologName.isNotEmpty)
+                        Text(
+                          [
+                            if (displayDate.isNotEmpty) displayDate,
+                            if (psikologName.isNotEmpty) psikologName,
+                          ].join(' • '),
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            color: isDisabled ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (_attachmentPath != null)
-                  IconButton(
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      size: 20,
-                      color: AppColors.error,
-                    ),
-                    onPressed: () => setState(() => _attachmentPath = null),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: isDisabled ? const Color(0xFFE2E8F0) : const Color(0xFFECFDF5),
+                    borderRadius: BorderRadius.circular(6),
                   ),
+                  child: Text(
+                    alreadyBooked ? 'Terdaftar' : (isFull ? 'Penuh' : 'Sisa $sisaKuota'),
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      color: isDisabled ? const Color(0xFF64748B) : const Color(0xFF059669),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-      ],
+        );
+      }).toList(),
     );
   }
 
-  Future<void> _pickFile() async {
-    try {
-      FilePickerResult? result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-      );
-
-      if (result != null && result.files.single.path != null) {
-        setState(() {
-          _attachmentPath = result.files.single.path;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        AppSnackbar.showError(context, 'Gagal memilih file: $e');
-      }
-    }
+  Widget _modeOptionTile(
+    String title,
+    String subtitle,
+    IconData icon,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFEFF6FF) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFBFDBFE) : const Color(0xFFE2E8F0),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFF64748B)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: isSelected ? const Color(0xFF1D4ED8) : const Color(0xFF0F172A),
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _buildConfirmButton(StudentCounselingProvider provider) {
-    return BkuButton(
-      text:
-          widget.rescheduleBookingId != null
-              ? 'Konfirmasi Reschedule'
-              : 'Lanjutkan Booking',
-      onPressed: _selectedSlot == null ? null : () => _submit(provider),
-      isLoading: _isSubmitting,
-      height: 60,
-      variant: BkuButtonVariant.success,
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Icon(icon, size: 16, color: const Color(0xFF475569)),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ...children,
+        ],
+      ),
     );
   }
 
   Future<void> _submit(StudentCounselingProvider provider) async {
     if (_selectedSlot == null) return;
+    if (_complaintCtrl.text.trim().length < 10) {
+      AppSnackbar.showError(context, 'Keluhan utama wajib diisi minimal 10 karakter');
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     final slot = _selectedSlot!;
 
-    dynamic rawPsikologId =
-        slot['psikolog_id'] ??
+    dynamic rawPsikologId = slot['psikolog_id'] ??
         slot['psychologist_id'] ??
         slot['dosen_id'] ??
         slot['DosenID'] ??
         slot['PsikologID'] ??
-        slot['psychologistId'] ??
-        slot['PsychologistID'];
+        slot['psychologistId'];
 
-    if ((rawPsikologId == null || rawPsikologId == 0 || rawPsikologId == '0') &&
-        slot['psychologist'] is Map) {
+    if ((rawPsikologId == null || rawPsikologId == 0 || rawPsikologId == '0') && slot['psychologist'] is Map) {
       final psych = slot['psychologist'] as Map<String, dynamic>;
-      rawPsikologId =
-          psych['id'] ??
-          psych['ID'] ??
-          psych['dosen_id'] ??
-          psych['DosenID'] ??
-          psych['psikolog_id'] ??
-          psych['PsikologID'];
-    }
-
-    if ((rawPsikologId == null || rawPsikologId == 0 || rawPsikologId == '0') &&
-        slot['psikolog'] is Map) {
-      final psik = slot['psikolog'] as Map<String, dynamic>;
-      rawPsikologId =
-          psik['id'] ??
-          psik['ID'] ??
-          psik['dosen_id'] ??
-          psik['DosenID'] ??
-          psik['psikolog_id'] ??
-          psik['PsikologID'];
+      rawPsikologId = psych['id'] ?? psych['ID'] ?? psych['dosen_id'];
     }
 
     if (rawPsikologId == null || rawPsikologId == 0 || rawPsikologId == '0') {
-      rawPsikologId =
-          widget.psikologId ??
-          provider.psychologistDetail['id'] ??
-          provider.psychologistDetail['ID'] ??
-          provider.psychologistDetail['dosen_id'] ??
-          provider.psychologistDetail['DosenID'];
+      rawPsikologId = widget.psikologId ?? provider.psychologistDetail['id'] ?? provider.psychologistDetail['ID'];
     }
 
     final int psikologId = int.tryParse(rawPsikologId?.toString() ?? '') ?? 0;
+    final int slotId = int.tryParse((slot['id'] ?? slot['ID'] ?? slot['slot_id'] ?? slot['SlotID'])?.toString() ?? '') ?? 0;
 
-    dynamic rawSlotId =
-        slot['id'] ??
-        slot['ID'] ??
-        slot['slot_id'] ??
-        slot['SlotID'] ??
-        slot['slotId'];
-    final int slotId = int.tryParse(rawSlotId?.toString() ?? '') ?? 0;
-
-    final date =
-        slot['tanggal']?.toString() ?? slot['next_date']?.toString() ?? '';
-    final start =
-        slot['jam_mulai']?.toString() ?? slot['start']?.toString() ?? '';
-    final end =
-        slot['jam_selesai']?.toString() ?? slot['end']?.toString() ?? '';
+    final date = slot['tanggal']?.toString() ?? slot['next_date']?.toString() ?? slot['date']?.toString() ?? '';
+    final start = slot['jam_mulai']?.toString() ?? slot['start']?.toString() ?? '';
+    final end = slot['jam_selesai']?.toString() ?? slot['end']?.toString() ?? '';
 
     final isReschedule = widget.rescheduleBookingId != null;
 
@@ -921,6 +854,23 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         return;
       }
     }
+
+    final spmiPayload = {
+      'harapan_konseling': _harapanCtrl.text.trim(),
+      'status_pernikahan': _statusPernikahan,
+      'anak_ke': _anakKe,
+      'jumlah_bersaudara': _jumlahBersaudara,
+      'nama_ortu_wali': _namaOrtuCtrl.text.trim(),
+      'no_hp_ortu_wali': _noHpOrtuCtrl.text.trim(),
+      'pekerjaan_ortu_wali': _pekerjaanOrtu,
+      'no_hp_dosen_pa': _noHpDosenPaCtrl.text.trim(),
+      'pernah_sakit_keras': _pernahSakitKeras,
+      'detail_sakit_keras': _pernahSakitKeras ? _detailSakitKerasCtrl.text.trim() : '',
+      'pernah_konseling_sebelumnya': _pernahKonseling,
+      'sub_kategori_akademik': _selectedAkademik.toList(),
+      'sub_kategori_non_akademik': _selectedNonAkademik.toList(),
+      'sub_kategori_lainnya': _subLainnyaCtrl.text.trim(),
+    };
 
     bool success = false;
 
@@ -938,34 +888,25 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         date: date,
         start: start,
         end: end,
-        topic: _selectedKategori,
+        topic: _selectedTopik,
         complaint: _complaintCtrl.text.trim(),
         mode: _selectedMode,
-        attachmentPath: _attachmentPath,
+        spmi: spmiPayload,
       );
     }
 
     if (mounted) {
       setState(() => _isSubmitting = false);
       if (success) {
-        final profileProvider = context.read<ProfileProvider>();
-
         AppSnackbar.showSuccess(
           context,
-          isReschedule
-              ? 'Jadwal konseling berhasil diperbarui'
-              : 'Pendaftaran konseling berhasil dikirim',
+          isReschedule ? 'Jadwal konseling berhasil diperbarui' : 'Pendaftaran konseling SPMI berhasil diajukan',
         );
-
-        profileProvider.fetchProfile();
-        context.pop();
+        Navigator.pop(context, true);
       } else {
         AppSnackbar.showError(
           context,
-          provider.bookingError ??
-              (isReschedule
-                  ? 'Gagal mereschedule booking'
-                  : 'Gagal melakukan booking konseling'),
+          provider.bookingError ?? (isReschedule ? 'Gagal mereschedule booking' : 'Gagal mengajukan konseling'),
         );
       }
     }
@@ -976,11 +917,10 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (ctx) => _InformedConsentSheet(
-            onAgree: () => Navigator.pop(ctx, true),
-            onCancel: () => Navigator.pop(ctx, false),
-          ),
+      builder: (ctx) => _InformedConsentSheet(
+        onAgree: () => Navigator.pop(ctx, true),
+        onCancel: () => Navigator.pop(ctx, false),
+      ),
     );
     return result ?? false;
   }
@@ -991,10 +931,9 @@ class _InformedConsentSheet extends StatelessWidget {
   final VoidCallback onCancel;
 
   const _InformedConsentSheet({
-    required onAgree,
-    required onCancel,
-  })  : onAgree = onAgree,
-        onCancel = onCancel;
+    required this.onAgree,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1002,77 +941,79 @@ class _InformedConsentSheet extends StatelessWidget {
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
       ),
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 12),
           Container(
-            width: 40,
+            width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.neutral500.withAlpha(60),
-              borderRadius: AppRadius.radiusXs,
+              color: const Color(0xFFCBD5E1),
+              borderRadius: BorderRadius.circular(4),
             ),
           ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
               children: [
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.md),
                 Center(
                   child: Container(
-                    padding: AppSpacing.paddingLg,
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withAlpha(30),
+                      color: const Color(0xFFF1F5F9),
                       shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                     ),
                     child: const Icon(
                       Icons.assignment_turned_in_rounded,
-                      color: AppColors.success,
-                      size: 40,
+                      color: Color(0xFF0F172A),
+                      size: 32,
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
-                Text(
+                const SizedBox(height: AppSpacing.md),
+                const Text(
                   'Informed Consent Digital',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyLg.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.appColors.secondary,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: -0.2,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
+                const SizedBox(height: 6),
+                const Text(
                   'Harap baca dan setujui lembar persetujuan layanan konseling di bawah ini sebelum melanjutkan pendaftaran.',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySm.copyWith(
-                    color: AppColors.neutral600,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF64748B),
+                    height: 1.4,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.lg),
                 _buildClauseItem(
-                  context,
                   '1. Kerahasiaan Informasi',
                   'Semua informasi yang Anda bagikan selama sesi konseling bersifat rahasia dan dilindungi, kecuali jika terdapat indikasi yang membahayakan diri sendiri atau orang lain.',
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: 10),
                 _buildClauseItem(
-                  context,
                   '2. Keterbukaan & Kerjasama',
                   'Proses konseling berjalan efektif apabila Anda bersedia menyampaikan keluhan dengan jujur dan bekerja sama secara aktif dengan konselor/psikolog.',
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: 10),
                 _buildClauseItem(
-                  context,
                   '3. Penjadwalan & Kehadiran',
                   'Anda diharapkan hadir tepat waktu sesuai jadwal slot yang dipilih. Jika ingin melakukan pembatalan atau penjadwalan ulang, harap lakukan sebelum sesi dimulai.',
                 ),
-                const SizedBox(height: AppSpacing.xxl),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
@@ -1080,28 +1021,49 @@ class _InformedConsentSheet extends StatelessWidget {
             padding: const EdgeInsets.only(
               left: AppSpacing.xl,
               right: AppSpacing.xl,
-              bottom: AppSpacing.xl + AppSpacing.sm,
+              bottom: AppSpacing.xl,
               top: AppSpacing.md,
             ),
-            decoration: BoxDecoration(
-          color: context.appColors.surface,
-          border: Border(top: BorderSide(color: AppColors.neutral500.withAlpha(100))),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
             ),
             child: Row(
               children: [
                 Expanded(
-                  child: BkuButton.outline(
-                    onPressed: onCancel,
-                    text: 'Batal',
+                  child: SizedBox(
+                    height: 46,
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFE2E8F0)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        foregroundColor: const Color(0xFF334155),
+                      ),
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.lg),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: BkuButton(
-                    text: 'Saya Setuju',
-                    onPressed: onAgree,
-                    height: 52,
-                    variant: BkuButtonVariant.success,
+                  child: SizedBox(
+                    height: 46,
+                    child: ElevatedButton(
+                      onPressed: onAgree,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: BkuTheme.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text(
+                        'Saya Setuju',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -1112,31 +1074,33 @@ class _InformedConsentSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildClauseItem(BuildContext context, String title, String content) {
+  Widget _buildClauseItem(String title, String content) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: context.appColors.background,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral300),
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w800,
-              fontSize: 14,
-              color: context.appColors.secondary,
+              fontSize: 13,
+              color: Color(0xFF0F172A),
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 6),
           Text(
             content,
-            style: AppTextStyles.bodySm.copyWith(
-              color: AppColors.neutral700,
-              height: 1.4,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF475569),
+              height: 1.45,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

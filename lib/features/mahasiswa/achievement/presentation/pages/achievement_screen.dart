@@ -16,6 +16,7 @@ import 'package:bkuhub_mobile/core/error/error_handler.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/presentation/providers/academic_provider.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/achievement.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/achievement/presentation/pages/report_achievement_screen.dart';
+import 'package:bkuhub_mobile/core/widgets/bku_design/bku_kpi_card.dart';
 
 class AchievementScreen extends StatefulWidget {
   const AchievementScreen({super.key});
@@ -409,103 +410,35 @@ class _KpiStatsSection extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _KpiCard(
-            label: 'Total Pengajuan',
+          child: BkuKpiCard(
+            title: 'Total Usulan',
             value: '${academic.totalAchievements}',
             icon: Icons.emoji_events_rounded,
-            color: BkuTheme.indigo,
-            bgColor: BkuTheme.indigoSoft,
-            borderColor: BkuTheme.indigoBorder,
+            badgeColor: BkuTheme.indigo,
+            subtitle: 'Rekap semua data',
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: _KpiCard(
-            label: 'Diverifikasi',
+          child: BkuKpiCard(
+            title: 'Diverifikasi',
             value: '${academic.validatedAchievements}',
             icon: Icons.verified_rounded,
-            color: BkuTheme.emerald,
-            bgColor: BkuTheme.emeraldSoft,
-            borderColor: BkuTheme.emeraldBorder,
+            badgeColor: BkuTheme.emerald,
+            subtitle: 'Sudah disetujui',
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: _KpiCard(
-            label: 'Menunggu Review',
+          child: BkuKpiCard(
+            title: 'Menunggu',
             value: '${academic.pendingAchievements}',
             icon: Icons.hourglass_top_rounded,
-            color: BkuTheme.amber,
-            bgColor: BkuTheme.amberSoft,
-            borderColor: BkuTheme.amberBorder,
+            badgeColor: BkuTheme.amber,
+            subtitle: 'Sedang ditinjau',
           ),
         ),
       ],
-    );
-  }
-}
-
-class _KpiCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-  final Color bgColor;
-  final Color borderColor;
-
-  const _KpiCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    required this.bgColor,
-    required this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-      decoration: BoxDecoration(
-        color: BkuTheme.cardSurface,
-        borderRadius: BkuTheme.r16,
-        border: Border.all(color: BkuTheme.border),
-        boxShadow: BkuTheme.cardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: borderColor, width: 0.8),
-            ),
-            child: Icon(icon, color: color, size: 16),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            value,
-            style: BkuTheme.textKpiValue.copyWith(
-              fontSize: 20,
-              color: BkuTheme.textHeading,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: BkuTheme.textCaption.copyWith(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: BkuTheme.textMuted,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 }

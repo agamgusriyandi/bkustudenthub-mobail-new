@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_card.dart';
 
 class CalendarEvent {
@@ -71,70 +70,67 @@ class _CalendarMiniState extends State<CalendarMini> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_month_rounded,
-                      color: context.appColors.primary,
-                      size: 18,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.calendar_month_rounded,
+                    color: Color(0xFF475569),
+                    size: 18,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Kalender Kegiatan',
+                    style: AppTextStyles.titleSm.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF0F172A),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Kalender Kegiatan',
-                        style: AppTextStyles.titleSm.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                     onPressed: () {
                       setState(() {
                         _currentDate = DateTime(year, month - 1, 1);
                         _selectedDay = null;
                       });
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.chevron_left_rounded,
-                      color: context.appColors.onSurfaceVariant,
+                      color: Color(0xFF64748B),
                       size: 20,
                     ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
                   ),
-                  SizedBox(
-                    width: 90,
-                    child: Text(
-                      '${_months[month - 1]} $year',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  const SizedBox(width: 4),
+                  Text(
+                    '${_months[month - 1]} $year',
+                    style: AppTextStyles.caption.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF334155),
                     ),
                   ),
+                  const SizedBox(width: 4),
                   IconButton(
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                     onPressed: () {
                       setState(() {
                         _currentDate = DateTime(year, month + 1, 1);
                         _selectedDay = null;
                       });
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.chevron_right_rounded,
-                      color: context.appColors.onSurfaceVariant,
+                      color: Color(0xFF64748B),
                       size: 20,
                     ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
                   ),
                 ],
               ),
@@ -196,51 +192,32 @@ class _CalendarMiniState extends State<CalendarMini> {
                       : 'Kegiatan ${_months[month - 1]}',
                   style: AppTextStyles.bodySm.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: const Color(0xFF0F172A),
                   ),
                 ),
                 const SizedBox(height: 8),
                 if (_selectedDay == null)
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.touch_app_rounded,
-                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
-                            size: 32,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Klik tanggal yang memiliki titik',
-                            style: AppTextStyles.caption.copyWith(
-                              color: context.appColors.onSurfaceVariant,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: Text(
+                        'Pilih tanggal untuk melihat rincian kegiatan',
+                        style: AppTextStyles.caption.copyWith(
+                          color: const Color(0xFF94A3B8),
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   )
                 else if (selectedDateEvents.isEmpty)
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.event_busy_rounded,
-                            color: context.appColors.onSurfaceVariant.withValues(alpha: 0.4),
-                            size: 32,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Tidak ada kegiatan',
-                            style: AppTextStyles.caption.copyWith(
-                              color: context.appColors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: Text(
+                        'Tidak ada kegiatan pada tanggal ini',
+                        style: AppTextStyles.caption.copyWith(
+                          color: const Color(0xFF94A3B8),
+                        ),
                       ),
                     ),
                   )
@@ -267,7 +244,7 @@ class _CalendarMiniState extends State<CalendarMini> {
     final cells = <Widget>[];
 
     for (int i = 0; i < startDay; i++) {
-      cells.add(SizedBox(width: columnWidth, height: 42));
+      cells.add(SizedBox(width: columnWidth, height: 38));
     }
 
     for (int d = 1; d <= daysInMonth; d++) {
@@ -281,54 +258,51 @@ class _CalendarMiniState extends State<CalendarMini> {
           onTap: hasEvent ? () => setState(() => _selectedDay = d) : null,
           child: SizedBox(
             width: columnWidth,
-            height: 42,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? context.appColors.primary.withValues(alpha: 0.2)
-                        : isToday
-                            ? context.appColors.primary
-                            : null,
-                    borderRadius: BorderRadius.circular(16),
-                    border: isSelected
-                        ? Border.all(
-                            color: context.appColors.primary.withValues(alpha: 0.4),
-                            width: 2,
-                          )
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '$d',
-                      style: AppTextStyles.caption.copyWith(
-                        color: isToday
-                            ? context.appColors.surface
-                            : isPast
-                                ? context.appColors.onSurfaceVariant.withValues(alpha: 0.4)
-                                : context.appColors.onSurface,
-                        fontWeight: FontWeight.bold,
-                      ),
+            height: 38,
+            child: Center(
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: isToday
+                      ? const Color(0xFF1E293B)
+                      : isSelected
+                          ? const Color(0xFFF1F5F9)
+                          : hasEvent
+                              ? const Color(0xFFF8FAFC)
+                              : null,
+                  borderRadius: BorderRadius.circular(8),
+                  border: isSelected
+                      ? Border.all(
+                          color: const Color(0xFF0F172A),
+                          width: 1.5,
+                        )
+                      : hasEvent && !isToday
+                          ? Border.all(
+                              color: const Color(0xFFCBD5E1),
+                              width: 0.8,
+                            )
+                          : null,
+                ),
+                child: Center(
+                  child: Text(
+                    '$d',
+                    style: AppTextStyles.caption.copyWith(
+                      color: isToday
+                          ? Colors.white
+                          : isSelected || hasEvent
+                              ? const Color(0xFF0F172A)
+                              : isPast
+                                  ? const Color(0xFFCBD5E1)
+                                  : const Color(0xFF475569),
+                      fontWeight: isToday || isSelected || hasEvent
+                          ? FontWeight.w800
+                          : FontWeight.w500,
+                      fontSize: 12,
                     ),
                   ),
                 ),
-                if (hasEvent)
-                  Container(
-                    width: 4,
-                    height: 4,
-                    margin: const EdgeInsets.only(top: 2),
-                    decoration: BoxDecoration(
-                      color: isToday || isSelected
-                          ? context.appColors.primary
-                          : context.appColors.primary.withValues(alpha: 0.6),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-              ],
+              ),
             ),
           ),
         ),
@@ -337,74 +311,65 @@ class _CalendarMiniState extends State<CalendarMini> {
 
     return Wrap(
       spacing: 0,
-      runSpacing: 4, // added slight vertical spacing between rows
+      runSpacing: 4,
       children: cells,
     );
   }
 
   Widget _buildEventItem(BuildContext context, CalendarEvent event) {
+    final catLabel = _getCategoryLabel(event.category);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: _getCategoryColor(event.category),
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  event.title,
-                  style: AppTextStyles.bodySm.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Text(
+                catLabel,
+                style: AppTextStyles.caption.copyWith(
+                  color: const Color(0xFF0F172A),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
                 ),
-                Text(
-                  _getCategoryLabel(event.category),
-                  style: AppTextStyles.caption.copyWith(
-                    color: context.appColors.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                event.title,
+                style: AppTextStyles.bodySm.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF0F172A),
+                  fontSize: 12,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Color _getCategoryColor(String? category) {
-    switch (category) {
-      case 'kencana':
-        return context.appColors.primary;
-      case 'beasiswa':
-        return AppColors.serviceEmerald;
-      case 'konseling':
-        return AppColors.servicePurple;
-      case 'kampus':
-        return AppColors.serviceSky;
-      case 'organisasi':
-        return AppColors.serviceAmber;
-      case 'libur':
-        return AppColors.serviceRose;
-      default:
-        return AppColors.neutral500;
-    }
-  }
-
   String _getCategoryLabel(String? category) {
-    switch (category) {
+    switch (category?.toLowerCase()) {
       case 'kencana':
+      case 'pkkmb':
         return 'PKKMB';
       case 'beasiswa':
         return 'Beasiswa';

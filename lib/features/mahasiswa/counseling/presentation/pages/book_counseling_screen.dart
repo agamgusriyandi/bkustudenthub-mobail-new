@@ -201,90 +201,41 @@ class _BookCounselingScreenState extends State<BookCounselingScreen> {
 
   Widget _buildStepIndicator() {
     final labels = ['Jadwal & Metode', 'Identitas & Ortu', 'Checklist SPMI', 'Keluhan & Harapan'];
-    final icons = [
-      Icons.calendar_today_rounded,
-      Icons.badge_rounded,
-      Icons.checklist_rounded,
-      Icons.edit_note_rounded,
-    ];
+    final percent = (((_step + 1) / _totalSteps) * 100).toInt();
 
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      color: context.appColors.surface,
-      child: Row(
-        children: List.generate(_totalSteps, (i) {
-          final active = i == _step;
-          final done = i < _step;
-          final color = active
-              ? context.appColors.primary
-              : done
-                  ? context.appColors.success
-                  : context.appColors.outline;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () {
-                if (i < _step) {
-                  setState(() => _step = i);
-                }
-              },
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: i <= _step
-                                ? context.appColors.primary
-                                : AppColors.surfaceContainerHighest,
-                            borderRadius: AppRadius.radiusXs,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.xs),
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          done ? Icons.check_rounded : icons[i],
-                          size: 14,
-                          color: color,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Flexible(
-                        child: Text(
-                          '${i + 1}. ${labels[i]}',
-                          style: AppTextStyles.labelSm.copyWith(
-                            color: active
-                                ? context.appColors.onSurface
-                                : context.appColors.outline,
-                            fontWeight: active ? FontWeight.w900 : FontWeight.bold,
-                            fontSize: 9,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Langkah ${_step + 1} dari $_totalSteps: ${labels[_step]}',
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
               ),
+              Text(
+                '$percent% Selesai',
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: (_step + 1) / _totalSteps,
+              backgroundColor: const Color(0xFFF1F5F9),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
+              minHeight: 5,
             ),
-          );
-        }),
+          ),
+        ],
       ),
     );
   }

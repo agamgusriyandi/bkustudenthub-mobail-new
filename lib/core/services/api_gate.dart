@@ -7,10 +7,10 @@ enum AppEnvironment {
 class ApiGate {
   static const AppEnvironment defaultEnvironment = AppEnvironment.staging;
 
-  static const String productionBaseUrl = 'https://tukang.bkustudenthub.com';
-  static const String productionWebUrl = 'https://bkustudenthub.com';
+  static const String productionBaseUrl = 'https://stag.bkustudenthub.com';
+  static const String productionWebUrl = 'https://stag.bkustudenthub.com';
 
-  static const String stagingBaseUrl = 'https://stagback.bkustudenthub.com';
+  static const String stagingBaseUrl = 'https://stag.bkustudenthub.com';
   static const String stagingWebUrl = 'https://stag.bkustudenthub.com';
 
   static const String localBaseUrl = 'http://localhost:3000';

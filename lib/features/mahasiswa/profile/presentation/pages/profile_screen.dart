@@ -12,6 +12,7 @@ import '../widgets/akademik_tab.dart';
 import '../widgets/keamanan_tab.dart';
 import '../widgets/notifikasi_tab.dart';
 import '../dialogs/avatar_upload_sheet.dart';
+import '../dialogs/student_ecard_dialog.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -302,6 +303,35 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        InkWell(
+                          onTap: () => StudentEcardDialog.show(context, profile),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF1F5F9),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.qr_code_rounded, size: 12, color: Color(0xFF0F172A)),
+                                SizedBox(width: 4),
+                                Text(
+                                  'KTM Digital',
+                                  style: TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF0F172A),
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
@@ -80,22 +79,12 @@ class AvailableScholarships extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.workspace_premium_rounded,
-                    color: AppColors.primary,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Beasiswa yang Tersedia',
-                    style: AppTextStyles.titleSm.copyWith(
-                      color: AppColors.neutral900,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
+              Text(
+                'Beasiswa yang Tersedia',
+                style: AppTextStyles.titleSm.copyWith(
+                  color: AppColors.neutral900,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               GestureDetector(
                 onTap: onViewAll ?? () {
@@ -106,21 +95,12 @@ class AvailableScholarships extends StatelessWidget {
                     ),
                   );
                 },
-                child: Row(
-                  children: [
-                    Text(
-                      'Lihat Semua',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: AppColors.primary,
-                      size: 14,
-                    ),
-                  ],
+                child: Text(
+                  'Lihat Semua',
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.appColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -139,20 +119,16 @@ class AvailableScholarships extends StatelessWidget {
 
     BkuStatus statusEnum;
     String statusText;
-    IconData statusIcon;
 
     if (isClosed) {
       statusEnum = BkuStatus.inactive;
       statusText = 'Ditutup';
-      statusIcon = Icons.event_busy_rounded;
     } else if (isUrgent) {
       statusEnum = BkuStatus.warning;
       statusText = 'Sisa $daysDiff Hari';
-      statusIcon = Icons.schedule_rounded;
     } else {
       statusEnum = BkuStatus.success;
       statusText = 'Terbuka';
-      statusIcon = Icons.verified_rounded;
     }
 
     return BkuCard(
@@ -169,16 +145,16 @@ class AvailableScholarships extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.2),
+                      color: const Color(0xFFE2E8F0),
                     ),
                   ),
                   child: Text(
                     item.category,
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.primary,
+                      color: const Color(0xFF0F172A),
                       fontWeight: FontWeight.w900,
                     ),
                     maxLines: 1,
@@ -190,7 +166,7 @@ class AvailableScholarships extends StatelessWidget {
               BkuStatusBadge(
                 status: statusEnum,
                 customText: statusText,
-                customIcon: statusIcon,
+                showIcon: false,
               ),
             ],
           ),
@@ -213,41 +189,24 @@ class AvailableScholarships extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: context.appColors.outline.withValues(alpha: 0.1),
-                  style: BorderStyle.solid,
-                ),
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.payments_rounded,
-                          color: AppColors.success,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Benefit',
-                          style: AppTextStyles.caption.copyWith(
-                            color: context.appColors.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Benefit',
+                      style: AppTextStyles.caption.copyWith(
+                        color: context.appColors.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       _formatRupiah(item.amount),
                       style: AppTextStyles.bodySm.copyWith(
+                        color: const Color(0xFF0F172A),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -257,26 +216,17 @@ class AvailableScholarships extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today_rounded,
-                          color: context.appColors.warning,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Batas Waktu',
-                          style: AppTextStyles.caption.copyWith(
-                            color: context.appColors.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Batas Waktu',
+                      style: AppTextStyles.caption.copyWith(
+                        color: context.appColors.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       _formatDate(item.deadline),
                       style: AppTextStyles.bodySm.copyWith(
+                        color: const Color(0xFF0F172A),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -285,14 +235,13 @@ class AvailableScholarships extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           BkuButton.primary(
             text: 'Lihat Detail Program',
-            trailingIcon: Icons.arrow_forward_rounded,
-            customBgColor: BkuTheme.primary,
-            customFgColor: Colors.white,
-            height: 34,
-            fontSize: 12,
+            customBgColor: const Color(0xFFF1F5F9),
+            customFgColor: const Color(0xFF1E293B),
+            height: 32,
+            fontSize: 11.5,
             onPressed: () {
               context.push('/scholarship/program/${item.id}');
             },

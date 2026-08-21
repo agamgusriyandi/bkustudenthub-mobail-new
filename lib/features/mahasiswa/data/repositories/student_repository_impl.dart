@@ -412,7 +412,7 @@ class StudentRepositoryImpl implements StudentRepository {
   @override
   Future<List<HealthRecord>> getHealthRecords() async {
     try {
-      final response = await apiClient.client.get('/kesehatan/student/riwayat');
+      final response = await apiClient.client.get('/student-health/riwayat');
       final List data = response.data['data'] ?? [];
       return data
           .map<HealthRecord>((json) => HealthRecordModel.fromJson(json))
@@ -791,7 +791,7 @@ class StudentRepositoryImpl implements StudentRepository {
         gulaDarah: record.gulaDarah,
       );
       await apiClient.client.post(
-        '/kesehatan/student/record',
+        '/student-health/record',
         data: model.toJson(),
       );
     } catch (e) {
@@ -1245,7 +1245,7 @@ class StudentRepositoryImpl implements StudentRepository {
   Future<List<HealthWorker>> getHealthWorkers() async {
     try {
       final response = await apiClient.client.get(
-        '/kesehatan/student/health-workers',
+        '/student-health/health-workers',
       );
       final List data = response.data['data'] ?? [];
       final List<HealthWorker> list =
@@ -1283,7 +1283,7 @@ class StudentRepositoryImpl implements StudentRepository {
   Future<List<HealthSchedule>> getHealthSchedules() async {
     try {
       final response = await apiClient.client.get(
-        '/kesehatan/student/health-worker-schedules',
+        '/student-health/health-worker-schedules',
       );
       final List data = response.data['data'] ?? [];
       final List<HealthSchedule> list =
@@ -1305,7 +1305,7 @@ class StudentRepositoryImpl implements StudentRepository {
   @override
   Future<List<HealthBooking>> getHealthBookings() async {
     try {
-      final response = await apiClient.client.get('/kesehatan/student/bookings');
+      final response = await apiClient.client.get('/student-health/bookings');
       final List data = response.data['data'] ?? [];
       return data
           .map<HealthBooking>((json) => HealthBookingModel.fromJson(json))
@@ -1323,7 +1323,7 @@ class StudentRepositoryImpl implements StudentRepository {
   }) async {
     try {
       await apiClient.client.post(
-        '/kesehatan/student/bookings',
+        '/student-health/bookings',
         data: {'jadwal_id': scheduleId, 'keluhan': keluhan},
       );
     } catch (e) {
@@ -1335,7 +1335,7 @@ class StudentRepositoryImpl implements StudentRepository {
   @override
   Future<void> cancelHealthBooking(String bookingId) async {
     try {
-      await apiClient.client.delete('/kesehatan/student/bookings/$bookingId');
+      await apiClient.client.delete('/student-health/bookings/$bookingId');
     } catch (e) {
       log('Error cancelling health booking: $e');
       throw _parseError(e, 'Gagal membatalkan booking klinik');
@@ -1349,7 +1349,7 @@ class StudentRepositoryImpl implements StudentRepository {
   ) async {
     try {
       await apiClient.client.put(
-        '/kesehatan/student/bookings/$bookingId/reschedule',
+        '/student-health/bookings/$bookingId/reschedule',
         data: {
           'jadwal_id': newScheduleId,
           'schedule_id': newScheduleId,

@@ -14,7 +14,7 @@ class CounselingHistoryRepository {
       if (status != null) queryParams['status'] = status;
 
       final response = await _apiClient.client.get(
-        '/counseling/history',
+        '/counseling/psychologist-bookings',
         queryParameters: queryParams,
       );
 
@@ -33,11 +33,8 @@ class CounselingHistoryRepository {
 
   Future<void> cancelBooking(int bookingId, {String? reason}) async {
     try {
-      await _apiClient.client.put(
-        '/counseling/$bookingId/cancel',
-        data: {
-          if (reason != null) 'reason': reason,
-        },
+      await _apiClient.client.delete(
+        '/counseling/psychologist-bookings/$bookingId',
       );
     } catch (e) {
       log('Error canceling booking: $e');
@@ -52,7 +49,7 @@ class CounselingHistoryRepository {
   }) async {
     try {
       await _apiClient.client.put(
-        '/counseling/$bookingId/reschedule',
+        '/counseling/psychologist-bookings/$bookingId/reschedule',
         data: {
           'date': newDate,
           'time': newTime,

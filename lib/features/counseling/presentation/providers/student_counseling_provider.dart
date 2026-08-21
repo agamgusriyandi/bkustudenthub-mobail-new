@@ -335,6 +335,60 @@ class StudentCounselingProvider extends ChangeNotifier {
     }
   }
 
+  // ─── Single Booking Detail ───────────────────────────────────────────────────
+  Map<String, dynamic>? _selectedBookingDetail;
+  Map<String, dynamic>? get selectedBookingDetail => _selectedBookingDetail;
+
+  bool _bookingDetailLoading = false;
+  bool get bookingDetailLoading => _bookingDetailLoading;
+
+  Future<Map<String, dynamic>?> loadBookingDetail(String bookingId) async {
+    _bookingDetailLoading = true;
+    notifyListeners();
+    try {
+      final response = await _apiClient.client.get('/counseling/psychologist-bookings/$bookingId');
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        _selectedBookingDetail = data;
+        _bookingDetailLoading = false;
+        notifyListeners();
+        return data;
+      }
+    } catch (e) {
+      log('StudentCounselingProvider.loadBookingDetail error: $e');
+    }
+    _bookingDetailLoading = false;
+    notifyListeners();
+    return null;
+  }
+
+  // ─── Update Booking (Edit isian / keluhan / SPMI) ────────────────────────────
+  bool _updateBookingLoading = false;
+  bool get updateBookingLoading => _updateBookingLoading;
+
+  Future<bool> updateBooking({
+    required String bookingId,
+    required Map<String, dynamic> payload,
+  }) async {
+    _updateBookingLoading = true;
+    notifyListeners();
+    try {
+      await _apiClient.client.put(
+        '/counseling/psychologist-bookings/$bookingId',
+        data: payload,
+      );
+      await loadMyBookings();
+      _updateBookingLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      log('StudentCounselingProvider.updateBooking error: $e');
+      _updateBookingLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   // ─── Faculty Statistics ──────────────────────────────────────────────────────
   List<Map<String, dynamic>> _facultyStats = [];
   List<Map<String, dynamic>> get facultyStats => _facultyStats;

@@ -15,6 +15,10 @@ class AppSnackbar {
     _showSnackbar(context, message, context.appColors.warning);
   }
 
+  static void showInfo(BuildContext context, String message) {
+    _showSnackbar(context, message, context.appColors.primary);
+  }
+
   static void _showSnackbar(
     BuildContext context,
     String message,

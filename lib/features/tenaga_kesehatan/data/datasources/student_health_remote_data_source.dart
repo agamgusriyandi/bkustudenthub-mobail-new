@@ -27,17 +27,17 @@ class StudentHealthRemoteDataSourceImpl
 
   @override
   Future<Response> getStudentHealthBookings() async {
-    return await dio.get('/kesehatan/student/bookings');
+    return await dio.get('/student-health/bookings');
   }
 
   @override
   Future<Response> createStudentHealthBooking(Map<String, dynamic> data) async {
-    return await dio.post('/kesehatan/student/bookings', data: data);
+    return await dio.post('/student-health/bookings', data: data);
   }
 
   @override
   Future<Response> cancelStudentHealthBooking(String id) async {
-    return await dio.delete('/kesehatan/student/bookings/$id');
+    return await dio.delete('/student-health/bookings/$id');
   }
 
   @override
@@ -45,51 +45,51 @@ class StudentHealthRemoteDataSourceImpl
     String id,
     Map<String, dynamic> data,
   ) async {
-    return await dio.put('/kesehatan/student/bookings/$id/reschedule', data: data);
+    return await dio.put('/student-health/bookings/$id/reschedule', data: data);
   }
 
   @override
   Future<Response> getAvailableHealthSchedules() async {
-    return await dio.get('/kesehatan/student/health-worker-schedules');
+    return await dio.get('/student-health/health-worker-schedules');
   }
 
   @override
   Future<Response> listHealthWorkers() async {
-    return await dio.get('/kesehatan/student/health-workers');
+    return await dio.get('/student-health/health-workers');
   }
 
   @override
   Future<Response> getHealthWorkerSchedules(String id) async {
-    return await dio.get('/kesehatan/student/health-workers/$id/schedules');
+    return await dio.get('/student-health/health-workers/$id/schedules');
   }
 
   @override
   Future<Response> createHealthMandiri(Map<String, dynamic> data) async {
-    return await dio.post('/kesehatan/student/mandiri', data: data);
+    return await dio.post('/student-health/mandiri', data: data);
   }
 
   @override
   Future<Response> createHealthRecord(Map<String, dynamic> data) async {
-    return await dio.post('/kesehatan/student/record', data: data);
+    return await dio.post('/student-health/record', data: data);
   }
 
   @override
   Future<Response> getHealthRingkasan() async {
-    return await dio.get('/kesehatan/student/ringkasan');
+    return await dio.get('/student-health/ringkasan');
   }
 
   @override
   Future<Response> getHealthRiwayat() async {
-    return await dio.get('/kesehatan/student/riwayat');
+    return await dio.get('/student-health/riwayat');
   }
 
   @override
   Future<Response> getHealthDetail(String id) async {
-    return await dio.get('/kesehatan/student/riwayat/$id');
+    return await dio.get('/student-health/riwayat/$id');
   }
 
   @override
   Future<Response> getHealthTips() async {
-    return await dio.get('/kesehatan/student/tips');
+    return await dio.get('/student-health/tips');
   }
 }
