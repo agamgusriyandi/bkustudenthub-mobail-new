@@ -355,6 +355,15 @@ class AppRoutes {
   static const String main = studentMain;
   static const String ormawa = ormawaMain;
 
+  static int _extractIdFromSlug(String? slug) {
+    if (slug == null || slug.isEmpty) return 0;
+    final match = RegExp(r'^(\d+)').firstMatch(slug);
+    if (match != null) {
+      return int.tryParse(match.group(1) ?? '0') ?? 0;
+    }
+    return 0;
+  }
+
   static final GoRouter router = GoRouter(
     navigatorKey:
         apiNavigatorKey, // For 401 handling - allows navigation from interceptors
@@ -369,6 +378,9 @@ class AppRoutes {
         // Map backend's /kencana/mentor to app's /mentor-kencana
         if (newPath.startsWith('/kencana/mentor')) {
           newPath = newPath.replaceFirst('/kencana/mentor', '/mentor-kencana');
+        } else if (newPath.startsWith('/student/kencana')) {
+          // Map backend's /student/kencana to app's /kencana
+          newPath = newPath.replaceFirst('/student/kencana', '/kencana');
         }
         
         // Preserve query parameters if any
@@ -597,15 +609,14 @@ class AppRoutes {
       GoRoute(
         path: '/kencana/stage/:id',
         builder: (context, state) {
-          final stageId = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          final stageId = _extractIdFromSlug(state.pathParameters['id']);
           return KencanaStageScreen(stageId: stageId);
         },
       ),
       GoRoute(
         path: '/kencana/session/:id',
         builder: (context, state) {
-          final sessionId =
-              int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          final sessionId = _extractIdFromSlug(state.pathParameters['id']);
           return KencanaSessionScreen(sessionId: sessionId);
         },
       ),
@@ -650,16 +661,26 @@ class AppRoutes {
       GoRoute(
         path: kencanaQuiz,
         builder: (context, state) {
-          final mission = state.extra as Mission?;
-          if (mission == null) return const Scaffold(body: Center(child: Text('Invalid quiz')));
+          final parsedId = _extractIdFromSlug(state.pathParameters['id']);
+          final mission = state.extra as Mission? ??
+              Mission(
+                id: parsedId.toString(),
+                title: 'Kuis Evaluasi',
+                type: 'quiz',
+              );
           return QuizScreen(mission: mission);
         },
       ),
       GoRoute(
         path: kencanaAssignment,
         builder: (context, state) {
-          final mission = state.extra as Mission?;
-          if (mission == null) return const Scaffold(body: Center(child: Text('Invalid assignment')));
+          final parsedId = _extractIdFromSlug(state.pathParameters['id']);
+          final mission = state.extra as Mission? ??
+              Mission(
+                id: parsedId.toString(),
+                title: 'Tugas Penugasan',
+                type: 'assignment',
+              );
           return AssignmentScreen(mission: mission);
         },
       ),

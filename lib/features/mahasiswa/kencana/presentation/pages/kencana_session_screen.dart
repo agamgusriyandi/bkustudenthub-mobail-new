@@ -40,7 +40,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
     final session = provider.currentSessionDetail;
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -132,20 +132,16 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       children: [
         Text(
           session.title,
-          style: const TextStyle(
-            color: AppColors.neutral900,
-            fontWeight: FontWeight.w900,
-            fontSize: 20,
-          ),
+          style: BkuTheme.textPageTitle.copyWith(fontSize: 20),
         ),
         const SizedBox(height: 10),
         if (session.startDate != null)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.neutral100,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.neutral300),
+              color: BkuTheme.slateSoft,
+              borderRadius: BkuTheme.r8,
+              border: Border.all(color: BkuTheme.border),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -153,13 +149,13 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                 const Icon(
                   Icons.access_time_filled_rounded,
                   size: 14,
-                  color: AppColors.neutral600,
+                  color: BkuTheme.textMuted,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
                   style: const TextStyle(
-                    color: AppColors.neutral600,
+                    color: BkuTheme.textMuted,
                     fontWeight: FontWeight.w700,
                     fontSize: 11.5,
                   ),
@@ -171,11 +167,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
           const SizedBox(height: 12),
           Text(
             session.description!,
-            style: const TextStyle(
-              color: AppColors.neutral600,
-              fontSize: 13,
-              height: 1.4,
-            ),
+            style: BkuTheme.textBodyRegular.copyWith(fontSize: 13, height: 1.4),
           ),
         ],
       ],
@@ -395,20 +387,14 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BkuTheme.r16,
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: context.appColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.neutral300),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 12,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            color: BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r16,
+            border: Border.all(color: BkuTheme.border),
+            boxShadow: BkuTheme.cardShadow,
           ),
           child: Row(
             children: [
@@ -417,7 +403,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                 height: 42,
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BkuTheme.r12,
                 ),
                 child: Icon(icon, color: iconColor, size: 22),
               ),
@@ -430,7 +416,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                       title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: AppColors.neutral900,
+                        color: BkuTheme.textHeading,
                         fontSize: 13.5,
                       ),
                     ),
@@ -438,7 +424,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: AppColors.neutral600,
+                        color: BkuTheme.textMuted,
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,
                       ),
@@ -449,7 +435,7 @@ class _KencanaSessionScreenState extends State<KencanaSessionScreen> {
               if (onTap != null)
                 const Icon(
                   Icons.chevron_right_rounded,
-                  color: AppColors.neutral900,
+                  color: BkuTheme.textHeading,
                   size: 22,
                 ),
             ],

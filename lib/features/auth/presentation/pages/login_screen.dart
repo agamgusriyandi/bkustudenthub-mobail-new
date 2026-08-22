@@ -223,10 +223,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: IntrinsicHeight(
                       child: Column(
                         children: [
-                          const SizedBox(height: AppSpacing.lg),
-                          _buildCenteredLogo(),
-                          const SizedBox(height: AppSpacing.lg),
-                          const Spacer(),
+                          Expanded(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.lg,
+                                ),
+                                child: _buildCenteredLogo(),
+                              ),
+                            ),
+                          ),
                           Center(
                             child: ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 480),

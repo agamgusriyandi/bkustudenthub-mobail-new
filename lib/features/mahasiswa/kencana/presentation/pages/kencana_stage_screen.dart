@@ -38,7 +38,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
     final detail = provider.currentStageDetail;
 
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -111,18 +111,12 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                     const SizedBox(height: AppSpacing.xxl),
                     Text(
                       'Sesi & Rangkaian Acara',
-                      style: AppTextStyles.titleLg.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: context.appColors.onSurface,
-                        fontSize: 15,
-                      ),
+                      style: BkuTheme.textSectionTitle.copyWith(fontSize: 15),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Daftar sesi yang harus kamu ikuti dalam tahapan ini.',
-                      style: AppTextStyles.labelSm.copyWith(
-                        color: context.appColors.outline,
-                      ),
+                      style: BkuTheme.textCardSubtitle,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     if (detail.sessions.isEmpty)
@@ -188,16 +182,10 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.neutral300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r18,
+        border: Border.all(color: BkuTheme.border),
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,13 +217,13 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                     const Icon(
                       Icons.calendar_today_rounded,
                       size: 13,
-                      color: AppColors.neutral600,
+                      color: BkuTheme.textMuted,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       '${_formatDate(detail.startDate)} - ${_formatDate(detail.endDate)}',
                       style: const TextStyle(
-                        color: AppColors.neutral600,
+                        color: BkuTheme.textMuted,
                         fontWeight: FontWeight.w600,
                         fontSize: 11,
                       ),
@@ -247,21 +235,13 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
           const SizedBox(height: 12),
           Text(
             detail.name,
-            style: const TextStyle(
-              color: AppColors.neutral900,
-              fontWeight: FontWeight.w900,
-              fontSize: 19,
-            ),
+            style: BkuTheme.textPageTitle.copyWith(fontSize: 19),
           ),
           if (detail.description != null && detail.description!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Text(
               detail.description!,
-              style: const TextStyle(
-                color: AppColors.neutral600,
-                fontSize: 12.5,
-                height: 1.4,
-              ),
+              style: BkuTheme.textBodyRegular.copyWith(fontSize: 12.5, height: 1.4),
             ),
           ],
           if (detail.group != null || detail.mentor != null) ...[
@@ -269,10 +249,10 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.neutral100,
-                borderRadius: BorderRadius.circular(12),
+                color: BkuTheme.slateSoft,
+                borderRadius: BkuTheme.r12,
                 border: Border.all(
-                  color: AppColors.neutral300,
+                  color: BkuTheme.border,
                 ),
               ),
               child: Row(
@@ -287,7 +267,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.neutral600,
+                              color: BkuTheme.textMuted,
                               letterSpacing: 1.2,
                             ),
                           ),
@@ -297,7 +277,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 12.5,
-                              color: AppColors.neutral900,
+                              color: BkuTheme.textHeading,
                             ),
                           ),
                           Text(
@@ -305,7 +285,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 11,
-                              color: AppColors.neutral600,
+                              color: BkuTheme.textMuted,
                             ),
                           ),
                         ],
@@ -321,7 +301,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.neutral600,
+                              color: BkuTheme.textMuted,
                               letterSpacing: 1.2,
                             ),
                           ),
@@ -333,7 +313,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 12.5,
-                              color: AppColors.neutral900,
+                              color: BkuTheme.textHeading,
                             ),
                             textAlign: TextAlign.right,
                           ),
@@ -374,19 +354,13 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
         border: Border.all(
           color: isActive ? BkuTheme.indigo : BkuTheme.border,
           width: isActive ? 1.5 : 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: BkuTheme.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -394,19 +368,19 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
           onTap: () {
             context.push('/kencana/session/${session.id}');
           },
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BkuTheme.r16,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: iconBg,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: iconBg,
+                      borderRadius: BkuTheme.r12,
+                    ),
                   child: Icon(
                     iconData,
                     color: iconColor,
@@ -423,7 +397,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 14.5,
-                          color: AppColors.neutral900,
+                          color: BkuTheme.textHeading,
                         ),
                       ),
                       if (session.startDate != null) ...[
@@ -431,7 +405,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                         Text(
                           '${_formatDateTime(session.startDate)} - ${_formatDateTime(session.endDate)}',
                           style: const TextStyle(
-                            color: AppColors.neutral600,
+                            color: BkuTheme.textMuted,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
@@ -464,7 +438,7 @@ class _KencanaStageScreenState extends State<KencanaStageScreen> {
                 ),
                 const Icon(
                   Icons.chevron_right_rounded,
-                  color: AppColors.neutral900,
+                  color: BkuTheme.textHeading,
                   size: 22,
                 ),
               ],

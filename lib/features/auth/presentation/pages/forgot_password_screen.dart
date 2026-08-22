@@ -1,13 +1,10 @@
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
-import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
+import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/core/widgets/fade_in_animation.dart';
 import 'package:bkuhub_mobile/core/services/auth_service.dart';
 import 'package:bkuhub_mobile/core/routes/app_routes.dart';
@@ -166,10 +163,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: Stack(
         children: [
-          // Background Image
+          // Background Image - 1:1 dengan login
           Positioned.fill(
             child: Semantics(
               excludeSemantics: true,
@@ -181,7 +178,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
             ),
           ),
-          // Gradient Overlay
+          // Gradient Overlay - 1:1 dengan login
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -189,8 +186,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    context.appColors.primary.withAlpha(140),
-                    context.appColors.primary.withAlpha(217),
+                    BkuTheme.primary.withAlpha(140),
+                    BkuTheme.primary.withAlpha(217),
                   ],
                 ),
               ),
@@ -210,66 +207,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: IntrinsicHeight(
                       child: Column(
                         children: [
-                          // Back Button
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 16, top: 12),
-                              child: InkWell(
-                                onTap: () {
-                                  if (_currentStep == ForgotPasswordStep.otp) {
-                                    setState(
-                                      () =>
-                                          _currentStep =
-                                              ForgotPasswordStep.email,
-                                    );
-                                  } else if (_currentStep ==
-                                      ForgotPasswordStep.newPassword) {
-                                    setState(
-                                      () =>
-                                          _currentStep = ForgotPasswordStep.otp,
-                                    );
-                                  } else {
-                                    context.pop();
-                                  }
-                                },
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withAlpha(40),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.white.withAlpha(70), width: 0.8),
-                                  ),
-                                  child: const Icon(
-                                    Icons.arrow_back_ios_new_rounded,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
+                          // Logo centered 1:1 dengan login
+                          Expanded(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.lg,
                                 ),
+                                child: _buildCenteredLogo(),
                               ),
                             ),
                           ),
 
-                          const SizedBox(height: 10),
-                          _buildCenteredLogo(),
-                          const SizedBox(height: AppSpacing.lg),
-                          const Spacer(),
-
-                          // The Card
+                          // The Card - 1:1 dengan login
                           Center(
                             child: ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 480),
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: context.appColors.surface,
+                                  color: BkuTheme.cardSurface,
                                   borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(AppRadius.xxl),
+                                    top: Radius.circular(28),
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: context.appColors.onSurface.withValues(alpha: 0.15),
+                                      color: Colors.black.withAlpha(30),
                                       blurRadius: 32,
                                       offset: const Offset(0, -12),
                                     ),
@@ -277,37 +240,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 ),
                                 child: Column(
                                   children: [
-                                    const SizedBox(height: AppSpacing.s20),
+                                    const SizedBox(height: 12),
                                     Center(
                                       child: Container(
-                                        width: 48,
-                                        height: 5,
+                                        width: 40,
+                                        height: 4,
                                         decoration: BoxDecoration(
-                                          color: AppColors.neutral300,
-                                          borderRadius: AppRadius.radiusMd,
+                                          color: BkuTheme.border,
+                                          borderRadius: BorderRadius.circular(2),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: AppSpacing.xl),
-
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: AppSpacing.xl,
-                                      ),
-                                      child: _buildTimeline(),
-                                    ),
-
-                                    const SizedBox(height: AppSpacing.xl),
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: AppSpacing.xxl,
-                                        right: AppSpacing.xxl,
-                                        bottom: AppSpacing.xxxl,
-                                      ),
-                                      child: AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 300),
-                                        child: _buildCurrentStepContent(),
+                                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                            child: _buildTimeline(),
+                                          ),
+                                          const SizedBox(height: AppSpacing.lg),
+                                          AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 300),
+                                            child: _buildCurrentStepContent(),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -321,6 +278,42 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 );
               },
+            ),
+          ),
+          // Back button overlay - tetap ada tapi gak ganggu centering logo (1:1 login)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, top: 12),
+                child: InkWell(
+                  onTap: () {
+                    if (_currentStep == ForgotPasswordStep.otp) {
+                      setState(() => _currentStep = ForgotPasswordStep.email);
+                    } else if (_currentStep == ForgotPasswordStep.newPassword) {
+                      setState(() => _currentStep = ForgotPasswordStep.otp);
+                    } else {
+                      context.pop();
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(40),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withAlpha(70), width: 0.8),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -434,9 +427,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           height: 36,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isActive ? context.appColors.primary : context.appColors.surface,
+            color: isActive ? BkuTheme.primary : BkuTheme.cardSurface,
             border: Border.all(
-              color: isActive ? context.appColors.primary : AppColors.neutral200,
+              color: isActive ? BkuTheme.primary : BkuTheme.border,
               width: 2,
             ),
           ),
@@ -444,7 +437,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Text(
               stepNum.toString(),
               style: TextStyle(
-                color: isActive ? context.appColors.onPrimary : AppColors.neutral400,
+                color: isActive ? Colors.white : BkuTheme.textPlaceholder,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -455,7 +448,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         Text(
           label,
           style: TextStyle(
-            color: isActive ? context.appColors.primary : AppColors.neutral400,
+            color: isActive ? BkuTheme.primary : BkuTheme.textPlaceholder,
             fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
             fontSize: 12,
           ),
@@ -469,7 +462,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       width: 40,
       height: 2,
       margin: const EdgeInsets.only(bottom: AppSpacing.xl, left: AppSpacing.sm, right: AppSpacing.sm),
-      color: isActive ? context.appColors.primary : AppColors.neutral200,
+      color: isActive ? BkuTheme.primary : BkuTheme.border,
     );
   }
 
@@ -492,27 +485,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Lupa Sandi?',
-            style: AppTextStyles.headlineLarge.copyWith(
-              color: AppColors.neutral800,
-              letterSpacing: -0.5,
-            ),
+            style: BkuTheme.textPageTitle.copyWith(fontSize: 21, letterSpacing: -0.3),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 2),
           Text(
             'Masukkan email atau NIM Anda, dan kami akan mengirimkan OTP untuk mengatur ulang kata sandi.',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral500,
-              height: 1.5,
-            ),
+            style: BkuTheme.textCardSubtitle.copyWith(height: 1.5),
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           _buildTextField(
             label: 'Email atau NIM',
             placeholder: 'Masukkan email atau NIM',
             icon: Icons.person_outline_rounded,
             controller: _emailController,
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           _buildActionButton(label: 'Kirim OTP', onPressed: _requestOtp),
         ],
       ),
@@ -523,24 +510,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final defaultPinTheme = PinTheme(
       width: 48,
       height: 56,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 20,
-        color: AppColors.neutral800,
+        color: BkuTheme.textHeading,
         fontWeight: FontWeight.w600,
       ),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        border: Border.all(color: AppColors.neutral300),
-        borderRadius: AppRadius.radiusMd,
+        color: BkuTheme.cardSurface,
+        border: Border.all(color: BkuTheme.border),
+        borderRadius: BkuTheme.r12,
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
       border: Border.all(
-        color: context.appColors.primary,
+        color: BkuTheme.primary,
         width: 1.5,
       ),
-      borderRadius: AppRadius.radiusMd,
+      borderRadius: BkuTheme.r12,
     );
 
     return KeyedSubtree(
@@ -550,20 +537,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Verifikasi OTP',
-            style: AppTextStyles.headlineLarge.copyWith(
-              color: AppColors.neutral800,
-            ),
+            style: BkuTheme.textPageTitle.copyWith(fontSize: 21, letterSpacing: -0.3),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 2),
           Text(
             'Masukkan 6 digit kode yang telah dikirim ke\n${_emailController.text}',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral500,
-              height: 1.5,
-            ),
+            style: BkuTheme.textCardSubtitle.copyWith(height: 1.5),
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           Pinput(
             length: 6,
             controller: _otpController,
@@ -571,28 +553,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             focusedPinTheme: focusedPinTheme,
             onCompleted: (pin) => _verifyOtp(),
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           _buildActionButton(label: 'Verifikasi OTP', onPressed: _verifyOtp),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Belum menerima kode? ',
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.neutral500,
-                ),
+                style: BkuTheme.textCardSubtitle,
               ),
               GestureDetector(
                 onTap: _canResendOtp ? _requestOtp : null,
                 child: Text(
                   _canResendOtp ? 'Kirim Ulang' : '$_start detik',
-                  style: AppTextStyles.labelMd.copyWith(
-                    color:
-                        _canResendOtp
-                            ? context.appColors.primary
-                            : AppColors.neutral400,
-                    fontWeight: FontWeight.bold,
+                  style: BkuTheme.textButton.copyWith(
+                    color: _canResendOtp ? BkuTheme.primary : BkuTheme.textPlaceholder,
+                    fontSize: 12.5,
                   ),
                 ),
               ),
@@ -611,20 +588,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           Text(
             'Buat Sandi Baru',
-            style: AppTextStyles.headlineLarge.copyWith(
-              color: AppColors.neutral800,
-              letterSpacing: -0.5,
-            ),
+            style: BkuTheme.textPageTitle.copyWith(fontSize: 21, letterSpacing: -0.3),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 2),
           Text(
             'Sandi baru Anda harus unik dan berbeda dari sandi sebelumnya.',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.neutral500,
-              height: 1.5,
-            ),
+            style: BkuTheme.textCardSubtitle.copyWith(height: 1.5),
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           _buildTextField(
             label: 'Kata Sandi Baru',
             placeholder: 'Masukkan kata sandi baru',
@@ -638,7 +609,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             },
             controller: _passwordController,
           ),
-          const SizedBox(height: AppSpacing.s20),
+          const SizedBox(height: AppSpacing.md),
           _buildTextField(
             label: 'Konfirmasi Sandi Baru',
             placeholder: 'Ulangi kata sandi baru',
@@ -652,7 +623,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             },
             controller: _confirmPasswordController,
           ),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.lg),
           _buildActionButton(
             label: 'Simpan Sandi Baru',
             onPressed: _resetPassword,
@@ -676,25 +647,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelMedium.copyWith(
-            color: AppColors.neutral800,
-            fontWeight: FontWeight.w700,
-          ),
+          style: BkuTheme.textSectionTitle.copyWith(fontSize: 12.5),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: 6),
         BkuTextField(
           controller: controller,
           obscureText: isPassword && !isPasswordVisible,
-          style: AppTextStyles.bodyLarge.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.neutral800,
-          ),
+          style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5),
           decoration: InputDecoration(
             hintText: placeholder,
-            hintStyle: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.neutral400,
-            ),
-            prefixIcon: Icon(icon, color: AppColors.neutral400, size: 22),
+            hintStyle: BkuTheme.textCaption.copyWith(color: BkuTheme.textPlaceholder),
+            prefixIcon: Icon(icon, color: BkuTheme.textPlaceholder, size: 20),
             suffixIcon:
                 isPassword
                     ? IconButton(
@@ -702,33 +665,34 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         isPasswordVisible
                             ? Icons.visibility_rounded
                             : Icons.visibility_off_rounded,
-                        color: AppColors.neutral400,
-                        size: 22,
+                        color: BkuTheme.textPlaceholder,
+                        size: 20,
                       ),
                       onPressed: onVisibilityToggle,
                     )
                     : null,
             filled: true,
-            fillColor: AppColors.neutral50,
+            fillColor: BkuTheme.scaffoldBg,
             border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral300, width: 1.0),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
-              borderSide: BorderSide(color: AppColors.neutral300, width: 1.0),
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusMd,
+              borderRadius: BkuTheme.r12,
               borderSide: BorderSide(
-                color: context.appColors.primary,
+                color: BkuTheme.primary,
                 width: 1.5,
               ),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xl,
-              vertical: AppSpacing.lg,
+            errorBorder: OutlineInputBorder(
+              borderRadius: BkuTheme.r12,
+              borderSide: BorderSide(color: BkuTheme.rose, width: 1.5),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ],

@@ -1,8 +1,8 @@
 import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
+import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_text_field.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
@@ -236,7 +236,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           const BkuAppBar(
@@ -320,10 +320,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           // Header Clean
           Text(
             title,
-            style: AppTextStyles.titleLarge.copyWith(
-              color: context.appColors.onSurface,
-              fontWeight: FontWeight.w800,
-            ),
+            style: BkuTheme.textPageTitle.copyWith(fontSize: 19),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -334,17 +331,17 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 color:
                     _isPastDue(dueDate)
                         ? AppColors.error
-                        : context.appColors.outline,
+                        : BkuTheme.textMuted,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Tenggat: ${_formatDateTime(dueDateStr)}',
-                style: AppTextStyles.labelMd.copyWith(
+                style: BkuTheme.textCardTitle.copyWith(
+                  fontSize: 12,
                   color:
                       _isPastDue(dueDate)
                           ? AppColors.error
-                          : context.appColors.outline,
-                  fontWeight: FontWeight.w600,
+                          : BkuTheme.textMuted,
                 ),
               ),
             ],
@@ -354,28 +351,19 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           if (desc.isNotEmpty) ...[
             Text(
               'Deskripsi Tugas',
-              style: AppTextStyles.titleMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.appColors.onSurface,
-              ),
+              style: BkuTheme.textSectionTitle.copyWith(fontSize: 14),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               desc,
-              style: AppTextStyles.bodyMd.copyWith(
-                height: 1.6,
-                color: context.appColors.onSurfaceVariant,
-              ),
+              style: BkuTheme.textBodyRegular.copyWith(height: 1.6),
             ),
             const SizedBox(height: AppSpacing.xxl),
           ],
 
           Text(
             'Pengumpulan',
-            style: AppTextStyles.titleMd.copyWith(
-              fontWeight: FontWeight.bold,
-              color: context.appColors.onSurface,
-            ),
+            style: BkuTheme.textSectionTitle.copyWith(fontSize: 14),
           ),
           const SizedBox(height: AppSpacing.lg),
 
@@ -414,9 +402,9 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: AppRadius.radiusLg,
-        border: Border.all(color: AppColors.neutral200.withAlpha(150)),
+        color: BkuTheme.cardSurface,
+        borderRadius: BkuTheme.r16,
+        border: Border.all(color: BkuTheme.border),
       ),
       child: Row(
         children: [
@@ -428,19 +416,16 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               children: [
                 Text(
                   statusText,
-                  style: AppTextStyles.labelMd.copyWith(
-                    color: AppColors.neutral800,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: BkuTheme.textCardTitle.copyWith(fontSize: 13),
                 ),
                 if (status == 'graded' &&
                     _submissionData?['score'] != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Nilai: ${_submissionData!['score']}',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.primary,
-                      fontWeight: FontWeight.bold,
+                    style: BkuTheme.textCaption.copyWith(
+                      color: BkuTheme.primary,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -469,7 +454,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
     } else if (type == 'file' || type == 'media') {
       return InkWell(
         onTap: _pickFile,
-        borderRadius: AppRadius.radiusLg,
+        borderRadius: BkuTheme.r16,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(
@@ -478,13 +463,13 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
           ),
           decoration: BoxDecoration(
             color: _selectedFile != null
-                ? context.appColors.primary.withAlpha(15)
-                : context.appColors.surface,
-            borderRadius: AppRadius.radiusLg,
+                ? BkuTheme.primarySoft
+                : BkuTheme.cardSurface,
+            borderRadius: BkuTheme.r16,
             border: Border.all(
               color: _selectedFile != null
-                  ? context.appColors.primary
-                  : context.appColors.outlineVariant,
+                  ? BkuTheme.primary
+                  : BkuTheme.border,
               width: _selectedFile != null ? 1.5 : 1.0,
             ),
           ),
@@ -494,8 +479,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: _selectedFile != null
-                      ? context.appColors.primary.withAlpha(30)
-                      : context.appColors.onSurface.withAlpha(15),
+                      ? BkuTheme.primarySoft
+                      : BkuTheme.slateSoft,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -504,8 +489,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                       : Icons.cloud_upload_rounded,
                   size: 28,
                   color: _selectedFile != null
-                      ? context.appColors.primary
-                      : context.appColors.onSurfaceVariant,
+                      ? BkuTheme.primary
+                      : BkuTheme.textMuted,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -513,11 +498,11 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 _selectedFile != null
                     ? _selectedFile!.name
                     : 'Pilih file untuk diunggah',
-                style: AppTextStyles.titleSm.copyWith(
+                style: BkuTheme.textCardTitle.copyWith(
                   color:
                       _selectedFile != null
-                          ? context.appColors.primary
-                          : context.appColors.onSurfaceVariant,
+                          ? BkuTheme.primary
+                          : BkuTheme.textHeading,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -525,9 +510,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Format: PDF, DOCX, JPG, PNG, MP4',
-                  style: AppTextStyles.bodySm.copyWith(
-                    color: context.appColors.outline,
-                  ),
+                  style: BkuTheme.textCaption,
                 ),
               ],
             ],

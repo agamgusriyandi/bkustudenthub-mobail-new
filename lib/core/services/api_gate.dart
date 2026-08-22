@@ -7,11 +7,11 @@ enum AppEnvironment {
 class ApiGate {
   static const AppEnvironment defaultEnvironment = AppEnvironment.staging;
 
-  static const String productionBaseUrl = 'https://stag.bkustudenthub.com';
-  static const String productionWebUrl = 'https://stag.bkustudenthub.com';
+  static const String productionBaseUrl = 'https://tukangbku.center.biz.id';
+  static const String productionWebUrl = 'https://bku.center.biz.id';
 
-  static const String stagingBaseUrl = 'https://stag.bkustudenthub.com';
-  static const String stagingWebUrl = 'https://stag.bkustudenthub.com';
+  static const String stagingBaseUrl = 'https://tukangbku.center.biz.id';
+  static const String stagingWebUrl = 'https://bku.center.biz.id';
 
   static const String localBaseUrl = 'http://localhost:3000';
   static const String localWebUrl = 'http://localhost:5173';
@@ -93,14 +93,12 @@ class ApiGate {
       final isKnownHost = path.contains('localhost') ||
           path.contains('127.0.0.1') ||
           path.contains('10.0.2.2') ||
-          path.startsWith('http://bkustudenthub.com') ||
-          path.startsWith('https://bkustudenthub.com') ||
-          path.startsWith('http://tukang.bkustudenthub.com') ||
-          path.startsWith('https://tukang.bkustudenthub.com') ||
-          path.startsWith('http://stag.bkustudenthub.com') ||
-          path.startsWith('https://stag.bkustudenthub.com') ||
-          path.startsWith('http://stagback.bkustudenthub.com') ||
-          path.startsWith('https://stagback.bkustudenthub.com');
+          path.contains('tukangbku.center.biz.id') ||
+          path.contains('bku.center.biz.id') ||
+          path.startsWith('http://tukangbku.center.biz.id') ||
+          path.startsWith('https://tukangbku.center.biz.id') ||
+          path.startsWith('http://bku.center.biz.id') ||
+          path.startsWith('https://bku.center.biz.id');
 
       if (isKnownHost) {
         final uri = Uri.tryParse(path);

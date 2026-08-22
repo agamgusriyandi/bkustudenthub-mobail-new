@@ -44,7 +44,6 @@ class BkuKpiCard extends StatelessWidget {
         children: [
           if (badgeText != null || icon != null || progress != null) ...[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (icon != null)
                   Container(
@@ -54,58 +53,73 @@ class BkuKpiCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(icon, size: 14, color: effectiveColor),
-                  )
-                else
-                  const SizedBox.shrink(),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (progress != null) ...[
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              value: progress!.clamp(0.0, 1.0),
-                              strokeWidth: 2.5,
-                              backgroundColor: effectiveProgressColor.withAlpha(30),
-                              valueColor: AlwaysStoppedAnimation<Color>(effectiveProgressColor),
+                  ),
+                if (icon != null) const SizedBox(width: 8),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (progress != null) ...[
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: progress!.clamp(0.0, 1.0),
+                                  strokeWidth: 2.5,
+                                  backgroundColor: effectiveProgressColor.withAlpha(30),
+                                  valueColor: AlwaysStoppedAnimation<Color>(effectiveProgressColor),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                    ],
-                    if (badgeText != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
-                        decoration: BoxDecoration(
-                          color: effectiveColor.withAlpha(14),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          badgeText!,
-                          style: TextStyle(
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w700,
-                            color: effectiveColor,
-                            letterSpacing: 0.1,
                           ),
-                        ),
-                      ),
-                  ],
+                          const SizedBox(width: 6),
+                        ],
+                        if (badgeText != null)
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
+                              decoration: BoxDecoration(
+                                color: effectiveColor.withAlpha(14),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                badgeText!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: effectiveColor,
+                                  letterSpacing: 0.1,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
           ],
-          Text(
-            value,
-            style: BkuTheme.textKpiValue,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: BkuTheme.textKpiValue,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -113,6 +127,7 @@ class BkuKpiCard extends StatelessWidget {
             style: BkuTheme.textKpiLabel,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            softWrap: false,
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 2),

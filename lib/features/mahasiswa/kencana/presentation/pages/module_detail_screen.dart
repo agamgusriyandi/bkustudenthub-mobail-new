@@ -1,11 +1,8 @@
 import 'package:bkuhub_mobile/core/theme/bku_theme.dart';
-import 'package:bkuhub_mobile/core/theme/app_colors.dart';
 import 'package:bkuhub_mobile/core/utils/snackbar_helper.dart';
 import 'package:bkuhub_mobile/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:bkuhub_mobile/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:bkuhub_mobile/core/theme/app_text_styles.dart';
 import 'package:bkuhub_mobile/features/mahasiswa/domain/entities/mission.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +11,6 @@ import 'package:bkuhub_mobile/features/kencana/presentation/providers/kencana_pr
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_loading_dialog.dart';
 import 'package:bkuhub_mobile/core/widgets/bku_design/bku_button.dart';
-import 'package:bkuhub_mobile/core/theme/app_radius.dart';
 
 class ModuleDetailScreen extends StatelessWidget {
   final Mission mission;
@@ -24,7 +20,7 @@ class ModuleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.appColors.surface,
+      backgroundColor: BkuTheme.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           BkuAppBar(
@@ -65,36 +61,36 @@ class ModuleDetailScreen extends StatelessWidget {
                             }
                           }
                         },
-                        child: Container(
-                          width: double.infinity,
-                          padding: AppSpacing.paddingLg,
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral100,
-                            borderRadius: AppRadius.radiusLg,
-                            border: Border.all(color: AppColors.neutral300, width: 1.2),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: AppSpacing.padding10,
-                                decoration: const BoxDecoration(color: AppColors.neutral900, shape: BoxShape.circle),
-                                child: const Icon(Icons.attach_file_rounded, color: Colors.white, size: 22),
-                              ),
-                              const SizedBox(width: AppSpacing.s14),
-                              const Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('File Dokumen / Lampiran', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.neutral900)),
-                                    SizedBox(height: AppSpacing.s3),
-                                    Text('Ketuk untuk mengunduh / membuka file', style: TextStyle(color: AppColors.neutral600, fontSize: 12)),
-                                  ],
+child: Container(
+                            width: double.infinity,
+                            padding: AppSpacing.paddingLg,
+                            decoration: BoxDecoration(
+                              color: BkuTheme.slateSoft,
+                              borderRadius: BkuTheme.r16,
+                              border: Border.all(color: BkuTheme.border, width: 1.2),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(color: BkuTheme.textHeading, shape: BoxShape.circle),
+                                  child: const Icon(Icons.attach_file_rounded, color: Colors.white, size: 22),
                                 ),
-                              ),
-                              const Icon(Icons.chevron_right_rounded, color: AppColors.neutral900, size: 22),
-                            ],
+                                const SizedBox(width: AppSpacing.s14),
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('File Dokumen / Lampiran', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: BkuTheme.textHeading)),
+                                      SizedBox(height: AppSpacing.s3),
+                                      Text('Ketuk untuk mengunduh / membuka file', style: TextStyle(color: BkuTheme.textMuted, fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(Icons.chevron_right_rounded, color: BkuTheme.textHeading, size: 22),
+                              ],
+                            ),
                           ),
-                        ),
                       ),
                     ),
                   if (mission.linkUrl != null && mission.linkUrl!.trim().isNotEmpty)
@@ -121,60 +117,51 @@ class ModuleDetailScreen extends StatelessWidget {
                             }
                           }
                         },
-                        child: Container(
-                          width: double.infinity,
-                          padding: AppSpacing.paddingLg,
-                          decoration: BoxDecoration(
-                            color: BkuTheme.indigoSoft,
-                            borderRadius: BkuTheme.r16,
-                            border: Border.all(color: BkuTheme.indigoBorder, width: 1.2),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(color: BkuTheme.indigo, shape: BoxShape.circle),
-                                child: const Icon(Icons.link_rounded, color: Colors.white, size: 22),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Tautan Web Eksternal', style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5, color: BkuTheme.indigo)),
-                                    const SizedBox(height: 2),
-                                    Text(mission.linkUrl!, style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
-                                  ],
+child: Container(
+                            width: double.infinity,
+                            padding: AppSpacing.paddingLg,
+                            decoration: BoxDecoration(
+                              color: BkuTheme.indigoSoft,
+                              borderRadius: BkuTheme.r16,
+                              border: Border.all(color: BkuTheme.indigoBorder, width: 1.2),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(color: BkuTheme.indigo, shape: BoxShape.circle),
+                                  child: const Icon(Icons.link_rounded, color: Colors.white, size: 22),
                                 ),
-                              ),
-                              Icon(Icons.chevron_right_rounded, color: BkuTheme.indigo, size: 22),
-                            ],
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Tautan Web Eksternal', style: BkuTheme.textCardTitle.copyWith(fontSize: 13.5, color: BkuTheme.indigo)),
+                                      const SizedBox(height: 2),
+                                      Text(mission.linkUrl!, style: BkuTheme.textCaption.copyWith(color: BkuTheme.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                    ],
+                                  ),
+                                ),
+                                Icon(Icons.chevron_right_rounded, color: BkuTheme.indigo, size: 22),
+                              ],
+                            ),
                           ),
-                        ),
                       ),
                     ),
                   Text(
                     mission.title ?? '',
-                    style: AppTextStyles.titleLg.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.onSurface,
-                    ),
+                    style: BkuTheme.textPageTitle.copyWith(fontSize: 19),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Diposting oleh Panitia PKKMB Kencana',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: context.appColors.outline,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: BkuTheme.textCardSubtitle.copyWith(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(
                     mission.content ?? 'Tidak ada deskripsi materi.',
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: context.appColors.outline,
-                      height: 1.6,
-                    ),
+                    style: BkuTheme.textBodyRegular.copyWith(height: 1.6),
                   ),
                   const SizedBox(height: AppSpacing.xxxl),
                   BkuButton(
